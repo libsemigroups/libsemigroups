@@ -229,6 +229,40 @@ namespace libsemigroups {
       KnuthBendixImpl& init(congruence_kind                  knd,
                             Presentation<native_word_type>&& p);
 
+      // Construct from order
+      KnuthBendixImpl(congruence_kind                       knd,
+                      Presentation<native_word_type> const& p,
+                      ReductionOrder const&                 order)
+          : KnuthBendixImpl() {
+        init(knd, p, order);
+      }
+
+      KnuthBendixImpl& init(congruence_kind                       knd,
+                            Presentation<native_word_type> const& p,
+                            ReductionOrder const&                 order) {
+        // Call rvalue ref init
+        return init(knd, Presentation(p), order);
+      }
+
+      KnuthBendixImpl(congruence_kind                  knd,
+                      Presentation<native_word_type>&& p,
+                      ReductionOrder const&            order)
+          : KnuthBendixImpl() {
+        init(knd, std::move(p), order);
+      }
+
+      KnuthBendixImpl& init(congruence_kind                  knd,
+                            Presentation<native_word_type>&& p,
+                            ReductionOrder const&            order) {
+        LIBSEMIGROUPS_ASSERT(presentation::is_normalized(p));
+        init();
+        kind(knd);
+        _rewriting_system.order() = order;
+        _presentation             = std::move(p);
+        init_from_internal_presentation();
+        return *this;
+      }
+
       // TODO(1) construct/init from kind and KnuthBendixImpl const&, for
       // consistency with ToddCoxeterImpl
 
