@@ -100,7 +100,7 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
 
   LIBSEMIGROUPS_TEST_CASE("Subwords", "000", "strings", "[quick]") {
     using rx::operator|;
@@ -476,7 +476,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "a", "cc");
     presentation::add_rule(p, "c", "bab");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto result
         = (p | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
@@ -1129,52 +1129,14 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaaabaaba", "a");
 
-    PedersenPestov<RPOTrie> pp(p);
-
-    KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>> kb(
-        congruence_kind::twosided, p);
-
-    auto morpho_complete
-        = rx::transform([&kb](Presentation<std::string> const& p) {
-            kb.init(congruence_kind::twosided, p);
-            kb.rewriting_system().sort_pending_rules_by(nullptr);
-            kb.rewriting_system().settings().reduction_threshold
-                = POSITIVE_INFINITY;
-            kb.max_rounds(2).run();
-            return to<Presentation>(kb);
-          });
-
-    Presentation<std::string> p0 = p, p1, p2;
+    KnuthBendix kb(congruence_kind::twosided, p);
 
     auto input
-        = (p0 | AllAlphabetOrders() | morpho_complete
-           | Subwords().min_length(2).max_length(3).proper(true)
-           | rx::transform([&p0](auto const& pair) {
-               auto copy(p0);
-               presentation::replace_word_with_new_generator(copy, pair.second);
-               return copy;
-             })
-           | AllAlphabetOrderExts() | Ref(p1) | morpho_complete
-           | Subwords().min_length(2).max_length(3).proper(true)
-           | rx::transform([&p1](auto const& pair) {
-               auto copy(p1);
-               presentation::replace_word_with_new_generator(copy, pair.second);
-               return copy;
-             })
-           | AllAlphabetOrderExts() | Ref(p2) | morpho_complete
-           | Subwords().min_length(2).max_length(3).proper(true)
-           | rx::transform([&p2](auto const& pair) {
-               auto copy(p2);
-               presentation::replace_word_with_new_generator(copy, pair.second);
-               // fmt::print("C: {}\n", copy.alphabet());
-               // fmt::print("C: {}\n\n", copy.rules);
-               return copy;
-             })
-           | AllAlphabetOrderExts());
+        = (p | pedersen_pestov<5>(kb).min_length(2).max_length(3).proper(true));
 
     auto num = (input | rx::count());
 
-    // REQUIRE(num == 399'620);
+    REQUIRE(num == 399'620);
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);

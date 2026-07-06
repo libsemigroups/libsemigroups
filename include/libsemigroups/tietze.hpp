@@ -38,6 +38,8 @@
 #include "presentation.hpp"  // for Presentation, operator!=, rep...
 #include "runner.hpp"        // for Runner
 
+#include "knuth-bendix-class.hpp"  // for KnuthBendix
+
 #include "detail/fmt.hpp"   // for print
 #include "detail/race.hpp"  // for Race
 
@@ -1104,74 +1106,121 @@ namespace libsemigroups {
     }
   };
 
-  template <typename RewritingSystem, typename Word>
-  class PedersenPestov {
+  ////////////////////////////////////////////////////////////////////////
+  // PedersenPestov
+  ////////////////////////////////////////////////////////////////////////
+
+  template <size_t Depth, typename Word, typename RewritingSystem>
+  class PedersenPestov : detail::SubwordsSettings {
    private:
-    std::vector<Presentation<Word>> _presentations;
+    using Settings = detail::SubwordsSettings;
+
+    mutable KnuthBendix<Word, RewritingSystem> _kb;
+    mutable std::vector<Presentation<Word>>    _presentations;
 
    public:
-    PedersenPestov(Presentation<Word> const& p) : _presentations({p}){};
-  };
+    PedersenPestov(KnuthBendix<Word, RewritingSystem> const& kb)
+        : Settings(), _kb(kb), _presentations(Depth) {
+      min_length(2);
+      max_length(6);
+      proper(true);
+    }
 
-  //  namespace {
-  //
-  //    template <size_t N,
-  //              size_t Depth,
-  //              typename InputRange,
-  //              typename MorphoComplete,
-  //              typename Score>
-  //    auto add_tietze_morpho_generator_steps(
-  //        InputRange&&                            input,
-  //        std::vector<Presentation<std::string>>& ps,
-  //        MorphoComplete const&                   morpho_complete,
-  //        Score const&                            score) {
-  //      static_assert(N < Depth);
-  //
-  //      size_t const M = 2'048;
-  //
-  //      using rx::operator|;
-  //
-  //      if constexpr (N == 0) {
-  //        auto step
-  //            = (std::forward<InputRange>(input) | Ref(ps[N]) |
-  //            morpho_complete
-  //               |
-  //               SubwordsFreq(score).min_length(2).max_length(6).proper(true)
-  //               | rx::take(M) | rx::transform([&ps](auto const& tup) {
-  //                   auto copy(ps[N]);
-  //                   presentation::replace_word_with_new_generator(
-  //                       copy, std::get<1>(tup));
-  //                   return copy;
-  //                 }));
-  //
-  //        if constexpr (N + 1 == Depth) {
-  //          return (step | AllAlphabetOrderExts());
-  //        } else {
-  //          return add_tietze_morpho_generator_steps<N + 1, Depth>(
-  //              std::move(step), ps, morpho_complete, score);
-  //        }
-  //      } else {
-  //        auto step
-  //            = (std::forward<InputRange>(input) | AllAlphabetOrderExts()
-  //               | Ref(ps[N]) | morpho_complete
-  //               |
-  //               SubwordsFreq(score).min_length(2).max_length(6).proper(true)
-  //               | rx::take(M) | rx::transform([&ps](auto const& tup) {
-  //                   auto copy(ps[N]);
-  //                   presentation::replace_word_with_new_generator(
-  //                       copy, std::get<1>(tup));
-  //                   return copy;
-  //                 }));
-  //
-  //        if constexpr (N + 1 == Depth) {
-  //          return (step | AllAlphabetOrderExts());
-  //        } else {
-  //          return add_tietze_morpho_generator_steps<N + 1, Depth>(
-  //              std::move(step), ps, morpho_complete, score);
-  //        }
-  //      }
-  //    }
-  //  }  // namespace
+    ////////////////////////////////////////////////////////////////////////
+    // Settings
+    ////////////////////////////////////////////////////////////////////////
 
+    using Settings::max_length;
+    using Settings::min_length;
+    using Settings::proper;
+
+    PedersenPestov& max_length(size_t val) {
+      Settings::max_length(val);
+      return *this;
+    }
+
+    PedersenPestov& min_length(size_t val) {
+      // TODO throw if val < 2
+      Settings::min_length(val);
+      return *this;
+    }
+
+    PedersenPestov& proper(bool val) {
+      Settings::proper(val);
+      return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Main event
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename InputRange,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+    [[nodiscard]] auto operator()(InputRange&& input) const {
+      return add_steps<0>(std::forward<InputRange>(input));
+    }
+
+    [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
+      return operator()(Singleton(input));
+    }
+
+   private:
+    template <size_t N, typename InputRange>
+    auto add_steps(InputRange&& input) const {
+      static_assert(N < Depth);
+
+      LIBSEMIGROUPS_ASSERT(N < _presentations.size());
+
+      using rx::operator|;
+
+      auto run_knuth_bendix = [this](Presentation<Word> const& p) {
+        _kb.init(congruence_kind::twosided, p);
+        _kb.rewriting_system().sort_pending_rules_by(nullptr);
+        _kb.rewriting_system().settings().reduction_threshold
+            = POSITIVE_INFINITY;
+        _kb.max_rounds(2).run();
+        return to<Presentation>(_kb);
+      };
+
+      if constexpr (N == 0) {
+        // Call Subwords(*this) to pass thru the settings
+        auto step = (std::forward<InputRange>(input) | Ref(_presentations[N])
+                     | rx::transform(run_knuth_bendix) | Subwords(*this)
+                     | rx::transform([this](auto const& tup) {
+                         auto copy(_presentations[N]);
+                         presentation::replace_word_with_new_generator(
+                             copy, std::get<1>(tup));
+                         return copy;
+                       }));
+
+        if constexpr (N + 1 == Depth) {
+          return (step | AllAlphabetOrderExts());
+        } else {
+          return add_steps<N + 1>(std::move(step));
+        }
+      } else {
+        // Call Subwords(*this) to pass thru the settings
+        auto step = (std::forward<InputRange>(input) | AllAlphabetOrderExts()
+                     | Ref(_presentations[N]) | rx::transform(run_knuth_bendix)
+                     | Subwords(*this) | rx::transform([this](auto const& tup) {
+                         auto copy(_presentations[N]);
+                         presentation::replace_word_with_new_generator(
+                             copy, std::get<1>(tup));
+                         return copy;
+                       }));
+
+        if constexpr (N + 1 == Depth) {
+          return (step | AllAlphabetOrderExts());
+        } else {
+          return add_steps<N + 1>(std::move(step));
+        }
+      }
+    }
+  };  // class PedersenPestov
+
+  template <size_t Depth, typename Word, typename RewritingSystem>
+  auto pedersen_pestov(KnuthBendix<Word, RewritingSystem> const& kb) {
+    return PedersenPestov<Depth, Word, RewritingSystem>(kb);
+  }
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TIETZE_HPP_

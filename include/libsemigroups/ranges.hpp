@@ -442,6 +442,10 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
+template <typename Thing>
+struct rx::is_input_range<typename libsemigroups::Singleton<Thing>>
+    : std::true_type {};
+
 #include "ranges.tpp"
 
 #endif  // LIBSEMIGROUPS_RANGES_HPP_
