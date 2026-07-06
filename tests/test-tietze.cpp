@@ -25,8 +25,10 @@
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #include <chrono>
-#include <string>  // for string
-#include <vector>  // for vector
+#include <string>   // for string
+#include <tuple>    // for get
+#include <utility>  // for move
+#include <vector>   // for vector
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -43,36 +45,58 @@
 namespace libsemigroups {
   namespace {
 
-    template <typename Iterator>
-    auto most_frequent_subword(Iterator first, Iterator last) {
-      using Word = std::conditional_t<
-          std::is_same_v<std::remove_const_t<typename Iterator::value_type>,
-                         word_type>,
-          word_type,
-          std::string>;
+    template <size_t N,
+              size_t Depth,
+              typename InputRange,
+              typename MorphoComplete,
+              typename Score>
+    auto add_tietze_morpho_generator_steps(
+        InputRange&&                            input,
+        std::vector<Presentation<std::string>>& ps,
+        MorphoComplete const&                   morpho_complete,
+        Score const&                            score) {
+      static_assert(N < Depth);
 
-      std::unordered_map<Word, size_t> mp;
-      Word                             tmp;
+      size_t const M = 2'048;
 
-      for (auto it = first; it < last; ++it) {
-        auto const& w = *it;
-        for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
-          for (auto prefix = suffix + 2; prefix < w.cend(); ++prefix) {
-            tmp.assign(suffix, prefix);
-            auto [it, inserted] = mp.emplace(tmp, 1);
-            if (!inserted) {
-              ++(*it).second;
-            }
-          }
+      using rx::operator|;
+
+      if constexpr (N == 0) {
+        auto step
+            = (std::forward<InputRange>(input) | Ref(ps[N]) | morpho_complete
+               | SubwordsFreq(score).min_length(2).max_length(6).proper(true)
+               | rx::take(M) | rx::transform([&ps](auto const& tup) {
+                   auto copy(ps[N]);
+                   presentation::replace_word_with_new_generator(
+                       copy, std::get<1>(tup));
+                   return copy;
+                 }));
+
+        if constexpr (N + 1 == Depth) {
+          return (step | AllAlphabetOrderExts());
+        } else {
+          return add_tietze_morpho_generator_steps<N + 1, Depth>(
+              std::move(step), ps, morpho_complete, score);
+        }
+      } else {
+        auto step
+            = (std::forward<InputRange>(input) | AllAlphabetOrderExts()
+               | Ref(ps[N]) | morpho_complete
+               | SubwordsFreq(score).min_length(2).max_length(6).proper(true)
+               | rx::take(M) | rx::transform([&ps](auto const& tup) {
+                   auto copy(ps[N]);
+                   presentation::replace_word_with_new_generator(
+                       copy, std::get<1>(tup));
+                   return copy;
+                 }));
+
+        if constexpr (N + 1 == Depth) {
+          return (step | AllAlphabetOrderExts());
+        } else {
+          return add_tietze_morpho_generator_steps<N + 1, Depth>(
+              std::move(step), ps, morpho_complete, score);
         }
       }
-
-      return std::max_element(mp.begin(),
-                              mp.end(),
-                              [](auto const& x, auto const& y) {
-                                return x.second < y.second;
-                              })
-          ->first;
     }
   }  // namespace
 
@@ -748,8 +772,6 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "aabbaab", "aba");
 
-    REQUIRE(most_frequent_subword(p.rules.begin(), p.rules.end()) == "ab");
-
     KnuthBendix kb(congruence_kind::twosided, p);
 
     auto morpho_complete
@@ -782,8 +804,6 @@ namespace libsemigroups {
     //                                      "abaabaababbaba",
     //                                      "abaabaababbaaabbaba",
     //                                      "abaababaaab"}));
-
-    // REQUIRE(most_frequent_subword(q.rules.begin(), q.rules.end()) == "ab");
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1074,32 +1094,18 @@ namespace libsemigroups {
              > std::get<1>(tup2).size() * std::get<2>(tup2);
     };
 
-    size_t const                           depth = 6;
+    constexpr size_t                       depth = 6;
     std::vector<Presentation<std::string>> ps(depth);
 
-    auto input = (p | AllAlphabetOrders() | Ref(ps[0]) | morpho_complete
-                  | SubwordsFreq(score).min_length(2).max_length(6).proper(true)
-                  | rx::take(1'024) | rx::transform([&ps](auto const& tup) {
-                      auto copy(ps[0]);
-                      presentation::replace_word_with_new_generator(
-                          copy, std::get<1>(tup));
-                      return copy;
-                    }));
-    for (size_t i = 1; i < depth; ++i) {
-      input = (input | AllAlphabetOrderExts() | Ref(ps[1]) | morpho_complete
-               | SubwordsFreq(score).min_length(2).max_length(6).proper(true)
-               | rx::take(1'024) | rx::transform([&ps](auto const& tup) {
-                   auto copy(ps[1]);
-                   presentation::replace_word_with_new_generator(
-                       copy, std::get<1>(tup));
-                   return copy;
-                 }));
-    }
-
-    input    = (input | AllAlphabetOrderExts());
+    auto input = add_tietze_morpho_generator_steps<0, depth>(
+        p | AllAlphabetOrders(), ps, morpho_complete, score);
     auto num = (input | rx::count());
 
-    REQUIRE(num == 0);
+    REQUIRE(num == 108);
+
+    // REQUIRE((input | rx::transform([](auto const& p) { return p.rules; })
+    //          | rx::to_vector())
+    //         == std::vector<std::vector<std::string>>());
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
