@@ -964,54 +964,45 @@ namespace libsemigroups {
             return to<Presentation>(kb);
           });
 
+    auto score = [](auto const& tup1, auto const& tup2) {
+      return std::get<1>(tup1).size() * std::get<2>(tup1)
+             > std::get<1>(tup2).size() * std::get<2>(tup2);
+    };
+
     Presentation<std::string> p0 = p, p1, p2;
 
-    size_t const m = 4 * 2048;
+    size_t const m = 2'048;
 
     auto input
         = (p0 | AllAlphabetOrders() | morpho_complete
-           | SubwordsFreq().min_length(2).max_length(3)
-           | rx::sort([](auto const& tup1, auto const& tup2) {
-               return std::get<1>(tup1).size() * std::get<2>(tup1)
-                      > std::get<1>(tup2).size() * std::get<2>(tup2);
-             })
-           | rx::take(m) | rx::transform([&p0](auto const& tup) {
+           | SubwordsFreq(score).min_length(2).max_length(3) | rx::take(m)
+           | rx::transform([&p0](auto const& tup) {
                auto copy(p0);
                presentation::replace_word_with_new_generator(copy,
                                                              std::get<1>(tup));
                return copy;
              })
            | AllAlphabetOrderExts() | Ref(p1) | morpho_complete
-           | SubwordsFreq().min_length(2).max_length(3)
-           | rx::sort([](auto const& tup1, auto const& tup2) {
-               return std::get<1>(tup1).size() * std::get<2>(tup1)
-                      > std::get<1>(tup2).size() * std::get<2>(tup2);
-             })
-           | rx::take(m) | rx::transform([&p1](auto const& tup) {
+           | SubwordsFreq(score).min_length(2).max_length(3) | rx::take(m)
+           | rx::transform([&p1](auto const& tup) {
                auto copy(p1);
                presentation::replace_word_with_new_generator(copy,
                                                              std::get<1>(tup));
                return copy;
              })
            | AllAlphabetOrderExts() | Ref(p2) | morpho_complete
-           | SubwordsFreq().min_length(2).max_length(3)
-           | rx::sort([](auto const& tup1, auto const& tup2) {
-               return std::get<1>(tup1).size() * std::get<2>(tup1)
-                      > std::get<1>(tup2).size() * std::get<2>(tup2);
-             })
-           | rx::take(m) | rx::transform([&p2](auto const& tup) {
+           | SubwordsFreq(score).min_length(2).max_length(3) | rx::take(m)
+           | rx::transform([&p2](auto const& tup) {
                auto copy(p2);
                presentation::replace_word_with_new_generator(copy,
                                                              std::get<1>(tup));
-               fmt::print("C: {}\n", copy.alphabet());
-               fmt::print("C: {}\n\n", copy.rules);
                return copy;
              })
            | AllAlphabetOrderExts());
 
     size_t const num = (input | rx::count());
 
-    // REQUIRE(num == 160);
+    // REQUIRE(num == 40'960);
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1021,6 +1012,30 @@ namespace libsemigroups {
 
     auto result = (input | find_if.total(num)).get();
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "decab");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"bcabca", "ad", "c", "aa", "d", "ba", "e", "dcc"}));
+
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>(
+                {{"ba", "d"},           {"aa", "c"},
+                 {"dcc", "e"},          {"bc", "da"},
+                 {"ac", "ca"},          {"ae", "dcec"},
+                 {"dcedc", "cd"},       {"bed", "ddedc"},
+                 {"bdce", "ddc"},       {"dceec", "ce"},
+                 {"cdc", "dcee"},       {"dcecd", "cdedc"},
+                 {"bddcee", "dd"},      {"ad", "ddcee"},
+                 {"bece", "ddeeeec"},   {"becd", "ddeeedc"},
+                 {"bee", "ddeec"},      {"cddcee", "dceedc"},
+                 {"cce", "dceeeec"},    {"ccd", "dceeedc"},
+                 {"dcece", "cdeec"},    {"dceedcee", "cedc"},
+                 {"dceddcee", "cddc"},  {"ddceeee", "edc"},
+                 {"ddceeedc", "ed"},    {"ddceeece", "edeec"},
+                 {"ddceeecd", "ededc"}, {"ddceeeddcee", "eddc"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FindIf",
@@ -1054,33 +1069,37 @@ namespace libsemigroups {
             kb.max_rounds(2).run();
             return to<Presentation>(kb);
           });
+    auto score = [](auto const& tup1, auto const& tup2) {
+      return std::get<1>(tup1).size() * std::get<2>(tup1)
+             > std::get<1>(tup2).size() * std::get<2>(tup2);
+    };
 
-    Presentation<std::string> p0 = p, p1, p2;
+    size_t const                           depth = 6;
+    std::vector<Presentation<std::string>> ps(depth);
 
-    auto input
-        = (p0 | AllAlphabetOrders() | morpho_complete
-           | Subwords().min_length(2).max_length(6).proper(true)
-           | rx::transform([&p0](auto const& pair) {
-               auto copy(p0);
-               presentation::replace_word_with_new_generator(copy, pair.second);
-               return copy;
-             })
-           | AllAlphabetOrderExts() | Ref(p1) | morpho_complete
-           | Subwords().min_length(2).max_length(6).proper(true)
-           | rx::transform([&p1](auto const& pair) {
-               auto copy(p1);
-               presentation::replace_word_with_new_generator(copy, pair.second);
-               return copy;
-             })
-           | AllAlphabetOrderExts() | Ref(p2) | morpho_complete
-           | Subwords().min_length(2).max_length(6).proper(true)
-           | rx::transform([&p2](auto const& pair) {
-               auto copy(p2);
-               presentation::replace_word_with_new_generator(copy, pair.second);
-               return copy;
-             })
-           | AllAlphabetOrderExts());
+    auto input = (p | AllAlphabetOrders() | Ref(ps[0]) | morpho_complete
+                  | SubwordsFreq(score).min_length(2).max_length(6).proper(true)
+                  | rx::take(1'024) | rx::transform([&ps](auto const& tup) {
+                      auto copy(ps[0]);
+                      presentation::replace_word_with_new_generator(
+                          copy, std::get<1>(tup));
+                      return copy;
+                    }));
+    for (size_t i = 1; i < depth; ++i) {
+      input = (input | AllAlphabetOrderExts() | Ref(ps[1]) | morpho_complete
+               | SubwordsFreq(score).min_length(2).max_length(6).proper(true)
+               | rx::take(1'024) | rx::transform([&ps](auto const& tup) {
+                   auto copy(ps[1]);
+                   presentation::replace_word_with_new_generator(
+                       copy, std::get<1>(tup));
+                   return copy;
+                 }));
+    }
+
+    input    = (input | AllAlphabetOrderExts());
     auto num = (input | rx::count());
+
+    REQUIRE(num == 0);
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
