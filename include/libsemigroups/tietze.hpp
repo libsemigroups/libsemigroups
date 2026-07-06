@@ -364,9 +364,10 @@ namespace libsemigroups {
     }
   };
 
+  template <typename Score>
   class SubwordsFreq;
 
-  template <typename InputRange>
+  template <typename InputRange, typename Score>
   class SubwordsFreqRange : public detail::SubwordsSettings {
     using Settings = detail::SubwordsSettings;
     using Word =
@@ -386,17 +387,21 @@ namespace libsemigroups {
     InputRange              _input;
     InputRange              _input_orig;
     std::vector<value_type> _output_for_current_input;
+    Score                   _score;
 
    public:
     // TODO replace Settings_ -> SubwordsFreq when out of lining, and
     // remove template
     template <typename Settings_>
-    SubwordsFreqRange(InputRange const& input, Settings_ const& settings)
+    SubwordsFreqRange(InputRange const& input,
+                      Settings_ const&  settings,
+                      Score const&      score)
         : Settings(settings),
           _index(UNDEFINED),
           _input(input),
           _input_orig(_input),
-          _output_for_current_input() {
+          _output_for_current_input(),
+          _score(score) {
       init_from_input();
     }
 
@@ -465,23 +470,35 @@ namespace libsemigroups {
           subwords.next();
         }
         // Now subwords is at_end(), so we can call frequency
+        // TODO we don't really need to retain frequency in the output any
+        // more.
         for (auto& [_, w, freq] : _output_for_current_input) {
           freq = subwords.frequency(w);
         }
+        std::sort(_output_for_current_input.begin(),
+                  _output_for_current_input.end(),
+                  _score);
       }
     }
   };
 
+  template <typename Score>
   class SubwordsFreq : public detail::SubwordsSettings {
    private:
     using Settings = detail::SubwordsSettings;
 
+    Score _score;
+
    public:
+    explicit SubwordsFreq(Score&& score)
+        : Settings(), _score(std::move(score)){};
+    explicit SubwordsFreq(Score const& score) : Settings(), _score(score){};
+
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
       // Pass *this to pass thru the settings
-      return SubwordsFreqRange(std::forward<InputRange>(input), *this);
+      return SubwordsFreqRange(std::forward<InputRange>(input), *this, _score);
     }
 
     template <typename Word>
@@ -503,7 +520,7 @@ namespace libsemigroups {
       Settings::proper(val);
       return *this;
     }
-  };
+  };  // class SubwordsFreq
 
   template <typename InputRange>
   class TietzeAddGeneratorsRange {

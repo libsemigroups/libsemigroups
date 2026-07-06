@@ -138,7 +138,13 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "abab", "ba");
-    auto subwords = (p | SubwordsFreq());
+
+    auto score = [](auto const& tup1, auto const& tup2) {
+      return std::get<1>(tup1).size() * std::get<2>(tup1)
+             > std::get<1>(tup2).size() * std::get<2>(tup2);
+    };
+
+    auto subwords = (p | SubwordsFreq(score));
 
     REQUIRE(subwords.size_hint() == 0);
 
@@ -146,14 +152,14 @@ namespace libsemigroups {
                return std::pair(std::get<1>(tup), std::get<2>(tup));
              })
              | rx::to_vector())
-            == std::vector<std::pair<std::string, size_t>>({{"", 6},
-                                                            {"a", 3},
-                                                            {"ab", 2},
-                                                            {"aba", 1},
+            == std::vector<std::pair<std::string, size_t>>({{"ab", 2},
                                                             {"abab", 1},
-                                                            {"b", 3},
                                                             {"ba", 2},
-                                                            {"bab", 1}}));
+                                                            {"a", 3},
+                                                            {"aba", 1},
+                                                            {"b", 3},
+                                                            {"bab", 1},
+                                                            {"", 6}}));
 
     subwords.min_length(2).max_length(3);
     REQUIRE(subwords.min_length() == 2);
@@ -163,7 +169,7 @@ namespace libsemigroups {
              })
              | rx::to_vector())
             == std::vector<std::pair<std::string, size_t>>(
-                {{"ab", 2}, {"aba", 1}, {"ba", 2}, {"bab", 1}}));
+                {{"ab", 2}, {"ba", 2}, {"aba", 1}, {"bab", 1}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Subwords", "002", "word_type", "[quick]") {
