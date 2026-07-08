@@ -1248,7 +1248,7 @@ EXTRA_PROGRAMS += test_word_graph
 EXTRA_PROGRAMS += test_word_graph_view
 EXTRA_PROGRAMS += test_word_range
 
-EXTRA_PROGRAMS += examples_1_relation_000_049
+EXTRA_PROGRAMS += examples_1_relation
 
 EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
@@ -1761,10 +1761,19 @@ test_word_range_SOURCES += tests/test-main.cpp
 test_word_range_SOURCES += $(CATCH2_SOURCES)
 test_word_range_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
-examples_1_relation_000_049_SOURCES =  examples/1-relation/examples-1-relation-000-049.cpp
-examples_1_relation_000_049_SOURCES += tests/test-main.cpp
-examples_1_relation_000_049_SOURCES += $(CATCH2_SOURCES)
-examples_1_relation_000_049_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+examples_1_relation_SOURCES =  examples/1-relation/examples-1-relation-000-049.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-050-099.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-100-149.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-150-199.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-200-249.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-250-299.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-300-349.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-350-399.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-400-449.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-450-501.cpp
+examples_1_relation_SOURCES += tests/test-main.cpp
+examples_1_relation_SOURCES += $(CATCH2_SOURCES)
+examples_1_relation_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 bench_all_SOURCES  = benchmarks/bench-action.cpp
 bench_all_SOURCES += benchmarks/bench-bmat.cpp
