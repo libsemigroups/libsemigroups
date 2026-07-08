@@ -59,7 +59,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(6).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -69,13 +69,35 @@ namespace libsemigroups {
 
     auto result = (input | find_if).get();
 
-    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cadb");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"ad", "cba", "c", "baaaaa", "d", "babc"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"babc", "d"},
+                                       {"baaaaa", "c"},
+                                       {"cba", "ad"},
+                                       {"babad", "dba"},
+                                       {"adbc", "cd"},
+                                       {"adaaaa", "cc"},
+                                       {"baaaacd", "cdbc"},
+                                       {"baaaacc", "cdaaaa"},
+                                       {"adbad", "cdba"},
+                                       {"cbcd", "addbc"},
+                                       {"cbcc", "addaaaa"},
+                                       {"ccdbc", "adaaacd"},
+                                       {"ccdaaaa", "adaaacc"},
+                                       {"baaaacad", "cdaaaaba"},
+                                       {"cbcad", "addaaaaba"},
+                                       {"ccdbad", "adaaacdba"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "001",
-                          "aabaababba=baaba",
-                          "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "001", "aabaababba=baaba", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -104,7 +126,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "002",
                           "abbabbaaaa=babba",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -143,7 +165,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -159,7 +181,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "004",
                           "baabbaaaba=aabba",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -185,10 +207,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "005",
-                          "baaaaabbba=aaaaa",
-                          "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "005", "baaaaabbba=aaaaa", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -217,7 +236,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "006",
                           "abaabaabaa=baaba",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -227,10 +246,10 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "abaabaabaa", "baaba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, LenLexTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(6).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -243,10 +262,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "007",
-                          "abaaabaaba=babaaa",
-                          "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "007", "abaaabaaba=babaaa", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -275,7 +291,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "008",
                           "aabaaaabba=baaabaa",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -301,7 +317,10 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "009", "babbbaba=abbba", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation",
+                          "009",
+                          "babbbaba=abbba",
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -314,7 +333,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(6).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -356,7 +375,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "011",
                           "babaaababa=aabababa",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -382,7 +401,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "012", "bababbba=aba", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "012", "bababbba=aba", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -411,7 +430,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "013",
                           "ababaaabba=baaababa",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -437,7 +456,10 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "014", "babbaababa=abba", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation",
+                          "014",
+                          "babbaababa=abba",
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -466,7 +488,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "015",
                           "baabaabbaa=abbaaba",
-                          "[extreme]") {
+                          "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -492,7 +514,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "016", "baaaabbbaa=aaaa", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "016", "baaaabbbaa=aaaa", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -521,7 +543,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "017",
                           "aababbabba=babaa",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -550,7 +572,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "018",
                           "aaabaaabba=baaabaa",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -579,7 +601,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "019",
                           "baababbaa=abbaaba",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -608,7 +630,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "020",
                           "aaabaabbaa=baaaba",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -637,7 +659,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "021",
                           "aaaabaabba=baabaaa",
-                          "[extreme]") {
+                          "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -663,7 +685,10 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "022", "baaaabbaba=a", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation",
+                          "022",
+                          "baaaabbaba=a",
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -689,7 +714,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "023", "baaabbbbba=aa", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "023", "baaabbbbba=aa", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -718,7 +743,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "024",
                           "baaabaaaba=abbaa",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -747,7 +772,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "025",
                           "abbababaaa=baabba",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -776,7 +801,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "026",
                           "baaabaabaa=ababa",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -802,7 +827,10 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "027", "abbabaaba=baba", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation",
+                          "027",
+                          "abbabaaba=baba",
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -831,7 +859,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "028",
                           "aaabababba=babaaa",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -857,7 +885,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "029", "abbabbaa=baba", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "029", "abbabbaa=baba", "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -886,7 +914,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "030",
                           "baabbaabba=abababa",
-                          "[extreme]") {
+                          "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -912,10 +940,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "031",
-                          "aaaabababa=babaa",
-                          "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "031", "aaaabababa=babaa", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -944,7 +969,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "032",
                           "baaabababa=abbaa",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -973,7 +998,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "033",
                           "baabaabba=abaaba",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1031,7 +1056,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "035",
                           "baabaaabba=abbaaba",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1060,7 +1085,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "036",
                           "aababbaaaa=baaaaaba",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1115,7 +1140,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "038",
                           "babaabbbba=abbbbaba",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1141,7 +1166,10 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "039", "abbababbaa=baba", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation",
+                          "039",
+                          "abbababbaa=baba",
+                          "[standard][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1154,20 +1182,24 @@ namespace libsemigroups {
     KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(6).proper(true));
+
+    auto num = (input | rx::count());
+
+    REQUIRE(num == 19'853'625);
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
-                     kb.run_for(std::chrono::milliseconds(2));
+                     kb.run_for(std::chrono::milliseconds(1));
                      return kb.rewriting_system().confluent();
                    }).number_of_threads(8);
 
-    auto result = (input | find_if).get();
+    auto result = (input | find_if.total(num)).get();
 
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "040", "baabbaabba=aa", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "040", "baabbaabba=aa", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1196,7 +1228,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "041",
                           "aabbaabbba=baabbaa",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1222,7 +1254,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "042", "baabababba=a", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "042", "baabababba=a", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1232,10 +1264,14 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baabababba", "a");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(2).proper(true));
+
+    auto num = (input | rx::count());
+
+    REQUIRE(num != 0);
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1243,12 +1279,31 @@ namespace libsemigroups {
                      return kb.rewriting_system().confluent();
                    }).number_of_threads(8);
 
-    auto result = (input | find_if).get();
+    auto result = (input | find_if.total(num)).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "bcda");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"caccbc", "a", "c", "ba", "d", "aa"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bdccc", "dccbc"},
+                                       {"a", "bdccbc"},
+                                       {"cbdccbc", "bd"},
+                                       {"bbdccbc", "c"},
+                                       {"bdccbbd", "d"},
+                                       {"bdcbd", "dccc"},
+                                       {"bdccbd", "dccbbd"},
+                                       {"bdbd", "dcccccbc"},
+                                       {"cd", "dcccccbcccbc"},
+                                       {"bdd", "dcccccbcccbbd"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "043", "baaabbabba=aa", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "043", "baaabbabba=aa", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1274,7 +1329,10 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "044", "aabababa=babaaa", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation",
+                          "044",
+                          "aabababa=babaaa",
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1300,6 +1358,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
+  // Takes ~7 seconds
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "045",
                           "baabbaabaa=aabbaa",
@@ -1313,26 +1372,103 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baabbaabaa", "aabbaa");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(3).max_length(3).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
-                     kb.run_for(std::chrono::milliseconds(2));
+                     kb.run_for(std::chrono::milliseconds(1));
                      return kb.rewriting_system().confluent();
                    }).number_of_threads(8);
 
-    auto result = (input | find_if).get();
+    auto num = (input | rx::count());
+
+    REQUIRE(num != 0);
+
+    auto result = (input | find_if.total(num)).get();
 
     REQUIRE(result.has_value());
+    // Non-deterministic, so output not checked
+    // REQUIRE(result.value().alphabet() == "bedca");
+    // REQUIRE(result.value().rules
+    //         == std::vector<std::string>(
+    //             {"dcaa", "cbaa", "c", "aab", "d", "bcb", "e", "bcc"}));
+    // kb.init(congruence_kind::twosided, result.value());
+    // kb.run();
+    // REQUIRE(kb.rewriting_system().confluent());
+
+    // using rule_type = typename decltype(kb)::rule_type;
+    // REQUIRE((kb.active_rules() | rx::to_vector())
+    //         == std::vector<rule_type>({{"aab", "c"},
+    //                                    {"bcc", "e"},
+    //                                    {"bcb", "d"},
+    //                                    {"aad", "ccb"},
+    //                                    {"aae", "ccc"},
+    //                                    {"cbc", "bce"},
+    //                                    {"aacbaa", "bceeaa"},
+    //                                    {"aacbac", "bceeac"},
+    //                                    {"ccd", "bceeb"},
+    //                                    {"bceec", "cce"},
+    //                                    {"dc", "bbce"},
+    //                                    {"bcec", "ce"},
+    //                                    {"bceb", "cd"},
+    //                                    {"ebc", "bbcee"},
+    //                                    {"cbbce", "dbcee"},
+    //                                    {"bbceabce", "cbabce"},
+    //                                    {"bbceac", "cbac"},
+    //                                    {"bbceaa", "cbaa"},
+    //                                    {"aacce", "cceec"},
+    //                                    {"aacd", "cceb"},
+    //                                    {"aace", "ccec"},
+    //                                    {"aacbadbcee", "bceeadbcee"},
+    //                                    {"aacbabce", "bceeabce"},
+    //                                    {"ccce", "bceeec"},
+    //                                    {"ccebbce", "bceedbcee"},
+    //                                    {"ccbaa", "dbceeaa"},
+    //                                    {"ccbac", "dbceeac"},
+    //                                    {"ccbabce", "dbceeabce"},
+    //                                    {"dbceeec", "cee"},
+    //                                    {"dbceeb", "bced"},
+    //                                    {"ecce", "bbceeeec"},
+    //                                    {"ecd", "bbceeeb"},
+    //                                    {"bbceeec", "ece"},
+    //                                    {"bbceeb", "ed"},
+    //                                    {"dbceaa", "ebaa"},
+    //                                    {"dbceac", "ebac"},
+    //                                    {"dbceabce", "ebabce"},
+    //                                    {"dbceeeec", "cece"},
+    //                                    {"dbceeeb", "ced"},
+    //                                    {"bdbcee", "dbce"},
+    //                                    {"bbceadbcee", "cbadbcee"},
+    //                                    {"bcdbce", "ddbcee"},
+    //                                    {"ddbceee", "ebbce"},
+    //                                    {"ccecbaa", "bceedbceeaa"},
+    //                                    {"ccecbac", "bceedbceeac"},
+    //                                    {"ccecbabce", "bceedbceeabce"},
+    //                                    {"ccbadbcee", "dbceeadbcee"},
+    //                                    {"ecebbce", "bbceeedbcee"},
+    //                                    {"ddbceeaa", "cdaa"},
+    //                                    {"ddbceeac", "cdac"},
+    //                                    {"ddbceeabce", "cdabce"},
+    //                                    {"dbceadbcee", "ebadbcee"},
+    //                                    {"ececbaa", "bbceeedbceeaa"},
+    //                                    {"ececbac", "bbceeedbceeac"},
+    //                                    {"ececbabce", "bbceeedbceeabce"},
+    //                                    {"ccecbadbcee", "bceedbceeadbcee"},
+    //                                    {"dbceedbce", "bceddbcee"},
+    //                                    {"dbceeedbce", "ceddbcee"},
+    //                                    {"bcedbce", "cddbcee"},
+    //                                    {"bbceedbce", "eddbcee"},
+    //                                    {"ececbadbcee", "bbceeedbceeadbcee"},
+    //                                    {"ddbceeadbcee", "cdadbcee"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "046",
                           "abbabaabba=babababa",
-                          "[extreme]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1361,7 +1497,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "047",
                           "ababbababa=babababa",
-                          "[extreme]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1387,7 +1523,10 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "048", "abbababbba=baba", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation",
+                          "048",
+                          "abbababbba=baba",
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1400,7 +1539,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1413,7 +1552,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "049", "baabaabba=a", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "049", "baabaabba=a", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
