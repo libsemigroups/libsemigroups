@@ -1248,6 +1248,8 @@ EXTRA_PROGRAMS += test_word_graph
 EXTRA_PROGRAMS += test_word_graph_view
 EXTRA_PROGRAMS += test_word_range
 
+EXTRA_PROGRAMS += examples_1_relation_000_049
+
 EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
 EXTRA_PROGRAMS += bench_bipartition
@@ -1758,6 +1760,11 @@ test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
 test_word_range_SOURCES += $(CATCH2_SOURCES)
 test_word_range_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+
+examples_1_relation_000_049_SOURCES =  examples/1-relation/examples-1-relation-000-049.cpp
+examples_1_relation_000_049_SOURCES += tests/test-main.cpp
+examples_1_relation_000_049_SOURCES += $(CATCH2_SOURCES)
+examples_1_relation_000_049_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 bench_all_SOURCES  = benchmarks/bench-action.cpp
 bench_all_SOURCES += benchmarks/bench-bmat.cpp
