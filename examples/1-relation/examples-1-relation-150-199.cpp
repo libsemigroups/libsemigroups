@@ -56,7 +56,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaababba", "a");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -144,7 +144,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaaababaa", "abaaba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -199,7 +199,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "abababbaa", "baababa");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -280,7 +280,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaaaaabba", "abaaa");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -309,7 +309,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "aabaabbba", "baaba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -398,7 +398,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "abababaaaa", "baba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -456,7 +456,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaaababba", "aba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -485,7 +485,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaaaabbaa", "abaaa");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -514,7 +514,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "abbabaaaba", "baba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -543,7 +543,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaababbba", "aba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -698,7 +698,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "173",
                           "baabbabbba=a",
-                          "[extreme][fail]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -708,7 +708,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baabbabbba", "a");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -763,7 +763,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaabaabaa", "aabba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -818,7 +818,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "abbababbaa", "bababa");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -847,7 +847,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "abbabaaa", "baba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -876,7 +876,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "babababbba", "abbaba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -1148,7 +1148,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "ababaabbaa", "baabaaba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -1259,7 +1259,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaaaaabba", "abaa");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -1375,7 +1375,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baabaaabba", "abaa");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -1404,7 +1404,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaaaabbaa", "abaaaa");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
@@ -1433,7 +1433,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "ababbababa", "baaba");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
