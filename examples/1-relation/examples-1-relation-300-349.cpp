@@ -127,10 +127,11 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
+  // This extreme test passed in 4.265s.
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "303",
                           "abbababaa=baabba",
-                          "[extreme][fail]") {
+                          "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -143,7 +144,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -172,7 +173,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -363,7 +364,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -406,10 +407,11 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
+  // This extreme test passed in 8.632s.
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "313",
                           "abaabbaaaa=baaaba",
-                          "[extreme][fail]") {
+                          "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -422,7 +424,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -451,7 +453,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -509,7 +511,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -538,7 +540,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -596,7 +598,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -612,7 +614,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "320",
                           "baaaababa=a",
-                          "[standard][fail]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -625,7 +627,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -839,7 +841,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "328",
                           "abbabbbba=babba",
-                          "[standard][fail]") {
+                          "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -852,7 +854,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1218,7 +1220,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1273,7 +1275,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1328,7 +1330,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1341,10 +1343,11 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
+  // This extreme test passed in 12.925s.
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "346",
                           "baababbaa=abaaba",
-                          "[extreme][fail]") {
+                          "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1357,7 +1360,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1386,7 +1389,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -1444,7 +1447,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
