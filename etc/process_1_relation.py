@@ -7,7 +7,7 @@ the corresponding ``LIBSEMIGROUPS_TEST_CASE`` tags in the generated source.
 Failing tests, including tests killed after the timeout, also receive
 ``[fail]``.  Passing extreme tests also get a generated comment recording how
 long they took to run.  If ``--tags`` is supplied, only requested tests that
-already have all of the supplied tags in the source file are executed.
+already have all of the supplied tags in the source files are executed.
 """
 
 from __future__ import annotations
@@ -78,7 +78,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--source",
         type=Path,
-        help="source file whose test tags should be updated",
+        nargs="+",
+        help="source file(s) whose test tags should be updated",
         required=True,
     )
     parser.add_argument(
@@ -216,26 +217,32 @@ def parse_tag_filter(values: list[str]) -> set[str]:
     return result
 
 
-def source_test_tags(source: Path) -> dict[int, set[str]]:
-    """Return test number to normalized source tags for ``source``."""
+def source_test_tags(sources: list[Path]) -> dict[int, set[str]]:
+    """Return test number to normalized source tags for ``sources``."""
 
     tags: dict[int, set[str]] = {}
-    for match in TEST_CASE_RE.finditer(source.read_text()):
-        number = int(match.group("number"))
-        tags[number] = {
-            normalize_tag(tag) for tag in split_tags(match.group("tags"))
-        }
+    for source in sources:
+        for match in TEST_CASE_RE.finditer(source.read_text()):
+            number = int(match.group("number"))
+            if number in tags:
+                raise RuntimeError(
+                    f"duplicate test number {number:03d} found while reading "
+                    f"{source}"
+                )
+            tags[number] = {
+                normalize_tag(tag) for tag in split_tags(match.group("tags"))
+            }
     return tags
 
 
 def filter_numbers_by_tags(
-    numbers: list[int], source: Path, required_tags: set[str]
+    numbers: list[int], sources: list[Path], required_tags: set[str]
 ) -> tuple[list[int], list[int]]:
     """Split ``numbers`` into runnable and skipped lists using ``required_tags``."""
 
     if not required_tags:
         return numbers, []
-    tags_by_number = source_test_tags(source)
+    tags_by_number = source_test_tags(sources)
     runnable = []
     skipped = []
     for number in numbers:
@@ -265,8 +272,8 @@ def format_extreme_comment(indent: str, result: TestResult) -> str:
     return ""
 
 
-def update_source_tags(source: Path, results: dict[int, TestResult]) -> int:
-    """Update matching test-case tags/comments and return edit count."""
+def update_source_tags(source: Path, results: dict[int, TestResult]) -> set[int]:
+    """Update matching test-case tags/comments and return seen test numbers."""
 
     content = source.read_text()
     seen: set[int] = set()
@@ -287,14 +294,31 @@ def update_source_tags(source: Path, results: dict[int, TestResult]) -> int:
         )
 
     updated = TEST_CASE_RE.sub(replace, content)
+    if updated != content:
+        source.write_text(updated)
+    return seen
+
+
+def update_sources_tags(sources: list[Path], results: dict[int, TestResult]) -> int:
+    """Update matching test-case tags/comments across ``sources``."""
+
+    seen: set[int] = set()
+    for source in sources:
+        source_seen = update_source_tags(source, results)
+        duplicate_seen = seen & source_seen
+        if duplicate_seen:
+            raise RuntimeError(
+                "test cases found in multiple source files: "
+                + ", ".join(f"{number:03d}" for number in sorted(duplicate_seen))
+            )
+        seen |= source_seen
+
     missing = sorted(set(results) - seen)
     if missing:
         raise RuntimeError(
-            "could not find test cases in source: "
+            "could not find test cases in source files: "
             + ", ".join(f"{number:03d}" for number in missing)
         )
-    if updated != content:
-        source.write_text(updated)
     return len(seen)
 
 
@@ -360,7 +384,7 @@ def main() -> int:
 
     edited = None
     if not args.no_edit:
-        edited = update_source_tags(
+        edited = update_sources_tags(
             args.source, {result.number: result for result in results}
         )
     print_summary(results, edited, skipped)

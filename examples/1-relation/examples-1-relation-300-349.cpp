@@ -524,10 +524,11 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
+  // This extreme test passed in 10.659s.
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "317",
                           "bababbaaba=ababba",
-                          "[extreme][fail]") {
+                          "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -841,7 +842,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "328",
                           "abbabbbba=babba",
-                          "[extreme][fail]") {
+                          "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1373,10 +1374,11 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
+  // This extreme test passed in 5.503s.
   LIBSEMIGROUPS_TEST_CASE("1-relation",
                           "347",
                           "ababbbabba=baba",
-                          "[extreme][fail]") {
+                          "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
