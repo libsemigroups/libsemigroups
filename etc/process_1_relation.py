@@ -21,7 +21,6 @@ from pathlib import Path
 
 
 DEFAULT_EXE = Path("./examples_1_relation")
-DEFAULT_SOURCE = Path("examples/1-relation/examples-1-relation.cpp")
 DEFAULT_TIMEOUT_SECONDS = 10.0
 
 RUNTIME_TAGS = {"quick", "standard", "extreme"}
@@ -78,8 +77,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--source",
         type=Path,
-        default=DEFAULT_SOURCE,
         help="source file whose test tags should be updated",
+        required=True,
     )
     parser.add_argument(
         "--timeout",
