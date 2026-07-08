@@ -1798,6 +1798,141 @@ namespace libsemigroups {
   };  // struct RevRPOCmp<Default>
 
   //////////////////////////////////////////////////////////////////////
+  // Wreath-product
+  //////////////////////////////////////////////////////////////////////
+
+  // This algorithm determines if the first sequence (word 1) is strictly
+  // smaller than the second sequence (word 2) with respect to a wreath product
+  // order. Generators are assigned levels. Differences between generators at
+  // higher levels dominate differences at lower levels. Differences within the
+  // same level are determined by len-lex.
+  //
+  // The words are read from right to left, and the dominant level is stored in
+  // the variable <relevant_level>. This level is the highest level that is
+  // currently determining whether the suffix of word 1 or the suffix of word 2
+  // is smaller. The value of <relevant_level> increases every time a generator
+  // of a higher level is read.
+  //
+  // The suffix of word 1 (respectively, word 2) containing only letters from
+  // the <relevant_value> is referred to as the 'head' of word 1 (respectively,
+  // word2). If the heads of word 1 and word 2 is the same, then the generators
+  // with the level <relevant_level> cannot be used to distinguish between word
+  // 1 and word 2. Therefore, the relevant_level is reset to zero.
+  //
+  // The process of reading letters, updating the <relevant_level> and recording
+  // which suffix is smaller is repeated until one of the words has been fully
+  // consumed. At this point, a final check of the remaining letters is
+  // performed, and the result is returned.
+  template <typename Iterator,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  [[nodiscard]] bool
+  wreath_product_cmp_no_checks(Iterator                   first1,
+                               Iterator                   last1,
+                               Iterator                   first2,
+                               Iterator                   last2,
+                               std::vector<size_t> const& levels) {
+    // Remove common prefix
+    std::tie(first1, first2) = std::mismatch(first1, last1, first2, last2);
+
+    auto       it1  = std::make_reverse_iterator(last1);
+    auto const end1 = std::make_reverse_iterator(first1);
+    auto       it2  = std::make_reverse_iterator(last2);
+    auto const end2 = std::make_reverse_iterator(first2);
+
+    bool word1_smallest = false;
+
+    // The level which is determining which word is smaller
+    size_t relevant_level = 0;
+
+    // Whether the currently parsed head of each word is the same
+    bool same_head = true;
+
+    // Process while both words still have elements to compare
+    while (it1 != end1 && it2 != end2) {
+      size_t level1 = levels[*it1];
+      size_t level2 = levels[*it2];
+
+      if (level1 < relevant_level && level2 < relevant_level) {
+        ++it1;
+        ++it2;
+        continue;
+      }
+
+      if (level1 < level2) {
+        if (level2 > relevant_level) {
+          word1_smallest = true;
+          same_head      = true;
+          relevant_level = level2;
+        }
+        ++it1;
+      } else if (level1 > level2) {
+        if (level1 > relevant_level) {
+          word1_smallest = false;
+          same_head      = true;
+          relevant_level = level1;
+        }
+        ++it2;
+      } else {
+        // Levels are equal and >= relevant_level
+        if (*it1 > *it2) {
+          word1_smallest = false;
+          same_head      = false;
+          relevant_level = level1;
+        } else if (*it1 < *it2) {
+          word1_smallest = true;
+          same_head      = false;
+          relevant_level = level1;
+        } else if (level1 > relevant_level || same_head) {
+          same_head      = true;
+          relevant_level = 0;
+        }
+        ++it1;
+        ++it2;
+      }
+    }
+
+    // Word 1 is exhausted. Check if the remainder of word 2 is larger than
+    // word 1.
+    while (it2 != end2) {
+      if (word1_smallest || levels[*it2] >= relevant_level) {
+        return true;
+      }
+      ++it2;
+    }
+
+    // Word 2 is exhausted. Check if the remainder of word 1 is larger than
+    // word 2.
+    while (it1 != end1) {
+      if (!word1_smallest || levels[*it1] >= relevant_level) {
+        return false;
+      }
+      ++it1;
+    }
+
+    // Both sequences are fully evaluated
+    return word1_smallest;
+  }
+
+  template <typename Thing,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  [[nodiscard]] bool
+  wreath_product_cmp_no_checks(Thing const&               x,
+                               Thing const&               y,
+                               std::vector<size_t> const& levels) noexcept {
+    return wreath_product_cmp_no_checks(
+        x.cbegin(), x.cend(), y.cbegin(), y.cend(), levels);
+  }
+
+  template <typename Thing>
+  [[nodiscard]] bool
+  wreath_product_cmp_no_checks(Thing* const               x,
+                               Thing* const               y,
+                               std::vector<size_t> const& levels) noexcept {
+    return wreath_product_cmp_no_checks(
+        x->cbegin(), x->cend(), y->cbegin(), y->cend(), levels);
+  }
+
+  //////////////////////////////////////////////////////////////////////
   // Weighted len-lex
   //////////////////////////////////////////////////////////////////////
 
