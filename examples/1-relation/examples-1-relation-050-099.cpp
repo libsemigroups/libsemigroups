@@ -46,7 +46,7 @@ namespace libsemigroups {
       "1-relation",
       "050",
       "babaabaaba=aabbabaa",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -79,7 +79,7 @@ namespace libsemigroups {
       "1-relation",
       "051",
       "baaaaaabba=aaaaa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -112,7 +112,7 @@ namespace libsemigroups {
       "1-relation",
       "052",
       "abaabbabba=babbaaba",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -141,11 +141,12 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
+  // This extreme test passed in 3.007s.
   LIBSEMIGROUPS_TEST_CASE(
       "1-relation",
       "053",
       "baaababbaa=abababa",
-      "[quick][fail]") {
+      "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -178,7 +179,7 @@ namespace libsemigroups {
       "1-relation",
       "054",
       "bbaaabbaaa=abbaa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -211,7 +212,7 @@ namespace libsemigroups {
       "1-relation",
       "055",
       "baabaabbba=aa",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -244,7 +245,7 @@ namespace libsemigroups {
       "1-relation",
       "056",
       "abbabbabaa=baba",
-      "[quick][fail]") {
+      "[standard][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -277,7 +278,7 @@ namespace libsemigroups {
       "1-relation",
       "057",
       "abaabbbaba=babaa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -310,7 +311,7 @@ namespace libsemigroups {
       "1-relation",
       "058",
       "baabbaaaba=abbaa",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -343,7 +344,7 @@ namespace libsemigroups {
       "1-relation",
       "059",
       "abbabbbaba=babba",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -376,7 +377,7 @@ namespace libsemigroups {
       "1-relation",
       "060",
       "baabbbabba=a",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -409,7 +410,7 @@ namespace libsemigroups {
       "1-relation",
       "061",
       "baaababbba=abaa",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -442,7 +443,7 @@ namespace libsemigroups {
       "1-relation",
       "062",
       "baabbbbba=aa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -475,7 +476,7 @@ namespace libsemigroups {
       "1-relation",
       "063",
       "baaaababa=aa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -508,7 +509,7 @@ namespace libsemigroups {
       "1-relation",
       "064",
       "aaaabababa=babaaaaa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -541,7 +542,7 @@ namespace libsemigroups {
       "1-relation",
       "065",
       "bbaabbabba=abbaa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -574,7 +575,7 @@ namespace libsemigroups {
       "1-relation",
       "066",
       "abababbba=baba",
-      "[quick][fail]") {
+      "[standard][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -607,7 +608,7 @@ namespace libsemigroups {
       "1-relation",
       "067",
       "baaaaabba=aabaa",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -640,7 +641,7 @@ namespace libsemigroups {
       "1-relation",
       "068",
       "baaaabbba=aa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -673,7 +674,7 @@ namespace libsemigroups {
       "1-relation",
       "069",
       "abaabaabba=babaa",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -706,7 +707,7 @@ namespace libsemigroups {
       "1-relation",
       "070",
       "abababbaaa=baababa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -739,7 +740,7 @@ namespace libsemigroups {
       "1-relation",
       "071",
       "baababbba=aba",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -772,7 +773,7 @@ namespace libsemigroups {
       "1-relation",
       "072",
       "baaaaabbba=aaa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -805,7 +806,7 @@ namespace libsemigroups {
       "1-relation",
       "073",
       "baaabaabba=a",
-      "[quick][fail]") {
+      "[standard][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -838,7 +839,7 @@ namespace libsemigroups {
       "1-relation",
       "074",
       "abaababaa=baaba",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -871,7 +872,7 @@ namespace libsemigroups {
       "1-relation",
       "075",
       "baaababba=aba",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -904,7 +905,7 @@ namespace libsemigroups {
       "1-relation",
       "076",
       "baaaabbbba=aa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -937,7 +938,7 @@ namespace libsemigroups {
       "1-relation",
       "077",
       "aabbabbaba=babaa",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -970,7 +971,7 @@ namespace libsemigroups {
       "1-relation",
       "078",
       "baaaabbbba=aaa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1003,7 +1004,7 @@ namespace libsemigroups {
       "1-relation",
       "079",
       "baaabaaaba=aaabbaa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1036,7 +1037,7 @@ namespace libsemigroups {
       "1-relation",
       "080",
       "aaaababbaa=babaaa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1069,7 +1070,7 @@ namespace libsemigroups {
       "1-relation",
       "081",
       "aabaababba=baabaa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1102,7 +1103,7 @@ namespace libsemigroups {
       "1-relation",
       "082",
       "abbaaabbaa=babba",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1131,11 +1132,12 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
+  // This extreme test passed in 3.686s.
   LIBSEMIGROUPS_TEST_CASE(
       "1-relation",
       "083",
       "baabaabbaa=aabbaaba",
-      "[quick][fail]") {
+      "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1168,7 +1170,7 @@ namespace libsemigroups {
       "1-relation",
       "084",
       "baabbbabaa=aabbba",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1201,7 +1203,7 @@ namespace libsemigroups {
       "1-relation",
       "085",
       "bbaaaabbaa=abbaaa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1234,7 +1236,7 @@ namespace libsemigroups {
       "1-relation",
       "086",
       "aaabbbaaba=baabbaa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1267,7 +1269,7 @@ namespace libsemigroups {
       "1-relation",
       "087",
       "baaaaabbaa=aaba",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1300,7 +1302,7 @@ namespace libsemigroups {
       "1-relation",
       "088",
       "bbaaabbbba=abbaa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1333,7 +1335,7 @@ namespace libsemigroups {
       "1-relation",
       "089",
       "baabbaabba=aba",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1366,7 +1368,7 @@ namespace libsemigroups {
       "1-relation",
       "090",
       "abbbaababa=baabbbaa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1399,7 +1401,7 @@ namespace libsemigroups {
       "1-relation",
       "091",
       "abaaabbaba=babaa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1432,7 +1434,7 @@ namespace libsemigroups {
       "1-relation",
       "092",
       "abbaababba=bababbaa",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1465,7 +1467,7 @@ namespace libsemigroups {
       "1-relation",
       "093",
       "aabaaaabba=babaa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1498,7 +1500,7 @@ namespace libsemigroups {
       "1-relation",
       "094",
       "baaaabba=aa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1531,7 +1533,7 @@ namespace libsemigroups {
       "1-relation",
       "095",
       "babbabbbba=abba",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1564,7 +1566,7 @@ namespace libsemigroups {
       "1-relation",
       "096",
       "baabaabbaa=abababa",
-      "[quick][fail]") {
+      "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1597,7 +1599,7 @@ namespace libsemigroups {
       "1-relation",
       "097",
       "baababbbaa=aaba",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1630,7 +1632,7 @@ namespace libsemigroups {
       "1-relation",
       "098",
       "baaaabba=aaa",
-      "[quick][fail]") {
+      "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1663,7 +1665,7 @@ namespace libsemigroups {
       "1-relation",
       "099",
       "baababbaa=abababa",
-      "[quick][fail]") {
+      "[extreme][fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
