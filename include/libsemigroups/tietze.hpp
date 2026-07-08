@@ -496,6 +496,7 @@ namespace libsemigroups {
    public:
     explicit SubwordsFreq(Score&& score)
         : Settings(), _score(std::move(score)){};
+
     explicit SubwordsFreq(Score const& score) : Settings(), _score(score){};
 
     template <typename InputRange,
@@ -1151,10 +1152,20 @@ namespace libsemigroups {
           return to<Presentation>(state->kb);
         };
 
+        auto score_by_freq
+            = [](std::tuple<Presentation<Word>, Word, size_t> const& tup1,
+                 std::tuple<Presentation<Word>, Word, size_t> const& tup2) {
+                return std::get<2>(tup1) > std::get<2>(tup2);
+              };
+
         if constexpr (N == 0) {
           auto step = (std::forward<Range>(input) | AllAlphabetOrders()
                        | Ref(state->presentations[N])
-                       | rx::transform(run_knuth_bendix) | Subwords(*this)
+                       | rx::transform(run_knuth_bendix)
+                       | SubwordsFreq(score_by_freq)
+                             .max_length(max_length())
+                             .min_length(min_length())
+                             .proper(proper())
                        | rx::transform([state](auto const& tup) {
                            auto copy(state->presentations[N]);
                            presentation::replace_word_with_new_generator(
@@ -1170,7 +1181,11 @@ namespace libsemigroups {
         } else {
           auto step = (std::forward<Range>(input) | AllAlphabetOrderExts()
                        | Ref(state->presentations[N])
-                       | rx::transform(run_knuth_bendix) | Subwords(*this)
+                       | rx::transform(run_knuth_bendix)
+                       | SubwordsFreq(score_by_freq)
+                             .max_length(max_length())
+                             .min_length(min_length())
+                             .proper(proper())
                        | rx::transform([state](auto const& tup) {
                            auto copy(state->presentations[N]);
                            presentation::replace_word_with_new_generator(
