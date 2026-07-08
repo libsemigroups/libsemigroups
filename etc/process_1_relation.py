@@ -6,7 +6,8 @@ a time, classifies their runtime according to ``CONTRIBUTING.rst``, and updates
 the corresponding ``LIBSEMIGROUPS_TEST_CASE`` tags in the generated source.
 Failing tests, including tests killed after the timeout, also receive
 ``[fail]``.  Passing extreme tests also get a generated comment recording how
-long they took to run.
+long they took to run.  If ``--tags`` is supplied, only requested tests that
+already have all of the supplied tags in the source file are executed.
 """
 
 from __future__ import annotations
@@ -85,6 +86,15 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=DEFAULT_TIMEOUT_SECONDS,
         help="seconds before a test subprocess is killed and marked as fail",
+    )
+    parser.add_argument(
+        "--tags",
+        nargs="+",
+        default=[],
+        help=(
+            "only run tests whose source tags include all of these tags; accepts "
+            "forms such as quick fail, quick,fail, or [quick][fail]"
+        ),
     )
     parser.add_argument(
         "--no-edit",
@@ -185,6 +195,58 @@ def split_tags(tags: str) -> list[str]:
     return [match.group(1) for match in TAG_RE.finditer(tags)]
 
 
+def normalize_tag(tag: str) -> str:
+    """Return a canonical, case-insensitive tag spelling."""
+
+    return tag.strip().strip("[]").lower()
+
+
+def parse_tag_filter(values: list[str]) -> set[str]:
+    """Return normalized tag filters parsed from command line values."""
+
+    result: set[str] = set()
+    for value in values:
+        bracketed_tags = split_tags(value)
+        if bracketed_tags:
+            result.update(normalize_tag(tag) for tag in bracketed_tags)
+            continue
+        result.update(
+            normalize_tag(tag) for tag in value.split(",") if normalize_tag(tag)
+        )
+    return result
+
+
+def source_test_tags(source: Path) -> dict[int, set[str]]:
+    """Return test number to normalized source tags for ``source``."""
+
+    tags: dict[int, set[str]] = {}
+    for match in TEST_CASE_RE.finditer(source.read_text()):
+        number = int(match.group("number"))
+        tags[number] = {
+            normalize_tag(tag) for tag in split_tags(match.group("tags"))
+        }
+    return tags
+
+
+def filter_numbers_by_tags(
+    numbers: list[int], source: Path, required_tags: set[str]
+) -> tuple[list[int], list[int]]:
+    """Split ``numbers`` into runnable and skipped lists using ``required_tags``."""
+
+    if not required_tags:
+        return numbers, []
+    tags_by_number = source_test_tags(source)
+    runnable = []
+    skipped = []
+    for number in numbers:
+        tags = tags_by_number.get(number, set())
+        if required_tags <= tags:
+            runnable.append(number)
+        else:
+            skipped.append(number)
+    return runnable, skipped
+
+
 def format_tags(existing: str, result: TestResult) -> str:
     """Return a normalized tag string for ``result`` preserving unrelated tags."""
 
@@ -236,7 +298,9 @@ def update_source_tags(source: Path, results: dict[int, TestResult]) -> int:
     return len(seen)
 
 
-def print_summary(results: list[TestResult], edited: int | None) -> None:
+def print_summary(
+    results: list[TestResult], edited: int | None, skipped: list[int]
+) -> None:
     """Print a compact summary after all tests have run."""
 
     status_counts = {"pass": 0, "fail": 0}
@@ -253,6 +317,7 @@ def print_summary(results: list[TestResult], edited: int | None) -> None:
     print("Summary")
     print("=======")
     print(f"tests:    {len(results)}")
+    print(f"skipped:  {len(skipped)}")
     print(f"pass:     {status_counts['pass']}")
     print(f"fail:     {status_counts['fail']}")
     print(f"quick:    {category_counts['quick']}")
@@ -260,6 +325,8 @@ def print_summary(results: list[TestResult], edited: int | None) -> None:
     print(f"extreme:  {category_counts['extreme']}")
     if timed_out:
         print("timeout:  " + ", ".join(f"{number:03d}" for number in timed_out))
+    if skipped:
+        print("filtered: " + ", ".join(f"{number:03d}" for number in skipped))
     if edited is not None:
         print(f"retagged: {edited}")
 
@@ -271,6 +338,14 @@ def main() -> int:
     if args.timeout <= 0:
         raise ValueError("--timeout must be positive")
     numbers = parse_test_range(args.range)
+    required_tags = parse_tag_filter(args.tags)
+    numbers, skipped = filter_numbers_by_tags(numbers, args.source, required_tags)
+    if required_tags:
+        print(
+            "tag filter: "
+            + ", ".join(f"[{tag}]" for tag in sorted(required_tags)),
+            flush=True,
+        )
 
     results = []
     for number in numbers:
@@ -288,7 +363,7 @@ def main() -> int:
         edited = update_source_tags(
             args.source, {result.number: result for result in results}
         )
-    print_summary(results, edited)
+    print_summary(results, edited, skipped)
     return 0
 
 
