@@ -615,6 +615,56 @@ namespace libsemigroups {
     return lenlex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
+  template <typename Word = Default>
+  class LenLexCmp;
+
+  template <typename Word>
+  class LenLexCmp {
+    Alphabet<Word> _alphabet;
+
+   public:
+    LenLexCmp()                            = delete;
+    LenLexCmp(LenLexCmp const&)            = default;
+    LenLexCmp(LenLexCmp&&)                 = default;
+    LenLexCmp& operator=(LenLexCmp const&) = default;
+    LenLexCmp& operator=(LenLexCmp&&)      = default;
+
+    ~LenLexCmp() = default;
+
+    explicit LenLexCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+    explicit LenLexCmp(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref lenlex_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using \ref lenlex_cmp.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is len-lex less than \p y,
+    //! and \c false otherwise.
+    //!
+    //! \exceptions
+    //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+    //!
+    //! \complexity
+    //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return lenlex_cmp(_alphabet, x, y);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return lenlex_cmp(_alphabet, first1, last1, first2, last2);
+    }
+  };
+
   //! \brief A stateless struct with binary call operator using
   //! \ref lenlex_cmp.
   //!
@@ -627,7 +677,8 @@ namespace libsemigroups {
   //!
   //! \sa
   //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator)
-  struct LenLexCmp {
+  template <>
+  struct LenLexCmp<Default> {
     //! \brief Call operator that compares \p x and \p y using
     //! \ref lenlex_cmp.
     //!
@@ -659,7 +710,7 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return lenlex_cmp(first1, last1, first2, last2);
     }
-  };  // struct LenLexCmp
+  };  // struct LenLexCmp<Default>
 
   //////////////////////////////////////////////////////////////////////
   // Short-lex - deprecated
@@ -809,7 +860,7 @@ namespace libsemigroups {
   //! shortlex_compare(Iterator, Iterator, Iterator, Iterator)
   //!
   //! \deprecated_warning{struct} Use \ref LenLexCmp instead.
-  using ShortLexCompare [[deprecated("Use LenLexCmp instead!")]] = LenLexCmp;
+  using ShortLexCompare [[deprecated("Use LenLexCmp instead!")]] = LenLexCmp<>;
 
   //////////////////////////////////////////////////////////////////////
   // Recursive path order (RPO)
@@ -3090,7 +3141,7 @@ namespace libsemigroups {
     //! Specialization of \ref is_length_non_increasing for
     //! \ref LenLexCmp.
     template <>
-    struct is_length_non_increasing<LenLexCmp> : std::true_type {};
+    struct is_length_non_increasing<LenLexCmp<>> : std::true_type {};
 
     //! \brief Helper variable template for \ref is_length_non_increasing.
     //!
@@ -3117,7 +3168,7 @@ namespace libsemigroups {
     //!
     //! Specialization of \ref is_well_founded for \ref LenLexCmp.
     template <>
-    struct is_well_founded<LenLexCmp> : std::true_type {};
+    struct is_well_founded<LenLexCmp<>> : std::true_type {};
 
     //! \brief Recursive path order is well-founded.
     //!

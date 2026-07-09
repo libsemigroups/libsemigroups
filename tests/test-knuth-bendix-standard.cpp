@@ -55,8 +55,8 @@ namespace libsemigroups {
 
   using namespace rx;
 
-  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
-  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp<>>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp<>>;
   using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
   using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
 
@@ -131,7 +131,7 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
 
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       // In Sims it says to use 44 here, but that doesn't seem to work.
       kb.max_overlap(45);
       kb.run();

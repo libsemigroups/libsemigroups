@@ -97,7 +97,7 @@ namespace libsemigroups {
   //! * 256 letters if `char` is an unsigned integer.
   // TODO(v4) remove the final template parameter, which isn't required any more
   template <typename Word,
-            typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>,
+            typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp<>>,
             typename ReductionOrder = typename RewritingSystem::reduction_order>
   class KnuthBendix
       : public detail::KnuthBendixImpl<RewritingSystem, ReductionOrder> {

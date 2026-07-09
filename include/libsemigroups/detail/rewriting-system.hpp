@@ -496,8 +496,8 @@ namespace libsemigroups {
 
     }  // namespace rewriting_system
 
-    using RewriteTrie [[deprecated]]     = RewritingSystemTrie<LenLexCmp>;
-    using RewriteFromLeft [[deprecated]] = RewritingSystemSet<LenLexCmp>;
+    using RewriteTrie [[deprecated]]     = RewritingSystemTrie<LenLexCmp<>>;
+    using RewriteFromLeft [[deprecated]] = RewritingSystemSet<LenLexCmp<>>;
 
   }  // namespace detail
 }  // namespace libsemigroups

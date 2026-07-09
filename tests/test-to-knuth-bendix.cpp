@@ -39,8 +39,8 @@ namespace libsemigroups {
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr onesided = congruence_kind::onesided;
-  using RewritingSystemSet           = detail::RewritingSystemSet<LenLexCmp>;
-  using RewritingSystemTrie          = detail::RewritingSystemTrie<LenLexCmp>;
+  using RewritingSystemSet           = detail::RewritingSystemSet<LenLexCmp<>>;
+  using RewritingSystemTrie          = detail::RewritingSystemTrie<LenLexCmp<>>;
 
   using RewritingSystemSet_string = std::pair<RewritingSystemSet, std::string>;
   using RewritingSystemSet_word   = std::pair<RewritingSystemSet, word_type>;

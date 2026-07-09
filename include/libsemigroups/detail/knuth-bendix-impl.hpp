@@ -133,9 +133,9 @@ namespace libsemigroups {
 
     // TODO(1) Make overlap measure a template param?
     // TODO(v4) 2nd template parameter no longer used, remove
-    template <typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>,
-              typename ReductionOrder =
-                  typename RewritingSystem::reduction_order>
+    template <
+        typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp<>>,
+        typename ReductionOrder  = typename RewritingSystem::reduction_order>
     class KnuthBendixImpl : public CongruenceCommon {
       // Since the 2nd template parameter is now unnecessary, but not removed
       // for backwards compatibility, we assert that it is the order of the
