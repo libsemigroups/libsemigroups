@@ -527,7 +527,16 @@ namespace libsemigroups {
     [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
       return lenlex_cmp(x, y);
     }
-  };  // class LenLexCmp
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return lenlex_cmp(first1, last1, first2, last2);
+    }
+  };  // struct LenLexCmp
 
   //////////////////////////////////////////////////////////////////////
   // Short-lex - deprecated
@@ -828,7 +837,16 @@ namespace libsemigroups {
     [[nodiscard]] bool operator()(Thing const& x,
                                   Thing const& y) const noexcept {
       return rpo_cmp(x, y);
-    }  // namespace libsemigroups
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rpo_cmp(first1, last1, first2, last2);
+    }
   };
 
   //////////////////////////////////////////////////////////////////////
@@ -984,7 +1002,16 @@ namespace libsemigroups {
     [[nodiscard]] bool operator()(Thing const& x,
                                   Thing const& y) const noexcept {
       return rev_rpo_cmp(x, y);
-    }  // namespace libsemigroups
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rev_rpo_cmp(first1, last1, first2, last2);
+    }
   };
 
   //////////////////////////////////////////////////////////////////////
@@ -1576,6 +1603,19 @@ namespace libsemigroups {
       }
     }
 
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      if (_should_check) {
+        return wt_lenlex_cmp(first1, last1, first2, last2, _weights);
+      } else {
+        return wt_lenlex_cmp_no_checks(first1, last1, first2, last2, _weights);
+      }
+    }
+
     //! \brief Call operator that does no checks.
     //!
     //! This member function always uses \ref wt_lenlex_cmp_no_checks to
@@ -1600,6 +1640,15 @@ namespace libsemigroups {
     template <typename Thing>
     [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
       return wt_lenlex_cmp_no_checks(x, y, _weights);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool call_no_checks(Iterator first1,
+                                      Iterator last1,
+                                      Iterator first2,
+                                      Iterator last2) const {
+      return wt_lenlex_cmp_no_checks(first1, last1, first2, last2, _weights);
     }
 
     //! \brief Returns the value of the constructor parameter \c should_check.
@@ -2104,6 +2153,19 @@ namespace libsemigroups {
       }
     }
 
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      if (_should_check) {
+        return wt_lex_cmp(first1, last1, first2, last2, _weights);
+      } else {
+        return wt_lex_cmp_no_checks(first1, last1, first2, last2, _weights);
+      }
+    }
+
     //! \brief Call operator that does no checks.
     //!
     //! This member function always uses \ref wt_lex_cmp_no_checks to
@@ -2128,6 +2190,15 @@ namespace libsemigroups {
     template <typename Thing>
     [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
       return wt_lex_cmp_no_checks(x, y, _weights);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool call_no_checks(Iterator first1,
+                                      Iterator last1,
+                                      Iterator first2,
+                                      Iterator last2) const {
+      return wt_lex_cmp_no_checks(first1, last1, first2, last2, _weights);
     }
 
     //! \brief Returns the value of the constructor parameter \c should_check.
