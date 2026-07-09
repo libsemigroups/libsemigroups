@@ -908,7 +908,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaaaaabaa", "aabaaa");
 
-    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(9).proper(true));
@@ -917,7 +917,7 @@ namespace libsemigroups {
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
-                     kb.run_for(std::chrono::milliseconds(5));
+                     kb.run_for(std::chrono::milliseconds(2));
                      return kb.rewriting_system().confluent();
                    }).number_of_threads(8);
 
