@@ -280,6 +280,7 @@ namespace libsemigroups {
     }
 
     // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
     //! \copydoc KnuthBendix(congruence_kind, Presentation<Word> const&, ReductionOrder const&)
     // clang-format on
     KnuthBendix(congruence_kind      knd,
@@ -290,6 +291,7 @@ namespace libsemigroups {
     }
 
     // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
     //! \copydoc init(congruence_kind, Presentation<Word> const&, ReductionOrder const&)
     // clang-format on
     KnuthBendix& init(congruence_kind      knd,
