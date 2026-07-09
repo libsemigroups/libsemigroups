@@ -74,10 +74,7 @@ namespace libsemigroups {
   }
 
   // This extreme test passed in 14.472s.
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "451",
-                          "baaabaaba=a",
-                          "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "451", "baaabaaba=a", "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -418,10 +415,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "463",
-                          "baabababba=aba",
-                          "[standard]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "463", "baabababba=aba", "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -618,10 +612,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "470",
-                          "ababbabaa=baba",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "470", "ababbabaa=baba", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -878,10 +869,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "479",
-                          "bbaabbabba=a",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "479", "bbaabbabba=a", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -925,13 +913,15 @@ namespace libsemigroups {
     auto input
         = (p | pedersen_pestov<2>(kb).min_length(2).max_length(9).proper(true));
 
+    auto num = (input | rx::count());
+
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
                      kb.run_for(std::chrono::milliseconds(2));
                      return kb.rewriting_system().confluent();
                    }).number_of_threads(8);
 
-    auto result = (input | find_if).get();
+    auto result = (input | find_if.total(num)).get();
 
     REQUIRE(result.has_value());
   }
@@ -1051,10 +1041,7 @@ namespace libsemigroups {
   }
 
   // This extreme test passed in 18.860s.
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "485",
-                          "baaaababba=aa",
-                          "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "485", "baaaababba=aa", "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1337,10 +1324,7 @@ namespace libsemigroups {
   }
 
   // This extreme test passed in 24.162s.
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "495",
-                          "aababbaba=babaa",
-                          "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "495", "aababbaba=babaa", "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);

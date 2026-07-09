@@ -74,10 +74,7 @@ namespace libsemigroups {
   }
 
   // This extreme test passed in 34.902s.
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "251",
-                          "baabaabaa=ababa",
-                          "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "251", "baabaabaa=ababa", "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -1300,10 +1297,7 @@ namespace libsemigroups {
   }
 
   // This extreme test passed in 10.067s.
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "294",
-                          "babbaaba=abba",
-                          "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "294", "babbaaba=abba", "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);

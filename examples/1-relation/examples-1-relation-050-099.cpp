@@ -491,10 +491,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "066",
-                          "abababbba=baba",
-                          "[standard]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "066", "abababbba=baba", "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -634,10 +631,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "071",
-                          "baababbba=aba",
-                          "[standard]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "071", "baababbba=aba", "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -744,10 +738,7 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "075",
-                          "baaababba=aba",
-                          "[standard]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "075", "baaababba=aba", "[standard]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
