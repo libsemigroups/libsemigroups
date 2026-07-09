@@ -917,7 +917,7 @@ namespace libsemigroups {
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
-                     kb.run_for(std::chrono::milliseconds(2));
+                     kb.run_for(std::chrono::milliseconds(5));
                      return kb.rewriting_system().confluent();
                    }).number_of_threads(8);
 
