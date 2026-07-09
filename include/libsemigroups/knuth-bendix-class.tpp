@@ -69,6 +69,18 @@ namespace libsemigroups {
   KnuthBendix<Word, RewritingSystem, ReductionOrder>::init(
       congruence_kind      knd,
       Presentation<Word>&& p) {
+    static_assert(!order::is_stateful_v<ReductionOrder>,
+                  "a KnuthBendix object with a stateful ReductionOrder must be "
+                  "initialised by specifying an instance of a ReductionOrder.");
+    return init(knd, std::move(p), ReductionOrder());
+  }
+
+  template <typename Word, typename RewritingSystem, typename ReductionOrder>
+  KnuthBendix<Word, RewritingSystem, ReductionOrder>&
+  KnuthBendix<Word, RewritingSystem, ReductionOrder>::init(
+      congruence_kind      knd,
+      Presentation<Word>&& p,
+      ReductionOrder&&     order) {
     using string_type = typename KnuthBendixImpl_::native_word_type;
 
     if constexpr (std::is_signed_v<char>) {
@@ -80,21 +92,22 @@ namespace libsemigroups {
       // KnuthBendix.
       //
       // This could be fixed by using [-128, ..., -128 + size of alphabet]
-      // always inside KnuthBendixImpl (instead of [0, ..., size of alphabet] as
-      // we currently do) and then instead of using a letter "a" in the alphabet
-      // when accessing (for example) the trie, we use "a + 128" so that the
-      // values are always in [0, ..., size of alphabet].
+      // always inside KnuthBendixImpl (instead of [0, ..., size of alphabet]
+      // as we currently do) and then instead of using a letter "a" in the
+      // alphabet when accessing (for example) the trie, we use "a + 128" so
+      // that the values are always in [0, ..., size of alphabet].
       if (p.alphabet().size() > 128) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected the 2nd argument (presentation) to have alphabet of size "
-            "at most 128, but found {}",
-            p.alphabet().size());
+        LIBSEMIGROUPS_EXCEPTION("expected the 2nd argument (presentation) to "
+                                "have alphabet of size "
+                                "at most 128, but found {}",
+                                p.alphabet().size());
       }
     }
-    KnuthBendixImpl_::init(knd,
-                           v4::to<Presentation<string_type>>(p, [&p](auto x) {
-                             return p.index_no_checks(x);
-                           }));
+    KnuthBendixImpl_::init(
+        knd,
+        v4::to<Presentation<string_type>>(
+            p, [&p](auto x) { return p.index_no_checks(x); }),
+        order);
     _extra_letter_added = false;
     _generating_pairs.clear();
     _presentation = std::move(p);
