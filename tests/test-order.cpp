@@ -954,14 +954,14 @@ namespace libsemigroups {
                                     "baba"s, "bbaa"s, "bbb"s,  "abbb"s, "babb"s,
                                     "bbab"s, "bbba"s, "bbbb"s}));
 
-    // std::sort(strings.begin(), strings.end(), RPOCmp{alphabet});
-    // REQUIRE(strings == std::vector({"bb"s,   "ba"s,   "ab"s,   "aa"s, "bbb"s,
-    //                                 "bba"s,  "bab"s,  "baa"s,  "abb"s,
-    //                                 "aba"s, "aab"s,  "aaa"s,  "bbbb"s,
-    //                                 "bbba"s, "bbab"s, "bbaa"s, "babb"s,
-    //                                 "baba"s, "baab"s, "baaa"s, "abbb"s,
-    //                                 "abba"s, "abab"s, "abaa"s, "aabb"s,
-    //                                 "aaba"s, "aaab"s, "aaaa"s}));
+    std::sort(strings.begin(), strings.end(), RPOCmp{alphabet});
+
+    REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ba"s,   "bba"s,
+                                    "bbba"s, "ab"s,   "bab"s,  "bbab"s, "abb"s,
+                                    "babb"s, "abbb"s, "aa"s,   "baa"s,  "bbaa"s,
+                                    "aba"s,  "baba"s, "abba"s, "aab"s,  "baab"s,
+                                    "abab"s, "aabb"s, "aaa"s,  "baaa"s, "abaa"s,
+                                    "aaba"s, "aaab"s, "aaaa"s}));
   }
 
 }  // namespace libsemigroups

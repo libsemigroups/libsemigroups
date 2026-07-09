@@ -992,6 +992,51 @@ namespace libsemigroups {
     return rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
+  template <typename Word = Default>
+  class RPOCmp;
+
+  template <typename Word>
+  class RPOCmp {
+    Alphabet<Word> _alphabet;
+
+   public:
+    RPOCmp()                         = delete;
+    RPOCmp(RPOCmp const&)            = default;
+    RPOCmp(RPOCmp&&)                 = default;
+    RPOCmp& operator=(RPOCmp const&) = default;
+    RPOCmp& operator=(RPOCmp&&)      = default;
+
+    ~RPOCmp() = default;
+
+    explicit RPOCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+    explicit RPOCmp(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the recursive path ordering, and \c false otherwise.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return rpo_cmp(_alphabet, x, y);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rpo_cmp(_alphabet, first1, last1, first2, last2);
+    }
+  };
+
   //! \brief A stateless struct with binary call operator using
   //! \ref rpo_cmp.
   //!
@@ -1005,7 +1050,8 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  struct RPOCmp {
+  template <>
+  struct RPOCmp<Default> {
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rpo_cmp.
     //!
@@ -3189,7 +3235,7 @@ namespace libsemigroups {
     //!
     //! Specialization of \ref is_well_founded for \ref RPOCmp.
     template <>
-    struct is_well_founded<RPOCmp> : std::true_type {};
+    struct is_well_founded<RPOCmp<>> : std::true_type {};
 
     //! \brief Reverse recursive path order is well-founded.
     //!
