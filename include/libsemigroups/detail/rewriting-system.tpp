@@ -18,6 +18,20 @@
 namespace libsemigroups::detail {
 
   ////////////////////////////////////////////////////////////////////////
+  // RewritingSystemBaseWithOrder --- Constructors + initializers
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename ReductionOrder>
+  RewritingSystemBaseWithOrder<ReductionOrder>&
+  RewritingSystemBaseWithOrder<ReductionOrder>::init() {
+    RewritingSystemBase::init();
+    if constexpr (order::is_stateful_v<ReductionOrder>) {
+      _order.init();
+    }
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // RewritingSystemSet --- Constructors + initializers
   ////////////////////////////////////////////////////////////////////////
 

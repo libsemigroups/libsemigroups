@@ -209,14 +209,8 @@ namespace libsemigroups {
       // Constructors + inits
       ////////////////////////////////////////////////////////////////////////
 
-      RewritingSystemBaseWithOrder& init() {
-        RewritingSystemBase::init();
-        if constexpr (order::is_stateful_v<reduction_order>) {
-          _order.init();
-        }
-        return *this;
-      }
       RewritingSystemBaseWithOrder() = default;
+      RewritingSystemBaseWithOrder& init();
 
       RewritingSystemBaseWithOrder(RewritingSystemBaseWithOrder const& that)
           = default;
