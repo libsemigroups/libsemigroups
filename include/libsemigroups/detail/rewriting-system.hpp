@@ -209,8 +209,6 @@ namespace libsemigroups {
       // Constructors + inits
       ////////////////////////////////////////////////////////////////////////
 
-      RewritingSystemBaseWithOrder() : _order() {}
-
       RewritingSystemBaseWithOrder& init() {
         RewritingSystemBase::init();
         if constexpr (order::is_stateful_v<reduction_order>) {
@@ -218,30 +216,21 @@ namespace libsemigroups {
         }
         return *this;
       }
+      RewritingSystemBaseWithOrder() = default;
 
       RewritingSystemBaseWithOrder(RewritingSystemBaseWithOrder const& that)
-          : RewritingSystemBaseWithOrder() {
-        *this = that;
-      }
+          = default;
 
       RewritingSystemBaseWithOrder(RewritingSystemBaseWithOrder&& that)
-          : RewritingSystemBaseWithOrder() {
-        *this = std::move(that);
-      }
+          = default;
 
       RewritingSystemBaseWithOrder&
-      operator=(RewritingSystemBaseWithOrder const& that) {
-        RewritingSystemBase::operator=(that);
-        _order = that._order;
-        return *this;
-      }
+      operator=(RewritingSystemBaseWithOrder const& that)
+          = default;
 
       RewritingSystemBaseWithOrder&
-      operator=(RewritingSystemBaseWithOrder&& that) {
-        RewritingSystemBase::operator=(std::move(that));
-        _order = std::move(that._order);
-        return *this;
-      }
+      operator=(RewritingSystemBaseWithOrder&& that)
+          = default;
 
       ~RewritingSystemBaseWithOrder() = default;
 
