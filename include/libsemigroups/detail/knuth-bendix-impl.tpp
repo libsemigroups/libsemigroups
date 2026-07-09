@@ -191,14 +191,7 @@ namespace libsemigroups {
           !order::is_stateful_v<typename RewritingSystem::reduction_order>,
           "a KnuthBendix object with a stateful ReductionOrder must be "
           "initialised by specifying an instance of a ReductionOrder.");
-      // TODO(1) assert that the alphabet + rules are good
-      // p.throw_if_bad_alphabet_or_rules();
-      LIBSEMIGROUPS_ASSERT(presentation::is_normalized(p));
-      init();
-      kind(knd);
-      _presentation = std::move(p);
-      init_from_internal_presentation();
-      return *this;
+      return init(knd, p, ReductionOrder());
     }
 
     template <typename RewritingSystem>
