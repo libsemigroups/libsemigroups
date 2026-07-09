@@ -106,7 +106,7 @@ namespace libsemigroups {
   }
 
   // =========================================================================
-  // Interface variants - iterators, pointers, structs
+  // Interface variants - iterators, structs
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -122,19 +122,6 @@ namespace libsemigroups {
         w1.cbegin(), w1.cend(), w2.cbegin(), w2.cend(), weights));
     REQUIRE(!wt_lenlex_cmp_no_checks(
         w2.cbegin(), w2.cend(), w1.cbegin(), w1.cend(), weights));
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "006",
-                          "pointer version",
-                          "[quick][order]") {
-    auto                rg      = ReportGuard(false);
-    std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    word_type           w1      = {0, 1};  // weight = 3
-    word_type           w2      = {2};     // weight = 6
-
-    REQUIRE(wt_lenlex_cmp_no_checks(&w1, &w2, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(&w2, &w1, weights));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
@@ -395,19 +382,6 @@ namespace libsemigroups {
         wt_lenlex_cmp(w1.cbegin(), w1.cend(), w2.cbegin(), w2.cend(), weights));
     REQUIRE(!wt_lenlex_cmp(
         w2.cbegin(), w2.cend(), w1.cbegin(), w1.cend(), weights));
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
-                          "024",
-                          "pointer version with validation",
-                          "[quick][order]") {
-    auto                rg      = ReportGuard(false);
-    std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    word_type           w1      = {0, 1};  // weight = 3
-    word_type           w2      = {2};     // weight = 6
-
-    REQUIRE(wt_lenlex_cmp(&w1, &w2, weights));
-    REQUIRE(!wt_lenlex_cmp(&w2, &w1, weights));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",

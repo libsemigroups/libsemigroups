@@ -162,8 +162,12 @@ namespace libsemigroups {
   //! \code_no_test
   //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
   //! \end_code_no_test
+  //!
+  //! \deprecated_warning{function}
   template <typename Thing>
-  [[nodiscard]] bool lex_cmp(Thing* const x, Thing* const y) {
+  [[deprecated("This function will be removed in v4, and no alternative "
+               "provided.")]] [[nodiscard]] bool
+  lex_cmp(Thing* const x, Thing* const y) {
     return std::lexicographical_compare(
         x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
@@ -225,10 +229,13 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See std::lexicographical_compare.
-    // TODO(v4) is this really necessary?
+    //!
+    //! \deprecated_warning{function}
     template <typename T>
-    [[nodiscard]] bool operator()(std::initializer_list<T> x,
-                                  std::initializer_list<T> y) const {
+    [[nodiscard]] [[deprecated(
+        "This function will be removed in v4, and no alternative "
+        "provided.")]] bool
+    operator()(std::initializer_list<T> x, std::initializer_list<T> y) const {
       return std::lexicographical_compare(
           x.begin(), x.end(), y.begin(), y.end());
     }
@@ -255,7 +262,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See std::lexicographical_compare.
-    // TODO(v4) remove this?
+    //!
+    // TODO ensure this is implemented in every other struct in this file
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -333,9 +341,11 @@ namespace libsemigroups {
   //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
   //! \end_code_no_test
   //!
-  //! \deprecated_warning{function} Use \ref lex_cmp instead.
+  //! \deprecated_warning{function}.
   template <typename Thing>
-  [[nodiscard]] [[deprecated("Use lex_cmp instead!")]] bool
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
   lexicographical_compare(Thing* const x, Thing* const y) {
     return lex_cmp(x, y);
   }
@@ -354,7 +364,7 @@ namespace libsemigroups {
   //! \sa
   //! std::lexicographical_compare.
   //!
-  //! \deprecated_warning{struct} Use \ref lex_cmp instead.
+  //! \deprecated_warning{struct} Use \ref LexCmp instead.
   using LexicographicalCompare [[deprecated("Use LexCmp instead")]] = LexCmp;
 
   //////////////////////////////////////////////////////////////////////
@@ -473,8 +483,12 @@ namespace libsemigroups {
   //!
   //! \sa
   //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \deprecated_warning{function}
   template <typename Thing>
-  [[nodiscard]] bool lenlex_cmp(Thing* const x, Thing* const y) {
+  [[deprecated("This function will be removed in v4, and no alternative "
+               "provided.")]] [[nodiscard]] bool
+  lenlex_cmp(Thing* const x, Thing* const y) {
     return lenlex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
@@ -513,7 +527,7 @@ namespace libsemigroups {
     [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
       return lenlex_cmp(x, y);
     }
-  };
+  };  // class LenLexCmp
 
   //////////////////////////////////////////////////////////////////////
   // Short-lex - deprecated
@@ -642,7 +656,9 @@ namespace libsemigroups {
   //!
   //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
   template <typename Thing>
-  [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
   shortlex_compare(Thing* const x, Thing* const y) {
     return lenlex_cmp(x, y);
   }
@@ -768,8 +784,13 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  //!
+  //! \deprecated_warning{function}
   template <typename Thing>
-  [[nodiscard]] bool rpo_cmp(Thing* const x, Thing* const y) noexcept {
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
+  rpo_cmp(Thing* const x, Thing* const y) noexcept {
     return rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
@@ -919,8 +940,13 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  //!
+  //! \deprecated_warning{function}
   template <typename Thing>
-  [[nodiscard]] bool rev_rpo_cmp(Thing* const x, Thing* const y) noexcept {
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
+  rev_rpo_cmp(Thing* const x, Thing* const y) noexcept {
     return rev_rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
@@ -1084,7 +1110,9 @@ namespace libsemigroups {
   //!
   //! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
   template <typename Thing>
-  [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
   recursive_path_compare(Thing* const x, Thing* const y) noexcept {
     return rev_rpo_cmp(x, y);
   }
@@ -1247,8 +1275,12 @@ namespace libsemigroups {
   //! \sa
   //! wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
+  //!
+  //! \deprecated_warning{function}
   template <typename Thing>
-  [[nodiscard]] bool
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
   wt_lenlex_cmp_no_checks(Thing* const               x,
                           Thing* const               y,
                           std::vector<size_t> const& weights) {
@@ -1389,9 +1421,12 @@ namespace libsemigroups {
   //! wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
-  [[nodiscard]] bool wt_lenlex_cmp(Thing* const               x,
-                                   Thing* const               y,
-                                   std::vector<size_t> const& weights) {
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
+  wt_lenlex_cmp(Thing* const               x,
+                Thing* const               y,
+                std::vector<size_t> const& weights) {
     return wt_lenlex_cmp(
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
@@ -1774,9 +1809,12 @@ namespace libsemigroups {
   //! wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
-  [[nodiscard]] bool wt_lex_cmp_no_checks(Thing* const               x,
-                                          Thing* const               y,
-                                          std::vector<size_t> const& weights) {
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
+  wt_lex_cmp_no_checks(Thing* const               x,
+                       Thing* const               y,
+                       std::vector<size_t> const& weights) {
     return wt_lex_cmp_no_checks(
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
@@ -1914,9 +1952,12 @@ namespace libsemigroups {
   //! wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
-  [[nodiscard]] bool wt_lex_cmp(Thing* const               x,
-                                Thing* const               y,
-                                std::vector<size_t> const& weights) {
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
+  wt_lex_cmp(Thing* const               x,
+             Thing* const               y,
+             std::vector<size_t> const& weights) {
     return wt_lex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
 
@@ -2302,7 +2343,9 @@ namespace libsemigroups {
   //!
   //! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
   template <typename Thing>
-  [[nodiscard]] [[deprecated("Use wt_lenlex_cmp_no_checks instead!")]] bool
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
   wt_shortlex_compare_no_checks(Thing* const               x,
                                 Thing* const               y,
                                 std::vector<size_t> const& weights) {
@@ -2452,7 +2495,9 @@ namespace libsemigroups {
   //!
   //! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
   template <typename Thing>
-  [[nodiscard]] [[deprecated("Use wt_lenlex_cmp instead!")]] bool
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
   wt_shortlex_compare(Thing* const               x,
                       Thing* const               y,
                       std::vector<size_t> const& weights) {
@@ -2635,7 +2680,9 @@ namespace libsemigroups {
   //!
   //! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
   template <typename Thing>
-  [[nodiscard]] [[deprecated("Use wt_lex_cmp_no_checks instead!")]] bool
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
   wt_lex_compare_no_checks(Thing* const               x,
                            Thing* const               y,
                            std::vector<size_t> const& weights) {
@@ -2785,7 +2832,9 @@ namespace libsemigroups {
   //!
   //! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
   template <typename Thing>
-  [[nodiscard]] [[deprecated("Use wt_lex_cmp instead!")]] bool
+  [[nodiscard]] [[deprecated(
+      "This function will be removed in v4, and no alternative "
+      "provided.")]] bool
   wt_lex_compare(Thing* const               x,
                  Thing* const               y,
                  std::vector<size_t> const& weights) {
