@@ -52,6 +52,18 @@ namespace libsemigroups {
     }
   }
 
+  template <typename Word, typename Iterator>
+  bool rpo_cmp(Alphabet<Word> const& alphabet,
+               Iterator              first1,
+               Iterator              last1,
+               Iterator              first2,
+               Iterator              last2) {
+    return rpo_cmp(detail::citow(alphabet, first1),
+                   detail::citow(alphabet, last1),
+                   detail::citow(alphabet, first2),
+                   detail::citow(alphabet, last2));
+  }
+
   template <typename Iterator, typename>
   bool rev_rpo_cmp(Iterator first1,
                    Iterator last1,

@@ -778,11 +778,28 @@ namespace libsemigroups {
     REQUIRE(rpo_cmp("bcbabcbbc"s, "acbbabcacb"s));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "037", "with alphabet", "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    Alphabet alphabet("ba"s);
+
+    REQUIRE(rpo_cmp("a"s, "b"s));
+    REQUIRE(!rpo_cmp(alphabet, "a"s, "b"s));
+    REQUIRE(rpo_cmp(alphabet, "b"s, "a"s));
+
+    auto u = "aa"s;
+    auto v = "ba"s;
+    REQUIRE(rpo_cmp(u, v));
+    REQUIRE(!rpo_cmp(alphabet, u, v));
+    REQUIRE(rpo_cmp(alphabet, u.cbegin(), u.cend(), v.cbegin(), v.cend())
+            == rpo_cmp(alphabet, u, v));
+  }
+
   // =========================================================================
   // lex_cmp with alphabet
   // =========================================================================
 
-  LIBSEMIGROUPS_TEST_CASE("lex_cmp", "037", "with alphabet", "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("lex_cmp", "038", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
     StringRange sr;
@@ -837,7 +854,7 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("lenlex_cmp",
-                          "038",
+                          "039",
                           "with alphabet",
                           "[quick][order]") {
     using std::string_literals::operator""s;
@@ -887,6 +904,64 @@ namespace libsemigroups {
                                     "bbaa"s, "babb"s, "baba"s, "baab"s, "baaa"s,
                                     "abbb"s, "abba"s, "abab"s, "abaa"s, "aabb"s,
                                     "aaba"s, "aaab"s, "aaaa"s}));
+  }
+
+  // =========================================================================
+  // rpo_cmp with alphabet
+  // =========================================================================
+
+  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "040", "with alphabet", "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    StringRange sr;
+    sr.alphabet("ab").min(2).max(5);
+
+    auto strings = (sr | rx::to_vector());
+
+    std::sort(
+        strings.begin(), strings.end(), [](auto const& lhop, auto const& rhop) {
+          return rpo_cmp(lhop, rhop);
+        });
+
+    REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ab"s,   "aab"s,
+                                    "aaab"s, "ba"s,   "aba"s,  "aaba"s, "baa"s,
+                                    "abaa"s, "baaa"s, "bb"s,   "abb"s,  "aabb"s,
+                                    "bab"s,  "abab"s, "baab"s, "bba"s,  "abba"s,
+                                    "baba"s, "bbaa"s, "bbb"s,  "abbb"s, "babb"s,
+                                    "bbab"s, "bbba"s, "bbbb"s}));
+
+    Alphabet alphabet("ba"s);
+
+    std::sort(strings.begin(),
+              strings.end(),
+              [&alphabet](auto const& lhop, auto const& rhop) {
+                return rpo_cmp(alphabet, lhop, rhop);
+              });
+
+    REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ba"s,   "bba"s,
+                                    "bbba"s, "ab"s,   "bab"s,  "bbab"s, "abb"s,
+                                    "babb"s, "abbb"s, "aa"s,   "baa"s,  "bbaa"s,
+                                    "aba"s,  "baba"s, "abba"s, "aab"s,  "baab"s,
+                                    "abab"s, "aabb"s, "aaa"s,  "baaa"s, "abaa"s,
+                                    "aaba"s, "aaab"s, "aaaa"s}));
+
+    std::sort(strings.begin(), strings.end(), RPOCmp{});
+
+    REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ab"s,   "aab"s,
+                                    "aaab"s, "ba"s,   "aba"s,  "aaba"s, "baa"s,
+                                    "abaa"s, "baaa"s, "bb"s,   "abb"s,  "aabb"s,
+                                    "bab"s,  "abab"s, "baab"s, "bba"s,  "abba"s,
+                                    "baba"s, "bbaa"s, "bbb"s,  "abbb"s, "babb"s,
+                                    "bbab"s, "bbba"s, "bbbb"s}));
+
+    // std::sort(strings.begin(), strings.end(), RPOCmp{alphabet});
+    // REQUIRE(strings == std::vector({"bb"s,   "ba"s,   "ab"s,   "aa"s, "bbb"s,
+    //                                 "bba"s,  "bab"s,  "baa"s,  "abb"s,
+    //                                 "aba"s, "aab"s,  "aaa"s,  "bbbb"s,
+    //                                 "bbba"s, "bbab"s, "bbaa"s, "babb"s,
+    //                                 "baba"s, "baab"s, "baaa"s, "abbb"s,
+    //                                 "abba"s, "abab"s, "abaa"s, "aabb"s,
+    //                                 "aaba"s, "aaab"s, "aaaa"s}));
   }
 
 }  // namespace libsemigroups

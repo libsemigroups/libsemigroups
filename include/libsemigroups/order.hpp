@@ -912,13 +912,21 @@ namespace libsemigroups {
                              Iterator first2,
                              Iterator last2) noexcept;
 
+  // TODO doc
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rpo_cmp(Alphabet<Word> const& alphabet,
+                             Iterator              first1,
+                             Iterator              last1,
+                             Iterator              first2,
+                             Iterator              last2);
+
   //! \brief Compare two objects of the same type using //! \ref rpo_cmp.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using \ref rpo_cmp.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -936,10 +944,17 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool rpo_cmp(Thing const& x, Thing const& y) noexcept {
+  template <typename Word>
+  [[nodiscard]] bool rpo_cmp(Word const& x, Word const& y) noexcept {
     return rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  // TODO doc
+  template <typename Word>
+  [[nodiscard]] bool rpo_cmp(Alphabet<Word> const& alphabet,
+                             Word const&           x,
+                             Word const&           y) {
+    return rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects via their pointers using \ref rpo_cmp.
