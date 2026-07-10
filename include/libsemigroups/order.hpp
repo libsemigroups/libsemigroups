@@ -1957,7 +1957,6 @@ namespace libsemigroups {
   class WtLenLexCmp {
     Alphabet<Word>      _alphabet;
     std::vector<size_t> _weights;
-    bool                _should_check;
 
    public:
     WtLenLexCmp()                              = delete;
@@ -1969,49 +1968,40 @@ namespace libsemigroups {
     ~WtLenLexCmp() = default;
 
     WtLenLexCmp(Alphabet<Word> const&      alphabet,
-                std::vector<size_t> const& weights,
-                bool                       should_check = order::checks)
-        : _alphabet(alphabet), _weights(weights), _should_check(should_check) {
+                std::vector<size_t> const& weights)
+        : _alphabet(alphabet), _weights(weights) {
       // TODO check that _alphabet and _weights have the same length
     }
 
-    WtLenLexCmp(Alphabet<Word>&&      alphabet,
-                std::vector<size_t>&& weights,
-                bool                  should_check = order::checks)
-        : _alphabet(std::move(alphabet)),
-          _weights(std::move(weights)),
-          _should_check(should_check) {
-      // TODO check that _alphabet and _weights have the same length
+    WtLenLexCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& weights)
+        : _alphabet(std::move(alphabet)), _weights(std::move(weights)) {
+      // TODO check that _alphabet and _weights have the
+      // same length
     }
 
     WtLenLexCmp& init(Alphabet<Word> const&      alphabet,
-                      std::vector<size_t> const& weights,
-                      bool                       should_check = order::checks) {
-      // TODO check that _alphabet and _weights have the same length
-      // TODO check if _alphabet or _weights is alphabet or weights, i.e. check
-      // that it is okay to copy assign something to itself.
-      _alphabet     = alphabet;
-      _weights      = weights;
-      _should_check = should_check;
+                      std::vector<size_t> const& weights) {
+      // TODO check that _alphabet and _weights have the
+      // same length
+      // TODO check if _alphabet or _weights is alphabet
+      // or weights, i.e. check
+      // that it is okay to copy assign something to
+      // itself.
+      _alphabet = alphabet;
+      _weights  = weights;
       return *this;
     }
 
     WtLenLexCmp& init(Alphabet<Word>&&      alphabet,
-                      std::vector<size_t>&& weights,
-                      bool                  should_check = order::checks) {
+                      std::vector<size_t>&& weights) {
       // TODO check that _alphabet and _weights have the same length
-      _alphabet     = std::move(alphabet);
-      _weights      = std::move(weights);
-      _should_check = should_check;
+      _alphabet = std::move(alphabet);
+      _weights  = std::move(weights);
       return *this;
     }
 
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      if (_should_check) {
-        return wt_lenlex_cmp(_alphabet, _weights, x, y);
-      } else {
-        return wt_lenlex_cmp_no_checks(_alphabet, _weights, x, y);
-      }
+      return wt_lenlex_cmp(_alphabet, _weights, x, y);
     }
 
     template <typename Iterator>
@@ -2019,38 +2009,82 @@ namespace libsemigroups {
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
-      if (_should_check) {
-        return wt_lenlex_cmp(_alphabet, _weights, first1, last1, first2, last2);
-      } else {
-        return wt_lenlex_cmp_no_checks(
-            _alphabet, _weights, first1, last1, first2, last2);
-      }
-    }
-
-    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
-      return wt_lenlex_cmp_no_checks(_alphabet, _weights, x, y);
-    }
-
-    template <typename Iterator>
-    [[nodiscard]] bool call_no_checks(Iterator first1,
-                                      Iterator last1,
-                                      Iterator first2,
-                                      Iterator last2) const {
-      return wt_lenlex_cmp_no_checks(
-          _alphabet, _weights, first1, last1, first2, last2);
+      return wt_lenlex_cmp(_alphabet, _weights, first1, last1, first2, last2);
     }
 
     [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
       return _alphabet;
     }
 
-    [[nodiscard]] bool should_check() const noexcept {
-      return _should_check;
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+  };  // class WtLenLexCmp
+
+  template <typename Word>
+  class WtLenLexCmpNoChecks {
+    Alphabet<Word>      _alphabet;
+    std::vector<size_t> _weights;
+
+   public:
+    WtLenLexCmpNoChecks()                                      = delete;
+    WtLenLexCmpNoChecks(WtLenLexCmpNoChecks const&)            = default;
+    WtLenLexCmpNoChecks(WtLenLexCmpNoChecks&&)                 = default;
+    WtLenLexCmpNoChecks& operator=(WtLenLexCmpNoChecks const&) = default;
+    WtLenLexCmpNoChecks& operator=(WtLenLexCmpNoChecks&&)      = default;
+
+    ~WtLenLexCmpNoChecks() = default;
+
+    WtLenLexCmpNoChecks(Alphabet<Word> const&      alphabet,
+                        std::vector<size_t> const& weights)
+        : _alphabet(alphabet), _weights(weights) {
+      // TODO check that _alphabet and _weights have the
+      // same length
     }
 
-    WtLenLexCmp& should_check(bool val) noexcept {
-      _should_check = val;
+    WtLenLexCmpNoChecks(Alphabet<Word>&&      alphabet,
+                        std::vector<size_t>&& weights)
+        : _alphabet(std::move(alphabet)), _weights(std::move(weights)) {
+      // TODO check that _alphabet and _weights have the
+      // same length
+    }
+
+    WtLenLexCmpNoChecks& init(Alphabet<Word> const&      alphabet,
+                              std::vector<size_t> const& weights) {
+      // TODO check that _alphabet and _weights have the
+      // same length
+      // TODO check if _alphabet or _weights is alphabet
+      // or weights, i.e. check
+      // that it is okay to copy assign something to
+      // itself.
+      _alphabet = alphabet;
+      _weights  = weights;
       return *this;
+    }
+
+    WtLenLexCmpNoChecks& init(Alphabet<Word>&&      alphabet,
+                              std::vector<size_t>&& weights) {
+      // TODO check that _alphabet and _weights have the same length
+      _alphabet = std::move(alphabet);
+      _weights  = std::move(weights);
+      return *this;
+    }
+
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return wt_lenlex_cmp_no_checks(_alphabet, _weights, x, y);
+    }
+
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return wt_lenlex_cmp_no_checks(
+          _alphabet, _weights, first1, last1, first2, last2);
+    }
+
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
     }
 
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
@@ -2081,7 +2115,11 @@ namespace libsemigroups {
   //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Word const&,
   //! Word const&)
   template <>
-  struct WtLenLexCmp<Default> {
+  class WtLenLexCmp<Default> {
+   private:
+    std::vector<size_t> _weights;
+
+   public:
     //! \brief Construct from weights vector reference and specify whether or
     //! not the call operator should check its arguments.
     //!
@@ -2096,8 +2134,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp(std::vector<size_t> const& weights, bool should_check)
-        : _weights(weights), _should_check(should_check) {}
+    WtLenLexCmp(std::vector<size_t> const& weights) : _weights(weights) {}
 
     //! \brief Reinitialize an existing WtLenLexCmp object.
     //!
@@ -2106,14 +2143,11 @@ namespace libsemigroups {
     //! arguments.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp& init(std::vector<size_t> const& weights, bool should_check) {
-      _weights      = weights;
-      _should_check = should_check;
+    WtLenLexCmp& init(std::vector<size_t> const& weights) {
+      _weights = weights;
       return *this;
     }
 
@@ -2122,17 +2156,13 @@ namespace libsemigroups {
     //!
     //! Constructs a comparison object that takes ownership of the provided
     //! weights vector, where the `i`th index corresponds to the weight of the
-    //! `i`th letter in the alphabet. The \p should_check parameter determines
-    //! whether the call operator will validate that letters are valid indices.
+    //! `i`th letter in the alphabet.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp(std::vector<size_t>&& weights, bool should_check)
-        : _weights(std::move(weights)), _should_check(should_check) {}
+    WtLenLexCmp(std::vector<size_t>&& weights) : _weights(std::move(weights)) {}
 
     //! \brief Reinitialize an existing WtLenLexCmp object.
     //!
@@ -2141,14 +2171,11 @@ namespace libsemigroups {
     //! arguments.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp& init(std::vector<size_t>&& weights, bool should_check) {
-      _weights      = std::move(weights);
-      _should_check = should_check;
+    WtLenLexCmp& init(std::vector<size_t>&& weights) {
+      _weights = std::move(weights);
       return *this;
     }
 
@@ -2184,11 +2211,7 @@ namespace libsemigroups {
     //! checked that the letters are valid indices into the weights vector.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      if (_should_check) {
-        return wt_lenlex_cmp(_weights, x, y);
-      } else {
-        return wt_lenlex_cmp_no_checks(_weights, x, y);
-      }
+      return wt_lenlex_cmp(_weights, x, y);
     }
 
     // TODO doc
@@ -2197,80 +2220,7 @@ namespace libsemigroups {
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
-      if (_should_check) {
-        return wt_lenlex_cmp(_weights, first1, last1, first2, last2);
-      } else {
-        return wt_lenlex_cmp_no_checks(_weights, first1, last1, first2, last2);
-      }
-    }
-
-    //! \brief Call operator that does no checks.
-    //!
-    //! This member function always uses \ref wt_lenlex_cmp_no_checks to
-    //! compare \p x and \p y, regardless of the value of the constructor
-    //! parameter \c should_check. Use this when you want to ensure validation
-    //! is not performed.
-    //!
-    //! \tparam Word the type of the objects to be compared.
-    //!
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is weighted len-lex less
-    //! than \p y, and \c false otherwise.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! See wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
-    //! Iterator, Iterator, Iterator)
-    template <typename Word>
-    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
-      return wt_lenlex_cmp_no_checks(_weights, x, y);
-    }
-
-    // TODO doc
-    template <typename Iterator>
-    [[nodiscard]] bool call_no_checks(Iterator first1,
-                                      Iterator last1,
-                                      Iterator first2,
-                                      Iterator last2) const {
-      return wt_lenlex_cmp_no_checks(_weights, first1, last1, first2, last2);
-    }
-
-    //! \brief Returns the value of the constructor parameter \c should_check.
-    //!
-    //! This function returns the current value of the constructor parameter
-    //! \c should_check.
-    //!
-    //! \returns Whether or not the call operator is checking its arguments.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa should_check(bool)
-    [[nodiscard]] bool should_check() const noexcept {
-      return _should_check;
-    }
-
-    //! \brief Set the value of the constructor parameter \c should_check.
-    //!
-    //! This function sets the value of \c should_check to \p val. This
-    //! parameter determines whether or not the call operator is checking its
-    //! arguments.
-    //!
-    //! \param val the new value of \c should_check.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa should_check()
-    WtLenLexCmp& should_check(bool val) noexcept {
-      _should_check = val;
-      return *this;
+      return wt_lenlex_cmp(_weights, first1, last1, first2, last2);
     }
 
     //! \brief Returns the weights.
@@ -2285,46 +2235,25 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
-
-    //! \brief Set the weights.
-    //!
-    //! This function can be used to redefine the weights used to define the
-    //! comparison implemented by WtLenLexCmp.
-    //!
-    //! \param val the new weights to use.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    WtLenLexCmp& weights(std::vector<size_t> const& val) {
-      _weights = val;
-      return *this;
-    }
-
-   private:
-    std::vector<size_t> _weights;
-    bool                _should_check;
   };
 
-  WtLenLexCmp(std::vector<size_t> const&, bool)->WtLenLexCmp<>;
-  WtLenLexCmp(std::vector<size_t>&&, bool)->WtLenLexCmp<>;
+  WtLenLexCmp(std::vector<size_t> const&)->WtLenLexCmp<>;
+  WtLenLexCmp(std::vector<size_t>&&)->WtLenLexCmp<>;
 
   template <typename Word>
-  WtLenLexCmp(Alphabet<Word> const&, std::vector<size_t> const&, bool)
+  WtLenLexCmp(Alphabet<Word> const&, std::vector<size_t> const&)
       -> WtLenLexCmp<Word>;
 
   template <typename Word>
-  WtLenLexCmp(Alphabet<Word> const&, std::vector<size_t>&&, bool)
+  WtLenLexCmp(Alphabet<Word> const&, std::vector<size_t>&&)
       -> WtLenLexCmp<Word>;
 
   template <typename Word>
-  WtLenLexCmp(Alphabet<Word>&&, std::vector<size_t> const&, bool)
+  WtLenLexCmp(Alphabet<Word>&&, std::vector<size_t> const&)
       -> WtLenLexCmp<Word>;
 
   template <typename Word>
-  WtLenLexCmp(Alphabet<Word>&&, std::vector<size_t>&&, bool)
-      -> WtLenLexCmp<Word>;
+  WtLenLexCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WtLenLexCmp<Word>;
 
   //////////////////////////////////////////////////////////////////////
   // Weighted lex
