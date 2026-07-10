@@ -204,43 +204,6 @@ namespace libsemigroups {
     return lex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using
-  //! std::lexicographical_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! std::lexicographical_compare.
-  //!
-  //! \tparam Word the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is lexicographically less than
-  //! \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  //! See std::lexicographical_compare.
-  //!
-  //! \complexity
-  //! See std::lexicographical_compare.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
-  //! \end_code_no_test
-  //!
-  //! \deprecated_warning{function}
-  template <typename Word>
-  [[deprecated("This function will be removed in v4, and no alternative "
-               "provided.")]] [[nodiscard]] bool
-  lex_cmp(Word* const x, Word* const y) {
-    return std::lexicographical_compare(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  }
-
   // TODO doc
   using Default = void;
 
@@ -580,7 +543,7 @@ namespace libsemigroups {
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  lexicographical_compare(Word* const x, Word* const y) {
+  lexicographical_compare(Word const* x, Word const* y) {
     return lex_cmp(x, y);
   }
 
@@ -728,44 +691,6 @@ namespace libsemigroups {
                                           Word const&           y) {
     return lenlex_cmp_no_checks(
         alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  //! \brief Compare two objects via their pointers using \ref lenlex_cmp.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref lenlex_cmp.
-  //!
-  //! \tparam Word the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word len-lex less
-  //! than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
-  //!
-  //! \complexity
-  //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of the word
-  //! pointed to by \p x and the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! lenlex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
-  //!
-  //! \deprecated_warning{function}
-  template <typename Word>
-  [[deprecated("This function will be removed in v4, and no alternative "
-               "provided.")]] [[nodiscard]] bool
-  lenlex_cmp(Word* const x, Word* const y) {
-    return lenlex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
   template <typename Word = Default>
@@ -1048,7 +973,7 @@ namespace libsemigroups {
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  shortlex_compare(Word* const x, Word* const y) {
+  shortlex_compare(Word const* x, Word const* y) {
     return lenlex_cmp(x, y);
   }
 
@@ -1177,41 +1102,6 @@ namespace libsemigroups {
                                        Word const&           y) {
     return rpo_cmp_no_checks(
         alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  //! \brief Compare two objects via their pointers using \ref rpo_cmp.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using \ref rpo_cmp.
-  //!
-  //! \tparam Word the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the value pointed to by \p x is less
-  //! than the value pointed to by \p y with r to the recursive path
-  //! ordering, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  //!
-  //! \deprecated_warning{function}
-  template <typename Word>
-  [[nodiscard]] [[deprecated(
-      "This function will be removed in v4, and no alternative "
-      "provided.")]] bool
-  rpo_cmp(Word* const x, Word* const y) noexcept {
-    return rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
   template <typename Word = Default>
@@ -1467,42 +1357,6 @@ namespace libsemigroups {
                                  Word const&           x,
                                  Word const&           y) {
     return rev_rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  //! \brief Compare two objects via their pointers using \ref rev_rpo_cmp.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref rev_rpo_cmp.
-  //!
-  //! \tparam Word the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the value pointed to by \p x is less
-  //! than the value pointed to by \p y with r to the reversed recursive path
-  //! ordering, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! rev_rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  //!
-  //! \deprecated_warning{function}
-  template <typename Word>
-  [[nodiscard]] [[deprecated(
-      "This function will be removed in v4, and no alternative "
-      "provided.")]] bool
-  rev_rpo_cmp(Word* const x, Word* const y) noexcept {
-    return rev_rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
   template <typename Word = Default>
@@ -1770,7 +1624,7 @@ namespace libsemigroups {
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  recursive_path_compare(Word* const x, Word* const y) noexcept {
+  recursive_path_compare(Word const* x, Word const* y) noexcept {
     return rev_rpo_cmp(x, y);
   }
 
@@ -1948,58 +1802,6 @@ namespace libsemigroups {
         alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lenlex_cmp_no_checks without checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lenlex_cmp_no_checks, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! \tparam Word the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! len-lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lenlex_cmp_no_checks(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \warning
-  //! It is not checked that the letters are valid indices into the weights
-  //! vector.
-  //!
-  //! \sa
-  //! wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function}
-  template <typename Word>
-  [[nodiscard]] [[deprecated(
-      "This function will be removed in v4, and no alternative "
-      "provided.")]] bool
-  wt_lenlex_cmp_no_checks(Word* const                x,
-                          Word* const                y,
-                          std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp_no_checks(
-        weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  }
-
   //! \brief Compare two objects of the same type using the weighted len-lex
   //! ordering and check validity.
   //!
@@ -2146,55 +1948,6 @@ namespace libsemigroups {
                                    Word const&                y) {
     return wt_lenlex_cmp(
         alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lenlex_cmp and check validity.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lenlex_cmp, where the `i`th index of the weights vector
-  //! corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! After checking that all letters are valid indices into the weights
-  //! vector, this function performs the same as
-  //! `wt_lenlex_cmp_no_checks(*x, *y, weights)`.
-  //!
-  //! \tparam Word the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! len-lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter is not a valid index into
-  //! the weights vector.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lenlex_cmp(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Word>
-  [[nodiscard]] [[deprecated(
-      "This function will be removed in v4, and no alternative "
-      "provided.")]] bool
-  wt_lenlex_cmp(Word* const                x,
-                Word* const                y,
-                std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(
-        weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
   template <typename Word = Default>
@@ -2670,56 +2423,6 @@ namespace libsemigroups {
         weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lex_cmp_no_checks without checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lex_cmp_no_checks, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! \tparam Word the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref wt_lex_cmp_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lex_cmp_no_checks(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \warning
-  //! It is not checked that the letters are valid indices into the weights
-  //! vector.
-  //!
-  //! \sa
-  //! wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Word>
-  [[nodiscard]] [[deprecated(
-      "This function will be removed in v4, and no alternative "
-      "provided.")]] bool
-  wt_lex_cmp_no_checks(Word* const                x,
-                       Word* const                y,
-                       std::vector<size_t> const& weights) {
-    return wt_lex_cmp_no_checks(
-        weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  }
-
   //! \brief Compare two objects of the same type using the weighted lex
   //! ordering and check validity.
   //!
@@ -2810,52 +2513,6 @@ namespace libsemigroups {
                                 Word const&                x,
                                 Word const&                y) {
     return wt_lex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lex_cmp and check validity.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lex_cmp, where the `i`th index of the weights vector
-  //! corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! After checking that all letters are valid indices into the weights
-  //! vector, this function performs the same as
-  //! `wt_lex_cmp_no_checks(*x, *y, weights)`.
-  //!
-  //! \tparam Word the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter is not a valid index into
-  //! the weights vector.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lex_cmp(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Word>
-  [[nodiscard]] [[deprecated(
-      "This function will be removed in v4, and no alternative "
-      "provided.")]] bool
-  wt_lex_cmp(Word* const x, Word* const y, std::vector<size_t> const& weights) {
-    return wt_lex_cmp(weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
   //! \brief A stateful struct with binary call operator using
@@ -3100,7 +2757,7 @@ namespace libsemigroups {
    private:
     std::vector<size_t> _weights;
     bool                _should_check;
-  };
+  };  // class WtLexCmp
 
   //////////////////////////////////////////////////////////////////////
   // Weighted short-lex - deprecated
@@ -3251,8 +2908,8 @@ namespace libsemigroups {
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_shortlex_compare_no_checks(Word* const                x,
-                                Word* const                y,
+  wt_shortlex_compare_no_checks(Word const*                x,
+                                Word const*                y,
                                 std::vector<size_t> const& weights) {
     return wt_lenlex_cmp(weights, x, y);
   }
@@ -3401,8 +3058,8 @@ namespace libsemigroups {
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_shortlex_compare(Word* const                x,
-                      Word* const                y,
+  wt_shortlex_compare(Word const*                x,
+                      Word const*                y,
                       std::vector<size_t> const& weights) {
     return wt_lenlex_cmp(weights, x, y);
   }
@@ -3584,8 +3241,8 @@ namespace libsemigroups {
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_lex_compare_no_checks(Word* const                x,
-                           Word* const                y,
+  wt_lex_compare_no_checks(Word const*                x,
+                           Word const*                y,
                            std::vector<size_t> const& weights) {
     return wt_lex_cmp_no_checks(weights, x, y);
   }
@@ -3734,8 +3391,8 @@ namespace libsemigroups {
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_lex_compare(Word* const                x,
-                 Word* const                y,
+  wt_lex_compare(Word const*                x,
+                 Word const*                y,
                  std::vector<size_t> const& weights) {
     return wt_lex_cmp(weights, x, y);
   }
