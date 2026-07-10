@@ -772,6 +772,9 @@ namespace libsemigroups {
   class LenLexCmp;
 
   template <typename Word>
+  class LenLexCmpNoChecks;
+
+  template <typename Word>
   class LenLexCmp {
     Alphabet<Word> _alphabet;
 
@@ -808,7 +811,55 @@ namespace libsemigroups {
     }
 
     // TODO doc
-    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return lenlex_cmp(_alphabet, first1, last1, first2, last2);
+    }
+  };
+
+  // TODO doc
+  template <typename Word>
+  class LenLexCmpNoChecks {
+    Alphabet<Word> _alphabet;
+
+   public:
+    LenLexCmpNoChecks() = delete;
+
+    LenLexCmpNoChecks(LenLexCmpNoChecks const&) = default;
+    LenLexCmpNoChecks(LenLexCmpNoChecks&&)      = default;
+
+    LenLexCmpNoChecks& operator=(LenLexCmpNoChecks const&) = default;
+    LenLexCmpNoChecks& operator=(LenLexCmpNoChecks&&)      = default;
+
+    ~LenLexCmpNoChecks() = default;
+
+    explicit LenLexCmpNoChecks(Alphabet<Word> const& alphabet)
+        : _alphabet(alphabet) {}
+
+    explicit LenLexCmpNoChecks(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref lenlex_cmp_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref lenlex_cmp_no_checks.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is len-lex less than \p y,
+    //! and \c false otherwise.
+    //!
+    //! \exceptions TODO
+    //!
+    //! \complexity
+    //! See \ref lenlex_cmp_no_checks(Alphabet<Word> const&, Iterator,
+    //! Iterator, Iterator, Iterator).
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return lenlex_cmp_no_checks(_alphabet, x, y);
     }
 
@@ -818,18 +869,9 @@ namespace libsemigroups {
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
-      return lenlex_cmp(_alphabet, first1, last1, first2, last2);
-    }
-
-    // TODO doc
-    template <typename Iterator>
-    [[nodiscard]] bool call_no_checks(Iterator first1,
-                                      Iterator last1,
-                                      Iterator first2,
-                                      Iterator last2) const {
       return lenlex_cmp_no_checks(_alphabet, first1, last1, first2, last2);
     }
-  };
+  };  // class LenLexCmpNoChecks
 
   //! \brief A stateless struct with binary call operator using
   //! \ref lenlex_cmp.

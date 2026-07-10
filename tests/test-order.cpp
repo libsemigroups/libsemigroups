@@ -1061,7 +1061,9 @@ namespace libsemigroups {
                                     "abbb"s, "abba"s, "abab"s, "abaa"s, "aabb"s,
                                     "aaba"s, "aaab"s, "aaaa"s}));
 
-    REQUIRE(LenLexCmp{alphabet}.call_no_checks(b, a));
+    REQUIRE(LenLexCmpNoChecks{alphabet}(b, a));
+    REQUIRE(LenLexCmpNoChecks{alphabet}(
+        b.cbegin(), b.cend(), a.cbegin(), a.cend()));
 
     alphabet.init("cd"s);
 
