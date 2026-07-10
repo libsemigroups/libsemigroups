@@ -87,16 +87,27 @@ namespace libsemigroups {
   }
 
   template <typename Word, typename Iterator>
+  bool rev_rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                             Iterator              first1,
+                             Iterator              last1,
+                             Iterator              first2,
+                             Iterator              last2) {
+    return rpo_cmp_no_checks(alphabet,
+                             std::make_reverse_iterator(last1),
+                             std::make_reverse_iterator(first1),
+                             std::make_reverse_iterator(last2),
+                             std::make_reverse_iterator(first2));
+  }
+
+  template <typename Word, typename Iterator>
   bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
                    Iterator              first1,
                    Iterator              last1,
                    Iterator              first2,
                    Iterator              last2) {
-    return rpo_cmp(alphabet,
-                   std::make_reverse_iterator(last1),
-                   std::make_reverse_iterator(first1),
-                   std::make_reverse_iterator(last2),
-                   std::make_reverse_iterator(first2));
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    return rev_rpo_cmp_no_checks(alphabet, first1, last1, first2, last2);
   }
 
   template <typename Iterator>

@@ -679,6 +679,8 @@ namespace libsemigroups {
     REQUIRE(rev_rpo_cmp("a"s, "b"s));
     REQUIRE(!rev_rpo_cmp(alphabet, "a"s, "b"s));
     REQUIRE(rev_rpo_cmp(alphabet, "b"s, "a"s));
+    REQUIRE(!rev_rpo_cmp_no_checks(alphabet, "a"s, "b"s));
+    REQUIRE(rev_rpo_cmp_no_checks(alphabet, "b"s, "a"s));
 
     auto u = "aa"s;
     auto v = "ab"s;
@@ -686,9 +688,21 @@ namespace libsemigroups {
     REQUIRE(!rev_rpo_cmp(alphabet, u, v));
     REQUIRE(rev_rpo_cmp(alphabet, u.cbegin(), u.cend(), v.cbegin(), v.cend())
             == rev_rpo_cmp(alphabet, u, v));
+    REQUIRE(rev_rpo_cmp_no_checks(
+                alphabet, v.cbegin(), v.cend(), u.cbegin(), u.cend())
+            == rev_rpo_cmp_no_checks(alphabet, v, u));
 
     REQUIRE(!RevRPOCmp{alphabet}(u, v));
     REQUIRE(RevRPOCmp{alphabet}(v, u));
+    REQUIRE(!RevRPOCmpNoChecks{alphabet}(u, v));
+    REQUIRE(RevRPOCmpNoChecks{alphabet}(v, u));
+
+    alphabet.init("cd"s);
+
+    REQUIRE_EXCEPTION_MSG(std::ignore = rev_rpo_cmp(alphabet, "b"s, "aa"s),
+                          "invalid letter 'b', valid letters are \"cd\"");
+    REQUIRE_EXCEPTION_MSG(std::ignore = RevRPOCmp{alphabet}("b"s, "aa"s),
+                          "invalid letter 'b', valid letters are \"cd\"");
   }
 
   LIBSEMIGROUPS_TEST_CASE("rpo_cmp",
@@ -920,8 +934,8 @@ namespace libsemigroups {
         rpo_cmp_no_checks(alphabet, v.cbegin(), v.cend(), u.cbegin(), u.cend())
         == rpo_cmp_no_checks(alphabet, v, u));
 
-    REQUIRE(!RPOCmp{alphabet}.call_no_checks(u, v));
-    REQUIRE(RPOCmp{alphabet}.call_no_checks(v, u));
+    REQUIRE(!RPOCmpNoChecks{alphabet}(u, v));
+    REQUIRE(RPOCmpNoChecks{alphabet}(v, u));
 
     alphabet.init("cd"s);
 

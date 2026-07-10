@@ -1218,6 +1218,9 @@ namespace libsemigroups {
   class RPOCmp;
 
   template <typename Word>
+  class RPOCmpNoChecks;
+
+  template <typename Word>
   class RPOCmp {
     Alphabet<Word> _alphabet;
 
@@ -1250,7 +1253,49 @@ namespace libsemigroups {
     }
 
     // TODO doc
-    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rpo_cmp(_alphabet, first1, last1, first2, last2);
+    }
+  };
+
+  // TODO doc
+  template <typename Word>
+  class RPOCmpNoChecks {
+    Alphabet<Word> _alphabet;
+
+   public:
+    RPOCmpNoChecks() = delete;
+
+    RPOCmpNoChecks(RPOCmpNoChecks const&) = default;
+    RPOCmpNoChecks(RPOCmpNoChecks&&)      = default;
+
+    RPOCmpNoChecks& operator=(RPOCmpNoChecks const&) = default;
+    RPOCmpNoChecks& operator=(RPOCmpNoChecks&&)      = default;
+
+    ~RPOCmpNoChecks() = default;
+
+    explicit RPOCmpNoChecks(Alphabet<Word> const& alphabet)
+        : _alphabet(alphabet) {}
+
+    explicit RPOCmpNoChecks(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp_no_checks.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the recursive path ordering, and \c false otherwise.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return rpo_cmp_no_checks(_alphabet, x, y);
     }
 
@@ -1260,18 +1305,9 @@ namespace libsemigroups {
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
-      return rpo_cmp(_alphabet, first1, last1, first2, last2);
-    }
-
-    // TODO doc
-    template <typename Iterator>
-    [[nodiscard]] bool call_no_checks(Iterator first1,
-                                      Iterator last1,
-                                      Iterator first2,
-                                      Iterator last2) const {
       return rpo_cmp_no_checks(_alphabet, first1, last1, first2, last2);
     }
-  };
+  };  // class RPOCmpNoChecks
 
   //! \brief A stateless struct with binary call operator using
   //! \ref rpo_cmp.
@@ -1371,6 +1407,14 @@ namespace libsemigroups {
 
   // TODO doc
   template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                           Iterator              first1,
+                                           Iterator              last1,
+                                           Iterator              first2,
+                                           Iterator              last2);
+
+  // TODO doc
+  template <typename Word, typename Iterator>
   [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
                                  Iterator              first1,
                                  Iterator              last1,
@@ -1406,6 +1450,15 @@ namespace libsemigroups {
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
   [[nodiscard]] bool rev_rpo_cmp(Word const& x, Word const& y) noexcept {
     return rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  // TODO doc
+  template <typename Word>
+  [[nodiscard]] bool rev_rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                           Word const&           x,
+                                           Word const&           y) {
+    return rev_rpo_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   // TODO doc
@@ -1456,6 +1509,9 @@ namespace libsemigroups {
   class RevRPOCmp;
 
   template <typename Word>
+  class RevRPOCmpNoChecks;
+
+  template <typename Word>
   class RevRPOCmp {
     Alphabet<Word> _alphabet;
 
@@ -1496,6 +1552,53 @@ namespace libsemigroups {
       return rev_rpo_cmp(_alphabet, first1, last1, first2, last2);
     }
   };
+
+  // TODO doc
+  template <typename Word>
+  class RevRPOCmpNoChecks {
+    Alphabet<Word> _alphabet;
+
+   public:
+    RevRPOCmpNoChecks() = delete;
+
+    RevRPOCmpNoChecks(RevRPOCmpNoChecks const&) = default;
+    RevRPOCmpNoChecks(RevRPOCmpNoChecks&&)      = default;
+
+    RevRPOCmpNoChecks& operator=(RevRPOCmpNoChecks const&) = default;
+    RevRPOCmpNoChecks& operator=(RevRPOCmpNoChecks&&)      = default;
+
+    ~RevRPOCmpNoChecks() = default;
+
+    explicit RevRPOCmpNoChecks(Alphabet<Word> const& alphabet)
+        : _alphabet(alphabet) {}
+
+    explicit RevRPOCmpNoChecks(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp_no_checks.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the reversed recursive path ordering, and \c false otherwise.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return rev_rpo_cmp_no_checks(_alphabet, x, y);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rev_rpo_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+    }
+  };  // class RevRPOCmpNoChecks
 
   //! \brief A stateless struct with binary call operator using
   //! \ref rev_rpo_cmp.
