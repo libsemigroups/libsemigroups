@@ -957,6 +957,7 @@ namespace libsemigroups {
 
     std::sort(strings.begin(), strings.end(), LexCmp{});
 
+    // TODO rm
     // template <typename Args...>
     // KnuthBendix<std::string, LenLex> kb(congruence_kind, p, Args &&..arg)
     //     : _order(std::forward<Args>(args...)) {}
@@ -975,6 +976,12 @@ namespace libsemigroups {
                  "ba"s, "bab"s, "babb"s, "baba"s, "baa"s, "baab"s, "baaa"s,
                  "ab"s, "abb"s, "abbb"s, "abba"s, "aba"s, "abab"s, "abaa"s,
                  "aa"s, "aab"s, "aabb"s, "aaba"s, "aaa"s, "aaab"s, "aaaa"s}));
+
+    alphabet.init("cd"s);
+
+    REQUIRE_EXCEPTION_MSG(
+        std::sort(strings.begin(), strings.end(), LexCmp{alphabet}),
+        "invalid letter 'b', valid letters are \"cd\"");
   }
 
   // =========================================================================

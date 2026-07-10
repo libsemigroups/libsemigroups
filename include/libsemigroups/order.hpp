@@ -129,16 +129,29 @@ namespace libsemigroups {
 
   // TODO doc
   template <typename Word, typename Iterator>
-  [[nodiscard]] bool lex_cmp(Alphabet<Word> const& alphabet,
-                             Iterator              first1,
-                             Iterator              last1,
-                             Iterator              first2,
-                             Iterator              last2) {
+  [[nodiscard]] bool lex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Iterator              first1,
+                                       Iterator              last1,
+                                       Iterator              first2,
+                                       Iterator              last2) {
     return std::lexicographical_compare(detail::citow(alphabet, first1),
                                         detail::citow(alphabet, last1),
                                         detail::citow(alphabet, first2),
                                         detail::citow(alphabet, last2));
   }
+
+  // TODO doc
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool lex_cmp(Alphabet<Word> const& alphabet,
+                             Iterator              first1,
+                             Iterator              last1,
+                             Iterator              first2,
+                             Iterator              last2) {
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    return lex_cmp_no_checks(alphabet, first1, last1, first2, last2);
+  }
+
   //! \brief Compare two objects of the same type using
   //! std::lexicographical_compare.
   //!
@@ -171,6 +184,15 @@ namespace libsemigroups {
   [[nodiscard]] bool lex_cmp(Word const& x, Word const& y) {
     return std::lexicographical_compare(
         x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  // TODO doc
+  template <typename Word>
+  [[nodiscard]] bool lex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Word const&           x,
+                                       Word const&           y) {
+    return lex_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   // TODO doc
@@ -218,26 +240,36 @@ namespace libsemigroups {
         x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
+  // TODO doc
   using Default = void;
 
   template <typename Word = Default>
   class LexCmp;
 
+  // TODO doc
   template <typename Word>
   class LexCmp {
     Alphabet<Word> _alphabet;  // TODO reference or pointer?
 
    public:
+    // TODO doc
     LexCmp() = delete;
 
-    LexCmp(LexCmp const&)            = default;
-    LexCmp(LexCmp&&)                 = default;
+    // TODO doc
+    LexCmp(LexCmp const&) = default;
+    // TODO doc
+    LexCmp(LexCmp&&) = default;
+    // TODO doc
     LexCmp& operator=(LexCmp const&) = default;
-    LexCmp& operator=(LexCmp&&)      = default;
+    // TODO doc
+    LexCmp& operator=(LexCmp&&) = default;
 
     ~LexCmp() = default;
 
+    // TODO doc
     explicit LexCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+
+    // TODO doc
     explicit LexCmp(Alphabet<Word>&& alphabet)
         : _alphabet(std::move(alphabet)) {}
 
@@ -255,13 +287,17 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is lexicographically less
     //! than \p y, and \c false otherwise.
     //!
-    //! \exceptions
-    //! See std::lexicographical_compare.
+    //! \exceptions TODO
     //!
     //! \complexity
     //! See std::lexicographical_compare.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return lex_cmp(_alphabet, x, y);
+    }
+
+    // TODO doc
+    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
+      return lex_cmp_no_checks(_alphabet, x, y);
     }
 
     //! \brief Call operator that compares iterators using
@@ -281,8 +317,7 @@ namespace libsemigroups {
     //! lexicographically less than the range `[first2, last2)`, and \c false
     //! otherwise.
     //!
-    //! \exceptions
-    //! See std::lexicographical_compare.
+    //! \exceptions TODO
     //!
     //! \complexity
     //! See std::lexicographical_compare.
@@ -293,6 +328,15 @@ namespace libsemigroups {
                                   Iterator first2,
                                   Iterator last2) const {
       return lex_cmp(_alphabet, first1, last1, first2, last2);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool call_no_checks(Iterator first1,
+                                      Iterator last1,
+                                      Iterator first2,
+                                      Iterator last2) const {
+      return lex_cmp_no_checks(_alphabet, first1, last1, first2, last2);
     }
   };
 
@@ -335,6 +379,36 @@ namespace libsemigroups {
       return lex_cmp(x, y);
     }
 
+    //! \brief Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! \tparam Iterator the type of the parameters.
+    //!
+    //! \param first1 the start of the first object to compare.
+    //! \param last1 one beyond the end of the first object to compare.
+    //! \param first2 the start of the second object to compare.
+    //! \param last2 one beyond the end of the second object to compare.
+    //!
+    //! \returns The boolean value \c true if the range `[first1, last1)` is
+    //! lexicographically less than the range `[first2, last2)`, and \c false
+    //! otherwise.
+    //!
+    //! \exceptions
+    //! See std::lexicographical_compare.
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return std::lexicographical_compare(first1, last1, first2, last2);
+    }
+
     //! \brief Call operator that compares \p x and \p y given initializer lists
     //! using std::lexicographical_compare.
     //!
@@ -363,37 +437,6 @@ namespace libsemigroups {
     operator()(std::initializer_list<T> x, std::initializer_list<T> y) const {
       return std::lexicographical_compare(
           x.begin(), x.end(), y.begin(), y.end());
-    }
-
-    //! \brief Call operator that compares iterators using
-    //! std::lexicographical_compare.
-    //!
-    //! Call operator that compares iterators using
-    //! std::lexicographical_compare.
-    //!
-    //! \tparam Iterator the type of the parameters.
-    //!
-    //! \param first1 the start of the first object to compare.
-    //! \param last1 one beyond the end of the first object to compare.
-    //! \param first2 the start of the second object to compare.
-    //! \param last2 one beyond the end of the second object to compare.
-    //!
-    //! \returns The boolean value \c true if the range `[first1, last1)` is
-    //! lexicographically less than the range `[first2, last2)`, and \c false
-    //! otherwise.
-    //!
-    //! \exceptions
-    //! See std::lexicographical_compare.
-    //!
-    //! \complexity
-    //! See std::lexicographical_compare.
-    //!
-    template <typename Iterator>
-    [[nodiscard]] bool operator()(Iterator first1,
-                                  Iterator last1,
-                                  Iterator first2,
-                                  Iterator last2) const {
-      return std::lexicographical_compare(first1, last1, first2, last2);
     }
   };
 
