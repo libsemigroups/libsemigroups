@@ -25,6 +25,7 @@
 // * check if the SFINAE for ranges is really required or not, and remove it if
 // not
 // * check exception spec in the doc
+// * check if everything with private is a class
 
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_
@@ -1953,6 +1954,9 @@ namespace libsemigroups {
   template <typename Word = Default>
   class WtLenLexCmp;
 
+  template <typename Word = Default>
+  class WtLenLexCmpNoChecks;
+
   template <typename Word>
   class WtLenLexCmp {
     Alphabet<Word>      _alphabet;
@@ -2254,6 +2258,150 @@ namespace libsemigroups {
 
   template <typename Word>
   WtLenLexCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WtLenLexCmp<Word>;
+
+  template <>
+  class WtLenLexCmpNoChecks<Default> {
+   private:
+    std::vector<size_t> _weights;
+
+   public:
+    //! \brief Construct from weights vector reference and specify whether or
+    //! not the call operator should check its arguments.
+    //!
+    //! Constructs a comparison object that stores a copy of the provided
+    //! weights vector, where the `i`th index corresponds to the weight of the
+    //! `i`th letter in the alphabet. The \p should_check parameter determines
+    //! whether the call operator will validate that letters are valid indices.
+    //!
+    //! \param weights the weights vector.
+    //! \param should_check if \c true (\ref checks), the call operator will
+    //! check validity; if \c false (\ref no_checks), it will not.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtLenLexCmpNoChecks(std::vector<size_t> const& weights)
+        : _weights(weights) {}
+
+    //! \brief Reinitialize an existing WtLenLexCmpNoChecks object.
+    //!
+    //! This function reinitializes an existing WtLenLexCmpNoChecks object so
+    //! that it is in the same state as if it was newly constructed using the
+    //! same arguments.
+    //!
+    //! \param weights the weights vector.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtLenLexCmpNoChecks& init(std::vector<size_t> const& weights) {
+      _weights = weights;
+      return *this;
+    }
+
+    //! \brief Construct from weights vector rvalue reference and specify
+    //! whether or not the call operator should check its arguments.
+    //!
+    //! Constructs a comparison object that takes ownership of the provided
+    //! weights vector, where the `i`th index corresponds to the weight of the
+    //! `i`th letter in the alphabet.
+    //!
+    //! \param weights the weights vector.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtLenLexCmpNoChecks(std::vector<size_t>&& weights)
+        : _weights(std::move(weights)) {}
+
+    //! \brief Reinitialize an existing WtLenLexCmpNoChecks object.
+    //!
+    //! This function reinitializes an existing WtLenLexCmpNoChecks object so
+    //! that it is in the same state as if it was newly constructed using the
+    //! same arguments.
+    //!
+    //! \param weights the weights vector.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtLenLexCmpNoChecks& init(std::vector<size_t>&& weights) {
+      _weights = std::move(weights);
+      return *this;
+    }
+
+    //! \brief Call operator that compares \p x and \p y using either
+    //! \ref wt_lenlex_cmp or \ref wt_lenlex_cmp_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref wt_lenlex_cmp (if the constructor parameter \c should_check
+    //! is \c true) or \ref wt_lenlex_cmp_no_checks (if \c should_check is
+    //! \c false).
+    //!
+    //! \tparam Word the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted len-lex less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if the constructor parameter
+    //! \c should_check is \c true and any letter is not a valid index into the
+    //! weights vector.
+    //!
+    //! \complexity
+    //! See
+    //! * wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator,
+    //! Iterator, Iterator);
+    //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+    //! Iterator, Iterator, Iterator).
+    //!
+    //! \warning
+    //! If the constructor parameter \c should_check is \c false, it is not
+    //! checked that the letters are valid indices into the weights vector.
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return wt_lenlex_cmp_no_checks(_weights, x, y);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return wt_lenlex_cmp_no_checks(_weights, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the weights.
+    //!
+    //! This function returns the current value of the weights used to define
+    //! the comparison implemented by WtLenLexCmpNoChecks.
+    //!
+    //! \returns The current weights.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+  };
+
+  WtLenLexCmpNoChecks(std::vector<size_t> const&)->WtLenLexCmpNoChecks<>;
+  WtLenLexCmpNoChecks(std::vector<size_t>&&)->WtLenLexCmpNoChecks<>;
+
+  template <typename Word>
+  WtLenLexCmpNoChecks(Alphabet<Word> const&, std::vector<size_t> const&)
+      -> WtLenLexCmpNoChecks<Word>;
+
+  template <typename Word>
+  WtLenLexCmpNoChecks(Alphabet<Word> const&, std::vector<size_t>&&)
+      -> WtLenLexCmpNoChecks<Word>;
+
+  template <typename Word>
+  WtLenLexCmpNoChecks(Alphabet<Word>&&, std::vector<size_t> const&)
+      -> WtLenLexCmpNoChecks<Word>;
+
+  template <typename Word>
+  WtLenLexCmpNoChecks(Alphabet<Word>&&, std::vector<size_t>&&)
+      -> WtLenLexCmpNoChecks<Word>;
 
   //////////////////////////////////////////////////////////////////////
   // Weighted lex
