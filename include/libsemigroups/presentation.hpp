@@ -3431,51 +3431,29 @@ namespace libsemigroups {
       return find_rule(p, lhs, rhs) != p.rules.end();
     }
 
+    //! \brief Attempt to find weights such that the rules of the presentation
+    //! are oriented with respect to weighted len-lex.
+    //!
+    //! This function attempts to find a weight for each letter in the alphabet
+    //! of \p p such that, for each relation, the left-hand-side is greater than
+    //! or equal to the right-hand-side with respect to weighted len-lex. If
+    //! this succeeds (that is, if `has_value()` returns true when called on the
+    //! returned value of this function), the \f$i\f$-th value in the vector of
+    //! weights corresponds to the letter in the alphabet of \p p with index
+    //! \f$i\f$.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //!
+    //! \param p the presentation.
+    //!
+    //! \returns A \c std::optional containing a \c std::vector of weights if
+    //! the search succeeds, and \c std::nullopt otherwise.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
     template <typename Word>
     [[nodiscard]] std::optional<std::vector<size_t>>
-    find_weights(Presentation<Word> const& p) {
-      p.throw_if_bad_alphabet_or_rules();
-      size_t const               num_variables   = p.alphabet_v4().size();
-      size_t const               num_constraints = p.rules.size() / 2;
-      detail::DynamicArray2<int> coefficients(num_variables, num_constraints);
-
-      std::vector<bool> is_strict;
-      is_strict.reserve(num_constraints);
-
-      std::vector<int> row(num_variables);
-      size_t           next_row_index = 0;
-
-      for (size_t i = 0; i < p.rules.size(); i += 2) {
-        std::fill(row.begin(), row.end(), 0);
-        Word const& lhs = p.rules[i];
-        Word const& rhs = p.rules[i + 1];
-
-        // Populate row
-        for (auto const& letter : lhs) {
-          row[p.alphabet_v4().index_no_checks(letter)] += 1;
-        }
-        for (auto const& letter : rhs) {
-          row[p.alphabet_v4().index_no_checks(letter)] -= 1;
-        }
-
-        // Only consider constraints where at least one coefficient is negative;
-        // constraints where all coefficients are non-negative are trivially
-        // satisfied by any assignment of positive weights.
-        if (std::any_of(
-                row.cbegin(), row.cend(), [](int val) { return val < 0; })) {
-          std::copy(
-              row.cbegin(), row.cend(), coefficients.begin_row(next_row_index));
-          // If lhs < rhs w.r.t lenlex, then the constraint must be a strict
-          // inequality. Otherwise, the weight of the lhs can be equal to the
-          // weight of the rhs, and weighted_lenlex will still correctly orient
-          // the rule so that lhs > rhs.
-          is_strict.push_back(lenlex_cmp(lhs, rhs));
-          ++next_row_index;
-        }
-      }
-      coefficients.shrink_rows_to(next_row_index);
-      return detail::get_weights(coefficients, is_strict);
-    }
+    find_weights(Presentation<Word> const& p);
 
   }  // namespace presentation
 
