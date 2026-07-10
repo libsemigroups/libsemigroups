@@ -20,10 +20,7 @@
 // defining linear orders on words.
 
 // TODO
-// * dry it out
 // * noexcept
-// * check if the SFINAE for ranges is really required or not, and remove it if
-// not
 // * check exception spec in the doc
 // * check if everything with private is a class
 

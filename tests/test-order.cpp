@@ -461,8 +461,8 @@ namespace libsemigroups {
     std::vector<size_t> short_weights = {1};
     REQUIRE_EXCEPTION_MSG(std::ignore
                           = wt_lenlex_cmp(alphabet, short_weights, a, b),
-                          "letter value out of bounds, expected value in [0, "
-                          "1), found 1 in position 0");
+                          "letter index out of bounds, expected index in [0, "
+                          "1), found index 1 in position 0");
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",

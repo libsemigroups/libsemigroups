@@ -21,6 +21,68 @@
 
 namespace libsemigroups {
 
+  namespace detail {
+
+    template <typename Iterator>
+    void throw_if_incompat_weights(std::vector<size_t> const& weights,
+                                   Iterator                   first,
+                                   Iterator                   last) {
+      auto const it = std::find_if(first, last, [&weights](auto letter) {
+        return static_cast<size_t>(letter) >= weights.size();
+      });
+      if (it != last) {
+        LIBSEMIGROUPS_EXCEPTION("letter value out of bounds, expected value in "
+                                "[0, {}), found {} in position {}",
+                                weights.size(),
+                                static_cast<size_t>(*it),
+                                std::distance(first, it));
+      }
+    }
+
+    template <typename Word, typename Iterator>
+    void throw_if_incompat_weights(Alphabet<Word> const&      alphabet,
+                                   std::vector<size_t> const& weights,
+                                   Iterator                   first,
+                                   Iterator                   last) {
+      auto const it
+          = std::find_if(first, last, [&alphabet, &weights](auto letter) {
+              return alphabet.index_no_checks(letter) >= weights.size();
+            });
+      if (it != last) {
+        LIBSEMIGROUPS_EXCEPTION("letter index out of bounds, expected index in "
+                                "[0, {}), found index {} in position {}",
+                                weights.size(),
+                                alphabet.index_no_checks(*it),
+                                std::distance(first, it));
+      }
+    }
+
+    template <typename Iterator>
+    [[nodiscard]] size_t weight(std::vector<size_t> const& weights,
+                                Iterator                   first,
+                                Iterator                   last) {
+      return std::accumulate(
+          first, last, size_t(0), [&weights](size_t sum, auto letter) {
+            return sum + weights[letter];
+          });
+    }
+
+    template <typename Word, typename Iterator>
+    [[nodiscard]] size_t weight(Alphabet<Word> const&      alphabet,
+                                std::vector<size_t> const& weights,
+                                Iterator                   first,
+                                Iterator                   last) {
+      return std::accumulate(
+          first,
+          last,
+          size_t(0),
+          [&alphabet, &weights](size_t sum, auto letter) {
+            return sum + weights[alphabet.index_no_checks(letter)];
+          });
+    }
+
+  }  // namespace detail
+
   template <typename Iterator>
   bool rpo_cmp(Iterator first1,
                Iterator last1,
@@ -116,15 +178,8 @@ namespace libsemigroups {
                                Iterator                   last1,
                                Iterator                   first2,
                                Iterator                   last2) {
-    size_t weight1 = std::accumulate(
-        first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
-          return sum + weights[letter];
-        });
-
-    size_t weight2 = std::accumulate(
-        first2, last2, size_t(0), [&weights](size_t sum, auto letter) {
-          return sum + weights[letter];
-        });
+    size_t const weight1 = detail::weight(weights, first1, last1);
+    size_t const weight2 = detail::weight(weights, first2, last2);
 
     if (weight1 != weight2) {
       return weight1 < weight2;
@@ -140,21 +195,8 @@ namespace libsemigroups {
                                Iterator                   last1,
                                Iterator                   first2,
                                Iterator                   last2) {
-    size_t weight1 = std::accumulate(
-        first1,
-        last1,
-        size_t(0),
-        [&alphabet, &weights](size_t sum, auto letter) {
-          return sum + weights[alphabet.index_no_checks(letter)];
-        });
-
-    size_t weight2 = std::accumulate(
-        first2,
-        last2,
-        size_t(0),
-        [&alphabet, &weights](size_t sum, auto letter) {
-          return sum + weights[alphabet.index_no_checks(letter)];
-        });
+    size_t const weight1 = detail::weight(alphabet, weights, first1, last1);
+    size_t const weight2 = detail::weight(alphabet, weights, first2, last2);
 
     if (weight1 != weight2) {
       return weight1 < weight2;
@@ -169,32 +211,8 @@ namespace libsemigroups {
                      Iterator                   last1,
                      Iterator                   first2,
                      Iterator                   last2) {
-    // TODO throw_if_incompat_weights
-    size_t const alphabet_size = weights.size();
-
-    auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
-      return static_cast<size_t>(letter) >= alphabet_size;
-    });
-    if (it1 != last1) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          static_cast<size_t>(*it1),
-          std::distance(first1, it1));
-    }
-
-    auto const it2 = std::find_if(first2, last2, [&alphabet_size](auto letter) {
-      return static_cast<size_t>(letter) >= alphabet_size;
-    });
-    if (it2 != last2) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          static_cast<size_t>(*it2),
-          std::distance(first2, it2));
-    }
+    detail::throw_if_incompat_weights(weights, first1, last1);
+    detail::throw_if_incompat_weights(weights, first2, last2);
 
     return wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
@@ -209,33 +227,8 @@ namespace libsemigroups {
     alphabet.throw_if_letter_not_in_alphabet(first1, last1);
     alphabet.throw_if_letter_not_in_alphabet(first2, last2);
 
-    size_t const alphabet_size = weights.size();
-
-    auto const it1
-        = std::find_if(first1, last1, [&alphabet, &alphabet_size](auto letter) {
-            return alphabet.index(letter) >= alphabet_size;
-          });
-    if (it1 != last1) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          alphabet.index(*it1),
-          std::distance(first1, it1));
-    }
-
-    auto const it2
-        = std::find_if(first2, last2, [&alphabet, &alphabet_size](auto letter) {
-            return alphabet.index(letter) >= alphabet_size;
-          });
-    if (it2 != last2) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          alphabet.index(*it2),
-          std::distance(first2, it2));
-    }
+    detail::throw_if_incompat_weights(alphabet, weights, first1, last1);
+    detail::throw_if_incompat_weights(alphabet, weights, first2, last2);
 
     return wt_lenlex_cmp_no_checks(
         alphabet, weights, first1, last1, first2, last2);
@@ -247,15 +240,8 @@ namespace libsemigroups {
                             Iterator                   last1,
                             Iterator                   first2,
                             Iterator                   last2) {
-    size_t weight1 = std::accumulate(
-        first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
-          return sum + weights[letter];
-        });
-
-    size_t weight2 = std::accumulate(
-        first2, last2, size_t(0), [&weights](size_t sum, auto letter) {
-          return sum + weights[letter];
-        });
+    size_t weight1 = detail::weight(weights, first1, last1);
+    size_t weight2 = detail::weight(weights, first2, last2);
 
     if (weight1 != weight2) {
       return weight1 < weight2;
@@ -270,31 +256,8 @@ namespace libsemigroups {
                   Iterator                   last1,
                   Iterator                   first2,
                   Iterator                   last2) {
-    size_t const alphabet_size = weights.size();
-
-    auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
-      return static_cast<size_t>(letter) >= alphabet_size;
-    });
-    if (it1 != last1) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          static_cast<size_t>(*it1),
-          std::distance(first1, it1));
-    }
-
-    auto const it2 = std::find_if(first2, last2, [&alphabet_size](auto letter) {
-      return static_cast<size_t>(letter) >= alphabet_size;
-    });
-    if (it2 != last2) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          static_cast<size_t>(*it2),
-          std::distance(first2, it2));
-    }
+    detail::throw_if_incompat_weights(weights, first1, last1);
+    detail::throw_if_incompat_weights(weights, first2, last2);
 
     return wt_lex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
