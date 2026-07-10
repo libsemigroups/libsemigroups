@@ -1222,17 +1222,18 @@ namespace libsemigroups {
 
     Alphabet alphabet("ba"s);
 
-    weights['a'] = 2;
-    weights['b'] = 1;
-
+    REQUIRE_EXCEPTION_MSG(WtLenLexCmp(alphabet, weights),
+                          "the alphabet and weights must have the same "
+                          "size, but found 2 and 256");
+    weights = {2, 1};
     std::sort(strings.begin(), strings.end(), WtLenLexCmp(alphabet, weights));
 
-    REQUIRE(strings == std::vector({"bb"s,   "ba"s,   "ab"s,   "aa"s,   "bbb"s,
-                                    "bba"s,  "bab"s,  "baa"s,  "abb"s,  "aba"s,
-                                    "aab"s,  "aaa"s,  "bbbb"s, "bbba"s, "bbab"s,
-                                    "bbaa"s, "babb"s, "baba"s, "baab"s, "baaa"s,
-                                    "abbb"s, "abba"s, "abab"s, "abaa"s, "aabb"s,
-                                    "aaba"s, "aaab"s, "aaaa"s}));
+    REQUIRE(strings == std::vector({"aa"s,   "ba"s,   "ab"s,   "aaa"s,  "bb"s,
+                                    "baa"s,  "aba"s,  "aab"s,  "aaaa"s, "bba"s,
+                                    "bab"s,  "abb"s,  "baaa"s, "abaa"s, "aaba"s,
+                                    "aaab"s, "bbb"s,  "bbaa"s, "baba"s, "baab"s,
+                                    "abba"s, "abab"s, "aabb"s, "bbba"s, "bbab"s,
+                                    "babb"s, "abbb"s, "bbbb"s}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lex_cmp",
