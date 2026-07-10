@@ -2114,7 +2114,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp(std::vector<size_t> const& weights) : _weights(weights) {}
+    explicit WtLenLexCmp(std::vector<size_t> const& weights)
+        : _weights(weights) {}
 
     //! \brief Reinitialize an existing WtLenLexCmp object.
     //!
@@ -2142,7 +2143,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp(std::vector<size_t>&& weights) : _weights(std::move(weights)) {}
+    explicit WtLenLexCmp(std::vector<size_t>&& weights)
+        : _weights(std::move(weights)) {}
 
     //! \brief Reinitialize an existing WtLenLexCmp object.
     //!
@@ -2255,7 +2257,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmpNoChecks(std::vector<size_t> const& weights)
+    explicit WtLenLexCmpNoChecks(std::vector<size_t> const& weights)
         : _weights(weights) {}
 
     //! \brief Reinitialize an existing WtLenLexCmpNoChecks object.
@@ -2284,7 +2286,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmpNoChecks(std::vector<size_t>&& weights)
+    explicit WtLenLexCmpNoChecks(std::vector<size_t>&& weights)
         : _weights(std::move(weights)) {}
 
     //! \brief Reinitialize an existing WtLenLexCmpNoChecks object.

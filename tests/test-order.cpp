@@ -678,16 +678,16 @@ namespace libsemigroups {
                 alphabet, v.cbegin(), v.cend(), u.cbegin(), u.cend())
             == rev_rpo_cmp_no_checks(alphabet, v, u));
 
-    REQUIRE(!RevRPOCmp{alphabet}(u, v));
-    REQUIRE(RevRPOCmp{alphabet}(v, u));
-    REQUIRE(!RevRPOCmpNoChecks{alphabet}(u, v));
-    REQUIRE(RevRPOCmpNoChecks{alphabet}(v, u));
+    REQUIRE(!RevRPOCmp(alphabet)(u, v));
+    REQUIRE(RevRPOCmp(alphabet)(v, u));
+    REQUIRE(!RevRPOCmpNoChecks(alphabet)(u, v));
+    REQUIRE(RevRPOCmpNoChecks(alphabet)(v, u));
 
     alphabet.init("cd"s);
 
     REQUIRE_EXCEPTION_MSG(std::ignore = rev_rpo_cmp(alphabet, "b"s, "aa"s),
                           "invalid letter 'b', valid letters are \"cd\"");
-    REQUIRE_EXCEPTION_MSG(std::ignore = RevRPOCmp{alphabet}("b"s, "aa"s),
+    REQUIRE_EXCEPTION_MSG(std::ignore = RevRPOCmp(alphabet)("b"s, "aa"s),
                           "invalid letter 'b', valid letters are \"cd\"");
   }
 
@@ -920,14 +920,14 @@ namespace libsemigroups {
         rpo_cmp_no_checks(alphabet, v.cbegin(), v.cend(), u.cbegin(), u.cend())
         == rpo_cmp_no_checks(alphabet, v, u));
 
-    REQUIRE(!RPOCmpNoChecks{alphabet}(u, v));
-    REQUIRE(RPOCmpNoChecks{alphabet}(v, u));
+    REQUIRE(!RPOCmpNoChecks(alphabet)(u, v));
+    REQUIRE(RPOCmpNoChecks(alphabet)(v, u));
 
     alphabet.init("cd"s);
 
     REQUIRE_EXCEPTION_MSG(static_cast<void>(rpo_cmp(alphabet, "b"s, "aa"s)),
                           "invalid letter 'b', valid letters are \"cd\"");
-    REQUIRE_EXCEPTION_MSG(static_cast<void>(RPOCmp{alphabet}("b"s, "aa"s)),
+    REQUIRE_EXCEPTION_MSG(static_cast<void>(RPOCmp(alphabet)("b"s, "aa"s)),
                           "invalid letter 'b', valid letters are \"cd\"");
   }
 
@@ -984,7 +984,7 @@ namespace libsemigroups {
                  "ba"s, "baa"s, "baaa"s, "baab"s, "bab"s, "baba"s, "babb"s,
                  "bb"s, "bba"s, "bbaa"s, "bbab"s, "bbb"s, "bbba"s, "bbbb"s}));
 
-    std::sort(strings.begin(), strings.end(), LexCmp{alphabet});
+    std::sort(strings.begin(), strings.end(), LexCmp(alphabet));
     REQUIRE(strings
             == std::vector(
                 {"bb"s, "bbb"s, "bbbb"s, "bbba"s, "bba"s, "bbab"s, "bbaa"s,
@@ -995,7 +995,7 @@ namespace libsemigroups {
     alphabet.init("cd"s);
 
     REQUIRE_EXCEPTION_MSG(
-        std::sort(strings.begin(), strings.end(), LexCmp{alphabet}),
+        std::sort(strings.begin(), strings.end(), LexCmp(alphabet)),
         "invalid letter 'b', valid letters are \"cd\"");
   }
 
@@ -1053,7 +1053,7 @@ namespace libsemigroups {
                                     "baaa"s, "baab"s, "baba"s, "babb"s, "bbaa"s,
                                     "bbab"s, "bbba"s, "bbbb"s}));
 
-    std::sort(strings.begin(), strings.end(), LenLexCmp{alphabet});
+    std::sort(strings.begin(), strings.end(), LenLexCmp(alphabet));
     REQUIRE(strings == std::vector({"bb"s,   "ba"s,   "ab"s,   "aa"s,   "bbb"s,
                                     "bba"s,  "bab"s,  "baa"s,  "abb"s,  "aba"s,
                                     "aab"s,  "aaa"s,  "bbbb"s, "bbba"s, "bbab"s,
@@ -1061,15 +1061,15 @@ namespace libsemigroups {
                                     "abbb"s, "abba"s, "abab"s, "abaa"s, "aabb"s,
                                     "aaba"s, "aaab"s, "aaaa"s}));
 
-    REQUIRE(LenLexCmpNoChecks{alphabet}(b, a));
-    REQUIRE(LenLexCmpNoChecks{alphabet}(
+    REQUIRE(LenLexCmpNoChecks(alphabet)(b, a));
+    REQUIRE(LenLexCmpNoChecks(alphabet)(
         b.cbegin(), b.cend(), a.cbegin(), a.cend()));
 
     alphabet.init("cd"s);
 
     REQUIRE_EXCEPTION_MSG(std::ignore = lenlex_cmp(alphabet, "b"s, "aa"s),
                           "invalid letter 'b', valid letters are \"cd\"");
-    REQUIRE_EXCEPTION_MSG(std::ignore = LenLexCmp{alphabet}("b"s, "aa"s),
+    REQUIRE_EXCEPTION_MSG(std::ignore = LenLexCmp(alphabet)("b"s, "aa"s),
                           "invalid letter 'b', valid letters are \"cd\"");
   }
 
@@ -1121,7 +1121,7 @@ namespace libsemigroups {
                                     "baba"s, "bbaa"s, "bbb"s,  "abbb"s, "babb"s,
                                     "bbab"s, "bbba"s, "bbbb"s}));
 
-    std::sort(strings.begin(), strings.end(), RPOCmp{alphabet});
+    std::sort(strings.begin(), strings.end(), RPOCmp(alphabet));
 
     REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ba"s,   "bba"s,
                                     "bbba"s, "ab"s,   "bab"s,  "bbab"s, "abb"s,
@@ -1182,17 +1182,10 @@ namespace libsemigroups {
                                     "abab"s, "aabb"s, "bbb"s,  "bbba"s, "bbab"s,
                                     "babb"s, "abbb"s, "bbbb"s}));
 
-    // TODO uncomment
-    // alphabet.init("cd"s);
-    // std::sort(strings.begin(), strings.end(), RevRPOCmp{alphabet});
-
-    // REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ab"s, "abb"s,
-    //                                 "abbb"s, "ba"s,   "bab"s,  "babb"s,
-    //                                 "bba"s, "bbab"s, "bbba"s, "aa"s, "aab"s,
-    //                                 "aabb"s, "aba"s,  "abab"s, "abba"s,
-    //                                 "baa"s,  "baab"s, "baba"s, "bbaa"s,
-    //                                 "aaa"s,  "aaab"s, "aaba"s, "abaa"s,
-    //                                 "baaa"s, "aaaa"s}));
+    alphabet.init("cd"s);
+    REQUIRE_EXCEPTION_MSG(
+        std::sort(strings.begin(), strings.end(), RevRPOCmp(alphabet)),
+        "invalid letter 'a', valid letters are \"cd\"");
   }
 
   // =========================================================================
