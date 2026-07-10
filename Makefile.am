@@ -230,9 +230,28 @@ detailinclude_HEADERS += include/libsemigroups/detail/todd-coxeter-impl.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/uf.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/value-guard.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/value-guard.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/weight-finding.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
+
+alglibincludedir = $(includedir)/libsemigroups/alglib-4.08.0/
+alglibinclude_HEADERS = third_party/alglib-4.08.0/src/alglibinternal.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/alglibmisc.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/ap.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/integration.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/interpolation.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/kernels_avx2.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/kernels_fma.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/kernels_neon.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/kernels_rvv10.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/kernels_sse2.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/linalg.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/minlp.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/optimization.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/solvers.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/specialfunctions.h
+alglibinclude_HEADERS += third_party/alglib-4.08.0/src/stdafx.h
 
 if USE_BUNDLED_CATCH
 catch2includedir = $(includedir)/libsemigroups/Catch2-3.14.0/
@@ -1134,9 +1153,6 @@ libsemigroups_la_LDFLAGS = -version-info 3:0:0
 libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/alglibinternal.cpp
 libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/alglibmisc.cpp
 libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/ap.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/dataanalysis.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/diffequations.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/fasttransforms.cpp
 libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/integration.cpp
 libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/interpolation.cpp
 libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_avx2.cpp
@@ -1149,7 +1165,6 @@ libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/minlp.cpp
 libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/optimization.cpp
 libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/solvers.cpp
 libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/specialfunctions.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/statistics.cpp
 
 ## Extra files for the distribution
 
