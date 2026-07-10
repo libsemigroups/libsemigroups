@@ -403,7 +403,9 @@ namespace libsemigroups {
     word_type           w1      = {0, 1};
     word_type           w2      = {5};  // invalid: 5 >= weights.size()
 
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w1, w2), LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w1, w2),
+                          "letter value out of bounds, expected value in [0, "
+                          "5), found 5 in position 0");
     REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
   }
 
@@ -457,8 +459,10 @@ namespace libsemigroups {
         alphabet, equal_weights, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
 
     std::vector<size_t> short_weights = {1};
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(alphabet, short_weights, a, b),
-                      LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(std::ignore
+                          = wt_lenlex_cmp(alphabet, short_weights, a, b),
+                          "letter value out of bounds, expected value in [0, "
+                          "1), found 1 in position 0");
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -470,7 +474,9 @@ namespace libsemigroups {
     word_type           w1      = {5};        // invalid
     word_type           w2      = {10};       // invalid
 
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w1, w2), LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w1, w2),
+                          "letter value out of bounds, expected value in [0, "
+                          "3), found 5 in position 0");
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -482,8 +488,12 @@ namespace libsemigroups {
     word_type           w1      = {0, 1, 2};  // valid
     word_type           w2      = {0, 5, 2};  // invalid in middle
 
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w1, w2), LibsemigroupsException);
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w2, w1), LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w1, w2),
+                          "letter value out of bounds, expected value in [0, "
+                          "3), found 5 in position 1");
+    REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w2, w1),
+                          "letter value out of bounds, expected value in [0, "
+                          "3), found 5 in position 1");
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -496,7 +506,9 @@ namespace libsemigroups {
     word_type           w2      = {0};  // invalid: no letters in alphabet
 
     REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w2, w1), LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w2, w1),
+                          "letter value out of bounds, expected value in [0, "
+                          "0), found 0 in position 0");
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
@@ -530,8 +542,9 @@ namespace libsemigroups {
     REQUIRE(comp(a, b));
     REQUIRE(!comp(b, a));
 
-    REQUIRE_THROWS_AS(comp("c"s, "d"s), LibsemigroupsException);
-    REQUIRE(!comp.call_no_checks(b, b));
+    REQUIRE_EXCEPTION_MSG(std::ignore = comp("c"s, "d"s),
+                          "invalid letter 'c', valid letters are \"ba\"");
+    REQUIRE(!comp(b, b));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
@@ -609,7 +622,9 @@ namespace libsemigroups {
     W                   w2      = {5};     // invalid
 
     REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w1, w2), LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w1, w2),
+                          "letter value out of bounds, expected value in [0, "
+                          "3), found 5 in position 0");
   }
 
   // =========================================================================
