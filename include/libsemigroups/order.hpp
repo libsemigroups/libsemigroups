@@ -95,27 +95,6 @@ namespace libsemigroups {
     // wreath TODO(later)
   };
 
-  //! \ingroup orders_group
-  //!
-  //! Defined in ``order.hpp``.
-  //!
-  //! This namespace contains compile-time helpers for detecting properties of
-  //! reduction order comparison types, and for enabling or disabling argument
-  //! checks in the various classes defined in ``order.hpp``.
-  namespace order {
-    //! \brief Constant to enable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool checks = true;
-
-    //! \brief Constant to disable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that no
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool no_checks = false;
-  }  // namespace order
-
   //! \defgroup orders_group Orders
   //! This page contains the documentation for several class and function
   //! templates for comparing words or strings with respect to certain reduction
@@ -2403,6 +2382,8 @@ namespace libsemigroups {
   WtLenLexCmpNoChecks(Alphabet<Word>&&, std::vector<size_t>&&)
       -> WtLenLexCmpNoChecks<Word>;
 
+  // TODO update from here
+
   //////////////////////////////////////////////////////////////////////
   // Weighted lex
   //////////////////////////////////////////////////////////////////////
@@ -3506,6 +3487,12 @@ namespace libsemigroups {
   // Helpers
   //////////////////////////////////////////////////////////////////////
 
+  //! \ingroup orders_group
+  //!
+  //! Defined in ``order.hpp``.
+  //!
+  //! This namespace contains compile-time helpers for detecting properties of
+  //! reduction order comparison types.
   namespace order {
     //! \brief Helper used to indicate whether or not an order is length
     //! non-increasing.
