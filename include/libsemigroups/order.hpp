@@ -24,6 +24,7 @@
 // * noexcept
 // * check if the SFINAE for ranges is really required or not, and remove it if
 // not
+// * check exception spec in the doc
 
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_
@@ -577,6 +578,8 @@ namespace libsemigroups {
   //!                  first1, last1, first2, last2));
   //! }
   //! \end_code_no_test
+  // NOTE no alphabet means nothing can go wrong here, so this is both the
+  // checks and no_checks version
   template <typename Iterator>
   [[nodiscard]] bool
   lenlex_cmp(Iterator first1, Iterator last1, Iterator first2, Iterator last2) {
@@ -587,14 +590,26 @@ namespace libsemigroups {
 
   // TODO doc
   template <typename Word, typename Iterator>
+  [[nodiscard]] bool lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                          Iterator              first1,
+                                          Iterator              last1,
+                                          Iterator              first2,
+                                          Iterator              last2) {
+    return (last1 - first1) < (last2 - first2)
+           || ((last1 - first1) == (last2 - first2)
+               && lex_cmp_no_checks(alphabet, first1, last1, first2, last2));
+  }
+
+  // TODO doc
+  template <typename Word, typename Iterator>
   [[nodiscard]] bool lenlex_cmp(Alphabet<Word> const& alphabet,
                                 Iterator              first1,
                                 Iterator              last1,
                                 Iterator              first2,
                                 Iterator              last2) {
-    return (last1 - first1) < (last2 - first2)
-           || ((last1 - first1) == (last2 - first2)
-               && lex_cmp(alphabet, first1, last1, first2, last2));
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    return lenlex_cmp_no_checks(alphabet, first1, last1, first2, last2);
   }
 
   //! \brief Compare two objects of the same type using \ref lenlex_cmp.
@@ -637,6 +652,15 @@ namespace libsemigroups {
                                 Word const&           x,
                                 Word const&           y) {
     return lenlex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  // TODO doc
+  template <typename Word>
+  [[nodiscard]] bool lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                          Word const&           x,
+                                          Word const&           y) {
+    return lenlex_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects via their pointers using \ref lenlex_cmp.
@@ -708,13 +732,17 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is len-lex less than \p y,
     //! and \c false otherwise.
     //!
-    //! \exceptions
-    //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+    //! \exceptions TODO
     //!
     //! \complexity
     //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return lenlex_cmp(_alphabet, x, y);
+    }
+
+    // TODO doc
+    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
+      return lenlex_cmp_no_checks(_alphabet, x, y);
     }
 
     // TODO doc
@@ -724,6 +752,15 @@ namespace libsemigroups {
                                   Iterator first2,
                                   Iterator last2) const {
       return lenlex_cmp(_alphabet, first1, last1, first2, last2);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool call_no_checks(Iterator first1,
+                                      Iterator last1,
+                                      Iterator first2,
+                                      Iterator last2) const {
+      return lenlex_cmp_no_checks(_alphabet, first1, last1, first2, last2);
     }
   };
 
