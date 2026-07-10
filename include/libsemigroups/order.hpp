@@ -1010,6 +1010,14 @@ namespace libsemigroups {
 
   // TODO doc
   template <typename Word, typename Iterator>
+  [[nodiscard]] bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Iterator              first1,
+                                       Iterator              last1,
+                                       Iterator              first2,
+                                       Iterator              last2);
+
+  // TODO doc
+  template <typename Word, typename Iterator>
   [[nodiscard]] bool rpo_cmp(Alphabet<Word> const& alphabet,
                              Iterator              first1,
                              Iterator              last1,
@@ -1051,6 +1059,15 @@ namespace libsemigroups {
                              Word const&           x,
                              Word const&           y) {
     return rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  // TODO doc
+  template <typename Word>
+  [[nodiscard]] bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Word const&           x,
+                                       Word const&           y) {
+    return rpo_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects via their pointers using \ref rpo_cmp.
@@ -1124,12 +1141,26 @@ namespace libsemigroups {
     }
 
     // TODO doc
+    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
+      return rpo_cmp_no_checks(_alphabet, x, y);
+    }
+
+    // TODO doc
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
       return rpo_cmp(_alphabet, first1, last1, first2, last2);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool call_no_checks(Iterator first1,
+                                      Iterator last1,
+                                      Iterator first2,
+                                      Iterator last2) const {
+      return rpo_cmp_no_checks(_alphabet, first1, last1, first2, last2);
     }
   };
 
@@ -1992,6 +2023,8 @@ namespace libsemigroups {
                       std::vector<size_t> const& weights,
                       bool                       should_check = order::checks) {
       // TODO check that _alphabet and _weights have the same length
+      // TODO check if _alphabet or _weights is alphabet or weights, i.e. check
+      // that it is okay to copy assign something to itself.
       _alphabet     = alphabet;
       _weights      = weights;
       _should_check = should_check;

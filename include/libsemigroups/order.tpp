@@ -53,15 +53,26 @@ namespace libsemigroups {
   }
 
   template <typename Word, typename Iterator>
+  bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                         Iterator              first1,
+                         Iterator              last1,
+                         Iterator              first2,
+                         Iterator              last2) {
+    return rpo_cmp(detail::citow(alphabet, first1),
+                   detail::citow(alphabet, last1),
+                   detail::citow(alphabet, first2),
+                   detail::citow(alphabet, last2));
+  }
+
+  template <typename Word, typename Iterator>
   bool rpo_cmp(Alphabet<Word> const& alphabet,
                Iterator              first1,
                Iterator              last1,
                Iterator              first2,
                Iterator              last2) {
-    return rpo_cmp(detail::citow(alphabet, first1),
-                   detail::citow(alphabet, last1),
-                   detail::citow(alphabet, first2),
-                   detail::citow(alphabet, last2));
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    return rpo_cmp_no_checks(alphabet, first1, last1, first2, last2);
   }
 
   template <typename Iterator>

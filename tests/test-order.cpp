@@ -907,6 +907,8 @@ namespace libsemigroups {
     REQUIRE(rpo_cmp("a"s, "b"s));
     REQUIRE(!rpo_cmp(alphabet, "a"s, "b"s));
     REQUIRE(rpo_cmp(alphabet, "b"s, "a"s));
+    REQUIRE(!rpo_cmp_no_checks(alphabet, "a"s, "b"s));
+    REQUIRE(rpo_cmp_no_checks(alphabet, "b"s, "a"s));
 
     auto u = "aa"s;
     auto v = "ba"s;
@@ -914,6 +916,19 @@ namespace libsemigroups {
     REQUIRE(!rpo_cmp(alphabet, u, v));
     REQUIRE(rpo_cmp(alphabet, u.cbegin(), u.cend(), v.cbegin(), v.cend())
             == rpo_cmp(alphabet, u, v));
+    REQUIRE(
+        rpo_cmp_no_checks(alphabet, v.cbegin(), v.cend(), u.cbegin(), u.cend())
+        == rpo_cmp_no_checks(alphabet, v, u));
+
+    REQUIRE(!RPOCmp{alphabet}.call_no_checks(u, v));
+    REQUIRE(RPOCmp{alphabet}.call_no_checks(v, u));
+
+    alphabet.init("cd"s);
+
+    REQUIRE_EXCEPTION_MSG(static_cast<void>(rpo_cmp(alphabet, "b"s, "aa"s)),
+                          "invalid letter 'b', valid letters are \"cd\"");
+    REQUIRE_EXCEPTION_MSG(static_cast<void>(RPOCmp{alphabet}("b"s, "aa"s)),
+                          "invalid letter 'b', valid letters are \"cd\"");
   }
 
   // =========================================================================
