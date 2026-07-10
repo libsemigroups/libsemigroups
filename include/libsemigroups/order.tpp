@@ -141,16 +141,20 @@ namespace libsemigroups {
                                Iterator                   first2,
                                Iterator                   last2) {
     size_t weight1 = std::accumulate(
-        detail::citow(alphabet, first1),
-        detail::citow(alphabet, last1),
+        first1,
+        last1,
         size_t(0),
-        [&weights](size_t sum, auto letter) { return sum + weights[letter]; });
+        [&alphabet, &weights](size_t sum, auto letter) {
+          return sum + weights[alphabet.index_no_checks(letter)];
+        });
 
     size_t weight2 = std::accumulate(
-        detail::citow(alphabet, first2),
-        detail::citow(alphabet, last2),
+        first2,
+        last2,
         size_t(0),
-        [&weights](size_t sum, auto letter) { return sum + weights[letter]; });
+        [&alphabet, &weights](size_t sum, auto letter) {
+          return sum + weights[alphabet.index_no_checks(letter)];
+        });
 
     if (weight1 != weight2) {
       return weight1 < weight2;
@@ -165,6 +169,7 @@ namespace libsemigroups {
                      Iterator                   last1,
                      Iterator                   first2,
                      Iterator                   last2) {
+    // TODO throw_if_incompat_weights
     size_t const alphabet_size = weights.size();
 
     auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
@@ -201,6 +206,9 @@ namespace libsemigroups {
                      Iterator                   last1,
                      Iterator                   first2,
                      Iterator                   last2) {
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+
     size_t const alphabet_size = weights.size();
 
     auto const it1
