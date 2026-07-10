@@ -50,8 +50,8 @@ namespace libsemigroups {
     word_type           w1      = {0, 1};  // weight = 2 + 1 = 3
     word_type           w2      = {2};     // weight = 6
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(w2, w1, weights));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -63,8 +63,8 @@ namespace libsemigroups {
     word_type           w1      = {0, 0, 0};  // weight = 2 + 2 + 2 = 6
     word_type           w2      = {2};        // weight = 6
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w2, w1, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(w1, w2, weights));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w2, w1));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w1, w2));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -76,8 +76,8 @@ namespace libsemigroups {
     word_type           w1      = {1, 1, 3};  // weight = 1 + 1 + 3 = 5
     word_type           w2      = {0, 0, 1};  // weight = 2 + 2 + 1 = 5
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w2, w1, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(w1, w2, weights));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w2, w1));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w1, w2));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -89,8 +89,8 @@ namespace libsemigroups {
     word_type           w1      = {0, 1, 2};
     word_type           w2      = {0, 1, 2};
 
-    REQUIRE(!wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(w2, w1, weights));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -102,8 +102,8 @@ namespace libsemigroups {
     word_type           w1      = {};   // weight = 0
     word_type           w2      = {1};  // weight = 1
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(w2, w1, weights));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
 
   // =========================================================================
@@ -120,9 +120,9 @@ namespace libsemigroups {
     word_type           w2      = {2};     // weight = 6
 
     REQUIRE(wt_lenlex_cmp_no_checks(
-        w1.cbegin(), w1.cend(), w2.cbegin(), w2.cend(), weights));
+        weights, w1.cbegin(), w1.cend(), w2.cbegin(), w2.cend()));
     REQUIRE(!wt_lenlex_cmp_no_checks(
-        w2.cbegin(), w2.cend(), w1.cbegin(), w1.cend(), weights));
+        weights, w2.cbegin(), w2.cend(), w1.cbegin(), w1.cend()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
@@ -191,8 +191,8 @@ namespace libsemigroups {
     std::string         w1      = {0, 1};  // weight = 2 + 1 = 3
     std::string         w2      = {2};     // weight = 6
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(w2, w1, weights));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -206,9 +206,9 @@ namespace libsemigroups {
 
     // Use iterator version since arrays have different types
     REQUIRE(wt_lenlex_cmp_no_checks(
-        w1.cbegin(), w1.cend(), w2.cbegin(), w2.cend(), weights));
+        weights, w1.cbegin(), w1.cend(), w2.cbegin(), w2.cend()));
     REQUIRE(!wt_lenlex_cmp_no_checks(
-        w2.cbegin(), w2.cend(), w1.cbegin(), w1.cend(), weights));
+        weights, w2.cbegin(), w2.cend(), w1.cbegin(), w1.cend()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -221,8 +221,8 @@ namespace libsemigroups {
     std::vector<size_t> w2      = {3, 1};     // weight = 3 + 1 = 4
 
     // Same weight, so falls back to shortlex (w2 < w1 because w2 is shorter)
-    REQUIRE(!wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(wt_lenlex_cmp_no_checks(w2, w1, weights));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
 
   // =========================================================================
@@ -239,8 +239,8 @@ namespace libsemigroups {
     word_type           w2      = {2, 3};  // weight = 2
 
     // Same weight and length, so pure shortlex: {0,1} < {2,3}
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(w2, w1, weights));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -253,9 +253,9 @@ namespace libsemigroups {
     word_type           w2      = {0, 0};     // weight = 10
     word_type           w3      = {0, 0, 0};  // weight = 15
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(wt_lenlex_cmp_no_checks(w2, w3, weights));
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w3, weights));  // transitivity
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w2, w3));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w3));  // transitivity
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -267,7 +267,7 @@ namespace libsemigroups {
     word_type           w1      = {0, 1, 2};     // weight = 2+1+6 = 9
     word_type           w2      = {0, 1, 2, 1};  // weight = 2+1+6+1 = 10
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w2, weights));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -280,8 +280,8 @@ namespace libsemigroups {
     word_type           w2      = {1, 1};        // weight = 2+2 = 4
 
     // Same weight (4), w2 is shorter so w2 < w1
-    REQUIRE(!wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(wt_lenlex_cmp_no_checks(w2, w1, weights));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
 
   // =========================================================================
@@ -296,7 +296,7 @@ namespace libsemigroups {
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w       = {0, 1, 2, 3};
 
-    REQUIRE(!wt_lenlex_cmp_no_checks(w, w, weights));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w, w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -309,9 +309,9 @@ namespace libsemigroups {
     word_type           w2      = {0, 1};  // weight = 3
     word_type           w3      = {2};     // weight = 6
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(wt_lenlex_cmp_no_checks(w2, w3, weights));
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w3, weights));  // transitivity
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w2, w3));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w3));  // transitivity
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
@@ -323,8 +323,8 @@ namespace libsemigroups {
     word_type           w1      = {1};  // weight = 1
     word_type           w2      = {2};  // weight = 6
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(w2, w1, weights));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
 
   // =========================================================================
@@ -340,8 +340,8 @@ namespace libsemigroups {
     word_type           w1      = {0, 1};  // weight = 3
     word_type           w2      = {2};     // weight = 6
 
-    REQUIRE(wt_lenlex_cmp(w1, w2, weights));
-    REQUIRE(!wt_lenlex_cmp(w2, w1, weights));
+    REQUIRE(wt_lenlex_cmp(weights, w1, w2));
+    REQUIRE(!wt_lenlex_cmp(weights, w2, w1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -353,8 +353,8 @@ namespace libsemigroups {
     word_type           w1      = {0, 1};
     word_type           w2      = {5};  // invalid: 5 >= weights.size()
 
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(w1, w2, weights), LibsemigroupsException);
-    REQUIRE_NOTHROW(wt_lenlex_cmp(w1, w1, weights));
+    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w1, w2), LibsemigroupsException);
+    REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -366,8 +366,8 @@ namespace libsemigroups {
     std::string         w1      = {0, 1};  // weight = 3
     std::string         w2      = {2};     // weight = 6
 
-    REQUIRE(wt_lenlex_cmp(w1, w2, weights));
-    REQUIRE(!wt_lenlex_cmp(w2, w1, weights));
+    REQUIRE(wt_lenlex_cmp(weights, w1, w2));
+    REQUIRE(!wt_lenlex_cmp(weights, w2, w1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -380,9 +380,9 @@ namespace libsemigroups {
     word_type           w2      = {2};     // weight = 6
 
     REQUIRE(
-        wt_lenlex_cmp(w1.cbegin(), w1.cend(), w2.cbegin(), w2.cend(), weights));
+        wt_lenlex_cmp(weights, w1.cbegin(), w1.cend(), w2.cbegin(), w2.cend()));
     REQUIRE(!wt_lenlex_cmp(
-        w2.cbegin(), w2.cend(), w1.cbegin(), w1.cend(), weights));
+        weights, w2.cbegin(), w2.cend(), w1.cbegin(), w1.cend()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -394,7 +394,7 @@ namespace libsemigroups {
     word_type           w1      = {5};        // invalid
     word_type           w2      = {10};       // invalid
 
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(w1, w2, weights), LibsemigroupsException);
+    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w1, w2), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -406,8 +406,8 @@ namespace libsemigroups {
     word_type           w1      = {0, 1, 2};  // valid
     word_type           w2      = {0, 5, 2};  // invalid in middle
 
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(w1, w2, weights), LibsemigroupsException);
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(w2, w1, weights), LibsemigroupsException);
+    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w1, w2), LibsemigroupsException);
+    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w2, w1), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -419,8 +419,8 @@ namespace libsemigroups {
     word_type           w1      = {};   // empty word is valid
     word_type           w2      = {0};  // invalid: no letters in alphabet
 
-    REQUIRE_NOTHROW(wt_lenlex_cmp(w1, w1, weights));
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(w2, w1, weights), LibsemigroupsException);
+    REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
+    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w2, w1), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
@@ -524,8 +524,8 @@ namespace libsemigroups {
     W                   w1      = {0, 1};  // weight = 3
     W                   w2      = {2};     // weight = 6
 
-    REQUIRE(wt_lenlex_cmp_no_checks(w1, w2, weights));
-    REQUIRE(!wt_lenlex_cmp_no_checks(w2, w1, weights));
+    REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
+    REQUIRE(!wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("wt_lenlex_cmp",
@@ -540,8 +540,8 @@ namespace libsemigroups {
     W                   w1      = {0, 1};  // valid
     W                   w2      = {5};     // invalid
 
-    REQUIRE_NOTHROW(wt_lenlex_cmp(w1, w1, weights));
-    REQUIRE_THROWS_AS(wt_lenlex_cmp(w1, w2, weights), LibsemigroupsException);
+    REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
+    REQUIRE_THROWS_AS(wt_lenlex_cmp(weights, w1, w2), LibsemigroupsException);
   }
 
   // =========================================================================

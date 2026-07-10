@@ -89,11 +89,11 @@ namespace libsemigroups {
   }
 
   template <typename Iterator, typename>
-  bool wt_lenlex_cmp_no_checks(Iterator                   first1,
+  bool wt_lenlex_cmp_no_checks(std::vector<size_t> const& weights,
+                               Iterator                   first1,
                                Iterator                   last1,
                                Iterator                   first2,
-                               Iterator                   last2,
-                               std::vector<size_t> const& weights) {
+                               Iterator                   last2) {
     size_t weight1 = std::accumulate(
         first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
           return sum + weights[letter];
@@ -111,11 +111,11 @@ namespace libsemigroups {
     return lenlex_cmp(first1, last1, first2, last2);
   }
   template <typename Iterator, typename>
-  bool wt_lenlex_cmp(Iterator                   first1,
+  bool wt_lenlex_cmp(std::vector<size_t> const& weights,
+                     Iterator                   first1,
                      Iterator                   last1,
                      Iterator                   first2,
-                     Iterator                   last2,
-                     std::vector<size_t> const& weights) {
+                     Iterator                   last2) {
     size_t const alphabet_size = weights.size();
 
     auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
@@ -142,15 +142,15 @@ namespace libsemigroups {
           std::distance(first2, it2));
     }
 
-    return wt_lenlex_cmp_no_checks(first1, last1, first2, last2, weights);
+    return wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
 
   template <typename Iterator, typename>
-  bool wt_lex_cmp_no_checks(Iterator                   first1,
+  bool wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                            Iterator                   first1,
                             Iterator                   last1,
                             Iterator                   first2,
-                            Iterator                   last2,
-                            std::vector<size_t> const& weights) {
+                            Iterator                   last2) {
     size_t weight1 = std::accumulate(
         first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
           return sum + weights[letter];
@@ -169,11 +169,11 @@ namespace libsemigroups {
   }
 
   template <typename Iterator, typename>
-  bool wt_lex_cmp(Iterator                   first1,
+  bool wt_lex_cmp(std::vector<size_t> const& weights,
+                  Iterator                   first1,
                   Iterator                   last1,
                   Iterator                   first2,
-                  Iterator                   last2,
-                  std::vector<size_t> const& weights) {
+                  Iterator                   last2) {
     size_t const alphabet_size = weights.size();
 
     auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
@@ -200,6 +200,6 @@ namespace libsemigroups {
           std::distance(first2, it2));
     }
 
-    return wt_lex_compare_no_checks(first1, last1, first2, last2, weights);
+    return wt_lex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
 }  // namespace libsemigroups

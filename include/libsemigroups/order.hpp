@@ -22,6 +22,8 @@
 // TODO
 // * dry it out
 // * noexcept
+// * check if the SFINAE for ranges is really required or not, and remove it if
+// not
 
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_
@@ -1478,11 +1480,11 @@ namespace libsemigroups {
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
+  //! \param weights the weights vector.
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted len-lex less than the range `[first2, last2)`, and \c false
@@ -1501,16 +1503,15 @@ namespace libsemigroups {
   //! the \p weights vector.
   //!
   //! \sa
-  //! wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,std::vector<size_t>
-  //! const&).
+  //! wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator).
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool
-  wt_lenlex_cmp_no_checks(Iterator                   first1,
-                          Iterator                   last1,
-                          Iterator                   first2,
-                          Iterator                   last2,
-                          std::vector<size_t> const& weights);
+  [[nodiscard]] bool wt_lenlex_cmp_no_checks(std::vector<size_t> const& weights,
+                                             Iterator                   first1,
+                                             Iterator                   last1,
+                                             Iterator                   first2,
+                                             Iterator                   last2);
 
   //! \brief Compare two objects of the same type using
   //! \ref wt_lenlex_cmp_no_checks without checks.
@@ -1523,16 +1524,16 @@ namespace libsemigroups {
   //!
   //! \tparam Thing the type of the objects to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted len-lex less
   //! than \p y, and \c false otherwise.
   //!
   //! \exceptions
-  //! See \ref wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
+  //! See \ref wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+  //! Iterator, Iterator, Iterator).
   //!
   //! \complexity
   //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
@@ -1541,7 +1542,7 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lenlex_cmp_no_checks(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
   //! \warning
@@ -1549,16 +1550,15 @@ namespace libsemigroups {
   //! into the weights vector.
   //!
   //! \sa
-  //! wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
+  //! wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool
-  wt_lenlex_cmp_no_checks(Thing const&               x,
-                          Thing const&               y,
-                          std::vector<size_t> const& weights) {
+  [[nodiscard]] bool wt_lenlex_cmp_no_checks(std::vector<size_t> const& weights,
+                                             Thing const&               x,
+                                             Thing const&               y) {
     return wt_lenlex_cmp_no_checks(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects via their pointers using
@@ -1610,7 +1610,7 @@ namespace libsemigroups {
                           Thing* const               y,
                           std::vector<size_t> const& weights) {
     return wt_lenlex_cmp_no_checks(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+        weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
   //! \brief Compare two objects of the same type using the weighted len-lex
@@ -1627,15 +1627,15 @@ namespace libsemigroups {
   //!
   //! After checking that all letters in both ranges are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wt_lenlex_cmp_no_checks(first1, last1, first2, last2, weights)`.
+  //! `wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2)`.
   //!
   //! \tparam Iterator the type of iterators to the first object to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted len-lex less than the range `[first2, last2)`, and \c false
@@ -1651,15 +1651,15 @@ namespace libsemigroups {
   //! \p first2.
   //!
   //! \sa
-  //! wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
+  //! wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator).
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool wt_lenlex_cmp(Iterator                   first1,
+  [[nodiscard]] bool wt_lenlex_cmp(std::vector<size_t> const& weights,
+                                   Iterator                   first1,
                                    Iterator                   last1,
                                    Iterator                   first2,
-                                   Iterator                   last2,
-                                   std::vector<size_t> const& weights);
+                                   Iterator                   last2);
 
   //! \brief Compare two objects of the same type using \ref wt_lenlex_cmp
   //! and check validity.
@@ -1672,13 +1672,13 @@ namespace libsemigroups {
   //!
   //! After checking that all letters in both objects are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wt_lenlex_cmp_no_checks(x, y, weights)`.
+  //! `wt_lenlex_cmp_no_checks(weights, x, y)`.
   //!
   //! \tparam Thing the type of the objects to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted len-lex less
   //! than \p y, and \c false otherwise.
@@ -1693,18 +1693,18 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lenlex_cmp(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
   //! \sa
-  //! wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
+  //! wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool wt_lenlex_cmp(Thing const&               x,
-                                   Thing const&               y,
-                                   std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  [[nodiscard]] bool wt_lenlex_cmp(std::vector<size_t> const& weights,
+                                   Thing const&               x,
+                                   Thing const&               y) {
+    return wt_lenlex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects via their pointers using
@@ -1753,7 +1753,7 @@ namespace libsemigroups {
                 Thing* const               y,
                 std::vector<size_t> const& weights) {
     return wt_lenlex_cmp(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+        weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
   //! \brief A stateful struct with binary call operator using
@@ -1775,10 +1775,9 @@ namespace libsemigroups {
   //! (\ref checks) to enable argument checking in the call operator.
   //!
   //! \sa
-  //! * wt_lenlex_cmp(Thing const&, Thing const&, std::vector<size_t>
-  //! const&)
-  //! * wt_lenlex_cmp_no_checks(Thing const&, Thing const&,
-  //! std::vector<size_t> const&)
+  //! * wt_lenlex_cmp(std::vector<size_t> const&, Thing const&, Thing const&)
+  //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Thing const&,
+  //! Thing const&)
   struct WtLenLexCmp {
     //! \brief Constant to enable validity checks.
     //!
@@ -1884,10 +1883,10 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See
-    //! * wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&);
-    //! * wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&).
+    //! * wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator,
+    //! Iterator, Iterator);
+    //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+    //! Iterator, Iterator, Iterator).
     //!
     //! \warning
     //! If the constructor parameter \c should_check is \c false, it is not
@@ -1895,9 +1894,9 @@ namespace libsemigroups {
     template <typename Thing>
     [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
       if (_should_check) {
-        return wt_lenlex_cmp(x, y, _weights);
+        return wt_lenlex_cmp(_weights, x, y);
       } else {
-        return wt_lenlex_cmp_no_checks(x, y, _weights);
+        return wt_lenlex_cmp_no_checks(_weights, x, y);
       }
     }
 
@@ -1908,9 +1907,9 @@ namespace libsemigroups {
                                   Iterator first2,
                                   Iterator last2) const {
       if (_should_check) {
-        return wt_lenlex_cmp(first1, last1, first2, last2, _weights);
+        return wt_lenlex_cmp(_weights, first1, last1, first2, last2);
       } else {
-        return wt_lenlex_cmp_no_checks(first1, last1, first2, last2, _weights);
+        return wt_lenlex_cmp_no_checks(_weights, first1, last1, first2, last2);
       }
     }
 
@@ -1933,11 +1932,11 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! See wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator,
-    //! Iterator, std::vector<size_t> const&)
+    //! See wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+    //! Iterator, Iterator, Iterator)
     template <typename Thing>
     [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
-      return wt_lenlex_cmp_no_checks(x, y, _weights);
+      return wt_lenlex_cmp_no_checks(_weights, x, y);
     }
 
     // TODO doc
@@ -1946,7 +1945,7 @@ namespace libsemigroups {
                                       Iterator last1,
                                       Iterator first2,
                                       Iterator last2) const {
-      return wt_lenlex_cmp_no_checks(first1, last1, first2, last2, _weights);
+      return wt_lenlex_cmp_no_checks(_weights, first1, last1, first2, last2);
     }
 
     //! \brief Returns the value of the constructor parameter \c should_check.
@@ -2035,11 +2034,11 @@ namespace libsemigroups {
   //!
   //! \tparam Iterator the type of iterators to the first object to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted lex less than the range `[first2, last2)`, and \c false
@@ -2058,15 +2057,15 @@ namespace libsemigroups {
   //! the weights vector.
   //!
   //! \sa
-  //! wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
+  //! wt_lex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator).
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool wt_lex_cmp_no_checks(Iterator                   first1,
+  [[nodiscard]] bool wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                                          Iterator                   first1,
                                           Iterator                   last1,
                                           Iterator                   first2,
-                                          Iterator                   last2,
-                                          std::vector<size_t> const& weights);
+                                          Iterator                   last2);
 
   //! \brief Compare two objects of the same type using
   //! \ref wt_lex_cmp_no_checks without checks.
@@ -2079,16 +2078,16 @@ namespace libsemigroups {
   //!
   //! \tparam Thing the type of the objects to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted lex less
   //! than \p y, and \c false otherwise.
   //!
   //! \exceptions
-  //! See \ref wt_lex_cmp_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
+  //! See \ref wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+  //! Iterator, Iterator, Iterator).
   //!
   //! \complexity
   //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
@@ -2097,7 +2096,7 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lex_cmp_no_checks(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
   //! \warning
@@ -2105,15 +2104,15 @@ namespace libsemigroups {
   //! into the weights vector.
   //!
   //! \sa
-  //! wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
+  //! wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool wt_lex_cmp_no_checks(Thing const&               x,
-                                          Thing const&               y,
-                                          std::vector<size_t> const& weights) {
+  [[nodiscard]] bool wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                                          Thing const&               x,
+                                          Thing const&               y) {
     return wt_lex_cmp_no_checks(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects via their pointers using
@@ -2163,7 +2162,7 @@ namespace libsemigroups {
                        Thing* const               y,
                        std::vector<size_t> const& weights) {
     return wt_lex_cmp_no_checks(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+        weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
   //! \brief Compare two objects of the same type using the weighted lex
@@ -2180,15 +2179,15 @@ namespace libsemigroups {
   //!
   //! After checking that all letters in both ranges are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wt_lex_cmp_no_checks(first1, last1, first2, last2, weights)`.
+  //! `wt_lex_cmp_no_checks(weights, first1, last1, first2, last2)`.
   //!
   //! \tparam Iterator the type of iterators to the first object to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted lex less than the range `[first2, last2)`, and \c false
@@ -2204,15 +2203,15 @@ namespace libsemigroups {
   //! \p first2.
   //!
   //! \sa
-  //! wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&)
+  //! wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator)
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool wt_lex_cmp(Iterator                   first1,
+  [[nodiscard]] bool wt_lex_cmp(std::vector<size_t> const& weights,
+                                Iterator                   first1,
                                 Iterator                   last1,
                                 Iterator                   first2,
-                                Iterator                   last2,
-                                std::vector<size_t> const& weights);
+                                Iterator                   last2);
 
   //! \brief Compare two objects of the same type using \ref wt_lex_cmp
   //! and check validity.
@@ -2225,13 +2224,13 @@ namespace libsemigroups {
   //!
   //! After checking that all letters in both objects are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wt_lex_cmp_no_checks(x, y, weights)`.
+  //! `wt_lex_cmp_no_checks(weights, x, y)`.
   //!
   //! \tparam Thing the type of the objects to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted lex less
   //! than \p y, and \c false otherwise.
@@ -2246,18 +2245,18 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lex_cmp(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
   //! \sa
-  //! wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
+  //! wt_lex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool wt_lex_cmp(Thing const&               x,
-                                Thing const&               y,
-                                std::vector<size_t> const& weights) {
-    return wt_lex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  [[nodiscard]] bool wt_lex_cmp(std::vector<size_t> const& weights,
+                                Thing const&               x,
+                                Thing const&               y) {
+    return wt_lex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects via their pointers using
@@ -2305,7 +2304,7 @@ namespace libsemigroups {
   wt_lex_cmp(Thing* const               x,
              Thing* const               y,
              std::vector<size_t> const& weights) {
-    return wt_lex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+    return wt_lex_cmp(weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
   //! \brief A stateful struct with binary call operator using
@@ -2327,9 +2326,9 @@ namespace libsemigroups {
   //! (\ref checks) to enable argument checking in the call operator.
   //!
   //! \sa
-  //! * wt_lex_cmp(Thing const&, Thing const&, std::vector<size_t> const&)
-  //! * wt_lex_cmp_no_checks(Thing const&, Thing const&, std::vector<size_t>
-  //! const&)
+  //! * wt_lex_cmp(std::vector<size_t> const&, Thing const&, Thing const&)
+  //! * wt_lex_cmp_no_checks(std::vector<size_t> const&, Thing const&,
+  //! Thing const&)
   struct WtLexCmp {
     //! \brief Constant to enable validity checks.
     //!
@@ -2434,10 +2433,10 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See:
-    //! * wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&)
-    //! * wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&).
+    //! * wt_lex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+    //! Iterator)
+    //! * wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+    //! Iterator, Iterator).
     //!
     //! \warning
     //! If the constructor parameter \c should_check is \c false, it is not
@@ -2445,9 +2444,9 @@ namespace libsemigroups {
     template <typename Thing>
     [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
       if (_should_check) {
-        return wt_lex_cmp(x, y, _weights);
+        return wt_lex_cmp(_weights, x, y);
       } else {
-        return wt_lex_cmp_no_checks(x, y, _weights);
+        return wt_lex_cmp_no_checks(_weights, x, y);
       }
     }
 
@@ -2458,9 +2457,9 @@ namespace libsemigroups {
                                   Iterator first2,
                                   Iterator last2) const {
       if (_should_check) {
-        return wt_lex_cmp(first1, last1, first2, last2, _weights);
+        return wt_lex_cmp(_weights, first1, last1, first2, last2);
       } else {
-        return wt_lex_cmp_no_checks(first1, last1, first2, last2, _weights);
+        return wt_lex_cmp_no_checks(_weights, first1, last1, first2, last2);
       }
     }
 
@@ -2483,11 +2482,11 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! See wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&).
+    //! See wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+    //! Iterator, Iterator, Iterator).
     template <typename Thing>
     [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
-      return wt_lex_cmp_no_checks(x, y, _weights);
+      return wt_lex_cmp_no_checks(_weights, x, y);
     }
 
     // TODO doc
@@ -2496,7 +2495,7 @@ namespace libsemigroups {
                                       Iterator last1,
                                       Iterator first2,
                                       Iterator last2) const {
-      return wt_lex_cmp_no_checks(first1, last1, first2, last2, _weights);
+      return wt_lex_cmp_no_checks(_weights, first1, last1, first2, last2);
     }
 
     //! \brief Returns the value of the constructor parameter \c should_check.
@@ -2617,7 +2616,7 @@ namespace libsemigroups {
                                 Iterator                   first2,
                                 Iterator                   last2,
                                 std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp_no_checks(first1, last1, first2, last2, weights);
+    return wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
 
   //! \brief Compare two objects of the same type using
@@ -2667,7 +2666,7 @@ namespace libsemigroups {
   wt_shortlex_compare_no_checks(Thing const&               x,
                                 Thing const&               y,
                                 std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp_no_checks(x, y, weights);
+    return wt_lenlex_cmp_no_checks(weights, x, y);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -2718,7 +2717,7 @@ namespace libsemigroups {
   wt_shortlex_compare_no_checks(Thing* const               x,
                                 Thing* const               y,
                                 std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(x, y, weights);
+    return wt_lenlex_cmp(weights, x, y);
   }
 
   //! \brief Compare two objects of the same type using the weighted short-lex
@@ -2771,7 +2770,7 @@ namespace libsemigroups {
                       Iterator                   first2,
                       Iterator                   last2,
                       std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(first1, last1, first2, last2, weights);
+    return wt_lenlex_cmp(weights, first1, last1, first2, last2);
   }
 
   //! \brief Compare two objects of the same type using \ref wt_shortlex_compare
@@ -2820,7 +2819,7 @@ namespace libsemigroups {
   wt_shortlex_compare(Thing const&               x,
                       Thing const&               y,
                       std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(x, y, weights);
+    return wt_lenlex_cmp(weights, x, y);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -2870,7 +2869,7 @@ namespace libsemigroups {
   wt_shortlex_compare(Thing* const               x,
                       Thing* const               y,
                       std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(x, y, weights);
+    return wt_lenlex_cmp(weights, x, y);
   }
 
   //! \brief A stateful struct with binary call operator using
@@ -2954,7 +2953,7 @@ namespace libsemigroups {
                            Iterator                   first2,
                            Iterator                   last2,
                            std::vector<size_t> const& weights) {
-    return wt_lex_cmp_no_checks(first1, last1, first2, last2, weights);
+    return wt_lex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
 
   //! \brief Compare two objects of the same type using
@@ -3004,7 +3003,7 @@ namespace libsemigroups {
   wt_lex_compare_no_checks(Thing const&               x,
                            Thing const&               y,
                            std::vector<size_t> const& weights) {
-    return wt_lex_cmp_no_checks(x, y, weights);
+    return wt_lex_cmp_no_checks(weights, x, y);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -3055,7 +3054,7 @@ namespace libsemigroups {
   wt_lex_compare_no_checks(Thing* const               x,
                            Thing* const               y,
                            std::vector<size_t> const& weights) {
-    return wt_lex_cmp_no_checks(x, y, weights);
+    return wt_lex_cmp_no_checks(weights, x, y);
   }
 
   //! \brief Compare two objects of the same type using the weighted lex
@@ -3108,7 +3107,7 @@ namespace libsemigroups {
                  Iterator                   first2,
                  Iterator                   last2,
                  std::vector<size_t> const& weights) {
-    return wt_lex_cmp(first1, last1, first2, last2, weights);
+    return wt_lex_cmp(weights, first1, last1, first2, last2);
   }
 
   //! \brief Compare two objects of the same type using \ref wt_lex_compare
@@ -3157,7 +3156,7 @@ namespace libsemigroups {
   wt_lex_compare(Thing const&               x,
                  Thing const&               y,
                  std::vector<size_t> const& weights) {
-    return wt_lex_cmp(x, y, weights);
+    return wt_lex_cmp(weights, x, y);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -3207,7 +3206,7 @@ namespace libsemigroups {
   wt_lex_compare(Thing* const               x,
                  Thing* const               y,
                  std::vector<size_t> const& weights) {
-    return wt_lex_cmp(x, y, weights);
+    return wt_lex_cmp(weights, x, y);
   }
 
   //! \brief A stateful struct with binary call operator using
