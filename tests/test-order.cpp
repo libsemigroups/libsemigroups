@@ -162,18 +162,17 @@ namespace libsemigroups {
     auto                a             = "a"s;
     auto                b             = "b"s;
 
-    WtLenLexCmp comp(alphabet, weights, WtLenLexCmp<std::string>::no_checks);
+    WtLenLexCmp comp(alphabet, weights, order::no_checks);
     REQUIRE(comp(a, b));
     REQUIRE(!comp(b, a));
 
-    comp.init(alphabet, equal_weights, WtLenLexCmp<std::string>::no_checks);
+    comp.init(alphabet, equal_weights, order::no_checks);
     REQUIRE(comp(b, a));
     REQUIRE(!comp(a, b));
     REQUIRE(comp(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
 
-    WtLenLexCmp moved(Alphabet("ba"s),
-                      std::vector<size_t>{1, 1},
-                      WtLenLexCmp<std::string>::no_checks);
+    WtLenLexCmp moved(
+        Alphabet("ba"s), std::vector<size_t>{1, 1}, order::no_checks);
     REQUIRE(moved(b, a));
   }
 
@@ -183,7 +182,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
+    WtLenLexCmp         comp(weights, order::no_checks);
 
     word_type w1 = {0, 1};  // weight = 3
     word_type w2 = {2};     // weight = 6
@@ -198,7 +197,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {1, 1, 1, 1, 1};
-    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
+    WtLenLexCmp         comp(weights, order::no_checks);
 
     word_type w1 = {0};  // weight = 1
     word_type w2 = {1};  // weight = 1
@@ -213,7 +212,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
+    WtLenLexCmp         comp(weights, order::no_checks);
 
     word_type w1 = {1, 1, 1, 1};  // weight = 1 + 1 + 1 + 1 = 4
     word_type w2 = {3, 1};        // weight = 3 + 1 = 4
@@ -507,7 +506,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtLenLexCmp         comp(weights, WtLenLexCmp<>::checks);
+    WtLenLexCmp         comp(weights, order::checks);
 
     word_type w1 = {0, 1};  // weight = 3
     word_type w2 = {2};     // weight = 6
@@ -528,12 +527,11 @@ namespace libsemigroups {
     auto                a       = "a"s;
     auto                b       = "b"s;
 
-    WtLenLexCmp comp(alphabet, weights, WtLenLexCmp<std::string>::checks);
+    WtLenLexCmp comp(alphabet, weights);
     REQUIRE(comp(a, b));
     REQUIRE(!comp(b, a));
 
-    comp.weights({1});
-    REQUIRE_THROWS_AS(comp(a, b), LibsemigroupsException);
+    REQUIRE_THROWS_AS(comp("c"s, "d"s), LibsemigroupsException);
     REQUIRE(!comp.call_no_checks(b, b));
   }
 
@@ -543,7 +541,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};  // alphabet size = 5
-    WtLenLexCmp         comp(weights, WtLenLexCmp<>::checks);
+    WtLenLexCmp         comp(weights, order::checks);
 
     word_type w1 = {0, 1};
     word_type w2 = {10};  // invalid: 10 >= weights.size()
@@ -557,7 +555,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
+    WtLenLexCmp         comp(weights, order::no_checks);
 
     word_type w1 = {0, 1};  // weight = 3
     word_type w2 = {2};     // weight = 6
@@ -572,7 +570,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};  // alphabet size = 5
-    WtLenLexCmp         comp(weights, WtLenLexCmp<>::checks);
+    WtLenLexCmp         comp(weights, order::checks);
 
     word_type w1 = {0, 1};
     word_type w2 = {10};  // invalid: 10 >= weights.size()
@@ -591,7 +589,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {3, 2, 1};
-    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
+    WtLenLexCmp         comp(weights, order::no_checks);
 
     std::set<word_type, WtLenLexCmp<>> ordered_words(comp);
     ordered_words.insert({2});     // weight = 1
@@ -1195,7 +1193,7 @@ namespace libsemigroups {
 
     std::sort(strings.begin(),
               strings.end(),
-              WtLenLexCmp(alphabet, weights, WtLenLexCmp<>::checks));
+              WtLenLexCmp(alphabet, weights, order::checks));
 
     REQUIRE(strings == std::vector({"bb"s,   "ba"s,   "ab"s,   "aa"s,   "bbb"s,
                                     "bba"s,  "bab"s,  "baa"s,  "abb"s,  "aba"s,

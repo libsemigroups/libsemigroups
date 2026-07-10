@@ -93,6 +93,27 @@ namespace libsemigroups {
     // wreath TODO(later)
   };
 
+  //! \ingroup orders_group
+  //!
+  //! Defined in ``order.hpp``.
+  //!
+  //! This namespace contains compile-time helpers for detecting properties of
+  //! reduction order comparison types, and for enabling or disabling argument
+  //! checks in the various classes defined in ``order.hpp``.
+  namespace order {
+    //! \brief Constant to enable validity checks.
+    //!
+    //! This constant can be used in the constructors to indicate that
+    //! checks should be performed on the arguments to the call operator.
+    static constexpr bool checks = true;
+
+    //! \brief Constant to disable validity checks.
+    //!
+    //! This constant can be used in the constructors to indicate that no
+    //! checks should be performed on the arguments to the call operator.
+    static constexpr bool no_checks = false;
+  }  // namespace order
+
   //! \defgroup orders_group Orders
   //! This page contains the documentation for several class and function
   //! templates for comparing words or strings with respect to certain reduction
@@ -1871,24 +1892,26 @@ namespace libsemigroups {
 
     ~WtLenLexCmp() = default;
 
-    static constexpr bool checks    = true;
-    static constexpr bool no_checks = false;
-
     WtLenLexCmp(Alphabet<Word> const&      alphabet,
                 std::vector<size_t> const& weights,
-                bool                       should_check)
-        : _alphabet(alphabet), _weights(weights), _should_check(should_check) {}
+                bool                       should_check = order::checks)
+        : _alphabet(alphabet), _weights(weights), _should_check(should_check) {
+      // TODO check that _alphabet and _weights have the same length
+    }
 
     WtLenLexCmp(Alphabet<Word>&&      alphabet,
                 std::vector<size_t>&& weights,
-                bool                  should_check)
+                bool                  should_check = order::checks)
         : _alphabet(std::move(alphabet)),
           _weights(std::move(weights)),
-          _should_check(should_check) {}
+          _should_check(should_check) {
+      // TODO check that _alphabet and _weights have the same length
+    }
 
     WtLenLexCmp& init(Alphabet<Word> const&      alphabet,
                       std::vector<size_t> const& weights,
-                      bool                       should_check) {
+                      bool                       should_check = order::checks) {
+      // TODO check that _alphabet and _weights have the same length
       _alphabet     = alphabet;
       _weights      = weights;
       _should_check = should_check;
@@ -1897,7 +1920,8 @@ namespace libsemigroups {
 
     WtLenLexCmp& init(Alphabet<Word>&&      alphabet,
                       std::vector<size_t>&& weights,
-                      bool                  should_check) {
+                      bool                  should_check = order::checks) {
+      // TODO check that _alphabet and _weights have the same length
       _alphabet     = std::move(alphabet);
       _weights      = std::move(weights);
       _should_check = should_check;
@@ -1942,16 +1966,6 @@ namespace libsemigroups {
       return _alphabet;
     }
 
-    WtLenLexCmp& alphabet(Alphabet<Word> const& val) {
-      _alphabet = val;
-      return *this;
-    }
-
-    WtLenLexCmp& alphabet(Alphabet<Word>&& val) {
-      _alphabet = std::move(val);
-      return *this;
-    }
-
     [[nodiscard]] bool should_check() const noexcept {
       return _should_check;
     }
@@ -1963,11 +1977,6 @@ namespace libsemigroups {
 
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
-    }
-
-    WtLenLexCmp& weights(std::vector<size_t> const& val) {
-      _weights = val;
-      return *this;
     }
   };
 
@@ -1995,18 +2004,6 @@ namespace libsemigroups {
   //! Word const&)
   template <>
   struct WtLenLexCmp<Default> {
-    //! \brief Constant to enable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool checks = true;
-
-    //! \brief Constant to disable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that no
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool no_checks = false;
-
     //! \brief Construct from weights vector reference and specify whether or
     //! not the call operator should check its arguments.
     //!
@@ -2559,18 +2556,6 @@ namespace libsemigroups {
   //! * wt_lex_cmp_no_checks(std::vector<size_t> const&, Word const&,
   //! Word const&)
   struct WtLexCmp {
-    //! \brief Constant to enable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool checks = true;
-
-    //! \brief Constant to disable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that no
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool no_checks = false;
-
     //! \brief Construct from weights vector reference and specify whether or
     //! not the call operator should check its arguments.
     //!
@@ -3462,12 +3447,6 @@ namespace libsemigroups {
   // Helpers
   //////////////////////////////////////////////////////////////////////
 
-  //! \ingroup orders_group
-  //!
-  //! Defined in ``order.hpp``.
-  //!
-  //! This namespace contains compile-time helpers for detecting properties of
-  //! reduction order comparison types.
   namespace order {
     //! \brief Helper used to indicate whether or not an order is length
     //! non-increasing.
