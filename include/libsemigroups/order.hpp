@@ -126,7 +126,7 @@ namespace libsemigroups {
   //! This function compares two objects of the same type using
   //! std::lexicographical_compare.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -145,20 +145,18 @@ namespace libsemigroups {
   //! \code_no_test
   //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
   //! \end_code_no_test
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool lex_cmp(Thing const& x, Thing const& y) {
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool lex_cmp(Word const& x, Word const& y) {
     return std::lexicographical_compare(
         x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   // TODO doc
-  template <typename Word,
-            typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] bool lex_cmp(Alphabet<Word> const& alphabet,
-                             Thing const&          x,
-                             Thing const&          y) {
+                             Word const&           x,
+                             Word const&           y) {
     return lex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
@@ -170,7 +168,7 @@ namespace libsemigroups {
   //! This function compares two objects via their pointers using
   //! std::lexicographical_compare.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -191,10 +189,10 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \deprecated_warning{function}
-  template <typename Thing>
+  template <typename Word>
   [[deprecated("This function will be removed in v4, and no alternative "
                "provided.")]] [[nodiscard]] bool
-  lex_cmp(Thing* const x, Thing* const y) {
+  lex_cmp(Word* const x, Word* const y) {
     return std::lexicographical_compare(
         x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
@@ -228,7 +226,7 @@ namespace libsemigroups {
     //! Call operator that compares \p x and \p y using
     //! std::lexicographical_compare.
     //!
-    //! \tparam Thing the type of the parameters.
+    //! \tparam Word the type of the parameters.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -298,7 +296,7 @@ namespace libsemigroups {
     //! Call operator that compares \p x and \p y using
     //! std::lexicographical_compare.
     //!
-    //! \tparam Thing the type of the parameters.
+    //! \tparam Word the type of the parameters.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -311,8 +309,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See std::lexicographical_compare.
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return lex_cmp(x, y);
     }
 
@@ -390,7 +388,7 @@ namespace libsemigroups {
   //! This function compares two objects of the same type using
   //! std::lexicographical_compare.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -411,10 +409,9 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \deprecated_warning{function} Use \ref lex_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] [[deprecated("Use lex_cmp instead!")]] bool
-  lexicographical_compare(Thing const& x, Thing const& y) {
+  lexicographical_compare(Word const& x, Word const& y) {
     return lex_cmp(x, y);
   }
 
@@ -426,7 +423,7 @@ namespace libsemigroups {
   //! This function compares two objects via their pointers using
   //! std::lexicographical_compare.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -447,11 +444,11 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \deprecated_warning{function}.
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  lexicographical_compare(Thing* const x, Thing* const y) {
+  lexicographical_compare(Word* const x, Word* const y) {
     return lex_cmp(x, y);
   }
 
@@ -543,7 +540,7 @@ namespace libsemigroups {
   //! This function compares two objects of the same type using
   //! \ref lenlex_cmp.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -565,18 +562,16 @@ namespace libsemigroups {
   //!
   //! \sa
   //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool lenlex_cmp(Thing const& x, Thing const& y) {
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool lenlex_cmp(Word const& x, Word const& y) {
     return lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  template <typename Word,
-            typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] bool lenlex_cmp(Alphabet<Word> const& alphabet,
-                                Thing const&          x,
-                                Thing const&          y) {
+                                Word const&           x,
+                                Word const&           y) {
     return lenlex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
@@ -587,7 +582,7 @@ namespace libsemigroups {
   //! This function compares two objects via their pointers using
   //! \ref lenlex_cmp.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -611,10 +606,10 @@ namespace libsemigroups {
   //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
   //!
   //! \deprecated_warning{function}
-  template <typename Thing>
+  template <typename Word>
   [[deprecated("This function will be removed in v4, and no alternative "
                "provided.")]] [[nodiscard]] bool
-  lenlex_cmp(Thing* const x, Thing* const y) {
+  lenlex_cmp(Word* const x, Word* const y) {
     return lenlex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
@@ -687,7 +682,7 @@ namespace libsemigroups {
     //!
     //! Call operator that compares \p x and \p y using \ref lenlex_cmp.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -700,8 +695,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return lenlex_cmp(x, y);
     }
 
@@ -760,8 +755,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
   shortlex_compare(Iterator first1,
                    Iterator last1,
@@ -777,7 +771,7 @@ namespace libsemigroups {
   //! This function compares two objects of the same type using
   //! \ref shortlex_compare.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -802,10 +796,9 @@ namespace libsemigroups {
   //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
   //!
   //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
-  shortlex_compare(Thing const& x, Thing const& y) {
+  shortlex_compare(Word const& x, Word const& y) {
     return lenlex_cmp(x, y);
   }
 
@@ -816,7 +809,7 @@ namespace libsemigroups {
   //! This function compares two objects via their pointers using
   //! \ref shortlex_compare.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -841,11 +834,11 @@ namespace libsemigroups {
   //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
   //!
   //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  shortlex_compare(Thing* const x, Thing* const y) {
+  shortlex_compare(Word* const x, Word* const y) {
     return lenlex_cmp(x, y);
   }
 
@@ -908,8 +901,7 @@ namespace libsemigroups {
   //! \warning
   //! This function has significantly worse performance than all
   //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] bool rpo_cmp(Iterator first1,
                              Iterator last1,
                              Iterator first2,
@@ -966,7 +958,7 @@ namespace libsemigroups {
   //!
   //! This function compares two objects via their pointers using \ref rpo_cmp.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -987,11 +979,11 @@ namespace libsemigroups {
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
   //!
   //! \deprecated_warning{function}
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  rpo_cmp(Thing* const x, Thing* const y) noexcept {
+  rpo_cmp(Word* const x, Word* const y) noexcept {
     return rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
@@ -1061,7 +1053,7 @@ namespace libsemigroups {
     //! Call operator that compares \p x and \p y using
     //! \ref rpo_cmp.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -1071,9 +1063,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x,
-                                  Thing const& y) const noexcept {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const noexcept {
       return rpo_cmp(x, y);
     }
 
@@ -1131,8 +1122,7 @@ namespace libsemigroups {
   //! \warning
   //! This function has significantly worse performance than all
   //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] bool rev_rpo_cmp(Iterator first1,
                                  Iterator last1,
                                  Iterator first2,
@@ -1153,7 +1143,7 @@ namespace libsemigroups {
   //! This function compares two objects of the same type using
   //! \ref rev_rpo_cmp.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -1171,10 +1161,9 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool rev_rpo_cmp(Iterator const& x,
-                                 Iterator const& y) noexcept {
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool rev_rpo_cmp(Word const& x, Word const& y) noexcept {
     return rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
@@ -1193,7 +1182,7 @@ namespace libsemigroups {
   //! This function compares two objects via their pointers using
   //! \ref rev_rpo_cmp.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -1214,11 +1203,11 @@ namespace libsemigroups {
   //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
   //!
   //! \deprecated_warning{function}
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  rev_rpo_cmp(Thing* const x, Thing* const y) noexcept {
+  rev_rpo_cmp(Word* const x, Word* const y) noexcept {
     return rev_rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
@@ -1288,7 +1277,7 @@ namespace libsemigroups {
     //! Call operator that compares \p x and \p y using
     //! \ref rev_rpo_cmp.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -1298,9 +1287,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x,
-                                  Thing const& y) const noexcept {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const noexcept {
       return rev_rpo_cmp(x, y);
     }
 
@@ -1360,8 +1348,7 @@ namespace libsemigroups {
   //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   //!
   //! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
   recursive_path_compare(Iterator first1,
                          Iterator last1,
@@ -1378,7 +1365,7 @@ namespace libsemigroups {
   //! This function compares two objects of the same type using
   //! \ref recursive_path_compare.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -1399,10 +1386,9 @@ namespace libsemigroups {
   //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
   //!
   //! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
-  recursive_path_compare(Thing const& x, Thing const& y) noexcept {
+  recursive_path_compare(Word const& x, Word const& y) noexcept {
     return rev_rpo_cmp(x, y);
   }
 
@@ -1414,7 +1400,7 @@ namespace libsemigroups {
   //! This function compares two objects via their pointers using
   //! \ref recursive_path_compare.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -1436,11 +1422,11 @@ namespace libsemigroups {
   //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
   //!
   //! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  recursive_path_compare(Thing* const x, Thing* const y) noexcept {
+  recursive_path_compare(Word* const x, Word* const y) noexcept {
     return rev_rpo_cmp(x, y);
   }
 
@@ -1522,7 +1508,7 @@ namespace libsemigroups {
   //! \ref wt_lenlex_cmp_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
@@ -1570,7 +1556,7 @@ namespace libsemigroups {
   //! \ref wt_lenlex_cmp_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -1602,12 +1588,12 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function}
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_lenlex_cmp_no_checks(Thing* const               x,
-                          Thing* const               y,
+  wt_lenlex_cmp_no_checks(Word* const                x,
+                          Word* const                y,
                           std::vector<size_t> const& weights) {
     return wt_lenlex_cmp_no_checks(
         weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
@@ -1653,8 +1639,7 @@ namespace libsemigroups {
   //! \sa
   //! wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
   //! Iterator, Iterator).
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] bool wt_lenlex_cmp(std::vector<size_t> const& weights,
                                    Iterator                   first1,
                                    Iterator                   last1,
@@ -1674,7 +1659,7 @@ namespace libsemigroups {
   //! the weights vector, this function performs the same as
   //! `wt_lenlex_cmp_no_checks(weights, x, y)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
@@ -1699,11 +1684,10 @@ namespace libsemigroups {
   //! \sa
   //! wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
   //! Iterator).
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] bool wt_lenlex_cmp(std::vector<size_t> const& weights,
-                                   Thing const&               x,
-                                   Thing const&               y) {
+                                   Word const&                x,
+                                   Word const&                y) {
     return wt_lenlex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
@@ -1720,7 +1704,7 @@ namespace libsemigroups {
   //! vector, this function performs the same as
   //! `wt_lenlex_cmp_no_checks(*x, *y, weights)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -1745,12 +1729,12 @@ namespace libsemigroups {
   //! \sa
   //! wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_lenlex_cmp(Thing* const               x,
-                Thing* const               y,
+  wt_lenlex_cmp(Word* const                x,
+                Word* const                y,
                 std::vector<size_t> const& weights) {
     return wt_lenlex_cmp(
         weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
@@ -1775,9 +1759,9 @@ namespace libsemigroups {
   //! (\ref checks) to enable argument checking in the call operator.
   //!
   //! \sa
-  //! * wt_lenlex_cmp(std::vector<size_t> const&, Thing const&, Thing const&)
-  //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Thing const&,
-  //! Thing const&)
+  //! * wt_lenlex_cmp(std::vector<size_t> const&, Word const&, Word const&)
+  //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Word const&,
+  //! Word const&)
   struct WtLenLexCmp {
     //! \brief Constant to enable validity checks.
     //!
@@ -1869,7 +1853,7 @@ namespace libsemigroups {
     //! is \c true) or \ref wt_lenlex_cmp_no_checks (if \c should_check is
     //! \c false).
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -1891,8 +1875,8 @@ namespace libsemigroups {
     //! \warning
     //! If the constructor parameter \c should_check is \c false, it is not
     //! checked that the letters are valid indices into the weights vector.
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       if (_should_check) {
         return wt_lenlex_cmp(_weights, x, y);
       } else {
@@ -1920,7 +1904,7 @@ namespace libsemigroups {
     //! parameter \c should_check. Use this when you want to ensure validation
     //! is not performed.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -1934,8 +1918,8 @@ namespace libsemigroups {
     //! \complexity
     //! See wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
     //! Iterator, Iterator, Iterator)
-    template <typename Thing>
-    [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
+    template <typename Word>
+    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
       return wt_lenlex_cmp_no_checks(_weights, x, y);
     }
 
@@ -2059,8 +2043,7 @@ namespace libsemigroups {
   //! \sa
   //! wt_lex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
   //! Iterator).
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] bool wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
                                           Iterator                   first1,
                                           Iterator                   last1,
@@ -2076,7 +2059,7 @@ namespace libsemigroups {
   //! \ref wt_lex_cmp_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
@@ -2106,11 +2089,10 @@ namespace libsemigroups {
   //! \sa
   //! wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
   //! Iterator, Iterator).
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] bool wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
-                                          Thing const&               x,
-                                          Thing const&               y) {
+                                          Word const&                x,
+                                          Word const&                y) {
     return wt_lex_cmp_no_checks(
         weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
@@ -2124,7 +2106,7 @@ namespace libsemigroups {
   //! \ref wt_lex_cmp_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -2154,12 +2136,12 @@ namespace libsemigroups {
   //! \sa
   //! wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_lex_cmp_no_checks(Thing* const               x,
-                       Thing* const               y,
+  wt_lex_cmp_no_checks(Word* const                x,
+                       Word* const                y,
                        std::vector<size_t> const& weights) {
     return wt_lex_cmp_no_checks(
         weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
@@ -2205,8 +2187,7 @@ namespace libsemigroups {
   //! \sa
   //! wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
   //! Iterator, Iterator)
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] bool wt_lex_cmp(std::vector<size_t> const& weights,
                                 Iterator                   first1,
                                 Iterator                   last1,
@@ -2226,7 +2207,7 @@ namespace libsemigroups {
   //! the weights vector, this function performs the same as
   //! `wt_lex_cmp_no_checks(weights, x, y)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
@@ -2251,11 +2232,10 @@ namespace libsemigroups {
   //! \sa
   //! wt_lex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
   //! Iterator).
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] bool wt_lex_cmp(std::vector<size_t> const& weights,
-                                Thing const&               x,
-                                Thing const&               y) {
+                                Word const&                x,
+                                Word const&                y) {
     return wt_lex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
@@ -2272,7 +2252,7 @@ namespace libsemigroups {
   //! vector, this function performs the same as
   //! `wt_lex_cmp_no_checks(*x, *y, weights)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -2297,13 +2277,11 @@ namespace libsemigroups {
   //! \sa
   //! wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_lex_cmp(Thing* const               x,
-             Thing* const               y,
-             std::vector<size_t> const& weights) {
+  wt_lex_cmp(Word* const x, Word* const y, std::vector<size_t> const& weights) {
     return wt_lex_cmp(weights, x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
@@ -2326,9 +2304,9 @@ namespace libsemigroups {
   //! (\ref checks) to enable argument checking in the call operator.
   //!
   //! \sa
-  //! * wt_lex_cmp(std::vector<size_t> const&, Thing const&, Thing const&)
-  //! * wt_lex_cmp_no_checks(std::vector<size_t> const&, Thing const&,
-  //! Thing const&)
+  //! * wt_lex_cmp(std::vector<size_t> const&, Word const&, Word const&)
+  //! * wt_lex_cmp_no_checks(std::vector<size_t> const&, Word const&,
+  //! Word const&)
   struct WtLexCmp {
     //! \brief Constant to enable validity checks.
     //!
@@ -2420,7 +2398,7 @@ namespace libsemigroups {
     //! \c true) or \ref wt_lex_cmp_no_checks (if \c should_check is
     //! \c false).
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -2441,8 +2419,8 @@ namespace libsemigroups {
     //! \warning
     //! If the constructor parameter \c should_check is \c false, it is not
     //! checked that the letters are valid indices into the weights vector.
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       if (_should_check) {
         return wt_lex_cmp(_weights, x, y);
       } else {
@@ -2470,7 +2448,7 @@ namespace libsemigroups {
     //! parameter \c should_check. Use this when you want to ensure validation
     //! is not performed.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -2484,8 +2462,8 @@ namespace libsemigroups {
     //! \complexity
     //! See wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator,
     //! Iterator, Iterator, Iterator).
-    template <typename Thing>
-    [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
+    template <typename Word>
+    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
       return wt_lex_cmp_no_checks(_weights, x, y);
     }
 
@@ -2608,8 +2586,7 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] [[deprecated("Use wt_lenlex_cmp_no_checks instead!")]] bool
   wt_shortlex_compare_no_checks(Iterator                   first1,
                                 Iterator                   last1,
@@ -2628,7 +2605,7 @@ namespace libsemigroups {
   //! \ref wt_shortlex_compare_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -2660,11 +2637,10 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] [[deprecated("Use wt_lenlex_cmp_no_checks instead!")]] bool
-  wt_shortlex_compare_no_checks(Thing const&               x,
-                                Thing const&               y,
+  wt_shortlex_compare_no_checks(Word const&                x,
+                                Word const&                y,
                                 std::vector<size_t> const& weights) {
     return wt_lenlex_cmp_no_checks(weights, x, y);
   }
@@ -2678,7 +2654,7 @@ namespace libsemigroups {
   //! \ref wt_shortlex_compare_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -2710,12 +2686,12 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_shortlex_compare_no_checks(Thing* const               x,
-                                Thing* const               y,
+  wt_shortlex_compare_no_checks(Word* const                x,
+                                Word* const                y,
                                 std::vector<size_t> const& weights) {
     return wt_lenlex_cmp(weights, x, y);
   }
@@ -2762,8 +2738,7 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] [[deprecated("Use wt_lenlex_cmp instead!")]] bool
   wt_shortlex_compare(Iterator                   first1,
                       Iterator                   last1,
@@ -2786,7 +2761,7 @@ namespace libsemigroups {
   //! the weights vector, this function performs the same as
   //! `wt_shortlex_compare_no_checks(x, y, weights)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -2813,11 +2788,10 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] [[deprecated("Use wt_lenlex_cmp instead!")]] bool
-  wt_shortlex_compare(Thing const&               x,
-                      Thing const&               y,
+  wt_shortlex_compare(Word const&                x,
+                      Word const&                y,
                       std::vector<size_t> const& weights) {
     return wt_lenlex_cmp(weights, x, y);
   }
@@ -2835,7 +2809,7 @@ namespace libsemigroups {
   //! vector, this function performs the same as
   //! `wt_shortlex_compare_no_checks(*x, *y, weights)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -2862,12 +2836,12 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_shortlex_compare(Thing* const               x,
-                      Thing* const               y,
+  wt_shortlex_compare(Word* const                x,
+                      Word* const                y,
                       std::vector<size_t> const& weights) {
     return wt_lenlex_cmp(weights, x, y);
   }
@@ -2891,9 +2865,9 @@ namespace libsemigroups {
   //! (\ref checks) to enable argument checking in the call operator.
   //!
   //! \sa
-  //! * wt_shortlex_compare(Thing const&, Thing const&, std::vector<size_t>
+  //! * wt_shortlex_compare(Word const&, Word const&, std::vector<size_t>
   //! const&)
-  //! * wt_shortlex_compare_no_checks(Thing const&, Thing const&,
+  //! * wt_shortlex_compare_no_checks(Word const&, Word const&,
   //! std::vector<size_t> const&)
   //!
   //! \deprecated_warning{struct} Use \ref WtLenLexCmp instead.
@@ -2945,8 +2919,7 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] [[deprecated("Use wt_lex_cmp_no_checks instead!")]] bool
   wt_lex_compare_no_checks(Iterator                   first1,
                            Iterator                   last1,
@@ -2965,7 +2938,7 @@ namespace libsemigroups {
   //! \ref wt_lex_compare_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -2997,11 +2970,10 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] [[deprecated("Use wt_lex_cmp_no_checks instead!")]] bool
-  wt_lex_compare_no_checks(Thing const&               x,
-                           Thing const&               y,
+  wt_lex_compare_no_checks(Word const&                x,
+                           Word const&                y,
                            std::vector<size_t> const& weights) {
     return wt_lex_cmp_no_checks(weights, x, y);
   }
@@ -3015,7 +2987,7 @@ namespace libsemigroups {
   //! \ref wt_lex_compare_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -3047,12 +3019,12 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_lex_compare_no_checks(Thing* const               x,
-                           Thing* const               y,
+  wt_lex_compare_no_checks(Word* const                x,
+                           Word* const                y,
                            std::vector<size_t> const& weights) {
     return wt_lex_cmp_no_checks(weights, x, y);
   }
@@ -3099,8 +3071,7 @@ namespace libsemigroups {
   //! std::vector<size_t> const&)
   //!
   //! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] [[deprecated("Use wt_lex_cmp instead!")]] bool
   wt_lex_compare(Iterator                   first1,
                  Iterator                   last1,
@@ -3123,7 +3094,7 @@ namespace libsemigroups {
   //! the weights vector, this function performs the same as
   //! `wt_lex_compare_no_checks(x, y, weights)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -3150,11 +3121,10 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  template <typename Word>
   [[nodiscard]] [[deprecated("Use wt_lex_cmp instead!")]] bool
-  wt_lex_compare(Thing const&               x,
-                 Thing const&               y,
+  wt_lex_compare(Word const&                x,
+                 Word const&                y,
                  std::vector<size_t> const& weights) {
     return wt_lex_cmp(weights, x, y);
   }
@@ -3172,7 +3142,7 @@ namespace libsemigroups {
   //! vector, this function performs the same as
   //! `wt_lex_compare_no_checks(*x, *y, weights)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
@@ -3199,12 +3169,12 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   //!
   //! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
-  template <typename Thing>
+  template <typename Word>
   [[nodiscard]] [[deprecated(
       "This function will be removed in v4, and no alternative "
       "provided.")]] bool
-  wt_lex_compare(Thing* const               x,
-                 Thing* const               y,
+  wt_lex_compare(Word* const                x,
+                 Word* const                y,
                  std::vector<size_t> const& weights) {
     return wt_lex_cmp(weights, x, y);
   }
@@ -3228,8 +3198,8 @@ namespace libsemigroups {
   //! (\ref checks) to enable argument checking in the call operator.
   //!
   //! \sa
-  //! * wt_lex_compare(Thing const&, Thing const&, std::vector<size_t> const&)
-  //! * wt_lex_compare_no_checks(Thing const&, Thing const&, std::vector<size_t>
+  //! * wt_lex_compare(Word const&, Word const&, std::vector<size_t> const&)
+  //! * wt_lex_compare_no_checks(Word const&, Word const&, std::vector<size_t>
   //! const&)
   //!
   //! \deprecated_warning{struct} Use \ref WtLexCmp instead.

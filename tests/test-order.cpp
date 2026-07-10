@@ -831,7 +831,10 @@ namespace libsemigroups {
 
     auto strings = (sr | rx::to_vector());
 
-    std::sort(strings.begin(), strings.end(), lex_cmp<std::string, void>);
+    std::sort(
+        strings.begin(), strings.end(), [](auto const& lhop, auto const& rhop) {
+          return lex_cmp(lhop, rhop);
+        });
 
     REQUIRE(strings
             == std::vector(

@@ -21,7 +21,7 @@
 
 namespace libsemigroups {
 
-  template <typename Iterator, typename>
+  template <typename Iterator>
   bool rpo_cmp(Iterator first1,
                Iterator last1,
                Iterator first2,
@@ -64,7 +64,7 @@ namespace libsemigroups {
                    detail::citow(alphabet, last2));
   }
 
-  template <typename Iterator, typename>
+  template <typename Iterator>
   bool rev_rpo_cmp(Iterator first1,
                    Iterator last1,
                    Iterator first2,
@@ -88,7 +88,7 @@ namespace libsemigroups {
                    std::make_reverse_iterator(first2));
   }
 
-  template <typename Iterator, typename>
+  template <typename Iterator>
   bool wt_lenlex_cmp_no_checks(std::vector<size_t> const& weights,
                                Iterator                   first1,
                                Iterator                   last1,
@@ -110,7 +110,34 @@ namespace libsemigroups {
 
     return lenlex_cmp(first1, last1, first2, last2);
   }
-  template <typename Iterator, typename>
+
+  template <typename Word, typename Iterator>
+  bool wt_lenlex_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                               std::vector<size_t> const& weights,
+                               Iterator                   first1,
+                               Iterator                   last1,
+                               Iterator                   first2,
+                               Iterator                   last2) {
+    size_t weight1 = std::accumulate(
+        detail::citow(alphabet, first1),
+        detail::citow(alphabet, last1),
+        size_t(0),
+        [&weights](size_t sum, auto letter) { return sum + weights[letter]; });
+
+    size_t weight2 = std::accumulate(
+        detail::citow(alphabet, first2),
+        detail::citow(alphabet, last2),
+        size_t(0),
+        [&weights](size_t sum, auto letter) { return sum + weights[letter]; });
+
+    if (weight1 != weight2) {
+      return weight1 < weight2;
+    }
+
+    return lenlex_cmp(alphabet, first1, last1, first2, last2);
+  }
+
+  template <typename Iterator>
   bool wt_lenlex_cmp(std::vector<size_t> const& weights,
                      Iterator                   first1,
                      Iterator                   last1,
@@ -145,7 +172,7 @@ namespace libsemigroups {
     return wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
 
-  template <typename Iterator, typename>
+  template <typename Iterator>
   bool wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
                             Iterator                   first1,
                             Iterator                   last1,
@@ -168,7 +195,7 @@ namespace libsemigroups {
     return std::lexicographical_compare(first1, last1, first2, last2);
   }
 
-  template <typename Iterator, typename>
+  template <typename Iterator>
   bool wt_lex_cmp(std::vector<size_t> const& weights,
                   Iterator                   first1,
                   Iterator                   last1,
