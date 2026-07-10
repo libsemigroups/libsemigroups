@@ -148,9 +148,6 @@ namespace libsemigroups::detail {
     // Run the solver
     alglib::minlpsolverresults(solver, result, rep);
 
-    // TODO(1): Remove
-    std::cout << "\nNumber of evaluations: " << rep.nfev << std::endl;
-
     // The documentation says that a terminationtype of 2 corresponds to a
     // solution being found, but the implementation doesn't agree with this.
     // It may be the case that there is a value greater than 0 that represents
