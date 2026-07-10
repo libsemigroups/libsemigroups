@@ -1235,4 +1235,66 @@ namespace libsemigroups {
                                     "aaba"s, "aaab"s, "aaaa"s}));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("wt_lex_cmp",
+                          "047",
+                          "with alphabet",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    StringRange sr;
+    sr.alphabet("ab").min(2).max(5);
+
+    auto strings = (sr | rx::to_vector());
+
+    std::vector<size_t> weights(256, 100);
+    weights['a'] = 1;
+    weights['b'] = 2;
+
+    std::sort(strings.begin(), strings.end(), WtLexCmp(weights));
+
+    REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "ab"s,   "ba"s,   "aaaa"s,
+                                    "aab"s,  "aba"s,  "baa"s,  "bb"s,   "aaab"s,
+                                    "aaba"s, "abaa"s, "abb"s,  "baaa"s, "bab"s,
+                                    "bba"s,  "aabb"s, "abab"s, "abba"s, "baab"s,
+                                    "baba"s, "bbaa"s, "bbb"s,  "abbb"s, "babb"s,
+                                    "bbab"s, "bbba"s, "bbbb"s}));
+
+    Alphabet            alphabet("ba"s);
+    std::vector<size_t> alphabet_weights = {1, 2};
+    auto                a                = "a"s;
+    auto                b                = "b"s;
+
+    REQUIRE(wt_lex_cmp(alphabet, alphabet_weights, b, a));
+    REQUIRE(wt_lex_cmp_no_checks(alphabet, alphabet_weights, b, a));
+    REQUIRE(wt_lex_cmp_no_checks(alphabet,
+                                 alphabet_weights,
+                                 b.cbegin(),
+                                 b.cend(),
+                                 a.cbegin(),
+                                 a.cend()));
+
+    std::sort(
+        strings.begin(), strings.end(), WtLexCmp(alphabet, alphabet_weights));
+
+    REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "ba"s,   "ab"s,   "bbbb"s,
+                                    "bba"s,  "bab"s,  "abb"s,  "aa"s,   "bbba"s,
+                                    "bbab"s, "babb"s, "baa"s,  "abbb"s, "aba"s,
+                                    "aab"s,  "bbaa"s, "baba"s, "baab"s, "abba"s,
+                                    "abab"s, "aabb"s, "aaa"s,  "baaa"s, "abaa"s,
+                                    "aaba"s, "aaab"s, "aaaa"s}));
+
+    REQUIRE(WtLexCmpNoChecks(alphabet, alphabet_weights)(b, a));
+
+    std::vector<size_t> short_weights = {1};
+    REQUIRE_EXCEPTION_MSG(
+        static_cast<void>(wt_lex_cmp(alphabet, short_weights, a, b)),
+        "letter index out of bounds, expected index in [0, 1), found index 1 "
+        "in position 0");
+
+    alphabet.init("cd"s);
+    REQUIRE_EXCEPTION_MSG(
+        static_cast<void>(WtLexCmp(alphabet, alphabet_weights)("b"s, "aa"s)),
+        "invalid letter 'b', valid letters are \"cd\"");
+  }
+
 }  // namespace libsemigroups
