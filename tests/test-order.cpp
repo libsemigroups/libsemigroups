@@ -125,13 +125,65 @@ namespace libsemigroups {
         weights, w2.cbegin(), w2.cend(), w1.cbegin(), w1.cend()));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
+                          "006",
+                          "with alphabet",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg = ReportGuard(false);
+    Alphabet            alphabet("ba"s);
+    std::vector<size_t> weights       = {10, 1};
+    std::vector<size_t> equal_weights = {1, 1};
+    auto                a             = "a"s;
+    auto                b             = "b"s;
+
+    REQUIRE(wt_lenlex_cmp_no_checks(alphabet, weights, a, b));
+    REQUIRE(!wt_lenlex_cmp_no_checks(alphabet, weights, b, a));
+
+    REQUIRE(wt_lenlex_cmp_no_checks(alphabet, equal_weights, b, a));
+    REQUIRE(!wt_lenlex_cmp_no_checks(alphabet, equal_weights, a, b));
+    REQUIRE(
+        wt_lenlex_cmp_no_checks(
+            alphabet, equal_weights, b.cbegin(), b.cend(), a.cbegin(), a.cend())
+        == wt_lenlex_cmp_no_checks(alphabet, equal_weights, b, a));
+  }
+
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
                           "007",
+                          "struct with alphabet",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg = ReportGuard(false);
+    Alphabet            alphabet("ba"s);
+    std::vector<size_t> weights       = {10, 1};
+    std::vector<size_t> equal_weights = {1, 1};
+    auto                a             = "a"s;
+    auto                b             = "b"s;
+
+    WtLenLexCmp comp(alphabet, weights, WtLenLexCmp<std::string>::no_checks);
+    REQUIRE(comp(a, b));
+    REQUIRE(!comp(b, a));
+
+    comp.init(alphabet, equal_weights, WtLenLexCmp<std::string>::no_checks);
+    REQUIRE(comp(b, a));
+    REQUIRE(!comp(a, b));
+    REQUIRE(comp(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+
+    WtLenLexCmp moved(Alphabet("ba"s),
+                      std::vector<size_t>{1, 1},
+                      WtLenLexCmp<std::string>::no_checks);
+    REQUIRE(moved(b, a));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
+                          "008",
                           "struct with operator()",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtLenLexCmp         comp(weights, WtLenLexCmp::no_checks);
+    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
 
     word_type w1 = {0, 1};  // weight = 3
     word_type w2 = {2};     // weight = 6
@@ -141,12 +193,12 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
-                          "008",
+                          "009",
                           "same weight fallback to shortlex",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {1, 1, 1, 1, 1};
-    WtLenLexCmp         comp(weights, WtLenLexCmp::no_checks);
+    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
 
     word_type w1 = {0};  // weight = 1
     word_type w2 = {1};  // weight = 1
@@ -156,12 +208,12 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
-                          "009",
+                          "010",
                           "complex example from documentation",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtLenLexCmp         comp(weights, WtLenLexCmp::no_checks);
+    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
 
     word_type w1 = {1, 1, 1, 1};  // weight = 1 + 1 + 1 + 1 = 4
     word_type w2 = {3, 1};        // weight = 3 + 1 = 4
@@ -183,7 +235,7 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "010",
+                          "011",
                           "std::string format",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -196,7 +248,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "011",
+                          "012",
                           "std::array format",
                           "[quick][order]") {
     auto                  rg      = ReportGuard(false);
@@ -212,7 +264,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "012",
+                          "013",
                           "std::vector with different content",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -230,7 +282,7 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "013",
+                          "014",
                           "uniform weights (shortlex)",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -244,7 +296,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "014",
+                          "015",
                           "single letter alphabet",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -259,7 +311,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "015",
+                          "016",
                           "words with same prefix",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -271,7 +323,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "016",
+                          "017",
                           "repeated letters",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -289,7 +341,7 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "017",
+                          "018",
                           "irreflexivity: !(a < a)",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -300,7 +352,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "018",
+                          "019",
                           "transitivity: a<b && b<c => a<c",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -315,7 +367,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
-                          "019",
+                          "020",
                           "antisymmetry: a<b => !(b<a)",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -332,7 +384,7 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
-                          "020",
+                          "021",
                           "valid letters with word_type",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -345,7 +397,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
-                          "021",
+                          "022",
                           "invalid letter throws exception",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -358,7 +410,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
-                          "022",
+                          "023",
                           "std::string format with validation",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -371,7 +423,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
-                          "023",
+                          "024",
                           "iterator version with validation",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -387,6 +439,32 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
                           "025",
+                          "with alphabet",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg = ReportGuard(false);
+    Alphabet            alphabet("ba"s);
+    std::vector<size_t> weights       = {10, 1};
+    std::vector<size_t> equal_weights = {1, 1};
+    auto                a             = "a"s;
+    auto                b             = "b"s;
+
+    REQUIRE(wt_lenlex_cmp(alphabet, weights, a, b));
+    REQUIRE(!wt_lenlex_cmp(alphabet, weights, b, a));
+
+    REQUIRE(wt_lenlex_cmp(alphabet, equal_weights, b, a));
+    REQUIRE(!wt_lenlex_cmp(alphabet, equal_weights, a, b));
+    REQUIRE(wt_lenlex_cmp(
+        alphabet, equal_weights, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+
+    std::vector<size_t> short_weights = {1};
+    REQUIRE_THROWS_AS(wt_lenlex_cmp(alphabet, short_weights, a, b),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
+                          "026",
                           "both words invalid",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -398,7 +476,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
-                          "026",
+                          "027",
                           "invalid letter in middle of word",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -411,7 +489,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
-                          "027",
+                          "028",
                           "empty weights vector",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
@@ -424,12 +502,12 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
-                          "028",
+                          "029",
                           "struct with validation enabled",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtLenLexCmp         comp(weights, WtLenLexCmp::checks);
+    WtLenLexCmp         comp(weights, WtLenLexCmp<>::checks);
 
     word_type w1 = {0, 1};  // weight = 3
     word_type w2 = {2};     // weight = 6
@@ -439,12 +517,33 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
-                          "029",
+                          "030",
+                          "struct with alphabet and validation enabled",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg = ReportGuard(false);
+    Alphabet            alphabet("ba"s);
+    std::vector<size_t> weights = {10, 1};
+    auto                a       = "a"s;
+    auto                b       = "b"s;
+
+    WtLenLexCmp comp(alphabet, weights, WtLenLexCmp<std::string>::checks);
+    REQUIRE(comp(a, b));
+    REQUIRE(!comp(b, a));
+
+    comp.weights({1});
+    REQUIRE_THROWS_AS(comp(a, b), LibsemigroupsException);
+    REQUIRE(!comp.call_no_checks(b, b));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
+                          "031",
                           "struct throws on invalid letter with checks enabled",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};  // alphabet size = 5
-    WtLenLexCmp         comp(weights, WtLenLexCmp::checks);
+    WtLenLexCmp         comp(weights, WtLenLexCmp<>::checks);
 
     word_type w1 = {0, 1};
     word_type w2 = {10};  // invalid: 10 >= weights.size()
@@ -453,12 +552,12 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
-                          "030",
+                          "032",
                           "call_no_checks always validates",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtLenLexCmp         comp(weights, WtLenLexCmp::no_checks);
+    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
 
     word_type w1 = {0, 1};  // weight = 3
     word_type w2 = {2};     // weight = 6
@@ -468,12 +567,12 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
-                          "034",
+                          "033",
                           "call_no_checks throws on invalid letter",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};  // alphabet size = 5
-    WtLenLexCmp         comp(weights, WtLenLexCmp::checks);
+    WtLenLexCmp         comp(weights, WtLenLexCmp<>::checks);
 
     word_type w1 = {0, 1};
     word_type w2 = {10};  // invalid: 10 >= weights.size()
@@ -487,14 +586,14 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
-                          "031",
+                          "034",
                           "use in std::set",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {3, 2, 1};
-    WtLenLexCmp         comp(weights, WtLenLexCmp::no_checks);
+    WtLenLexCmp         comp(weights, WtLenLexCmp<>::no_checks);
 
-    std::set<word_type, WtLenLexCmp> ordered_words(comp);
+    std::set<word_type, WtLenLexCmp<>> ordered_words(comp);
     ordered_words.insert({2});     // weight = 1
     ordered_words.insert({1, 1});  // weight = 4
     ordered_words.insert({0, 2});  // weight = 4
@@ -513,7 +612,7 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("wt_lenlex_cmp_no_checks",
-                                   "032",
+                                   "035",
                                    "multiple word types",
                                    "[quick][order]",
                                    word_type,
@@ -529,7 +628,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("wt_lenlex_cmp",
-                                   "033",
+                                   "036",
                                    "validation with multiple word types",
                                    "[quick][order]",
                                    word_type,
@@ -549,7 +648,7 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("rev_rpo_cmp",
-                          "034",
+                          "037",
                           "empty word",
                           "[quick][order]") {
     auto      rg = ReportGuard(false);
@@ -561,7 +660,7 @@ namespace libsemigroups {
     REQUIRE(!rev_rpo_cmp(w1, w2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("RevRPOCmp", "035", "empty word", "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("RevRPOCmp", "038", "empty word", "[quick][order]") {
     auto      rg = ReportGuard(false);
     word_type w1(12_w);
     word_type w2{};
@@ -572,7 +671,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("rev_rpo_cmp",
-                          "036",
+                          "039",
                           "with alphabet",
                           "[quick][order]") {
     using std::string_literals::operator""s;
@@ -595,7 +694,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("rpo_cmp",
-                          "037",
+                          "040",
                           "random examples",
                           "[quick][order]") {
     using std::literals::string_literals::operator""s;
@@ -802,7 +901,7 @@ namespace libsemigroups {
     REQUIRE(rpo_cmp("bcbabcbbc"s, "acbbabcacb"s));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "038", "with alphabet", "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "041", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
     Alphabet alphabet("ba"s);
@@ -823,7 +922,7 @@ namespace libsemigroups {
   // lex_cmp with alphabet
   // =========================================================================
 
-  LIBSEMIGROUPS_TEST_CASE("lex_cmp", "039", "with alphabet", "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("lex_cmp", "042", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
     StringRange sr;
@@ -885,7 +984,7 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("lenlex_cmp",
-                          "040",
+                          "043",
                           "with alphabet",
                           "[quick][order]") {
     using std::string_literals::operator""s;
@@ -941,7 +1040,7 @@ namespace libsemigroups {
   // rpo_cmp with alphabet
   // =========================================================================
 
-  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "040", "with alphabet", "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "044", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
     StringRange sr;
@@ -1000,7 +1099,7 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("rev_rpo_cmp",
-                          "041",
+                          "045",
                           "with alphabet",
                           "[quick][order]") {
     using std::string_literals::operator""s;
@@ -1046,6 +1145,7 @@ namespace libsemigroups {
                                     "abab"s, "aabb"s, "bbb"s,  "bbba"s, "bbab"s,
                                     "babb"s, "abbb"s, "bbbb"s}));
 
+    alphabet = Alphabet("cd"s);
     std::sort(strings.begin(), strings.end(), RevRPOCmp{alphabet});
 
     REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ab"s,   "abb"s,
@@ -1054,6 +1154,55 @@ namespace libsemigroups {
                                     "aba"s,  "abab"s, "abba"s, "baa"s,  "baab"s,
                                     "baba"s, "bbaa"s, "aaa"s,  "aaab"s, "aaba"s,
                                     "abaa"s, "baaa"s, "aaaa"s}));
+  }
+
+  // =========================================================================
+  // wt_lex_cmp with string weights
+  // =========================================================================
+
+  LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
+                          "046",
+                          "with string weights",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    StringRange sr;
+    sr.alphabet("ab").min(2).max(5);
+
+    auto strings = (sr | rx::to_vector());
+
+    std::vector<size_t> weights(256, 100);
+    weights['a'] = 1;
+    weights['b'] = 2;
+
+    std::sort(strings.begin(),
+              strings.end(),
+              [&weights](auto const& lhop, auto const& rhop) {
+                return wt_lenlex_cmp(weights, lhop, rhop);
+              });
+
+    REQUIRE(strings == std::vector({"aa"s,   "ab"s,   "ba"s,   "aaa"s,  "bb"s,
+                                    "aab"s,  "aba"s,  "baa"s,  "aaaa"s, "abb"s,
+                                    "bab"s,  "bba"s,  "aaab"s, "aaba"s, "abaa"s,
+                                    "baaa"s, "bbb"s,  "aabb"s, "abab"s, "abba"s,
+                                    "baab"s, "baba"s, "bbaa"s, "abbb"s, "babb"s,
+                                    "bbab"s, "bbba"s, "bbbb"s}));
+
+    Alphabet alphabet("ba"s);
+
+    weights['a'] = 2;
+    weights['b'] = 1;
+
+    std::sort(strings.begin(),
+              strings.end(),
+              WtLenLexCmp(alphabet, weights, WtLenLexCmp<>::checks));
+
+    REQUIRE(strings == std::vector({"bb"s,   "ba"s,   "ab"s,   "aa"s,   "bbb"s,
+                                    "bba"s,  "bab"s,  "baa"s,  "abb"s,  "aba"s,
+                                    "aab"s,  "aaa"s,  "bbbb"s, "bbba"s, "bbab"s,
+                                    "bbaa"s, "babb"s, "baba"s, "baab"s, "baaa"s,
+                                    "abbb"s, "abba"s, "abab"s, "abaa"s, "aabb"s,
+                                    "aaba"s, "aaab"s, "aaaa"s}));
   }
 
 }  // namespace libsemigroups

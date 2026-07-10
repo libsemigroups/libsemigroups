@@ -172,6 +172,45 @@ namespace libsemigroups {
     return wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
 
+  template <typename Word, typename Iterator>
+  bool wt_lenlex_cmp(Alphabet<Word> const&      alphabet,
+                     std::vector<size_t> const& weights,
+                     Iterator                   first1,
+                     Iterator                   last1,
+                     Iterator                   first2,
+                     Iterator                   last2) {
+    size_t const alphabet_size = weights.size();
+
+    auto const it1
+        = std::find_if(first1, last1, [&alphabet, &alphabet_size](auto letter) {
+            return alphabet.index(letter) >= alphabet_size;
+          });
+    if (it1 != last1) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "letter value out of bounds, expected value in [0, {}), found {} in "
+          "position {}",
+          alphabet_size,
+          alphabet.index(*it1),
+          std::distance(first1, it1));
+    }
+
+    auto const it2
+        = std::find_if(first2, last2, [&alphabet, &alphabet_size](auto letter) {
+            return alphabet.index(letter) >= alphabet_size;
+          });
+    if (it2 != last2) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "letter value out of bounds, expected value in [0, {}), found {} in "
+          "position {}",
+          alphabet_size,
+          alphabet.index(*it2),
+          std::distance(first2, it2));
+    }
+
+    return wt_lenlex_cmp_no_checks(
+        alphabet, weights, first1, last1, first2, last2);
+  }
+
   template <typename Iterator>
   bool wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
                             Iterator                   first1,
