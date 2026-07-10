@@ -296,8 +296,84 @@ namespace libsemigroups {
       return lex_cmp(_alphabet, x, y);
     }
 
+    //! \brief Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! \tparam Iterator the type of the parameters.
+    //!
+    //! \param first1 the start of the first object to compare.
+    //! \param last1 one beyond the end of the first object to compare.
+    //! \param first2 the start of the second object to compare.
+    //! \param last2 one beyond the end of the second object to compare.
+    //!
+    //! \returns The boolean value \c true if the range `[first1, last1)` is
+    //! lexicographically less than the range `[first2, last2)`, and \c false
+    //! otherwise.
+    //!
+    //! \exceptions TODO
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    //!
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return lex_cmp(_alphabet, first1, last1, first2, last2);
+    }
+  };
+
+  // TODO doc
+  template <typename Word>
+  class LexCmpNoChecks {
+    Alphabet<Word> _alphabet;  // TODO reference or pointer?
+
+   public:
     // TODO doc
-    [[nodiscard]] bool call_no_checks(Word const& x, Word const& y) const {
+    LexCmpNoChecks() = delete;
+
+    // TODO doc
+    LexCmpNoChecks(LexCmpNoChecks const&) = default;
+    // TODO doc
+    LexCmpNoChecks(LexCmpNoChecks&&) = default;
+    // TODO doc
+    LexCmpNoChecks& operator=(LexCmpNoChecks const&) = default;
+    // TODO doc
+    LexCmpNoChecks& operator=(LexCmpNoChecks&&) = default;
+
+    ~LexCmpNoChecks() = default;
+
+    // TODO doc
+    explicit LexCmpNoChecks(Alphabet<Word> const& alphabet)
+        : _alphabet(alphabet) {}
+
+    // TODO doc
+    explicit LexCmpNoChecks(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Call operator that compares \p x and \p y using
+    //! std::lexicographical_compare.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! std::lexicographical_compare.
+    //!
+    //! \tparam Word the type of the parameters.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is lexicographically less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \exceptions TODO
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return lex_cmp_no_checks(_alphabet, x, y);
     }
 
@@ -328,18 +404,9 @@ namespace libsemigroups {
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
-      return lex_cmp(_alphabet, first1, last1, first2, last2);
-    }
-
-    // TODO doc
-    template <typename Iterator>
-    [[nodiscard]] bool call_no_checks(Iterator first1,
-                                      Iterator last1,
-                                      Iterator first2,
-                                      Iterator last2) const {
       return lex_cmp_no_checks(_alphabet, first1, last1, first2, last2);
     }
-  };
+  };  // class LexCmpNoChecks
 
   //! \brief A stateless struct with binary call operator using
   //! std::lexicographical_compare.
