@@ -57,8 +57,8 @@ namespace libsemigroups {
 
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp<>>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp<>>;
-  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
-  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
+  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp<>>;
+  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp<>>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 
@@ -136,7 +136,7 @@ namespace libsemigroups {
       kb.max_overlap(45);
       kb.run();
       REQUIRE(kb.rewriting_system().number_of_rules() == 1'026);
-    } else if (std::is_same_v<order, RevRPOCmp>) {
+    } else if (std::is_same_v<order, RevRPOCmp<>>) {
       kb.max_overlap(56);
       kb.run();
       REQUIRE(kb.rewriting_system().number_of_rules() == 407);

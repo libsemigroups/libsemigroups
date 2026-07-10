@@ -204,10 +204,11 @@ namespace libsemigroups {
 
   template <typename Word>
   class LexCmp {
-    Alphabet<Word> _alphabet;
+    Alphabet<Word> _alphabet;  // TODO reference or pointer?
 
    public:
-    LexCmp()                         = delete;
+    LexCmp() = delete;
+
     LexCmp(LexCmp const&)            = default;
     LexCmp(LexCmp&&)                 = default;
     LexCmp& operator=(LexCmp const&) = default;
@@ -1135,6 +1136,14 @@ namespace libsemigroups {
                                  Iterator first2,
                                  Iterator last2) noexcept;
 
+  // TODO doc
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
+                                 Iterator              first1,
+                                 Iterator              last1,
+                                 Iterator              first2,
+                                 Iterator              last2);
+
   //! \brief Compare two objects of the same type using \ref rev_rpo_cmp.
   //!
   //! Defined in `order.hpp`.
@@ -1165,6 +1174,14 @@ namespace libsemigroups {
   [[nodiscard]] bool rev_rpo_cmp(Iterator const& x,
                                  Iterator const& y) noexcept {
     return rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  // TODO doc
+  template <typename Word>
+  [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
+                                 Word const&           x,
+                                 Word const&           y) {
+    return rev_rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects via their pointers using \ref rev_rpo_cmp.
@@ -1203,6 +1220,51 @@ namespace libsemigroups {
     return rev_rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
+  template <typename Word = Default>
+  class RevRPOCmp;
+
+  template <typename Word>
+  class RevRPOCmp {
+    Alphabet<Word> _alphabet;
+
+   public:
+    RevRPOCmp()                            = delete;
+    RevRPOCmp(RevRPOCmp const&)            = default;
+    RevRPOCmp(RevRPOCmp&&)                 = default;
+    RevRPOCmp& operator=(RevRPOCmp const&) = default;
+    RevRPOCmp& operator=(RevRPOCmp&&)      = default;
+
+    ~RevRPOCmp() = default;
+
+    explicit RevRPOCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+    explicit RevRPOCmp(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the reversed recursive path ordering, and \c false otherwise.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return rev_rpo_cmp(_alphabet, x, y);
+    }
+
+    // TODO doc
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rev_rpo_cmp(_alphabet, first1, last1, first2, last2);
+    }
+  };
+
   //! \brief A stateless struct with binary call operator using
   //! \ref rev_rpo_cmp.
   //!
@@ -1216,7 +1278,8 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  struct RevRPOCmp {
+  template <>
+  struct RevRPOCmp<Default> {
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rev_rpo_cmp.
     //!
@@ -1395,7 +1458,7 @@ namespace libsemigroups {
   //!
   //! \deprecated_warning{struct} Use \ref RevRPOCmp instead.
   using RecursivePathCompare [[deprecated("Use RevRPOCmp instead!")]]
-  = RevRPOCmp;
+  = RevRPOCmp<>;
 
   //////////////////////////////////////////////////////////////////////
   // Weighted len-lex
@@ -3241,7 +3304,7 @@ namespace libsemigroups {
     //!
     //! Specialization of \ref is_well_founded for \ref RPOCmp.
     template <>
-    struct is_well_founded<RevRPOCmp> : std::true_type {};
+    struct is_well_founded<RevRPOCmp<>> : std::true_type {};
 
     //! \brief Weighted short-lex order is well-founded.
     //!

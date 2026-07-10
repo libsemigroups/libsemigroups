@@ -75,6 +75,19 @@ namespace libsemigroups {
                    std::make_reverse_iterator(first2));
   }
 
+  template <typename Word, typename Iterator>
+  bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
+                   Iterator              first1,
+                   Iterator              last1,
+                   Iterator              first2,
+                   Iterator              last2) {
+    return rpo_cmp(alphabet,
+                   std::make_reverse_iterator(last1),
+                   std::make_reverse_iterator(first1),
+                   std::make_reverse_iterator(last2),
+                   std::make_reverse_iterator(first2));
+  }
+
   template <typename Iterator, typename>
   bool wt_lenlex_cmp_no_checks(Iterator                   first1,
                                Iterator                   last1,
