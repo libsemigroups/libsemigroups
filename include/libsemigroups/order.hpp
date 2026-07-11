@@ -347,7 +347,7 @@ namespace libsemigroups {
     [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
       return _alphabet;
     }
-  };
+  };  // class LexCmp
 
   //! \brief Stateful lexicographic comparison functor without checks.
   //!
@@ -556,7 +556,7 @@ namespace libsemigroups {
       return std::lexicographical_compare(
           x.begin(), x.end(), y.begin(), y.end());
     }
-  };
+  };  // struct LexCmp<Default>
 
   //////////////////////////////////////////////////////////////////////
   // Len-lex
@@ -822,7 +822,7 @@ namespace libsemigroups {
     [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
       return _alphabet;
     }
-  };
+  };  // class LenLexCmp
 
   //! \brief Stateful len-lex comparison functor without checks.
   //!
@@ -1228,7 +1228,7 @@ namespace libsemigroups {
     [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
       return _alphabet;
     }
-  };
+  };  // class RPOCmp
 
   //! \brief Stateful recursive path order comparison functor without checks.
   //!
@@ -1372,7 +1372,7 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return rpo_cmp(first1, last1, first2, last2);
     }
-  };
+  };  // struct RPOCmp<Default>
 
   //////////////////////////////////////////////////////////////////////
   // Reversed recursive path order (RPO)
@@ -1635,7 +1635,7 @@ namespace libsemigroups {
     [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
       return _alphabet;
     }
-  };
+  };  // class RevRPOCmp
 
   //! \brief Stateful reversed recursive path order comparison functor without
   //! checks.
@@ -1780,7 +1780,7 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return rev_rpo_cmp(first1, last1, first2, last2);
     }
-  };
+  };  // struct RevRPOCmp<Default>
 
   //////////////////////////////////////////////////////////////////////
   // Weighted len-lex
@@ -2450,7 +2450,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
-  };
+  };  // class WtLenLexCmpNoChecks
 
   //! \brief Stateful weighted len-lex comparison functor.
   //!
@@ -2586,7 +2586,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
-  };
+  };  // class WtLenLexCmp<Default>
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from weights.
   WtLenLexCmp(std::vector<size_t> const&)->WtLenLexCmp<>;
@@ -2742,7 +2742,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
-  };
+  };  // class WtLenLexCmpNoChecks<Default>
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
   //! weights.
@@ -3406,7 +3406,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
-  };
+  };  // class WtLexCmpNoChecks
 
   //! \brief Stateful weighted lex comparison functor.
   //!
@@ -3531,7 +3531,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
-  };  // class WtLexCmp
+  };  // class WtLexCmp<Default>
 
   //! \brief Deduction guide for constructing \ref WtLexCmp from weights.
   WtLexCmp(std::vector<size_t> const&)->WtLexCmp<>;
@@ -3669,7 +3669,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
-  };
+  };  // class WtLexCmpNoChecks<Default>
 
   //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from
   //! weights.
