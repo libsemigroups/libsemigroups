@@ -20,6 +20,7 @@
 #include <cstddef>  // for size_t
 #include <set>      // for set
 #include <string>   // for string
+#include <utility>  // for move
 #include <vector>   // for vector
 
 #include "libsemigroups/detail/rewriting-system.hpp"
@@ -1296,6 +1297,388 @@ namespace libsemigroups {
     REQUIRE_EXCEPTION_MSG(
         static_cast<void>(WtLexCmp(alphabet, alphabet_weights)("b"s, "aa"s)),
         "invalid letter 'b', valid letters are \"cd\"");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("order.hpp",
+                          "048",
+                          "coverage function instantiations",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto rg = ReportGuard(false);
+
+    // Function instantiations that are easy to miss in the coverage report.
+    std::vector<size_t> v1 = {0, 1};
+    std::vector<size_t> v2 = {0, 2};
+    REQUIRE(lex_cmp(v1, v2));
+
+    size_t const a1[] = {0, 1};
+    size_t const a2[] = {0, 1, 0};
+    REQUIRE(lenlex_cmp(a1, a1 + 2, a2, a2 + 3));
+
+    auto c1 = chain(v1, v1);
+    auto c2 = chain(v1, v2);
+    REQUIRE(LenLexCmp{}(c1, c2));
+
+    Alphabet ba("ba"s);
+    auto     a = "a"s;
+    auto     b = "b"s;
+
+    REQUIRE(lex_cmp_no_checks(ba, b, a));
+    REQUIRE(lex_cmp_no_checks(ba, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order.hpp",
+                                   "049",
+                                   "default comparator API",
+                                   "[quick][order]",
+                                   LexCmp<>,
+                                   LenLexCmp<>,
+                                   RPOCmp<>,
+                                   RevRPOCmp<>) {
+    using std::string_literals::operator""s;
+
+    auto rg = ReportGuard(false);
+    auto a  = "a"s;
+    auto b  = "b"s;
+
+    TestType cmp;
+    REQUIRE(cmp(a, b));
+    REQUIRE(cmp(a.cbegin(), a.cend(), b.cbegin(), b.cend()));
+    REQUIRE(TestType{}(a.cbegin(), a.cend(), b.cbegin(), b.cend()));
+
+    TestType cmp_copy(cmp);
+    REQUIRE(cmp_copy(a, b));
+    TestType cmp_move(std::move(cmp_copy));
+    REQUIRE(cmp_move(a, b));
+
+    TestType cmp_copy_assigned;
+    cmp_copy_assigned = cmp;
+    REQUIRE(cmp_copy_assigned(a, b));
+    TestType cmp_move_assigned;
+    cmp_move_assigned = std::move(cmp_move);
+    REQUIRE(cmp_move_assigned(a, b));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order.hpp",
+                                   "050",
+                                   "alphabet comparator API",
+                                   "[quick][order]",
+                                   LexCmp<std::string>,
+                                   LenLexCmp<std::string>,
+                                   RPOCmp<std::string>,
+                                   RevRPOCmp<std::string>) {
+    using std::string_literals::operator""s;
+
+    auto                  rg = ReportGuard(false);
+    Alphabet<std::string> ba("ba"s);
+    Alphabet<std::string> ab("ab"s);
+    auto                  a = "a"s;
+    auto                  b = "b"s;
+
+    TestType cmp(ba);
+    REQUIRE(cmp(b, a));
+    REQUIRE(cmp(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+
+    TestType from_rvalue(Alphabet<std::string>("ba"s));
+    REQUIRE(from_rvalue(b, a));
+    REQUIRE(from_rvalue(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+
+    TestType cmp_copy(cmp);
+    REQUIRE(cmp_copy(b, a));
+    TestType cmp_move(std::move(cmp_copy));
+    REQUIRE(cmp_move(b, a));
+
+    TestType cmp_copy_assigned(ab);
+    cmp_copy_assigned = cmp;
+    REQUIRE(cmp_copy_assigned(b, a));
+    TestType cmp_move_assigned(ab);
+    cmp_move_assigned = std::move(cmp_move);
+    REQUIRE(cmp_move_assigned(b, a));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
+                                   "051",
+                                   "alpha no-check API",
+                                   "[quick][order]",
+                                   LexCmpNoChecks<std::string>,
+                                   LenLexCmpNoChecks<std::string>,
+                                   RPOCmpNoChecks<std::string>,
+                                   RevRPOCmpNoChecks<std::string>) {
+    using std::string_literals::operator""s;
+
+    auto                  rg = ReportGuard(false);
+    Alphabet<std::string> ba("ba"s);
+    Alphabet<std::string> ab("ab"s);
+    auto                  a = "a"s;
+    auto                  b = "b"s;
+
+    TestType cmp(ba);
+    REQUIRE(cmp(b, a));
+    REQUIRE(cmp(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+
+    TestType from_rvalue(Alphabet<std::string>("ba"s));
+    REQUIRE(from_rvalue(b, a));
+    REQUIRE(from_rvalue(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+
+    TestType cmp_copy(cmp);
+    REQUIRE(cmp_copy(b, a));
+    TestType cmp_move(std::move(cmp_copy));
+    REQUIRE(cmp_move(b, a));
+
+    TestType cmp_copy_assigned(ab);
+    cmp_copy_assigned = cmp;
+    REQUIRE(cmp_copy_assigned(b, a));
+    TestType cmp_move_assigned(ab);
+    cmp_move_assigned = std::move(cmp_move);
+    REQUIRE(cmp_move_assigned(b, a));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
+                                   "052",
+                                   "weighted alpha API",
+                                   "[quick][order]",
+                                   WtLenLexCmp<std::string>,
+                                   WtLenLexCmpNoChecks<std::string>,
+                                   WtLexCmp<std::string>,
+                                   WtLexCmpNoChecks<std::string>) {
+    using std::string_literals::operator""s;
+
+    auto                  rg = ReportGuard(false);
+    Alphabet<std::string> ba("ba"s);
+    Alphabet<std::string> ab("ab"s);
+    std::vector<size_t>   ba_weights = {10, 1};
+    std::vector<size_t>   ab_weights = {1, 10};
+    std::vector<size_t>   equal      = {1, 1};
+    auto                  a          = "a"s;
+    auto                  b          = "b"s;
+
+    TestType cmp(ba, ba_weights);
+    REQUIRE(cmp(a, b));
+    REQUIRE(cmp(a.cbegin(), a.cend(), b.cbegin(), b.cend()));
+    REQUIRE(cmp.alphabet().size() == 2);
+    REQUIRE(cmp.weights() == ba_weights);
+
+    cmp.init(ab, ab_weights);
+    REQUIRE(cmp(a, b));
+    cmp.init(Alphabet<std::string>("ba"s), std::vector<size_t>{10, 1});
+    REQUIRE(cmp(a, b));
+
+    TestType moved(Alphabet<std::string>("ab"s), std::vector<size_t>{1, 10});
+    REQUIRE(moved(a, b));
+    moved.init(ba, equal);
+    REQUIRE(moved(b, a));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order.hpp",
+                                   "053",
+                                   "weights-only comparator API",
+                                   "[quick][order]",
+                                   WtLenLexCmp<>,
+                                   WtLenLexCmpNoChecks<>,
+                                   WtLexCmp<>,
+                                   WtLexCmpNoChecks<>) {
+    auto rg = ReportGuard(false);
+
+    std::vector<size_t> ba_weights = {10, 1};
+    std::vector<size_t> equal      = {1, 1};
+    word_type           zero       = {0};
+    word_type           one        = {1};
+
+    TestType cmp(ba_weights);
+    REQUIRE(cmp(one, zero));
+    REQUIRE(cmp(one.cbegin(), one.cend(), zero.cbegin(), zero.cend()));
+    REQUIRE(cmp.weights() == ba_weights);
+
+    cmp.init(equal);
+    REQUIRE(cmp(zero, one));
+    cmp.init(std::vector<size_t>{10, 1});
+    REQUIRE(cmp(one, zero));
+
+    TestType moved(std::vector<size_t>{1, 1});
+    REQUIRE(moved(zero, one));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
+                                   "054",
+                                   "wll alpha ctors",
+                                   "[quick][order]",
+                                   WtLenLexCmp<std::string>,
+                                   WtLenLexCmpNoChecks<std::string>) {
+    using std::string_literals::operator""s;
+
+    auto                  rg = ReportGuard(false);
+    Alphabet<std::string> ba("ba"s);
+    Alphabet<std::string> ab("ab"s);
+    std::vector<size_t>   ba_weights = {10, 1};
+    std::vector<size_t>   equal      = {1, 1};
+    auto                  a          = "a"s;
+    auto                  b          = "b"s;
+
+    TestType from_lvalue(ba, ba_weights);
+    REQUIRE(from_lvalue(a, b));
+    REQUIRE(from_lvalue.alphabet().size() == 2);
+    REQUIRE(from_lvalue.weights() == ba_weights);
+
+    TestType from_rvalue(Alphabet<std::string>("ba"s),
+                         std::vector<size_t>{10, 1});
+    REQUIRE(from_rvalue(a, b));
+    REQUIRE(from_rvalue.alphabet().size() == 2);
+    REQUIRE(from_rvalue.weights() == ba_weights);
+
+    TestType copied(from_lvalue);
+    REQUIRE(copied(a, b));
+    REQUIRE(copied.weights() == ba_weights);
+
+    TestType moved(std::move(copied));
+    REQUIRE(moved(a, b));
+    REQUIRE(moved.weights() == ba_weights);
+
+    TestType copy_assigned(ab, equal);
+    copy_assigned = from_lvalue;
+    REQUIRE(copy_assigned(a, b));
+    REQUIRE(copy_assigned.weights() == ba_weights);
+
+    TestType move_assigned(ab, equal);
+    move_assigned = std::move(moved);
+    REQUIRE(move_assigned(a, b));
+    REQUIRE(move_assigned.weights() == ba_weights);
+
+    std::vector<size_t> short_weights = {1};
+    REQUIRE_EXCEPTION_MSG(
+        static_cast<void>(TestType(ba, short_weights)),
+        "the alphabet and weights must have the same size, but found 2 and 1");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
+                                   "055",
+                                   "wll ctors",
+                                   "[quick][order]",
+                                   WtLenLexCmp<>,
+                                   WtLenLexCmpNoChecks<>) {
+    auto rg = ReportGuard(false);
+
+    std::vector<size_t> ba_weights = {10, 1};
+    std::vector<size_t> equal      = {1, 1};
+    word_type           zero       = {0};
+    word_type           one        = {1};
+
+    TestType from_lvalue(ba_weights);
+    REQUIRE(from_lvalue(one, zero));
+    REQUIRE(from_lvalue.weights() == ba_weights);
+
+    TestType from_rvalue(std::vector<size_t>{10, 1});
+    REQUIRE(from_rvalue(one, zero));
+    REQUIRE(from_rvalue.weights() == ba_weights);
+
+    TestType copied(from_lvalue);
+    REQUIRE(copied(one, zero));
+    REQUIRE(copied.weights() == ba_weights);
+
+    TestType moved(std::move(copied));
+    REQUIRE(moved(one, zero));
+    REQUIRE(moved.weights() == ba_weights);
+
+    TestType copy_assigned(equal);
+    copy_assigned = from_lvalue;
+    REQUIRE(copy_assigned(one, zero));
+    REQUIRE(copy_assigned.weights() == ba_weights);
+
+    TestType move_assigned(equal);
+    move_assigned = std::move(moved);
+    REQUIRE(move_assigned(one, zero));
+    REQUIRE(move_assigned.weights() == ba_weights);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
+                                   "056",
+                                   "wl alpha ctors",
+                                   "[quick][order]",
+                                   WtLexCmp<std::string>,
+                                   WtLexCmpNoChecks<std::string>) {
+    using std::string_literals::operator""s;
+
+    auto                  rg = ReportGuard(false);
+    Alphabet<std::string> ba("ba"s);
+    Alphabet<std::string> ab("ab"s);
+    std::vector<size_t>   ba_weights = {10, 1};
+    std::vector<size_t>   equal      = {1, 1};
+    auto                  a          = "a"s;
+    auto                  b          = "b"s;
+
+    TestType from_lvalue(ba, ba_weights);
+    REQUIRE(from_lvalue(a, b));
+    REQUIRE(from_lvalue.alphabet().size() == 2);
+    REQUIRE(from_lvalue.weights() == ba_weights);
+
+    TestType from_rvalue(Alphabet<std::string>("ba"s),
+                         std::vector<size_t>{10, 1});
+    REQUIRE(from_rvalue(a, b));
+    REQUIRE(from_rvalue.alphabet().size() == 2);
+    REQUIRE(from_rvalue.weights() == ba_weights);
+
+    TestType copied(from_lvalue);
+    REQUIRE(copied(a, b));
+    REQUIRE(copied.weights() == ba_weights);
+
+    TestType moved(std::move(copied));
+    REQUIRE(moved(a, b));
+    REQUIRE(moved.weights() == ba_weights);
+
+    TestType copy_assigned(ab, equal);
+    copy_assigned = from_lvalue;
+    REQUIRE(copy_assigned(a, b));
+    REQUIRE(copy_assigned.weights() == ba_weights);
+
+    TestType move_assigned(ab, equal);
+    move_assigned = std::move(moved);
+    REQUIRE(move_assigned(a, b));
+    REQUIRE(move_assigned.weights() == ba_weights);
+
+    std::vector<size_t> short_weights = {1};
+    REQUIRE_EXCEPTION_MSG(
+        static_cast<void>(TestType(ba, short_weights)),
+        "the alphabet and weights must have the same size, but found 2 and 1");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
+                                   "057",
+                                   "wl ctors",
+                                   "[quick][order]",
+                                   WtLexCmp<>,
+                                   WtLexCmpNoChecks<>) {
+    auto rg = ReportGuard(false);
+
+    std::vector<size_t> ba_weights = {10, 1};
+    std::vector<size_t> equal      = {1, 1};
+    word_type           zero       = {0};
+    word_type           one        = {1};
+
+    TestType from_lvalue(ba_weights);
+    REQUIRE(from_lvalue(one, zero));
+    REQUIRE(from_lvalue.weights() == ba_weights);
+
+    TestType from_rvalue(std::vector<size_t>{10, 1});
+    REQUIRE(from_rvalue(one, zero));
+    REQUIRE(from_rvalue.weights() == ba_weights);
+
+    TestType copied(from_lvalue);
+    REQUIRE(copied(one, zero));
+    REQUIRE(copied.weights() == ba_weights);
+
+    TestType moved(std::move(copied));
+    REQUIRE(moved(one, zero));
+    REQUIRE(moved.weights() == ba_weights);
+
+    TestType copy_assigned(equal);
+    copy_assigned = from_lvalue;
+    REQUIRE(copy_assigned(one, zero));
+    REQUIRE(copy_assigned.weights() == ba_weights);
+
+    TestType move_assigned(equal);
+    move_assigned = std::move(moved);
+    REQUIRE(move_assigned(one, zero));
+    REQUIRE(move_assigned.weights() == ba_weights);
   }
 
 }  // namespace libsemigroups
