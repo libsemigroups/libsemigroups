@@ -93,8 +93,8 @@ template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
     "provided.")]] bool
-lexicographical_compare(Word const* x, Word const* y) {
-  return lex_cmp(x, y);
+lexicographical_compare(Word* const x, Word* const y) {
+  return lex_cmp(*x, *y);
 }
 
 //! \brief A stateless struct with binary call operator using
@@ -243,8 +243,8 @@ template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
     "provided.")]] bool
-shortlex_compare(Word const* x, Word const* y) {
-  return lenlex_cmp(x, y);
+shortlex_compare(Word* const x, Word* const y) {
+  return lenlex_cmp(*x, *y);
 }
 
 //! \brief A stateless struct with binary call operator using
@@ -387,8 +387,8 @@ template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
     "provided.")]] bool
-recursive_path_compare(Word const* x, Word const* y) noexcept {
-  return rev_rpo_cmp(x, y);
+recursive_path_compare(Word* const x, Word* const y) noexcept {
+  return rev_rpo_cmp(*x, *y);
 }
 
 //! \brief A stateless struct with binary call operator using
@@ -558,10 +558,10 @@ template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
     "provided.")]] bool
-wt_shortlex_compare_no_checks(Word const*                x,
-                              Word const*                y,
+wt_shortlex_compare_no_checks(Word* const                x,
+                              Word* const                y,
                               std::vector<size_t> const& weights) {
-  return wt_lenlex_cmp(weights, x, y);
+  return wt_lenlex_cmp(weights, *x, *y);
 }
 
 //! \brief Compare two objects of the same type using the weighted short-lex
@@ -708,10 +708,10 @@ template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
     "provided.")]] bool
-wt_shortlex_compare(Word const*                x,
-                    Word const*                y,
+wt_shortlex_compare(Word* const                x,
+                    Word* const                y,
                     std::vector<size_t> const& weights) {
-  return wt_lenlex_cmp(weights, x, y);
+  return wt_lenlex_cmp(weights, *x, *y);
 }
 
 //! \brief A stateful struct with binary call operator using
@@ -891,10 +891,10 @@ template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
     "provided.")]] bool
-wt_lex_compare_no_checks(Word const*                x,
-                         Word const*                y,
+wt_lex_compare_no_checks(Word* const                x,
+                         Word* const                y,
                          std::vector<size_t> const& weights) {
-  return wt_lex_cmp_no_checks(weights, x, y);
+  return wt_lex_cmp_no_checks(weights, *x, *y);
 }
 
 //! \brief Compare two objects of the same type using the weighted lex
@@ -1041,10 +1041,10 @@ template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
     "provided.")]] bool
-wt_lex_compare(Word const*                x,
-               Word const*                y,
+wt_lex_compare(Word* const                x,
+               Word* const                y,
                std::vector<size_t> const& weights) {
-  return wt_lex_cmp(weights, x, y);
+  return wt_lex_cmp(weights, *x, *y);
 }
 
 //! \brief A stateful struct with binary call operator using

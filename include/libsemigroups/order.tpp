@@ -225,7 +225,7 @@ namespace libsemigroups {
       return weight1 < weight2;
     }
 
-    return lenlex_cmp(alphabet, first1, last1, first2, last2);
+    return lenlex_cmp_no_checks(alphabet, first1, last1, first2, last2);
   }
 
   template <typename Word, typename Iterator>

@@ -699,6 +699,21 @@ namespace libsemigroups {
     return lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
+  //! \brief Compare two objects using len-lex with respect to an alphabet.
+  //!
+  //! This overload checks that both objects contain only letters belonging to
+  //! \p alphabet, then orders first by length and then lexicographically using
+  //! the corresponding alphabet indices.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is len-lex less than \p y
+  //! with respect to \p alphabet, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either object does not
+  //! belong to \p alphabet.
   template <typename Word>
   [[nodiscard]] bool lenlex_cmp(Alphabet<Word> const& alphabet,
                                 Word const&           x,
@@ -998,7 +1013,7 @@ namespace libsemigroups {
   //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
   //!   3. \f$a > b\f$ and \f$u < v'\f$.
   //!
-  //! This documentation and the implementation of \ref recursive_path_compare
+  //! This documentation and the implementation of \ref rpo_cmp
   //! is based on the source code of \cite Holt2018aa, specifically the function
   //! `rec_compare`.
   //!
@@ -1397,7 +1412,7 @@ namespace libsemigroups {
   //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
   //!   3. \f$a > b\f$ and \f$u < v'\f$.
   //!
-  //! This documentation and the implementation of \ref recursive_path_compare
+  //! This documentation and the implementation of \ref rev_rpo_cmp
   //! is based on the source code of \cite Holt2018aa, specifically the function
   //! `rt_rec_compare`.
   //!
@@ -2546,6 +2561,7 @@ namespace libsemigroups {
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from weights.
   WtLenLexCmp(std::vector<size_t> const&)->WtLenLexCmp<>;
+
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from weights.
   WtLenLexCmp(std::vector<size_t>&&)->WtLenLexCmp<>;
 
@@ -2553,18 +2569,6 @@ namespace libsemigroups {
   //! alphabet and weights.
   template <typename Word>
   WtLenLexCmp(Alphabet<Word> const&, std::vector<size_t> const&)
-      -> WtLenLexCmp<Word>;
-
-  //! \brief Deduction guide for constructing \ref WtLenLexCmp from an
-  //! alphabet and weights.
-  template <typename Word>
-  WtLenLexCmp(Alphabet<Word> const&, std::vector<size_t>&&)
-      -> WtLenLexCmp<Word>;
-
-  //! \brief Deduction guide for constructing \ref WtLenLexCmp from an
-  //! alphabet and weights.
-  template <typename Word>
-  WtLenLexCmp(Alphabet<Word>&&, std::vector<size_t> const&)
       -> WtLenLexCmp<Word>;
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from an
@@ -2711,18 +2715,6 @@ namespace libsemigroups {
   //! an alphabet and weights.
   template <typename Word>
   WtLenLexCmpNoChecks(Alphabet<Word> const&, std::vector<size_t> const&)
-      -> WtLenLexCmpNoChecks<Word>;
-
-  //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
-  //! an alphabet and weights.
-  template <typename Word>
-  WtLenLexCmpNoChecks(Alphabet<Word> const&, std::vector<size_t>&&)
-      -> WtLenLexCmpNoChecks<Word>;
-
-  //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
-  //! an alphabet and weights.
-  template <typename Word>
-  WtLenLexCmpNoChecks(Alphabet<Word>&&, std::vector<size_t> const&)
       -> WtLenLexCmpNoChecks<Word>;
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
@@ -3455,6 +3447,7 @@ namespace libsemigroups {
 
   //! \brief Deduction guide for constructing \ref WtLexCmp from weights.
   WtLexCmp(std::vector<size_t> const&)->WtLexCmp<>;
+
   //! \brief Deduction guide for constructing \ref WtLexCmp from weights.
   WtLexCmp(std::vector<size_t>&&)->WtLexCmp<>;
 
@@ -3462,16 +3455,6 @@ namespace libsemigroups {
   //! and weights.
   template <typename Word>
   WtLexCmp(Alphabet<Word> const&, std::vector<size_t> const&) -> WtLexCmp<Word>;
-
-  //! \brief Deduction guide for constructing \ref WtLexCmp from an alphabet
-  //! and weights.
-  template <typename Word>
-  WtLexCmp(Alphabet<Word> const&, std::vector<size_t>&&) -> WtLexCmp<Word>;
-
-  //! \brief Deduction guide for constructing \ref WtLexCmp from an alphabet
-  //! and weights.
-  template <typename Word>
-  WtLexCmp(Alphabet<Word>&&, std::vector<size_t> const&) -> WtLexCmp<Word>;
 
   //! \brief Deduction guide for constructing \ref WtLexCmp from an alphabet
   //! and weights.
@@ -3607,18 +3590,6 @@ namespace libsemigroups {
   //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from an
   //! alphabet and weights.
   template <typename Word>
-  WtLexCmpNoChecks(Alphabet<Word> const&, std::vector<size_t>&&)
-      -> WtLexCmpNoChecks<Word>;
-
-  //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from an
-  //! alphabet and weights.
-  template <typename Word>
-  WtLexCmpNoChecks(Alphabet<Word>&&, std::vector<size_t> const&)
-      -> WtLexCmpNoChecks<Word>;
-
-  //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from an
-  //! alphabet and weights.
-  template <typename Word>
   WtLexCmpNoChecks(Alphabet<Word>&&, std::vector<size_t>&&)
       -> WtLexCmpNoChecks<Word>;
 
@@ -3691,13 +3662,13 @@ namespace libsemigroups {
 
     //! \brief Reverse recursive path order is well-founded.
     //!
-    //! Specialization of \ref is_well_founded for \ref RPOCmp.
+    //! Specialization of \ref is_well_founded for \ref RevRPOCmp.
     template <>
     struct is_well_founded<RevRPOCmp<>> : std::true_type {};
 
     //! \brief Weighted short-lex order is well-founded.
     //!
-    //! Specialization of \ref is_well_founded for \ref WtLexCmp.
+    //! Specialization of \ref is_well_founded for \ref WtLenLexCmp.
     template <>
     struct is_well_founded<WtLenLexCmp<>> : std::true_type {};
 

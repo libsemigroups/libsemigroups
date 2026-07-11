@@ -68,10 +68,6 @@ namespace libsemigroups {
         return _ptr->index_no_checks(*_it);
       }
 
-      const_pointer operator->() const {
-        return &_ptr->index_no_checks(*_it);
-      }
-
       bool operator==(citow const& that) const noexcept {
         return _it == that._it;
       }
@@ -164,10 +160,6 @@ namespace libsemigroups {
 
       reference operator*() const {
         return _ptr->letter_no_checks(*_it);
-      }
-
-      const_pointer operator->() const {
-        return &_ptr->letter_no_checks(*_it);
       }
 
       bool operator==(cifrw const& that) const noexcept {
