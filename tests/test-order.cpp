@@ -1509,7 +1509,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
                                    "054",
-                                   "wll alpha ctors",
+                                   "wll alpha ctors",  // codespell:ignore
                                    "[quick][order]",
                                    WtLenLexCmp<std::string>,
                                    WtLenLexCmpNoChecks<std::string>) {
@@ -1560,7 +1560,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
                                    "055",
-                                   "wll ctors",
+                                   "wll ctors",  // codespell:ignore
                                    "[quick][order]",
                                    WtLenLexCmp<>,
                                    WtLenLexCmpNoChecks<>) {
