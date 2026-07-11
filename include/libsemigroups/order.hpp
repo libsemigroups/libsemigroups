@@ -2060,7 +2060,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any letter in \p x or \p y is not in
     //! the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return wt_lenlex_cmp(_alphabet, _weights, x, y);
+      return operator()(x.begin(), x.end(), y.begin(), y.end());
     }
 
     //! \brief Call operator that compares two iterator ranges.
@@ -2080,7 +2080,13 @@ namespace libsemigroups {
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
-      return wt_lenlex_cmp(_alphabet, _weights, first1, last1, first2, last2);
+      // NOTE: only need to check that the iterators point at things
+      // that are inbounds, don't need to check _alphabet and _weights are
+      // compatible again.
+      _alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+      _alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+      return wt_lenlex_cmp_no_checks(
+          _alphabet, _weights, first1, last1, first2, last2);
     }
 
     //! \brief Returns the alphabet.
@@ -3003,7 +3009,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any letter in \p x or \p y is not in
     //! the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return wt_lex_cmp(_alphabet, _weights, x, y);
+      return operator()(x.begin(), x.end(), y.begin(), y.end());
     }
 
     //! \brief Call operator that compares two iterator ranges.
@@ -3023,10 +3029,13 @@ namespace libsemigroups {
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
-      // TODO actually only need to check that the iterators point at things
+      // NOTE: only need to check that the iterators point at things
       // that are inbounds, don't need to check _alphabet and _weights are
-      // compatible again.
-      return wt_lex_cmp(_alphabet, _weights, first1, last1, first2, last2);
+      // compatible again, which we would if we called wt_lenlex_cmp below.
+      _alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+      _alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+      return wt_lex_cmp_no_checks(
+          _alphabet, _weights, first1, last1, first2, last2);
     }
 
     //! \brief Returns the alphabet.
