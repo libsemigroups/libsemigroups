@@ -256,10 +256,13 @@ namespace libsemigroups {
 
     //! \brief Copy constructor.
     LexCmp(LexCmp const&) = default;
+
     //! \brief Move constructor.
     LexCmp(LexCmp&&) = default;
+
     //! \brief Copy assignment operator.
     LexCmp& operator=(LexCmp const&) = default;
+
     //! \brief Move assignment operator.
     LexCmp& operator=(LexCmp&&) = default;
 
@@ -361,10 +364,13 @@ namespace libsemigroups {
 
     //! \brief Copy constructor.
     LexCmpNoChecks(LexCmpNoChecks const&) = default;
+
     //! \brief Move constructor.
     LexCmpNoChecks(LexCmpNoChecks&&) = default;
+
     //! \brief Copy assignment operator.
     LexCmpNoChecks& operator=(LexCmpNoChecks const&) = default;
+
     //! \brief Move assignment operator.
     LexCmpNoChecks& operator=(LexCmpNoChecks&&) = default;
 
@@ -735,19 +741,35 @@ namespace libsemigroups {
     Alphabet<Word> _alphabet;
 
    public:
-    LenLexCmp()                            = delete;
-    LenLexCmp(LenLexCmp const&)            = default;
-    LenLexCmp(LenLexCmp&&)                 = default;
-    LenLexCmp& operator=(LenLexCmp const&) = default;
-    LenLexCmp& operator=(LenLexCmp&&)      = default;
+    //! \brief Deleted default constructor.
+    LenLexCmp() = delete;
 
+    //! \brief Copy constructor.
+    LenLexCmp(LenLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    LenLexCmp(LenLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    LenLexCmp& operator=(LenLexCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    LenLexCmp& operator=(LenLexCmp&&) = default;
+
+    //! \brief Destructor.
     ~LenLexCmp() = default;
 
     //! \brief Construct from an alphabet.
     //!
+    //! The alphabet is copied and used by the call operator.
+    //!
     //! \param alphabet the alphabet used to compare letters.
     explicit LenLexCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+
     //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
     //!
     //! \param alphabet the alphabet used to compare letters.
     explicit LenLexCmp(Alphabet<Word>&& alphabet)
@@ -812,23 +834,36 @@ namespace libsemigroups {
     Alphabet<Word> _alphabet;
 
    public:
+    //! \brief Deleted default constructor.
     LenLexCmpNoChecks() = delete;
 
+    //! \brief Copy constructor.
     LenLexCmpNoChecks(LenLexCmpNoChecks const&) = default;
-    LenLexCmpNoChecks(LenLexCmpNoChecks&&)      = default;
 
+    //! \brief Move constructor.
+    LenLexCmpNoChecks(LenLexCmpNoChecks&&) = default;
+
+    //! \brief Copy assignment operator.
     LenLexCmpNoChecks& operator=(LenLexCmpNoChecks const&) = default;
-    LenLexCmpNoChecks& operator=(LenLexCmpNoChecks&&)      = default;
 
+    //! \brief Move assignment operator.
+    LenLexCmpNoChecks& operator=(LenLexCmpNoChecks&&) = default;
+
+    //! \brief Destructor.
     ~LenLexCmpNoChecks() = default;
 
     //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
     //!
     //! \param alphabet the alphabet used to compare letters.
     explicit LenLexCmpNoChecks(Alphabet<Word> const& alphabet)
         : _alphabet(alphabet) {}
 
     //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
     //!
     //! \param alphabet the alphabet used to compare letters.
     explicit LenLexCmpNoChecks(Alphabet<Word>&& alphabet)
@@ -1117,19 +1152,35 @@ namespace libsemigroups {
     Alphabet<Word> _alphabet;
 
    public:
-    RPOCmp()                         = delete;
-    RPOCmp(RPOCmp const&)            = default;
-    RPOCmp(RPOCmp&&)                 = default;
-    RPOCmp& operator=(RPOCmp const&) = default;
-    RPOCmp& operator=(RPOCmp&&)      = default;
+    //! \brief Deleted default constructor.
+    RPOCmp() = delete;
 
+    //! \brief Copy constructor.
+    RPOCmp(RPOCmp const&) = default;
+
+    //! \brief Move constructor.
+    RPOCmp(RPOCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    RPOCmp& operator=(RPOCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    RPOCmp& operator=(RPOCmp&&) = default;
+
+    //! \brief Destructor.
     ~RPOCmp() = default;
 
     //! \brief Construct from an alphabet.
     //!
+    //! The alphabet is copied and used by the call operator.
+    //!
     //! \param alphabet the alphabet used to compare letters.
     explicit RPOCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+
     //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
     //!
     //! \param alphabet the alphabet used to compare letters.
     explicit RPOCmp(Alphabet<Word>&& alphabet)
@@ -1189,23 +1240,36 @@ namespace libsemigroups {
     Alphabet<Word> _alphabet;
 
    public:
+    //! \brief Deleted default constructor.
     RPOCmpNoChecks() = delete;
 
+    //! \brief Copy constructor.
     RPOCmpNoChecks(RPOCmpNoChecks const&) = default;
-    RPOCmpNoChecks(RPOCmpNoChecks&&)      = default;
 
+    //! \brief Move constructor.
+    RPOCmpNoChecks(RPOCmpNoChecks&&) = default;
+
+    //! \brief Copy assignment operator.
     RPOCmpNoChecks& operator=(RPOCmpNoChecks const&) = default;
-    RPOCmpNoChecks& operator=(RPOCmpNoChecks&&)      = default;
 
+    //! \brief Move assignment operator.
+    RPOCmpNoChecks& operator=(RPOCmpNoChecks&&) = default;
+
+    //! \brief Destructor.
     ~RPOCmpNoChecks() = default;
 
     //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
     //!
     //! \param alphabet the alphabet used to compare letters.
     explicit RPOCmpNoChecks(Alphabet<Word> const& alphabet)
         : _alphabet(alphabet) {}
 
     //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
     //!
     //! \param alphabet the alphabet used to compare letters.
     explicit RPOCmpNoChecks(Alphabet<Word>&& alphabet)
@@ -1495,19 +1559,35 @@ namespace libsemigroups {
     Alphabet<Word> _alphabet;
 
    public:
-    RevRPOCmp()                            = delete;
-    RevRPOCmp(RevRPOCmp const&)            = default;
-    RevRPOCmp(RevRPOCmp&&)                 = default;
-    RevRPOCmp& operator=(RevRPOCmp const&) = default;
-    RevRPOCmp& operator=(RevRPOCmp&&)      = default;
+    //! \brief Deleted default constructor.
+    RevRPOCmp() = delete;
 
+    //! \brief Copy constructor.
+    RevRPOCmp(RevRPOCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevRPOCmp(RevRPOCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    RevRPOCmp& operator=(RevRPOCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    RevRPOCmp& operator=(RevRPOCmp&&) = default;
+
+    //! \brief Destructor.
     ~RevRPOCmp() = default;
 
     //! \brief Construct from an alphabet.
     //!
+    //! The alphabet is copied and used by the call operator.
+    //!
     //! \param alphabet the alphabet used to compare letters.
     explicit RevRPOCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+
     //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
     //!
     //! \param alphabet the alphabet used to compare letters.
     explicit RevRPOCmp(Alphabet<Word>&& alphabet)
@@ -1568,23 +1648,36 @@ namespace libsemigroups {
     Alphabet<Word> _alphabet;
 
    public:
+    //! \brief Deleted default constructor.
     RevRPOCmpNoChecks() = delete;
 
+    //! \brief Copy constructor.
     RevRPOCmpNoChecks(RevRPOCmpNoChecks const&) = default;
-    RevRPOCmpNoChecks(RevRPOCmpNoChecks&&)      = default;
 
+    //! \brief Move constructor.
+    RevRPOCmpNoChecks(RevRPOCmpNoChecks&&) = default;
+
+    //! \brief Copy assignment operator.
     RevRPOCmpNoChecks& operator=(RevRPOCmpNoChecks const&) = default;
-    RevRPOCmpNoChecks& operator=(RevRPOCmpNoChecks&&)      = default;
 
+    //! \brief Move assignment operator.
+    RevRPOCmpNoChecks& operator=(RevRPOCmpNoChecks&&) = default;
+
+    //! \brief Destructor.
     ~RevRPOCmpNoChecks() = default;
 
     //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
     //!
     //! \param alphabet the alphabet used to compare letters.
     explicit RevRPOCmpNoChecks(Alphabet<Word> const& alphabet)
         : _alphabet(alphabet) {}
 
     //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
     //!
     //! \param alphabet the alphabet used to compare letters.
     explicit RevRPOCmpNoChecks(Alphabet<Word>&& alphabet)
@@ -2206,12 +2299,16 @@ namespace libsemigroups {
    public:
     //! \brief Deleted default constructor.
     WtLenLexCmpNoChecks() = delete;
+
     //! \brief Copy constructor.
     WtLenLexCmpNoChecks(WtLenLexCmpNoChecks const&) = default;
+
     //! \brief Move constructor.
     WtLenLexCmpNoChecks(WtLenLexCmpNoChecks&&) = default;
+
     //! \brief Copy assignment operator.
     WtLenLexCmpNoChecks& operator=(WtLenLexCmpNoChecks const&) = default;
+
     //! \brief Move assignment operator.
     WtLenLexCmpNoChecks& operator=(WtLenLexCmpNoChecks&&) = default;
 
@@ -2988,12 +3085,16 @@ namespace libsemigroups {
    public:
     //! \brief Deleted default constructor.
     WtLexCmp() = delete;
+
     //! \brief Copy constructor.
     WtLexCmp(WtLexCmp const&) = default;
+
     //! \brief Move constructor.
     WtLexCmp(WtLexCmp&&) = default;
+
     //! \brief Copy assignment operator.
     WtLexCmp& operator=(WtLexCmp const&) = default;
+
     //! \brief Move assignment operator.
     WtLexCmp& operator=(WtLexCmp&&) = default;
 
@@ -3155,12 +3256,16 @@ namespace libsemigroups {
    public:
     //! \brief Deleted default constructor.
     WtLexCmpNoChecks() = delete;
+
     //! \brief Copy constructor.
     WtLexCmpNoChecks(WtLexCmpNoChecks const&) = default;
+
     //! \brief Move constructor.
     WtLexCmpNoChecks(WtLexCmpNoChecks&&) = default;
+
     //! \brief Copy assignment operator.
     WtLexCmpNoChecks& operator=(WtLexCmpNoChecks const&) = default;
+
     //! \brief Move assignment operator.
     WtLexCmpNoChecks& operator=(WtLexCmpNoChecks&&) = default;
 

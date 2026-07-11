@@ -100,7 +100,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    word_type           w1      = {};   // weight = 0
+    word_type           w1      = ();   // weight = 0
     word_type           w2      = {1};  // weight = 1
 
     REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
@@ -502,8 +502,8 @@ namespace libsemigroups {
                           "empty weights vector",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
-    std::vector<size_t> weights = {};   // empty alphabet
-    word_type           w1      = {};   // empty word is valid
+    std::vector<size_t> weights = ();   // empty alphabet
+    word_type           w1      = ();   // empty word is valid
     word_type           w2      = {0};  // invalid: no letters in alphabet
 
     REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
@@ -638,7 +638,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto      rg = ReportGuard(false);
     word_type w1(12_w);
-    word_type w2{};
+    word_type w2();
 
     REQUIRE(!rev_rpo_cmp(w1, w1));
     REQUIRE(rev_rpo_cmp(w2, w1));
@@ -648,7 +648,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("RevRPOCmp", "038", "empty word", "[quick][order]") {
     auto      rg = ReportGuard(false);
     word_type w1(12_w);
-    word_type w2{};
+    word_type w2();
 
     REQUIRE(!RevRPOCmp()(w1, w1));
     REQUIRE(RevRPOCmp()(w2, w1));
@@ -971,12 +971,12 @@ namespace libsemigroups {
                  "ab"s, "abb"s, "abbb"s, "abba"s, "aba"s, "abab"s, "abaa"s,
                  "aa"s, "aab"s, "aabb"s, "aaba"s, "aaa"s, "aaab"s, "aaaa"s}));
 
-    std::sort(strings.begin(), strings.end(), LexCmp{});
+    std::sort(strings.begin(), strings.end(), LexCmp());
 
     // TODO rm
     // template <typename Args...>
     // KnuthBendix<std::string, LenLex> kb(congruence_kind, p, Args &&..arg)
-    //     : _order(std::forward<Args>(args...)) {}
+    //     : _order(std::forward<Args>(args...)) ()
 
     REQUIRE(strings
             == std::vector(
@@ -1045,7 +1045,7 @@ namespace libsemigroups {
                                     "abbb"s, "abba"s, "abab"s, "abaa"s, "aabb"s,
                                     "aaba"s, "aaab"s, "aaaa"s}));
 
-    std::sort(strings.begin(), strings.end(), LenLexCmp{});
+    std::sort(strings.begin(), strings.end(), LenLexCmp());
 
     REQUIRE(strings == std::vector({"aa"s,   "ab"s,   "ba"s,   "bb"s,   "aaa"s,
                                     "aab"s,  "aba"s,  "abb"s,  "baa"s,  "bab"s,
@@ -1113,7 +1113,7 @@ namespace libsemigroups {
                                     "abab"s, "aabb"s, "aaa"s,  "baaa"s, "abaa"s,
                                     "aaba"s, "aaab"s, "aaaa"s}));
 
-    std::sort(strings.begin(), strings.end(), RPOCmp{});
+    std::sort(strings.begin(), strings.end(), RPOCmp());
 
     REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ab"s,   "aab"s,
                                     "aaab"s, "ba"s,   "aba"s,  "aaba"s, "baa"s,
@@ -1174,7 +1174,7 @@ namespace libsemigroups {
                                     "baba"s, "bbaa"s, "aaa"s,  "aaab"s, "aaba"s,
                                     "abaa"s, "baaa"s, "aaaa"s}));
 
-    std::sort(strings.begin(), strings.end(), RevRPOCmp{});
+    std::sort(strings.begin(), strings.end(), RevRPOCmp());
 
     REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ba"s,   "baa"s,
                                     "baaa"s, "ab"s,   "aba"s,  "abaa"s, "aab"s,
@@ -1318,7 +1318,7 @@ namespace libsemigroups {
 
     auto c1 = chain(v1, v1);
     auto c2 = chain(v1, v2);
-    REQUIRE(LenLexCmp{}(c1, c2));
+    REQUIRE(LenLexCmp()(c1, c2));
 
     Alphabet ba("ba"s);
     auto     a = "a"s;
@@ -1345,7 +1345,7 @@ namespace libsemigroups {
     TestType cmp;
     REQUIRE(cmp(a, b));
     REQUIRE(cmp(a.cbegin(), a.cend(), b.cbegin(), b.cend()));
-    REQUIRE(TestType{}(a.cbegin(), a.cend(), b.cbegin(), b.cend()));
+    REQUIRE(TestType()(a.cbegin(), a.cend(), b.cbegin(), b.cend()));
 
     TestType cmp_copy(cmp);
     REQUIRE(cmp_copy(a, b));
