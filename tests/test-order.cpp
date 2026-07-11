@@ -1379,10 +1379,12 @@ namespace libsemigroups {
     TestType cmp(ba);
     REQUIRE(cmp(b, a));
     REQUIRE(cmp(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(cmp.alphabet().size() == 2);
 
     TestType from_rvalue(Alphabet<std::string>("ba"s));
     REQUIRE(from_rvalue(b, a));
     REQUIRE(from_rvalue(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(from_rvalue.alphabet().size() == 2);
 
     TestType cmp_copy(cmp);
     REQUIRE(cmp_copy(b, a));
@@ -1392,9 +1394,11 @@ namespace libsemigroups {
     TestType cmp_copy_assigned(ab);
     cmp_copy_assigned = cmp;
     REQUIRE(cmp_copy_assigned(b, a));
+    REQUIRE(cmp_copy_assigned.alphabet().size() == 2);
     TestType cmp_move_assigned(ab);
     cmp_move_assigned = std::move(cmp_move);
     REQUIRE(cmp_move_assigned(b, a));
+    REQUIRE(cmp_move_assigned.alphabet().size() == 2);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
@@ -1416,10 +1420,12 @@ namespace libsemigroups {
     TestType cmp(ba);
     REQUIRE(cmp(b, a));
     REQUIRE(cmp(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(cmp.alphabet().size() == 2);
 
     TestType from_rvalue(Alphabet<std::string>("ba"s));
     REQUIRE(from_rvalue(b, a));
     REQUIRE(from_rvalue(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(from_rvalue.alphabet().size() == 2);
 
     TestType cmp_copy(cmp);
     REQUIRE(cmp_copy(b, a));
@@ -1429,9 +1435,11 @@ namespace libsemigroups {
     TestType cmp_copy_assigned(ab);
     cmp_copy_assigned = cmp;
     REQUIRE(cmp_copy_assigned(b, a));
+    REQUIRE(cmp_copy_assigned.alphabet().size() == 2);
     TestType cmp_move_assigned(ab);
     cmp_move_assigned = std::move(cmp_move);
     REQUIRE(cmp_move_assigned(b, a));
+    REQUIRE(cmp_move_assigned.alphabet().size() == 2);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",

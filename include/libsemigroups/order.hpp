@@ -334,6 +334,16 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return lex_cmp(_alphabet, first1, last1, first2, last2);
     }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
   };
 
   //! \brief Stateful lexicographic comparison functor without checks.
@@ -429,6 +439,16 @@ namespace libsemigroups {
                                   Iterator first2,
                                   Iterator last2) const {
       return lex_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
     }
   };  // class LexCmpNoChecks
 
@@ -770,6 +790,16 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return lenlex_cmp(_alphabet, first1, last1, first2, last2);
     }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
   };
 
   //! \brief Stateful len-lex comparison functor without checks.
@@ -842,6 +872,16 @@ namespace libsemigroups {
                                   Iterator first2,
                                   Iterator last2) const {
       return lenlex_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
     }
   };  // class LenLexCmpNoChecks
 
@@ -1127,6 +1167,16 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return rpo_cmp(_alphabet, first1, last1, first2, last2);
     }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
   };
 
   //! \brief Stateful recursive path order comparison functor without checks.
@@ -1192,6 +1242,16 @@ namespace libsemigroups {
                                   Iterator first2,
                                   Iterator last2) const {
       return rpo_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
     }
   };  // class RPOCmpNoChecks
 
@@ -1485,6 +1545,16 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return rev_rpo_cmp(_alphabet, first1, last1, first2, last2);
     }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
   };
 
   //! \brief Stateful reversed recursive path order comparison functor without
@@ -1551,6 +1621,16 @@ namespace libsemigroups {
                                   Iterator first2,
                                   Iterator last2) const {
       return rev_rpo_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
     }
   };  // class RevRPOCmpNoChecks
 
