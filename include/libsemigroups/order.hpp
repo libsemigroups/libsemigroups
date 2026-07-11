@@ -2016,10 +2016,12 @@ namespace libsemigroups {
     WtLenLexCmp& init(Alphabet<Word> const&      alphabet,
                       std::vector<size_t> const& weights) {
       detail::throw_if_incompat_weights(alphabet, weights);
-      // TODO check if _alphabet or _weights is alphabet or weights, i.e. check
-      // that it is okay to copy assign something to itself.
-      _alphabet = alphabet;
-      _weights  = weights;
+      if (&alphabet != &_alphabet) {
+        _alphabet = alphabet;
+      }
+      if (&weights != &_weights) {
+        _weights = weights;
+      }
       return *this;
     }
 
@@ -2038,10 +2040,12 @@ namespace libsemigroups {
     WtLenLexCmp& init(Alphabet<Word>&&      alphabet,
                       std::vector<size_t>&& weights) {
       detail::throw_if_incompat_weights(alphabet, weights);
-      // TODO check if _alphabet or _weights is alphabet or weights, i.e. check
-      // that it is okay to copy assign something to itself.
-      _alphabet = std::move(alphabet);
-      _weights  = std::move(weights);
+      if (&alphabet != &_alphabet) {
+        _alphabet = std::move(alphabet);
+      }
+      if (&weights != &_weights) {
+        _weights = std::move(weights);
+      }
       return *this;
     }
 
@@ -2143,8 +2147,6 @@ namespace libsemigroups {
                         std::vector<size_t> const& weights)
         : _alphabet(alphabet), _weights(weights) {
       detail::throw_if_incompat_weights(_alphabet, _weights);
-      // TODO check that _alphabet and _weights have the
-      // same length
     }
 
     //! \brief Construct from an alphabet rvalue and weights vector rvalue.
@@ -2161,8 +2163,6 @@ namespace libsemigroups {
                         std::vector<size_t>&& weights)
         : _alphabet(std::move(alphabet)), _weights(std::move(weights)) {
       detail::throw_if_incompat_weights(_alphabet, _weights);
-      // TODO check that _alphabet and _weights have the
-      // same length
     }
 
     //! \brief Reinitialize from an alphabet and weights vector.
@@ -2180,10 +2180,12 @@ namespace libsemigroups {
     WtLenLexCmpNoChecks& init(Alphabet<Word> const&      alphabet,
                               std::vector<size_t> const& weights) {
       detail::throw_if_incompat_weights(alphabet, weights);
-      // TODO check if _alphabet or _weights is alphabet or weights, i.e. check
-      // that it is okay to copy assign something to itself.
-      _alphabet = alphabet;
-      _weights  = weights;
+      if (&alphabet != &_alphabet) {
+        _alphabet = alphabet;
+      }
+      if (&weights != &_weights) {
+        _weights = weights;
+      }
       return *this;
     }
 
@@ -2202,10 +2204,12 @@ namespace libsemigroups {
     WtLenLexCmpNoChecks& init(Alphabet<Word>&&      alphabet,
                               std::vector<size_t>&& weights) {
       detail::throw_if_incompat_weights(alphabet, weights);
-      // TODO check if _alphabet or _weights is alphabet or weights, i.e. check
-      // that it is okay to copy assign something to itself.
-      _alphabet = std::move(alphabet);
-      _weights  = std::move(weights);
+      if (&alphabet != &_alphabet) {
+        _alphabet = std::move(alphabet);
+      }
+      if (&weights != &_weights) {
+        _weights = std::move(weights);
+      }
       return *this;
     }
 
@@ -2956,9 +2960,12 @@ namespace libsemigroups {
     WtLexCmp& init(Alphabet<Word> const&      alphabet,
                    std::vector<size_t> const& weights) {
       detail::throw_if_incompat_weights(alphabet, weights);
-      // TODO check if &_alphabet == &alphabet
-      _alphabet = alphabet;
-      _weights  = weights;
+      if (&alphabet != &_alphabet) {
+        _alphabet = alphabet;
+      }
+      if (&weights != &_weights) {
+        _weights = weights;
+      }
       return *this;
     }
 
@@ -2976,9 +2983,12 @@ namespace libsemigroups {
     //! have the same size.
     WtLexCmp& init(Alphabet<Word>&& alphabet, std::vector<size_t>&& weights) {
       detail::throw_if_incompat_weights(alphabet, weights);
-      // TODO check if &_alphabet == &alphabet
-      _alphabet = std::move(alphabet);
-      _weights  = std::move(weights);
+      if (&alphabet != &_alphabet) {
+        _alphabet = std::move(alphabet);
+      }
+      if (&weights != &_weights) {
+        _weights = std::move(weights);
+      }
       return *this;
     }
 
@@ -3115,9 +3125,12 @@ namespace libsemigroups {
     WtLexCmpNoChecks& init(Alphabet<Word> const&      alphabet,
                            std::vector<size_t> const& weights) {
       detail::throw_if_incompat_weights(alphabet, weights);
-      // TODO check if &_alphabet == &alphabet
-      _alphabet = alphabet;
-      _weights  = weights;
+      if (&alphabet != &_alphabet) {
+        _alphabet = alphabet;
+      }
+      if (&weights != &_weights) {
+        _weights = weights;
+      }
       return *this;
     }
 
@@ -3136,9 +3149,12 @@ namespace libsemigroups {
     WtLexCmpNoChecks& init(Alphabet<Word>&&      alphabet,
                            std::vector<size_t>&& weights) {
       detail::throw_if_incompat_weights(alphabet, weights);
-      // TODO check if &_alphabet == &alphabet
-      _alphabet = std::move(alphabet);
-      _weights  = std::move(weights);
+      if (&alphabet != &_alphabet) {
+        _alphabet = std::move(alphabet);
+      }
+      if (&weights != &_weights) {
+        _weights = std::move(weights);
+      }
       return *this;
     }
 
