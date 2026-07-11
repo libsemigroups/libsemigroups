@@ -100,7 +100,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    word_type           w1      = ();   // weight = 0
+    word_type           w1      = {};   // weight = 0
     word_type           w2      = {1};  // weight = 1
 
     REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
@@ -502,8 +502,8 @@ namespace libsemigroups {
                           "empty weights vector",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
-    std::vector<size_t> weights = ();   // empty alphabet
-    word_type           w1      = ();   // empty word is valid
+    std::vector<size_t> weights = {};   // empty alphabet
+    word_type           w1      = {};   // empty word is valid
     word_type           w2      = {0};  // invalid: no letters in alphabet
 
     REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
@@ -638,7 +638,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto      rg = ReportGuard(false);
     word_type w1(12_w);
-    word_type w2();
+    word_type w2;
 
     REQUIRE(!rev_rpo_cmp(w1, w1));
     REQUIRE(rev_rpo_cmp(w2, w1));
@@ -648,7 +648,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("RevRPOCmp", "038", "empty word", "[quick][order]") {
     auto      rg = ReportGuard(false);
     word_type w1(12_w);
-    word_type w2();
+    word_type w2;
 
     REQUIRE(!RevRPOCmp()(w1, w1));
     REQUIRE(RevRPOCmp()(w2, w1));

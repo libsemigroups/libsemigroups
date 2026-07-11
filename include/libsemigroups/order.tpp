@@ -81,6 +81,17 @@ namespace libsemigroups {
           });
     }
 
+    template <typename Word>
+    void throw_if_incompat_weights(Alphabet<Word> const&      alphabet,
+                                   std::vector<size_t> const& weights) {
+      if (alphabet.size() != weights.size()) {
+        LIBSEMIGROUPS_EXCEPTION("the alphabet and weights must have the "
+                                "same size, but found {} and {}",
+                                alphabet.size(),
+                                weights.size());
+      }
+    }
+
   }  // namespace detail
 
   template <typename Iterator>
@@ -188,6 +199,18 @@ namespace libsemigroups {
     return lenlex_cmp(first1, last1, first2, last2);
   }
 
+  template <typename Iterator>
+  bool wt_lenlex_cmp(std::vector<size_t> const& weights,
+                     Iterator                   first1,
+                     Iterator                   last1,
+                     Iterator                   first2,
+                     Iterator                   last2) {
+    detail::throw_if_incompat_weights(weights, first1, last1);
+    detail::throw_if_incompat_weights(weights, first2, last2);
+
+    return wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2);
+  }
+
   template <typename Word, typename Iterator>
   bool wt_lenlex_cmp_no_checks(Alphabet<Word> const&      alphabet,
                                std::vector<size_t> const& weights,
@@ -203,18 +226,6 @@ namespace libsemigroups {
     }
 
     return lenlex_cmp(alphabet, first1, last1, first2, last2);
-  }
-
-  template <typename Iterator>
-  bool wt_lenlex_cmp(std::vector<size_t> const& weights,
-                     Iterator                   first1,
-                     Iterator                   last1,
-                     Iterator                   first2,
-                     Iterator                   last2) {
-    detail::throw_if_incompat_weights(weights, first1, last1);
-    detail::throw_if_incompat_weights(weights, first2, last2);
-
-    return wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
 
   template <typename Word, typename Iterator>
@@ -250,6 +261,18 @@ namespace libsemigroups {
     return std::lexicographical_compare(first1, last1, first2, last2);
   }
 
+  template <typename Iterator>
+  bool wt_lex_cmp(std::vector<size_t> const& weights,
+                  Iterator                   first1,
+                  Iterator                   last1,
+                  Iterator                   first2,
+                  Iterator                   last2) {
+    detail::throw_if_incompat_weights(weights, first1, last1);
+    detail::throw_if_incompat_weights(weights, first2, last2);
+
+    return wt_lex_cmp_no_checks(weights, first1, last1, first2, last2);
+  }
+
   template <typename Word, typename Iterator>
   bool wt_lex_cmp_no_checks(Alphabet<Word> const&      alphabet,
                             std::vector<size_t> const& weights,
@@ -265,18 +288,6 @@ namespace libsemigroups {
     }
 
     return lex_cmp_no_checks(alphabet, first1, last1, first2, last2);
-  }
-
-  template <typename Iterator>
-  bool wt_lex_cmp(std::vector<size_t> const& weights,
-                  Iterator                   first1,
-                  Iterator                   last1,
-                  Iterator                   first2,
-                  Iterator                   last2) {
-    detail::throw_if_incompat_weights(weights, first1, last1);
-    detail::throw_if_incompat_weights(weights, first2, last2);
-
-    return wt_lex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
 
   template <typename Word, typename Iterator>
@@ -295,4 +306,114 @@ namespace libsemigroups {
     return wt_lex_cmp_no_checks(
         alphabet, weights, first1, last1, first2, last2);
   }
+
+  template <typename Word>
+  WtLenLexCmp<Word>&
+  WtLenLexCmp<Word>::init(Alphabet<Word> const&      alphabet,
+                          std::vector<size_t> const& weights) {
+    detail::throw_if_incompat_weights(alphabet, weights);
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    if (&weights != &_weights) {
+      _weights = weights;
+    }
+    return *this;
+  }
+
+  template <typename Word>
+  WtLenLexCmp<Word>& WtLenLexCmp<Word>::init(Alphabet<Word>&&      alphabet,
+                                             std::vector<size_t>&& weights) {
+    detail::throw_if_incompat_weights(alphabet, weights);
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    if (&weights != &_weights) {
+      _weights = std::move(weights);
+    }
+    return *this;
+  }
+
+  template <typename Word>
+  WtLenLexCmpNoChecks<Word>&
+  WtLenLexCmpNoChecks<Word>::init(Alphabet<Word> const&      alphabet,
+                                  std::vector<size_t> const& weights) {
+    detail::throw_if_incompat_weights(alphabet, weights);
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    if (&weights != &_weights) {
+      _weights = weights;
+    }
+    return *this;
+  }
+
+  template <typename Word>
+  WtLenLexCmpNoChecks<Word>&
+  WtLenLexCmpNoChecks<Word>::init(Alphabet<Word>&&      alphabet,
+                                  std::vector<size_t>&& weights) {
+    detail::throw_if_incompat_weights(alphabet, weights);
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    if (&weights != &_weights) {
+      _weights = std::move(weights);
+    }
+    return *this;
+  }
+
+  template <typename Word>
+  WtLexCmp<Word>& WtLexCmp<Word>::init(Alphabet<Word> const&      alphabet,
+                                       std::vector<size_t> const& weights) {
+    detail::throw_if_incompat_weights(alphabet, weights);
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    if (&weights != &_weights) {
+      _weights = weights;
+    }
+    return *this;
+  }
+
+  template <typename Word>
+  WtLexCmp<Word>& WtLexCmp<Word>::init(Alphabet<Word>&&      alphabet,
+                                       std::vector<size_t>&& weights) {
+    detail::throw_if_incompat_weights(alphabet, weights);
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    if (&weights != &_weights) {
+      _weights = std::move(weights);
+    }
+    return *this;
+  }
+
+  template <typename Word>
+  WtLexCmpNoChecks<Word>&
+  WtLexCmpNoChecks<Word>::init(Alphabet<Word> const&      alphabet,
+                               std::vector<size_t> const& weights) {
+    detail::throw_if_incompat_weights(alphabet, weights);
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    if (&weights != &_weights) {
+      _weights = weights;
+    }
+    return *this;
+  }
+
+  template <typename Word>
+  WtLexCmpNoChecks<Word>&
+  WtLexCmpNoChecks<Word>::init(Alphabet<Word>&&      alphabet,
+                               std::vector<size_t>&& weights) {
+    detail::throw_if_incompat_weights(alphabet, weights);
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    if (&weights != &_weights) {
+      _weights = std::move(weights);
+    }
+    return *this;
+  }
+
 }  // namespace libsemigroups
