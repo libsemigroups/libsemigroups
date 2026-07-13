@@ -68,7 +68,7 @@ namespace libsemigroups {
   namespace detail {
 
     template <typename = Default>
-    using ReturnFalseOrder = ReturnFalse;
+    using NoOrder = ReturnFalse;
 
     using string_type = RewritingSystemTrie<LenLexCmp>::native_word_type;
 
@@ -334,9 +334,9 @@ namespace libsemigroups {
                             "011",
                             "not obviously terminating example",
                             "[quick]") {
-      using rule_type = std::pair<std::string, std::string>;
-      auto                                  rg = ReportGuard(false);
-      RewritingSystemTrie<ReturnFalseOrder> rws;
+      using rule_type                 = std::pair<std::string, std::string>;
+      auto                         rg = ReportGuard(false);
+      RewritingSystemTrie<NoOrder> rws;
 
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "aaa"_w, "c"_w);
@@ -364,9 +364,9 @@ namespace libsemigroups {
                             "012",
                             "not obviously terminating example",
                             "[quick]") {
-      using rule_type = std::pair<std::string, std::string>;
-      auto                                  rg = ReportGuard(false);
-      RewritingSystemTrie<ReturnFalseOrder> rws;
+      using rule_type                 = std::pair<std::string, std::string>;
+      auto                         rg = ReportGuard(false);
+      RewritingSystemTrie<NoOrder> rws;
 
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "aa"_w, "bbb"_w);
@@ -472,8 +472,8 @@ namespace libsemigroups {
                             "015",
                             "is_terminating",
                             "[quick]") {
-      auto                                  rg = ReportGuard(false);
-      RewritingSystemTrie<ReturnFalseOrder> rws;
+      auto                         rg = ReportGuard(false);
+      RewritingSystemTrie<NoOrder> rws;
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "bbb"_w, "aa"_w);
       rewriting_system::add_rule(rws, "bbb"_w, "ccc"_w);
