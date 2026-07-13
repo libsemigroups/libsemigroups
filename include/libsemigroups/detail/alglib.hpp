@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_DETAIL_ALGLIBL_HPP_
-#define LIBSEMIGROUPS_DETAIL_ALGLIBL_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_ALGLIB_HPP_
+#define LIBSEMIGROUPS_DETAIL_ALGLIB_HPP_
 
 #include "libsemigroups/config.hpp"
 
@@ -34,4 +34,4 @@
 
 #endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
 
-#endif  // LIBSEMIGROUPS_DETAIL_ALGLIBL_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_ALGLIB_HPP_
