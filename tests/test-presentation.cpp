@@ -35,10 +35,11 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"                // for Bipartition
-#include "libsemigroups/constants.hpp"             // for operator==, operator!=
-#include "libsemigroups/exception.hpp"             // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"          // for FroidurePin
+#include "libsemigroups/bipart.hpp"        // for Bipartition
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_ALGLIB_ENABLED
+#include "libsemigroups/constants.hpp"     // for operator==, operator!=
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/knuth-bendix-helpers.hpp"  // for redundant_rule
 #include "libsemigroups/order.hpp"                 // for LenLexCmp, shor...
 #include "libsemigroups/presentation.hpp"     // for Presentation, human_r...
@@ -4355,6 +4356,7 @@ End;)xxx");
     REQUIRE(std::all_of(
         rule.begin(), rule.end(), [](auto letter) { return letter == 'b'; }));
   }
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
                                    "110",
@@ -4444,4 +4446,5 @@ End;)xxx");
     auto result = presentation::find_weights(p);
     REQUIRE(!result.has_value());
   }
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
 }  // namespace libsemigroups

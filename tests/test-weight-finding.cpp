@@ -15,6 +15,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_ALGLIB_ENABLED
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+
 #include <cstddef>  // for size_t
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -164,3 +167,5 @@ namespace libsemigroups::detail {
     REQUIRE(res.value() == std::vector<size_t>{1, 1});
   }
 }  // namespace libsemigroups::detail
+
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED

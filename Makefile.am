@@ -9,6 +9,7 @@ AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.2/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/rx-ranges/include
 AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
+AM_CXXFLAGS += $(ALGLIB_CFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
 AM_CXXFLAGS += $(EIGEN3_CFLAGS)
 AM_CXXFLAGS += $(MAGICENUM_CFLAGS)
@@ -27,7 +28,7 @@ if LIBSEMIGROUPS_HPCOMBI_ENABLED
 AM_CXXFLAGS += $(HPCOMBI_CXXFLAGS)
 endif
 
-AM_LDFLAGS  =  -no-undefined -lpthread $(FMT_LIBS)
+AM_LDFLAGS  =  -no-undefined -lpthread $(FMT_LIBS) $(ALGLIB_LIBS)
 
 if LIBSEMIGROUPS_DEBUG
 AM_CPPFLAGS = -DDEBUG
@@ -258,6 +259,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/word-iterators-impl.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.tpp
 
+if LIBSEMIGROUPS_WITH_INTERNAL_ALGLIB
 alglibincludedir = $(includedir)/libsemigroups/alglib-4.08.0/
 alglibinclude_HEADERS = third_party/alglib-4.08.0/src/alglibinternal.h
 alglibinclude_HEADERS += third_party/alglib-4.08.0/src/alglibmisc.h
@@ -275,6 +277,7 @@ alglibinclude_HEADERS += third_party/alglib-4.08.0/src/optimization.h
 alglibinclude_HEADERS += third_party/alglib-4.08.0/src/solvers.h
 alglibinclude_HEADERS += third_party/alglib-4.08.0/src/specialfunctions.h
 alglibinclude_HEADERS += third_party/alglib-4.08.0/src/stdafx.h
+endif # LIBSEMIGROUPS_WITH_INTERNAL_ALGLIB
 
 if USE_BUNDLED_CATCH
 catch2includedir = $(includedir)/libsemigroups/Catch2-3.14.0/
@@ -1167,11 +1170,10 @@ libsemigroups_la_SOURCES += src/detail/timer.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-report.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-stats.cpp
-libsemigroups_la_SOURCES += src/detail/weight-finding.cpp
 libsemigroups_la_SOURCES += src/detail/word-iterator-impl.cpp
 libsemigroups_la_SOURCES += src/detail/word-iterators.cpp
 
-# TODO: Only include the following if it is available
+if LIBSEMIGROUPS_ALGLIB_ENABLED
 libsemigroups_la_SOURCES += src/detail/weight-finding.cpp
 
 libsemigroups_la_SOURCES += src/detail/alglib/alglibinternal.cpp
@@ -1189,6 +1191,7 @@ libsemigroups_la_SOURCES += src/detail/alglib/minlp.cpp
 libsemigroups_la_SOURCES += src/detail/alglib/optimization.cpp
 libsemigroups_la_SOURCES += src/detail/alglib/solvers.cpp
 libsemigroups_la_SOURCES += src/detail/alglib/specialfunctions.cpp
+endif
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
