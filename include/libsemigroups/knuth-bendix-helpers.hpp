@@ -98,8 +98,8 @@ namespace libsemigroups {
               typename ReductionOrder>
     [[nodiscard]] auto
     normal_forms(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb) {
-      return detail::
-          KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>(kb);
+      return detail::KnuthBendixNormalFormRange<Word, RewritingSystem>(
+          kb.gilman_graph(), kb.presentation());
     }
 
     ////////////////////////////////////////////////////////////////////////
