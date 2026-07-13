@@ -3,8 +3,7 @@
 ##############################################################################
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for backward-cpp
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/alglib-4.08.0/src
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for backward-cpp and alglib
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.2/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.2/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/rx-ranges/include
@@ -178,6 +177,7 @@ pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 detailincludedir = $(includedir)/libsemigroups/detail
 detailinclude_HEADERS =  include/libsemigroups/detail/aho-corasick-impl.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/aho-corasick-impl.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/alglib.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/bruidhinn-traits.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/citow.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/cong-common-class.hpp
@@ -1141,30 +1141,32 @@ libsemigroups_la_SOURCES += src/detail/timer.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-report.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-stats.cpp
-libsemigroups_la_SOURCES += src/detail/weight-finding.cpp
 libsemigroups_la_SOURCES += src/detail/word-iterators.cpp
+
+# TODO: Only include the following if it is available
+libsemigroups_la_SOURCES += src/detail/weight-finding.cpp
+
+libsemigroups_la_SOURCES += src/detail/alglib/alglibinternal.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/alglibmisc.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/ap.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/integration.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/interpolation.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/kernels_avx2.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/kernels_fma.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/kernels_neon.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/kernels_rvv10.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/kernels_sse2.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/linalg.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/minlp.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/optimization.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/solvers.cpp
+libsemigroups_la_SOURCES += src/detail/alglib/specialfunctions.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
 
 ## See https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html#Updating-version-info
 libsemigroups_la_LDFLAGS = -version-info 3:0:0
-
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/alglibinternal.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/alglibmisc.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/ap.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/integration.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/interpolation.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_avx2.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_fma.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_neon.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_rvv10.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_sse2.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/linalg.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/minlp.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/optimization.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/solvers.cpp
-libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/specialfunctions.cpp
 
 ## Extra files for the distribution
 
@@ -1175,24 +1177,36 @@ libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/specialfunctions.cpp
 EXTRA_DIST =  .clang-format
 EXTRA_DIST += .pre-commit-config.yaml
 EXTRA_DIST += .VERSION
+EXTRA_DIST += autogen.sh
 EXTRA_DIST += CPPLINT.cfg
+EXTRA_DIST += benchmarks/uf-old.hpp
+EXTRA_DIST += hpcombi.mk.in
 EXTRA_DIST += LICENSE
 EXTRA_DIST += README.md
-EXTRA_DIST += autogen.sh
-EXTRA_DIST += benchmarks/uf-old.hpp
 EXTRA_DIST += docs
 EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
-EXTRA_DIST += hpcombi.mk.in
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
 EXTRA_DIST += tests/word-graph-test-common.hpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/alglibinternal.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/alglibmisc.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/ap.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/integration.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/interpolation.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/kernels_avx2.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/kernels_fma.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/kernels_neon.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/kernels_rvv10.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/kernels_sse2.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/linalg.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/minlp.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/optimization.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/solvers.cpp
+EXTRA_DIST += third_party/alglib-4.08.0/src/specialfunctions.cpp
 EXTRA_DIST += third_party/Catch2-3.14.0/catch_amalgamated.cpp
 EXTRA_DIST += third_party/Catch2-3.14.0/catch_amalgamated.hpp
-EXTRA_DIST += third_party/HPCombi-1.1.2/HPCOMBI_VERSION
-EXTRA_DIST += third_party/HPCombi-1.1.2/LICENSE
-EXTRA_DIST += third_party/HPCombi-1.1.2/README.md
 EXTRA_DIST += third_party/eigen-5.0.1/COPYING.APACHE
 EXTRA_DIST += third_party/eigen-5.0.1/COPYING.BSD
 EXTRA_DIST += third_party/eigen-5.0.1/COPYING.MINPACK
@@ -1202,6 +1216,9 @@ EXTRA_DIST += third_party/eigen-5.0.1/README.md
 EXTRA_DIST += third_party/eigen-5.0.1/unsupported/Eigen/CXX11/src/Tensor/README.md
 EXTRA_DIST += third_party/eigen-5.0.1/unsupported/Eigen/src/LevenbergMarquardt/CopyrightMINPACK.txt
 EXTRA_DIST += third_party/eigen-5.0.1/unsupported/README.txt
+EXTRA_DIST += third_party/HPCombi-1.1.2/HPCOMBI_VERSION
+EXTRA_DIST += third_party/HPCombi-1.1.2/LICENSE
+EXTRA_DIST += third_party/HPCombi-1.1.2/README.md
 
 
 ## For testing . . .

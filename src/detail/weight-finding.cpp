@@ -21,11 +21,16 @@
 
 #include "libsemigroups/detail/weight-finding.hpp"
 
-#include "minlp.h"
+#include "libsemigroups/config.hpp"
+
+// TODO
+// #ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+
+#include "libsemigroups/detail/alglib.hpp"
 
 #include <iostream>
 
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGRUOPS_EXCEPTION
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 // TODO(2): Experiment with different solvers if alglib proves to be unsuitable.
 // Examples include SCIP, HiGHS and CBC. Could also implement out own simplex
