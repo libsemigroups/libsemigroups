@@ -36,15 +36,16 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
-#include "libsemigroups/order.hpp"            // for LenLexCmp, shor...
-#include "libsemigroups/presentation.hpp"     // for Presentation, human_r...
-#include "libsemigroups/ranges.hpp"           // for chain, lenlex_cmp
+#include "libsemigroups/bipart.hpp"        // for Bipartition
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_ALGLIB_ENABLED
+#include "libsemigroups/constants.hpp"     // for operator==, operator!=
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
+#include "libsemigroups/order.hpp"         // for LenLexCmp, shor...
+#include "libsemigroups/presentation.hpp"  // for Presentation, human_r...
+#include "libsemigroups/ranges.hpp"        // for chain, lenlex_cmp
 #include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
 #include "libsemigroups/word-range.hpp"       // for operator+=, operator""_w
@@ -4054,6 +4055,8 @@ End;)xxx");
                           "letters, found \"abAB\"!");
   }
 
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
                                    "102",
                                    "find_weights simple",
@@ -4142,4 +4145,5 @@ End;)xxx");
     auto result = presentation::find_weights(p);
     REQUIRE(!result.has_value());
   }
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
 }  // namespace libsemigroups

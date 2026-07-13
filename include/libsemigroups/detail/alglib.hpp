@@ -19,13 +19,23 @@
 #ifndef LIBSEMIGROUPS_DETAIL_ALGLIBL_HPP_
 #define LIBSEMIGROUPS_DETAIL_ALGLIBL_HPP_
 
+#include "libsemigroups/config.hpp"
+
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-declarations"
 #pragma GCC diagnostic ignored "-Wredundant-decls"
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Winline"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#ifdef WITH_INTERNAL_ALGLIB
 #include "alglib-4.08.0/src/minlp.h"
+#else
+#include "minlp.h"
+#endif
 #pragma GCC diagnostic pop
+
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
 
 #endif  // LIBSEMIGROUPS_DETAIL_ALGLIBL_HPP_

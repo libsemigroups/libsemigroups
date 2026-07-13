@@ -1195,6 +1195,7 @@ namespace libsemigroups {
       return UNDEFINED;
     }
 
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
     template <typename Word>
     std::optional<std::vector<size_t>>
     find_weights(Presentation<Word> const& p) {
@@ -1240,7 +1241,8 @@ namespace libsemigroups {
       coefficients.shrink_rows_to(next_row_index);
       return detail::get_weights(coefficients, is_strict);
     }
-  }  // namespace presentation
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
+  }     // namespace presentation
 
   template <typename Word>
   std::string to_human_readable_repr(Presentation<Word> const& p) {
