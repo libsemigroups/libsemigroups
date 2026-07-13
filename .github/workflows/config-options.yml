@@ -26,7 +26,7 @@ jobs:
           - --enable-hpcombi
           - --disable-hpcombi
           # Don't test the combination that corresponds to the default values
-          exclude:
+        exclude:
           - alglib: --enable-debug
             debug: --disable-debug
             eigen: --enable-eigen
@@ -56,7 +56,10 @@ jobs:
 
   external-deps:
     timeout-minutes: 45
-    name: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }} ${{ matrix.external-magic-enum }} ${{ matrix.external-catch }}
+    name:
+      ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{
+      matrix.external-eigen }} ${{ matrix.external-magic-enum }} ${{
+      matrix.external-catch }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -85,7 +88,10 @@ jobs:
     env:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
-      CONFIGFLAGS: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }} ${{ matrix.external-magic-enum }} ${{ matrix.external-catch }}
+      CONFIGFLAGS:
+        ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{
+        matrix.external-eigen }} ${{ matrix.external-magic-enum }} ${{
+        matrix.external-catch }}
       PKG_CONFIG_PATH: /home/runner/micromamba/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba/envs/libsemigroups/share/pkgconfig/
       LD_LIBRARY_PATH: /home/runner/micromamba/envs/libsemigroups/lib
       # TODO is the next line really required?
