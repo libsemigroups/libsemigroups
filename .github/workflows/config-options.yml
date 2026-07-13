@@ -13,6 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        alglib:
+          - --enable-alglib
+          - --disable-alglib
         debug:
           - --enable-debug
           - --disable-debug
@@ -22,8 +25,10 @@ jobs:
         hpcombi:
           - --enable-hpcombi
           - --disable-hpcombi
-        exclude:
-          - debug: --disable-debug
+          # Don't test the combination that corresponds to the default values
+          exclude:
+          - alglib: --enable-debug
+            debug: --disable-debug
             eigen: --enable-eigen
             hpcombi: --enable-hpcombi
     env:

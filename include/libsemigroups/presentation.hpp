@@ -42,9 +42,9 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "adapters.hpp"              // for Hash, EqualTo
 #include "alphabet-class.hpp"        // for Alphabet
 #include "alphabet-helpers.hpp"      // for add_letter
+#include "config.hpp"                // for LIBSEMIGROUPS_ALGLIB_ENABLED
 #include "constants.hpp"             // for Max, UNDEFINED, operator==
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
@@ -3679,6 +3679,7 @@ namespace libsemigroups {
       return find_rule(p, lhs, rhs) != p.rules.end();
     }
 
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
     //! \brief Attempt to find weights such that the rules of the presentation
     //! are oriented with respect to weighted len-lex.
     //!
@@ -3702,6 +3703,7 @@ namespace libsemigroups {
     template <typename Word>
     [[nodiscard]] std::optional<std::vector<size_t>>
     find_weights(Presentation<Word> const& p);
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
 
   }  // namespace presentation
 
