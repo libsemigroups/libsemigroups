@@ -17,6 +17,19 @@
 //
 
 #pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#pragma GCC diagnostic ignored "-Winline"
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wredundant-decls"
+#pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=format"
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=noreturn"
+#else
+#pragma GCC diagnostic ignored "-Wmissing-noreturn"
+#pragma GCC diagnostic ignored "-Wcast-align"
+#endif
 #include "third_party/alglib-4.08.0/src/ap.cpp"
 #pragma GCC diagnostic pop

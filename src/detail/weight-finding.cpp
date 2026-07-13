@@ -38,10 +38,10 @@ namespace libsemigroups::detail {
   // function we are attempting to minimise, and arbitrarily define it to be
   // the function with the constant value 1.
   // TODO: experiment with different objectives
-  void objective(const alglib::real_1d_array& x,
-                 alglib::real_1d_array&       fi,
-                 alglib::real_2d_array&       jac,
-                 void*                        ptr) {
+  static void objective(const alglib::real_1d_array& x,
+                        alglib::real_1d_array&       fi,
+                        alglib::real_2d_array&       jac,
+                        void*                        ptr) {
     // ptr is a necessary parameter as this function's API is prescribed by
     // <minlpsolveroptimize>
     (void) ptr;
