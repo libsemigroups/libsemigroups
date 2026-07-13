@@ -21,11 +21,16 @@
 
 #include "libsemigroups/detail/weight-finding.hpp"
 
-#include "minlp.h"
+#include "libsemigroups/config.hpp"
+
+// TODO
+// #ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+
+#include "libsemigroups/detail/alglib.hpp"
 
 #include <iostream>
 
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGRUOPS_EXCEPTION
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 // TODO(2): Experiment with different solvers if alglib proves to be unsuitable.
 // Examples include SCIP, HiGHS and CBC. Could also implement out own simplex
@@ -36,10 +41,10 @@ namespace libsemigroups::detail {
   // function we are attempting to minimise, and arbitrarily define it to be
   // the function with the constant value 1.
   // TODO: experiment with different objectives
-  void objective(const alglib::real_1d_array& x,
-                 alglib::real_1d_array&       fi,
-                 alglib::real_2d_array&       jac,
-                 void*                        ptr) {
+  static void objective(const alglib::real_1d_array& x,
+                        alglib::real_1d_array&       fi,
+                        alglib::real_2d_array&       jac,
+                        void*                        ptr) {
     // ptr is a necessary parameter as this function's API is prescribed by
     // <minlpsolveroptimize>
     (void) ptr;
