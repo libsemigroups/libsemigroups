@@ -22,9 +22,10 @@
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 
-#include <algorithm>  // for for_each
-#include <utility>    // for move
-#include <vector>     // for vector
+#include <algorithm>    // for for_each
+#include <type_traits>  // for is_same_v
+#include <utility>      // for move
+#include <vector>       // for vector
 
 #include "order.hpp"         // for LenLexCmp
 #include "presentation.hpp"  // for Presentation
@@ -100,11 +101,12 @@ namespace libsemigroups {
             typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>,
             template <typename> typename ReductionOrder
             = RewritingSystem::template reduction_order_template>
-  class KnuthBendix
-      : public detail::KnuthBendixImpl<RewritingSystem, ReductionOrder> {
+  class KnuthBendix : public detail::KnuthBendixImpl<RewritingSystem> {
    private:
-    using KnuthBendixImpl_
-        = detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>;
+    static_assert(std::is_same_v<ReductionOrder<Default>,
+                                 typename RewritingSystem::reduction_order>);
+
+    using KnuthBendixImpl_ = detail::KnuthBendixImpl<RewritingSystem>;
 
     bool               _extra_letter_added;
     std::vector<Word>  _generating_pairs;

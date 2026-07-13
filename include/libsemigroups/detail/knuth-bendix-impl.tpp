@@ -27,38 +27,28 @@ namespace libsemigroups {
     // KnuthBendix::Settings - constructor - public
     //////////////////////////////////////////////////////////////////////////
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem,
-                    ReductionOrder>::Settings::Settings() noexcept {
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::Settings::Settings() noexcept {
       init();
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    typename KnuthBendixImpl<RewritingSystem, ReductionOrder>::Settings&
-    KnuthBendixImpl<RewritingSystem,
-                    ReductionOrder>::Settings::init() noexcept {
+    template <typename RewritingSystem>
+    typename KnuthBendixImpl<RewritingSystem>::Settings&
+    KnuthBendixImpl<RewritingSystem>::Settings::init() noexcept {
       max_overlap    = POSITIVE_INFINITY;
       max_rules      = POSITIVE_INFINITY;
       overlap_policy = options::overlap::ABC;
       return *this;
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::Stats::Stats() noexcept {
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::Stats::Stats() noexcept {
       init();
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    typename KnuthBendixImpl<RewritingSystem, ReductionOrder>::Stats&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::Stats::init() noexcept {
+    template <typename RewritingSystem>
+    typename KnuthBendixImpl<RewritingSystem>::Stats&
+    KnuthBendixImpl<RewritingSystem>::Stats::init() noexcept {
       prev_active_rules   = 0;
       prev_inactive_rules = 0;
       prev_total_rules    = 0;
@@ -69,11 +59,9 @@ namespace libsemigroups {
     // KnuthBendixImpl - setters for Settings - public
     //////////////////////////////////////////////////////////////////////////
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::overlap_policy(
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>&
+    KnuthBendixImpl<RewritingSystem>::overlap_policy(
         typename options::overlap p) {
       if (p == _settings.overlap_policy && _overlap_measure != nullptr) {
         return *this;
@@ -99,10 +87,8 @@ namespace libsemigroups {
     // KnuthBendixImpl - constructors and destructor - public
     //////////////////////////////////////////////////////////////////////////
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::KnuthBendixImpl()
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::KnuthBendixImpl()
         : CongruenceCommon(),
           _gen_pairs_initted(),
           _gilman_graph(),
@@ -117,11 +103,8 @@ namespace libsemigroups {
       init();
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::init() {
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>& KnuthBendixImpl<RewritingSystem>::init() {
       CongruenceCommon::init();
       report_prefix("KnuthBendix");
 
@@ -140,12 +123,9 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::operator=(
-        KnuthBendixImpl const& that) {
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>&
+    KnuthBendixImpl<RewritingSystem>::operator=(KnuthBendixImpl const& that) {
       CongruenceCommon::operator=(that);
       _gen_pairs_initted        = that._gen_pairs_initted;
       _gilman_graph             = that._gilman_graph;
@@ -163,12 +143,9 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::operator=(
-        KnuthBendixImpl&& that) {
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>&
+    KnuthBendixImpl<RewritingSystem>::operator=(KnuthBendixImpl&& that) {
       CongruenceCommon::operator=(std::move(that));
       _gen_pairs_initted        = std::move(that._gen_pairs_initted);
       _gilman_graph             = std::move(that._gilman_graph);
@@ -182,47 +159,34 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::KnuthBendixImpl(
-        KnuthBendixImpl&& that)
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::KnuthBendixImpl(KnuthBendixImpl&& that)
         : KnuthBendixImpl() {
       operator=(std::move(that));
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::KnuthBendixImpl(
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::KnuthBendixImpl(
         KnuthBendixImpl const& that)
         : KnuthBendixImpl() {
       operator=(that);
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::~KnuthBendixImpl()
-        = default;
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::~KnuthBendixImpl() = default;
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::KnuthBendixImpl(
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::KnuthBendixImpl(
         congruence_kind                  knd,
         Presentation<native_word_type>&& p)
         : KnuthBendixImpl() {
       init(knd, std::move(p));
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::init(
-        congruence_kind                  knd,
-        Presentation<native_word_type>&& p) {
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>&
+    KnuthBendixImpl<RewritingSystem>::init(congruence_kind                  knd,
+                                           Presentation<native_word_type>&& p) {
       // TODO(1) assert that the alphabet + rules are good
       // p.throw_if_bad_alphabet_or_rules();
       LIBSEMIGROUPS_ASSERT(presentation::is_normalized(p));
@@ -233,21 +197,16 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::KnuthBendixImpl(
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::KnuthBendixImpl(
         congruence_kind                       knd,
         Presentation<native_word_type> const& p)
         : KnuthBendixImpl() {
       init(knd, p);
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::init(
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>& KnuthBendixImpl<RewritingSystem>::init(
         congruence_kind                       knd,
         Presentation<native_word_type> const& p) {
       // Call rvalue ref init
@@ -258,11 +217,8 @@ namespace libsemigroups {
     // KnuthBendixImpl - attributes - public
     //////////////////////////////////////////////////////////////////////////
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    uint64_t
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::number_of_classes() {
+    template <typename RewritingSystem>
+    uint64_t KnuthBendixImpl<RewritingSystem>::number_of_classes() {
       if (is_obviously_infinite(*this)) {
         return POSITIVE_INFINITY;
       }
@@ -277,18 +233,16 @@ namespace libsemigroups {
       }
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
+    template <typename RewritingSystem>
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    tril KnuthBendixImpl<RewritingSystem, ReductionOrder>::
-        currently_contains_no_checks(Iterator1 first1,
-                                     Iterator2 last1,
-                                     Iterator3 first2,
-                                     Iterator4 last2) const {
+    tril KnuthBendixImpl<RewritingSystem>::currently_contains_no_checks(
+        Iterator1 first1,
+        Iterator2 last1,
+        Iterator3 first2,
+        Iterator4 last2) const {
       if (std::equal(first1, last1, first2, last2)) {
         return tril::TRUE;
       }
@@ -307,14 +261,11 @@ namespace libsemigroups {
       return tril::unknown;
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
+    template <typename RewritingSystem>
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
-    OutputIterator
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::reduce_no_run_no_checks(
+    OutputIterator KnuthBendixImpl<RewritingSystem>::reduce_no_run_no_checks(
         OutputIterator d_first,
         InputIterator1 first,
         InputIterator2 last) const {
@@ -325,18 +276,15 @@ namespace libsemigroups {
       } else {
         _tmp_element1.assign(first, last);
       }
-      const_cast<KnuthBendixImpl<RewritingSystem, ReductionOrder>&>(*this)
-          .rewrite_inplace(_tmp_element1);
+      const_cast<KnuthBendixImpl<RewritingSystem>&>(*this).rewrite_inplace(
+          _tmp_element1);
       return std::copy(
           std::begin(_tmp_element1), std::end(_tmp_element1), d_first);
     }
 
     // TODO(1) export a version of this for use elsewhere
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem, ReductionOrder>::report_presentation()
-        const {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::report_presentation() const {
       // NOTE: this function does the same as presentation::to_report_string,
       // which we cannot use directly here because we don't have a presentation
       // object to pass to it (and possibly because of some cyclic dependency
@@ -361,10 +309,8 @@ namespace libsemigroups {
                      group_digits(len));
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem, ReductionOrder>::report_before_run() {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::report_before_run() {
       if (reporting_enabled()) {
         report_no_prefix("{:+<95}\n", "");
         report_default("KnuthBendix: STARTING . . .\n");
@@ -373,11 +319,8 @@ namespace libsemigroups {
       }
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem,
-                         ReductionOrder>::report_progress_from_thread() {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::report_progress_from_thread() {
       using std::chrono::duration_cast;
       using std::chrono::high_resolution_clock;
 
@@ -411,10 +354,8 @@ namespace libsemigroups {
       stats_check_point();
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem, ReductionOrder>::report_after_run() {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::report_after_run() {
       if (reporting_enabled()) {
         report_progress_from_thread();
         if (finished()) {
@@ -452,11 +393,9 @@ namespace libsemigroups {
     // report_no_prefix(msg);
     // REVIEW was it okay to remove const here? Needed to do so to maybe process
     // some rules.
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem, ReductionOrder>::rewrite_inplace(
-        native_word_type& w) {
+    template <typename RewritingSystem>
+    void
+    KnuthBendixImpl<RewritingSystem>::rewrite_inplace(native_word_type& w) {
       add_octo(w);
       _rewriting_system.rewrite(w);
       rm_octo(w);
@@ -467,10 +406,8 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     // TODO(1) move to Stats
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem, ReductionOrder>::stats_check_point() {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::stats_check_point() {
       _stats.prev_active_rules = _rewriting_system.number_of_rules();
       _stats.prev_total_rules  = _rewriting_system.stats().total_rules;
     }
@@ -479,29 +416,20 @@ namespace libsemigroups {
     // KnuthBendixImpl - main methods - public
     //////////////////////////////////////////////////////////////////////////
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    bool
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::finished_impl() const {
+    template <typename RewritingSystem>
+    bool KnuthBendixImpl<RewritingSystem>::finished_impl() const {
       return _rewriting_system.confluent_known()
              && _rewriting_system.confluent();
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    bool
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::stop_running() const {
+    template <typename RewritingSystem>
+    bool KnuthBendixImpl<RewritingSystem>::stop_running() const {
       return stopped()
              || _rewriting_system.number_of_rules() > _settings.max_rules;
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem,
-                         ReductionOrder>::init_from_generating_pairs() {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::init_from_generating_pairs() {
       if (_gen_pairs_initted) {
         return;
       }
@@ -535,10 +463,8 @@ namespace libsemigroups {
       }
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem, ReductionOrder>::run_impl() {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::run_impl() {
       using std::chrono::duration_cast;
       using std::chrono::seconds;
 
@@ -758,11 +684,9 @@ namespace libsemigroups {
       report_after_run();
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
+    template <typename RewritingSystem>
     WordGraph<uint32_t> const&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::gilman_graph() {
+    KnuthBendixImpl<RewritingSystem>::gilman_graph() {
       if (_gilman_graph.number_of_nodes() == 0
           && !internal_presentation().alphabet().empty()) {
         // TODO(1) should implement a SettingsGuard as in ToddCoxeterImpl
@@ -843,22 +767,16 @@ namespace libsemigroups {
     // KnuthBendixImpl - converting ints <-> string/char - private
     //////////////////////////////////////////////////////////////////////////
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem, ReductionOrder>::add_octo(
-        native_word_type& w) const {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::add_octo(native_word_type& w) const {
       if (kind() != congruence_kind::twosided
           && !internal_generating_pairs().empty()) {
         w = internal_presentation().alphabet().back() + w;
       }
     }
 
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem, ReductionOrder>::rm_octo(
-        native_word_type& w) const {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::rm_octo(native_word_type& w) const {
       if (kind() != congruence_kind::twosided
           && !internal_generating_pairs().empty()) {
         LIBSEMIGROUPS_ASSERT(w.front()
@@ -872,11 +790,8 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     // TODO(1) move this to the single call site
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void KnuthBendixImpl<RewritingSystem,
-                         ReductionOrder>::init_from_internal_presentation() {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::init_from_internal_presentation() {
       auto const& p = _presentation;
 
       _rewriting_system.increase_alphabet_size_by(p.alphabet().size());
@@ -892,12 +807,9 @@ namespace libsemigroups {
 
     // OVERLAP_2 from Sims, p77
     // TODO(1) move to elsewhere
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    void
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::overlap(Rule const* u,
-                                                              Rule const* v) {
+    template <typename RewritingSystem>
+    void KnuthBendixImpl<RewritingSystem>::overlap(Rule const* u,
+                                                   Rule const* v) {
       constexpr const auto active = Rule::State::active;
 
       LIBSEMIGROUPS_ASSERT(u->state() == active);
@@ -933,21 +845,16 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
-  template <typename RewritingSystem,
-            template <typename>
-            typename ReductionOrder>
-  std::ostream&
-  operator<<(std::ostream&                                             os,
-             detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb) {
+  template <typename RewritingSystem>
+  std::ostream& operator<<(std::ostream&                             os,
+                           detail::KnuthBendixImpl<RewritingSystem>& kb) {
     os << kb.rewriting_system().rules();
     return os;
   }
 
-  template <typename RewritingSystem,
-            template <typename>
-            typename ReductionOrder>
-  std::string to_human_readable_repr(
-      detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb) {
+  template <typename RewritingSystem>
+  std::string
+  to_human_readable_repr(detail::KnuthBendixImpl<RewritingSystem>& kb) {
     using detail::group_digits;
     std::string conf, genpairs;
     if (kb.rewriting_system().confluent_known()) {

@@ -158,9 +158,7 @@ namespace libsemigroups {
      protected:
       void sort_pending_rules();
 
-      template <typename RewritingSystem,
-                template <typename>
-                typename ReductionOrder>
+      template <typename RewritingSystem>
       friend class KnuthBendixImpl;
 
       bool cached_confluent() const noexcept {

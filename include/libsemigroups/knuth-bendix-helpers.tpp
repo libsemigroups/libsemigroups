@@ -286,11 +286,8 @@ namespace libsemigroups {
     }
 
     // TODO(1) deprecate and make this RewritingSystem mem fn
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    bool
-    is_reduced(detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb) {
+    template <typename RewritingSystem>
+    bool is_reduced(detail::KnuthBendixImpl<RewritingSystem>& kb) {
       for (auto const& test_rule : kb.rewriting_system().rules()) {
         auto const lhs = test_rule.first;
         for (auto const& rule : kb.rewriting_system().rules()) {

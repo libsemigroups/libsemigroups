@@ -240,11 +240,8 @@ namespace libsemigroups {
     //! stored within the \ref_knuth_bendix instance, \f$C\f$ is neither a
     //! subword of \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-    template <typename RewritingSystem,
-              template <typename>
-              typename ReductionOrder>
-    [[nodiscard]] bool
-    is_reduced(detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb);
+    template <typename RewritingSystem>
+    [[nodiscard]] bool is_reduced(detail::KnuthBendixImpl<RewritingSystem>& kb);
 #else
     template <typename Word,
               typename RewritingSystem,

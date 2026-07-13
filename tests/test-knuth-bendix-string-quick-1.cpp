@@ -61,8 +61,8 @@ namespace libsemigroups {
 
   static_assert(std::is_default_constructible_v<
                 KnuthBendix<std::string, LenLexTrie, LenLexCmp>>);
-  static_assert(std::is_default_constructible_v<
-                detail::KnuthBendixImpl<LenLexTrie, LenLexCmp>>);
+  static_assert(
+      std::is_default_constructible_v<detail::KnuthBendixImpl<LenLexTrie>>);
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 
