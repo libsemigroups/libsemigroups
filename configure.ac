@@ -120,6 +120,10 @@ AS_IF([test "x$compile_warnings" = "xyes"],
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
 
+# Check if the vendored alglib should be used or not, or if alglib should be
+# disabled altogether
+AX_CHECK_ALGLIB()
+
 # Check if the vendored backward should be used or not, or if backward should be
 # disabled altogether
 AX_CHECK_BACKWARD()

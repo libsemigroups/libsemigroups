@@ -19,18 +19,15 @@
 // This file contains the implementation of a function that takes in 2d array of
 // constraints and returns an integer solution, if such a solution exists
 
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_ALGLIB_ENABLED
+
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+
 #include "libsemigroups/detail/weight-finding.hpp"
 
-#include "libsemigroups/config.hpp"
-
-// TODO
-// #ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 #include "libsemigroups/detail/alglib.hpp"
-
-#include <iostream>
-
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 // TODO(2): Experiment with different solvers if alglib proves to be unsuitable.
 // Examples include SCIP, HiGHS and CBC. Could also implement out own simplex
@@ -165,3 +162,5 @@ namespace libsemigroups::detail {
     return {};
   }
 }  // namespace libsemigroups::detail
+
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED

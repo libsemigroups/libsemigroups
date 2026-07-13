@@ -22,6 +22,10 @@
 #ifndef LIBSEMIGROUPS_DETAIL_WEIGHT_FINDING_HPP_
 #define LIBSEMIGROUPS_DETAIL_WEIGHT_FINDING_HPP_
 
+#include "libsemigroups/config.hpp"
+
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+
 #include <optional>  // for std::optional
 #include <vector>    // for std::vector
 
@@ -33,4 +37,5 @@ namespace libsemigroups::detail {
               std::vector<bool> const&  is_strict);
 }
 
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
 #endif  // LIBSEMIGROUPS_DETAIL_WEIGHT_FINDING_HPP_
