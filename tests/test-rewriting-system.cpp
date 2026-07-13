@@ -352,9 +352,8 @@ namespace libsemigroups {
                                          {{0}, {0, 2}},
                                          {{1, 2}, {1}},
                                          {{1, 2}, {2}}}));
-      REQUIRE(rewriting_system::is_length_non_increasing_no_reduce(rws)
-              == tril::unknown);
-      REQUIRE(rewriting_system::is_terminating_no_reduce(rws) == tril::unknown);
+      REQUIRE(rws.is_length_non_increasing_no_reduce() == tril::unknown);
+      REQUIRE(rws.is_terminating_no_reduce() == tril::FALSE);
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ReturnFalse>",
@@ -382,13 +381,13 @@ namespace libsemigroups {
                   {{{0, 0}, {2, 2, 2}}, {{1, 1, 1}, {2, 2, 2}}}));
       REQUIRE(!rws.confluent());
 
-      REQUIRE(!rewriting_system::is_length_non_increasing(rws));
-      REQUIRE(rewriting_system::is_terminating(rws) == tril::unknown);
+      REQUIRE(!rws.is_length_non_increasing());
+      REQUIRE(rws.is_terminating() == tril::unknown);
 
       std::string w({0, 0});
       rws.rewrite(w);
       REQUIRE(w == std::string({2, 2, 2}));
-      REQUIRE(rewriting_system::is_terminating(rws) == tril::unknown);
+      REQUIRE(rws.is_terminating() == tril::unknown);
     }
 
     LIBSEMIGROUPS_TEST_CASE("Rules", "013", "constructors/init", "[quick]") {
@@ -418,8 +417,8 @@ namespace libsemigroups {
       rws.init();
       REQUIRE(rws.number_of_rules() == 0);
       REQUIRE(rws.trie().number_of_nodes() == 1);
-      REQUIRE(rewriting_system::is_length_non_increasing(rws));
-      REQUIRE(rewriting_system::is_terminating(rws) == tril::TRUE);
+      REQUIRE(rws.is_length_non_increasing());
+      REQUIRE(rws.is_terminating() == tril::TRUE);
 
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "aaa"_w, "c"_w);
@@ -474,10 +473,14 @@ namespace libsemigroups {
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "bbb"_w, "aa"_w);
       rewriting_system::add_rule(rws, "bbb"_w, "ccc"_w);
-      REQUIRE(rewriting_system::is_terminating_no_reduce(rws) == tril::unknown);
+      REQUIRE(rws.is_terminating_no_reduce() == tril::unknown);
       REQUIRE(rws.is_reduced() == tril::unknown);
-      REQUIRE(rewriting_system::is_terminating(rws) == tril::TRUE);
+      REQUIRE(rws.is_terminating() == tril::TRUE);
       REQUIRE(rws.is_reduced() == tril::TRUE);
+
+      rewriting_system::add_rule(rws, "a"_w, "aa"_w);
+      REQUIRE(rws.is_terminating_no_reduce() == tril::FALSE);
+      REQUIRE(rws.is_reduced() == tril::unknown);
     }
 
     LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
@@ -505,5 +508,21 @@ namespace libsemigroups {
       REQUIRE(rws.confluent_known());
       REQUIRE(!rws.confluent());
     }
+
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystem",
+                            "017",
+                            "is_terminating x2",
+                            "[quick]") {
+      auto                             rg = ReportGuard(false);
+      RewritingSystemTrie<ReturnFalse> rws;
+      rws.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(rws, "aa"_w, "bab"_w);
+      rewriting_system::add_rule(rws, "ab"_w, "aa"_w);
+      REQUIRE(rws.is_terminating_no_reduce() == tril::unknown);
+      // Reduce runs forever, unless running in debug mode, in which case an
+      // assertion is raised.
+      // rws.reduce();
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups
