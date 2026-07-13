@@ -67,28 +67,31 @@ namespace libsemigroups {
 
   namespace detail {
 
-    using string_type = RewritingSystemTrie<LenLexCmp<>>::native_word_type;
+    template <typename = Default>
+    using ReturnFalseOrder = ReturnFalse;
+
+    using string_type = RewritingSystemTrie<LenLexCmp>::native_word_type;
 
     using namespace std::literals;
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "000",
                             "initial test",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rt;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rt;
       REQUIRE(rt.number_of_rules() == 0);
       rt.increase_alphabet_size_by(2);
       rewriting_system::add_rule(rt, "ba"_w, "a"_w);
       REQUIRE(rt.number_of_rules() == 1);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "001",
                             "simple test",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rt;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rt;
 
       rt.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rt, "ac"_w, "ca"_w);
@@ -127,7 +130,7 @@ namespace libsemigroups {
       REQUIRE(w5 == string_type({0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemSet<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemSet<LenLexCmp>",
                             "002",
                             "simple test",
                             "[quick]") {
@@ -135,7 +138,7 @@ namespace libsemigroups {
 
       auto rg = ReportGuard(false);
 
-      RewritingSystemSet<LenLexCmp<>> rws;
+      RewritingSystemSet<LenLexCmp> rws;
 
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "ac"_w, "ca"_w);
@@ -180,12 +183,12 @@ namespace libsemigroups {
       REQUIRE(w5 == string_type({0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "003",
                             "confluent",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rws;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rws;
       rws.increase_alphabet_size_by(3);
 
       rewriting_system::add_rule(rws, "ab"_w, "ba"_w);
@@ -214,12 +217,12 @@ namespace libsemigroups {
                   {{{2, 0}, {0}}, {{0, 2}, {0}}, {{1}, {0}}, {{0, 0}, {0}}}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "004",
                             "non-confluent",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rt;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rt;
       rt.increase_alphabet_size_by(2);
       rewriting_system::add_rule(rt, "aaa"_w, ""_w);
       rewriting_system::add_rule(rt, "bbb"_w, ""_w);
@@ -227,12 +230,12 @@ namespace libsemigroups {
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "005",
                             "Example 5.1 in Sims (infinite)",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rt;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rt;
       rt.increase_alphabet_size_by(4);
       rewriting_system::add_rule(rt, "ab"_w, ""_w);
       rewriting_system::add_rule(rt, "ba"_w, ""_w);
@@ -243,12 +246,12 @@ namespace libsemigroups {
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "006",
                             "non-confluent",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rt;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rt;
 
       rt.increase_alphabet_size_by(4);
       rewriting_system::add_rule(rt, "ca"_w, ""_w);
@@ -260,12 +263,12 @@ namespace libsemigroups {
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "007",
                             "Example 5.3 in Sims",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rt;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rt;
       rt.increase_alphabet_size_by(2);
       rewriting_system::add_rule(rt, "aa"_w, ""_w);
       rewriting_system::add_rule(rt, "bbb"_w, ""_w);
@@ -274,12 +277,12 @@ namespace libsemigroups {
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "008",
                             "Example 5.4 in Sims",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rt;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rt;
       rt.increase_alphabet_size_by(3);
 
       rewriting_system::add_rule(rt, "aa"_w, ""_w);
@@ -290,12 +293,12 @@ namespace libsemigroups {
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "009",
                             "Example 6.4 in Sims (size 168)",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rt;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rt;
       rt.increase_alphabet_size_by(3);
 
       rewriting_system::add_rule(rt, "aa"_w, ""_w);
@@ -307,12 +310,12 @@ namespace libsemigroups {
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp<>>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<LenLexCmp>",
                             "010",
                             "random example",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rt;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rt;
 
       rt.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rt, "aaa"_w, "c"_w);
@@ -331,9 +334,9 @@ namespace libsemigroups {
                             "011",
                             "not obviously terminating example",
                             "[quick]") {
-      using rule_type                     = std::pair<std::string, std::string>;
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<ReturnFalse> rws;
+      using rule_type = std::pair<std::string, std::string>;
+      auto                                  rg = ReportGuard(false);
+      RewritingSystemTrie<ReturnFalseOrder> rws;
 
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "aaa"_w, "c"_w);
@@ -361,9 +364,9 @@ namespace libsemigroups {
                             "012",
                             "not obviously terminating example",
                             "[quick]") {
-      using rule_type                     = std::pair<std::string, std::string>;
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<ReturnFalse> rws;
+      using rule_type = std::pair<std::string, std::string>;
+      auto                                  rg = ReportGuard(false);
+      RewritingSystemTrie<ReturnFalseOrder> rws;
 
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "aa"_w, "bbb"_w);
@@ -403,8 +406,8 @@ namespace libsemigroups {
                             "014",
                             "constructors/init",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp<>> rws;
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rws;
 
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "aaa"_w, "c"_w);
@@ -469,8 +472,8 @@ namespace libsemigroups {
                             "015",
                             "is_terminating",
                             "[quick]") {
-      auto                             rg = ReportGuard(false);
-      RewritingSystemTrie<ReturnFalse> rws;
+      auto                                  rg = ReportGuard(false);
+      RewritingSystemTrie<ReturnFalseOrder> rws;
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "bbb"_w, "aa"_w);
       rewriting_system::add_rule(rws, "bbb"_w, "ccc"_w);
@@ -484,8 +487,8 @@ namespace libsemigroups {
                                      "016",
                                      "confluence_ratio",
                                      "[quick]",
-                                     RewritingSystemSet<LenLexCmp<>>,
-                                     RewritingSystemTrie<LenLexCmp<>>) {
+                                     RewritingSystemSet<LenLexCmp>,
+                                     RewritingSystemTrie<LenLexCmp>) {
       auto     rg = ReportGuard(false);
       TestType rws;
       REQUIRE(rws.confluence_ratio() == std::pair<size_t, size_t>{0, 0});

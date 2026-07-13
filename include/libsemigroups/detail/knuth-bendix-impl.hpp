@@ -133,14 +133,14 @@ namespace libsemigroups {
 
     // TODO(1) Make overlap measure a template param?
     // TODO(v4) 2nd template parameter no longer used, remove
-    template <
-        typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp<>>,
-        typename ReductionOrder  = typename RewritingSystem::reduction_order>
+    template <typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>,
+              template <typename> typename ReductionOrder
+              = RewritingSystem::template reduction_order_template>
     class KnuthBendixImpl : public CongruenceCommon {
       // Since the 2nd template parameter is now unnecessary, but not removed
       // for backwards compatibility, we assert that it is the order of the
       // rewriting system.
-      static_assert(std::is_same_v<ReductionOrder,
+      static_assert(std::is_same_v<ReductionOrder<Default>,
                                    typename RewritingSystem::reduction_order>);
 
      public:
@@ -875,12 +875,17 @@ namespace libsemigroups {
   //!
   //! \returns A reference to the first argument.
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  template <typename Word, typename RewritingSystem, typename ReductionOrder>
+  template <typename Word,
+            typename RewritingSystem,
+            template <typename>
+            typename ReductionOrder>
   std::ostream&
   operator<<(std::ostream&                                             os,
              KnuthBendix<Word, RewritingSystem, ReductionOrder> const& kb);
 #else
-  template <typename RewritingSystem, typename ReductionOrder>
+  template <typename RewritingSystem,
+            template <typename>
+            typename ReductionOrder>
   std::ostream& operator<<(
       std::ostream&                                                   os,
       detail::KnuthBendixImpl<RewritingSystem, ReductionOrder> const& kb);
@@ -905,18 +910,26 @@ namespace libsemigroups {
   //! \returns The representation, a value of type \c std::string.
   // TODO(1) preferably kb would be a const&
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  template <typename Word, typename RewritingSystem, typename ReductionOrder>
+  template <typename Word,
+            typename RewritingSystem,
+            template <typename>
+            typename ReductionOrder>
   std::string to_human_readable_repr(
       KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);
 #else
-  template <typename RewritingSystem, typename ReductionOrder>
+  template <typename RewritingSystem,
+            template <typename>
+            typename ReductionOrder>
   std::string to_human_readable_repr(
       detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb);
 #endif
 
   //! No doc
   // TODO(1) kb should be const
-  template <typename Result, typename RewritingSystem, typename ReductionOrder>
+  template <typename Result,
+            typename RewritingSystem,
+            template <typename>
+            typename ReductionOrder>
   auto to(detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb)
       -> std::enable_if_t<
           std::is_same_v<Presentation<typename Result::word_type>, Result>,

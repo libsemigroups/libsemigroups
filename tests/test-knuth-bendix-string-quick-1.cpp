@@ -23,12 +23,13 @@
 #include "libsemigroups/order.hpp"
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include <algorithm>  // for fill
-#include <chrono>     // for milliseconds
-#include <cstddef>    // for size_t
-#include <string>     // for basic_string, operator==
-#include <utility>    // for move
-#include <vector>     // for vector, operator==
+#include <algorithm>    // for fill
+#include <chrono>       // for milliseconds
+#include <cstddef>      // for size_t
+#include <string>       // for basic_string, operator==
+#include <type_traits>  // for is_default_constructible_v
+#include <utility>      // for move
+#include <vector>       // for vector, operator==
 
 #include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
@@ -52,11 +53,16 @@ namespace libsemigroups {
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
 
-  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp<>>;
-  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp<>>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
 
-  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp<>>;
-  using RPOSet  = detail::RewritingSystemSet<RevRPOCmp<>>;
+  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+
+  static_assert(std::is_default_constructible_v<
+                KnuthBendix<std::string, LenLexTrie, LenLexCmp>>);
+  static_assert(std::is_default_constructible_v<
+                detail::KnuthBendixImpl<LenLexTrie, LenLexCmp>>);
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 

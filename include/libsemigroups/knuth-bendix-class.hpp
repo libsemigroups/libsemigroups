@@ -70,7 +70,7 @@ namespace libsemigroups {
   //!
   //! \tparam Word the type of the words in rules in the presentation.
   //! \tparam RewritingSystem the type of the rewriter.
-  //! \tparam ReductionOrder the reduction ordering.
+  //! \tparam ReductionOrder the reduction-order class template.
   //!
   //! \par Example
   //! \code
@@ -97,8 +97,9 @@ namespace libsemigroups {
   //! * 256 letters if `char` is an unsigned integer.
   // TODO(v4) remove the final template parameter, which isn't required any more
   template <typename Word,
-            typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp<>>,
-            typename ReductionOrder = typename RewritingSystem::reduction_order>
+            typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>,
+            template <typename> typename ReductionOrder
+            = RewritingSystem::template reduction_order_template>
   class KnuthBendix
       : public detail::KnuthBendixImpl<RewritingSystem, ReductionOrder> {
    private:

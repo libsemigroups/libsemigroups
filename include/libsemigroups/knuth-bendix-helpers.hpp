@@ -92,7 +92,10 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \cong_common_warn_undecidable{Knuth-Bendix}.
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    template <typename Word,
+              typename RewritingSystem,
+              template <typename>
+              typename ReductionOrder>
     [[nodiscard]] auto
     normal_forms(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb) {
       return detail::
@@ -146,7 +149,10 @@ namespace libsemigroups {
     //! of \p kb1 has fewer nodes than that of \p kb2.
     //!
     //! \cong_common_warn_undecidable{Knuth-Bendix}.
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    template <typename Word,
+              typename RewritingSystem,
+              template <typename>
+              typename ReductionOrder>
     [[nodiscard]] std::vector<std::vector<Word>> non_trivial_classes(
         KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb1,
         KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb2);
@@ -207,7 +213,10 @@ namespace libsemigroups {
     //! confluent, which might be never.
     //!
     //! \sa KnuthBendix::run.
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    template <typename Word,
+              typename RewritingSystem,
+              template <typename>
+              typename ReductionOrder>
     void
     by_overlap_length(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);
 
@@ -231,11 +240,16 @@ namespace libsemigroups {
     //! stored within the \ref_knuth_bendix instance, \f$C\f$ is neither a
     //! subword of \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-    template <typename RewritingSystem, typename ReductionOrder>
+    template <typename RewritingSystem,
+              template <typename>
+              typename ReductionOrder>
     [[nodiscard]] bool
     is_reduced(detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb);
 #else
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    template <typename Word,
+              typename RewritingSystem,
+              template <typename>
+              typename ReductionOrder>
     [[nodiscard]] bool
     is_reduced(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);
 #endif

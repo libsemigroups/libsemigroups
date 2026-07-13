@@ -29,11 +29,11 @@
 
 namespace libsemigroups {
 
-  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp<>>;
-  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp<>>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
 
-  using RPOTrie = detail::RewritingSystemTrie<RPOCmp<>>;
-  using RPOSet  = detail::RewritingSystemSet<RPOCmp<>>;
+  using RPOTrie = detail::RewritingSystemTrie<RPOCmp>;
+  using RPOSet  = detail::RewritingSystemSet<RPOCmp>;
 
   using literals::operator""_w;
 

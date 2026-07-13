@@ -56,6 +56,7 @@ namespace libsemigroups {
   template <typename Result,
             typename WordIn,
             typename RewritingSystem,
+            template <typename>
             typename ReductionOrder>
   auto to(KnuthBendix<WordIn, RewritingSystem, ReductionOrder>& kb)
       -> std::enable_if_t<

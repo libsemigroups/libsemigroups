@@ -50,9 +50,9 @@ namespace libsemigroups {
 
   // TODO update these tests to use RPO as well
 
-  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp<>>;
-  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp<>>;
-  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp<>>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
+  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
 

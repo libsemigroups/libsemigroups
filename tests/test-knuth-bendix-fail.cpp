@@ -57,10 +57,10 @@ namespace libsemigroups {
 
   using namespace rx;
 
-  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp<>>;
-  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp<>>;
-  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp<>>;
-  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp<>>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
+  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, RPOTrie
 

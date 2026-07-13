@@ -59,11 +59,11 @@ namespace libsemigroups {
   using knuth_bendix::reduce;
   using knuth_bendix::reduce_no_run;
 
-  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp<>>;
-  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp<>>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
 
-  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp<>>;
-  using RPOSet  = detail::RewritingSystemSet<RevRPOCmp<>>;
+  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 

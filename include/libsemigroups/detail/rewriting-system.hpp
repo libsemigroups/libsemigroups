@@ -28,6 +28,7 @@
 #include <set>            // for set
 #include <stack>          // for stack
 #include <string>         // for basic_string, operator==
+#include <type_traits>    // for enable_if_t, is_same_v
 #include <unordered_map>  // for unordered_map
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_DEBUG
@@ -157,7 +158,9 @@ namespace libsemigroups {
      protected:
       void sort_pending_rules();
 
-      template <typename RewritingSystem, typename ReductionOrder>
+      template <typename RewritingSystem,
+                template <typename>
+                typename ReductionOrder>
       friend class KnuthBendixImpl;
 
       bool cached_confluent() const noexcept {
@@ -235,7 +238,7 @@ namespace libsemigroups {
     // RewritingSystemSet
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename ReductionOrder>
+    template <template <typename> typename ReductionOrder>
     class RewritingSystemSet : public RewritingSystemBase {
       ////////////////////////////////////////////////////////////////////////
       // Private aliases
@@ -253,8 +256,13 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       using native_word_type     = Rule::native_word_type;
-      using reduction_order      = ReductionOrder;
+      using reduction_order      = ReductionOrder<Default>;
       using rule_const_reference = RewritingSystemBase::rule_const_reference;
+
+      template <typename Word>
+      using reduction_order_template
+          = std::enable_if_t<std::is_same_v<Word, Default>,
+                             ReductionOrder<Default>>;
 
       ////////////////////////////////////////////////////////////////////////
       // Constructors + initializers
@@ -328,7 +336,7 @@ namespace libsemigroups {
     // RewritingSystemTrie
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename ReductionOrder>
+    template <template <typename> typename ReductionOrder>
     class RewritingSystemTrie : public RewritingSystemBase {
       ////////////////////////////////////////////////////////////////////////
       // Private aliases
@@ -356,7 +364,12 @@ namespace libsemigroups {
 
       using native_word_type     = Rule::native_word_type;
       using rule_const_reference = RewritingSystemBase::rule_const_reference;
-      using reduction_order      = ReductionOrder;
+      using reduction_order      = ReductionOrder<Default>;
+
+      template <typename Word>
+      using reduction_order_template
+          = std::enable_if_t<std::is_same_v<Word, Default>,
+                             ReductionOrder<Default>>;
 
       ////////////////////////////////////////////////////////////////////////
       // Constructors + initializers
@@ -496,8 +509,8 @@ namespace libsemigroups {
 
     }  // namespace rewriting_system
 
-    using RewriteTrie [[deprecated]]     = RewritingSystemTrie<LenLexCmp<>>;
-    using RewriteFromLeft [[deprecated]] = RewritingSystemSet<LenLexCmp<>>;
+    using RewriteTrie [[deprecated]]     = RewritingSystemTrie<LenLexCmp>;
+    using RewriteFromLeft [[deprecated]] = RewritingSystemSet<LenLexCmp>;
 
   }  // namespace detail
 }  // namespace libsemigroups
