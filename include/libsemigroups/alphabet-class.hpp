@@ -557,6 +557,7 @@ namespace libsemigroups {
   //!
   //! \tparam Word the type of the words in the alphabet.
   //! \param alphabet the alphabet.
+  //! \param braces the braces to use in the returned string (default: `"{}"`).
   //!
   //! \returns A string containing the input required to recreate the alphabet.
   // TODO doc exception
@@ -574,6 +575,7 @@ namespace libsemigroups {
   //! literal; otherwise, they are represented by their character values.
   //!
   //! \param alphabet the alphabet.
+  //! \param braces the braces to use in the returned string (default: `"{}"`).
   //!
   //! \returns A string containing the input required to recreate the alphabet.
   // TODO doc exception
@@ -583,11 +585,13 @@ namespace libsemigroups {
 
   //! \relates Alphabet
   //!
-  //! \brief Insert the output of \ref to_input_string(Alphabet<Word> const&)
-  //! into a std::ostream.
+  //! \brief Insert the output of
+  //! \ref to_input_string(Alphabet<Word> const&, std::string const&) into a
+  //! std::ostream.
   //!
   //! This function inserts the output of
-  //! \ref to_input_string(Alphabet<Word> const&) into a std::ostream.
+  //! \ref to_input_string(Alphabet<Word> const&, std::string const&) into a
+  //! std::ostream.
   //!
   //! \tparam Word the type of the words in the alphabet.
   //! \param os the std::ostream.

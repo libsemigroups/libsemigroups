@@ -42,7 +42,7 @@
 //! \p y, and \c false otherwise.
 //!
 //! \exceptions
-//! \no_libsemigroups_except
+//! \no_libsemigroups_except_detail
 //! See std::lexicographical_compare.
 //!
 //! \complexity
@@ -53,7 +53,7 @@
 //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
 //! \end_code_no_test
 //!
-//! \deprecated_warning{function} Use \ref lex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::lex_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated("Use lex_cmp instead!")]] bool
 lexicographical_compare(Word const& x, Word const& y) {
@@ -77,7 +77,7 @@ lexicographical_compare(Word const& x, Word const& y) {
 //! \p y, and \c false otherwise.
 //!
 //! \exceptions
-//! \no_libsemigroups_except
+//! \no_libsemigroups_except_detail
 //! See std::lexicographical_compare.
 //!
 //! \complexity
@@ -111,7 +111,7 @@ lexicographical_compare(Word* const x, Word* const y) {
 //! \sa
 //! std::lexicographical_compare.
 //!
-//! \deprecated_warning{struct} Use \ref LexCmp instead.
+//! \deprecated_warning{struct} Use \ref libsemigroups::LexCmp instead.
 using LexicographicalCompare [[deprecated("Use LexCmp instead")]]
 = LexCmp<void>;
 
@@ -159,7 +159,7 @@ using LexicographicalCompare [[deprecated("Use LexCmp instead")]]
 //! }
 //! \end_code_no_test
 //!
-//! \deprecated_warning{function} Use \ref lenlex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::lenlex_cmp instead.
 template <typename Iterator>
 [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
 shortlex_compare(Iterator first1,
@@ -169,12 +169,13 @@ shortlex_compare(Iterator first1,
   return lenlex_cmp(first1, last1, first2, last2);
 }
 
-//! \brief Compare two objects of the same type using \ref shortlex_compare.
+//! \brief Compare two objects of the same type using
+//! \ref libsemigroups::shortlex_compare.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects of the same type using
-//! \ref shortlex_compare.
+//! \ref libsemigroups::shortlex_compare.
 //!
 //! \tparam Word the type of the objects to be compared.
 //!
@@ -185,7 +186,8 @@ shortlex_compare(Iterator first1,
 //! and \c false otherwise.
 //!
 //! \exceptions
-//! See \ref shortlex_compare(Iterator, Iterator, Iterator, Iterator).
+//! See \ref libsemigroups::shortlex_compare(Iterator, Iterator, Iterator,
+//! Iterator).
 //!
 //! \complexity
 //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of \p x and
@@ -200,19 +202,20 @@ shortlex_compare(Iterator first1,
 //! \sa
 //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
 //!
-//! \deprecated_warning{function} Use \ref lenlex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::lenlex_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
 shortlex_compare(Word const& x, Word const& y) {
   return lenlex_cmp(x, y);
 }
 
-//! \brief Compare two objects via their pointers using \ref shortlex_compare.
+//! \brief Compare two objects via their pointers using
+//! \ref libsemigroups::shortlex_compare.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects via their pointers using
-//! \ref shortlex_compare.
+//! \ref libsemigroups::shortlex_compare.
 //!
 //! \tparam Word the type of the objects to be compared.
 //!
@@ -223,7 +226,8 @@ shortlex_compare(Word const& x, Word const& y) {
 //! than the word pointed to by \p y, and \c false otherwise.
 //!
 //! \exceptions
-//! See \ref shortlex_compare(Iterator, Iterator, Iterator, Iterator).
+//! See \ref libsemigroups::shortlex_compare(Iterator, Iterator, Iterator,
+//! Iterator).
 //!
 //! \complexity
 //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of the word
@@ -238,7 +242,7 @@ shortlex_compare(Word const& x, Word const& y) {
 //! \sa
 //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
 //!
-//! \deprecated_warning{function} Use \ref lenlex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::lenlex_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
@@ -248,19 +252,21 @@ shortlex_compare(Word* const x, Word* const y) {
 }
 
 //! \brief A stateless struct with binary call operator using
-//! \ref shortlex_compare.
+//! \ref libsemigroups::shortlex_compare.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
-//! A stateless struct with binary call operator using \ref shortlex_compare.
+//! A stateless struct with binary call operator using
+//! \ref libsemigroups::shortlex_compare.
 //!
 //! This only exists to be used as a template parameter, and has no
-//! advantages over using \ref shortlex_compare otherwise.
+//! advantages over using \ref libsemigroups::shortlex_compare otherwise.
 //!
 //! \sa
 //! shortlex_compare(Iterator, Iterator, Iterator, Iterator)
 //!
-//! \deprecated_warning{struct} Use \ref LenLexCmp instead.
+//! \deprecated_warning{struct} Use \ref libsemigroups::LenLexCmp
+//! instead.
 using ShortLexCompare [[deprecated("Use LenLexCmp instead!")]] = LenLexCmp<>;
 
 //////////////////////////////////////////////////////////////////////
@@ -286,9 +292,9 @@ using ShortLexCompare [[deprecated("Use LenLexCmp instead!")]] = LenLexCmp<>;
 //!   2. \f$a < b\f$ and \f$u  < v'\f$; or
 //!   3. \f$a > b\f$ and \f$u' < v\f$.
 //!
-//! This documentation and the implementation of \ref recursive_path_compare
-//! is based on the source code of \cite Holt2018aa, specifically the function
-//! `rt_rec_compare`.
+//! This documentation and the implementation of
+//! \ref libsemigroups::recursive_path_compare is based on the source code of
+//! \cite Holt2018aa, specifically the function `rt_rec_compare`.
 //!
 //! \tparam Iterator the type of iterators that are the arguments.
 //!
@@ -306,9 +312,10 @@ using ShortLexCompare [[deprecated("Use LenLexCmp instead!")]] = LenLexCmp<>;
 //!
 //! \warning
 //! This function has significantly worse performance than all
-//! the variants of \ref lenlex_cmp and std::lexicographical_compare.
+//! the variants of \ref libsemigroups::lenlex_cmp and
+//! std::lexicographical_compare.
 //!
-//! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::rev_rpo_cmp instead.
 template <typename Iterator>
 [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
 recursive_path_compare(Iterator first1,
@@ -319,12 +326,12 @@ recursive_path_compare(Iterator first1,
 }
 
 //! \brief Compare two objects of the same type using
-//! \ref recursive_path_compare.
+//! \ref libsemigroups::recursive_path_compare.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects of the same type using
-//! \ref recursive_path_compare.
+//! \ref libsemigroups::recursive_path_compare.
 //!
 //! \tparam Word the type of the objects to be compared.
 //!
@@ -346,7 +353,7 @@ recursive_path_compare(Iterator first1,
 //! \sa
 //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
 //!
-//! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::rev_rpo_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
 recursive_path_compare(Word const& x, Word const& y) noexcept {
@@ -354,12 +361,12 @@ recursive_path_compare(Word const& x, Word const& y) noexcept {
 }
 
 //! \brief Compare two objects via their pointers using
-//! \ref recursive_path_compare.
+//! \ref libsemigroups::recursive_path_compare.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects via their pointers using
-//! \ref recursive_path_compare.
+//! \ref libsemigroups::recursive_path_compare.
 //!
 //! \tparam Word the type of the objects to be compared.
 //!
@@ -382,7 +389,7 @@ recursive_path_compare(Word const& x, Word const& y) noexcept {
 //! \sa
 //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
 //!
-//! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::rev_rpo_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
@@ -392,20 +399,20 @@ recursive_path_compare(Word* const x, Word* const y) noexcept {
 }
 
 //! \brief A stateless struct with binary call operator using
-//! \ref recursive_path_compare.
+//! \ref libsemigroups::recursive_path_compare.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! A stateless struct with binary call operator using
-//! \ref recursive_path_compare.
+//! \ref libsemigroups::recursive_path_compare.
 //!
 //! This only exists to be used as a template parameter, and has no
-//! advantages over using \ref recursive_path_compare otherwise.
+//! advantages over using \ref libsemigroups::recursive_path_compare otherwise.
 //!
 //! \sa
 //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
 //!
-//! \deprecated_warning{struct} Use \ref RevRPOCmp instead.
+//! \deprecated_warning{struct} Use \ref libsemigroups::RevRPOCmp instead.
 using RecursivePathCompare [[deprecated("Use RevRPOCmp instead!")]]
 = RevRPOCmp<>;
 
@@ -453,7 +460,8 @@ using RecursivePathCompare [[deprecated("Use RevRPOCmp instead!")]]
 //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
+//! \deprecated_warning{function} Use
+//! \ref libsemigroups::wt_lenlex_cmp_no_checks instead.
 template <typename Iterator>
 [[nodiscard]] [[deprecated("Use wt_lenlex_cmp_no_checks instead!")]] bool
 wt_shortlex_compare_no_checks(Iterator                   first1,
@@ -465,13 +473,14 @@ wt_shortlex_compare_no_checks(Iterator                   first1,
 }
 
 //! \brief Compare two objects of the same type using
-//! \ref wt_shortlex_compare_no_checks without checks.
+//! \ref libsemigroups::wt_shortlex_compare_no_checks without checks.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects of the same type using
-//! \ref wt_shortlex_compare_no_checks, where the `i`th index of the weights
-//! vector corresponds to the weight of the `i`th letter in the alphabet.
+//! \ref libsemigroups::wt_shortlex_compare_no_checks, where the `i`th index of
+//! the weights vector corresponds to the weight of the `i`th letter in the
+//! alphabet.
 //!
 //! \tparam Word the type of the objects to be compared.
 //!
@@ -483,8 +492,8 @@ wt_shortlex_compare_no_checks(Iterator                   first1,
 //! than \p y, and \c false otherwise.
 //!
 //! \exceptions
-//! See \ref wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator,
-//! Iterator, std::vector<size_t> const&).
+//! See \ref libsemigroups::wt_shortlex_compare_no_checks(Iterator, Iterator,
+//! Iterator, Iterator, std::vector<size_t> const&).
 //!
 //! \complexity
 //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
@@ -504,7 +513,8 @@ wt_shortlex_compare_no_checks(Iterator                   first1,
 //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
+//! \deprecated_warning{function} Use
+//! \ref libsemigroups::wt_lenlex_cmp_no_checks instead.
 template <typename Word>
 [[nodiscard]] [[deprecated("Use wt_lenlex_cmp_no_checks instead!")]] bool
 wt_shortlex_compare_no_checks(Word const&                x,
@@ -514,13 +524,14 @@ wt_shortlex_compare_no_checks(Word const&                x,
 }
 
 //! \brief Compare two objects via their pointers using
-//! \ref wt_shortlex_compare_no_checks without checks.
+//! \ref libsemigroups::wt_shortlex_compare_no_checks without checks.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects via their pointers using
-//! \ref wt_shortlex_compare_no_checks, where the `i`th index of the weights
-//! vector corresponds to the weight of the `i`th letter in the alphabet.
+//! \ref libsemigroups::wt_shortlex_compare_no_checks, where the `i`th index of
+//! the weights vector corresponds to the weight of the `i`th letter in the
+//! alphabet.
 //!
 //! \tparam Word the type of the objects to be compared.
 //!
@@ -532,8 +543,8 @@ wt_shortlex_compare_no_checks(Word const&                x,
 //! short-lex less than the word pointed to by \p y, and \c false otherwise.
 //!
 //! \exceptions
-//! See \ref wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator,
-//! Iterator, std::vector<size_t> const&).
+//! See \ref libsemigroups::wt_shortlex_compare_no_checks(Iterator, Iterator,
+//! Iterator, Iterator, std::vector<size_t> const&).
 //!
 //! \complexity
 //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
@@ -553,7 +564,8 @@ wt_shortlex_compare_no_checks(Word const&                x,
 //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
+//! \deprecated_warning{function} Use
+//! \ref libsemigroups::wt_lenlex_cmp_no_checks instead.
 template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
@@ -605,7 +617,7 @@ wt_shortlex_compare_no_checks(Word* const                x,
 //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::wt_lenlex_cmp instead.
 template <typename Iterator>
 [[nodiscard]] [[deprecated("Use wt_lenlex_cmp instead!")]] bool
 wt_shortlex_compare(Iterator                   first1,
@@ -616,14 +628,15 @@ wt_shortlex_compare(Iterator                   first1,
   return wt_lenlex_cmp(weights, first1, last1, first2, last2);
 }
 
-//! \brief Compare two objects of the same type using \ref wt_shortlex_compare
-//! and check validity.
+//! \brief Compare two objects of the same type using
+//! \ref libsemigroups::wt_shortlex_compare and check validity.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects of the same type using
-//! \ref wt_shortlex_compare, where the `i`th index of the weights vector
-//! corresponds to the weight of the `i`th letter in the alphabet.
+//! \ref libsemigroups::wt_shortlex_compare, where the `i`th index of the
+//! weights vector corresponds to the weight of the `i`th letter in the
+//! alphabet.
 //!
 //! After checking that all letters in both objects are valid indices into
 //! the weights vector, this function performs the same as
@@ -655,7 +668,7 @@ wt_shortlex_compare(Iterator                   first1,
 //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::wt_lenlex_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated("Use wt_lenlex_cmp instead!")]] bool
 wt_shortlex_compare(Word const&                x,
@@ -665,13 +678,14 @@ wt_shortlex_compare(Word const&                x,
 }
 
 //! \brief Compare two objects via their pointers using
-//! \ref wt_shortlex_compare and check validity.
+//! \ref libsemigroups::wt_shortlex_compare and check validity.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects via their pointers using
-//! \ref wt_shortlex_compare, where the `i`th index of the weights vector
-//! corresponds to the weight of the `i`th letter in the alphabet.
+//! \ref libsemigroups::wt_shortlex_compare, where the `i`th index of the
+//! weights vector corresponds to the weight of the `i`th letter in the
+//! alphabet.
 //!
 //! After checking that all letters are valid indices into the weights
 //! vector, this function performs the same as
@@ -703,7 +717,7 @@ wt_shortlex_compare(Word const&                x,
 //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::wt_lenlex_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
@@ -715,22 +729,23 @@ wt_shortlex_compare(Word* const                x,
 }
 
 //! \brief A stateful struct with binary call operator using
-//! \ref wt_shortlex_compare or \ref wt_shortlex_compare_no_checks.
+//! \ref libsemigroups::wt_shortlex_compare or
+//! \ref libsemigroups::wt_shortlex_compare_no_checks.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! A stateful struct with binary call operator using
-//! \ref wt_shortlex_compare or \ref wt_shortlex_compare_no_checks,
-//! depending on the value of the constructor parameter \c should_check. This
-//! struct stores a copy of a weights vector and can be used as a template
-//! parameter for standard library containers or algorithms that require a
-//! comparison functor.
+//! \ref libsemigroups::wt_shortlex_compare or
+//! \ref libsemigroups::wt_shortlex_compare_no_checks, depending on the value of
+//! the constructor parameter \c should_check. This struct stores a copy of a
+//! weights vector and can be used as a template parameter for standard library
+//! containers or algorithms that require a comparison functor.
 //!
 //! \warning
 //! When the constructor parameter \c should_check is \c false, the call
 //! operator does not check that letters are valid indices into the weights
 //! vector. Use the constructor with \c should_check set to \c true
-//! (\ref checks) to enable argument checking in the call operator.
+//! to enable argument checking in the call operator.
 //!
 //! \sa
 //! * wt_shortlex_compare(Word const&, Word const&, std::vector<size_t>
@@ -738,7 +753,7 @@ wt_shortlex_compare(Word* const                x,
 //! * wt_shortlex_compare_no_checks(Word const&, Word const&,
 //! std::vector<size_t> const&)
 //!
-//! \deprecated_warning{struct} Use \ref WtLenLexCmp instead.
+//! \deprecated_warning{struct} Use \ref libsemigroups::WtLenLexCmp instead.
 using WtShortLexCompare [[deprecated("Use WtLenLexCmp instead!")]]
 = WtLenLexCmp<>;
 
@@ -786,7 +801,8 @@ using WtShortLexCompare [[deprecated("Use WtLenLexCmp instead!")]]
 //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::wt_lex_cmp_no_checks
+//! instead.
 template <typename Iterator>
 [[nodiscard]] [[deprecated("Use wt_lex_cmp_no_checks instead!")]] bool
 wt_lex_compare_no_checks(Iterator                   first1,
@@ -798,13 +814,14 @@ wt_lex_compare_no_checks(Iterator                   first1,
 }
 
 //! \brief Compare two objects of the same type using
-//! \ref wt_lex_compare_no_checks without checks.
+//! \ref libsemigroups::wt_lex_compare_no_checks without checks.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects of the same type using
-//! \ref wt_lex_compare_no_checks, where the `i`th index of the weights
-//! vector corresponds to the weight of the `i`th letter in the alphabet.
+//! \ref libsemigroups::wt_lex_compare_no_checks, where the `i`th index of the
+//! weights vector corresponds to the weight of the `i`th letter in the
+//! alphabet.
 //!
 //! \tparam Word the type of the objects to be compared.
 //!
@@ -816,8 +833,8 @@ wt_lex_compare_no_checks(Iterator                   first1,
 //! than \p y, and \c false otherwise.
 //!
 //! \exceptions
-//! See \ref wt_lex_compare_no_checks(Iterator, Iterator, Iterator,
-//! Iterator, std::vector<size_t> const&).
+//! See \ref libsemigroups::wt_lex_compare_no_checks(Iterator, Iterator,
+//! Iterator, Iterator, std::vector<size_t> const&).
 //!
 //! \complexity
 //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
@@ -837,7 +854,8 @@ wt_lex_compare_no_checks(Iterator                   first1,
 //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::wt_lex_cmp_no_checks
+//! instead.
 template <typename Word>
 [[nodiscard]] [[deprecated("Use wt_lex_cmp_no_checks instead!")]] bool
 wt_lex_compare_no_checks(Word const&                x,
@@ -847,13 +865,14 @@ wt_lex_compare_no_checks(Word const&                x,
 }
 
 //! \brief Compare two objects via their pointers using
-//! \ref wt_lex_compare_no_checks without checks.
+//! \ref libsemigroups::wt_lex_compare_no_checks without checks.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects via their pointers using
-//! \ref wt_lex_compare_no_checks, where the `i`th index of the weights
-//! vector corresponds to the weight of the `i`th letter in the alphabet.
+//! \ref libsemigroups::wt_lex_compare_no_checks, where the `i`th index of the
+//! weights vector corresponds to the weight of the `i`th letter in the
+//! alphabet.
 //!
 //! \tparam Word the type of the objects to be compared.
 //!
@@ -865,8 +884,8 @@ wt_lex_compare_no_checks(Word const&                x,
 //! lex less than the word pointed to by \p y, and \c false otherwise.
 //!
 //! \exceptions
-//! See \ref wt_lex_compare_no_checks(Iterator, Iterator, Iterator,
-//! Iterator, std::vector<size_t> const&).
+//! See \ref libsemigroups::wt_lex_compare_no_checks(Iterator, Iterator,
+//! Iterator, Iterator, std::vector<size_t> const&).
 //!
 //! \complexity
 //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
@@ -886,7 +905,8 @@ wt_lex_compare_no_checks(Word const&                x,
 //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::wt_lex_cmp_no_checks
+//! instead.
 template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
@@ -938,7 +958,7 @@ wt_lex_compare_no_checks(Word* const                x,
 //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&)
 //!
-//! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::wt_lex_cmp instead.
 template <typename Iterator>
 [[nodiscard]] [[deprecated("Use wt_lex_cmp instead!")]] bool
 wt_lex_compare(Iterator                   first1,
@@ -949,14 +969,14 @@ wt_lex_compare(Iterator                   first1,
   return wt_lex_cmp(weights, first1, last1, first2, last2);
 }
 
-//! \brief Compare two objects of the same type using \ref wt_lex_compare
-//! and check validity.
+//! \brief Compare two objects of the same type using
+//! \ref libsemigroups::wt_lex_compare and check validity.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects of the same type using
-//! \ref wt_lex_compare, where the `i`th index of the weights vector
-//! corresponds to the weight of the `i`th letter in the alphabet.
+//! \ref libsemigroups::wt_lex_compare, where the `i`th index of the weights
+//! vector corresponds to the weight of the `i`th letter in the alphabet.
 //!
 //! After checking that all letters in both objects are valid indices into
 //! the weights vector, this function performs the same as
@@ -988,7 +1008,7 @@ wt_lex_compare(Iterator                   first1,
 //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::wt_lex_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated("Use wt_lex_cmp instead!")]] bool
 wt_lex_compare(Word const&                x,
@@ -998,13 +1018,13 @@ wt_lex_compare(Word const&                x,
 }
 
 //! \brief Compare two objects via their pointers using
-//! \ref wt_lex_compare and check validity.
+//! \ref libsemigroups::wt_lex_compare and check validity.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! This function compares two objects via their pointers using
-//! \ref wt_lex_compare, where the `i`th index of the weights vector
-//! corresponds to the weight of the `i`th letter in the alphabet.
+//! \ref libsemigroups::wt_lex_compare, where the `i`th index of the weights
+//! vector corresponds to the weight of the `i`th letter in the alphabet.
 //!
 //! After checking that all letters are valid indices into the weights
 //! vector, this function performs the same as
@@ -1036,7 +1056,7 @@ wt_lex_compare(Word const&                x,
 //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
 //! std::vector<size_t> const&).
 //!
-//! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::wt_lex_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
@@ -1048,31 +1068,30 @@ wt_lex_compare(Word* const                x,
 }
 
 //! \brief A stateful struct with binary call operator using
-//! \ref wt_lex_compare or \ref wt_lex_compare_no_checks.
+//! \ref libsemigroups::wt_lex_compare or
+//! \ref libsemigroups::wt_lex_compare_no_checks.
 //!
 //! Defined in `order-deprecated.hpp`.
 //!
 //! A stateful struct with binary call operator using
-//! \ref wt_lex_compare or \ref wt_lex_compare_no_checks,
-//! depending on the value of the constructor parameter \c should_check. This
-//! struct stores a copy of a weights vector and can be used as a template
-//! parameter for standard library containers or algorithms that require a
-//! comparison functor.
+//! \ref libsemigroups::wt_lex_compare or
+//! \ref libsemigroups::wt_lex_compare_no_checks, depending on the value of the
+//! constructor parameter \c should_check. This struct stores a copy of a
+//! weights vector and can be used as a template parameter for standard library
+//! containers or algorithms that require a comparison functor.
 //!
 //! \warning
 //! When the constructor parameter \c should_check is \c false, the call
 //! operator does not check that letters are valid indices into the weights
 //! vector. Use the constructor with \c should_check set to \c true
-//! (\ref checks) to enable argument checking in the call operator.
+//! to enable argument checking in the call operator.
 //!
 //! \sa
 //! * wt_lex_compare(Word const&, Word const&, std::vector<size_t> const&)
 //! * wt_lex_compare_no_checks(Word const&, Word const&, std::vector<size_t>
 //! const&)
 //!
-//! \deprecated_warning{struct} Use \ref WtLexCmp instead.
+//! \deprecated_warning{struct} Use \ref libsemigroups::WtLexCmp instead.
 using WtLexCompare [[deprecated("Use WtLexCmp instead!")]] = WtLexCmp<>;
-
-//! @}
 
 #endif  // LIBSEMIGROUPS_ORDER_DEPRECATED_HPP_
