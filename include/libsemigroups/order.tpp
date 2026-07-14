@@ -209,12 +209,11 @@ namespace libsemigroups {
   // consumed. At this point, a final check of the remaining letters is
   // performed, and the result is returned.
   template <typename Iterator, typename>
-  [[nodiscard]] bool
-  wreath_product_cmp_no_checks(Iterator                   first1,
-                               Iterator                   last1,
-                               Iterator                   first2,
-                               Iterator                   last2,
-                               std::vector<size_t> const& levels) {
+  [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
+                                          Iterator                   first1,
+                                          Iterator                   last1,
+                                          Iterator                   first2,
+                                          Iterator                   last2) {
     // Remove common prefix
     std::tie(first1, first2) = std::mismatch(first1, last1, first2, last2);
 

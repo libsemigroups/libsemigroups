@@ -1801,55 +1801,87 @@ namespace libsemigroups {
   // Wreath-product
   //////////////////////////////////////////////////////////////////////
 
-  // This algorithm determines if the first sequence (word 1) is strictly
-  // smaller than the second sequence (word 2) with respect to a wreath product
-  // order. Generators are assigned levels. Differences between generators at
-  // higher levels dominate differences at lower levels. Differences within the
-  // same level are determined by len-lex.
-  //
-  // The words are read from right to left, and the dominant level is stored in
-  // the variable <relevant_level>. This level is the highest level that is
-  // currently determining whether the suffix of word 1 or the suffix of word 2
-  // is smaller. The value of <relevant_level> increases every time a generator
-  // of a higher level is read.
-  //
-  // The suffix of word 1 (respectively, word 2) containing only letters from
-  // the <relevant_value> is referred to as the 'head' of word 1 (respectively,
-  // word2). If the heads of word 1 and word 2 is the same, then the generators
-  // with the level <relevant_level> cannot be used to distinguish between word
-  // 1 and word 2. Therefore, the relevant_level is reset to zero.
-  //
-  // The process of reading letters, updating the <relevant_level> and recording
-  // which suffix is smaller is repeated until one of the words has been fully
-  // consumed. At this point, a final check of the remaining letters is
-  // performed, and the result is returned.
+  //! \brief Compare two objects of the same type using the wreath-product
+  //! ordering without checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using a
+  //! wreath-product of len-lex comparisons as described in \cite Sims1994aa
+  //! (Chapter 2.1). Generators are assigned levels. Differences between
+  //! generators at higher levels dominate differences at lower levels.
+  //! Differences within the same level are determined by len-lex.
+  //!
+  //! Suppose that \f$X\f$ is the disjoint union of non-empty sets
+  //! \f$X_1, \dots, X_n\f$ referred to as levels, and for \f$1 \leq i \leq
+  //! n\f$, let \f$<_i\f$ be a len-lex ordering of \f$X_i\f$. We define \f$<\f$
+  //! to be \f$<_1 \wr \dots \wr <_n\f$. Next suppose that \f$U, V\in X ^
+  //! {*}\f$. If \f$U\f$ and \f$V\f$ have a common prefix, that is \f$U = AB\f$
+  //! and \f$V = AC\f$, then \f$U < V\f$ if and only if \f$B < C\f$. Therefore,
+  //! we may assume that \f$U\f$ and \f$V\f$ do not share a common prefix.
+  //!
+  //! Let \f$m\f$ be the largest index such that \f$U\f$ contains a generator
+  //! at level \f$m\f$.Therefore, we may write \f$U = A_0x_1A_1\dots
+  //! x_{s-1}A_{s-1}x_sA_s\f$ where \f$x_i \in X_m\f$ and \f$A_i \in \{X_1 \cup
+  //! \dots X_{m-1}\} ^ *\f$. Similarly, we may write \f$V = B_0y_1B_1\dots
+  //! y_{t-1}B_{t-1}y_tB_t\f$ where \f$y_i \in X_n\f$ and \f$B_i \in \{X_1 \cup
+  //! \dots X_{n-1}\} ^ *\f$ for a maximal choice of \f$n\f$. Then \f$U<V\f$ and
+  //! only if one of the following conditions hold:
+  //! 1. \f$m < n\f$; or
+  //! 2. \f$m = n \f$ and \f$x_1x_2 \dots x_s <_m y_1y_2 \dots y_t\f$; or
+  //! 3. \f$m = n \f$, \f$x_1x_2 \dots x_s = y_1y_2 \dots y_t\f$ and
+  //! \f$A_0 < B_0\f$.
+  //!
+  //! The implementation of this function is inspired by the source code of
+  //! \cite Holt2018aa, specifically the function `wreath_compare`.
+  //!
+  //! In the case where each generator has a unique level, this function
+  //! produces the same output as \ref rev_rpo_cmp.
+  //!
+  //! \tparam Iterator the type of iterators that are the arguments.
+  //!
+  //! \param levels the level of each generator.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is less
+  //! than the range `[first2, last2)` with respect to the wreath-product
+  //! ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \libsemigroups_no_except
+  //!
+  //! \warning
+  //! This function has significantly worse performance than all
+  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool
-  wreath_product_cmp_no_checks(Iterator                   first1,
-                               Iterator                   last1,
-                               Iterator                   first2,
-                               Iterator                   last2,
-                               std::vector<size_t> const& levels);
+  [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
+                                          Iterator                   first1,
+                                          Iterator                   last1,
+                                          Iterator                   first2,
+                                          Iterator                   last2);
 
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool
-  wreath_product_cmp_no_checks(Thing const&               x,
-                               Thing const&               y,
-                               std::vector<size_t> const& levels) noexcept {
-    return wreath_product_cmp_no_checks(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend(), levels);
+  [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
+                                          Thing const&               x,
+                                          Thing const& y) noexcept {
+    return wreath_cmp_no_checks(
+        levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   template <typename Thing>
-  [[nodiscard]] bool
-  wreath_product_cmp_no_checks(Thing* const               x,
-                               Thing* const               y,
-                               std::vector<size_t> const& levels) noexcept {
-    return wreath_product_cmp_no_checks(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), levels);
+  [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
+                                          Thing* const               x,
+                                          Thing* const y) noexcept {
+    return wreath_cmp_no_checks(
+        levels, x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
+
+  // TODO(0): checks versions
 
   //////////////////////////////////////////////////////////////////////
   // Weighted len-lex
