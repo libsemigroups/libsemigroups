@@ -31,11 +31,12 @@ namespace libsemigroups {
         return static_cast<size_t>(letter) >= weights.size();
       });
       if (it != last) {
-        LIBSEMIGROUPS_EXCEPTION("letter value out of bounds, expected value in "
-                                "[0, {}), found {} in position {}",
-                                weights.size(),
-                                static_cast<size_t>(*it),
-                                std::distance(first, it));
+        LIBSEMIGROUPS_EXCEPTION(
+            "letter value not compatible with weights, expected value in "
+            "[0, {}), found {} in position {}",
+            weights.size(),
+            static_cast<size_t>(*it),
+            std::distance(first, it));
       }
     }
 
@@ -49,11 +50,12 @@ namespace libsemigroups {
               return alphabet.index_no_checks(letter) >= weights.size();
             });
       if (it != last) {
-        LIBSEMIGROUPS_EXCEPTION("letter index out of bounds, expected index in "
-                                "[0, {}), found index {} in position {}",
-                                weights.size(),
-                                alphabet.index_no_checks(*it),
-                                std::distance(first, it));
+        LIBSEMIGROUPS_EXCEPTION(
+            "letter value not compatible with weights, expected value in "
+            "[0, {}), found {} in position {}",
+            weights.size(),
+            alphabet.index_no_checks(*it),
+            std::distance(first, it));
       }
     }
 
