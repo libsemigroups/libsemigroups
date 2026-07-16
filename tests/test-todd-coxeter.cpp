@@ -4806,6 +4806,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 5);
   }
 
+  // 2 minutes and 14 seconds
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "117",
                           "Rudvalis group",

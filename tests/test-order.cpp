@@ -405,8 +405,8 @@ namespace libsemigroups {
     word_type           w2      = {5};  // invalid: 5 >= weights.size()
 
     REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w1, w2),
-                          "letter value out of bounds, expected value in [0, "
-                          "5), found 5 in position 0");
+                          "letter value not compatible with weights, expected "
+                          "value in [0, 5), found 5 in position 0");
     REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
   }
 
@@ -462,8 +462,8 @@ namespace libsemigroups {
     std::vector<size_t> short_weights = {1};
     REQUIRE_EXCEPTION_MSG(std::ignore
                           = wt_lenlex_cmp(alphabet, short_weights, a, b),
-                          "letter index out of bounds, expected index in [0, "
-                          "1), found index 1 in position 0");
+                          "letter value not compatible with weights, expected "
+                          "value in [0, 1), found 1 in position 0");
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -476,8 +476,8 @@ namespace libsemigroups {
     word_type           w2      = {10};       // invalid
 
     REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w1, w2),
-                          "letter value out of bounds, expected value in [0, "
-                          "3), found 5 in position 0");
+                          "letter value not compatible with weights, expected "
+                          "value in [0, 3), found 5 in position 0");
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -490,11 +490,11 @@ namespace libsemigroups {
     word_type           w2      = {0, 5, 2};  // invalid in middle
 
     REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w1, w2),
-                          "letter value out of bounds, expected value in [0, "
-                          "3), found 5 in position 1");
+                          "letter value not compatible with weights, expected "
+                          "value in [0, 3), found 5 in position 1");
     REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w2, w1),
-                          "letter value out of bounds, expected value in [0, "
-                          "3), found 5 in position 1");
+                          "letter value not compatible with weights, expected "
+                          "value in [0, 3), found 5 in position 1");
   }
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp",
@@ -508,8 +508,8 @@ namespace libsemigroups {
 
     REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
     REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w2, w1),
-                          "letter value out of bounds, expected value in [0, "
-                          "0), found 0 in position 0");
+                          "letter value not compatible with weights, expected "
+                          "value in [0, 0), found 0 in position 0");
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
@@ -560,8 +560,8 @@ namespace libsemigroups {
     word_type w2 = {10};  // invalid: 10 >= weights.size()
 
     REQUIRE_EXCEPTION_MSG(std::ignore = comp(w1, w2),
-                          "letter value out of bounds, expected value in [0, "
-                          "5), found 10 in position 0");
+                          "letter value not compatible with weights, expected "
+                          "value in [0, 5), found 10 in position 0");
   }
 
   // =========================================================================
@@ -624,8 +624,8 @@ namespace libsemigroups {
 
     REQUIRE_NOTHROW(wt_lenlex_cmp(weights, w1, w1));
     REQUIRE_EXCEPTION_MSG(std::ignore = wt_lenlex_cmp(weights, w1, w2),
-                          "letter value out of bounds, expected value in [0, "
-                          "3), found 5 in position 0");
+                          "letter value not compatible with weights, expected "
+                          "value in [0, 3), found 5 in position 0");
   }
 
   // =========================================================================
@@ -1290,8 +1290,8 @@ namespace libsemigroups {
     std::vector<size_t> short_weights = {1};
     REQUIRE_EXCEPTION_MSG(
         static_cast<void>(wt_lex_cmp(alphabet, short_weights, a, b)),
-        "letter index out of bounds, expected index in [0, 1), found index 1 "
-        "in position 0");
+        "letter value not compatible with weights, expected value in [0, 1), "
+        "found 1 in position 0");
 
     alphabet.init("cd"s);
     REQUIRE_EXCEPTION_MSG(
