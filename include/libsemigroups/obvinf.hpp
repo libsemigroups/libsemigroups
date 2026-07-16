@@ -43,7 +43,7 @@ namespace libsemigroups {
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
   namespace detail {
-    template <typename RewritingSystem, typename ReductionOrder>
+    template <typename RewritingSystem>
     class KnuthBendixImpl;  // forward decl
     class ToddCoxeterImpl;  // forward decl
   }                         // namespace detail
@@ -648,9 +648,8 @@ namespace libsemigroups {
   //!
   //! \note If this function returns \c false, it is still possible that the
   //! quotient defined by the \ref_knuth_bendix object \p kb is infinite.
-  template <typename RewritingSystem, typename ReductionOrder>
-  bool is_obviously_infinite(
-      detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb) {
+  template <typename RewritingSystem>
+  bool is_obviously_infinite(detail::KnuthBendixImpl<RewritingSystem>& kb) {
     if (kb.finished()) {
       return !v4::word_graph::is_acyclic(kb.gilman_graph());
     }

@@ -53,6 +53,7 @@ namespace libsemigroups {
   template <template <typename...> typename Thing,
             typename Word,
             typename RewritingSystem,
+            template <typename>
             typename ReductionOrder>
   auto to(congruence_kind                                     knd,
           KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb)

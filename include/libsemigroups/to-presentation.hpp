@@ -145,6 +145,7 @@ namespace libsemigroups {
   template <typename Result,
             typename WordIn,
             typename RewritingSystem,
+            template <typename>
             typename ReductionOrder>
   auto to(KnuthBendix<WordIn, RewritingSystem, ReductionOrder>& kb)
       -> std::enable_if_t<
@@ -188,6 +189,7 @@ namespace libsemigroups {
   template <template <typename...> typename Thing,
             typename Word,
             typename RewritingSystem,
+            template <typename>
             typename ReductionOrder>
   auto to(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb)
       -> std::enable_if_t<std::is_same_v<Thing<Word>, Presentation<Word>>,

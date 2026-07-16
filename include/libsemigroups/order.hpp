@@ -20,8 +20,8 @@
 // defining linear orders on words.
 
 // TODO
-// * dry it out
 // * noexcept
+// * check exception spec in the doc
 
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_
@@ -36,8 +36,11 @@
 #include <utility>           // for move
 #include <vector>            // for vector
 
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "ranges.hpp"     // for shortlex_compare
+#include "alphabet-class.hpp"  // for Alphabet
+#include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
+#include "ranges.hpp"          // for shortlex_compare
+
+#include "detail/citow.hpp"  // for citow
 
 namespace libsemigroups {
   //! \ingroup types_group
@@ -101,6 +104,62 @@ namespace libsemigroups {
   // Lex
   //////////////////////////////////////////////////////////////////////
 
+  //! \brief Compare two ranges lexicographically without checking an alphabet.
+  //!
+  //! This overload maps letters through \p alphabet and compares the resulting
+  //! indices using std::lexicographical_compare. It does not check that the
+  //! letters in the ranges belong to \p alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the mapped range `[first1, last1)`
+  //! is lexicographically less than the mapped range `[first2, last2)`, and
+  //! \c false otherwise.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool lex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Iterator              first1,
+                                       Iterator              last1,
+                                       Iterator              first2,
+                                       Iterator              last2) {
+    return std::lexicographical_compare(detail::citow(alphabet, first1),
+                                        detail::citow(alphabet, last1),
+                                        detail::citow(alphabet, first2),
+                                        detail::citow(alphabet, last2));
+  }
+
+  //! \brief Compare two ranges lexicographically with respect to an alphabet.
+  //!
+  //! This overload checks that both ranges contain only letters belonging to
+  //! \p alphabet, then compares the corresponding alphabet indices using
+  //! std::lexicographical_compare.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the mapped range `[first1, last1)`
+  //! is lexicographically less than the mapped range `[first2, last2)`, and
+  //! \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either range does not
+  //! belong to \p alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool lex_cmp(Alphabet<Word> const& alphabet,
+                             Iterator              first1,
+                             Iterator              last1,
+                             Iterator              first2,
+                             Iterator              last2) {
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    return lex_cmp_no_checks(alphabet, first1, last1, first2, last2);
+  }
+
   //! \brief Compare two objects of the same type using
   //! std::lexicographical_compare.
   //!
@@ -109,7 +168,7 @@ namespace libsemigroups {
   //! This function compares two objects of the same type using
   //! std::lexicographical_compare.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -128,45 +187,276 @@ namespace libsemigroups {
   //! \code_no_test
   //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
   //! \end_code_no_test
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool lex_cmp(Thing const& x, Thing const& y) {
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool lex_cmp(Word const& x, Word const& y) {
     return std::lexicographical_compare(
         x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using
-  //! std::lexicographical_compare.
+  //! \brief Compare two objects lexicographically without checking an alphabet.
   //!
-  //! Defined in `order.hpp`.
+  //! This overload maps letters through \p alphabet and compares the resulting
+  //! indices using std::lexicographical_compare. It does not check that the
+  //! letters in \p x or \p y belong to \p alphabet.
   //!
-  //! This function compares two objects via their pointers using
-  //! std::lexicographical_compare.
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
   //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is lexicographically less than
-  //! \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  //! See std::lexicographical_compare.
-  //!
-  //! \complexity
-  //! See std::lexicographical_compare.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
-  //! \end_code_no_test
-  template <typename Thing>
-  [[nodiscard]] bool lex_cmp(Thing* const x, Thing* const y) {
-    return std::lexicographical_compare(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //! \returns The boolean value \c true if \p x is lexicographically less
+  //! than \p y with respect to \p alphabet, and \c false otherwise.
+  template <typename Word>
+  [[nodiscard]] bool lex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Word const&           x,
+                                       Word const&           y) {
+    return lex_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
+
+  //! \brief Compare two objects lexicographically with respect to an alphabet.
+  //!
+  //! This overload checks that both objects contain only letters belonging to
+  //! \p alphabet, then compares the corresponding alphabet indices using
+  //! std::lexicographical_compare.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is lexicographically less
+  //! than \p y with respect to \p alphabet, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either object does not
+  //! belong to \p alphabet.
+  template <typename Word>
+  [[nodiscard]] bool lex_cmp(Alphabet<Word> const& alphabet,
+                             Word const&           x,
+                             Word const&           y) {
+    return lex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Marker type used for stateless comparison specializations.
+  using Default = void;
+
+  template <typename Word = Default>
+  class LexCmp;
+
+  //! \brief Stateful lexicographic comparison functor.
+  //!
+  //! This class stores an alphabet and compares words by applying \ref lex_cmp
+  //! with that alphabet.
+  template <typename Word>
+  class LexCmp {
+    Alphabet<Word> _alphabet;
+
+   public:
+    //! \brief Deleted default constructor.
+    LexCmp() = delete;
+
+    //! \brief Copy constructor.
+    LexCmp(LexCmp const&) = default;
+
+    //! \brief Move constructor.
+    LexCmp(LexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    LexCmp& operator=(LexCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    LexCmp& operator=(LexCmp&&) = default;
+
+    ~LexCmp() = default;
+
+    //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit LexCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit LexCmp(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Call operator that compares \p x and \p y using
+    //! std::lexicographical_compare.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! std::lexicographical_compare.
+    //!
+    //! \tparam Word the type of the parameters.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is lexicographically less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! Throws if the corresponding comparison function throws.
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return lex_cmp(_alphabet, x, y);
+    }
+
+    //! \brief Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! \tparam Iterator the type of the parameters.
+    //!
+    //! \param first1 the start of the first object to compare.
+    //! \param last1 one beyond the end of the first object to compare.
+    //! \param first2 the start of the second object to compare.
+    //! \param last2 one beyond the end of the second object to compare.
+    //!
+    //! \returns The boolean value \c true if the range `[first1, last1)` is
+    //! lexicographically less than the range `[first2, last2)`, and \c false
+    //! otherwise.
+    //!
+    //! \exceptions
+    //! Throws if the corresponding comparison function throws.
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    //!
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return lex_cmp(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+  };  // class LexCmp
+
+  //! \brief Stateful lexicographic comparison functor without checks.
+  //!
+  //! This class stores an alphabet and compares words by applying
+  //! \ref lex_cmp_no_checks with that alphabet. The call operator does not
+  //! check that letters belong to the stored alphabet.
+  template <typename Word>
+  class LexCmpNoChecks {
+    Alphabet<Word> _alphabet;
+
+   public:
+    //! \brief Deleted default constructor.
+    LexCmpNoChecks() = delete;
+
+    //! \brief Copy constructor.
+    LexCmpNoChecks(LexCmpNoChecks const&) = default;
+
+    //! \brief Move constructor.
+    LexCmpNoChecks(LexCmpNoChecks&&) = default;
+
+    //! \brief Copy assignment operator.
+    LexCmpNoChecks& operator=(LexCmpNoChecks const&) = default;
+
+    //! \brief Move assignment operator.
+    LexCmpNoChecks& operator=(LexCmpNoChecks&&) = default;
+
+    ~LexCmpNoChecks() = default;
+
+    //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit LexCmpNoChecks(Alphabet<Word> const& alphabet)
+        : _alphabet(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit LexCmpNoChecks(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Call operator that compares \p x and \p y using
+    //! std::lexicographical_compare.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! std::lexicographical_compare.
+    //!
+    //! \tparam Word the type of the parameters.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is lexicographically less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! Throws if the corresponding comparison function throws.
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return lex_cmp_no_checks(_alphabet, x, y);
+    }
+
+    //! \brief Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! \tparam Iterator the type of the parameters.
+    //!
+    //! \param first1 the start of the first object to compare.
+    //! \param last1 one beyond the end of the first object to compare.
+    //! \param first2 the start of the second object to compare.
+    //! \param last2 one beyond the end of the second object to compare.
+    //!
+    //! \returns The boolean value \c true if the range `[first1, last1)` is
+    //! lexicographically less than the range `[first2, last2)`, and \c false
+    //! otherwise.
+    //!
+    //! \exceptions
+    //! Throws if the corresponding comparison function throws.
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    //!
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return lex_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+  };  // class LexCmpNoChecks
 
   //! \brief A stateless struct with binary call operator using
   //! std::lexicographical_compare.
@@ -181,14 +471,15 @@ namespace libsemigroups {
   //!
   //! \sa
   //! std::lexicographical_compare.
-  struct LexCmp {
+  template <>
+  struct LexCmp<Default> {
     //! \brief Call operator that compares \p x and \p y using
     //! std::lexicographical_compare.
     //!
     //! Call operator that compares \p x and \p y using
     //! std::lexicographical_compare.
     //!
-    //! \tparam Thing the type of the parameters.
+    //! \tparam Word the type of the parameters.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -201,36 +492,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See std::lexicographical_compare.
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return lex_cmp(x, y);
-    }
-
-    //! \brief Call operator that compares \p x and \p y given initializer lists
-    //! using std::lexicographical_compare.
-    //!
-    //! Call operator that compares \p x and
-    //! \p y given initializer lists using std::lexicographical_compare.
-    //!
-    //! \tparam T the items in the arguments.
-    //!
-    //! \param x initializer list for the first object for comparison.
-    //! \param y initializer list for the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is lexicographically less
-    //! than \p y, and \c false otherwise.
-    //!
-    //! \exceptions
-    //! See std::lexicographical_compare.
-    //!
-    //! \complexity
-    //! See std::lexicographical_compare.
-    // TODO(v4) is this really necessary?
-    template <typename T>
-    [[nodiscard]] bool operator()(std::initializer_list<T> x,
-                                  std::initializer_list<T> y) const {
-      return std::lexicographical_compare(
-          x.begin(), x.end(), y.begin(), y.end());
     }
 
     //! \brief Call operator that compares iterators using
@@ -255,7 +519,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See std::lexicographical_compare.
-    // TODO(v4) remove this?
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -263,99 +526,37 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return std::lexicographical_compare(first1, last1, first2, last2);
     }
-  };
 
-  //////////////////////////////////////////////////////////////////////
-  // Lexicographical - deprecated
-  //////////////////////////////////////////////////////////////////////
-
-  //! \brief Compare two objects of the same type using
-  //! std::lexicographical_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using
-  //! std::lexicographical_compare.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is lexicographically less than
-  //! \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  //! See std::lexicographical_compare.
-  //!
-  //! \complexity
-  //! See std::lexicographical_compare.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
-  //! \end_code_no_test
-  //!
-  //! \deprecated_warning{function} Use \ref lex_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] [[deprecated("Use lex_cmp instead!")]] bool
-  lexicographical_compare(Thing const& x, Thing const& y) {
-    return lex_cmp(x, y);
-  }
-
-  //! \brief Compare two objects via their pointers using
-  //! std::lexicographical_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! std::lexicographical_compare.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is lexicographically less than
-  //! \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  //! See std::lexicographical_compare.
-  //!
-  //! \complexity
-  //! See std::lexicographical_compare.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
-  //! \end_code_no_test
-  //!
-  //! \deprecated_warning{function} Use \ref lex_cmp instead.
-  template <typename Thing>
-  [[nodiscard]] [[deprecated("Use lex_cmp instead!")]] bool
-  lexicographical_compare(Thing* const x, Thing* const y) {
-    return lex_cmp(x, y);
-  }
-
-  //! \brief A stateless struct with binary call operator using
-  //! std::lexicographical_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! A stateless struct with binary call operator using
-  //! std::lexicographical_compare.
-  //!
-  //! This only exists to be used as a template parameter, and has no
-  //! advantages over using std::lexicographical_compare otherwise.
-  //!
-  //! \sa
-  //! std::lexicographical_compare.
-  //!
-  //! \deprecated_warning{struct} Use \ref lex_cmp instead.
-  using LexicographicalCompare [[deprecated("Use LexCmp instead")]] = LexCmp;
+    //! \brief Call operator that compares \p x and \p y given initializer lists
+    //! using std::lexicographical_compare.
+    //!
+    //! Call operator that compares \p x and
+    //! \p y given initializer lists using std::lexicographical_compare.
+    //!
+    //! \tparam T the items in the arguments.
+    //!
+    //! \param x initializer list for the first object for comparison.
+    //! \param y initializer list for the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is lexicographically less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! See std::lexicographical_compare.
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    //!
+    //! \deprecated_warning{function}
+    template <typename T>
+    [[nodiscard]] [[deprecated(
+        "This function will be removed in v4, and no alternative "
+        "provided.")]] bool
+    operator()(std::initializer_list<T> x, std::initializer_list<T> y) const {
+      return std::lexicographical_compare(
+          x.begin(), x.end(), y.begin(), y.end());
+    }
+  };  // struct LexCmp<Default>
 
   //////////////////////////////////////////////////////////////////////
   // Len-lex
@@ -400,13 +601,67 @@ namespace libsemigroups {
   //!                  first1, last1, first2, last2));
   //! }
   //! \end_code_no_test
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  // NOTE no alphabet means nothing can go wrong here, so this is both the
+  // checks and no_checks version
+  template <typename Iterator>
   [[nodiscard]] bool
   lenlex_cmp(Iterator first1, Iterator last1, Iterator first2, Iterator last2) {
     return (last1 - first1) < (last2 - first2)
            || ((last1 - first1) == (last2 - first2)
                && std::lexicographical_compare(first1, last1, first2, last2));
+  }
+
+  //! \brief Compare two ranges using len-lex without checking an alphabet.
+  //!
+  //! This overload orders first by length and then lexicographically using
+  //! \p alphabet to map letters to indices. It does not check that the
+  //! letters in the ranges belong to \p alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is len-lex less
+  //! than the second range, and \c false otherwise.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                          Iterator              first1,
+                                          Iterator              last1,
+                                          Iterator              first2,
+                                          Iterator              last2) {
+    return (last1 - first1) < (last2 - first2)
+           || ((last1 - first1) == (last2 - first2)
+               && lex_cmp_no_checks(alphabet, first1, last1, first2, last2));
+  }
+
+  //! \brief Compare two ranges using len-lex with respect to an alphabet.
+  //!
+  //! This overload checks that both ranges contain only letters belonging to
+  //! \p alphabet, then orders first by length and then lexicographically using
+  //! the corresponding alphabet indices.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is len-lex less
+  //! than the second range, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either range does not
+  //! belong to \p alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool lenlex_cmp(Alphabet<Word> const& alphabet,
+                                Iterator              first1,
+                                Iterator              last1,
+                                Iterator              first2,
+                                Iterator              last2) {
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    return lenlex_cmp_no_checks(alphabet, first1, last1, first2, last2);
   }
 
   //! \brief Compare two objects of the same type using \ref lenlex_cmp.
@@ -416,7 +671,7 @@ namespace libsemigroups {
   //! This function compares two objects of the same type using
   //! \ref lenlex_cmp.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -438,45 +693,247 @@ namespace libsemigroups {
   //!
   //! \sa
   //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool lenlex_cmp(Thing const& x, Thing const& y) {
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool lenlex_cmp(Word const& x, Word const& y) {
     return lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using \ref lenlex_cmp.
+  //! \brief Compare two objects using len-lex with respect to an alphabet.
   //!
-  //! Defined in `order.hpp`.
+  //! This overload checks that both objects contain only letters belonging to
+  //! \p alphabet, then orders first by length and then lexicographically using
+  //! the corresponding alphabet indices.
   //!
-  //! This function compares two objects via their pointers using
-  //! \ref lenlex_cmp.
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \returns The boolean value \c true if \p x is len-lex less than \p y
+  //! with respect to \p alphabet, and \c false otherwise.
   //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word len-lex less
-  //! than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
-  //!
-  //! \complexity
-  //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of the word
-  //! pointed to by \p x and the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! lenlex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
-  template <typename Thing>
-  [[nodiscard]] bool lenlex_cmp(Thing* const x, Thing* const y) {
-    return lenlex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //! \throws LibsemigroupsException if any letter in either object does not
+  //! belong to \p alphabet.
+  template <typename Word>
+  [[nodiscard]] bool lenlex_cmp(Alphabet<Word> const& alphabet,
+                                Word const&           x,
+                                Word const&           y) {
+    return lenlex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
+
+  //! \brief Compare two objects using len-lex without checking an alphabet.
+  //!
+  //! This overload orders first by length and then lexicographically using
+  //! \p alphabet to map letters to indices. It does not check that the
+  //! letters in \p x or \p y belong to \p alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is len-lex less than \p y
+  //! with respect to \p alphabet, and \c false otherwise.
+  template <typename Word>
+  [[nodiscard]] bool lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                          Word const&           x,
+                                          Word const&           y) {
+    return lenlex_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  template <typename Word = Default>
+  class LenLexCmp;
+
+  template <typename Word>
+  class LenLexCmpNoChecks;
+
+  //! \brief Stateful len-lex comparison functor.
+  //!
+  //! This class stores an alphabet and compares words by applying
+  //! \ref lenlex_cmp with that alphabet.
+  template <typename Word>
+  class LenLexCmp {
+    Alphabet<Word> _alphabet;
+
+   public:
+    //! \brief Deleted default constructor.
+    LenLexCmp() = delete;
+
+    //! \brief Copy constructor.
+    LenLexCmp(LenLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    LenLexCmp(LenLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    LenLexCmp& operator=(LenLexCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    LenLexCmp& operator=(LenLexCmp&&) = default;
+
+    //! \brief Destructor.
+    ~LenLexCmp() = default;
+
+    //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit LenLexCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit LenLexCmp(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref lenlex_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using \ref lenlex_cmp.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is len-lex less than \p y,
+    //! and \c false otherwise.
+    //!
+    //! \exceptions
+    //! Throws if the corresponding comparison function throws.
+    //!
+    //! \complexity
+    //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return lenlex_cmp(_alphabet, x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return lenlex_cmp(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+  };  // class LenLexCmp
+
+  //! \brief Stateful len-lex comparison functor without checks.
+  //!
+  //! This class stores an alphabet and compares words by applying
+  //! \ref lenlex_cmp_no_checks with that alphabet. The call operator does not
+  //! check that letters belong to the stored alphabet.
+  template <typename Word>
+  class LenLexCmpNoChecks {
+    Alphabet<Word> _alphabet;
+
+   public:
+    //! \brief Deleted default constructor.
+    LenLexCmpNoChecks() = delete;
+
+    //! \brief Copy constructor.
+    LenLexCmpNoChecks(LenLexCmpNoChecks const&) = default;
+
+    //! \brief Move constructor.
+    LenLexCmpNoChecks(LenLexCmpNoChecks&&) = default;
+
+    //! \brief Copy assignment operator.
+    LenLexCmpNoChecks& operator=(LenLexCmpNoChecks const&) = default;
+
+    //! \brief Move assignment operator.
+    LenLexCmpNoChecks& operator=(LenLexCmpNoChecks&&) = default;
+
+    //! \brief Destructor.
+    ~LenLexCmpNoChecks() = default;
+
+    //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit LenLexCmpNoChecks(Alphabet<Word> const& alphabet)
+        : _alphabet(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit LenLexCmpNoChecks(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref lenlex_cmp_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref lenlex_cmp_no_checks.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is len-lex less than \p y,
+    //! and \c false otherwise.
+    //!
+    //! \exceptions
+    //! Throws if the corresponding comparison function throws.
+    //!
+    //! \complexity
+    //! See \ref lenlex_cmp_no_checks(Alphabet<Word> const&, Iterator,
+    //! Iterator, Iterator, Iterator).
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return lenlex_cmp_no_checks(_alphabet, x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return lenlex_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+  };  // class LenLexCmpNoChecks
 
   //! \brief A stateless struct with binary call operator using
   //! \ref lenlex_cmp.
@@ -490,13 +947,14 @@ namespace libsemigroups {
   //!
   //! \sa
   //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator)
-  struct LenLexCmp {
+  template <>
+  struct LenLexCmp<Default> {
     //! \brief Call operator that compares \p x and \p y using
     //! \ref lenlex_cmp.
     //!
     //! Call operator that compares \p x and \p y using \ref lenlex_cmp.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -509,159 +967,29 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return lenlex_cmp(x, y);
     }
-  };
 
-  //////////////////////////////////////////////////////////////////////
-  // Short-lex - deprecated
-  //////////////////////////////////////////////////////////////////////
-
-  //! \brief Compare two objects of the same type using the short-lex reduction
-  //! ordering.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using the short-lex
-  //! reduction ordering.
-  //!
-  //! \tparam Iterator the type of iterators that are the parameters.
-  //!
-  //! \param first1 beginning iterator of first object for comparison.
-  //! \param last1 ending iterator of first object for comparison.
-  //! \param first2 beginning iterator of second object for comparison.
-  //! \param last2 ending iterator of second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! short-lex less than the range `[first2, last2)`, and \c false
-  //! otherwise.
-  //!
-  //! \exceptions
-  //! Throws if std::lexicographical_compare does.
-  //!
-  //! \complexity
-  //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the distance between
-  //! \p last1 and \p first1, and the distance between \p last2 and \p first2.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! template <typename Iterator>
-  //! bool shortlex_compare(Iterator first1,
-  //!                       Iterator last1,
-  //!                       Iterator first2,
-  //!                       Iterator last2) {
-  //!   return (last1 - first1) < (last2 - first2)
-  //!          || ((last1 - first1) == (last2 - first2)
-  //!              && std::lexicographical_compare
-  //!                   (first1, last1, first2, last2));
-  //! }
-  //! \end_code_no_test
-  //!
-  //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
-  shortlex_compare(Iterator first1,
-                   Iterator last1,
-                   Iterator first2,
-                   Iterator last2) {
-    return lenlex_cmp(first1, last1, first2, last2);
-  }
-
-  //! \brief Compare two objects of the same type using \ref shortlex_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using
-  //! \ref shortlex_compare.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is short-lex less than \p y,
-  //! and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref shortlex_compare(Iterator, Iterator, Iterator, Iterator).
-  //!
-  //! \complexity
-  //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of \p x and
-  //! the length of \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! shortlex_compare(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
-  //!
-  //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
-  shortlex_compare(Thing const& x, Thing const& y) {
-    return lenlex_cmp(x, y);
-  }
-
-  //! \brief Compare two objects via their pointers using \ref shortlex_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref shortlex_compare.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word short-lex less
-  //! than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref shortlex_compare(Iterator, Iterator, Iterator, Iterator).
-  //!
-  //! \complexity
-  //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of the word
-  //! pointed to by \p x and the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! shortlex_compare(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
-  //!
-  //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
-  template <typename Thing>
-  [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
-  shortlex_compare(Thing* const x, Thing* const y) {
-    return lenlex_cmp(x, y);
-  }
-
-  //! \brief A stateless struct with binary call operator using
-  //! \ref shortlex_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! A stateless struct with binary call operator using \ref shortlex_compare.
-  //!
-  //! This only exists to be used as a template parameter, and has no
-  //! advantages over using \ref shortlex_compare otherwise.
-  //!
-  //! \sa
-  //! shortlex_compare(Iterator, Iterator, Iterator, Iterator)
-  //!
-  //! \deprecated_warning{struct} Use \ref LenLexCmp instead.
-  using ShortLexCompare [[deprecated("Use LenLexCmp instead!")]] = LenLexCmp;
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return lenlex_cmp(first1, last1, first2, last2);
+    }
+  };  // struct LenLexCmp<Default>
 
   //////////////////////////////////////////////////////////////////////
   // Recursive path order (RPO)
@@ -685,7 +1013,7 @@ namespace libsemigroups {
   //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
   //!   3. \f$a > b\f$ and \f$u < v'\f$.
   //!
-  //! This documentation and the implementation of \ref recursive_path_compare
+  //! This documentation and the implementation of \ref rpo_cmp
   //! is based on the source code of \cite Holt2018aa, specifically the function
   //! `rec_compare`.
   //!
@@ -706,20 +1034,64 @@ namespace libsemigroups {
   //! \warning
   //! This function has significantly worse performance than all
   //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] bool rpo_cmp(Iterator first1,
                              Iterator last1,
                              Iterator first2,
                              Iterator last2) noexcept;
 
-  //! \brief Compare two objects of the same type using //! \ref rpo_cmp.
+  //! \brief Compare two ranges using recursive path order without checks.
+  //!
+  //! This overload maps letters through \p alphabet before applying recursive
+  //! path order. It does not check that the letters in the ranges belong to
+  //! \p alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range with respect to recursive path order, and \c false otherwise.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Iterator              first1,
+                                       Iterator              last1,
+                                       Iterator              first2,
+                                       Iterator              last2);
+
+  //! \brief Compare two ranges using recursive path order and an alphabet.
+  //!
+  //! This overload checks that both ranges contain only letters belonging to
+  //! \p alphabet, then applies recursive path order to the corresponding
+  //! alphabet indices.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range with respect to recursive path order, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either range does not
+  //! belong to \p alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rpo_cmp(Alphabet<Word> const& alphabet,
+                             Iterator              first1,
+                             Iterator              last1,
+                             Iterator              first2,
+                             Iterator              last2);
+
+  //! \brief Compare two objects of the same type using \ref rpo_cmp.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using \ref rpo_cmp.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -737,41 +1109,230 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool rpo_cmp(Thing const& x, Thing const& y) noexcept {
+  template <typename Word>
+  [[nodiscard]] bool rpo_cmp(Word const& x, Word const& y) noexcept {
     return rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using \ref rpo_cmp.
+  //! \brief Compare two objects using recursive path order and an alphabet.
   //!
-  //! Defined in `order.hpp`.
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
   //!
-  //! This function compares two objects via their pointers using \ref rpo_cmp.
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to recursive path order, and \c false otherwise.
   //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the value pointed to by \p x is less
-  //! than the value pointed to by \p y with r to the recursive path
-  //! ordering, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <typename Thing>
-  [[nodiscard]] bool rpo_cmp(Thing* const x, Thing* const y) noexcept {
-    return rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //! \throws LibsemigroupsException if any letter in either object does not
+  //! belong to \p alphabet.
+  template <typename Word>
+  [[nodiscard]] bool rpo_cmp(Alphabet<Word> const& alphabet,
+                             Word const&           x,
+                             Word const&           y) {
+    return rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
+
+  //! \brief Compare two objects using recursive path order without checks.
+  //!
+  //! This overload maps letters through \p alphabet before applying recursive
+  //! path order. It does not check that letters in \p x or \p y belong to
+  //! \p alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to recursive path order, and \c false otherwise.
+  template <typename Word>
+  [[nodiscard]] bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Word const&           x,
+                                       Word const&           y) {
+    return rpo_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  template <typename Word = Default>
+  class RPOCmp;
+
+  template <typename Word>
+  class RPOCmpNoChecks;
+
+  //! \brief Stateful recursive path order comparison functor.
+  //!
+  //! This class stores an alphabet and compares words by applying
+  //! \ref rpo_cmp with that alphabet.
+  template <typename Word>
+  class RPOCmp {
+    Alphabet<Word> _alphabet;
+
+   public:
+    //! \brief Deleted default constructor.
+    RPOCmp() = delete;
+
+    //! \brief Copy constructor.
+    RPOCmp(RPOCmp const&) = default;
+
+    //! \brief Move constructor.
+    RPOCmp(RPOCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    RPOCmp& operator=(RPOCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    RPOCmp& operator=(RPOCmp&&) = default;
+
+    //! \brief Destructor.
+    ~RPOCmp() = default;
+
+    //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RPOCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RPOCmp(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the recursive path ordering, and \c false otherwise.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return rpo_cmp(_alphabet, x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rpo_cmp(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+  };  // class RPOCmp
+
+  //! \brief Stateful recursive path order comparison functor without checks.
+  //!
+  //! This class stores an alphabet and compares words by applying
+  //! \ref rpo_cmp_no_checks with that alphabet. The call operator does not
+  //! check that letters belong to the stored alphabet.
+  template <typename Word>
+  class RPOCmpNoChecks {
+    Alphabet<Word> _alphabet;
+
+   public:
+    //! \brief Deleted default constructor.
+    RPOCmpNoChecks() = delete;
+
+    //! \brief Copy constructor.
+    RPOCmpNoChecks(RPOCmpNoChecks const&) = default;
+
+    //! \brief Move constructor.
+    RPOCmpNoChecks(RPOCmpNoChecks&&) = default;
+
+    //! \brief Copy assignment operator.
+    RPOCmpNoChecks& operator=(RPOCmpNoChecks const&) = default;
+
+    //! \brief Move assignment operator.
+    RPOCmpNoChecks& operator=(RPOCmpNoChecks&&) = default;
+
+    //! \brief Destructor.
+    ~RPOCmpNoChecks() = default;
+
+    //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RPOCmpNoChecks(Alphabet<Word> const& alphabet)
+        : _alphabet(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RPOCmpNoChecks(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp_no_checks.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the recursive path ordering, and \c false otherwise.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return rpo_cmp_no_checks(_alphabet, x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rpo_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+  };  // class RPOCmpNoChecks
 
   //! \brief A stateless struct with binary call operator using
   //! \ref rpo_cmp.
@@ -786,14 +1347,15 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  struct RPOCmp {
+  template <>
+  struct RPOCmp<Default> {
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rpo_cmp.
     //!
     //! Call operator that compares \p x and \p y using
     //! \ref rpo_cmp.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -803,12 +1365,29 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x,
-                                  Thing const& y) const noexcept {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const noexcept {
       return rpo_cmp(x, y);
-    }  // namespace libsemigroups
-  };
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rpo_cmp(first1, last1, first2, last2);
+    }
+  };  // struct RPOCmp<Default>
 
   //////////////////////////////////////////////////////////////////////
   // Reversed recursive path order (RPO)
@@ -833,7 +1412,7 @@ namespace libsemigroups {
   //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
   //!   3. \f$a > b\f$ and \f$u < v'\f$.
   //!
-  //! This documentation and the implementation of \ref recursive_path_compare
+  //! This documentation and the implementation of \ref rev_rpo_cmp
   //! is based on the source code of \cite Holt2018aa, specifically the function
   //! `rt_rec_compare`.
   //!
@@ -854,12 +1433,60 @@ namespace libsemigroups {
   //! \warning
   //! This function has significantly worse performance than all
   //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  template <typename Iterator>
   [[nodiscard]] bool rev_rpo_cmp(Iterator first1,
                                  Iterator last1,
                                  Iterator first2,
                                  Iterator last2) noexcept;
+
+  //! \brief Compare two ranges using reversed recursive path order without
+  //! checks.
+  //!
+  //! This overload maps letters through \p alphabet before applying reversed
+  //! recursive path order. It does not check that the letters in the ranges
+  //! belong to \p alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range with respect to reversed recursive path order, and \c false
+  //! otherwise.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                           Iterator              first1,
+                                           Iterator              last1,
+                                           Iterator              first2,
+                                           Iterator              last2);
+
+  //! \brief Compare two ranges using reversed recursive path order and an
+  //! alphabet.
+  //!
+  //! This overload checks that both ranges contain only letters belonging to
+  //! \p alphabet, then applies reversed recursive path order to the
+  //! corresponding alphabet indices.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range with respect to reversed recursive path order, and \c false
+  //! otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either range does not
+  //! belong to \p alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
+                                 Iterator              first1,
+                                 Iterator              last1,
+                                 Iterator              first2,
+                                 Iterator              last2);
 
   //! \brief Compare two objects of the same type using \ref rev_rpo_cmp.
   //!
@@ -868,7 +1495,7 @@ namespace libsemigroups {
   //! This function compares two objects of the same type using
   //! \ref rev_rpo_cmp.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
@@ -886,43 +1513,234 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool rev_rpo_cmp(Iterator const& x,
-                                 Iterator const& y) noexcept {
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool rev_rpo_cmp(Word const& x, Word const& y) noexcept {
     return rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using \ref rev_rpo_cmp.
+  //! \brief Compare two objects using reversed recursive path order without
+  //! checks.
   //!
-  //! Defined in `order.hpp`.
+  //! This overload maps letters through \p alphabet before applying reversed
+  //! recursive path order. It does not check that letters in \p x or \p y
+  //! belong to \p alphabet.
   //!
-  //! This function compares two objects via their pointers using
-  //! \ref rev_rpo_cmp.
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
   //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the value pointed to by \p x is less
-  //! than the value pointed to by \p y with r to the reversed recursive path
-  //! ordering, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! rev_rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <typename Thing>
-  [[nodiscard]] bool rev_rpo_cmp(Thing* const x, Thing* const y) noexcept {
-    return rev_rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to reversed recursive path order, and \c false otherwise.
+  template <typename Word>
+  [[nodiscard]] bool rev_rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                           Word const&           x,
+                                           Word const&           y) {
+    return rev_rpo_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
+
+  //! \brief Compare two objects using reversed recursive path order and an
+  //! alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to reversed recursive path order, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either object does not
+  //! belong to \p alphabet.
+  template <typename Word>
+  [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
+                                 Word const&           x,
+                                 Word const&           y) {
+    return rev_rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  template <typename Word = Default>
+  class RevRPOCmp;
+
+  template <typename Word>
+  class RevRPOCmpNoChecks;
+
+  //! \brief Stateful reversed recursive path order comparison functor.
+  //!
+  //! This class stores an alphabet and compares words by applying
+  //! \ref rev_rpo_cmp with that alphabet.
+  template <typename Word>
+  class RevRPOCmp {
+    Alphabet<Word> _alphabet;
+
+   public:
+    //! \brief Deleted default constructor.
+    RevRPOCmp() = delete;
+
+    //! \brief Copy constructor.
+    RevRPOCmp(RevRPOCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevRPOCmp(RevRPOCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    RevRPOCmp& operator=(RevRPOCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    RevRPOCmp& operator=(RevRPOCmp&&) = default;
+
+    //! \brief Destructor.
+    ~RevRPOCmp() = default;
+
+    //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RevRPOCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RevRPOCmp(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the reversed recursive path ordering, and \c false otherwise.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return rev_rpo_cmp(_alphabet, x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rev_rpo_cmp(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+  };  // class RevRPOCmp
+
+  //! \brief Stateful reversed recursive path order comparison functor without
+  //! checks.
+  //!
+  //! This class stores an alphabet and compares words by applying
+  //! \ref rev_rpo_cmp_no_checks with that alphabet. The call operator does
+  //! not check that letters belong to the stored alphabet.
+  template <typename Word>
+  class RevRPOCmpNoChecks {
+    Alphabet<Word> _alphabet;
+
+   public:
+    //! \brief Deleted default constructor.
+    RevRPOCmpNoChecks() = delete;
+
+    //! \brief Copy constructor.
+    RevRPOCmpNoChecks(RevRPOCmpNoChecks const&) = default;
+
+    //! \brief Move constructor.
+    RevRPOCmpNoChecks(RevRPOCmpNoChecks&&) = default;
+
+    //! \brief Copy assignment operator.
+    RevRPOCmpNoChecks& operator=(RevRPOCmpNoChecks const&) = default;
+
+    //! \brief Move assignment operator.
+    RevRPOCmpNoChecks& operator=(RevRPOCmpNoChecks&&) = default;
+
+    //! \brief Destructor.
+    ~RevRPOCmpNoChecks() = default;
+
+    //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RevRPOCmpNoChecks(Alphabet<Word> const& alphabet)
+        : _alphabet(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RevRPOCmpNoChecks(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp_no_checks.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the reversed recursive path ordering, and \c false otherwise.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return rev_rpo_cmp_no_checks(_alphabet, x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rev_rpo_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+  };  // class RevRPOCmpNoChecks
 
   //! \brief A stateless struct with binary call operator using
   //! \ref rev_rpo_cmp.
@@ -937,14 +1755,15 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  struct RevRPOCmp {
+  template <>
+  struct RevRPOCmp<Default> {
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rev_rpo_cmp.
     //!
     //! Call operator that compares \p x and \p y using
     //! \ref rev_rpo_cmp.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -954,158 +1773,29 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x,
-                                  Thing const& y) const noexcept {
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const noexcept {
       return rev_rpo_cmp(x, y);
-    }  // namespace libsemigroups
-  };
+    }
 
-  //////////////////////////////////////////////////////////////////////
-  // Recursive path order (RPO) - deprecated
-  //////////////////////////////////////////////////////////////////////
-
-  //! \brief Compare two objects of the same type using the reversed recursive
-  //! path comparison.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using the reversed
-  //! recursive path comparison. This is the same as applying the recursive path
-  //! comparison described in \cite Jantzen2012aa (Definition 1.2.14, page 24)
-  //! to the reversed words in `[first1, last1)`, `[first2, last2)`.
-  //!
-  //! If \f$u, v\in X ^ {*}\f$, then
-  //! \f$u < v\f$ if and only if one of the following conditions holds:
-  //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
-  //! 2. \f$u = u'a\f$ and \f$v = v'b\f$ for some \f$a,b \in X\f$, \f$u',v'\in
-  //!    X ^ {*}\f$ and:
-  //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
-  //!   2. \f$a < b\f$ and \f$u  < v'\f$; or
-  //!   3. \f$a > b\f$ and \f$u' < v\f$.
-  //!
-  //! This documentation and the implementation of \ref recursive_path_compare
-  //! is based on the source code of \cite Holt2018aa, specifically the function
-  //! `rt_rec_compare`.
-  //!
-  //! \tparam Iterator the type of iterators that are the arguments.
-  //!
-  //! \param first1 beginning iterator of first object for comparison.
-  //! \param last1 ending iterator of first object for comparison.
-  //! \param first2 beginning iterator of second object for comparison.
-  //! \param last2 ending iterator of second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the range `[first1, last1)` is less
-  //! than the range `[first2, last2)` with respect to the reversed recursive
-  //! path ordering, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \warning
-  //! This function has significantly worse performance than all
-  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
-  //!
-  //! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
-  recursive_path_compare(Iterator first1,
-                         Iterator last1,
-                         Iterator first2,
-                         Iterator last2) noexcept {
-    return rev_rpo_cmp(first1, last1, first2, last2);
-  }
-
-  //! \brief Compare two objects of the same type using
-  //! \ref recursive_path_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using
-  //! \ref recursive_path_compare.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is less than \p y with respect
-  //! to the recursive path ordering, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! recursive_path_compare(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
-  //!
-  //! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
-  recursive_path_compare(Thing const& x, Thing const& y) noexcept {
-    return rev_rpo_cmp(x, y);
-  }
-
-  //! \brief Compare two objects via their pointers using
-  //! \ref recursive_path_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref recursive_path_compare.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the value pointed to by \p x is less
-  //! than the value pointed to by \p y with r to the recursive path
-  //! ordering, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! recursive_path_compare(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
-  //!
-  //! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
-  template <typename Thing>
-  [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
-  recursive_path_compare(Thing* const x, Thing* const y) noexcept {
-    return rev_rpo_cmp(x, y);
-  }
-
-  //! \brief A stateless struct with binary call operator using
-  //! \ref recursive_path_compare.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! A stateless struct with binary call operator using
-  //! \ref recursive_path_compare.
-  //!
-  //! This only exists to be used as a template parameter, and has no
-  //! advantages over using \ref recursive_path_compare otherwise.
-  //!
-  //! \sa
-  //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
-  //!
-  //! \deprecated_warning{struct} Use \ref RevRPOCmp instead.
-  using RecursivePathCompare [[deprecated("Use RevRPOCmp instead!")]]
-  = RevRPOCmp;
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return rev_rpo_cmp(first1, last1, first2, last2);
+    }
+  };  // struct RevRPOCmp<Default>
 
   //////////////////////////////////////////////////////////////////////
   // Weighted len-lex
@@ -1125,11 +1815,11 @@ namespace libsemigroups {
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
+  //! \param weights the weights vector.
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted len-lex less than the range `[first2, last2)`, and \c false
@@ -1148,16 +1838,47 @@ namespace libsemigroups {
   //! the \p weights vector.
   //!
   //! \sa
-  //! wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,std::vector<size_t>
-  //! const&).
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool
-  wt_lenlex_cmp_no_checks(Iterator                   first1,
-                          Iterator                   last1,
-                          Iterator                   first2,
-                          Iterator                   last2,
-                          std::vector<size_t> const& weights);
+  //! wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator).
+  template <typename Iterator>
+  [[nodiscard]] bool wt_lenlex_cmp_no_checks(std::vector<size_t> const& weights,
+                                             Iterator                   first1,
+                                             Iterator                   last1,
+                                             Iterator                   first2,
+                                             Iterator                   last2);
+
+  //! \brief Compare two ranges using the weighted len-lex ordering without
+  //! checks and with a specified alphabet.
+  //!
+  //! This overload is the same as
+  //! \ref wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+  //! Iterator, Iterator, Iterator), except that letters are first mapped to
+  //! indices using \p alphabet.
+  //!
+  //! \tparam Word the type of words for \p alphabet.
+  //! \tparam Iterator the type of iterators that are the arguments.
+  //!
+  //! \param alphabet the alphabet used to map letters to weight indices.
+  //! \param weights the weights vector.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is
+  //! weighted len-lex less than the range `[first2, last2)`, and \c false
+  //! otherwise.
+  //!
+  //! \warning
+  //! It is not checked that the letters in the ranges belong to \p alphabet or
+  //! that their indices are valid indices into the \p weights vector.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool wt_lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                             std::vector<size_t> const& weights,
+                                             Iterator                   first1,
+                                             Iterator                   last1,
+                                             Iterator                   first2,
+                                             Iterator                   last2);
 
   //! \brief Compare two objects of the same type using
   //! \ref wt_lenlex_cmp_no_checks without checks.
@@ -1168,18 +1889,18 @@ namespace libsemigroups {
   //! \ref wt_lenlex_cmp_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted len-lex less
   //! than \p y, and \c false otherwise.
   //!
   //! \exceptions
-  //! See \ref wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
+  //! See \ref wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+  //! Iterator, Iterator, Iterator).
   //!
   //! \complexity
   //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
@@ -1188,7 +1909,7 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lenlex_cmp_no_checks(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
   //! \warning
@@ -1196,64 +1917,40 @@ namespace libsemigroups {
   //! into the weights vector.
   //!
   //! \sa
-  //! wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool
-  wt_lenlex_cmp_no_checks(Thing const&               x,
-                          Thing const&               y,
-                          std::vector<size_t> const& weights) {
+  //! wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator).
+  template <typename Word>
+  [[nodiscard]] bool wt_lenlex_cmp_no_checks(std::vector<size_t> const& weights,
+                                             Word const&                x,
+                                             Word const&                y) {
     return wt_lenlex_cmp_no_checks(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lenlex_cmp_no_checks without checks.
+  //! \brief Compare two objects using
+  //! \ref wt_lenlex_cmp_no_checks without checks and with a specified
+  //! alphabet.
   //!
-  //! Defined in `order.hpp`.
+  //! \tparam Word the type of the objects to be compared.
   //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lenlex_cmp_no_checks, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
+  //! \param alphabet the alphabet used to map letters to weight indices.
   //! \param weights the weights vector.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! len-lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lenlex_cmp_no_checks(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
+  //! \returns The boolean value \c true if \p x is weighted len-lex less than
+  //! \p y, and \c false otherwise.
   //!
   //! \warning
-  //! It is not checked that the letters are valid indices into the weights
-  //! vector.
-  //!
-  //! \sa
-  //! wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Thing>
-  [[nodiscard]] bool
-  wt_lenlex_cmp_no_checks(Thing* const               x,
-                          Thing* const               y,
-                          std::vector<size_t> const& weights) {
+  //! It is not checked that the letters in \p x and \p y belong to \p alphabet
+  //! or that their indices are valid indices into the \p weights vector.
+  template <typename Word>
+  [[nodiscard]] bool wt_lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                             std::vector<size_t> const& weights,
+                                             Word const&                x,
+                                             Word const&                y) {
     return wt_lenlex_cmp_no_checks(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects of the same type using the weighted len-lex
@@ -1270,15 +1967,15 @@ namespace libsemigroups {
   //!
   //! After checking that all letters in both ranges are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wt_lenlex_cmp_no_checks(first1, last1, first2, last2, weights)`.
+  //! `wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2)`.
   //!
   //! \tparam Iterator the type of iterators to the first object to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted len-lex less than the range `[first2, last2)`, and \c false
@@ -1294,15 +1991,46 @@ namespace libsemigroups {
   //! \p first2.
   //!
   //! \sa
-  //! wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool wt_lenlex_cmp(Iterator                   first1,
+  //! wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator).
+  template <typename Iterator>
+  [[nodiscard]] bool wt_lenlex_cmp(std::vector<size_t> const& weights,
+                                   Iterator                   first1,
                                    Iterator                   last1,
                                    Iterator                   first2,
-                                   Iterator                   last2,
-                                   std::vector<size_t> const& weights);
+                                   Iterator                   last2);
+
+  //! \brief Compare two ranges using the weighted len-lex ordering and with a
+  //! specified alphabet.
+  //!
+  //! This overload is the same as
+  //! \ref wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator), except that letters are first mapped to indices
+  //! using \p alphabet.
+  //!
+  //! \tparam Word the type of words for \p alphabet.
+  //! \tparam Iterator the type of iterators that are the arguments.
+  //!
+  //! \param alphabet the alphabet used to map letters to weight indices.
+  //! \param weights the weights vector.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is
+  //! weighted len-lex less than the range `[first2, last2)`, and \c false
+  //! otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either range has an index
+  //! greater than or equal to `weights.size()`.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool wt_lenlex_cmp(Alphabet<Word> const&      alphabet,
+                                   std::vector<size_t> const& weights,
+                                   Iterator                   first1,
+                                   Iterator                   last1,
+                                   Iterator                   first2,
+                                   Iterator                   last2);
 
   //! \brief Compare two objects of the same type using \ref wt_lenlex_cmp
   //! and check validity.
@@ -1315,13 +2043,13 @@ namespace libsemigroups {
   //!
   //! After checking that all letters in both objects are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wt_lenlex_cmp_no_checks(x, y, weights)`.
+  //! `wt_lenlex_cmp_no_checks(weights, x, y)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted len-lex less
   //! than \p y, and \c false otherwise.
@@ -1336,118 +2064,395 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lenlex_cmp(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
   //! \sa
-  //! wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool wt_lenlex_cmp(Thing const&               x,
-                                   Thing const&               y,
-                                   std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //! wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator).
+  template <typename Word>
+  [[nodiscard]] bool wt_lenlex_cmp(std::vector<size_t> const& weights,
+                                   Word const&                x,
+                                   Word const&                y) {
+    return wt_lenlex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lenlex_cmp and check validity.
+  //! \brief Compare two objects using \ref wt_lenlex_cmp and with a specified
+  //! alphabet.
   //!
-  //! Defined in `order.hpp`.
+  //! \tparam Word the type of the objects to be compared.
   //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lenlex_cmp, where the `i`th index of the weights vector
-  //! corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! After checking that all letters are valid indices into the weights
-  //! vector, this function performs the same as
-  //! `wt_lenlex_cmp_no_checks(*x, *y, weights)`.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
+  //! \param alphabet the alphabet used to map letters to weight indices.
   //! \param weights the weights vector.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! len-lex less than the word pointed to by \p y, and \c false otherwise.
+  //! \returns The boolean value \c true if \p x is weighted len-lex less than
+  //! \p y, and \c false otherwise.
   //!
-  //! \throws LibsemigroupsException if any letter is not a valid index into
-  //! the weights vector.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lenlex_cmp(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Thing>
-  [[nodiscard]] bool wt_lenlex_cmp(Thing* const               x,
-                                   Thing* const               y,
-                                   std::vector<size_t> const& weights) {
+  //! \throws LibsemigroupsException if any letter in \p x or \p y has an
+  //! index greater than or equal to `weights.size()`.
+  template <typename Word>
+  [[nodiscard]] bool wt_lenlex_cmp(Alphabet<Word> const&      alphabet,
+                                   std::vector<size_t> const& weights,
+                                   Word const&                x,
+                                   Word const&                y) {
     return wt_lenlex_cmp(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief A stateful struct with binary call operator using
-  //! \ref wt_lenlex_cmp or \ref wt_lenlex_cmp_no_checks.
+  ////////////////////////////////////////////////////////////////////////
+  // WtLenLexCmp/NoChecks
+  ////////////////////////////////////////////////////////////////////////
+
+  namespace detail {
+
+    template <typename Word>
+    void throw_if_incompat_weights(Alphabet<Word> const&      alphabet,
+                                   std::vector<size_t> const& weights);
+  }  // namespace detail
+
+  //! \brief Forward declaration of \ref WtLenLexCmp.
+  template <typename Word = Default>
+  class WtLenLexCmp;
+
+  //! \brief Forward declaration of \ref WtLenLexCmpNoChecks.
+  template <typename Word = Default>
+  class WtLenLexCmpNoChecks;
+
+  //! \brief Stateful weighted len-lex comparison functor.
+  //!
+  //! This class stores an alphabet and a weights vector and compares words by
+  //! applying \ref wt_lenlex_cmp with that alphabet and weights vector. The
+  //! alphabet and weights vector must have the same size.
+  //!
+  //! \tparam Word the word type associated with the alphabet.
+  template <typename Word>
+  class WtLenLexCmp {
+    Alphabet<Word>      _alphabet;
+    std::vector<size_t> _weights;
+
+   public:
+    //! \brief Deleted default constructor.
+    WtLenLexCmp() = delete;
+
+    //! \brief Copy constructor.
+    WtLenLexCmp(WtLenLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    WtLenLexCmp(WtLenLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    WtLenLexCmp& operator=(WtLenLexCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    WtLenLexCmp& operator=(WtLenLexCmp&&) = default;
+
+    ~WtLenLexCmp() = default;
+
+    //! \brief Construct from an alphabet and weights vector.
+    //!
+    //! Constructs a comparison object that stores copies of \p alphabet and
+    //! \p weights. The `i`th entry of \p weights is the weight of the `i`th
+    //! letter in \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLenLexCmp(Alphabet<Word> const&      alphabet,
+                std::vector<size_t> const& weights)
+        : _alphabet(alphabet), _weights(weights) {
+      detail::throw_if_incompat_weights(_alphabet, _weights);
+    }
+
+    //! \brief Construct from an alphabet rvalue and weights vector rvalue.
+    //!
+    //! Constructs a comparison object that stores \p alphabet and \p weights by
+    //! moving from the arguments.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLenLexCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& weights)
+        : _alphabet(std::move(alphabet)), _weights(std::move(weights)) {
+      detail::throw_if_incompat_weights(_alphabet, _weights);
+    }
+
+    //! \brief Reinitialize from an alphabet and weights vector.
+    //!
+    //! Replaces the stored alphabet and weights vector with copies of
+    //! \p alphabet and \p weights.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLenLexCmp& init(Alphabet<Word> const&      alphabet,
+                      std::vector<size_t> const& weights);
+
+    //! \brief Reinitialize from an alphabet rvalue and weights vector rvalue.
+    //!
+    //! Replaces the stored alphabet and weights vector by moving from
+    //! \p alphabet and \p weights.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLenLexCmp& init(Alphabet<Word>&& alphabet, std::vector<size_t>&& weights);
+
+    //! \brief Call operator that compares two words.
+    //!
+    //! \param x const reference to the first word for comparison.
+    //! \param y const reference to the second word for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted len-lex less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if any letter in \p x or \p y is not in
+    //! the stored alphabet.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.begin(), x.end(), y.begin(), y.end());
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is weighted
+    //! len-lex less than the second range, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if any letter in either range is not in
+    //! the stored alphabet.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      // NOTE: only need to check that the iterators point at things
+      // that are inbounds, don't need to check _alphabet and _weights are
+      // compatible again.
+      _alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+      _alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+      return wt_lenlex_cmp_no_checks(
+          _alphabet, _weights, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+
+    //! \brief Returns the weights.
+    //!
+    //! \returns The stored weights vector.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+  };  // class WtLenLexCmp
+
+  //! \brief Stateful weighted len-lex comparison functor without checks.
+  //!
+  //! This class stores an alphabet and a weights vector and compares words by
+  //! applying \ref wt_lenlex_cmp_no_checks with that alphabet and weights
+  //! vector. The alphabet and weights vector must have the same size, but the
+  //! call operator does not check that letters belong to the stored alphabet.
+  //!
+  //! \tparam Word the word type associated with the alphabet.
+  template <typename Word>
+  class WtLenLexCmpNoChecks {
+    Alphabet<Word>      _alphabet;
+    std::vector<size_t> _weights;
+
+   public:
+    //! \brief Deleted default constructor.
+    WtLenLexCmpNoChecks() = delete;
+
+    //! \brief Copy constructor.
+    WtLenLexCmpNoChecks(WtLenLexCmpNoChecks const&) = default;
+
+    //! \brief Move constructor.
+    WtLenLexCmpNoChecks(WtLenLexCmpNoChecks&&) = default;
+
+    //! \brief Copy assignment operator.
+    WtLenLexCmpNoChecks& operator=(WtLenLexCmpNoChecks const&) = default;
+
+    //! \brief Move assignment operator.
+    WtLenLexCmpNoChecks& operator=(WtLenLexCmpNoChecks&&) = default;
+
+    //! \brief Destructor.
+    ~WtLenLexCmpNoChecks() = default;
+
+    //! \brief Construct from an alphabet and weights vector.
+    //!
+    //! Constructs a comparison object that stores copies of \p alphabet and
+    //! \p weights. The `i`th entry of \p weights is the weight of the `i`th
+    //! letter in \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLenLexCmpNoChecks(Alphabet<Word> const&      alphabet,
+                        std::vector<size_t> const& weights)
+        : _alphabet(alphabet), _weights(weights) {
+      detail::throw_if_incompat_weights(_alphabet, _weights);
+    }
+
+    //! \brief Construct from an alphabet rvalue and weights vector rvalue.
+    //!
+    //! Constructs a comparison object that stores \p alphabet and \p weights by
+    //! moving from the arguments.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLenLexCmpNoChecks(Alphabet<Word>&&      alphabet,
+                        std::vector<size_t>&& weights)
+        : _alphabet(std::move(alphabet)), _weights(std::move(weights)) {
+      detail::throw_if_incompat_weights(_alphabet, _weights);
+    }
+
+    //! \brief Reinitialize from an alphabet and weights vector.
+    //!
+    //! Replaces the stored alphabet and weights vector with copies of
+    //! \p alphabet and \p weights.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLenLexCmpNoChecks& init(Alphabet<Word> const&      alphabet,
+                              std::vector<size_t> const& weights);
+
+    //! \brief Reinitialize from an alphabet rvalue and weights vector rvalue.
+    //!
+    //! Replaces the stored alphabet and weights vector by moving from
+    //! \p alphabet and \p weights.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLenLexCmpNoChecks& init(Alphabet<Word>&&      alphabet,
+                              std::vector<size_t>&& weights);
+
+    //! \brief Call operator that compares two words without checks.
+    //!
+    //! \param x const reference to the first word for comparison.
+    //! \param y const reference to the second word for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted len-lex less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \warning It is not checked that letters in \p x or \p y belong to the
+    //! stored alphabet.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return wt_lenlex_cmp_no_checks(_alphabet, _weights, x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges without checks.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is weighted
+    //! len-lex less than the second range, and \c false otherwise.
+    //!
+    //! \warning It is not checked that letters in either range belong to the
+    //! stored alphabet.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return wt_lenlex_cmp_no_checks(
+          _alphabet, _weights, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+
+    //! \brief Returns the weights.
+    //!
+    //! \returns The stored weights vector.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+  };  // class WtLenLexCmpNoChecks
+
+  //! \brief Stateful weighted len-lex comparison functor.
   //!
   //! Defined in `order.hpp`.
   //!
-  //! A stateful struct with binary call operator using
-  //! \ref wt_lenlex_cmp or \ref wt_lenlex_cmp_no_checks,
-  //! depending on the value of the constructor parameter \c should_check. This
-  //! struct stores a copy of a weights vector and can be used as a template
-  //! parameter for standard library containers or algorithms that require a
-  //! comparison functor.
-  //!
-  //! \warning
-  //! When the constructor parameter \c should_check is \c false, the call
-  //! operator does not check that letters are valid indices into the weights
-  //! vector. Use the constructor with \c should_check set to \c true
-  //! (\ref checks) to enable argument checking in the call operator.
+  //! This specialization stores a copy of a weights vector and compares words
+  //! by applying \ref wt_lenlex_cmp. It can be used as a template parameter for
+  //! standard library containers or algorithms that require a comparison
+  //! functor.
   //!
   //! \sa
-  //! * wt_lenlex_cmp(Thing const&, Thing const&, std::vector<size_t>
-  //! const&)
-  //! * wt_lenlex_cmp_no_checks(Thing const&, Thing const&,
-  //! std::vector<size_t> const&)
-  struct WtLenLexCmp {
-    //! \brief Constant to enable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool checks = true;
+  //! * wt_lenlex_cmp(std::vector<size_t> const&, Word const&, Word const&)
+  //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Word const&,
+  //! Word const&)
+  template <>
+  class WtLenLexCmp<Default> {
+   private:
+    std::vector<size_t> _weights;
 
-    //! \brief Constant to disable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that no
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool no_checks = false;
-
-    //! \brief Construct from weights vector reference and specify whether or
-    //! not the call operator should check its arguments.
+   public:
+    //! \brief Construct from weights vector reference.
     //!
     //! Constructs a comparison object that stores a copy of the provided
     //! weights vector, where the `i`th index corresponds to the weight of the
-    //! `i`th letter in the alphabet. The \p should_check parameter determines
-    //! whether the call operator will validate that letters are valid indices.
+    //! `i`th letter in the alphabet.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp(std::vector<size_t> const& weights, bool should_check)
-        : _weights(weights), _should_check(should_check) {}
+    explicit WtLenLexCmp(std::vector<size_t> const& weights)
+        : _weights(weights) {}
 
     //! \brief Reinitialize an existing WtLenLexCmp object.
     //!
@@ -1456,33 +2461,26 @@ namespace libsemigroups {
     //! arguments.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp& init(std::vector<size_t> const& weights, bool should_check) {
-      _weights      = weights;
-      _should_check = should_check;
+    WtLenLexCmp& init(std::vector<size_t> const& weights) {
+      _weights = weights;
       return *this;
     }
 
-    //! \brief Construct from weights vector rvalue reference and specify
-    //! whether or not the call operator should check its arguments.
+    //! \brief Construct from weights vector rvalue reference.
     //!
     //! Constructs a comparison object that takes ownership of the provided
     //! weights vector, where the `i`th index corresponds to the weight of the
-    //! `i`th letter in the alphabet. The \p should_check parameter determines
-    //! whether the call operator will validate that letters are valid indices.
+    //! `i`th letter in the alphabet.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp(std::vector<size_t>&& weights, bool should_check)
-        : _weights(std::move(weights)), _should_check(should_check) {}
+    explicit WtLenLexCmp(std::vector<size_t>&& weights)
+        : _weights(std::move(weights)) {}
 
     //! \brief Reinitialize an existing WtLenLexCmp object.
     //!
@@ -1491,26 +2489,20 @@ namespace libsemigroups {
     //! arguments.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLenLexCmp& init(std::vector<size_t>&& weights, bool should_check) {
-      _weights      = std::move(weights);
-      _should_check = should_check;
+    WtLenLexCmp& init(std::vector<size_t>&& weights) {
+      _weights = std::move(weights);
       return *this;
     }
 
-    //! \brief Call operator that compares \p x and \p y using either
-    //! \ref wt_lenlex_cmp or \ref wt_lenlex_cmp_no_checks.
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref wt_lenlex_cmp.
     //!
-    //! Call operator that compares \p x and \p y using
-    //! \ref wt_lenlex_cmp (if the constructor parameter \c should_check
-    //! is \c true) or \ref wt_lenlex_cmp_no_checks (if \c should_check is
-    //! \c false).
+    //! Call operator that compares \p x and \p y using \ref wt_lenlex_cmp.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -1518,87 +2510,39 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is weighted len-lex less
     //! than \p y, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if the constructor parameter
-    //! \c should_check is \c true and any letter is not a valid index into the
-    //! weights vector.
+    //! \throws LibsemigroupsException if any letter is not a valid index into
+    //! the weights vector.
     //!
     //! \complexity
     //! See
-    //! * wt_lenlex_cmp(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&);
-    //! * wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&).
+    //! * wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator,
+    //! Iterator, Iterator);
+    //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+    //! Iterator, Iterator, Iterator).
     //!
-    //! \warning
-    //! If the constructor parameter \c should_check is \c false, it is not
-    //! checked that the letters are valid indices into the weights vector.
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
-      if (_should_check) {
-        return wt_lenlex_cmp(x, y, _weights);
-      } else {
-        return wt_lenlex_cmp_no_checks(x, y, _weights);
-      }
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return wt_lenlex_cmp(_weights, x, y);
     }
 
-    //! \brief Call operator that does no checks.
+    //! \brief Call operator that compares two iterator ranges.
     //!
-    //! This member function always uses \ref wt_lenlex_cmp_no_checks to
-    //! compare \p x and \p y, regardless of the value of the constructor
-    //! parameter \c should_check. Use this when you want to ensure validation
-    //! is not performed.
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \returns The boolean value \c true if the first range is weighted
+    //! len-lex less than the second range, and \c false otherwise.
     //!
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is weighted len-lex less
-    //! than \p y, and \c false otherwise.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! See wt_lenlex_cmp_no_checks(Iterator, Iterator, Iterator,
-    //! Iterator, std::vector<size_t> const&)
-    template <typename Thing>
-    [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
-      return wt_lenlex_cmp_no_checks(x, y, _weights);
-    }
-
-    //! \brief Returns the value of the constructor parameter \c should_check.
-    //!
-    //! This function returns the current value of the constructor parameter
-    //! \c should_check.
-    //!
-    //! \returns Whether or not the call operator is checking its arguments.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa should_check(bool)
-    [[nodiscard]] bool should_check() const noexcept {
-      return _should_check;
-    }
-
-    //! \brief Set the value of the constructor parameter \c should_check.
-    //!
-    //! This function sets the value of \c should_check to \p val. This
-    //! parameter determines whether or not the call operator is checking its
-    //! arguments.
-    //!
-    //! \param val the new value of \c should_check.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa should_check()
-    WtLenLexCmp& should_check(bool val) noexcept {
-      _should_check = val;
-      return *this;
+    //! \throws LibsemigroupsException if any letter is not a valid index into
+    //! the weights vector.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return wt_lenlex_cmp(_weights, first1, last1, first2, last2);
     }
 
     //! \brief Returns the weights.
@@ -1613,27 +2557,171 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
+  };  // class WtLenLexCmp<Default>
 
-    //! \brief Set the weights.
+  //! \brief Deduction guide for constructing \ref WtLenLexCmp from weights.
+  WtLenLexCmp(std::vector<size_t> const&)->WtLenLexCmp<>;
+
+  //! \brief Deduction guide for constructing \ref WtLenLexCmp from weights.
+  WtLenLexCmp(std::vector<size_t>&&)->WtLenLexCmp<>;
+
+  //! \brief Deduction guide for constructing \ref WtLenLexCmp from an
+  //! alphabet and weights.
+  template <typename Word>
+  WtLenLexCmp(Alphabet<Word> const&, std::vector<size_t> const&)
+      -> WtLenLexCmp<Word>;
+
+  //! \brief Deduction guide for constructing \ref WtLenLexCmp from an
+  //! alphabet and weights.
+  template <typename Word>
+  WtLenLexCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WtLenLexCmp<Word>;
+
+  //! \brief Stateful weighted len-lex comparison functor without checks.
+  //!
+  //! This specialization stores a copy of a weights vector and compares words
+  //! by applying \ref wt_lenlex_cmp_no_checks. The call operator does not
+  //! validate letters against the weights vector.
+  template <>
+  class WtLenLexCmpNoChecks<Default> {
+   private:
+    std::vector<size_t> _weights;
+
+   public:
+    //! \brief Construct from weights vector reference.
     //!
-    //! This function can be used to redefine the weights used to define the
-    //! comparison implemented by WtLenLexCmp.
+    //! Constructs a comparison object that stores a copy of the provided
+    //! weights vector, where the `i`th index corresponds to the weight of the
+    //! `i`th letter in the alphabet.
     //!
-    //! \param val the new weights to use.
+    //! \param weights the weights vector.
+    //! \exceptions
+    //! \no_libsemigroups_except
+    explicit WtLenLexCmpNoChecks(std::vector<size_t> const& weights)
+        : _weights(weights) {}
+
+    //! \brief Reinitialize an existing WtLenLexCmpNoChecks object.
     //!
-    //! \returns A reference to `*this`.
+    //! This function reinitializes an existing WtLenLexCmpNoChecks object so
+    //! that it is in the same state as if it was newly constructed using the
+    //! same arguments.
+    //!
+    //! \param weights the weights vector.
     //!
     //! \exceptions
-    //! \noexcept
-    WtLenLexCmp& weights(std::vector<size_t> const& val) {
-      _weights = val;
+    //! \no_libsemigroups_except
+    WtLenLexCmpNoChecks& init(std::vector<size_t> const& weights) {
+      _weights = weights;
       return *this;
     }
 
-   private:
-    std::vector<size_t> _weights;
-    bool                _should_check;
-  };
+    //! \brief Construct from weights vector rvalue reference.
+    //!
+    //! Constructs a comparison object that takes ownership of the provided
+    //! weights vector, where the `i`th index corresponds to the weight of the
+    //! `i`th letter in the alphabet.
+    //!
+    //! \param weights the weights vector.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    explicit WtLenLexCmpNoChecks(std::vector<size_t>&& weights)
+        : _weights(std::move(weights)) {}
+
+    //! \brief Reinitialize an existing WtLenLexCmpNoChecks object.
+    //!
+    //! This function reinitializes an existing WtLenLexCmpNoChecks object so
+    //! that it is in the same state as if it was newly constructed using the
+    //! same arguments.
+    //!
+    //! \param weights the weights vector.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtLenLexCmpNoChecks& init(std::vector<size_t>&& weights) {
+      _weights = std::move(weights);
+      return *this;
+    }
+
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref wt_lenlex_cmp_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref wt_lenlex_cmp_no_checks.
+    //!
+    //! \tparam Word the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted len-lex less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \complexity
+    //! See
+    //! * wt_lenlex_cmp(std::vector<size_t> const&, Iterator, Iterator,
+    //! Iterator, Iterator);
+    //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+    //! Iterator, Iterator, Iterator).
+    //!
+    //! \warning It is not checked that letters are valid indices into the
+    //! weights vector.
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return wt_lenlex_cmp_no_checks(_weights, x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is weighted
+    //! len-lex less than the second range, and \c false otherwise.
+    //!
+    //! \warning It is not checked that letters are valid indices into the
+    //! weights vector.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return wt_lenlex_cmp_no_checks(_weights, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the weights.
+    //!
+    //! This function returns the current value of the weights used to define
+    //! the comparison implemented by WtLenLexCmpNoChecks.
+    //!
+    //! \returns The current weights.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+  };  // class WtLenLexCmpNoChecks<Default>
+
+  //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
+  //! weights.
+  WtLenLexCmpNoChecks(std::vector<size_t> const&)->WtLenLexCmpNoChecks<>;
+  //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
+  //! weights.
+  WtLenLexCmpNoChecks(std::vector<size_t>&&)->WtLenLexCmpNoChecks<>;
+
+  //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
+  //! an alphabet and weights.
+  template <typename Word>
+  WtLenLexCmpNoChecks(Alphabet<Word> const&, std::vector<size_t> const&)
+      -> WtLenLexCmpNoChecks<Word>;
+
+  //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
+  //! an alphabet and weights.
+  template <typename Word>
+  WtLenLexCmpNoChecks(Alphabet<Word>&&, std::vector<size_t>&&)
+      -> WtLenLexCmpNoChecks<Word>;
 
   //////////////////////////////////////////////////////////////////////
   // Weighted lex
@@ -1653,11 +2741,11 @@ namespace libsemigroups {
   //!
   //! \tparam Iterator the type of iterators to the first object to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted lex less than the range `[first2, last2)`, and \c false
@@ -1676,15 +2764,37 @@ namespace libsemigroups {
   //! the weights vector.
   //!
   //! \sa
-  //! wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool wt_lex_cmp_no_checks(Iterator                   first1,
+  //! wt_lex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator).
+  template <typename Iterator>
+  [[nodiscard]] bool wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                                          Iterator                   first1,
                                           Iterator                   last1,
                                           Iterator                   first2,
-                                          Iterator                   last2,
-                                          std::vector<size_t> const& weights);
+                                          Iterator                   last2);
+
+  //! \brief Compare two ranges using weighted lex without checking an alphabet.
+  //!
+  //! This overload maps letters through \p alphabet before applying weighted
+  //! lex order. It does not check that the letters in the ranges belong to
+  //! \p alphabet or that their indices are valid for \p weights.
+  //!
+  //! \param alphabet the alphabet used to map letters to weight indices.
+  //! \param weights the weights vector.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is weighted lex
+  //! less than the second range, and \c false otherwise.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool wt_lex_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                          std::vector<size_t> const& weights,
+                                          Iterator                   first1,
+                                          Iterator                   last1,
+                                          Iterator                   first2,
+                                          Iterator                   last2);
 
   //! \brief Compare two objects of the same type using
   //! \ref wt_lex_cmp_no_checks without checks.
@@ -1695,18 +2805,18 @@ namespace libsemigroups {
   //! \ref wt_lex_cmp_no_checks, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted lex less
   //! than \p y, and \c false otherwise.
   //!
   //! \exceptions
-  //! See \ref wt_lex_cmp_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
+  //! See \ref wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator,
+  //! Iterator, Iterator, Iterator).
   //!
   //! \complexity
   //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
@@ -1715,7 +2825,7 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lex_cmp_no_checks(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
   //! \warning
@@ -1723,62 +2833,37 @@ namespace libsemigroups {
   //! into the weights vector.
   //!
   //! \sa
-  //! wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool wt_lex_cmp_no_checks(Thing const&               x,
-                                          Thing const&               y,
-                                          std::vector<size_t> const& weights) {
+  //! wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator).
+  template <typename Word>
+  [[nodiscard]] bool wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                                          Word const&                x,
+                                          Word const&                y) {
     return wt_lex_cmp_no_checks(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lex_cmp_no_checks without checks.
+  //! \brief Compare two objects using weighted lex without checking an
+  //! alphabet.
   //!
-  //! Defined in `order.hpp`.
+  //! This overload maps letters through \p alphabet before applying weighted
+  //! lex order. It does not check that letters in \p x or \p y belong to
+  //! \p alphabet or that their indices are valid for \p weights.
   //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lex_cmp_no_checks, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
+  //! \param alphabet the alphabet used to map letters to weight indices.
   //! \param weights the weights vector.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref wt_lex_cmp_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lex_cmp_no_checks(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \warning
-  //! It is not checked that the letters are valid indices into the weights
-  //! vector.
-  //!
-  //! \sa
-  //! wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Thing>
-  [[nodiscard]] bool wt_lex_cmp_no_checks(Thing* const               x,
-                                          Thing* const               y,
-                                          std::vector<size_t> const& weights) {
+  //! \returns The boolean value \c true if \p x is weighted lex less than
+  //! \p y, and \c false otherwise.
+  template <typename Word>
+  [[nodiscard]] bool wt_lex_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                          std::vector<size_t> const& weights,
+                                          Word const&                x,
+                                          Word const&                y) {
     return wt_lex_cmp_no_checks(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects of the same type using the weighted lex
@@ -1795,15 +2880,15 @@ namespace libsemigroups {
   //!
   //! After checking that all letters in both ranges are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wt_lex_cmp_no_checks(first1, last1, first2, last2, weights)`.
+  //! `wt_lex_cmp_no_checks(weights, first1, last1, first2, last2)`.
   //!
   //! \tparam Iterator the type of iterators to the first object to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted lex less than the range `[first2, last2)`, and \c false
@@ -1819,15 +2904,40 @@ namespace libsemigroups {
   //! \p first2.
   //!
   //! \sa
-  //! wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&)
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool wt_lex_cmp(Iterator                   first1,
+  //! wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator)
+  template <typename Iterator>
+  [[nodiscard]] bool wt_lex_cmp(std::vector<size_t> const& weights,
+                                Iterator                   first1,
                                 Iterator                   last1,
                                 Iterator                   first2,
-                                Iterator                   last2,
-                                std::vector<size_t> const& weights);
+                                Iterator                   last2);
+
+  //! \brief Compare two ranges using weighted lex and an alphabet.
+  //!
+  //! This overload checks that both ranges contain only letters belonging to
+  //! \p alphabet and that their alphabet indices are valid for \p weights,
+  //! then applies weighted lex order.
+  //!
+  //! \param alphabet the alphabet used to map letters to weight indices.
+  //! \param weights the weights vector.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is weighted lex
+  //! less than the second range, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter is invalid for \p alphabet
+  //! or \p weights.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool wt_lex_cmp(Alphabet<Word> const&      alphabet,
+                                std::vector<size_t> const& weights,
+                                Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2);
 
   //! \brief Compare two objects of the same type using \ref wt_lex_cmp
   //! and check validity.
@@ -1840,13 +2950,13 @@ namespace libsemigroups {
   //!
   //! After checking that all letters in both objects are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wt_lex_cmp_no_checks(x, y, weights)`.
+  //! `wt_lex_cmp_no_checks(weights, x, y)`.
   //!
-  //! \tparam Thing the type of the objects to be compared.
+  //! \tparam Word the type of the objects to be compared.
   //!
+  //! \param weights the weights vector.
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted lex less
   //! than \p y, and \c false otherwise.
@@ -1861,116 +2971,377 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lex_cmp(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
   //! \sa
-  //! wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool wt_lex_cmp(Thing const&               x,
-                                Thing const&               y,
-                                std::vector<size_t> const& weights) {
-    return wt_lex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //! wt_lex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator).
+  template <typename Word>
+  [[nodiscard]] bool wt_lex_cmp(std::vector<size_t> const& weights,
+                                Word const&                x,
+                                Word const&                y) {
+    return wt_lex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lex_cmp and check validity.
+  //! \brief Compare two objects using weighted lex and an alphabet.
   //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lex_cmp, where the `i`th index of the weights vector
-  //! corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! After checking that all letters are valid indices into the weights
-  //! vector, this function performs the same as
-  //! `wt_lex_cmp_no_checks(*x, *y, weights)`.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
+  //! \param alphabet the alphabet used to map letters to weight indices.
   //! \param weights the weights vector.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! lex less than the word pointed to by \p y, and \c false otherwise.
+  //! \returns The boolean value \c true if \p x is weighted lex less than
+  //! \p y, and \c false otherwise.
   //!
-  //! \throws LibsemigroupsException if any letter is not a valid index into
-  //! the weights vector.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lex_cmp(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  template <typename Thing>
-  [[nodiscard]] bool wt_lex_cmp(Thing* const               x,
-                                Thing* const               y,
-                                std::vector<size_t> const& weights) {
-    return wt_lex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+  //! \throws LibsemigroupsException if any letter is invalid for \p alphabet
+  //! or \p weights.
+  template <typename Word>
+  [[nodiscard]] bool wt_lex_cmp(Alphabet<Word> const&      alphabet,
+                                std::vector<size_t> const& weights,
+                                Word const&                x,
+                                Word const&                y) {
+    return wt_lex_cmp(
+        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief A stateful struct with binary call operator using
-  //! \ref wt_lex_cmp or \ref wt_lex_cmp_no_checks.
+  //! \brief Forward declaration of \ref WtLexCmp.
+  template <typename Word = Default>
+  class WtLexCmp;
+
+  //! \brief Forward declaration of \ref WtLexCmpNoChecks.
+  template <typename Word = Default>
+  class WtLexCmpNoChecks;
+
+  //! \brief Stateful weighted lex comparison functor.
   //!
   //! Defined in `order.hpp`.
   //!
-  //! A stateful struct with binary call operator using
-  //! \ref wt_lex_cmp or \ref wt_lex_cmp_no_checks,
-  //! depending on the value of the constructor parameter \c should_check. This
-  //! struct stores a copy of a weights vector and can be used as a template
-  //! parameter for standard library containers or algorithms that require a
-  //! comparison functor.
-  //!
-  //! \warning
-  //! When the constructor parameter \c should_check is \c false, the call
-  //! operator does not check that letters are valid indices into the weights
-  //! vector. Use the constructor with \c should_check set to \c true
-  //! (\ref checks) to enable argument checking in the call operator.
+  //! This class stores an alphabet and a weights vector and compares words by
+  //! applying \ref wt_lex_cmp with that alphabet and weights vector. The
+  //! alphabet and weights vector must have the same size.
   //!
   //! \sa
-  //! * wt_lex_cmp(Thing const&, Thing const&, std::vector<size_t> const&)
-  //! * wt_lex_cmp_no_checks(Thing const&, Thing const&, std::vector<size_t>
-  //! const&)
-  struct WtLexCmp {
-    //! \brief Constant to enable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool checks = true;
+  //! * wt_lex_cmp(std::vector<size_t> const&, Word const&, Word const&)
+  //! * wt_lex_cmp_no_checks(std::vector<size_t> const&, Word const&,
+  //! Word const&)
+  template <typename Word>
+  class WtLexCmp {
+    Alphabet<Word>      _alphabet;
+    std::vector<size_t> _weights;
 
-    //! \brief Constant to disable validity checks.
-    //!
-    //! This constant can be used in the constructors to indicate that no
-    //! checks should be performed on the arguments to the call operator.
-    static constexpr bool no_checks = false;
+   public:
+    //! \brief Deleted default constructor.
+    WtLexCmp() = delete;
 
-    //! \brief Construct from weights vector reference and specify whether or
-    //! not the call operator should check its arguments.
+    //! \brief Copy constructor.
+    WtLexCmp(WtLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    WtLexCmp(WtLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    WtLexCmp& operator=(WtLexCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    WtLexCmp& operator=(WtLexCmp&&) = default;
+
+    //! \brief Destructor.
+    ~WtLexCmp() = default;
+
+    //! \brief Construct from an alphabet and weights vector.
+    //!
+    //! Constructs a comparison object that stores copies of \p alphabet and
+    //! \p weights. The `i`th entry of \p weights is the weight of the `i`th
+    //! letter in \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLexCmp(Alphabet<Word> const& alphabet, std::vector<size_t> const& weights)
+        : _alphabet(alphabet), _weights(weights) {
+      detail::throw_if_incompat_weights(_alphabet, _weights);
+    }
+
+    //! \brief Construct from an alphabet rvalue and weights vector rvalue.
+    //!
+    //! Constructs a comparison object that stores \p alphabet and \p weights by
+    //! moving from the arguments.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLexCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& weights)
+        : _alphabet(std::move(alphabet)), _weights(std::move(weights)) {
+      detail::throw_if_incompat_weights(_alphabet, _weights);
+    }
+
+    //! \brief Reinitialize from an alphabet and weights vector.
+    //!
+    //! Replaces the stored alphabet and weights vector with copies of
+    //! \p alphabet and \p weights.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLexCmp& init(Alphabet<Word> const&      alphabet,
+                   std::vector<size_t> const& weights);
+
+    //! \brief Reinitialize from an alphabet rvalue and weights vector rvalue.
+    //!
+    //! Replaces the stored alphabet and weights vector by moving from
+    //! \p alphabet and \p weights.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLexCmp& init(Alphabet<Word>&& alphabet, std::vector<size_t>&& weights);
+
+    //! \brief Call operator that compares two words.
+    //!
+    //! \param x const reference to the first word for comparison.
+    //! \param y const reference to the second word for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted lex less than
+    //! \p y, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if any letter in \p x or \p y is not in
+    //! the stored alphabet.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.begin(), x.end(), y.begin(), y.end());
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is weighted lex
+    //! less than the second range, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if any letter in either range is not in
+    //! the stored alphabet.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      // NOTE: only need to check that the iterators point at things
+      // that are inbounds, don't need to check _alphabet and _weights are
+      // compatible again, which we would if we called wt_lenlex_cmp below.
+      _alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+      _alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+      return wt_lex_cmp_no_checks(
+          _alphabet, _weights, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+
+    //! \brief Returns the weights.
+    //!
+    //! \returns The stored weights vector.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+  };  // class WtLexCmp
+
+  //! \brief Stateful weighted lex comparison functor without checks.
+  //!
+  //! This class stores an alphabet and a weights vector and compares words by
+  //! applying \ref wt_lex_cmp_no_checks with that alphabet and weights vector.
+  //! The alphabet and weights vector must have the same size, but the call
+  //! operator does not check that letters belong to the stored alphabet.
+  //!
+  //! \tparam Word the word type associated with the alphabet.
+  template <typename Word>
+  class WtLexCmpNoChecks {
+    Alphabet<Word>      _alphabet;
+    std::vector<size_t> _weights;
+
+   public:
+    //! \brief Deleted default constructor.
+    WtLexCmpNoChecks() = delete;
+
+    //! \brief Copy constructor.
+    WtLexCmpNoChecks(WtLexCmpNoChecks const&) = default;
+
+    //! \brief Move constructor.
+    WtLexCmpNoChecks(WtLexCmpNoChecks&&) = default;
+
+    //! \brief Copy assignment operator.
+    WtLexCmpNoChecks& operator=(WtLexCmpNoChecks const&) = default;
+
+    //! \brief Move assignment operator.
+    WtLexCmpNoChecks& operator=(WtLexCmpNoChecks&&) = default;
+
+    //! \brief Destructor.
+    ~WtLexCmpNoChecks() = default;
+
+    //! \brief Construct from an alphabet and weights vector.
+    //!
+    //! Constructs a comparison object that stores copies of \p alphabet and
+    //! \p weights. The `i`th entry of \p weights is the weight of the `i`th
+    //! letter in \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLexCmpNoChecks(Alphabet<Word> const&      alphabet,
+                     std::vector<size_t> const& weights)
+        : _alphabet(alphabet), _weights(weights) {
+      detail::throw_if_incompat_weights(_alphabet, _weights);
+    }
+
+    //! \brief Construct from an alphabet rvalue and weights vector rvalue.
+    //!
+    //! Constructs a comparison object that stores \p alphabet and \p weights by
+    //! moving from the arguments.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLexCmpNoChecks(Alphabet<Word>&& alphabet, std::vector<size_t>&& weights)
+        : _alphabet(std::move(alphabet)), _weights(std::move(weights)) {
+      detail::throw_if_incompat_weights(_alphabet, _weights);
+    }
+
+    //! \brief Reinitialize from an alphabet and weights vector.
+    //!
+    //! Replaces the stored alphabet and weights vector with copies of
+    //! \p alphabet and \p weights.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLexCmpNoChecks& init(Alphabet<Word> const&      alphabet,
+                           std::vector<size_t> const& weights);
+
+    //! \brief Reinitialize from an alphabet rvalue and weights vector rvalue.
+    //!
+    //! Replaces the stored alphabet and weights vector by moving from
+    //! \p alphabet and \p weights.
+    //!
+    //! \param alphabet the alphabet used to map letters to weight indices.
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p weights do not
+    //! have the same size.
+    WtLexCmpNoChecks& init(Alphabet<Word>&&      alphabet,
+                           std::vector<size_t>&& weights);
+
+    //! \brief Call operator that compares two words without checks.
+    //!
+    //! \param x const reference to the first word for comparison.
+    //! \param y const reference to the second word for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted lex less than
+    //! \p y, and \c false otherwise.
+    //!
+    //! \warning It is not checked that letters in \p x or \p y belong to the
+    //! stored alphabet.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return wt_lex_cmp_no_checks(_alphabet, _weights, x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges without checks.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is weighted lex
+    //! less than the second range, and \c false otherwise.
+    //!
+    //! \warning It is not checked that letters in either range belong to the
+    //! stored alphabet.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return wt_lex_cmp_no_checks(
+          _alphabet, _weights, first1, last1, first2, last2);
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+
+    //! \brief Returns the weights.
+    //!
+    //! \returns The stored weights vector.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+  };  // class WtLexCmpNoChecks
+
+  //! \brief Stateful weighted lex comparison functor.
+  //!
+  //! This specialization stores a copy of a weights vector and compares words
+  //! by applying \ref wt_lex_cmp. It can be used as a template parameter for
+  //! standard library containers or algorithms that require a comparison
+  //! functor.
+  template <>
+  class WtLexCmp<Default> {
+   private:
+    std::vector<size_t> _weights;
+
+   public:
+    //! \brief Construct from weights vector reference.
     //!
     //! Constructs a comparison object that stores a copy of the provided
     //! weights vector, where the `i`th index corresponds to the weight of the
-    //! `i`th letter in the alphabet. The \p should_check parameter determines
-    //! whether the call operator will validate that letters are valid indices.
+    //! `i`th letter in the alphabet.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLexCmp(std::vector<size_t> const& weights, bool should_check)
-        : _weights(weights), _should_check(should_check) {}
+    explicit WtLexCmp(std::vector<size_t> const& weights) : _weights(weights) {}
 
     //! \brief Reinitialize an existing WtLexCmp object.
     //!
@@ -1979,33 +3350,24 @@ namespace libsemigroups {
     //! arguments.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLexCmp& init(std::vector<size_t> const& weights, bool should_check) {
-      _weights      = std::move(weights);
-      _should_check = should_check;
+    WtLexCmp& init(std::vector<size_t> const& weights) {
+      _weights = weights;
       return *this;
     }
 
-    //! \brief Construct from weights vector rvalue reference and specify
-    //! whether or not the call operator should check its arguments.
+    //! \brief Construct from weights vector rvalue reference.
     //!
     //! Constructs a comparison object that takes ownership of the provided
     //! weights vector, where the `i`th index corresponds to the weight of the
-    //! `i`th letter in the alphabet. The \p should_check parameter determines
-    //! whether the call operator will validate that letters are valid indices.
+    //! `i`th letter in the alphabet.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLexCmp(std::vector<size_t>&& weights, bool should_check)
-        : _weights(std::move(weights)), _should_check(should_check) {}
+    explicit WtLexCmp(std::vector<size_t>&& weights)
+        : _weights(std::move(weights)) {}
 
     //! \brief Reinitialize an existing WtLexCmp object.
     //!
@@ -2014,26 +3376,19 @@ namespace libsemigroups {
     //! arguments.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true (\ref checks), the call operator will
-    //! check validity; if \c false (\ref no_checks), it will not.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WtLexCmp& init(std::vector<size_t>&& weights, bool should_check) {
-      _weights      = std::move(weights);
-      _should_check = should_check;
+    WtLexCmp& init(std::vector<size_t>&& weights) {
+      _weights = std::move(weights);
       return *this;
     }
 
-    //! \brief Call operator that compares \p x and \p y using either
-    //! \ref wt_lex_cmp or \ref wt_lex_cmp_no_checks.
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref wt_lex_cmp.
     //!
-    //! Call operator that compares \p x and \p y using
-    //! \ref wt_lex_cmp (if the constructor parameter \c should_check is
-    //! \c true) or \ref wt_lex_cmp_no_checks (if \c should_check is
-    //! \c false).
+    //! Call operator that compares \p x and \p y using \ref wt_lex_cmp.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \tparam Word the type of the objects to be compared.
     //!
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
@@ -2041,86 +3396,39 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is weighted lex less
     //! than \p y, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if \p should_check is \c true and any
-    //! letter is not a valid index into the weights vector.
+    //! \throws LibsemigroupsException if any letter is not a valid index into
+    //! the weights vector.
     //!
     //! \complexity
     //! See:
-    //! * wt_lex_cmp(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&)
-    //! * wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&).
+    //! * wt_lex_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+    //! Iterator)
+    //! * wt_lex_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+    //! Iterator, Iterator).
     //!
-    //! \warning
-    //! If the constructor parameter \c should_check is \c false, it is not
-    //! checked that the letters are valid indices into the weights vector.
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
-      if (_should_check) {
-        return wt_lex_cmp(x, y, _weights);
-      } else {
-        return wt_lex_cmp_no_checks(x, y, _weights);
-      }
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return wt_lex_cmp(_weights, x, y);
     }
 
-    //! \brief Call operator that does no checks.
+    //! \brief Call operator that compares two iterator ranges.
     //!
-    //! This member function always uses \ref wt_lex_cmp_no_checks to
-    //! compare \p x and \p y, regardless of the value of the constructor
-    //! parameter \c should_check. Use this when you want to ensure validation
-    //! is not performed.
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
     //!
-    //! \tparam Thing the type of the objects to be compared.
+    //! \returns The boolean value \c true if the first range is weighted lex
+    //! less than the second range, and \c false otherwise.
     //!
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is weighted lex less
-    //! than \p y, and \c false otherwise.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! See wt_lex_cmp_no_checks(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&).
-    template <typename Thing>
-    [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
-      return wt_lex_cmp_no_checks(x, y, _weights);
-    }
-
-    //! \brief Returns the value of the constructor parameter \c should_check.
-    //!
-    //! This function returns the current value of the constructor parameter
-    //! \c should_check.
-    //!
-    //! \returns Whether or not the call operator is checking its arguments.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa should_check(bool)
-    [[nodiscard]] bool should_check() const noexcept {
-      return _should_check;
-    }
-
-    //! \brief Set the value of the constructor parameter \c should_check.
-    //!
-    //! This function sets the value of \c should_check to \p val. This
-    //! parameter determines whether or not the call operator is checking its
-    //! arguments.
-    //!
-    //! \param val the new value of \c should_check.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa should_check()
-    WtLexCmp& should_check(bool val) noexcept {
-      _should_check = val;
-      return *this;
+    //! \throws LibsemigroupsException if any letter is not a valid index into
+    //! the weights vector.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return wt_lex_cmp(_weights, first1, last1, first2, last2);
     }
 
     //! \brief Returns the weights.
@@ -2135,688 +3443,158 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
+  };  // class WtLexCmp<Default>
 
-    //! \brief Set the weights.
+  //! \brief Deduction guide for constructing \ref WtLexCmp from weights.
+  WtLexCmp(std::vector<size_t> const&)->WtLexCmp<>;
+
+  //! \brief Deduction guide for constructing \ref WtLexCmp from weights.
+  WtLexCmp(std::vector<size_t>&&)->WtLexCmp<>;
+
+  //! \brief Deduction guide for constructing \ref WtLexCmp from an alphabet
+  //! and weights.
+  template <typename Word>
+  WtLexCmp(Alphabet<Word> const&, std::vector<size_t> const&) -> WtLexCmp<Word>;
+
+  //! \brief Deduction guide for constructing \ref WtLexCmp from an alphabet
+  //! and weights.
+  template <typename Word>
+  WtLexCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WtLexCmp<Word>;
+
+  //! \brief Stateful weighted lex comparison functor without checks.
+  //!
+  //! This specialization stores a copy of a weights vector and compares words
+  //! by applying \ref wt_lex_cmp_no_checks. The call operator does not validate
+  //! letters against the weights vector.
+  template <>
+  class WtLexCmpNoChecks<Default> {
+   private:
+    std::vector<size_t> _weights;
+
+   public:
+    //! \brief Construct from weights vector reference.
     //!
-    //! This function can be used to redefine the weights used to define the
-    //! comparison implemented by WtLexCmp.
+    //! Constructs a comparison object that stores a copy of \p weights, where
+    //! the `i`th index corresponds to the weight of the `i`th letter in the
+    //! alphabet.
     //!
-    //! \param val the new weights to use.
+    //! \param weights the weights vector.
     //!
-    //! \returns A reference to `*this`.
-    WtLexCmp& weights(std::vector<size_t> const& val) {
-      _weights = val;
+    //! \exceptions
+    //! \no_libsemigroups_except
+    explicit WtLexCmpNoChecks(std::vector<size_t> const& weights)
+        : _weights(weights) {}
+
+    //! \brief Reinitialize an existing WtLexCmpNoChecks object.
+    //!
+    //! Replaces the stored weights vector with a copy of \p weights.
+    //!
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtLexCmpNoChecks& init(std::vector<size_t> const& weights) {
+      _weights = weights;
       return *this;
     }
 
-   private:
-    std::vector<size_t> _weights;
-    bool                _should_check;
-  };
+    //! \brief Construct from weights vector rvalue reference.
+    //!
+    //! Constructs a comparison object that takes ownership of \p weights.
+    //!
+    //! \param weights the weights vector.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    explicit WtLexCmpNoChecks(std::vector<size_t>&& weights)
+        : _weights(std::move(weights)) {}
 
-  //////////////////////////////////////////////////////////////////////
-  // Weighted short-lex - deprecated
-  //////////////////////////////////////////////////////////////////////
+    //! \brief Reinitialize an existing WtLexCmpNoChecks object.
+    //!
+    //! Replaces the stored weights vector by moving from \p weights.
+    //!
+    //! \param weights the weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtLexCmpNoChecks& init(std::vector<size_t>&& weights) {
+      _weights = std::move(weights);
+      return *this;
+    }
 
-  //! \brief Compare two objects of the same type using the weighted short-lex
-  //! ordering without checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using the weighted
-  //! short-lex ordering. The weight of a word is computed by adding up the
-  //! weights of the letters in the word, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //! Heavier words come later in the ordering than all lighter words. Amongst
-  //! words of equal weight, short-lex ordering is used.
-  //!
-  //! \tparam Iterator the type of iterators that are the arguments.
-  //!
-  //! \param first1 beginning iterator of first object for comparison.
-  //! \param last1 ending iterator of first object for comparison.
-  //! \param first2 beginning iterator of second object for comparison.
-  //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! weighted short-lex less than the range `[first2, last2)`, and \c false
-  //! otherwise.
-  //!
-  //! \exceptions
-  //! Throws if std::lexicographical_compare does.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
-  //! and \p first1, and \f$m\f$ is the distance between \p last2 and
-  //! \p first2.
-  //!
-  //! \warning
-  //! It is not checked that the letters in the ranges are valid indices into
-  //! the \p weights vector.
-  //!
-  //! \sa
-  //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] [[deprecated("Use wt_lenlex_cmp_no_checks instead!")]] bool
-  wt_shortlex_compare_no_checks(Iterator                   first1,
-                                Iterator                   last1,
-                                Iterator                   first2,
-                                Iterator                   last2,
-                                std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp_no_checks(first1, last1, first2, last2, weights);
-  }
+    //! \brief Call operator that compares \p x and \p y without checks.
+    //!
+    //! \tparam Word the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted lex less than
+    //! \p y, and \c false otherwise.
+    //!
+    //! \warning It is not checked that letters are valid indices into the
+    //! weights vector.
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return wt_lex_cmp_no_checks(_weights, x, y);
+    }
 
-  //! \brief Compare two objects of the same type using
-  //! \ref wt_shortlex_compare_no_checks without checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using
-  //! \ref wt_shortlex_compare_no_checks, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x is weighted short-lex less
-  //! than \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
-  //! is the length of \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_shortlex_compare_no_checks(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \warning
-  //! It is not checked that the letters in \p x and \p y are valid indices
-  //! into the weights vector.
-  //!
-  //! \sa
-  //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] [[deprecated("Use wt_lenlex_cmp_no_checks instead!")]] bool
-  wt_shortlex_compare_no_checks(Thing const&               x,
-                                Thing const&               y,
-                                std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp_no_checks(x, y, weights);
-  }
+    //! \brief Call operator that compares two iterator ranges without checks.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is weighted lex
+    //! less than the second range, and \c false otherwise.
+    //!
+    //! \warning It is not checked that letters are valid indices into the
+    //! weights vector.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return wt_lex_cmp_no_checks(_weights, first1, last1, first2, last2);
+    }
 
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_shortlex_compare_no_checks without checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_shortlex_compare_no_checks, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! short-lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_shortlex_compare_no_checks(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \warning
-  //! It is not checked that the letters are valid indices into the weights
-  //! vector.
-  //!
-  //! \sa
-  //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lenlex_cmp_no_checks instead.
-  template <typename Thing>
-  [[nodiscard]] [[deprecated("Use wt_lenlex_cmp_no_checks instead!")]] bool
-  wt_shortlex_compare_no_checks(Thing* const               x,
-                                Thing* const               y,
-                                std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(x, y, weights);
-  }
+    //! \brief Returns the weights.
+    //!
+    //! \returns The stored weights vector.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+  };  // class WtLexCmpNoChecks<Default>
 
-  //! \brief Compare two objects of the same type using the weighted short-lex
-  //! ordering and check validity.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using the weighted
-  //! short-lex ordering. The weight of a word is computed by adding up the
-  //! weights of the letters in the word, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //! Heavier words come later in the ordering than all lighter words. Amongst
-  //! words of equal weight, short-lex ordering is used.
-  //!
-  //! After checking that all letters in both ranges are valid indices into
-  //! the weights vector, this function performs the same as
-  //! `wt_shortlex_compare_no_checks(first1, last1, first2, last2, weights)`.
-  //!
-  //! \tparam Iterator the type of iterators to the first object to be compared.
-  //!
-  //! \param first1 beginning iterator of first object for comparison.
-  //! \param last1 ending iterator of first object for comparison.
-  //! \param first2 beginning iterator of second object for comparison.
-  //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! weighted short-lex less than the range `[first2, last2)`, and \c false
-  //! otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter in either range is not a
-  //! valid index into the weights vector (i.e., if any letter is greater
-  //! than or equal to `weights.size()`).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
-  //! and \p first1, and \f$m\f$ is the distance between \p last2 and
-  //! \p first2.
-  //!
-  //! \sa
-  //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] [[deprecated("Use wt_lenlex_cmp instead!")]] bool
-  wt_shortlex_compare(Iterator                   first1,
-                      Iterator                   last1,
-                      Iterator                   first2,
-                      Iterator                   last2,
-                      std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(first1, last1, first2, last2, weights);
-  }
+  //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from
+  //! weights.
+  WtLexCmpNoChecks(std::vector<size_t> const&)->WtLexCmpNoChecks<>;
+  //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from
+  //! weights.
+  WtLexCmpNoChecks(std::vector<size_t>&&)->WtLexCmpNoChecks<>;
 
-  //! \brief Compare two objects of the same type using \ref wt_shortlex_compare
-  //! and check validity.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using
-  //! \ref wt_shortlex_compare, where the `i`th index of the weights vector
-  //! corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! After checking that all letters in both objects are valid indices into
-  //! the weights vector, this function performs the same as
-  //! `wt_shortlex_compare_no_checks(x, y, weights)`.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x is weighted short-lex less
-  //! than \p y, and \c false otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter in \p x or \p y is not a
-  //! valid index into the weights vector.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
-  //! is the length of \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_shortlex_compare(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] [[deprecated("Use wt_lenlex_cmp instead!")]] bool
-  wt_shortlex_compare(Thing const&               x,
-                      Thing const&               y,
-                      std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(x, y, weights);
-  }
+  //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from an
+  //! alphabet and weights.
+  template <typename Word>
+  WtLexCmpNoChecks(Alphabet<Word> const&, std::vector<size_t> const&)
+      -> WtLexCmpNoChecks<Word>;
 
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_shortlex_compare and check validity.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_shortlex_compare, where the `i`th index of the weights vector
-  //! corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! After checking that all letters are valid indices into the weights
-  //! vector, this function performs the same as
-  //! `wt_shortlex_compare_no_checks(*x, *y, weights)`.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! short-lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter is not a valid index into
-  //! the weights vector.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_shortlex_compare(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lenlex_cmp instead.
-  template <typename Thing>
-  [[nodiscard]] [[deprecated("Use wt_lenlex_cmp instead!")]] bool
-  wt_shortlex_compare(Thing* const               x,
-                      Thing* const               y,
-                      std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(x, y, weights);
-  }
+  //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from an
+  //! alphabet and weights.
+  template <typename Word>
+  WtLexCmpNoChecks(Alphabet<Word>&&, std::vector<size_t>&&)
+      -> WtLexCmpNoChecks<Word>;
 
-  //! \brief A stateful struct with binary call operator using
-  //! \ref wt_shortlex_compare or \ref wt_shortlex_compare_no_checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! A stateful struct with binary call operator using
-  //! \ref wt_shortlex_compare or \ref wt_shortlex_compare_no_checks,
-  //! depending on the value of the constructor parameter \c should_check. This
-  //! struct stores a copy of a weights vector and can be used as a template
-  //! parameter for standard library containers or algorithms that require a
-  //! comparison functor.
-  //!
-  //! \warning
-  //! When the constructor parameter \c should_check is \c false, the call
-  //! operator does not check that letters are valid indices into the weights
-  //! vector. Use the constructor with \c should_check set to \c true
-  //! (\ref checks) to enable argument checking in the call operator.
-  //!
-  //! \sa
-  //! * wt_shortlex_compare(Thing const&, Thing const&, std::vector<size_t>
-  //! const&)
-  //! * wt_shortlex_compare_no_checks(Thing const&, Thing const&,
-  //! std::vector<size_t> const&)
-  //!
-  //! \deprecated_warning{struct} Use \ref WtLenLexCmp instead.
-  using WtShortLexCompare [[deprecated("Use WtLenLexCmp instead!")]]
-  = WtLenLexCmp;
+#include "order-deprecated.hpp"
 
-  //////////////////////////////////////////////////////////////////////
-  // Weighted lex - deprecated
-  //////////////////////////////////////////////////////////////////////
-
-  //! \brief Compare two objects of the same type using the weighted lex
-  //! ordering without checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using the weighted
-  //! lex ordering. The weight of a word is computed by adding up the
-  //! weights of the letters in the word, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //! Heavier words come later in the ordering than all lighter words. Amongst
-  //! words of equal weight, lexicographic ordering is used.
-  //!
-  //! \tparam Iterator the type of iterators to the first object to be compared.
-  //!
-  //! \param first1 beginning iterator of first object for comparison.
-  //! \param last1 ending iterator of first object for comparison.
-  //! \param first2 beginning iterator of second object for comparison.
-  //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! weighted lex less than the range `[first2, last2)`, and \c false
-  //! otherwise.
-  //!
-  //! \exceptions
-  //! Throws if std::lexicographical_compare does.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
-  //! and \p first1, and \f$m\f$ is the distance between \p last2 and
-  //! \p first2.
-  //!
-  //! \warning
-  //! It is not checked that the letters in the ranges are valid indices into
-  //! the weights vector.
-  //!
-  //! \sa
-  //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] [[deprecated("Use wt_lex_cmp_no_checks instead!")]] bool
-  wt_lex_compare_no_checks(Iterator                   first1,
-                           Iterator                   last1,
-                           Iterator                   first2,
-                           Iterator                   last2,
-                           std::vector<size_t> const& weights) {
-    return wt_lex_cmp_no_checks(first1, last1, first2, last2, weights);
-  }
-
-  //! \brief Compare two objects of the same type using
-  //! \ref wt_lex_compare_no_checks without checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using
-  //! \ref wt_lex_compare_no_checks, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x is weighted lex less
-  //! than \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref wt_lex_compare_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
-  //! is the length of \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lex_compare_no_checks(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \warning
-  //! It is not checked that the letters in \p x and \p y are valid indices
-  //! into the weights vector.
-  //!
-  //! \sa
-  //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] [[deprecated("Use wt_lex_cmp_no_checks instead!")]] bool
-  wt_lex_compare_no_checks(Thing const&               x,
-                           Thing const&               y,
-                           std::vector<size_t> const& weights) {
-    return wt_lex_cmp_no_checks(x, y, weights);
-  }
-
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lex_compare_no_checks without checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lex_compare_no_checks, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! See \ref wt_lex_compare_no_checks(Iterator, Iterator, Iterator,
-  //! Iterator, std::vector<size_t> const&).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lex_compare_no_checks(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \warning
-  //! It is not checked that the letters are valid indices into the weights
-  //! vector.
-  //!
-  //! \sa
-  //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lex_cmp_no_checks instead.
-  template <typename Thing>
-  [[nodiscard]] [[deprecated("Use wt_lex_cmp_no_checks instead!")]] bool
-  wt_lex_compare_no_checks(Thing* const               x,
-                           Thing* const               y,
-                           std::vector<size_t> const& weights) {
-    return wt_lex_cmp_no_checks(x, y, weights);
-  }
-
-  //! \brief Compare two objects of the same type using the weighted lex
-  //! ordering and check validity.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using the weighted
-  //! lex ordering. The weight of a word is computed by adding up the
-  //! weights of the letters in the word, where the `i`th index of the weights
-  //! vector corresponds to the weight of the `i`th letter in the alphabet.
-  //! Heavier words come later in the ordering than all lighter words. Amongst
-  //! words of equal weight, lexicographic ordering is used.
-  //!
-  //! After checking that all letters in both ranges are valid indices into
-  //! the weights vector, this function performs the same as
-  //! `wt_lex_compare_no_checks(first1, last1, first2, last2, weights)`.
-  //!
-  //! \tparam Iterator the type of iterators to the first object to be compared.
-  //!
-  //! \param first1 beginning iterator of first object for comparison.
-  //! \param last1 ending iterator of first object for comparison.
-  //! \param first2 beginning iterator of second object for comparison.
-  //! \param last2 ending iterator of second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! weighted lex less than the range `[first2, last2)`, and \c false
-  //! otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter in either range is not a
-  //! valid index into the weights vector (i.e., if any letter is greater
-  //! than or equal to `weights.size()`).
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
-  //! and \p first1, and \f$m\f$ is the distance between \p last2 and
-  //! \p first2.
-  //!
-  //! \sa
-  //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&)
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] [[deprecated("Use wt_lex_cmp instead!")]] bool
-  wt_lex_compare(Iterator                   first1,
-                 Iterator                   last1,
-                 Iterator                   first2,
-                 Iterator                   last2,
-                 std::vector<size_t> const& weights) {
-    return wt_lex_cmp(first1, last1, first2, last2, weights);
-  }
-
-  //! \brief Compare two objects of the same type using \ref wt_lex_compare
-  //! and check validity.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using
-  //! \ref wt_lex_compare, where the `i`th index of the weights vector
-  //! corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! After checking that all letters in both objects are valid indices into
-  //! the weights vector, this function performs the same as
-  //! `wt_lex_compare_no_checks(x, y, weights)`.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x is weighted lex less
-  //! than \p y, and \c false otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter in \p x or \p y is not a
-  //! valid index into the weights vector.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
-  //! is the length of \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lex_compare(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] [[deprecated("Use wt_lex_cmp instead!")]] bool
-  wt_lex_compare(Thing const&               x,
-                 Thing const&               y,
-                 std::vector<size_t> const& weights) {
-    return wt_lex_cmp(x, y, weights);
-  }
-
-  //! \brief Compare two objects via their pointers using
-  //! \ref wt_lex_compare and check validity.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects via their pointers using
-  //! \ref wt_lex_compare, where the `i`th index of the weights vector
-  //! corresponds to the weight of the `i`th letter in the alphabet.
-  //!
-  //! After checking that all letters are valid indices into the weights
-  //! vector, this function performs the same as
-  //! `wt_lex_compare_no_checks(*x, *y, weights)`.
-  //!
-  //! \tparam Thing the type of the objects to be compared.
-  //!
-  //! \param x pointer to the first object for comparison.
-  //! \param y pointer to the second object for comparison.
-  //! \param weights the weights vector.
-  //!
-  //! \returns The boolean value \c true if \p x points to a word weighted
-  //! lex less than the word pointed to by \p y, and \c false otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter is not a valid index into
-  //! the weights vector.
-  //!
-  //! \complexity
-  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
-  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! wt_lex_compare(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
-  //!
-  //! \deprecated_warning{function} Use \ref wt_lex_cmp instead.
-  template <typename Thing>
-  [[nodiscard]] [[deprecated("Use wt_lex_cmp instead!")]] bool
-  wt_lex_compare(Thing* const               x,
-                 Thing* const               y,
-                 std::vector<size_t> const& weights) {
-    return wt_lex_cmp(x, y, weights);
-  }
-
-  //! \brief A stateful struct with binary call operator using
-  //! \ref wt_lex_compare or \ref wt_lex_compare_no_checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! A stateful struct with binary call operator using
-  //! \ref wt_lex_compare or \ref wt_lex_compare_no_checks,
-  //! depending on the value of the constructor parameter \c should_check. This
-  //! struct stores a copy of a weights vector and can be used as a template
-  //! parameter for standard library containers or algorithms that require a
-  //! comparison functor.
-  //!
-  //! \warning
-  //! When the constructor parameter \c should_check is \c false, the call
-  //! operator does not check that letters are valid indices into the weights
-  //! vector. Use the constructor with \c should_check set to \c true
-  //! (\ref checks) to enable argument checking in the call operator.
-  //!
-  //! \sa
-  //! * wt_lex_compare(Thing const&, Thing const&, std::vector<size_t> const&)
-  //! * wt_lex_compare_no_checks(Thing const&, Thing const&, std::vector<size_t>
-  //! const&)
-  //!
-  //! \deprecated_warning{struct} Use \ref WtLexCmp instead.
-  using WtLexCompare [[deprecated("Use WtLexCmp instead!")]] = WtLexCmp;
   // end orders_group
   //! @}
 
@@ -2847,7 +3625,7 @@ namespace libsemigroups {
     //! Specialization of \ref is_length_non_increasing for
     //! \ref LenLexCmp.
     template <>
-    struct is_length_non_increasing<LenLexCmp> : std::true_type {};
+    struct is_length_non_increasing<LenLexCmp<>> : std::true_type {};
 
     //! \brief Helper variable template for \ref is_length_non_increasing.
     //!
@@ -2874,31 +3652,31 @@ namespace libsemigroups {
     //!
     //! Specialization of \ref is_well_founded for \ref LenLexCmp.
     template <>
-    struct is_well_founded<LenLexCmp> : std::true_type {};
+    struct is_well_founded<LenLexCmp<>> : std::true_type {};
 
     //! \brief Recursive path order is well-founded.
     //!
     //! Specialization of \ref is_well_founded for \ref RPOCmp.
     template <>
-    struct is_well_founded<RPOCmp> : std::true_type {};
+    struct is_well_founded<RPOCmp<>> : std::true_type {};
 
     //! \brief Reverse recursive path order is well-founded.
     //!
-    //! Specialization of \ref is_well_founded for \ref RPOCmp.
+    //! Specialization of \ref is_well_founded for \ref RevRPOCmp.
     template <>
-    struct is_well_founded<RevRPOCmp> : std::true_type {};
+    struct is_well_founded<RevRPOCmp<>> : std::true_type {};
 
     //! \brief Weighted short-lex order is well-founded.
     //!
-    //! Specialization of \ref is_well_founded for \ref WtLexCmp.
+    //! Specialization of \ref is_well_founded for \ref WtLenLexCmp.
     template <>
-    struct is_well_founded<WtLenLexCmp> : std::true_type {};
+    struct is_well_founded<WtLenLexCmp<>> : std::true_type {};
 
     //! \brief Weighted lex order is well-founded.
     //!
     //! Specialization of \ref is_well_founded for \ref WtLexCmp.
     template <>
-    struct is_well_founded<WtLexCmp> : std::true_type {};
+    struct is_well_founded<WtLexCmp<>> : std::true_type {};
 
     //! \brief Helper variable template for \ref is_well_founded.
     //!

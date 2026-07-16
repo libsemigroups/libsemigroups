@@ -107,7 +107,7 @@ namespace libsemigroups {
   //! \tparam Thing used for SFINAE, must be \ref_todd_coxeter.
   //! \tparam Word the type of the words used in relations in \p kb.
   //! \tparam RewritingSystem the type of rewriter used by \p kb.
-  //! \tparam ReductionOrder the type of reduction ordering used by \p kb.
+  //! \tparam ReductionOrder the reduction-order class template used by \p kb.
   //!
   //! \param knd the kind of the congruence being constructed.
   //! \param kb the \ref_knuth_bendix object being converted.
@@ -123,6 +123,7 @@ namespace libsemigroups {
   template <template <typename...> typename Thing,
             typename Word,
             typename RewritingSystem,
+            template <typename>
             typename ReductionOrder>
   auto to(congruence_kind                                     knd,
           KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb)

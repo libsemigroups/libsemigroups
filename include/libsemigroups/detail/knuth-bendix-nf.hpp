@@ -30,30 +30,31 @@
 
 namespace libsemigroups {
 
-  template <typename Word, typename RewritingSystem, typename ReductionOrder>
-  class KnuthBendix;
+  template <typename Word>
+  class Presentation;
 
   namespace detail {
 
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    template <typename Word, typename RewritingSystem>
     class KnuthBendixNormalFormRange : public Paths<uint32_t> {
       using Paths_ = Paths<uint32_t>;
 
-      mutable Word                                        _current;
-      KnuthBendix<Word, RewritingSystem, ReductionOrder>* _kb;
+      mutable Word              _current;
+      Presentation<Word> const* _presentation;
 
      public:
       using size_type   = typename Paths_::size_type;
       using output_type = Word const&;
 
       explicit KnuthBendixNormalFormRange(
-          KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb)
-          : Paths(kb.gilman_graph()), _current(), _kb(&kb) {
+          WordGraph<uint32_t> const& graph,
+          Presentation<Word> const&  presentation)
+          : Paths(graph), _current(), _presentation(&presentation) {
         // It's possible that the gilman graph is empty, so the call to
         // source_no_checks(0) is technically invalid, but nothing goes wrong,
         // so we just go with it. This is slightly smelly.
         Paths_::source_no_checks(0);
-        if (!kb.presentation().contains_empty_word()) {
+        if (!presentation.contains_empty_word()) {
           Paths_::next();
         }
       }
@@ -70,7 +71,7 @@ namespace libsemigroups {
         word_type const& w = Paths_::get();
         _current.clear();
         for (auto c : w) {
-          _current.push_back(_kb->presentation().letter_no_checks(c));
+          _current.push_back(_presentation->letter_no_checks(c));
         }
         return _current;
       }
@@ -96,36 +97,36 @@ namespace libsemigroups {
       static constexpr bool is_idempotent = true;
     };  // class KnuthBendixNormalFormRange
 
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>::
-        KnuthBendixNormalFormRange()
+    template <typename Word, typename RewritingSystem>
+    KnuthBendixNormalFormRange<Word,
+                               RewritingSystem>::KnuthBendixNormalFormRange()
         = default;
 
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>::
+    template <typename Word, typename RewritingSystem>
+    KnuthBendixNormalFormRange<Word, RewritingSystem>::
         KnuthBendixNormalFormRange(KnuthBendixNormalFormRange const&)
         = default;
 
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>::
+    template <typename Word, typename RewritingSystem>
+    KnuthBendixNormalFormRange<Word, RewritingSystem>::
         KnuthBendixNormalFormRange(KnuthBendixNormalFormRange&&)
         = default;
 
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>&
-    KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>::
-    operator=(KnuthBendixNormalFormRange const&)
+    template <typename Word, typename RewritingSystem>
+    KnuthBendixNormalFormRange<Word, RewritingSystem>&
+    KnuthBendixNormalFormRange<Word, RewritingSystem>::operator=(
+        KnuthBendixNormalFormRange const&)
         = default;
 
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>&
-    KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>::
-    operator=(KnuthBendixNormalFormRange&&)
+    template <typename Word, typename RewritingSystem>
+    KnuthBendixNormalFormRange<Word, RewritingSystem>&
+    KnuthBendixNormalFormRange<Word, RewritingSystem>::operator=(
+        KnuthBendixNormalFormRange&&)
         = default;
 
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>::
-        ~KnuthBendixNormalFormRange()
+    template <typename Word, typename RewritingSystem>
+    KnuthBendixNormalFormRange<Word,
+                               RewritingSystem>::~KnuthBendixNormalFormRange()
         = default;
   }  // namespace detail
 }  // namespace libsemigroups

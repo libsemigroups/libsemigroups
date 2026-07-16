@@ -113,10 +113,17 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  template <template <typename...> typename Thing, typename Word>
-  auto to(congruence_kind knd, ToddCoxeter<Word>& tc)
-      -> std::enable_if_t<std::is_same_v<Thing<Word>, KnuthBendix<Word>>,
-                          KnuthBendix<Word>> {
+  // Match the third parameter explicitly for C++17 portability.
+  template <template <typename, typename, template <typename> typename>
+            typename Thing,
+            typename Word>
+  auto to(congruence_kind knd, ToddCoxeter<Word>& tc) -> std::enable_if_t<
+      std::is_same_v<Thing<Word,
+                           detail::RewritingSystemTrie<LenLexCmp>,
+                           detail::RewritingSystemTrie<
+                               LenLexCmp>::template reduction_order_template>,
+                     KnuthBendix<Word>>,
+      KnuthBendix<Word>> {
     // TODO(1) could do a version where we convert tc to FroidurePin, then use
     // the rules of that instead?
     return KnuthBendix<Word>(knd, tc.presentation());

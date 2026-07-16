@@ -554,22 +554,8 @@ namespace libsemigroups {
              {"yB", "By"},    {"yC", "Cy"},     {"yD", "Dy"},   {"yY", ""},
              {"ya", "ayf"},   {"yb", "by"},     {"yc", "cy"},   {"yd", "dy"}}));
 
-    // NOTE: rev_rpo_cmp (and all the other orders) use the numerical
-    // value of the letters in the alphabet as the order on the alphabet, in
-    // this example, the order on the alphabet is "fFyYdDcCbBaA" which is
-    // not numerical order, hence the contorsions below.
-    // TODO: make it so that we don't have the contortions below, using the yet
-    // to be implemented Alphabet objects
-
-    v4::ToWord to_word(p.alphabet());
-    auto       rules2
-        = (rx::iterator_range(rules1.begin(), rules1.end())
-           | rx::transform([&to_word](auto const& rule) {
-               return std::pair(to_word(rule.first), to_word(rule.second));
-             })
-           | rx::to_vector());
-    REQUIRE(std::all_of(rules2.begin(), rules2.end(), [](auto const& rule) {
-      return rev_rpo_cmp(rule.second, rule.first);
+    REQUIRE(std::all_of(rules1.begin(), rules1.end(), [&p](auto const& rule) {
+      return rev_rpo_cmp(p.alphabet_v4(), rule.second, rule.first);
     }));
   }
 

@@ -25,7 +25,10 @@ namespace libsemigroups {
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    template <typename Word,
+              typename RewritingSystem,
+              template <typename>
+              typename ReductionOrder>
     std::vector<std::vector<Word>> non_trivial_classes(
         KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb1,
         KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb2) {
@@ -266,7 +269,10 @@ namespace libsemigroups {
       return p.rules.cend();
     }
 
-    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    template <typename Word,
+              typename RewritingSystem,
+              template <typename>
+              typename ReductionOrder>
     void
     by_overlap_length(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb) {
       size_t prev_max_overlap = kb.max_overlap();
@@ -280,9 +286,8 @@ namespace libsemigroups {
     }
 
     // TODO(1) deprecate and make this RewritingSystem mem fn
-    template <typename RewritingSystem, typename ReductionOrder>
-    bool
-    is_reduced(detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb) {
+    template <typename RewritingSystem>
+    bool is_reduced(detail::KnuthBendixImpl<RewritingSystem>& kb) {
       for (auto const& test_rule : kb.rewriting_system().rules()) {
         auto const lhs = test_rule.first;
         for (auto const& rule : kb.rewriting_system().rules()) {

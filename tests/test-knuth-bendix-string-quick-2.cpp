@@ -84,7 +84,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 24);
       REQUIRE(knuth_bendix::reduce_no_run(kb, "ca") == "ac");
       using rule_type = typename decltype(kb)::rule_type;
@@ -104,7 +104,7 @@ namespace libsemigroups {
               {"a", "b", "c", "d", "e", "aa", "ac", "ad", "bb", "be", "aad"}));
       REQUIRE(kb.number_of_classes() == 11);
       REQUIRE(nf.min(1).max(POSITIVE_INFINITY).count() == 11);
-    } else if (std::is_same_v<order, RevRPOCmp>) {
+    } else if (std::is_same_v<order, RevRPOCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 5);
     }
 
@@ -200,7 +200,7 @@ namespace libsemigroups {
 
     using order     = typename TestType::reduction_order;
     using rule_type = typename decltype(kb)::rule_type;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 16);
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
               == std::vector<rule_type>({{"Aa", ""},
@@ -285,7 +285,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 183);
       auto nf = knuth_bendix::normal_forms(kb);
 
@@ -304,7 +304,7 @@ namespace libsemigroups {
                                            "AB",
                                            "Ba",
                                            "BA"}));
-    } else if (std::is_same_v<order, RevRPOCmp>) {
+    } else if (std::is_same_v<order, RevRPOCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 72);
     }
 
@@ -497,7 +497,7 @@ namespace libsemigroups {
             == 211);  // verified with KBMAG
 
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       REQUIRE(kb.gilman_graph().number_of_nodes() == 121);
       auto g = kb.gilman_graph_node_labels();
       std::sort(g.begin(), g.end(), [](std::string x, std::string y) {
@@ -670,7 +670,7 @@ namespace libsemigroups {
     using order     = typename TestType::reduction_order;
     using rule_type = typename decltype(kb)::rule_type;
 
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 6);
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
               == std::vector<rule_type>({{{"Bb", "bB"},
@@ -679,7 +679,7 @@ namespace libsemigroups {
                                           {"BabB", "abab"},
                                           {"Baaba", "abaaB"},
                                           {"Bababa", "ababaB"}}}));
-    } else if (std::is_same_v<order, RevRPOCmp>) {
+    } else if (std::is_same_v<order, RevRPOCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 4);
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
               == std::vector<rule_type>({{"B", "bb"},
@@ -823,7 +823,7 @@ namespace libsemigroups {
     using rule_type = typename decltype(kb)::rule_type;
 
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 24);
 
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
@@ -834,7 +834,7 @@ namespace libsemigroups {
                    {"dc", "y"},  {"dd", "by"},  {"dy", "a"},  {"ya", "b"},
                    {"yb", "by"}, {"yc", "bb"},  {"yd", "a"},  {"yy", "ac"},
                    {"aaa", "y"}, {"aac", "by"}, {"bbb", "a"}, {"bby", "aad"}}));
-    } else if (std::is_same_v<order, RevRPOCmp>) {
+    } else if (std::is_same_v<order, RevRPOCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 5);
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
               == std::vector<rule_type>({{"b", "aaaa"},
@@ -979,7 +979,7 @@ namespace libsemigroups {
     using rule_type = typename decltype(kb)::rule_type;
 
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 14);
       // codespell:begin-ignore
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
@@ -998,7 +998,7 @@ namespace libsemigroups {
                                           {"baabba", "abbaab"},
                                           {"bbaabb", "abba"}}}));
       // codespell:end-ignore
-    } else if (std::is_same_v<order, RevRPOCmp>) {
+    } else if (std::is_same_v<order, RevRPOCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 11);
       // codespell:begin-ignore
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
@@ -1258,9 +1258,9 @@ namespace libsemigroups {
 
     knuth_bendix::by_overlap_length(kb);
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 11);
-    } else if (std::is_same_v<order, RevRPOCmp>) {
+    } else if (std::is_same_v<order, RevRPOCmp<>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 5);
     }
     REQUIRE(kb.rewriting_system().confluent());
@@ -1342,7 +1342,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 22);
 
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       // codespell:begin-ignore
       REQUIRE((knuth_bendix::normal_forms(kb) | to_vector())
               == std::vector<std::string>(
@@ -1350,7 +1350,7 @@ namespace libsemigroups {
                    "AC", "AD",  "AY",  "AF",  "BA",  "BD", "BY", "CY",
                    "DB", "ABA", "ABD", "ABY", "ACY", "ADB"}));
       // codespell:end-ignore
-    } else if (std::is_same_v<order, RevRPOCmp>) {
+    } else if (std::is_same_v<order, RevRPOCmp<>>) {
       REQUIRE((knuth_bendix::normal_forms(kb) | to_vector())
               == std::vector<std::string>(
                   {"",           "A",          "B",         "AB",
@@ -1576,7 +1576,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 24);
 
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
       REQUIRE(knuth_bendix::reduce(kb, "dcb") == "cd");
       REQUIRE(knuth_bendix::reduce(kb, "dca") == "cd");
       REQUIRE(knuth_bendix::reduce(kb, "da") == "d");

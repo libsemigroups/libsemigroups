@@ -16,17 +16,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains TODO
+// This file contains some wrapped iterator classes that can be used to convert
+// between, say, std::string::iterator and word_type::iterator.
 
 #ifndef LIBSEMIGROUPS_DETAIL_CITOW_HPP_
 #define LIBSEMIGROUPS_DETAIL_CITOW_HPP_
 
 #include <cstddef>   // for size_t
-#include <iterator>  // for pair
+#include <iterator>  // for bidirectional_iterator_tag
 
 #include "libsemigroups/types.hpp"  // for letter_type
 
 namespace libsemigroups {
+
+  template <typename Word>
+  class Alphabet;
+
   namespace detail {
     // The following is a class for wrapping iterators. This is used by the
     // member functions that accept iterators (that point at words that might
@@ -34,11 +39,11 @@ namespace libsemigroups {
     // pointed at into word_types, and in the class itow, to allow assignment of
     // these values too.
     // CITOW = const_iterator_to_word
-    template <typename Thing, typename Iterator>
+    template <typename Word, typename Iterator>
     class citow {
      protected:
-      Iterator     _it;
-      Thing const* _ptr;
+      Iterator              _it;
+      Alphabet<Word> const* _ptr;
 
      public:
       using internal_iterator_type = Iterator;
@@ -52,13 +57,16 @@ namespace libsemigroups {
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::bidirectional_iterator_tag;
 
-      citow(Thing const* tc, Iterator it) : _it(it), _ptr(tc) {}
+      template <typename Thing>
+      citow(Thing const* thing, Iterator it)
+          : _it(it), _ptr(&thing->presentation().alphabet_v4()) {}
+
+      citow(Alphabet<Word> const& alphabet, Iterator it)
+          : _it(it), _ptr(&alphabet) {}
 
       reference operator*() const {
-        return _ptr->presentation().index_no_checks(*_it);
+        return _ptr->index_no_checks(*_it);
       }
-
-      // TODO(1) operator-> ??
 
       bool operator==(citow const& that) const noexcept {
         return _it == that._it;
@@ -125,31 +133,34 @@ namespace libsemigroups {
     // CITOW, for unwrapping word_types (used natively in, say ToddCoxeterImpl,
     // to whatever type is used by ToddCoxeter<Word>)
     // CIFRW = const_iterator_from_word
-    template <typename Thing, typename Iterator>
+    template <typename Word, typename Iterator>
     class cifrw {
      protected:
-      Iterator     _it;
-      Thing const* _ptr;
+      Iterator              _it;
+      Alphabet<Word> const* _ptr;
 
      public:
       using internal_iterator_type = Iterator;
-      using value_type      = typename Thing::native_word_type::value_type;
-      using reference       = value_type;
-      using const_reference = value_type;
-      using const_pointer   = value_type const*;
-      using pointer         = value_type*;
+      using value_type             = typename Word::value_type;
+      using reference              = value_type;
+      using const_reference        = value_type;
+      using const_pointer          = value_type const*;
+      using pointer                = value_type*;
 
       using size_type         = size_t;
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::bidirectional_iterator_tag;
 
-      cifrw(Thing const* tc, Iterator it) : _it(it), _ptr(tc) {}
+      template <typename Thing>
+      cifrw(Thing const* thing, Iterator it)
+          : _it(it), _ptr(&thing->presentation().alphabet_v4()) {}
+
+      cifrw(Alphabet<Word> const& alphabet, Iterator it)
+          : _it(it), _ptr(&alphabet) {}
 
       reference operator*() const {
-        return _ptr->presentation().letter_no_checks(*_it);
+        return _ptr->letter_no_checks(*_it);
       }
-
-      // TODO(1) operator-> ??
 
       bool operator==(cifrw const& that) const noexcept {
         return _it == that._it;
@@ -215,28 +226,29 @@ namespace libsemigroups {
     // itow only differs from citow in the dereference member function
     // returning a (non-const) reference. A proxy is returned instead which
     // permits assignment to an output iterator.
-    template <typename Thing, typename Iterator>
-    class itow : public citow<Thing, Iterator> {
+    template <typename Word, typename Iterator>
+    class itow : public citow<Word, Iterator> {
       // Proxy class for reference to the returned values
       class proxy_ref {
        private:
-        Iterator     _it;
-        Thing const* _ptr;
+        Iterator              _it;
+        Alphabet<Word> const* _ptr;
 
        public:
-        // Constructor from Thing and iterator
-        proxy_ref(Thing const* tc, Iterator it) noexcept : _it(it), _ptr(tc) {}
+        // Constructor from Alphabet* and iterator
+        proxy_ref(Alphabet<Word> const* ptr, Iterator it) noexcept
+            : _it(it), _ptr(ptr) {}
 
         // Assignment operator to allow setting the value via the proxy
         Iterator operator=(letter_type i) noexcept {
-          *_it = _ptr->presentation().letter_no_checks(i);
+          *_it = _ptr->letter_no_checks(i);
           return _it;
         }
 
         // Conversion operator to obtain the letter corresponding to the
         // letter_type
         [[nodiscard]] operator letter_type() const noexcept {
-          return _ptr->presentation().index_no_checks(*_it);
+          return _ptr->index_no_checks(*_it);
         }
       };  // class proxy_ref
 
@@ -254,7 +266,7 @@ namespace libsemigroups {
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::bidirectional_iterator_tag;
 
-      using citow<Thing, Iterator>::citow;
+      using citow<Word, Iterator>::citow;
 
       reference operator*() {
         return reference(this->_ptr, this->_it);
@@ -262,33 +274,34 @@ namespace libsemigroups {
 
       // TODO(1) probably require more of these
       itow& operator++() {
-        citow<Thing, Iterator>::operator++();
+        citow<Word, Iterator>::operator++();
         return *this;
       }
     };  // class itow
 
-    template <typename Thing, typename Iterator>
-    class ifrw : public cifrw<Thing, Iterator> {
+    template <typename Word, typename Iterator>
+    class ifrw : public cifrw<Word, Iterator> {
       // Proxy class for reference to the returned values
       class proxy_ref {
        private:
-        Iterator     _it;
-        Thing const* _ptr;
+        Iterator              _it;
+        Alphabet<Word> const* _ptr;
 
        public:
-        // Constructor from Thing and iterator
-        proxy_ref(Thing const* tc, Iterator it) noexcept : _it(it), _ptr(tc) {}
+        // Constructor from Word and iterator
+        proxy_ref(Alphabet<Word> const* ptr, Iterator it) noexcept
+            : _it(it), _ptr(ptr) {}
 
         // Assignment operator to allow setting the value via the proxy
         Iterator operator=(letter_type i) noexcept {
-          *_it = _ptr->presentation().index_no_checks(i);
+          *_it = _ptr->index_no_checks(i);
           return _it;
         }
 
         // Conversion operator to obtain the letter corresponding to the
         // letter_type
         [[nodiscard]] operator letter_type() const noexcept {
-          return _ptr->presentation().letter_no_checks(*_it);
+          return _ptr->letter_no_checks(*_it);
         }
       };  // class proxy_ref
 
@@ -306,7 +319,7 @@ namespace libsemigroups {
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::bidirectional_iterator_tag;
 
-      using cifrw<Thing, Iterator>::cifrw;
+      using cifrw<Word, Iterator>::cifrw;
 
       reference operator*() {
         return reference(this->_ptr, this->_it);
@@ -314,22 +327,26 @@ namespace libsemigroups {
 
       // TODO(1) probably require more of these
       ifrw& operator++() {
-        cifrw<Thing, Iterator>::operator++();
+        cifrw<Word, Iterator>::operator++();
         return *this;
       }
     };  // class itow
 
-    template <typename Iterator, typename Thing>
-    citow(Thing const*, Iterator) -> citow<Thing, Iterator>;
+    template <typename Thing, typename Iterator>
+    citow(Thing const*, Iterator)
+        -> citow<typename Thing::native_word_type, Iterator>;
 
-    template <typename Iterator, typename Thing>
-    cifrw(Thing const*, Iterator) -> cifrw<Thing, Iterator>;
+    template <typename Thing, typename Iterator>
+    itow(Thing const*, Iterator)
+        -> itow<typename Thing::native_word_type, Iterator>;
 
-    template <typename Iterator, typename Thing>
-    itow(Thing const*, Iterator) -> itow<Thing, Iterator>;
+    template <typename Thing, typename Iterator>
+    cifrw(Thing const*, Iterator)
+        -> cifrw<typename Thing::native_word_type, Iterator>;
 
-    template <typename Iterator, typename Thing>
-    ifrw(Thing const*, Iterator) -> ifrw<Thing, Iterator>;
+    template <typename Thing, typename Iterator>
+    ifrw(Thing const*, Iterator)
+        -> ifrw<typename Thing::native_word_type, Iterator>;
 
   }  // namespace detail
 }  // namespace libsemigroups
