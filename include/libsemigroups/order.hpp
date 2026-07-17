@@ -1868,6 +1868,38 @@ namespace libsemigroups {
                                           Iterator                   first2,
                                           Iterator                   last2);
 
+  //! \brief Compare two ranges using the wreath-product ordering without
+  //! checks and with a specified alphabet.
+  //!
+  //! This overload is the same as
+  //! \ref wreath_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator), except that letters are mapped to indices using
+  //! \p alphabet.
+  //!
+  //! \tparam Word the type of words for \p alphabet.
+  //! \tparam Iterator the type of iterators that are the arguments.
+  //!
+  //! \param alphabet the alphabet used to map letters to level indices.
+  //! \param levels the level of each generator.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is less
+  //! than the range `[first2, last2)` with respect to the wreath-product
+  //! ordering, and \c false otherwise.
+  //!
+  //! \warning It is not checked that the letters belong to \p alphabet or
+  //! that their indices are valid indices into \p levels.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool wreath_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                          std::vector<size_t> const& levels,
+                                          Iterator                   first1,
+                                          Iterator                   last1,
+                                          Iterator                   first2,
+                                          Iterator                   last2);
+
   //! \brief Compare two objects of the same type using
   //! \ref wreath_cmp_no_checks without checks.
   //!
@@ -1914,6 +1946,30 @@ namespace libsemigroups {
         levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
+  //! \brief Compare two objects using the wreath-product ordering without
+  //! checks and with a specified alphabet.
+  //!
+  //! \tparam Word the type of the objects and the alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to level indices.
+  //! \param levels the level of each generator.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to the wreath-product ordering, and \c false otherwise.
+  //!
+  //! \warning It is not checked that the letters in \p x and \p y belong to
+  //! \p alphabet or that their indices are valid indices into \p levels.
+  template <typename Word>
+  [[nodiscard]] bool wreath_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                          std::vector<size_t> const& levels,
+                                          Word const&                x,
+                                          Word const&                y) {
+    return wreath_cmp_no_checks(
+        alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
   //! \brief Compare two ranges using the wreath-product ordering and check
   //! validity.
   //!
@@ -1947,6 +2003,37 @@ namespace libsemigroups {
   //! Iterator, Iterator).
   template <typename Iterator>
   [[nodiscard]] bool wreath_cmp(std::vector<size_t> const& levels,
+                                Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2);
+
+  //! \brief Compare two ranges using the wreath-product ordering, check
+  //! validity, and use a specified alphabet.
+  //!
+  //! This overload is the same as
+  //! \ref wreath_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator), except that letters are mapped to indices using \p alphabet.
+  //!
+  //! \tparam Word the type of words for \p alphabet.
+  //! \tparam Iterator the type of iterators that are the arguments.
+  //!
+  //! \param alphabet the alphabet used to map letters to level indices.
+  //! \param levels the level of each generator.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is less
+  //! than the range `[first2, last2)` with respect to the wreath-product
+  //! ordering, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if a letter does not belong to
+  //! \p alphabet or its index is greater than or equal to `levels.size()`.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool wreath_cmp(Alphabet<Word> const&      alphabet,
+                                std::vector<size_t> const& levels,
                                 Iterator                   first1,
                                 Iterator                   last1,
                                 Iterator                   first2,
@@ -1990,6 +2077,31 @@ namespace libsemigroups {
                                 Thing const&               x,
                                 Thing const&               y) {
     return wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects using the wreath-product ordering, check
+  //! validity, and use a specified alphabet.
+  //!
+  //! \tparam Word the type of the objects and the alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to level indices.
+  //! \param levels the level of each generator.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to the wreath-product ordering, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if a letter in \p x or \p y does not
+  //! belong to \p alphabet or its index is greater than or equal to
+  //! `levels.size()`.
+  template <typename Word>
+  [[nodiscard]] bool wreath_cmp(Alphabet<Word> const&      alphabet,
+                                std::vector<size_t> const& levels,
+                                Word const&                x,
+                                Word const&                y) {
+    return wreath_cmp(
+        alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //////////////////////////////////////////////////////////////////////

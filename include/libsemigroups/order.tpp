@@ -24,54 +24,22 @@ namespace libsemigroups {
   namespace detail {
 
     template <typename Iterator>
-    void throw_if_incompat_weights(std::vector<size_t> const& weights,
-                                   Iterator                   first,
-                                   Iterator                   last) {
-      auto const it = std::find_if(first, last, [&weights](auto letter) {
-        return static_cast<size_t>(letter) >= weights.size();
-      });
-      if (it != last) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "letter value not compatible with weights, expected value in "
-            "[0, {}), found {} in position {}",
-            weights.size(),
-            static_cast<size_t>(*it),
-            std::distance(first, it));
-      }
-    }
-
-    template <typename Iterator>
-    void throw_if_incompat_levels(std::vector<size_t> const& levels,
-                                  Iterator                   first,
-                                  Iterator                   last) {
-      auto const it = std::find_if(first, last, [&levels](auto letter) {
-        return static_cast<size_t>(letter) >= levels.size();
-      });
-      if (it != last) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "letter value not compatible with levels, expected value in "
-            "[0, {}), found {} in position {}",
-            levels.size(),
-            static_cast<size_t>(*it),
-            std::distance(first, it));
-      }
-    }
-
-    template <typename Word, typename Iterator>
-    void throw_if_incompat_weights(Alphabet<Word> const&      alphabet,
-                                   std::vector<size_t> const& weights,
-                                   Iterator                   first,
-                                   Iterator                   last) {
+    void throw_if_incompat_weights_or_levels(
+        std::vector<size_t> const& weights_or_levels,
+        Iterator                   first,
+        Iterator                   last,
+        std::string_view           msg) {
       auto const it
-          = std::find_if(first, last, [&alphabet, &weights](auto letter) {
-              return alphabet.index_no_checks(letter) >= weights.size();
+          = std::find_if(first, last, [&weights_or_levels](auto letter) {
+              return static_cast<size_t>(letter) >= weights_or_levels.size();
             });
       if (it != last) {
         LIBSEMIGROUPS_EXCEPTION(
-            "letter value not compatible with weights, expected value in "
+            "letter value not compatible with {}, expected value in "
             "[0, {}), found {} in position {}",
-            weights.size(),
-            alphabet.index_no_checks(*it),
+            msg,
+            weights_or_levels.size(),
+            static_cast<size_t>(*it),
             std::distance(first, it));
       }
     }
@@ -313,15 +281,51 @@ namespace libsemigroups {
     return word1_smallest;
   }
 
+  template <typename Word, typename Iterator>
+  bool wreath_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                            std::vector<size_t> const& levels,
+                            Iterator                   first1,
+                            Iterator                   last1,
+                            Iterator                   first2,
+                            Iterator                   last2) {
+    return wreath_cmp_no_checks(levels,
+                                detail::citow(alphabet, first1),
+                                detail::citow(alphabet, last1),
+                                detail::citow(alphabet, first2),
+                                detail::citow(alphabet, last2));
+  }
+
   template <typename Iterator>
   bool wreath_cmp(std::vector<size_t> const& levels,
                   Iterator                   first1,
                   Iterator                   last1,
                   Iterator                   first2,
                   Iterator                   last2) {
-    detail::throw_if_incompat_levels(levels, first1, last1);
-    detail::throw_if_incompat_levels(levels, first2, last2);
+    detail::throw_if_incompat_weights_or_levels(
+        levels, first1, last1, "levels");
+    detail::throw_if_incompat_weights_or_levels(
+        levels, first2, last2, "levels");
     return wreath_cmp_no_checks(levels, first1, last1, first2, last2);
+  }
+
+  template <typename Word, typename Iterator>
+  bool wreath_cmp(Alphabet<Word> const&      alphabet,
+                  std::vector<size_t> const& levels,
+                  Iterator                   first1,
+                  Iterator                   last1,
+                  Iterator                   first2,
+                  Iterator                   last2) {
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    detail::throw_if_incompat_weights_or_levels(levels,
+                                                detail::citow(alphabet, first1),
+                                                detail::citow(alphabet, last1),
+                                                "levels");
+    detail::throw_if_incompat_weights_or_levels(levels,
+                                                detail::citow(alphabet, first2),
+                                                detail::citow(alphabet, last2),
+                                                "levels");
+    return wreath_cmp_no_checks(alphabet, levels, first1, last1, first2, last2);
   }
 
   template <typename Iterator>
@@ -346,8 +350,10 @@ namespace libsemigroups {
                      Iterator                   last1,
                      Iterator                   first2,
                      Iterator                   last2) {
-    detail::throw_if_incompat_weights(weights, first1, last1);
-    detail::throw_if_incompat_weights(weights, first2, last2);
+    detail::throw_if_incompat_weights_or_levels(
+        weights, first1, last1, "weights");
+    detail::throw_if_incompat_weights_or_levels(
+        weights, first2, last2, "weights");
 
     return wt_lenlex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
@@ -379,8 +385,14 @@ namespace libsemigroups {
     alphabet.throw_if_letter_not_in_alphabet(first1, last1);
     alphabet.throw_if_letter_not_in_alphabet(first2, last2);
 
-    detail::throw_if_incompat_weights(alphabet, weights, first1, last1);
-    detail::throw_if_incompat_weights(alphabet, weights, first2, last2);
+    detail::throw_if_incompat_weights_or_levels(weights,
+                                                detail::citow(alphabet, first1),
+                                                detail::citow(alphabet, last1),
+                                                "weights");
+    detail::throw_if_incompat_weights_or_levels(weights,
+                                                detail::citow(alphabet, first2),
+                                                detail::citow(alphabet, last2),
+                                                "weights");
 
     return wt_lenlex_cmp_no_checks(
         alphabet, weights, first1, last1, first2, last2);
@@ -408,8 +420,10 @@ namespace libsemigroups {
                   Iterator                   last1,
                   Iterator                   first2,
                   Iterator                   last2) {
-    detail::throw_if_incompat_weights(weights, first1, last1);
-    detail::throw_if_incompat_weights(weights, first2, last2);
+    detail::throw_if_incompat_weights_or_levels(
+        weights, first1, last1, "weights");
+    detail::throw_if_incompat_weights_or_levels(
+        weights, first2, last2, "weights");
 
     return wt_lex_cmp_no_checks(weights, first1, last1, first2, last2);
   }
@@ -441,8 +455,14 @@ namespace libsemigroups {
     alphabet.throw_if_letter_not_in_alphabet(first1, last1);
     alphabet.throw_if_letter_not_in_alphabet(first2, last2);
 
-    detail::throw_if_incompat_weights(alphabet, weights, first1, last1);
-    detail::throw_if_incompat_weights(alphabet, weights, first2, last2);
+    detail::throw_if_incompat_weights_or_levels(weights,
+                                                detail::citow(alphabet, first1),
+                                                detail::citow(alphabet, last1),
+                                                "weights");
+    detail::throw_if_incompat_weights_or_levels(weights,
+                                                detail::citow(alphabet, first2),
+                                                detail::citow(alphabet, last2),
+                                                "weights");
 
     return wt_lex_cmp_no_checks(
         alphabet, weights, first1, last1, first2, last2);

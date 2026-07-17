@@ -1723,4 +1723,33 @@ namespace libsemigroups {
         "found 2 in position 1");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+                          "060",
+                          "with alphabet",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg = ReportGuard(false);
+    Alphabet            alphabet("ba"s);
+    std::vector<size_t> levels = {0, 0};
+    auto                b      = "b"s;
+    auto                a      = "a"s;
+
+    REQUIRE(wreath_cmp_no_checks(alphabet, levels, b, a));
+    REQUIRE(wreath_cmp_no_checks(
+        alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(wreath_cmp(alphabet, levels, b, a));
+    REQUIRE(wreath_cmp(
+        alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(!wreath_cmp(alphabet, levels, a, b));
+
+    std::vector<size_t> short_levels = {0};
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = wreath_cmp(alphabet, short_levels, a, b),
+        "letter value not compatible with levels, expected value in [0, 1), "
+        "found 1 in position 0");
+    REQUIRE_THROWS_AS(wreath_cmp(alphabet, levels, "c"s, b),
+                      LibsemigroupsException);
+  }
+
 }  // namespace libsemigroups
