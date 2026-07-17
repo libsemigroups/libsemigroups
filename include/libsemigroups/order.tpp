@@ -54,20 +54,6 @@ namespace libsemigroups {
           });
     }
 
-    template <typename Word, typename Iterator>
-    [[nodiscard]] size_t weight(Alphabet<Word> const&      alphabet,
-                                std::vector<size_t> const& weights,
-                                Iterator                   first,
-                                Iterator                   last) {
-      return std::accumulate(
-          first,
-          last,
-          size_t(0),
-          [&alphabet, &weights](size_t sum, auto letter) {
-            return sum + weights[alphabet.index_no_checks(letter)];
-          });
-    }
-
     template <typename Word>
     void throw_if_incompat_weights_or_levels(
         Alphabet<Word> const&      alphabet,
@@ -368,8 +354,12 @@ namespace libsemigroups {
                                Iterator                   last1,
                                Iterator                   first2,
                                Iterator                   last2) {
-    size_t const weight1 = detail::weight(alphabet, weights, first1, last1);
-    size_t const weight2 = detail::weight(alphabet, weights, first2, last2);
+    size_t const weight1 = detail::weight(weights,
+                                          detail::citow(alphabet, first1),
+                                          detail::citow(alphabet, last1));
+    size_t const weight2 = detail::weight(weights,
+                                          detail::citow(alphabet, first2),
+                                          detail::citow(alphabet, last2));
 
     if (weight1 != weight2) {
       return weight1 < weight2;
@@ -407,8 +397,8 @@ namespace libsemigroups {
                             Iterator                   last1,
                             Iterator                   first2,
                             Iterator                   last2) {
-    size_t weight1 = detail::weight(weights, first1, last1);
-    size_t weight2 = detail::weight(weights, first2, last2);
+    size_t const weight1 = detail::weight(weights, first1, last1);
+    size_t const weight2 = detail::weight(weights, first2, last2);
 
     if (weight1 != weight2) {
       return weight1 < weight2;
@@ -438,8 +428,12 @@ namespace libsemigroups {
                             Iterator                   last1,
                             Iterator                   first2,
                             Iterator                   last2) {
-    size_t weight1 = detail::weight(alphabet, weights, first1, last1);
-    size_t weight2 = detail::weight(alphabet, weights, first2, last2);
+    size_t const weight1 = detail::weight(weights,
+                                          detail::citow(alphabet, first1),
+                                          detail::citow(alphabet, last1));
+    size_t const weight2 = detail::weight(weights,
+                                          detail::citow(alphabet, first2),
+                                          detail::citow(alphabet, last2));
 
     if (weight1 != weight2) {
       return weight1 < weight2;
