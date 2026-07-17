@@ -1914,7 +1914,83 @@ namespace libsemigroups {
         levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  // TODO(0): checks versions
+  //! \brief Compare two ranges using the wreath-product ordering and check
+  //! validity.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! After checking that every letter in both ranges is a valid index into
+  //! \p levels, this function performs the same comparison as
+  //! \ref wreath_cmp_no_checks.
+  //!
+  //! \tparam Iterator the type of iterators that are the arguments.
+  //!
+  //! \param levels the level of each generator.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is less
+  //! than the range `[first2, last2)` with respect to the wreath-product
+  //! ordering, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either range is greater
+  //! than or equal to `levels.size()`.
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p first1
+  //! and \p last1, and \f$m\f$ is the distance between \p first2 and \p last2.
+  //!
+  //! \sa
+  //! wreath_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator).
+  template <typename Iterator>
+  [[nodiscard]] bool wreath_cmp(std::vector<size_t> const& levels,
+                                Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2);
+
+  //! \brief Compare two objects of the same type using the wreath-product
+  //! ordering and check validity.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! After checking that every letter in both objects is a valid index into
+  //! \p levels, this function performs the same comparison as
+  //! \ref wreath_cmp_no_checks.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param levels the level of each generator.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to the wreath-product ordering, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in \p x or \p y is greater
+  //! than or equal to `levels.size()`.
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
+  //! is the length of \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! \end_code_no_test
+  //!
+  //! \sa
+  //! wreath_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! Iterator).
+  template <typename Thing>
+  [[nodiscard]] bool wreath_cmp(std::vector<size_t> const& levels,
+                                Thing const&               x,
+                                Thing const&               y) {
+    return wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
 
   //////////////////////////////////////////////////////////////////////
   // Weighted len-lex

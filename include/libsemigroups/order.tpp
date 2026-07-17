@@ -40,6 +40,23 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Iterator>
+    void throw_if_incompat_levels(std::vector<size_t> const& levels,
+                                  Iterator                   first,
+                                  Iterator                   last) {
+      auto const it = std::find_if(first, last, [&levels](auto letter) {
+        return static_cast<size_t>(letter) >= levels.size();
+      });
+      if (it != last) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "letter value not compatible with levels, expected value in "
+            "[0, {}), found {} in position {}",
+            levels.size(),
+            static_cast<size_t>(*it),
+            std::distance(first, it));
+      }
+    }
+
     template <typename Word, typename Iterator>
     void throw_if_incompat_weights(Alphabet<Word> const&      alphabet,
                                    std::vector<size_t> const& weights,
@@ -294,6 +311,17 @@ namespace libsemigroups {
 
     // Both sequences are fully evaluated
     return word1_smallest;
+  }
+
+  template <typename Iterator>
+  bool wreath_cmp(std::vector<size_t> const& levels,
+                  Iterator                   first1,
+                  Iterator                   last1,
+                  Iterator                   first2,
+                  Iterator                   last2) {
+    detail::throw_if_incompat_levels(levels, first1, last1);
+    detail::throw_if_incompat_levels(levels, first2, last2);
+    return wreath_cmp_no_checks(levels, first1, last1, first2, last2);
   }
 
   template <typename Iterator>

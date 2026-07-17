@@ -1689,4 +1689,38 @@ namespace libsemigroups {
     REQUIRE(move_assigned.weights() == ba_weights);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+                          "058",
+                          "object and iterator overloads",
+                          "[quick][order]") {
+    auto                rg     = ReportGuard(false);
+    std::vector<size_t> levels = {0, 0, 1};
+    word_type           x      = {0, 2};
+    word_type           y      = {1, 2};
+
+    REQUIRE(wreath_cmp(levels, x, y));
+    REQUIRE(!wreath_cmp(levels, y, x));
+    REQUIRE(wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend()));
+    REQUIRE(wreath_cmp(levels, x, y) == wreath_cmp_no_checks(levels, x, y));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+                          "059",
+                          "invalid letters",
+                          "[quick][order]") {
+    auto                rg      = ReportGuard(false);
+    std::vector<size_t> levels  = {0, 1};
+    word_type           valid   = {0, 1};
+    word_type           invalid = {0, 2};
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = wreath_cmp(levels, invalid, valid),
+        "letter value not compatible with levels, expected value in [0, 2), "
+        "found 2 in position 1");
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = wreath_cmp(levels, valid, invalid),
+        "letter value not compatible with levels, expected value in [0, 2), "
+        "found 2 in position 1");
+  }
+
 }  // namespace libsemigroups
