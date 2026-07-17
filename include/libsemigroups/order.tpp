@@ -208,7 +208,7 @@ namespace libsemigroups {
   // which suffix is smaller is repeated until one of the words has been fully
   // consumed. At this point, a final check of the remaining letters is
   // performed, and the result is returned.
-  template <typename Iterator, typename>
+  template <typename Iterator>
   [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
                                           Iterator                   first1,
                                           Iterator                   last1,

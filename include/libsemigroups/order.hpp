@@ -32,6 +32,7 @@
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <numeric>           // for accumulate
+#include <tuple>             // for std::tie
 #include <type_traits>       // for enable_if_t
 #include <utility>           // for move
 #include <vector>            // for vector
@@ -1851,34 +1852,28 @@ namespace libsemigroups {
   //! ordering, and \c false otherwise.
   //!
   //! \exceptions
-  //! \libsemigroups_no_except
+  //! \no_libsemigroups_except
   //!
   //! \warning
   //! This function has significantly worse performance than all
   //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
-  template <typename Iterator,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  //!
+  //! \warning No checks on the arguments are performed, and it is required
+  //! that every letter pointed at by the iterators is less than the
+  //! length of \p levels.
+  template <typename Iterator>
   [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
                                           Iterator                   first1,
                                           Iterator                   last1,
                                           Iterator                   first2,
                                           Iterator                   last2);
 
-  template <typename Thing,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
-                                          Thing const&               x,
-                                          Thing const& y) noexcept {
-    return wreath_cmp_no_checks(
-        levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
   template <typename Thing>
   [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
-                                          Thing* const               x,
-                                          Thing* const y) noexcept {
+                                          Thing const&               x,
+                                          Thing const&               y) {
     return wreath_cmp_no_checks(
-        levels, x->cbegin(), x->cend(), y->cbegin(), y->cend());
+        levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   // TODO(0): checks versions
