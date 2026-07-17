@@ -1865,4 +1865,25 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(checked("c"s, "b"s), LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
+                          "064",
+                          "explicit order tests",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    Alphabet            alphabet("bac"s);
+    std::vector<size_t> levels = {1, 1, 0};
+    WreathCmp           cmp{alphabet, levels};
+
+    REQUIRE(cmp("cbcc"s, "ccbc"s));
+    REQUIRE(cmp("ac"s, "ca"s));
+    REQUIRE(cmp("cbac"s, "ccba"s));
+    REQUIRE(cmp("abcc"s, "acbc"s));
+    REQUIRE(cmp("c"s, "aa"s));
+    REQUIRE(cmp("a"s, "cbabc"s));
+    REQUIRE(cmp("abac"s, "acba"s));
+    REQUIRE(cmp("c"s, "cbabac"s));
+    REQUIRE(cmp("cbaba"s, "ababc"s));
+    REQUIRE(cmp("a"s, "ababac"s));
+  }
 }  // namespace libsemigroups
