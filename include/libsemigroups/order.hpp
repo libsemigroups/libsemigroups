@@ -1868,6 +1868,44 @@ namespace libsemigroups {
                                           Iterator                   first2,
                                           Iterator                   last2);
 
+  //! \brief Compare two objects of the same type using
+  //! \ref wreath_cmp_no_checks without checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using the
+  //! wreath-product ordering determined by \p levels.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param levels the level of each generator.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to the wreath-product ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref wreath_cmp_no_checks(std::vector<size_t> const&, Iterator,
+  //! Iterator, Iterator, Iterator).
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
+  //! is the length of \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! wreath_cmp_no_checks(
+  //!   levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! \end_code_no_test
+  //!
+  //! \warning
+  //! No checks on the arguments are performed, and it is required that every
+  //! letter in \p x and \p y is less than the length of \p levels.
+  //!
+  //! \sa
+  //! wreath_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! Iterator, Iterator).
   template <typename Thing>
   [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
                                           Thing const&               x,
