@@ -95,7 +95,7 @@ namespace libsemigroups {
         knd,
         v4::to<Presentation<string_type>>(
             p, [&p](auto x) { return p.index_no_checks(x); }),
-        std::forward<Args>(args)...);
+        ReductionOrder<Default>(std::forward<Args>(args)...));
     _extra_letter_added = false;
     _generating_pairs.clear();
     _presentation = std::move(p);

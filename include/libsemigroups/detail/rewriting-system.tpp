@@ -18,6 +18,20 @@
 namespace libsemigroups::detail {
 
   ////////////////////////////////////////////////////////////////////////
+  // RewritingSystemBaseWithOrder --- Constructors + initializers
+  ////////////////////////////////////////////////////////////////////////
+
+  template <template <typename> typename ReductionOrder>
+  RewritingSystemBaseWithOrder<ReductionOrder>&
+  RewritingSystemBaseWithOrder<ReductionOrder>::init() {
+    RewritingSystemBase::init();
+    if constexpr (order::is_stateful_v<ReductionOrder<Default>>) {
+      _order.init();
+    }
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // RewritingSystemSet --- Constructors + initializers
   ////////////////////////////////////////////////////////////////////////
 
@@ -25,10 +39,9 @@ namespace libsemigroups::detail {
   RewritingSystemSet<ReductionOrder>::~RewritingSystemSet() = default;
 
   template <template <typename> typename ReductionOrder>
-  template <typename... Args>
   RewritingSystemSet<ReductionOrder>&
-  RewritingSystemSet<ReductionOrder>::init(Args&&... args) {
-    RewritingSystemBaseWithOrder_::init(std::forward<Args>(args)...);
+  RewritingSystemSet<ReductionOrder>::init() {
+    RewritingSystemBaseWithOrder_::init();
     _set_rules.clear();
     return *this;
   }
@@ -384,20 +397,18 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   template <template <typename> typename ReductionOrder>
-  template <typename... Args>
-  RewritingSystemTrie<ReductionOrder>::RewritingSystemTrie(Args&&... args)
-      : RewritingSystemBaseWithOrder_(std::forward<Args>(args)...),
+  RewritingSystemTrie<ReductionOrder>::RewritingSystemTrie()
+      : RewritingSystemBaseWithOrder_(),
         _new_rule_trie(),
         _rule_trie(0),
         _ticker_running(false),
         _trie_nodes_visited_indices() {}
 
   template <template <typename> typename ReductionOrder>
-  template <typename... Args>
   RewritingSystemTrie<ReductionOrder>&
-  RewritingSystemTrie<ReductionOrder>::init(Args&&... args) {
+  RewritingSystemTrie<ReductionOrder>::init() {
     // Do nothing to _trie_nodes_visited_indices, or _new_rule_trie
-    RewritingSystemBaseWithOrder_::init(std::forward<Args>(args)...);
+    RewritingSystemBaseWithOrder_::init();
     _rule_trie.init();
     _ticker_running = false;
     return *this;

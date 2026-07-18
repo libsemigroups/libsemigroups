@@ -209,15 +209,8 @@ namespace libsemigroups {
       // Constructors + inits
       ////////////////////////////////////////////////////////////////////////
 
-      template <typename... Args>
-      RewritingSystemBaseWithOrder(Args&&... args)
-          : _order(std::forward<Args>(args)...) {}
-
-      template <typename... Args>
-      RewritingSystemBaseWithOrder& init(Args&&... args) {
-        _order.init(std::forward<Args>(args)...);
-        return *this;
-      }
+      RewritingSystemBaseWithOrder() = default;
+      RewritingSystemBaseWithOrder& init();
 
       RewritingSystemBaseWithOrder(RewritingSystemBaseWithOrder const& that)
           = default;
@@ -240,6 +233,10 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       [[nodiscard]] ReductionOrder<Default> const& order() const noexcept {
+        return _order;
+      }
+
+      [[nodiscard]] ReductionOrder<Default>& order() noexcept {
         return _order;
       }
 
@@ -326,12 +323,8 @@ namespace libsemigroups {
       // Constructors + initializers
       ////////////////////////////////////////////////////////////////////////
 
-      template <typename... Args>
-      RewritingSystemSet(Args&&... args)
-          : RewritingSystemBaseWithOrder_(std::forward<Args>(args)...) {}
-
-      template <typename... Args>
-      RewritingSystemSet& init(Args&&... args);
+      RewritingSystemSet() = default;
+      RewritingSystemSet& init();
 
       RewritingSystemSet(RewritingSystemSet const& that)
           : RewritingSystemSet() {
@@ -441,11 +434,8 @@ namespace libsemigroups {
       // Constructors + initializers
       ////////////////////////////////////////////////////////////////////////
 
-      template <typename... Args>
-      RewritingSystemTrie(Args&&... args);
-
-      template <typename... Args>
-      RewritingSystemTrie& init(Args&&... args);
+      RewritingSystemTrie();
+      RewritingSystemTrie& init();
 
       RewritingSystemTrie(RewritingSystemTrie const& that)
           : RewritingSystemTrie() {

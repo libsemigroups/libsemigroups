@@ -219,34 +219,32 @@ namespace libsemigroups {
 
       ~KnuthBendixImpl();
 
-      template <typename... Args>
+      KnuthBendixImpl(congruence_kind                       knd,
+                      Presentation<native_word_type> const& p);
+
+      KnuthBendixImpl& init(congruence_kind                       knd,
+                            Presentation<native_word_type> const& p);
+
+      KnuthBendixImpl(congruence_kind knd, Presentation<native_word_type>&& p);
+
+      KnuthBendixImpl& init(congruence_kind                  knd,
+                            Presentation<native_word_type>&& p);
+
       KnuthBendixImpl(congruence_kind                       knd,
                       Presentation<native_word_type> const& p,
-                      Args&&... args)
-          : KnuthBendixImpl() {
-        init(knd, p, std::forward<Args>(args)...);
-      }
+                      reduction_order const&                order);
 
-      template <typename... Args>
       KnuthBendixImpl& init(congruence_kind                       knd,
                             Presentation<native_word_type> const& p,
-                            Args&&... args) {
-        // Call rvalue ref init
-        return init(knd, Presentation(p), std::forward<Args>(args)...);
-      }
+                            reduction_order const&                order);
 
-      template <typename... Args>
       KnuthBendixImpl(congruence_kind                  knd,
                       Presentation<native_word_type>&& p,
-                      Args&&... args)
-          : KnuthBendixImpl() {
-        init(knd, std::move(p), std::forward<Args>(args)...);
-      }
+                      reduction_order&&                order);
 
-      template <typename... Args>
       KnuthBendixImpl& init(congruence_kind                  knd,
                             Presentation<native_word_type>&& p,
-                            Args&&... args);
+                            reduction_order&&                order);
 
       // TODO(1) construct/init from kind and KnuthBendixImpl const&, for
       // consistency with ToddCoxeterImpl
