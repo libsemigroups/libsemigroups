@@ -236,8 +236,10 @@ namespace libsemigroups {
         return _order;
       }
 
-      [[nodiscard]] ReductionOrder<Default>& order() noexcept {
-        return _order;
+      template <typename... Args>
+      RewritingSystemBaseWithOrder& emplace_order(Args&&... args) noexcept {
+        _order.init(std::forward<Args>(args)...);
+        return *this;
       }
 
       void reorder(Rule* rule) {
