@@ -525,8 +525,8 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(rewriting_system::add_rule(rws, "aab"_w, "bb"_w),
                         LibsemigroupsException);
       rws.init();
-
-      rws.order().weights({1, 1});
+      // TODO remove emplace_order, and just use order().init() instead
+      rws.emplace_order(std::vector<size_t>({1, 1}));
       rewriting_system::add_rule(rws, "aab"_w, "bb"_w);
       REQUIRE((rws.rules()
                | rx::transform([](auto const& pair) { return rule_type(pair); })
@@ -534,7 +534,7 @@ namespace libsemigroups {
               == std::vector<rule_type>({{{0, 0, 1}, {1, 1}}}));
 
       rws.init();
-      rws.order().weights({1, 3});
+      rws.order().init({1, 3});
       rws.increase_alphabet_size_by(2);
       rewriting_system::add_rule(rws, "aab"_w, "bb"_w);
       REQUIRE((rws.rules()

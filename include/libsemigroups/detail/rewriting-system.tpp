@@ -25,9 +25,7 @@ namespace libsemigroups::detail {
   RewritingSystemBaseWithOrder<ReductionOrder>&
   RewritingSystemBaseWithOrder<ReductionOrder>::init() {
     RewritingSystemBase::init();
-    if constexpr (order::is_stateful_v<ReductionOrder<Default>>) {
-      _order.init();
-    }
+    _order.init();
     return *this;
   }
 

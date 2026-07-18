@@ -901,7 +901,6 @@ namespace libsemigroups {
     REQUIRE(rpo_cmp("bcbabcbbc"s, "acbbabcacb"s));
   }
 
-<<<<<<< HEAD
   LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "041", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 

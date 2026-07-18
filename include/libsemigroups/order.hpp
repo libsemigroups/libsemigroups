@@ -2963,7 +2963,7 @@ namespace libsemigroups {
 
    public:
     //! \brief Deleted default constructor.
-    WtLenLexCmp() = delete;
+    WtLenLexCmp() = default;
 
     //! \brief Copy constructor.
     WtLenLexCmp(WtLenLexCmp const&) = default;
@@ -3279,10 +3279,12 @@ namespace libsemigroups {
    public:
     // TODO rule of 5
 
-    // WtLenLexCmp& init() {
-    //   _weights.clear();
-    //   return *this;
-    // }
+    WtLenLexCmp() = default;
+
+    WtLenLexCmp& init() {
+      _weights.clear();
+      return *this;
+    }
 
     //! \brief Construct from weights vector reference.
     //!
@@ -4554,6 +4556,7 @@ namespace libsemigroups {
     //! if \p Thing has a state, and \c false otherwise.
     //!
     //! \tparam Thing the reduction order type.
+    // TODO rm is_stateful + _v
     template <typename Thing>
     struct is_stateful : std::false_type {};
 

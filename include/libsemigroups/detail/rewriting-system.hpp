@@ -236,8 +236,12 @@ namespace libsemigroups {
         return _order;
       }
 
+      [[nodiscard]] ReductionOrder<Default>& order() noexcept {
+        return _order;
+      }
+
       template <typename... Args>
-      RewritingSystemBaseWithOrder& emplace_order(Args&&... args) noexcept {
+      RewritingSystemBaseWithOrder& emplace_order(Args&&... args) {
         _order.init(std::forward<Args>(args)...);
         return *this;
       }
@@ -413,7 +417,6 @@ namespace libsemigroups {
 
       Trie                                            _new_rule_trie;
       std::function<bool(RewritingSystemTrie const&)> _use_new_rule_trie;
-      ReductionOrder<Default>                         _order;
       Trie                                            _rule_trie;
       bool                                            _ticker_running;
       mutable std::vector<index_type> _trie_nodes_visited_indices;
