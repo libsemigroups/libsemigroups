@@ -474,6 +474,11 @@ namespace libsemigroups {
   //! std::lexicographical_compare.
   template <>
   struct LexCmp<Default> {
+    // TODO doc
+    auto& init() {
+      return *this;
+    };
+
     //! \brief Call operator that compares \p x and \p y using
     //! std::lexicographical_compare.
     //!
@@ -950,6 +955,11 @@ namespace libsemigroups {
   //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator)
   template <>
   struct LenLexCmp<Default> {
+    // TODO doc
+    auto& init() {
+      return *this;
+    }
+
     //! \brief Call operator that compares \p x and \p y using
     //! \ref lenlex_cmp.
     //!
@@ -1350,6 +1360,11 @@ namespace libsemigroups {
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
   template <>
   struct RPOCmp<Default> {
+    // TODO doc
+    auto& init() {
+      return *this;
+    }
+
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rpo_cmp.
     //!
@@ -1758,6 +1773,11 @@ namespace libsemigroups {
   //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
   template <>
   struct RevRPOCmp<Default> {
+    // TODO doc
+    auto& init() {
+      return *this;
+    };
+
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rev_rpo_cmp.
     //!
@@ -3098,7 +3118,7 @@ namespace libsemigroups {
 
    public:
     //! \brief Deleted default constructor.
-    WtLenLexCmpNoChecks() = default;  // TODO undelete other similar versions
+    WtLenLexCmpNoChecks() = delete;
 
     //! \brief Copy constructor.
     WtLenLexCmpNoChecks(WtLenLexCmpNoChecks const&) = default;
@@ -3408,7 +3428,13 @@ namespace libsemigroups {
 
    public:
     WtLenLexCmpNoChecks() = default;
+
     // TODO rule of five
+    // TODO doc, and impl the same for other classes
+    WtLenLexCmpNoChecks& init() {
+      _weights.clear();
+      return *this;
+    }
 
     //! \brief Construct from weights vector reference.
     //!
