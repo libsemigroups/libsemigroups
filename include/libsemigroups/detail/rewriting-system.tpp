@@ -21,11 +21,11 @@ namespace libsemigroups::detail {
   // RewritingSystemBaseWithOrder --- Constructors + initializers
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename ReductionOrder>
+  template <template <typename> typename ReductionOrder>
   RewritingSystemBaseWithOrder<ReductionOrder>&
   RewritingSystemBaseWithOrder<ReductionOrder>::init() {
     RewritingSystemBase::init();
-    if constexpr (order::is_stateful_v<ReductionOrder>) {
+    if constexpr (order::is_stateful_v<ReductionOrder<Default>>) {
       _order.init();
     }
     return *this;

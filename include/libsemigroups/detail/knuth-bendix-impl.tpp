@@ -189,9 +189,9 @@ namespace libsemigroups {
                                            Presentation<native_word_type>&& p) {
       static_assert(
           !order::is_stateful_v<typename RewritingSystem::reduction_order>,
-          "a KnuthBendix object with a stateful ReductionOrder must be "
-          "initialised by specifying an instance of a ReductionOrder.");
-      return init(knd, p, ReductionOrder());
+          "a KnuthBendix object with a stateful reduction_order must be "
+          "initialised by specifying an instance of a reduction_order.");
+      return init(knd, p, reduction_order());
     }
 
     template <typename RewritingSystem>
@@ -210,40 +210,38 @@ namespace libsemigroups {
       return init(knd, Presentation(p));
     }
 
-    template <typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::KnuthBendixImpl(
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::KnuthBendixImpl(
         congruence_kind                       knd,
         Presentation<native_word_type> const& p,
-        ReductionOrder const&                 order)
+        reduction_order const&                order)
         : KnuthBendixImpl() {
       init(knd, p, order);
     }
 
-    template <typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::init(
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>& KnuthBendixImpl<RewritingSystem>::init(
         congruence_kind                       knd,
         Presentation<native_word_type> const& p,
-        ReductionOrder const&                 order) {
+        reduction_order const&                order) {
       // Call rvalue ref init
-      return init(knd, Presentation(p), ReductionOrder(order));
+      return init(knd, Presentation(p), reduction_order(order));
     }
 
-    template <typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::KnuthBendixImpl(
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>::KnuthBendixImpl(
         congruence_kind                  knd,
         Presentation<native_word_type>&& p,
-        ReductionOrder&&                 order)
+        reduction_order&&                order)
         : KnuthBendixImpl() {
       init(knd, std::move(p), std::move(order));
     }
 
-    template <typename RewritingSystem, typename ReductionOrder>
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>&
-    KnuthBendixImpl<RewritingSystem, ReductionOrder>::init(
-        congruence_kind                  knd,
-        Presentation<native_word_type>&& p,
-        ReductionOrder&&                 order) {
+    template <typename RewritingSystem>
+    KnuthBendixImpl<RewritingSystem>&
+    KnuthBendixImpl<RewritingSystem>::init(congruence_kind                  knd,
+                                           Presentation<native_word_type>&& p,
+                                           reduction_order&& order) {
       // TODO(1) assert that the alphabet + rules are good
       // p.throw_if_bad_alphabet_or_rules();
       LIBSEMIGROUPS_ASSERT(presentation::is_normalized(p));

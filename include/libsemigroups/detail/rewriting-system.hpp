@@ -232,11 +232,11 @@ namespace libsemigroups {
       // Public member functions
       ////////////////////////////////////////////////////////////////////////
 
-      [[nodiscard]] ReductionOrder const& order() const noexcept {
+      [[nodiscard]] ReductionOrder<Default> const& order() const noexcept {
         return _order;
       }
 
-      [[nodiscard]] ReductionOrder& order() noexcept {
+      [[nodiscard]] ReductionOrder<Default>& order() noexcept {
         return _order;
       }
 

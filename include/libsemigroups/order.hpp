@@ -3098,7 +3098,7 @@ namespace libsemigroups {
 
    public:
     //! \brief Deleted default constructor.
-    WtLenLexCmpNoChecks() = delete;
+    WtLenLexCmpNoChecks() = default;  // TODO undelete other similar versions
 
     //! \brief Copy constructor.
     WtLenLexCmpNoChecks(WtLenLexCmpNoChecks const&) = default;
@@ -3255,6 +3255,13 @@ namespace libsemigroups {
     std::vector<size_t> _weights;
 
    public:
+    // TODO rule of 5
+
+    WtLenLexCmp& init() {
+      _weights.clear();
+      return *this;
+    }
+
     //! \brief Construct from weights vector reference.
     //!
     //! Constructs a comparison object that stores a copy of the provided
@@ -3373,10 +3380,10 @@ namespace libsemigroups {
   };  // class WtLenLexCmp<Default>
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from weights.
-  WtLenLexCmp(std::vector<size_t> const&) -> WtLenLexCmp<>;
+  WtLenLexCmp(std::vector<size_t> const&)->WtLenLexCmp<>;
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from weights.
-  WtLenLexCmp(std::vector<size_t>&&) -> WtLenLexCmp<>;
+  WtLenLexCmp(std::vector<size_t>&&)->WtLenLexCmp<>;
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from an
   //! alphabet and weights.
@@ -3400,6 +3407,9 @@ namespace libsemigroups {
     std::vector<size_t> _weights;
 
    public:
+    WtLenLexCmpNoChecks() = default;
+    // TODO rule of five
+
     //! \brief Construct from weights vector reference.
     //!
     //! Constructs a comparison object that stores a copy of the provided
@@ -3519,10 +3529,10 @@ namespace libsemigroups {
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
   //! weights.
-  WtLenLexCmpNoChecks(std::vector<size_t> const&) -> WtLenLexCmpNoChecks<>;
+  WtLenLexCmpNoChecks(std::vector<size_t> const&)->WtLenLexCmpNoChecks<>;
   //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
   //! weights.
-  WtLenLexCmpNoChecks(std::vector<size_t>&&) -> WtLenLexCmpNoChecks<>;
+  WtLenLexCmpNoChecks(std::vector<size_t>&&)->WtLenLexCmpNoChecks<>;
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
   //! an alphabet and weights.
@@ -4263,10 +4273,10 @@ namespace libsemigroups {
   };  // class WtLexCmp<Default>
 
   //! \brief Deduction guide for constructing \ref WtLexCmp from weights.
-  WtLexCmp(std::vector<size_t> const&) -> WtLexCmp<>;
+  WtLexCmp(std::vector<size_t> const&)->WtLexCmp<>;
 
   //! \brief Deduction guide for constructing \ref WtLexCmp from weights.
-  WtLexCmp(std::vector<size_t>&&) -> WtLexCmp<>;
+  WtLexCmp(std::vector<size_t>&&)->WtLexCmp<>;
 
   //! \brief Deduction guide for constructing \ref WtLexCmp from an alphabet
   //! and weights.
@@ -4393,10 +4403,10 @@ namespace libsemigroups {
 
   //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from
   //! weights.
-  WtLexCmpNoChecks(std::vector<size_t> const&) -> WtLexCmpNoChecks<>;
+  WtLexCmpNoChecks(std::vector<size_t> const&)->WtLexCmpNoChecks<>;
   //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from
   //! weights.
-  WtLexCmpNoChecks(std::vector<size_t>&&) -> WtLexCmpNoChecks<>;
+  WtLexCmpNoChecks(std::vector<size_t>&&)->WtLexCmpNoChecks<>;
 
   //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from an
   //! alphabet and weights.
@@ -4523,13 +4533,13 @@ namespace libsemigroups {
     //!
     //! Specialization of \ref is_stateful for \ref WtLexCmp.
     template <>
-    struct is_stateful<WtLenLexCmp> : std::true_type {};
+    struct is_stateful<WtLenLexCmp<>> : std::true_type {};
 
     //! \brief Weighted lex order is stateful.
     //!
     //! Specialization of \ref is_stateful for \ref WtLexCmp.
     template <>
-    struct is_stateful<WtLexCmp> : std::true_type {};
+    struct is_stateful<WtLexCmp<>> : std::true_type {};
 
     //! \brief Helper variable template for \ref is_stateful.
     //!

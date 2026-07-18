@@ -144,6 +144,7 @@ namespace libsemigroups {
       using rule_const_reference =
           typename RewritingSystem::rule_const_reference;
       using rewriting_system_type = RewritingSystem;
+      using reduction_order       = typename RewritingSystem::reduction_order;
 
       //////////////////////////////////////////////////////////////////////////
       // Nested classes - public
@@ -231,19 +232,19 @@ namespace libsemigroups {
 
       KnuthBendixImpl(congruence_kind                       knd,
                       Presentation<native_word_type> const& p,
-                      ReductionOrder const&                 order);
+                      reduction_order const&                order);
 
       KnuthBendixImpl& init(congruence_kind                       knd,
                             Presentation<native_word_type> const& p,
-                            ReductionOrder const&                 order);
+                            reduction_order const&                order);
 
       KnuthBendixImpl(congruence_kind                  knd,
                       Presentation<native_word_type>&& p,
-                      ReductionOrder&&                 order);
+                      reduction_order&&                order);
 
       KnuthBendixImpl& init(congruence_kind                  knd,
                             Presentation<native_word_type>&& p,
-                            ReductionOrder&&                 order);
+                            reduction_order&&                order);
 
       // TODO(1) construct/init from kind and KnuthBendixImpl const&, for
       // consistency with ToddCoxeterImpl
