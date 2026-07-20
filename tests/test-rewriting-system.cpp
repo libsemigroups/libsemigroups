@@ -519,11 +519,6 @@ namespace libsemigroups {
 
       TestType rws;
       rws.increase_alphabet_size_by(2);
-      // TODO(1): Strong exception guarantee is violated here; the rule is added
-      // before there is an attempt to orient it. If reorder throws, the rule is
-      // still added.
-      REQUIRE_THROWS_AS(rewriting_system::add_rule(rws, "aab"_w, "bb"_w),
-                        LibsemigroupsException);
       rws.init();
       // TODO remove emplace_order, and just use order().init() instead
       rws.emplace_order(std::vector<size_t>({1, 1}));

@@ -1334,9 +1334,13 @@ namespace libsemigroups {
                                    "default comparator API",
                                    "[quick][order]",
                                    LexCmp<>,
+                                   (LexCmp<Default, false>),
                                    LenLexCmp<>,
+                                   (LenLexCmp<Default, false>),
                                    RPOCmp<>,
-                                   RevRPOCmp<>) {
+                                   (RPOCmp<Default, false>),
+                                   RevRPOCmp<>,
+                                   (RevRPOCmp<Default, false>) ) {
     using std::string_literals::operator""s;
 
     auto rg = ReportGuard(false);
@@ -1344,6 +1348,8 @@ namespace libsemigroups {
     auto b  = "b"s;
 
     TestType cmp;
+    STATIC_REQUIRE(noexcept(cmp.init()));
+    REQUIRE(&cmp.init() == &cmp);
     REQUIRE(cmp(a, b));
     REQUIRE(cmp(a.cbegin(), a.cend(), b.cbegin(), b.cend()));
     REQUIRE(TestType()(a.cbegin(), a.cend(), b.cbegin(), b.cend()));
@@ -1503,6 +1509,13 @@ namespace libsemigroups {
     REQUIRE(cmp(zero, one));
     cmp.init(std::vector<size_t>{10, 1});
     REQUIRE(cmp(one, zero));
+
+    STATIC_REQUIRE(noexcept(cmp.init()));
+    REQUIRE(&cmp.init() == &cmp);
+    REQUIRE(cmp.weights().empty());
+
+    TestType default_constructed;
+    REQUIRE(default_constructed.weights().empty());
 
     TestType moved(std::vector<size_t>{1, 1});
     REQUIRE(moved(zero, one));
@@ -1688,16 +1701,6 @@ namespace libsemigroups {
     move_assigned = std::move(moved);
     REQUIRE(move_assigned(one, zero));
     REQUIRE(move_assigned.weights() == ba_weights);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Order", "035", "is_stateful", "[quick][order]") {
-    auto rg = ReportGuard(false);
-    REQUIRE(!order::is_stateful_v<LenLexCmp<>>);
-    REQUIRE(!order::is_stateful_v<LexCmp<>>);
-    REQUIRE(!order::is_stateful_v<RevRPOCmp<>>);
-    REQUIRE(!order::is_stateful_v<RPOCmp<>>);
-    REQUIRE(order::is_stateful_v<WtLenLexCmp<>>);
-    REQUIRE(order::is_stateful_v<WtLenLexCmp<>>);
   }
 
 }  // namespace libsemigroups

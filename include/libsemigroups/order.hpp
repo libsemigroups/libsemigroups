@@ -19,10 +19,6 @@
 // This file contains the declarations of several functions and structs
 // defining linear orders on words.
 
-// TODO
-// * noexcept
-// * check exception spec in the doc
-
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_
 
@@ -304,6 +300,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! Throws if the corresponding comparison function throws.
+    //! In particular, throws LibsemigroupsException if \c check is \c true
+    //! and a letter in \p x or \p y does not belong to the stored alphabet.
     //!
     //! \complexity
     //! See std::lexicographical_compare.
@@ -334,6 +332,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! Throws if the corresponding comparison function throws.
+    //! In particular, throws LibsemigroupsException if \c check is \c true
+    //! and a letter in either range does not belong to the stored alphabet.
     //!
     //! \complexity
     //! See std::lexicographical_compare.
@@ -376,10 +376,17 @@ namespace libsemigroups {
   //! std::lexicographical_compare.
   template <>
   struct LexCmp<Default, true> {
-    // TODO doc
-    auto& init() {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    LexCmp& init() noexcept {
       return *this;
-    };
+    }
 
     //! \brief Call operator that compares \p x and \p y using
     //! std::lexicographical_compare.
@@ -468,7 +475,15 @@ namespace libsemigroups {
 
   template <>
   struct LexCmp<Default, false> : LexCmp<Default, true> {
-    auto& init() {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    LexCmp& init() noexcept {
       return *this;
     }
   };  // struct LexCmp<Default, false>
@@ -718,6 +733,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! Throws if the corresponding comparison function throws.
+    //! In particular, throws LibsemigroupsException if \c check is \c true
+    //! and a letter in \p x or \p y does not belong to the stored alphabet.
     //!
     //! \complexity
     //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
@@ -739,6 +756,9 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is less than
     //! the second range with respect to this comparison object, and \c false
     //! otherwise.
+    //!
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! either range does not belong to the stored alphabet.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -776,8 +796,15 @@ namespace libsemigroups {
   //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator)
   template <>
   struct LenLexCmp<Default, true> {
-    // TODO doc
-    auto& init() {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    LenLexCmp& init() noexcept {
       return *this;
     }
 
@@ -825,7 +852,15 @@ namespace libsemigroups {
 
   template <>
   struct LenLexCmp<Default, false> : LenLexCmp<Default, true> {
-    auto& init() {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    LenLexCmp& init() noexcept {
       return *this;
     }
   };  // struct LenLexCmp<Default, false>
@@ -1051,6 +1086,9 @@ namespace libsemigroups {
     //!
     //! \returns The boolean value \c true if \p x is less than \p y with
     //! respect to the recursive path ordering, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! \p x or \p y does not belong to the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       if constexpr (check) {
         return rpo_cmp(_alphabet, x, y);
@@ -1069,6 +1107,9 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is less than
     //! the second range with respect to this comparison object, and \c false
     //! otherwise.
+    //!
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! either range does not belong to the stored alphabet.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -1107,8 +1148,15 @@ namespace libsemigroups {
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
   template <>
   struct RPOCmp<Default, true> {
-    // TODO doc
-    auto& init() {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    RPOCmp& init() noexcept {
       return *this;
     }
 
@@ -1143,18 +1191,29 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is less than
     //! the second range with respect to this comparison object, and \c false
     //! otherwise.
+    //!
+    //! \exceptions
+    //! \noexcept
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
                                   Iterator first2,
-                                  Iterator last2) const {
+                                  Iterator last2) const noexcept {
       return rpo_cmp(first1, last1, first2, last2);
     }
   };  // struct RPOCmp<Default, true>
 
   template <>
   struct RPOCmp<Default, false> : RPOCmp<Default, true> {
-    auto& init() {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    RPOCmp& init() noexcept {
       return *this;
     }
   };  // struct RPOCmp<Default, false>
@@ -1389,6 +1448,9 @@ namespace libsemigroups {
     //!
     //! \returns The boolean value \c true if \p x is less than \p y with
     //! respect to the reversed recursive path ordering, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! \p x or \p y does not belong to the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       if constexpr (check) {
         return rev_rpo_cmp(_alphabet, x, y);
@@ -1407,6 +1469,9 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is less than
     //! the second range with respect to this comparison object, and \c false
     //! otherwise.
+    //!
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! either range does not belong to the stored alphabet.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -1445,10 +1510,17 @@ namespace libsemigroups {
   //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
   template <>
   struct RevRPOCmp<Default, true> {
-    // TODO doc
-    auto& init() {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    RevRPOCmp& init() noexcept {
       return *this;
-    };
+    }
 
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rev_rpo_cmp.
@@ -1481,18 +1553,29 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is less than
     //! the second range with respect to this comparison object, and \c false
     //! otherwise.
+    //!
+    //! \exceptions
+    //! \noexcept
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
                                   Iterator first2,
-                                  Iterator last2) const {
+                                  Iterator last2) const noexcept {
       return rev_rpo_cmp(first1, last1, first2, last2);
     }
   };  // struct RevRPOCmp<Default, true>
 
   template <>
   struct RevRPOCmp<Default, false> : RevRPOCmp<Default, true> {
-    auto& init() {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    RevRPOCmp& init() noexcept {
       return *this;
     }
   };  // struct RevRPOCmp<Default, false>
@@ -2638,8 +2721,11 @@ namespace libsemigroups {
     std::vector<size_t> _weights;
 
    public:
-    //! \brief Deleted default constructor.
-    WtLenLexCmp() = default;  // TODO update the doc
+    //! \brief Default constructor.
+    //!
+    //! Constructs a comparison object with an empty alphabet and weights
+    //! vector.
+    WtLenLexCmp() = default;
 
     //! \brief Copy constructor.
     WtLenLexCmp(WtLenLexCmp const&) = default;
@@ -2726,8 +2812,8 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is weighted len-lex less
     //! than \p y, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter in \p x or \p y is not in
-    //! the stored alphabet.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! \p x or \p y does not belong to the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return operator()(x.begin(), x.end(), y.begin(), y.end());
     }
@@ -2742,8 +2828,8 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is weighted
     //! len-lex less than the second range, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter in either range is not in
-    //! the stored alphabet.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! either range does not belong to the stored alphabet.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -2790,6 +2876,9 @@ namespace libsemigroups {
   //! standard library containers or algorithms that require a comparison
   //! functor.
   //!
+  //! \tparam check whether to check that letters are valid indices into the
+  //! weights vector.
+  //!
   //! \sa
   //! * wt_lenlex_cmp(std::vector<size_t> const&, Word const&, Word const&)
   //! * wt_lenlex_cmp_no_checks(std::vector<size_t> const&, Word const&,
@@ -2800,11 +2889,35 @@ namespace libsemigroups {
     std::vector<size_t> _weights;
 
    public:
-    // TODO rule of 5
-
+    //! \brief Default constructor.
+    //!
+    //! Constructs a comparison object with an empty weights vector.
     WtLenLexCmp() = default;
 
-    WtLenLexCmp& init() {
+    //! \brief Copy constructor.
+    WtLenLexCmp(WtLenLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    WtLenLexCmp(WtLenLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    WtLenLexCmp& operator=(WtLenLexCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    WtLenLexCmp& operator=(WtLenLexCmp&&) = default;
+
+    //! \brief Destructor.
+    ~WtLenLexCmp() = default;
+
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! Clears the stored weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    WtLenLexCmp& init() noexcept {
       _weights.clear();
       return *this;
     }
@@ -2877,8 +2990,8 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is weighted len-lex less
     //! than \p y, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter is not a valid index into
-    //! the weights vector.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter is
+    //! not a valid index into the weights vector.
     //!
     //! \complexity
     //! See
@@ -2906,8 +3019,8 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is weighted
     //! len-lex less than the second range, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter is not a valid index into
-    //! the weights vector.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter is
+    //! not a valid index into the weights vector.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -3346,8 +3459,8 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is weighted lex less than
     //! \p y, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter in \p x or \p y is not in
-    //! the stored alphabet.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! \p x or \p y does not belong to the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return operator()(x.begin(), x.end(), y.begin(), y.end());
     }
@@ -3362,8 +3475,8 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is weighted lex
     //! less than the second range, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter in either range is not in
-    //! the stored alphabet.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! either range does not belong to the stored alphabet.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -3407,17 +3520,44 @@ namespace libsemigroups {
   //! by applying \ref wt_lex_cmp. It can be used as a template parameter for
   //! standard library containers or algorithms that require a comparison
   //! functor.
+  //!
+  //! \tparam check whether to check that letters are valid indices into the
+  //! weights vector.
   template <bool check>
   class WtLexCmp<Default, check> {
    private:
     std::vector<size_t> _weights;
 
    public:
-    // TODO doc
+    //! \brief Default constructor.
+    //!
+    //! Constructs a comparison object with an empty weights vector.
     WtLexCmp() = default;
-    // TODO rule of 5
 
-    WtLexCmp& init() {
+    //! \brief Copy constructor.
+    WtLexCmp(WtLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    WtLexCmp(WtLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    WtLexCmp& operator=(WtLexCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    WtLexCmp& operator=(WtLexCmp&&) = default;
+
+    //! \brief Destructor.
+    ~WtLexCmp() = default;
+
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! Clears the stored weights vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    WtLexCmp& init() noexcept {
       _weights.clear();
       return *this;
     }
@@ -3486,8 +3626,8 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is weighted lex less
     //! than \p y, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter is not a valid index into
-    //! the weights vector.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter is
+    //! not a valid index into the weights vector.
     //!
     //! \complexity
     //! See:
@@ -3515,8 +3655,8 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is weighted lex
     //! less than the second range, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter is not a valid index into
-    //! the weights vector.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter is
+    //! not a valid index into the weights vector.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -3659,36 +3799,6 @@ namespace libsemigroups {
     //! \tparam Thing the reduction order type.
     template <typename Thing>
     static constexpr bool is_well_founded_v = is_well_founded<Thing>::value;
-
-    //! \brief Helper used to indicate whether or not an order has a state.
-    //!
-    //! This helper has a single static data member \c value which is \c true
-    //! if \p Thing has a state, and \c false otherwise.
-    //!
-    //! \tparam Thing the reduction order type.
-    // TODO rm is_stateful + _v
-    template <typename Thing>
-    struct is_stateful : std::false_type {};
-
-    //! \brief Weighted short-lex order is stateful.
-    //!
-    //! Specialization of \ref is_stateful for \ref WtLexCmp.
-    template <bool check>
-    struct is_stateful<WtLenLexCmp<Default, check>> : std::true_type {};
-
-    //! \brief Weighted lex order is stateful.
-    //!
-    //! Specialization of \ref is_stateful for \ref WtLexCmp.
-    template <bool check>
-    struct is_stateful<WtLexCmp<Default, check>> : std::true_type {};
-
-    //! \brief Helper variable template for \ref is_stateful.
-    //!
-    //! This helper is \c true if \p Thing has a state, and \c false otherwise.
-    //!
-    //! \tparam Thing the reduction order type.
-    template <typename Thing>
-    static constexpr bool is_stateful_v = is_stateful<Thing>::value;
 
   }  // namespace order
 
