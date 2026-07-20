@@ -1478,6 +1478,7 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     using rule_type = typename decltype(kb)::rule_type;
+    // codespell:begin-ignore
     REQUIRE((kb.active_rules() | to_vector())
             == std::vector<rule_type>(
                 {{"aa", ""},       {"abab", "e"},    {"acac", "f"},
@@ -1512,6 +1513,7 @@ namespace libsemigroups {
                  {"ji", "cdcbdb"}, {"dcdf", "jaca"}, {"dj", "cdc"},
                  {"bdbj", "icdc"}, {"daj", "gcdc"},  {"gj", "dacdc"},
                  {"ij", "bdbcdc"}}));
+    // codespell:end-ignore
 
     WtLexCmp cmp{p.alphabet_v4(), weights};
     for (auto const& rule : kb.active_rules()) {
