@@ -374,8 +374,8 @@ namespace libsemigroups {
   //!
   //! \sa
   //! std::lexicographical_compare.
-  template <bool check>
-  struct LexCmp<Default, check> {
+  template <>
+  struct LexCmp<Default, true> {
     // TODO doc
     auto& init() {
       return *this;
@@ -464,7 +464,14 @@ namespace libsemigroups {
       return std::lexicographical_compare(
           x.begin(), x.end(), y.begin(), y.end());
     }
-  };  // struct LexCmp<Default, check>
+  };  // struct LexCmp<Default, true>
+
+  template <>
+  struct LexCmp<Default, false> : LexCmp<Default, true> {
+    auto& init() {
+      return *this;
+    }
+  };  // struct LexCmp<Default, false>
 
   //////////////////////////////////////////////////////////////////////
   // Len-lex
@@ -767,8 +774,8 @@ namespace libsemigroups {
   //!
   //! \sa
   //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <bool check>
-  struct LenLexCmp<Default, check> {
+  template <>
+  struct LenLexCmp<Default, true> {
     // TODO doc
     auto& init() {
       return *this;
@@ -814,7 +821,14 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return lenlex_cmp(first1, last1, first2, last2);
     }
-  };  // struct LenLexCmp<Default, check>
+  };  // struct LenLexCmp<Default, true>
+
+  template <>
+  struct LenLexCmp<Default, false> : LenLexCmp<Default, true> {
+    auto& init() {
+      return *this;
+    }
+  };  // struct LenLexCmp<Default, false>
 
   //////////////////////////////////////////////////////////////////////
   // Recursive path order (RPO)
@@ -1091,8 +1105,8 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <bool check>
-  struct RPOCmp<Default, check> {
+  template <>
+  struct RPOCmp<Default, true> {
     // TODO doc
     auto& init() {
       return *this;
@@ -1136,7 +1150,14 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return rpo_cmp(first1, last1, first2, last2);
     }
-  };  // struct RPOCmp<Default, check>
+  };  // struct RPOCmp<Default, true>
+
+  template <>
+  struct RPOCmp<Default, false> : RPOCmp<Default, true> {
+    auto& init() {
+      return *this;
+    }
+  };  // struct RPOCmp<Default, false>
 
   //////////////////////////////////////////////////////////////////////
   // Reversed recursive path order (RPO)
@@ -1422,8 +1443,8 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <bool check>
-  struct RevRPOCmp<Default, check> {
+  template <>
+  struct RevRPOCmp<Default, true> {
     // TODO doc
     auto& init() {
       return *this;
@@ -1467,7 +1488,14 @@ namespace libsemigroups {
                                   Iterator last2) const {
       return rev_rpo_cmp(first1, last1, first2, last2);
     }
-  };  // struct RevRPOCmp<Default, check>
+  };  // struct RevRPOCmp<Default, true>
+
+  template <>
+  struct RevRPOCmp<Default, false> : RevRPOCmp<Default, true> {
+    auto& init() {
+      return *this;
+    }
+  };  // struct RevRPOCmp<Default, false>
 
   //////////////////////////////////////////////////////////////////////
   // Wreath-product
