@@ -1521,4 +1521,136 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "158",
+                          "MAF: recursive/conder",
+                          "[maf][quick]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("aAbBcdef").contains_empty_word(true);
+
+    presentation::add_rule(p, "aA", "");
+    presentation::add_rule(p, "Aa", "");
+    presentation::add_rule(p, "bB", "");
+    presentation::add_rule(p, "Bb", "");
+    presentation::add_rule(p, "cc", "");
+    presentation::add_rule(p, "dd", "");
+    presentation::add_rule(p, "ee", "");
+    presentation::add_rule(p, "ff", "");
+    presentation::add_rule(p, "aaa", "");
+    presentation::add_rule(p, "bbb", "");
+    presentation::add_rule(p, "acacac", "");
+    presentation::add_rule(p, "adadad", "");
+    presentation::add_rule(p, "aeaeae", "");
+    presentation::add_rule(p, "afafaf", "");
+    presentation::add_rule(p, "bcbcbc", "");
+    presentation::add_rule(p, "bdbdbd", "");
+    presentation::add_rule(p, "bebebe", "");
+    presentation::add_rule(p, "bfbfbf", "");
+    presentation::add_rule(p, "abAcabAc", "");
+    presentation::add_rule(p, "abAdabAd", "");
+    presentation::add_rule(p, "AbaeAbae", "");
+    presentation::add_rule(p, "AbafAbaf", "");
+    presentation::add_rule(p, "baBcbaBc", "");
+    presentation::add_rule(p, "BabdBabd", "");
+    presentation::add_rule(p, "baBebaBe", "");
+    presentation::add_rule(p, "BabfBabf", "");
+
+    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+
+    std::vector<size_t>                       levels = {1, 1, 2, 2, 3, 3, 3, 3};
+    KnuthBendix<std::string, RewritingSystem> kb(
+        congruence_kind::twosided, p, levels);
+
+    kb.run();
+    REQUIRE(kb.rewriting_system().number_of_rules() == 76);
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    using rule_type = typename decltype(kb)::rule_type;
+    // codespell:begin-ignore
+    REQUIRE((kb.active_rules() | to_vector())
+            == std::vector<rule_type>({{"ff", ""},
+                                       {"ee", ""},
+                                       {"dd", ""},
+                                       {"cc", ""},
+                                       {"Bb", ""},
+                                       {"bB", ""},
+                                       {"Aa", ""},
+                                       {"aA", ""},
+                                       {"bb", "B"},
+                                       {"aa", "A"},
+                                       {"BB", "b"},
+                                       {"ebe", "BeB"},
+                                       {"cbc", "BcB"},
+                                       {"AA", "a"},
+                                       {"dad", "AdA"},
+                                       {"cac", "AcA"},
+                                       {"eBe", "beb"},
+                                       {"BAd", "AdabA"},
+                                       {"BAc", "AcabA"},
+                                       {"Baf", "afAba"},
+                                       {"Bae", "aeAba"},
+                                       {"fAf", "afa"},
+                                       {"eAe", "aea"},
+                                       {"bae", "aeABa"},
+                                       {"baf", "afABa"},
+                                       {"bAc", "AcaBA"},
+                                       {"bAd", "AdaBA"},
+                                       {"eae", "AeA"},
+                                       {"ABc", "BcbaB"},
+                                       {"faf", "AfA"},
+                                       {"ABe", "BebaB"},
+                                       {"Abf", "bfBab"},
+                                       {"Abd", "bdBab"},
+                                       {"abd", "bdBAb"},
+                                       {"abf", "bfBAb"},
+                                       {"aBe", "BebAB"},
+                                       {"cBc", "bcb"},
+                                       {"aBc", "BcbAB"},
+                                       {"dAd", "ada"},
+                                       {"cAc", "aca"},
+                                       {"cbac", "abcBaBa"},
+                                       {"dbad", "abadAbaBa"},
+                                       {"fbAf", "AbAfabABA"},
+                                       {"Bac", "abcBaba"},
+                                       {"Abc", "bacAbab"},
+                                       {"abe", "bAeabAb"},
+                                       {"BAf", "AbAfabAbA"},
+                                       {"cabc", "bacAbAb"},
+                                       {"Bf", "abAfabaB"},
+                                       {"fbf", "abAfabab"},
+                                       {"Bad", "abadAbaba"},
+                                       {"babc", "acABAb"},
+                                       {"fabAf", "bfBABA"},
+                                       {"eabAe", "bAeabABA"},
+                                       {"Abe", "abAeabAb"},
+                                       {"BAe", "abAeababA"},
+                                       {"ebAe", "abAeabaBA"},
+                                       {"fAbAf", "bAfabaBA"},
+                                       {"AbAe", "beBaBA"},
+                                       {"BAbAf", "bAfaBaBA"},
+                                       {"dAbad", "bdBaBa"},
+                                       {"babAf", "fbABA"},
+                                       {"Bd", "AbadAbAB"},
+                                       {"dabad", "badAbABa"},
+                                       {"dbd", "AbadAbAb"},
+                                       {"Babc", "bacABAb"},
+                                       {"BabAf", "bfbABA"},
+                                       {"Babad", "badABABa"},
+                                       {"babAe", "AeaBABA"},
+                                       {"abac", "bcBABa"},
+                                       {"Abac", "abcBABa"},
+                                       {"BAbad", "bdbaBa"},
+                                       {"bAbAf", "AfaBaBA"},
+                                       {"babad", "adABABa"},
+                                       {"bAbad", "dbaBa"},
+                                       {"BabAe", "bAeaBABA"}}));
+
+    WreathCmp cmp{p.alphabet_v4(), levels};
+    for (auto const& rule : kb.active_rules()) {
+      REQUIRE(cmp(rule.second, rule.first));
+    }
+    // codespell:end-ignore
+  }
+
 }  // namespace libsemigroups
