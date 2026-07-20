@@ -536,10 +536,38 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  WreathCmp<Word, check>&
+  WreathCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
+                               std::vector<size_t> const& levels) {
+    detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    if (&levels != &_levels) {
+      _levels = levels;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  WreathCmp<Word, check>&
+  WreathCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
+                               std::vector<size_t>&& levels) {
+    detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    if (&levels != &_levels) {
+      _levels = std::move(levels);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
   WtLenLexCmp<Word, check>&
   WtLenLexCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
                                  std::vector<size_t> const& weights) {
-    detail::throw_if_incompat_weights(alphabet, weights);
+    detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
     if (&alphabet != &_alphabet) {
       _alphabet = alphabet;
     }
@@ -553,7 +581,7 @@ namespace libsemigroups {
   WtLenLexCmp<Word, check>&
   WtLenLexCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
                                  std::vector<size_t>&& weights) {
-    detail::throw_if_incompat_weights(alphabet, weights);
+    detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
     if (&alphabet != &_alphabet) {
       _alphabet = std::move(alphabet);
     }
@@ -567,7 +595,7 @@ namespace libsemigroups {
   WtLexCmp<Word, check>&
   WtLexCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
                               std::vector<size_t> const& weights) {
-    detail::throw_if_incompat_weights(alphabet, weights);
+    detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
     if (&alphabet != &_alphabet) {
       _alphabet = alphabet;
     }
@@ -581,7 +609,7 @@ namespace libsemigroups {
   WtLexCmp<Word, check>&
   WtLexCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
                               std::vector<size_t>&& weights) {
-    detail::throw_if_incompat_weights(alphabet, weights);
+    detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
     if (&alphabet != &_alphabet) {
       _alphabet = std::move(alphabet);
     }

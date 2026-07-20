@@ -28,7 +28,8 @@
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <numeric>           // for accumulate
-#include <tuple>             // for std::tie
+#include <string_view>       // for string_view
+#include <tuple>             // for tie
 #include <type_traits>       // for enable_if_t
 #include <utility>           // for move
 #include <vector>            // for vector
@@ -1717,7 +1718,7 @@ namespace libsemigroups {
   //! In the case where each generator has a unique level, this function
   //! produces the same output as \ref rev_rpo_cmp. In the case where each
   //! generator has the same level, this function produces the same output as
-  //! \ref len_lex_cmp.
+  //! \ref lenlex_cmp.
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
@@ -1985,7 +1986,7 @@ namespace libsemigroups {
   }
 
   //////////////////////////////////////////////////////////////////////
-  // WreathCmp/NoChecks
+  // WreathCmp
   //////////////////////////////////////////////////////////////////////
 
   namespace detail {
@@ -1998,12 +1999,8 @@ namespace libsemigroups {
   }  // namespace detail
 
   //! \brief Forward declaration of \ref WreathCmp.
-  template <typename Word = Default>
+  template <typename Word = Default, bool check = true>
   class WreathCmp;
-
-  //! \brief Forward declaration of \ref WreathCmpNoChecks.
-  template <typename Word = Default>
-  class WreathCmpNoChecks;
 
   //! \brief Stateful wreath-product comparison functor.
   //!
@@ -2012,7 +2009,8 @@ namespace libsemigroups {
   //! alphabet and levels vector must have the same size.
   //!
   //! \tparam Word the word type associated with the alphabet.
-  template <typename Word>
+  //! \tparam check whether to check that letters belong to the alphabet.
+  template <typename Word, bool check>
   class WreathCmp {
     Alphabet<Word>      _alphabet;
     std::vector<size_t> _levels;
@@ -2098,8 +2096,8 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is less than \p y, and
     //! \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if a letter in \p x or \p y does not
-    //! belong to the stored alphabet.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! \p x or \p y does not belong to the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
@@ -2114,15 +2112,17 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is less than
     //! the second range, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if a letter in either range does not
-    //! belong to the stored alphabet.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! either range does not belong to the stored alphabet.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
-      _alphabet.throw_if_letter_not_in_alphabet(first1, last1);
-      _alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+      if constexpr (check) {
+        _alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+        _alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+      }
       return wreath_cmp_no_checks(
           _alphabet, _levels, first1, last1, first2, last2);
     }
@@ -2148,152 +2148,51 @@ namespace libsemigroups {
     }
   };  // class WreathCmp
 
-  //! \brief Stateful wreath-product comparison functor without checks.
-  //!
-  //! This class stores an alphabet and a levels vector and compares words by
-  //! applying \ref wreath_cmp_no_checks. The alphabet and levels vector must
-  //! have the same size, but the call operator does not check that letters
-  //! belong to the stored alphabet.
-  //!
-  //! \tparam Word the word type associated with the alphabet.
-  template <typename Word>
-  class WreathCmpNoChecks {
-    Alphabet<Word>      _alphabet;
-    std::vector<size_t> _levels;
-
-   public:
-    //! \brief Deleted default constructor.
-    WreathCmpNoChecks() = delete;
-
-    //! \brief Copy constructor.
-    WreathCmpNoChecks(WreathCmpNoChecks const&) = default;
-
-    //! \brief Move constructor.
-    WreathCmpNoChecks(WreathCmpNoChecks&&) = default;
-
-    //! \brief Copy assignment operator.
-    WreathCmpNoChecks& operator=(WreathCmpNoChecks const&) = default;
-
-    //! \brief Move assignment operator.
-    WreathCmpNoChecks& operator=(WreathCmpNoChecks&&) = default;
-
-    //! \brief Destructor.
-    ~WreathCmpNoChecks() = default;
-
-    //! \brief Construct from an alphabet and levels vector.
-    //!
-    //! \param alphabet the alphabet used to map letters to level indices.
-    //! \param levels the level of each generator.
-    //!
-    //! \throws LibsemigroupsException if \p alphabet and \p levels do not
-    //! have the same size.
-    WreathCmpNoChecks(Alphabet<Word> const&      alphabet,
-                      std::vector<size_t> const& levels)
-        : _alphabet(alphabet), _levels(levels) {
-      detail::throw_if_incompat_weights_or_levels(_alphabet, _levels, "levels");
-    }
-
-    //! \brief Construct from an alphabet rvalue and levels vector rvalue.
-    //!
-    //! \param alphabet the alphabet used to map letters to level indices.
-    //! \param levels the level of each generator.
-    //!
-    //! \throws LibsemigroupsException if \p alphabet and \p levels do not
-    //! have the same size.
-    WreathCmpNoChecks(Alphabet<Word>&& alphabet, std::vector<size_t>&& levels)
-        : _alphabet(std::move(alphabet)), _levels(std::move(levels)) {
-      detail::throw_if_incompat_weights_or_levels(_alphabet, _levels, "levels");
-    }
-
-    //! \brief Reinitialize from an alphabet and levels vector.
-    //!
-    //! \param alphabet the alphabet used to map letters to level indices.
-    //! \param levels the level of each generator.
-    //!
-    //! \returns A reference to \c *this.
-    //!
-    //! \throws LibsemigroupsException if \p alphabet and \p levels do not
-    //! have the same size.
-    WreathCmpNoChecks& init(Alphabet<Word> const&      alphabet,
-                            std::vector<size_t> const& levels);
-
-    //! \brief Reinitialize from an alphabet rvalue and levels vector rvalue.
-    //!
-    //! \param alphabet the alphabet used to map letters to level indices.
-    //! \param levels the level of each generator.
-    //!
-    //! \returns A reference to \c *this.
-    //!
-    //! \throws LibsemigroupsException if \p alphabet and \p levels do not
-    //! have the same size.
-    WreathCmpNoChecks& init(Alphabet<Word>&&      alphabet,
-                            std::vector<size_t>&& levels);
-
-    //! \brief Compare two words using wreath-product order without checks.
-    //!
-    //! \param x const reference to the first word for comparison.
-    //! \param y const reference to the second word for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is less than \p y, and
-    //! \c false otherwise.
-    //!
-    //! \warning It is not checked that letters in \p x or \p y belong to the
-    //! stored alphabet.
-    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return wreath_cmp_no_checks(_alphabet, _levels, x, y);
-    }
-
-    //! \brief Compare two iterator ranges without checks.
-    //!
-    //! \param first1 beginning iterator of first object for comparison.
-    //! \param last1 ending iterator of first object for comparison.
-    //! \param first2 beginning iterator of second object for comparison.
-    //! \param last2 ending iterator of second object for comparison.
-    //!
-    //! \returns The boolean value \c true if the first range is less than
-    //! the second range, and \c false otherwise.
-    //!
-    //! \warning It is not checked that letters in either range belong to the
-    //! stored alphabet.
-    template <typename Iterator>
-    [[nodiscard]] bool operator()(Iterator first1,
-                                  Iterator last1,
-                                  Iterator first2,
-                                  Iterator last2) const {
-      return wreath_cmp_no_checks(
-          _alphabet, _levels, first1, last1, first2, last2);
-    }
-
-    //! \brief Returns the alphabet.
-    //!
-    //! \returns The stored alphabet.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
-      return _alphabet;
-    }
-
-    //! \brief Returns the levels.
-    //!
-    //! \returns The stored levels vector.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] std::vector<size_t> const& levels() const noexcept {
-      return _levels;
-    }
-  };  // class WreathCmpNoChecks
-
   //! \brief Stateful wreath-product comparison functor.
   //!
   //! This specialization stores a levels vector and compares words whose
   //! letters are indices by applying \ref wreath_cmp.
-  template <>
-  class WreathCmp<Default> {
+  //!
+  //! \tparam check whether to check that letters are valid indices into the
+  //! levels vector.
+  template <bool check>
+  class WreathCmp<Default, check> {
     std::vector<size_t> _levels;
 
    public:
+    //! \brief Default constructor.
+    //!
+    //! Constructs a comparison object with an empty levels vector.
+    WreathCmp() = default;
+
+    //! \brief Copy constructor.
+    WreathCmp(WreathCmp const&) = default;
+
+    //! \brief Move constructor.
+    WreathCmp(WreathCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    WreathCmp& operator=(WreathCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    WreathCmp& operator=(WreathCmp&&) = default;
+
+    //! \brief Destructor.
+    ~WreathCmp() = default;
+
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! Clears the stored levels vector.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    WreathCmp& init() noexcept {
+      _levels.clear();
+      return *this;
+    }
+
     //! \brief Construct from a levels vector reference.
     //!
     //! \param levels the level of each generator.
@@ -2334,11 +2233,15 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is less than \p y, and
     //! \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if a letter is not a valid index into
-    //! the levels vector.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter is
+    //! not a valid index into the levels vector.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return wreath_cmp(_levels, x, y);
+      if constexpr (check) {
+        return wreath_cmp(_levels, x, y);
+      } else {
+        return wreath_cmp_no_checks(_levels, x, y);
+      }
     }
 
     //! \brief Compare two iterator ranges using wreath-product order.
@@ -2351,14 +2254,18 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if the first range is less than
     //! the second range, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if a letter is not a valid index into
-    //! the levels vector.
+    //! \throws LibsemigroupsException if \c check is \c true and a letter is
+    //! not a valid index into the levels vector.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
                                   Iterator first2,
                                   Iterator last2) const {
-      return wreath_cmp(_levels, first1, last1, first2, last2);
+      if constexpr (check) {
+        return wreath_cmp(_levels, first1, last1, first2, last2);
+      } else {
+        return wreath_cmp_no_checks(_levels, first1, last1, first2, last2);
+      }
     }
 
     //! \brief Returns the levels.
@@ -2370,7 +2277,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& levels() const noexcept {
       return _levels;
     }
-  };  // class WreathCmp<Default>
+  };  // class WreathCmp<Default, check>
 
   //! \brief Deduction guide from a levels vector reference.
   WreathCmp(std::vector<size_t> const&)->WreathCmp<>;
@@ -2386,110 +2293,6 @@ namespace libsemigroups {
   //! \brief Deduction guide from alphabet and levels vector rvalues.
   template <typename Word>
   WreathCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WreathCmp<Word>;
-
-  //! \brief Stateful wreath-product comparison functor without checks.
-  //!
-  //! This specialization stores a levels vector and compares words whose
-  //! letters are indices by applying \ref wreath_cmp_no_checks.
-  template <>
-  class WreathCmpNoChecks<Default> {
-    std::vector<size_t> _levels;
-
-   public:
-    //! \brief Construct from a levels vector reference.
-    //!
-    //! \param levels the level of each generator.
-    explicit WreathCmpNoChecks(std::vector<size_t> const& levels)
-        : _levels(levels) {}
-
-    //! \brief Construct from a levels vector rvalue reference.
-    //!
-    //! \param levels the level of each generator.
-    explicit WreathCmpNoChecks(std::vector<size_t>&& levels)
-        : _levels(std::move(levels)) {}
-
-    //! \brief Reinitialize from a levels vector reference.
-    //!
-    //! \param levels the level of each generator.
-    //!
-    //! \returns A reference to \c *this.
-    WreathCmpNoChecks& init(std::vector<size_t> const& levels) {
-      _levels = levels;
-      return *this;
-    }
-
-    //! \brief Reinitialize from a levels vector rvalue reference.
-    //!
-    //! \param levels the level of each generator.
-    //!
-    //! \returns A reference to \c *this.
-    WreathCmpNoChecks& init(std::vector<size_t>&& levels) {
-      _levels = std::move(levels);
-      return *this;
-    }
-
-    //! \brief Compare two objects using wreath-product order without checks.
-    //!
-    //! \tparam Word the type of the objects to be compared.
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is less than \p y, and
-    //! \c false otherwise.
-    //!
-    //! \warning It is not checked that letters are valid indices into the
-    //! levels vector.
-    template <typename Word>
-    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return wreath_cmp_no_checks(_levels, x, y);
-    }
-
-    //! \brief Compare two iterator ranges without checks.
-    //!
-    //! \param first1 beginning iterator of first object for comparison.
-    //! \param last1 ending iterator of first object for comparison.
-    //! \param first2 beginning iterator of second object for comparison.
-    //! \param last2 ending iterator of second object for comparison.
-    //!
-    //! \returns The boolean value \c true if the first range is less than
-    //! the second range, and \c false otherwise.
-    //!
-    //! \warning It is not checked that letters are valid indices into the
-    //! levels vector.
-    template <typename Iterator>
-    [[nodiscard]] bool operator()(Iterator first1,
-                                  Iterator last1,
-                                  Iterator first2,
-                                  Iterator last2) const {
-      return wreath_cmp_no_checks(_levels, first1, last1, first2, last2);
-    }
-
-    //! \brief Returns the levels.
-    //!
-    //! \returns The stored levels vector.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] std::vector<size_t> const& levels() const noexcept {
-      return _levels;
-    }
-  };  // class WreathCmpNoChecks<Default>
-
-  //! \brief Deduction guide from a levels vector reference.
-  WreathCmpNoChecks(std::vector<size_t> const&)->WreathCmpNoChecks<>;
-
-  //! \brief Deduction guide from a levels vector rvalue reference.
-  WreathCmpNoChecks(std::vector<size_t>&&)->WreathCmpNoChecks<>;
-
-  //! \brief Deduction guide from an alphabet and levels vector.
-  template <typename Word>
-  WreathCmpNoChecks(Alphabet<Word> const&, std::vector<size_t> const&)
-      -> WreathCmpNoChecks<Word>;
-
-  //! \brief Deduction guide from alphabet and levels vector rvalues.
-  template <typename Word>
-  WreathCmpNoChecks(Alphabet<Word>&&, std::vector<size_t>&&)
-      -> WreathCmpNoChecks<Word>;
 
   //////////////////////////////////////////////////////////////////////
   // Weighted len-lex
@@ -3869,8 +3672,8 @@ namespace libsemigroups {
     //! \brief Wreath-product order is well-founded.
     //!
     //! Specialization of \ref is_well_founded for \ref WreathCmp.
-    template <>
-    struct is_well_founded<WreathCmp<>> : std::true_type {};
+    template <bool check>
+    struct is_well_founded<WreathCmp<Default, check>> : std::true_type {};
 
     //! \brief Weighted short-lex order is well-founded.
     //!

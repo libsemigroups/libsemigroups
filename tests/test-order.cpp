@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <algorithm>  // for is_sorted
+#include <algorithm>  // for is_sorted, sort
 #include <array>      // for array
 #include <cstddef>    // for size_t
 #include <set>        // for set
@@ -1713,6 +1713,306 @@ namespace libsemigroups {
     move_assigned = std::move(moved);
     REQUIRE(move_assigned(one, zero));
     REQUIRE(move_assigned.weights() == ba_weights);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+                          "058",
+                          "object and iterator overloads",
+                          "[quick][order]") {
+    auto                rg     = ReportGuard(false);
+    std::vector<size_t> levels = {0, 0, 1};
+    word_type           x      = {0, 2};
+    word_type           y      = {1, 2};
+
+    REQUIRE(wreath_cmp(levels, x, y));
+    REQUIRE(!wreath_cmp(levels, y, x));
+    REQUIRE(wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend()));
+    REQUIRE(wreath_cmp(levels, x, y) == wreath_cmp_no_checks(levels, x, y));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+                          "059",
+                          "invalid letters",
+                          "[quick][order]") {
+    auto                rg      = ReportGuard(false);
+    std::vector<size_t> levels  = {0, 1};
+    word_type           valid   = {0, 1};
+    word_type           invalid = {0, 2};
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = wreath_cmp(levels, invalid, valid),
+        "letter value not compatible with levels, expected value in [0, 2), "
+        "found 2 in position 1");
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = wreath_cmp(levels, valid, invalid),
+        "letter value not compatible with levels, expected value in [0, 2), "
+        "found 2 in position 1");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+                          "060",
+                          "with alphabet",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg = ReportGuard(false);
+    Alphabet            alphabet("ba"s);
+    std::vector<size_t> levels = {0, 0};
+    auto                b      = "b"s;
+    auto                a      = "a"s;
+
+    REQUIRE(wreath_cmp_no_checks(alphabet, levels, b, a));
+    REQUIRE(wreath_cmp_no_checks(
+        alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(wreath_cmp(alphabet, levels, b, a));
+    REQUIRE(wreath_cmp(
+        alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(!wreath_cmp(alphabet, levels, a, b));
+
+    std::vector<size_t> short_levels = {0};
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = wreath_cmp(alphabet, short_levels, a, b),
+        "letter value not compatible with levels, expected value in [0, 1), "
+        "found 1 in position 0");
+    REQUIRE_THROWS_AS(wreath_cmp(alphabet, levels, "c"s, b),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
+                                   "061",
+                                   "wreath alphabet ctors",
+                                   "[quick][order]",
+                                   WreathCmp<std::string>,
+                                   (WreathCmp<std::string, false>) ) {
+    using std::string_literals::operator""s;
+
+    auto                  rg = ReportGuard(false);
+    Alphabet<std::string> ba("ba"s);
+    Alphabet<std::string> ab("ab"s);
+    std::vector<size_t>   levels = {0, 0};
+    auto                  b      = "b"s;
+    auto                  a      = "a"s;
+
+    TestType from_lvalue(ba, levels);
+    REQUIRE(from_lvalue(b, a));
+    REQUIRE(from_lvalue(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(from_lvalue.alphabet().size() == 2);
+    REQUIRE(from_lvalue.levels() == levels);
+
+    TestType from_rvalue(Alphabet<std::string>("ba"s),
+                         std::vector<size_t>{0, 0});
+    REQUIRE(from_rvalue(b, a));
+
+    TestType copied(from_lvalue);
+    REQUIRE(copied(b, a));
+
+    TestType moved(std::move(copied));
+    REQUIRE(moved(b, a));
+
+    TestType copy_assigned(ab, levels);
+    copy_assigned = from_lvalue;
+    REQUIRE(copy_assigned(b, a));
+
+    TestType move_assigned(ab, levels);
+    move_assigned = std::move(moved);
+    REQUIRE(move_assigned(b, a));
+
+    copy_assigned.init(ab, levels);
+    REQUIRE(!copy_assigned(b, a));
+    copy_assigned.init(Alphabet<std::string>("ba"s), std::vector<size_t>{0, 0});
+    REQUIRE(copy_assigned(b, a));
+
+    std::vector<size_t> short_levels = {0};
+    REQUIRE_EXCEPTION_MSG(
+        static_cast<void>(TestType(ba, short_levels)),
+        "the alphabet and levels must have the same size, but found 2 and 1");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
+                                   "062",
+                                   "wreath default ctors",
+                                   "[quick][order]",
+                                   WreathCmp<>,
+                                   (WreathCmp<Default, false>) ) {
+    auto rg = ReportGuard(false);
+
+    TestType default_constructed;
+    STATIC_REQUIRE(noexcept(default_constructed.init()));
+    REQUIRE(default_constructed.levels().empty());
+
+    std::vector<size_t> levels = {0, 0, 1};
+    word_type           x      = {0, 2};
+    word_type           y      = {1, 2};
+
+    TestType from_lvalue(levels);
+    REQUIRE(from_lvalue(x, y));
+    REQUIRE(from_lvalue(x.cbegin(), x.cend(), y.cbegin(), y.cend()));
+    REQUIRE(from_lvalue.levels() == levels);
+
+    TestType from_rvalue(std::vector<size_t>{0, 0, 1});
+    REQUIRE(from_rvalue(x, y));
+
+    TestType copied(from_lvalue);
+    REQUIRE(copied(x, y));
+
+    TestType moved(std::move(copied));
+    REQUIRE(moved(x, y));
+
+    TestType copy_assigned(std::vector<size_t>{0, 1, 0});
+    copy_assigned = from_lvalue;
+    REQUIRE(copy_assigned(x, y));
+
+    TestType move_assigned(std::vector<size_t>{0, 1, 0});
+    move_assigned = std::move(moved);
+    REQUIRE(move_assigned(x, y));
+
+    copy_assigned.init(levels);
+    REQUIRE(copy_assigned(x, y));
+    copy_assigned.init(std::vector<size_t>{0, 0, 1});
+    REQUIRE(copy_assigned(x, y));
+    REQUIRE(&copy_assigned.init() == &copy_assigned);
+    REQUIRE(copy_assigned.levels().empty());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
+                          "063",
+                          "deduction guides and checks",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                  rg = ReportGuard(false);
+    Alphabet<std::string> alphabet("ba"s);
+    std::vector<size_t>   levels = {0, 0};
+
+    static_assert(std::is_same_v<decltype(WreathCmp(levels)), WreathCmp<>>);
+    static_assert(std::is_same_v<decltype(WreathCmp(alphabet, levels)),
+                                 WreathCmp<std::string>>);
+    static_assert(order::is_well_founded_v<WreathCmp<>>);
+    static_assert(order::is_well_founded_v<WreathCmp<Default, false>>);
+
+    WreathCmp checked(alphabet, levels);
+    REQUIRE_THROWS_AS(checked("c"s, "b"s), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
+                          "064",
+                          "explicit order tests",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    Alphabet            alphabet("bac"s);
+    std::vector<size_t> levels = {1, 1, 0};
+    WreathCmp           cmp{alphabet, levels};
+
+    REQUIRE(cmp("cbcc"s, "ccbc"s));
+    REQUIRE(cmp("ac"s, "ca"s));
+    REQUIRE(cmp("cbac"s, "ccba"s));
+    REQUIRE(cmp("abcc"s, "acbc"s));
+    REQUIRE(cmp("c"s, "aa"s));
+    REQUIRE(cmp("a"s, "cbabc"s));
+    REQUIRE(cmp("abac"s, "acba"s));
+    REQUIRE(cmp("c"s, "cbabac"s));
+    REQUIRE(cmp("cbaba"s, "ababc"s));
+    REQUIRE(cmp("a"s, "ababac"s));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WreathCmp", "065", "total order", "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    Alphabet            alphabet("bac"s);
+    std::vector<size_t> levels = {1, 1, 0};
+    WreathCmp           cmp{alphabet, levels};
+
+    std::vector<std::string> strings{
+        "cbcb"s, "abac"s, "cb"s,   "baac"s, "cccb"s, "cbb"s,  "abb"s,  "cbca"s,
+        "bbb"s,  "cacb"s, "ccba"s, "ccc"s,  "cbbc"s, "b"s,    "bacc"s, "abcb"s,
+        "acab"s, "abc"s,  "cab"s,  "ccbb"s, "bcca"s, "bcab"s, "abcc"s, "cc"s,
+        "aab"s,  "aaac"s, "bbc"s,  "acbb"s, "cbab"s, "acaa"s, "bcc"s,  "caac"s,
+        "aaa"s,  "baab"s, "c"s,    "ccac"s, "babb"s, "cacc"s, "bc"s,   "baa"s,
+        "accc"s, "bbbb"s, "cbaa"s, "bbba"s, "bcbb"s, "bbbc"s, "cbba"s, ""s,
+        "caaa"s, "aaab"s, "bcba"s, "bca"s,  "abba"s, "aaba"s, "aba"s,  "acac"s,
+        "abaa"s, "cbac"s, "bbcc"s, "babc"s, "bcb"s,  "ccaa"s, "ac"s,   "aabc"s,
+        "abbb"s, "bbaa"s, "bb"s,   "cac"s,  "cca"s,  "aac"s,  "bba"s,  "abca"s,
+        "baba"s, "caa"s,  "bbca"s, "aacb"s, "cbcc"s, "cbbb"s, "bcbc"s, "ccbc"s,
+        "bab"s,  "bacb"s, "bbab"s, "aca"s,  "bcaa"s, "aabb"s, "cccc"s, "abbc"s,
+        "caba"s, "a"s,    "ccb"s,  "caab"s, "aa"s,   "acc"s,  "cabc"s, "ab"s,
+        "bbac"s, "accb"s, "abab"s, "aaca"s, "ba"s,   "cabb"s, "acca"s, "acb"s,
+        "ccca"s, "caca"s, "baca"s, "ca"s,   "bbcb"s, "ccab"s, "bccb"s, "aacc"s,
+        "acba"s, "cbc"s,  "bcac"s, "baaa"s, "aaaa"s, "cba"s,  "acbc"s, "bac"s,
+        "bccc"s};
+
+    std::sort(
+        strings.begin(),
+        strings.end(),
+        [&cmp](auto const& lhop, auto const& rhop) { return cmp(lhop, rhop); });
+
+    REQUIRE(strings
+            == std::vector<std::string>(
+                {""s,     "c"s,    "cc"s,   "ccc"s,  "cccc"s, "b"s,    "bc"s,
+                 "bcc"s,  "bccc"s, "cb"s,   "cbc"s,  "cbcc"s, "ccb"s,  "ccbc"s,
+                 "cccb"s, "a"s,    "ac"s,   "acc"s,  "accc"s, "ca"s,   "cac"s,
+                 "cacc"s, "cca"s,  "ccac"s, "ccca"s, "bb"s,   "bbc"s,  "bbcc"s,
+                 "bcb"s,  "bcbc"s, "bccb"s, "cbb"s,  "cbbc"s, "cbcb"s, "ccbb"s,
+                 "ba"s,   "bac"s,  "bacc"s, "bca"s,  "bcac"s, "bcca"s, "cba"s,
+                 "cbac"s, "cbca"s, "ccba"s, "ab"s,   "abc"s,  "abcc"s, "acb"s,
+                 "acbc"s, "accb"s, "cab"s,  "cabc"s, "cacb"s, "ccab"s, "aa"s,
+                 "aac"s,  "aacc"s, "aca"s,  "acac"s, "acca"s, "caa"s,  "caac"s,
+                 "caca"s, "ccaa"s, "bbb"s,  "bbbc"s, "bbcb"s, "bcbb"s, "cbbb"s,
+                 "bba"s,  "bbac"s, "bbca"s, "bcba"s, "cbba"s, "bab"s,  "babc"s,
+                 "bacb"s, "bcab"s, "cbab"s, "baa"s,  "baac"s, "baca"s, "bcaa"s,
+                 "cbaa"s, "abb"s,  "abbc"s, "abcb"s, "acbb"s, "cabb"s, "aba"s,
+                 "abac"s, "abca"s, "acba"s, "caba"s, "aab"s,  "aabc"s, "aacb"s,
+                 "acab"s, "caab"s, "aaa"s,  "aaac"s, "aaca"s, "acaa"s, "caaa"s,
+                 "bbbb"s, "bbba"s, "bbab"s, "bbaa"s, "babb"s, "baba"s, "baab"s,
+                 "baaa"s, "abbb"s, "abba"s, "abab"s, "abaa"s, "aabb"s, "aaba"s,
+                 "aaab"s, "aaaa"s}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
+                          "066",
+                          "generalisation",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    std::vector<std::string> strings{
+        "cbcb"s, "abac"s, "cb"s,   "baac"s, "cccb"s, "cbb"s,  "abb"s,  "cbca"s,
+        "bbb"s,  "cacb"s, "ccba"s, "ccc"s,  "cbbc"s, "b"s,    "bacc"s, "abcb"s,
+        "acab"s, "abc"s,  "cab"s,  "ccbb"s, "bcca"s, "bcab"s, "abcc"s, "cc"s,
+        "aab"s,  "aaac"s, "bbc"s,  "acbb"s, "cbab"s, "acaa"s, "bcc"s,  "caac"s,
+        "aaa"s,  "baab"s, "c"s,    "ccac"s, "babb"s, "cacc"s, "bc"s,   "baa"s,
+        "accc"s, "bbbb"s, "cbaa"s, "bbba"s, "bcbb"s, "bbbc"s, "cbba"s, ""s,
+        "caaa"s, "aaab"s, "bcba"s, "bca"s,  "abba"s, "aaba"s, "aba"s,  "acac"s,
+        "abaa"s, "cbac"s, "bbcc"s, "babc"s, "bcb"s,  "ccaa"s, "ac"s,   "aabc"s,
+        "abbb"s, "bbaa"s, "bb"s,   "cac"s,  "cca"s,  "aac"s,  "bba"s,  "abca"s,
+        "baba"s, "caa"s,  "bbca"s, "aacb"s, "cbcc"s, "cbbb"s, "bcbc"s, "ccbc"s,
+        "bab"s,  "bacb"s, "bbab"s, "aca"s,  "bcaa"s, "aabb"s, "cccc"s, "abbc"s,
+        "caba"s, "a"s,    "ccb"s,  "caab"s, "aa"s,   "acc"s,  "cabc"s, "ab"s,
+        "bbac"s, "accb"s, "abab"s, "aaca"s, "ba"s,   "cabb"s, "acca"s, "acb"s,
+        "ccca"s, "caca"s, "baca"s, "ca"s,   "bbcb"s, "ccab"s, "bccb"s, "aacc"s,
+        "acba"s, "cbc"s,  "bcac"s, "baaa"s, "aaaa"s, "cba"s,  "acbc"s, "bac"s,
+        "bccc"s};
+
+    Alphabet            alphabet("bac"s);
+    std::vector<size_t> levels = {0, 0, 0};
+    WreathCmp           cmp{alphabet, levels};
+
+    std::sort(
+        strings.begin(),
+        strings.end(),
+        [&cmp](auto const& lhop, auto const& rhop) { return cmp(lhop, rhop); });
+
+    REQUIRE(
+        std::is_sorted(strings.begin(), strings.end(), LenLexCmp(alphabet)));
+
+    levels = {0, 1, 2};
+    cmp.init(alphabet, levels);
+    std::sort(
+        strings.begin(),
+        strings.end(),
+        [&cmp](auto const& lhop, auto const& rhop) { return cmp(lhop, rhop); });
+
+    REQUIRE(
+        std::is_sorted(strings.begin(), strings.end(), RevRPOCmp(alphabet)));
   }
 
 }  // namespace libsemigroups

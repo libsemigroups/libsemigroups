@@ -23,6 +23,7 @@
 #include <ostream>      // for basic_ostream
 #include <string>       // for basic_string
 #include <string_view>  // for literals
+#include <type_traits>  // for is_same_v
 #include <utility>      // for pair, forward
 #include <vector>       // for vector, operat...
 
@@ -536,6 +537,28 @@ namespace libsemigroups {
                | rx::transform([](auto const& pair) { return rule_type(pair); })
                | rx::to_vector())
               == std::vector<rule_type>({{{1, 1}, {0, 0, 1}}}));
+    }
+
+    LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
+                                     "018",
+                                     "Wreath",
+                                     "[quick]",
+                                     RewritingSystemSet<WreathCmp>,
+                                     RewritingSystemTrie<WreathCmp>) {
+      auto rg         = ReportGuard(false);
+      using rule_type = std::pair<std::string, std::string>;
+
+      static_assert(std::is_same_v<typename TestType::reduction_order,
+                                   WreathCmp<Default, false>>);
+
+      TestType rws;
+      rws.increase_alphabet_size_by(3);
+      rws.order().init({0, 0, 1});
+      rewriting_system::add_rule(rws, "ac"_w, "bc"_w);
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::to_vector())
+              == std::vector<rule_type>({{{1, 2}, {0, 2}}}));
     }
   }  // namespace detail
 }  // namespace libsemigroups
