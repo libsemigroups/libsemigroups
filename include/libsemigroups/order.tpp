@@ -466,6 +466,76 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  LexCmp<Word, check>&
+  LexCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  LexCmp<Word, check>& LexCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  LenLexCmp<Word, check>&
+  LenLexCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  LenLexCmp<Word, check>&
+  LenLexCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  RPOCmp<Word, check>&
+  RPOCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  RPOCmp<Word, check>& RPOCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  RevRPOCmp<Word, check>&
+  RevRPOCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  RevRPOCmp<Word, check>&
+  RevRPOCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
   WtLenLexCmp<Word, check>&
   WtLenLexCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
                                  std::vector<size_t> const& weights) {

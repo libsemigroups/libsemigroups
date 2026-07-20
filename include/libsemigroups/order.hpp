@@ -284,6 +284,30 @@ namespace libsemigroups {
     explicit LexCmp(Alphabet<Word>&& alphabet)
         : _alphabet(std::move(alphabet)) {}
 
+    //! \brief Reinitialize from an alphabet.
+    //!
+    //! Replaces the stored alphabet with a copy of \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    LexCmp& init(Alphabet<Word> const& alphabet);
+
+    //! \brief Reinitialize from an alphabet rvalue.
+    //!
+    //! Replaces the stored alphabet by moving from \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    LexCmp& init(Alphabet<Word>&& alphabet);
+
     //! \brief Call operator that compares \p x and \p y using
     //! std::lexicographical_compare.
     //!
@@ -720,6 +744,30 @@ namespace libsemigroups {
     explicit LenLexCmp(Alphabet<Word>&& alphabet)
         : _alphabet(std::move(alphabet)) {}
 
+    //! \brief Reinitialize from an alphabet.
+    //!
+    //! Replaces the stored alphabet with a copy of \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    LenLexCmp& init(Alphabet<Word> const& alphabet);
+
+    //! \brief Reinitialize from an alphabet rvalue.
+    //!
+    //! Replaces the stored alphabet by moving from \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    LenLexCmp& init(Alphabet<Word>&& alphabet);
+
     //! \brief Call operator that compares \p x and \p y using
     //! \ref lenlex_cmp.
     //!
@@ -1074,6 +1122,30 @@ namespace libsemigroups {
     //! \param alphabet the alphabet used to compare letters.
     explicit RPOCmp(Alphabet<Word>&& alphabet)
         : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Reinitialize from an alphabet.
+    //!
+    //! Replaces the stored alphabet with a copy of \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    RPOCmp& init(Alphabet<Word> const& alphabet);
+
+    //! \brief Reinitialize from an alphabet rvalue.
+    //!
+    //! Replaces the stored alphabet by moving from \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    RPOCmp& init(Alphabet<Word>&& alphabet);
 
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rpo_cmp.
@@ -1436,6 +1508,30 @@ namespace libsemigroups {
     //! \param alphabet the alphabet used to compare letters.
     explicit RevRPOCmp(Alphabet<Word>&& alphabet)
         : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Reinitialize from an alphabet.
+    //!
+    //! Replaces the stored alphabet with a copy of \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    RevRPOCmp& init(Alphabet<Word> const& alphabet);
+
+    //! \brief Reinitialize from an alphabet rvalue.
+    //!
+    //! Replaces the stored alphabet by moving from \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    RevRPOCmp& init(Alphabet<Word>&& alphabet);
 
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rev_rpo_cmp.

@@ -1447,6 +1447,8 @@ namespace libsemigroups {
                           "157",
                           "coxeter/hermiller2",
                           "[quick][maf]") {
+    auto rg = ReportGuard(false);
+
     using literals::          operator""_p;
     Presentation<std::string> p;
     p.alphabet("jihgfedcba").contains_empty_word(true);

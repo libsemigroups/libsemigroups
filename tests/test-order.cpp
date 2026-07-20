@@ -1388,6 +1388,12 @@ namespace libsemigroups {
     REQUIRE(cmp(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
     REQUIRE(cmp.alphabet().size() == 2);
 
+    REQUIRE(&cmp.init(ab) == &cmp);
+    REQUIRE(cmp(a, b));
+    REQUIRE(&cmp.init(Alphabet<std::string>("ba"s)) == &cmp);
+    REQUIRE(cmp(b, a));
+    REQUIRE(&cmp.init(cmp.alphabet()) == &cmp);
+
     TestType from_rvalue(Alphabet<std::string>("ba"s));
     REQUIRE(from_rvalue(b, a));
     REQUIRE(from_rvalue(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
@@ -1428,6 +1434,12 @@ namespace libsemigroups {
     REQUIRE(cmp(b, a));
     REQUIRE(cmp(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
     REQUIRE(cmp.alphabet().size() == 2);
+
+    REQUIRE(&cmp.init(ab) == &cmp);
+    REQUIRE(cmp(a, b));
+    REQUIRE(&cmp.init(Alphabet<std::string>("ba"s)) == &cmp);
+    REQUIRE(cmp(b, a));
+    REQUIRE(&cmp.init(cmp.alphabet()) == &cmp);
 
     TestType from_rvalue(Alphabet<std::string>("ba"s));
     REQUIRE(from_rvalue(b, a));
