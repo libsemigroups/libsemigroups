@@ -2721,11 +2721,8 @@ namespace libsemigroups {
     std::vector<size_t> _weights;
 
    public:
-    //! \brief Default constructor.
-    //!
-    //! Constructs a comparison object with an empty alphabet and weights
-    //! vector.
-    WtLenLexCmp() = default;
+    //! \brief Deleted default constructor.
+    WtLenLexCmp() = delete;
 
     //! \brief Copy constructor.
     WtLenLexCmp(WtLenLexCmp const&) = default;
