@@ -67,7 +67,7 @@ namespace libsemigroups {
 
   namespace detail {
 
-    template <typename = Default>
+    template <typename = Default, bool = false>
     using NoOrder = ReturnFalse;
 
     using string_type = RewritingSystemTrie<LenLexCmp>::native_word_type;

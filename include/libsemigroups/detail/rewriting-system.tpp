@@ -21,7 +21,7 @@ namespace libsemigroups::detail {
   // RewritingSystemBaseWithOrder --- Constructors + initializers
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemBaseWithOrder<ReductionOrder>&
   RewritingSystemBaseWithOrder<ReductionOrder>::init() {
     RewritingSystemBase::init();
@@ -33,10 +33,10 @@ namespace libsemigroups::detail {
   // RewritingSystemSet --- Constructors + initializers
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemSet<ReductionOrder>::~RewritingSystemSet() = default;
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemSet<ReductionOrder>&
   RewritingSystemSet<ReductionOrder>::init() {
     RewritingSystemBaseWithOrder_::init();
@@ -44,7 +44,7 @@ namespace libsemigroups::detail {
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemSet<ReductionOrder>&
   RewritingSystemSet<ReductionOrder>::operator=(
       RewritingSystemSet const& that) {
@@ -64,7 +64,7 @@ namespace libsemigroups::detail {
   // RewritingSystemSet --- Public member functions
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   template <typename Iterator>
   RewritingSystemSet<ReductionOrder>&
   RewritingSystemSet<ReductionOrder>::add_rule(Iterator first1,
@@ -87,7 +87,7 @@ namespace libsemigroups::detail {
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemSet<ReductionOrder>::reduce() {
     RewritingSystemBase::sort_pending_rules();
 
@@ -145,7 +145,7 @@ namespace libsemigroups::detail {
     return rules_added;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemSet<ReductionOrder>::rewrite(native_word_type& v) {
     reduce();
     rewrite_no_reduce(v);
@@ -155,7 +155,7 @@ namespace libsemigroups::detail {
   // RewritingSystemSet --- Private member functions
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemSet<ReductionOrder>::add_active_rule(Rule* new_rule) {
     // NOTE: unlike add_active_rule in RewritingSystemTrie, we do not reorder
     // new_rule, but in reduce, because we need it ordered correctly
@@ -176,7 +176,7 @@ namespace libsemigroups::detail {
     RewritingSystemBase::set_cached_confluent(tril::unknown);
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   typename RewritingSystemSet<ReductionOrder>::iterator
   RewritingSystemSet<ReductionOrder>::make_active_rule_pending(iterator it) {
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -189,7 +189,7 @@ namespace libsemigroups::detail {
   }
 
   // REWRITE_FROM_LEFT from Sims, p67
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemSet<ReductionOrder>::rewrite_no_reduce(
       native_word_type& v) const {
     size_t const n = Rules::stats().min_length_lhs_rule;
@@ -230,7 +230,7 @@ namespace libsemigroups::detail {
   // Confluence
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemSet<ReductionOrder>::confluent_impl(
       std::atomic_uint64_t& seen) {
     using std::chrono::time_point;
@@ -300,7 +300,7 @@ namespace libsemigroups::detail {
   }
 
   // TODO(1): Remove duplication between this function and confluent_impl
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   std::pair<size_t, size_t>
   RewritingSystemSet<ReductionOrder>::confluence_ratio() {
     reduce();
@@ -365,7 +365,7 @@ namespace libsemigroups::detail {
   // RewritingSystemSet --- Reporting
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemSet<ReductionOrder>::report_checking_confluence(
       std::atomic_uint64_t const&                           seen,
       std::chrono::high_resolution_clock::time_point const& start_time) const {
@@ -394,7 +394,7 @@ namespace libsemigroups::detail {
   // RewritingSystemTrie - constructors + initializers
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>::RewritingSystemTrie()
       : RewritingSystemBaseWithOrder_(),
         _new_rule_trie(),
@@ -402,7 +402,7 @@ namespace libsemigroups::detail {
         _ticker_running(false),
         _trie_nodes_visited_indices() {}
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>&
   RewritingSystemTrie<ReductionOrder>::init() {
     // Do nothing to _trie_nodes_visited_indices, or _new_rule_trie
@@ -412,7 +412,7 @@ namespace libsemigroups::detail {
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>&
   RewritingSystemTrie<ReductionOrder>::operator=(
       RewritingSystemTrie const& that) {
@@ -428,7 +428,7 @@ namespace libsemigroups::detail {
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>::~RewritingSystemTrie() = default;
 
   ////////////////////////////////////////////////////////////////////////
@@ -437,7 +437,7 @@ namespace libsemigroups::detail {
 
   // TODO(1) this is identical in RewritingSystemTrie/Set maybe should be in
   // Base?
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   template <typename Iterator>
   RewritingSystemTrie<ReductionOrder>&
   RewritingSystemTrie<ReductionOrder>::add_rule(Iterator first1,
@@ -459,7 +459,7 @@ namespace libsemigroups::detail {
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::reduce() {
     using aho_corasick_impl::begin_search_no_checks;
     using aho_corasick_impl::end_search_no_checks;
@@ -567,7 +567,7 @@ namespace libsemigroups::detail {
     return rules_added;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::rewrite(native_word_type& v) {
     reduce();
     rewrite_no_reduce(v);
@@ -577,7 +577,7 @@ namespace libsemigroups::detail {
   // RewritingSystemTrie --- Private member functions
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::add_active_rule(Rule* new_rule) {
     // Must check negation here so we can use ReturnFalse to mean "no order"
     LIBSEMIGROUPS_ASSERT(!RewritingSystemBaseWithOrder_::order()(
@@ -588,14 +588,14 @@ namespace libsemigroups::detail {
     RewritingSystemBase::set_cached_confluent(tril::unknown);
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   typename RewritingSystemTrie<ReductionOrder>::iterator
   RewritingSystemTrie<ReductionOrder>::make_active_rule_pending(iterator it) {
     _rule_trie.erase_no_checks((*it)->lhs());
     return Rules::make_active_rule_pending(it);
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::rewrite_no_reduce(
       native_word_type& v) const {
     // fmt::print("Rewriting {} -> ", to_printable(v));
@@ -714,7 +714,7 @@ namespace libsemigroups::detail {
   // TODO(1): Consider moving this into RewriterBase so that it can be used by
   // RewritingSystemSet. This would require making <rewrite_no_reduce> a virtual
   // function, so maybe we don't want to do this.
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::overlap_confluent(
       Rule const*       rule1,
       Rule const*       rule2,
@@ -749,7 +749,7 @@ namespace libsemigroups::detail {
     return false;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::descendants_confluent(
       Rule const* rule1,
       index_type  current_node,
@@ -782,7 +782,7 @@ namespace libsemigroups::detail {
   }
 
   // TODO(1): Remove duplication with descendants_confluent
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   std::pair<size_t, size_t>
   RewritingSystemTrie<ReductionOrder>::number_descendants_confluent(
       Rule const* rule1,
@@ -817,7 +817,7 @@ namespace libsemigroups::detail {
     return confluence_fraction;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::confluent_impl(
       std::atomic_uint64_t& seen) {
     using std::chrono::time_point;
@@ -852,7 +852,7 @@ namespace libsemigroups::detail {
     return true;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   std::pair<size_t, size_t>
   RewritingSystemTrie<ReductionOrder>::confluence_ratio() {
     std::pair<size_t, size_t> confluence_fraction{0, 0};
@@ -885,7 +885,7 @@ namespace libsemigroups::detail {
   // RewritingSystemTrie --- Reporting
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::report_checking_confluence(
       std::atomic_uint64_t const&                           seen,
       std::chrono::high_resolution_clock::time_point const& start_time) const {
@@ -908,7 +908,7 @@ namespace libsemigroups::detail {
     }
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::report_reducing_rules(
       std::atomic_uint64_t const&                           seen,
       std::chrono::high_resolution_clock::time_point const& start_time) const {

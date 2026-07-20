@@ -682,8 +682,8 @@ namespace libsemigroups {
 
     REQUIRE(!RevRPOCmp(alphabet)(u, v));
     REQUIRE(RevRPOCmp(alphabet)(v, u));
-    REQUIRE(!RevRPOCmpNoChecks(alphabet)(u, v));
-    REQUIRE(RevRPOCmpNoChecks(alphabet)(v, u));
+    REQUIRE(!RevRPOCmp<std::string, false>(alphabet)(u, v));
+    REQUIRE(RevRPOCmp<std::string, false>(alphabet)(v, u));
 
     alphabet.init("cd"s);
 
@@ -922,8 +922,8 @@ namespace libsemigroups {
         rpo_cmp_no_checks(alphabet, v.cbegin(), v.cend(), u.cbegin(), u.cend())
         == rpo_cmp_no_checks(alphabet, v, u));
 
-    REQUIRE(!RPOCmpNoChecks(alphabet)(u, v));
-    REQUIRE(RPOCmpNoChecks(alphabet)(v, u));
+    REQUIRE(!RPOCmp<std::string, false>(alphabet)(u, v));
+    REQUIRE(RPOCmp<std::string, false>(alphabet)(v, u));
 
     alphabet.init("cd"s);
 
@@ -1063,8 +1063,8 @@ namespace libsemigroups {
                                     "abbb"s, "abba"s, "abab"s, "abaa"s, "aabb"s,
                                     "aaba"s, "aaab"s, "aaaa"s}));
 
-    REQUIRE(LenLexCmpNoChecks(alphabet)(b, a));
-    REQUIRE(LenLexCmpNoChecks(alphabet)(
+    REQUIRE(LenLexCmp<std::string, false>(alphabet)(b, a));
+    REQUIRE(LenLexCmp<std::string, false>(alphabet)(
         b.cbegin(), b.cend(), a.cbegin(), a.cend()));
 
     alphabet.init("cd"s);
@@ -1286,7 +1286,7 @@ namespace libsemigroups {
                                     "abab"s, "aabb"s, "aaa"s,  "baaa"s, "abaa"s,
                                     "aaba"s, "aaab"s, "aaaa"s}));
 
-    REQUIRE(WtLexCmpNoChecks(alphabet, alphabet_weights)(b, a));
+    REQUIRE(WtLexCmp<std::string, false>(alphabet, alphabet_weights)(b, a));
 
     std::vector<size_t> short_weights = {1};
     REQUIRE_EXCEPTION_MSG(
@@ -1406,10 +1406,10 @@ namespace libsemigroups {
                                    "051",
                                    "alpha no-check API",
                                    "[quick][order]",
-                                   LexCmpNoChecks<std::string>,
-                                   LenLexCmpNoChecks<std::string>,
-                                   RPOCmpNoChecks<std::string>,
-                                   RevRPOCmpNoChecks<std::string>) {
+                                   (LexCmp<std::string, false>),
+                                   (LenLexCmp<std::string, false>),
+                                   (RPOCmp<std::string, false>),
+                                   (RevRPOCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1448,9 +1448,9 @@ namespace libsemigroups {
                                    "weighted alpha API",
                                    "[quick][order]",
                                    WtLenLexCmp<std::string>,
-                                   WtLenLexCmpNoChecks<std::string>,
+                                   (WtLenLexCmp<std::string, false>),
                                    WtLexCmp<std::string>,
-                                   WtLexCmpNoChecks<std::string>) {
+                                   (WtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1484,9 +1484,9 @@ namespace libsemigroups {
                                    "weights-only comparator API",
                                    "[quick][order]",
                                    WtLenLexCmp<>,
-                                   WtLenLexCmpNoChecks<>,
+                                   (WtLenLexCmp<Default, false>),
                                    WtLexCmp<>,
-                                   WtLexCmpNoChecks<>) {
+                                   (WtLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     std::vector<size_t> ba_weights = {10, 1};
@@ -1513,7 +1513,7 @@ namespace libsemigroups {
                                    "wll alpha ctors",  // codespell:ignore
                                    "[quick][order]",
                                    WtLenLexCmp<std::string>,
-                                   WtLenLexCmpNoChecks<std::string>) {
+                                   (WtLenLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1564,7 +1564,7 @@ namespace libsemigroups {
                                    "wll ctors",  // codespell:ignore
                                    "[quick][order]",
                                    WtLenLexCmp<>,
-                                   WtLenLexCmpNoChecks<>) {
+                                   (WtLenLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     std::vector<size_t> ba_weights = {10, 1};
@@ -1604,7 +1604,7 @@ namespace libsemigroups {
                                    "wl alpha ctors",
                                    "[quick][order]",
                                    WtLexCmp<std::string>,
-                                   WtLexCmpNoChecks<std::string>) {
+                                   (WtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1655,7 +1655,7 @@ namespace libsemigroups {
                                    "wl ctors",
                                    "[quick][order]",
                                    WtLexCmp<>,
-                                   WtLexCmpNoChecks<>) {
+                                   (WtLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     std::vector<size_t> ba_weights = {10, 1};

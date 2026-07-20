@@ -63,6 +63,12 @@ namespace libsemigroups {
                 KnuthBendix<std::string, LenLexTrie, LenLexCmp>>);
   static_assert(
       std::is_default_constructible_v<detail::KnuthBendixImpl<LenLexTrie>>);
+  static_assert(
+      std::is_same_v<typename KnuthBendix<std::string>::reduction_order,
+                     LenLexCmp<Default, false>>);
+  static_assert(
+      std::is_same_v<typename detail::KnuthBendixImpl<>::reduction_order,
+                     LenLexCmp<Default, false>>);
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 

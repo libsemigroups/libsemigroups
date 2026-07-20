@@ -198,12 +198,12 @@ namespace libsemigroups {
     // RewritingSystemBaseWithOrder
     ////////////////////////////////////////////////////////////////////////
 
-    template <template <typename> typename ReductionOrder>
+    template <template <typename, bool> typename ReductionOrder>
     class RewritingSystemBaseWithOrder : public RewritingSystemBase {
-      ReductionOrder<Default> _order;
+      ReductionOrder<Default, false> _order;
 
      public:
-      using reduction_order = ReductionOrder<Default>;
+      using reduction_order = ReductionOrder<Default, false>;
 
       ////////////////////////////////////////////////////////////////////////
       // Constructors + inits
@@ -232,11 +232,11 @@ namespace libsemigroups {
       // Public member functions
       ////////////////////////////////////////////////////////////////////////
 
-      [[nodiscard]] ReductionOrder<Default> const& order() const noexcept {
+      [[nodiscard]] reduction_order const& order() const noexcept {
         return _order;
       }
 
-      [[nodiscard]] ReductionOrder<Default>& order() noexcept {
+      [[nodiscard]] reduction_order& order() noexcept {
         return _order;
       }
 
@@ -295,7 +295,7 @@ namespace libsemigroups {
     // RewritingSystemSet
     ////////////////////////////////////////////////////////////////////////
 
-    template <template <typename> typename ReductionOrder>
+    template <template <typename, bool> typename ReductionOrder>
     class RewritingSystemSet
         : public RewritingSystemBaseWithOrder<ReductionOrder> {
       ////////////////////////////////////////////////////////////////////////
@@ -317,13 +317,13 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       using native_word_type     = Rule::native_word_type;
-      using reduction_order      = ReductionOrder<Default>;
+      using reduction_order      = ReductionOrder<Default, false>;
       using rule_const_reference = RewritingSystemBase::rule_const_reference;
 
       template <typename Word>
       using reduction_order_template
           = std::enable_if_t<std::is_same_v<Word, Default>,
-                             ReductionOrder<Default>>;
+                             ReductionOrder<Default, false>>;
 
       ////////////////////////////////////////////////////////////////////////
       // Constructors + initializers
@@ -397,7 +397,7 @@ namespace libsemigroups {
     // RewritingSystemTrie
     ////////////////////////////////////////////////////////////////////////
 
-    template <template <typename> typename ReductionOrder>
+    template <template <typename, bool> typename ReductionOrder>
     class RewritingSystemTrie
         : public RewritingSystemBaseWithOrder<ReductionOrder> {
       ////////////////////////////////////////////////////////////////////////
@@ -428,12 +428,12 @@ namespace libsemigroups {
 
       using native_word_type     = Rule::native_word_type;
       using rule_const_reference = RewritingSystemBase::rule_const_reference;
-      using reduction_order      = ReductionOrder<Default>;
+      using reduction_order      = ReductionOrder<Default, false>;
 
       template <typename Word>
       using reduction_order_template
           = std::enable_if_t<std::is_same_v<Word, Default>,
-                             ReductionOrder<Default>>;
+                             ReductionOrder<Default, false>>;
 
       ////////////////////////////////////////////////////////////////////////
       // Constructors + initializers

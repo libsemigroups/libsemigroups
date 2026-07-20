@@ -1433,9 +1433,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "dc", "");
     presentation::add_rule(p, "ca", "ac");
 
-    // TODO ensure that it's the NoChecks variant that is used by default
-    KnuthBendix<std::string, detail::RewritingSystemTrie<WtLenLexCmpNoChecks>>
-        kb(twosided, p, std::vector<size_t>({2, 2, 2, 2}));
+    KnuthBendix<std::string, detail::RewritingSystemTrie<WtLenLexCmp>> kb(
+        twosided, p, std::vector<size_t>({2, 2, 2, 2}));
 
     REQUIRE(!kb.rewriting_system().confluent());
     kb.run();
