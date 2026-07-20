@@ -22,6 +22,9 @@
 // TODO
 // * noexcept
 // * check exception spec in the doc
+// * remove the NoChecks structs/classes, and instead implement call_no_checks.
+// O/w when constructing a rws, we have to write
+// RewritingSystem<LenLexCmpNoChecks> which sucks
 
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_

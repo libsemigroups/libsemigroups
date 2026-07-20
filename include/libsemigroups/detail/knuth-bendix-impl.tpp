@@ -186,7 +186,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(presentation::is_normalized(p));
       init();
       kind(knd);
-      _rewriting_system.emplace_order(std::forward<Args>(args)...);
+      _rewriting_system.order().init(std::forward<Args>(args)...);
       _presentation = std::move(p);
       init_from_internal_presentation();
       return *this;
