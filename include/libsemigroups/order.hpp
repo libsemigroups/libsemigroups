@@ -3245,13 +3245,13 @@ namespace libsemigroups {
   //! applying \ref wt_lex_cmp with that alphabet and weights vector. The
   //! alphabet and weights vector must have the same size.
   //!
+  //! \tparam Word the word type associated with the alphabet.
+  //! \tparam check whether to check that letters belong to the alphabet.
+  //!
   //! \sa
   //! * wt_lex_cmp(std::vector<size_t> const&, Word const&, Word const&)
   //! * wt_lex_cmp_no_checks(std::vector<size_t> const&, Word const&,
   //! Word const&)
-  //!
-  //! \tparam Word the word type associated with the alphabet.
-  //! \tparam check whether to check that letters belong to the alphabet.
   template <typename Word, bool check>
   class WtLexCmp {
     Alphabet<Word>      _alphabet;
