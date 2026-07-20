@@ -1837,7 +1837,9 @@ namespace libsemigroups {
   //! \cite Holt2018aa, specifically the function `wreath_compare`.
   //!
   //! In the case where each generator has a unique level, this function
-  //! produces the same output as \ref rev_rpo_cmp.
+  //! produces the same output as \ref rev_rpo_cmp. In the case where each
+  //! generator has the same level, this function produces the same output as
+  //! \ref len_lex_cmp.
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!

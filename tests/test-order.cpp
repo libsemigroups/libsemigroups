@@ -16,12 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <array>    // for array
-#include <cstddef>  // for size_t
-#include <set>      // for set
-#include <string>   // for string
-#include <utility>  // for move
-#include <vector>   // for vector
+#include <algorithm>  // for is_sorted
+#include <array>      // for array
+#include <cstddef>    // for size_t
+#include <set>        // for set
+#include <string>     // for string
+#include <utility>    // for move
+#include <vector>     // for vector
 
 #include "libsemigroups/detail/rewriting-system.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -1885,5 +1886,104 @@ namespace libsemigroups {
     REQUIRE(cmp("c"s, "cbabac"s));
     REQUIRE(cmp("cbaba"s, "ababc"s));
     REQUIRE(cmp("a"s, "ababac"s));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WreathCmp", "065", "total order", "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    Alphabet            alphabet("bac"s);
+    std::vector<size_t> levels = {1, 1, 0};
+    WreathCmp           cmp{alphabet, levels};
+
+    std::vector<std::string> strings{
+        "cbcb"s, "abac"s, "cb"s,   "baac"s, "cccb"s, "cbb"s,  "abb"s,  "cbca"s,
+        "bbb"s,  "cacb"s, "ccba"s, "ccc"s,  "cbbc"s, "b"s,    "bacc"s, "abcb"s,
+        "acab"s, "abc"s,  "cab"s,  "ccbb"s, "bcca"s, "bcab"s, "abcc"s, "cc"s,
+        "aab"s,  "aaac"s, "bbc"s,  "acbb"s, "cbab"s, "acaa"s, "bcc"s,  "caac"s,
+        "aaa"s,  "baab"s, "c"s,    "ccac"s, "babb"s, "cacc"s, "bc"s,   "baa"s,
+        "accc"s, "bbbb"s, "cbaa"s, "bbba"s, "bcbb"s, "bbbc"s, "cbba"s, ""s,
+        "caaa"s, "aaab"s, "bcba"s, "bca"s,  "abba"s, "aaba"s, "aba"s,  "acac"s,
+        "abaa"s, "cbac"s, "bbcc"s, "babc"s, "bcb"s,  "ccaa"s, "ac"s,   "aabc"s,
+        "abbb"s, "bbaa"s, "bb"s,   "cac"s,  "cca"s,  "aac"s,  "bba"s,  "abca"s,
+        "baba"s, "caa"s,  "bbca"s, "aacb"s, "cbcc"s, "cbbb"s, "bcbc"s, "ccbc"s,
+        "bab"s,  "bacb"s, "bbab"s, "aca"s,  "bcaa"s, "aabb"s, "cccc"s, "abbc"s,
+        "caba"s, "a"s,    "ccb"s,  "caab"s, "aa"s,   "acc"s,  "cabc"s, "ab"s,
+        "bbac"s, "accb"s, "abab"s, "aaca"s, "ba"s,   "cabb"s, "acca"s, "acb"s,
+        "ccca"s, "caca"s, "baca"s, "ca"s,   "bbcb"s, "ccab"s, "bccb"s, "aacc"s,
+        "acba"s, "cbc"s,  "bcac"s, "baaa"s, "aaaa"s, "cba"s,  "acbc"s, "bac"s,
+        "bccc"s};
+
+    std::sort(
+        strings.begin(),
+        strings.end(),
+        [&cmp](auto const& lhop, auto const& rhop) { return cmp(lhop, rhop); });
+
+    REQUIRE(strings
+            == std::vector<std::string>(
+                {""s,     "c"s,    "cc"s,   "ccc"s,  "cccc"s, "b"s,    "bc"s,
+                 "bcc"s,  "bccc"s, "cb"s,   "cbc"s,  "cbcc"s, "ccb"s,  "ccbc"s,
+                 "cccb"s, "a"s,    "ac"s,   "acc"s,  "accc"s, "ca"s,   "cac"s,
+                 "cacc"s, "cca"s,  "ccac"s, "ccca"s, "bb"s,   "bbc"s,  "bbcc"s,
+                 "bcb"s,  "bcbc"s, "bccb"s, "cbb"s,  "cbbc"s, "cbcb"s, "ccbb"s,
+                 "ba"s,   "bac"s,  "bacc"s, "bca"s,  "bcac"s, "bcca"s, "cba"s,
+                 "cbac"s, "cbca"s, "ccba"s, "ab"s,   "abc"s,  "abcc"s, "acb"s,
+                 "acbc"s, "accb"s, "cab"s,  "cabc"s, "cacb"s, "ccab"s, "aa"s,
+                 "aac"s,  "aacc"s, "aca"s,  "acac"s, "acca"s, "caa"s,  "caac"s,
+                 "caca"s, "ccaa"s, "bbb"s,  "bbbc"s, "bbcb"s, "bcbb"s, "cbbb"s,
+                 "bba"s,  "bbac"s, "bbca"s, "bcba"s, "cbba"s, "bab"s,  "babc"s,
+                 "bacb"s, "bcab"s, "cbab"s, "baa"s,  "baac"s, "baca"s, "bcaa"s,
+                 "cbaa"s, "abb"s,  "abbc"s, "abcb"s, "acbb"s, "cabb"s, "aba"s,
+                 "abac"s, "abca"s, "acba"s, "caba"s, "aab"s,  "aabc"s, "aacb"s,
+                 "acab"s, "caab"s, "aaa"s,  "aaac"s, "aaca"s, "acaa"s, "caaa"s,
+                 "bbbb"s, "bbba"s, "bbab"s, "bbaa"s, "babb"s, "baba"s, "baab"s,
+                 "baaa"s, "abbb"s, "abba"s, "abab"s, "abaa"s, "aabb"s, "aaba"s,
+                 "aaab"s, "aaaa"s}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
+                          "066",
+                          "generalisation",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    std::vector<std::string> strings{
+        "cbcb"s, "abac"s, "cb"s,   "baac"s, "cccb"s, "cbb"s,  "abb"s,  "cbca"s,
+        "bbb"s,  "cacb"s, "ccba"s, "ccc"s,  "cbbc"s, "b"s,    "bacc"s, "abcb"s,
+        "acab"s, "abc"s,  "cab"s,  "ccbb"s, "bcca"s, "bcab"s, "abcc"s, "cc"s,
+        "aab"s,  "aaac"s, "bbc"s,  "acbb"s, "cbab"s, "acaa"s, "bcc"s,  "caac"s,
+        "aaa"s,  "baab"s, "c"s,    "ccac"s, "babb"s, "cacc"s, "bc"s,   "baa"s,
+        "accc"s, "bbbb"s, "cbaa"s, "bbba"s, "bcbb"s, "bbbc"s, "cbba"s, ""s,
+        "caaa"s, "aaab"s, "bcba"s, "bca"s,  "abba"s, "aaba"s, "aba"s,  "acac"s,
+        "abaa"s, "cbac"s, "bbcc"s, "babc"s, "bcb"s,  "ccaa"s, "ac"s,   "aabc"s,
+        "abbb"s, "bbaa"s, "bb"s,   "cac"s,  "cca"s,  "aac"s,  "bba"s,  "abca"s,
+        "baba"s, "caa"s,  "bbca"s, "aacb"s, "cbcc"s, "cbbb"s, "bcbc"s, "ccbc"s,
+        "bab"s,  "bacb"s, "bbab"s, "aca"s,  "bcaa"s, "aabb"s, "cccc"s, "abbc"s,
+        "caba"s, "a"s,    "ccb"s,  "caab"s, "aa"s,   "acc"s,  "cabc"s, "ab"s,
+        "bbac"s, "accb"s, "abab"s, "aaca"s, "ba"s,   "cabb"s, "acca"s, "acb"s,
+        "ccca"s, "caca"s, "baca"s, "ca"s,   "bbcb"s, "ccab"s, "bccb"s, "aacc"s,
+        "acba"s, "cbc"s,  "bcac"s, "baaa"s, "aaaa"s, "cba"s,  "acbc"s, "bac"s,
+        "bccc"s};
+
+    Alphabet            alphabet("bac"s);
+    std::vector<size_t> levels = {0, 0, 0};
+    WreathCmp           cmp{alphabet, levels};
+
+    std::sort(
+        strings.begin(),
+        strings.end(),
+        [&cmp](auto const& lhop, auto const& rhop) { return cmp(lhop, rhop); });
+
+    REQUIRE(
+        std::is_sorted(strings.begin(), strings.end(), LenLexCmp(alphabet)));
+
+    levels = {0, 1, 2};
+    cmp.init(alphabet, levels);
+    std::sort(
+        strings.begin(),
+        strings.end(),
+        [&cmp](auto const& lhop, auto const& rhop) { return cmp(lhop, rhop); });
+
+    REQUIRE(
+        std::is_sorted(strings.begin(), strings.end(), RevRPOCmp(alphabet)));
   }
 }  // namespace libsemigroups
