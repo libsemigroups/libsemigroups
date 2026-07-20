@@ -887,7 +887,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   std::ostream&
   operator<<(std::ostream&                                             os,
@@ -919,7 +919,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   std::string to_human_readable_repr(
       KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);

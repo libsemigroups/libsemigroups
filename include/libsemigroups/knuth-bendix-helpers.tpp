@@ -27,7 +27,7 @@ namespace libsemigroups {
 
     template <typename Word,
               typename RewritingSystem,
-              template <typename>
+              template <typename, bool>
               typename ReductionOrder>
     std::vector<std::vector<Word>> non_trivial_classes(
         KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb1,
@@ -271,7 +271,7 @@ namespace libsemigroups {
 
     template <typename Word,
               typename RewritingSystem,
-              template <typename>
+              template <typename, bool>
               typename ReductionOrder>
     void
     by_overlap_length(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb) {

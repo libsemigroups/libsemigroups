@@ -99,7 +99,7 @@ namespace libsemigroups {
   // TODO(v4) remove the final template parameter, which isn't required any more
   template <typename Word,
             typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>,
-            template <typename> typename ReductionOrder
+            template <typename, bool> typename ReductionOrder
             = RewritingSystem::template reduction_order_template>
   class KnuthBendix : public detail::KnuthBendixImpl<RewritingSystem> {
    private:

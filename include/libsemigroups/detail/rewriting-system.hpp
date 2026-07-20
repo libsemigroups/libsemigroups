@@ -314,7 +314,7 @@ namespace libsemigroups {
       using reduction_order      = ReductionOrder<Default, false>;
       using rule_const_reference = RewritingSystemBase::rule_const_reference;
 
-      template <typename Word>
+      template <typename Word, bool>
       using reduction_order_template
           = std::enable_if_t<std::is_same_v<Word, Default>,
                              ReductionOrder<Default, false>>;
@@ -424,7 +424,7 @@ namespace libsemigroups {
       using rule_const_reference = RewritingSystemBase::rule_const_reference;
       using reduction_order      = ReductionOrder<Default, false>;
 
-      template <typename Word>
+      template <typename Word, bool>
       using reduction_order_template
           = std::enable_if_t<std::is_same_v<Word, Default>,
                              ReductionOrder<Default, false>>;

@@ -27,7 +27,7 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   FroidurePin(KnuthBendix<Word, RewritingSystem, ReductionOrder> const&)
       -> FroidurePin<
@@ -92,7 +92,7 @@ namespace libsemigroups {
   template <template <typename...> typename Thing,
             typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   auto to(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb)
       -> std::enable_if_t<

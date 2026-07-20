@@ -94,7 +94,7 @@ namespace libsemigroups {
     //! \cong_common_warn_undecidable{Knuth-Bendix}.
     template <typename Word,
               typename RewritingSystem,
-              template <typename>
+              template <typename, bool>
               typename ReductionOrder>
     [[nodiscard]] auto
     normal_forms(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb) {
@@ -151,7 +151,7 @@ namespace libsemigroups {
     //! \cong_common_warn_undecidable{Knuth-Bendix}.
     template <typename Word,
               typename RewritingSystem,
-              template <typename>
+              template <typename, bool>
               typename ReductionOrder>
     [[nodiscard]] std::vector<std::vector<Word>> non_trivial_classes(
         KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb1,
@@ -215,7 +215,7 @@ namespace libsemigroups {
     //! \sa KnuthBendix::run.
     template <typename Word,
               typename RewritingSystem,
-              template <typename>
+              template <typename, bool>
               typename ReductionOrder>
     void
     by_overlap_length(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);
@@ -245,7 +245,7 @@ namespace libsemigroups {
 #else
     template <typename Word,
               typename RewritingSystem,
-              template <typename>
+              template <typename, bool>
               typename ReductionOrder>
     [[nodiscard]] bool
     is_reduced(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);

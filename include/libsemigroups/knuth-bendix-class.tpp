@@ -19,13 +19,13 @@
 namespace libsemigroups {
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   KnuthBendix<Word, RewritingSystem, ReductionOrder>::KnuthBendix() = default;
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   KnuthBendix<Word, RewritingSystem, ReductionOrder>::KnuthBendix(
       KnuthBendix const& that)
@@ -33,13 +33,13 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   KnuthBendix<Word, RewritingSystem, ReductionOrder>::KnuthBendix(KnuthBendix&&)
       = default;
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
 
   KnuthBendix<Word, RewritingSystem, ReductionOrder>&
@@ -49,7 +49,7 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   KnuthBendix<Word, RewritingSystem, ReductionOrder>&
   KnuthBendix<Word, RewritingSystem, ReductionOrder>::operator=(KnuthBendix&&)
@@ -57,13 +57,13 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   KnuthBendix<Word, RewritingSystem, ReductionOrder>::~KnuthBendix() = default;
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   template <typename... Args>
   KnuthBendix<Word, RewritingSystem, ReductionOrder>&
@@ -105,7 +105,7 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   template <typename Iterator1, typename Iterator2>
   void KnuthBendix<Word, RewritingSystem, ReductionOrder>::
@@ -140,7 +140,7 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   template <typename Iterator1,
             typename Iterator2,
@@ -166,7 +166,7 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   template <typename Iterator1,
             typename Iterator2,
@@ -199,7 +199,7 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   template <typename Iterator1,
             typename Iterator2,
@@ -222,7 +222,7 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   auto KnuthBendix<Word, RewritingSystem, ReductionOrder>::active_rules() {
     // TODO(1) remove allocations here somehow (probably by making a custom
@@ -243,7 +243,7 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   std::vector<Word> KnuthBendix<Word, RewritingSystem, ReductionOrder>::
       gilman_graph_node_labels() {
@@ -261,7 +261,7 @@ namespace libsemigroups {
 
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   void KnuthBendix<Word, RewritingSystem, ReductionOrder>::run_impl() {
     if (requires_extra_letter() && !_extra_letter_added) {

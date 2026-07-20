@@ -114,7 +114,7 @@ namespace libsemigroups {
   //! \exceptions
   //! \no_libsemigroups_except
   // Match the third parameter explicitly for C++17 portability.
-  template <template <typename, typename, template <typename> typename>
+  template <template <typename, typename, template <typename, bool> typename>
             typename Thing,
             typename Word>
   auto to(congruence_kind knd, ToddCoxeter<Word>& tc) -> std::enable_if_t<
