@@ -2639,7 +2639,7 @@ namespace libsemigroups {
 
    public:
     //! \brief Deleted default constructor.
-    WtLenLexCmp() = default;
+    WtLenLexCmp() = default;  // TODO update the doc
 
     //! \brief Copy constructor.
     WtLenLexCmp(WtLenLexCmp const&) = default;
@@ -3413,6 +3413,15 @@ namespace libsemigroups {
     std::vector<size_t> _weights;
 
    public:
+    // TODO doc
+    WtLexCmp() = default;
+    // TODO rule of 5
+
+    WtLexCmp& init() {
+      _weights.clear();
+      return *this;
+    }
+
     //! \brief Construct from weights vector reference.
     //!
     //! Constructs a comparison object that stores a copy of the provided

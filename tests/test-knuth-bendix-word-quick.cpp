@@ -125,7 +125,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 0_w, 1_w);
 
     KnuthBendix<word_type, TestType> kb2(twosided, p);
-    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<Default, false>>) {
       REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
               == std::vector<std::vector<word_type>>(
                   {{1_w, 01_w, 11_w, 011_w, 0_w}}));
@@ -315,7 +315,7 @@ namespace libsemigroups {
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 27);
     std::vector<word_type> expected;
-    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<Default, false>>) {
       expected
           = {0_w,     1_w,     00_w,    01_w,    10_w,     11_w,    000_w,
              100_w,   010_w,   101_w,   011_w,   110_w,    111_w,   1000_w,

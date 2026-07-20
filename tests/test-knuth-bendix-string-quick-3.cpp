@@ -1443,4 +1443,78 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "157",
+                          "coxeter/hermiller2",
+                          "[quick][maf]") {
+    using literals::          operator""_p;
+    Presentation<std::string> p;
+    p.alphabet("jihgfedcba").contains_empty_word(true);
+
+    for (auto letter : p.alphabet()) {
+      presentation::add_rule(p, std::string(2, letter), "");
+    }
+
+    presentation::add_rule(p, "(ab) ^ 4"_p, "");
+    presentation::add_rule(p, "(ac) ^ 4"_p, "");
+    presentation::add_rule(p, "(ad) ^ 3"_p, "");
+    presentation::add_rule(p, "(bc) ^ 3"_p, "");
+    presentation::add_rule(p, "(bd) ^ 4"_p, "");
+    presentation::add_rule(p, "(cd) ^ 4"_p, "");
+    presentation::add_rule(p, "(ab) ^ 2"_p, "e");
+    presentation::add_rule(p, "(ac) ^ 2"_p, "f");
+    presentation::add_rule(p, "ada", "g");
+    presentation::add_rule(p, "bcb", "h");
+    presentation::add_rule(p, "bdbd", "i");
+    presentation::add_rule(p, "cdcd", "j");
+
+    std::vector<size_t> weights = {4, 4, 3, 3, 4, 4, 1, 1, 1, 1};
+
+    KnuthBendix<std::string, detail::RewritingSystemTrie<WtLexCmp>> kb(
+        twosided, p, weights);
+    REQUIRE(kb.rewriting_system().number_of_rules() == 22);
+    REQUIRE(!kb.rewriting_system().confluent());
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | to_vector())
+            == std::vector<rule_type>(
+                {{"aa", ""},       {"abab", "e"},    {"acac", "f"},
+                 {"ada", "g"},     {"bb", ""},       {"bcb", "h"},
+                 {"bdbd", "i"},    {"cc", ""},       {"cdcd", "j"},
+                 {"dd", ""},       {"ee", ""},       {"ff", ""},
+                 {"gg", ""},       {"hh", ""},       {"ii", ""},
+                 {"jj", ""},       {"abah", "ecb"},  {"abai", "edbd"},
+                 {"acaj", "fdcd"}, {"ade", "gbab"},  {"adf", "gcac"},
+                 {"ae", "bab"},    {"af", "cac"},    {"ag", "da"},
+                 {"bci", "hdbd"},  {"bh", "cb"},     {"bi", "dbd"},
+                 {"cbc", "h"},     {"cj", "dcd"},    {"dad", "g"},
+                 {"eb", "aba"},    {"fc", "aca"},    {"ga", "ad"},
+                 {"hb", "bc"},     {"id", "bdb"},    {"jd", "cdc"},
+                 {"acah", "fbc"},  {"gd", "da"},     {"bdbg", "iad"},
+                 {"hc", "cb"},     {"cbj", "hdcd"},  {"cdcg", "jad"},
+                 {"ch", "bc"},     {"dg", "ad"},     {"eh", "abacb"},
+                 {"ei", "abadbd"}, {"fh", "acabc"},  {"fj", "acadcd"},
+                 {"ge", "adbab"},  {"gf", "adcac"},  {"hi", "bcdbd"},
+                 {"hj", "cbdcd"},  {"ea", "bab"},    {"fa", "cac"},
+                 {"ib", "dbd"},    {"ig", "bdbad"},  {"jg", "cdcad"},
+                 {"baba", "e"},    {"caca", "f"},    {"babf", "ecac"},
+                 {"babg", "eda"},  {"dbdb", "i"},    {"cace", "fbab"},
+                 {"cacg", "fda"},  {"jc", "dcd"},    {"dbdh", "icb"},
+                 {"ef", "babcac"}, {"eg", "babda"},  {"fe", "cacbab"},
+                 {"fg", "cacda"},  {"ih", "dbdcb"},  {"di", "bdb"},
+                 {"bce", "haba"},  {"be", "aba"},    {"cbf", "haca"},
+                 {"cf", "aca"},    {"dai", "gbdb"},  {"gi", "dabdb"},
+                 {"he", "bcaba"},  {"hf", "cbaca"},  {"ie", "dbdaba"},
+                 {"dcdc", "j"},    {"cdci", "jbdb"}, {"dbde", "iaba"},
+                 {"dcdh", "jbc"},  {"jf", "dcdaca"}, {"jh", "dcdbc"},
+                 {"ji", "cdcbdb"}, {"dcdf", "jaca"}, {"dj", "cdc"},
+                 {"bdbj", "icdc"}, {"daj", "gcdc"},  {"gj", "dacdc"},
+                 {"ij", "bdbcdc"}}));
+
+    WtLexCmp cmp{p.alphabet_v4(), weights};
+    for (auto const& rule : kb.active_rules()) {
+      REQUIRE(cmp(rule.second, rule.first));
+    }
+  }
+
 }  // namespace libsemigroups
