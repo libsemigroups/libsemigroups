@@ -520,8 +520,7 @@ namespace libsemigroups {
       TestType rws;
       rws.increase_alphabet_size_by(2);
       rws.init();
-      // TODO remove emplace_order, and just use order().init() instead
-      rws.emplace_order(std::vector<size_t>({1, 1}));
+      rws.order().init(std::vector<size_t>({1, 1}));
       rewriting_system::add_rule(rws, "aab"_w, "bb"_w);
       REQUIRE((rws.rules()
                | rx::transform([](auto const& pair) { return rule_type(pair); })

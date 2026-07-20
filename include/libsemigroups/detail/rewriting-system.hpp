@@ -240,12 +240,6 @@ namespace libsemigroups {
         return _order;
       }
 
-      template <typename... Args>
-      RewritingSystemBaseWithOrder& emplace_order(Args&&... args) {
-        _order.init(std::forward<Args>(args)...);
-        return *this;
-      }
-
       void reorder(Rule* rule) {
         if (_order(rule->lhs(), rule->rhs())) {
           std::swap(rule->lhs(), rule->rhs());
