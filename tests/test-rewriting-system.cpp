@@ -508,6 +508,7 @@ namespace libsemigroups {
       REQUIRE(rws.confluent_known());
       REQUIRE(!rws.confluent());
     }
+
     LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
                                      "017",
                                      "WtLenLex",
