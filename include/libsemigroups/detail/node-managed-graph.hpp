@@ -219,7 +219,7 @@ namespace libsemigroups {
       bool process_coincidences(Functor&& = Noop{});
 
       void standardize(std::vector<node_type> const& p,
-                       std::vector<node_type> const& q) {
+                       std::vector<node_type>&       q) {
         auto& c = lookahead_cursor();
         if (c < q.size()) {
           c = q[c];
@@ -230,7 +230,7 @@ namespace libsemigroups {
       }
 
       void permute_nodes_no_checks(std::vector<node_type> const& p,
-                                   std::vector<node_type> const& q) {
+                                   std::vector<node_type>&       q) {
         BaseGraph::permute_nodes_no_checks(
             p, q, NodeManager<node_type>::number_of_nodes_active());
         NodeManager<node_type>::apply_permutation(p);
