@@ -157,7 +157,7 @@ namespace libsemigroups {
       // The permutation q must map the valid nodes to the [0, .. , n), where
       // n is the number of valid nodes, and p = q ^ -1.
       void permute_nodes_no_checks(std::vector<node_type> const& p,
-                                   std::vector<node_type> const& q,
+                                   std::vector<node_type>&       q,
                                    size_t                        n);
 
       // Swaps valid nodes c and d, if c or d is not valid, then this will
