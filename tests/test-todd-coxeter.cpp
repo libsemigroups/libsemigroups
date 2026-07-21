@@ -186,7 +186,7 @@ namespace libsemigroups {
       Order old_val   = tc.current_word_graph().standardization_order();
 
       tc.run();
-      for (auto val : {Order::lenlex, Order::lex, Order::rpo}) {
+      for (auto val : {Order::lenlex, Order::lex, Order::rpo, Order::rev_rpo}) {
         tc.standardize(val);
         REQUIRE(tc.current_word_graph().is_standardized(val));
         REQUIRE(tc.current_word_graph().is_standardized());
@@ -2604,6 +2604,8 @@ namespace libsemigroups {
     REQUIRE(!tc.finished());
     tc.standardize(Order::rpo);
     REQUIRE(!tc.finished());
+    tc.standardize(Order::rev_rpo);
+    REQUIRE(!tc.finished());
 
     section_hlt(tc);
     section_felsch(tc);
@@ -2619,6 +2621,8 @@ namespace libsemigroups {
     REQUIRE(is_sorted(normal_forms(tc), LexCmp()));
     tc.standardize(Order::rpo);
     REQUIRE(is_sorted(normal_forms(tc), RPOCmp()));
+    tc.standardize(Order::rev_rpo);
+    REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp()));
   }
 
   // The following example is a good one for using the lookahead.
