@@ -127,47 +127,52 @@ namespace libsemigroups {
           return static_cast<size_t>(max_seen + 1) == nr_reachable;
         }
 
+        template <typename Node>
+        class NodeManagedGraph;
+
         template <typename Graph>
         class Standardizer {
-         public:
           using node_type  = typename Graph::node_type;
           using label_type = typename Graph::label_type;
 
+          static node_type init_max_nodes(Graph& wg) {
+            if constexpr (is_specialization_of_v<Graph, NodeManagedGraph>) {
+              return wg.number_of_nodes_active() - 1;
+            } else {
+              return wg.number_of_nodes() - 1;
+            }
+          }
+
+         public:
           Standardizer(Graph& wg, Forest& f)
               : _f(f),
                 _largest_used_node(0),
-                _max_node(number_of_nodes_reachable_from(wg, 0) - 1),
-                _p(wg.number_of_nodes()),
-                _p_inverse(wg.number_of_nodes()),
+                _max_node(init_max_nodes(wg)),
+                _p(_max_node + 1),
+                _p_inverse(wg.number_of_nodes(), UNDEFINED),
                 _swapped(false),
                 _wg(wg) {
-            std::iota(_p.begin(), _p.end(), 0);
-            _p_inverse = _p;
+            _p_inverse[0] = 0;
           }
 
           // Follow the edge labelled <x> out of the node currently occupying
           // position <s>. If that edge leads to a node that is larger than
           // <_largest_used_node>, then <_largest_used_node> is incremented and
-          // p is updated to represent the swap that should take place.
+          // p[_largest_used_node] is set to the newly discovered node.
           //
           // Returns true if a previously-unseen node was discovered.
           bool try_set_next_smallest(node_type const s, label_type const x) {
-            node_type target = _wg.target_no_checks(_p[s], x);
-            if (target == UNDEFINED) {
-              return false;
-            }
-            target = _p_inverse[target];
-            if (target <= _largest_used_node) {
+            node_type const target = _wg.target_no_checks(_p[s], x);
+            if (target == UNDEFINED || _p_inverse[target] != UNDEFINED) {
               return false;
             }
             ++_largest_used_node;
             if (_largest_used_node >= _f.number_of_nodes()) {
               _f.add_nodes(1);
             }
-            if (target > _largest_used_node) {
-              std::swap(_p[target], _p[_largest_used_node]);
-              std::swap(_p_inverse[_p[target]],
-                        _p_inverse[_p[_largest_used_node]]);
+            _p[_largest_used_node] = target;
+            _p_inverse[target]     = _largest_used_node;
+            if (target != _largest_used_node) {
               _swapped = true;
             }
             _f.set_parent_and_label_no_checks(
@@ -185,8 +190,7 @@ namespace libsemigroups {
 
           bool standardize() {
             if (_swapped) {
-              _wg.permute_nodes_no_checks(
-                  _p, _p_inverse, _largest_used_node + 1);
+              _wg.standardize(_p, _p_inverse);
             }
             return _swapped;
           }
