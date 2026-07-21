@@ -39,17 +39,18 @@
 #include <utility>           // for pair, move, make_pair
 #include <vector>            // for vector, swap
 
-#include "libsemigroups/adapters.hpp"         // for Hash
-#include "libsemigroups/config.hpp"           // for LIBSEMIGROUPS_EIGEN_...
-#include "libsemigroups/constants.hpp"        // for UNDEFINED
-#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/dot.hpp"              // for Dot
-#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/forest.hpp"           // for Forest
-#include "libsemigroups/order.hpp"            // for Order
-#include "libsemigroups/types.hpp"            // for word_type, letter_type
-#include "libsemigroups/word-graph-view.hpp"  // for WordGraphView
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/adapters.hpp"   // for Hash
+#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_EIGEN_...
+#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/dot.hpp"        // for Dot
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/forest.hpp"     // for Forest
+#include "libsemigroups/is_specialization_of.hpp"  // for is_specialization_of
+#include "libsemigroups/order.hpp"                 // for Order
+#include "libsemigroups/types.hpp"                 // for word_type, letter_type
+#include "libsemigroups/word-graph-view.hpp"       // for WordGraphView
+#include "libsemigroups/word-graph.hpp"            // for WordGraph
 
 #include "libsemigroups/detail/fmt.hpp"     // for fmt::format
 #include "libsemigroups/detail/stl.hpp"     // for HasLessEqual
