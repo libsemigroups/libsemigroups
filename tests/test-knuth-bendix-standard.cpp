@@ -131,12 +131,12 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
 
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, LenLexCmp<>>) {
+    if constexpr (std::is_same_v<order, LenLexCmp<Default, false>>) {
       // In Sims it says to use 44 here, but that doesn't seem to work.
       kb.max_overlap(45);
       kb.run();
       REQUIRE(kb.rewriting_system().number_of_rules() == 1'026);
-    } else if (std::is_same_v<order, RevRPOCmp<>>) {
+    } else if (std::is_same_v<order, RevRPOCmp<Default, false>>) {
       kb.max_overlap(56);
       kb.run();
       REQUIRE(kb.rewriting_system().number_of_rules() == 407);

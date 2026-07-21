@@ -22,10 +22,9 @@
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 
-#include <algorithm>    // for for_each
-#include <type_traits>  // for is_same_v
-#include <utility>      // for move
-#include <vector>       // for vector
+#include <algorithm>  // for for_each
+#include <utility>    // for move
+#include <vector>     // for vector
 
 #include "order.hpp"         // for LenLexCmp
 #include "presentation.hpp"  // for Presentation
@@ -71,7 +70,8 @@ namespace libsemigroups {
   //!
   //! \tparam Word the type of the words in rules in the presentation.
   //! \tparam RewritingSystem the type of the rewriter.
-  //! \tparam ReductionOrder the reduction-order class template.
+  //! \tparam ReductionOrder the reduction-order class template (this template
+  //! parameter is redundant and will be removed in v3).
   //!
   //! \par Example
   //! \code
@@ -99,13 +99,10 @@ namespace libsemigroups {
   // TODO(v4) remove the final template parameter, which isn't required any more
   template <typename Word,
             typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>,
-            template <typename> typename ReductionOrder
+            template <typename, bool> typename ReductionOrder
             = RewritingSystem::template reduction_order_template>
   class KnuthBendix : public detail::KnuthBendixImpl<RewritingSystem> {
    private:
-    static_assert(std::is_same_v<ReductionOrder<Default>,
-                                 typename RewritingSystem::reduction_order>);
-
     using KnuthBendixImpl_ = detail::KnuthBendixImpl<RewritingSystem>;
 
     bool               _extra_letter_added;
@@ -222,14 +219,6 @@ namespace libsemigroups {
 
     ~KnuthBendix();
 
-    //! \copydoc KnuthBendix(congruence_kind, Presentation<Word> const&)
-    KnuthBendix(congruence_kind knd, Presentation<Word>&& p) : KnuthBendix() {
-      init(knd, std::move(p));
-    }
-
-    //! \copydoc init(congruence_kind, Presentation<Word> const&)
-    KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p);
-
     //! \ingroup knuth_bendix_class_init_group
     //!
     //! \brief Construct from \ref congruence_kind and Presentation.
@@ -240,6 +229,8 @@ namespace libsemigroups {
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
     //! \param p the presentation.
+    //! \param args parameter pack consisting of the arguments used to
+    //! construct the reduction order (if any).
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
     //! \throws LibsemigroupsException if \p p has too many letters in its
@@ -249,9 +240,11 @@ namespace libsemigroups {
     //! from presentations with alphabets containing at most:
     //! * 128 letters if `char` is a signed integer;
     //! * 256 letters if `char` is an unsigned integer.
-    KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
-        // call the rval ref constructor
-        : KnuthBendix(knd, Presentation<Word>(p)) {}
+    template <typename... Args>
+    KnuthBendix(congruence_kind knd, Presentation<Word>&& p, Args&&... args)
+        : KnuthBendix() {
+      init(knd, std::move(p), std::forward<Args>(args)...);
+    }
 
     //! \ingroup knuth_bendix_class_init_group
     //!
@@ -263,6 +256,8 @@ namespace libsemigroups {
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
     //! \param p the presentation.
+    //! \param args parameter pack consisting of the arguments used to
+    //! construct the reduction order (if any).
     //!
     //! \returns A reference to `*this`.
     //!
@@ -274,9 +269,69 @@ namespace libsemigroups {
     //! from presentations with alphabets containing at most:
     //! * 128 letters if `char` a signed integer;
     //! * 256 letters if `char` is an unsigned integer.
-    KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
+    template <typename... Args>
+    KnuthBendix& init(congruence_kind      knd,
+                      Presentation<Word>&& p,
+                      Args&&... args);
+
+    //! \ingroup knuth_bendix_class_init_group
+    //!
+    //! \brief Construct from \ref congruence_kind and Presentation.
+    //!
+    //! This function constructs a \ref_knuth_bendix instance representing
+    //! a congruence of kind \p knd over the semigroup or monoid defined by
+    //! the presentation \p p.
+    //!
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //! \param args parameter pack consisting of the arguments used to
+    //! construct the reduction order (if any).
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p p has too many letters in its
+    //! alphabet, see the warning below.
+    //!
+    //! \warning At present it is only possible to create KnuthBendix objects
+    //! from presentations with alphabets containing at most:
+    //! * 128 letters if `char` is a signed integer;
+    //! * 256 letters if `char` is an unsigned integer.
+    template <typename... Args>
+    KnuthBendix(congruence_kind           knd,
+                Presentation<Word> const& p,
+                Args&&... args)
+        // call the rval ref constructor
+        : KnuthBendix(knd, Presentation<Word>(p), std::forward<Args>(args)...) {
+    }
+
+    //! \ingroup knuth_bendix_class_init_group
+    //!
+    //! \brief Re-initialize a \ref_knuth_bendix instance.
+    //!
+    //! This function puts a \ref_knuth_bendix instance back into the state
+    //! that it would have been in if it had just been newly constructed from
+    //! \p knd and \p p.
+    //!
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //! \param args parameter pack consisting of the arguments used to
+    //! construct the reduction order (if any).
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p p has too many letters in its
+    //! alphabet, see the warning below.
+    //!
+    //! \warning At present it is only possible to create KnuthBendix objects
+    //! from presentations with alphabets containing at most:
+    //! * 128 letters if `char` a signed integer;
+    //! * 256 letters if `char` is an unsigned integer.
+    template <typename... Args>
+    KnuthBendix& init(congruence_kind           knd,
+                      Presentation<Word> const& p,
+                      Args&&... args) {
       // call the rval ref init
-      return init(knd, Presentation<Word>(p));
+      return init(knd, Presentation<Word>(p), std::forward<Args>(args)...);
     }
 
     //! \ingroup knuth_bendix_class_init_group

@@ -176,41 +176,20 @@ namespace libsemigroups {
     KnuthBendixImpl<RewritingSystem>::~KnuthBendixImpl() = default;
 
     template <typename RewritingSystem>
-    KnuthBendixImpl<RewritingSystem>::KnuthBendixImpl(
-        congruence_kind                  knd,
-        Presentation<native_word_type>&& p)
-        : KnuthBendixImpl() {
-      init(knd, std::move(p));
-    }
-
-    template <typename RewritingSystem>
+    template <typename... Args>
     KnuthBendixImpl<RewritingSystem>&
     KnuthBendixImpl<RewritingSystem>::init(congruence_kind                  knd,
-                                           Presentation<native_word_type>&& p) {
+                                           Presentation<native_word_type>&& p,
+                                           Args&&... args) {
       // TODO(1) assert that the alphabet + rules are good
       // p.throw_if_bad_alphabet_or_rules();
       LIBSEMIGROUPS_ASSERT(presentation::is_normalized(p));
       init();
       kind(knd);
+      _rewriting_system.order().init(std::forward<Args>(args)...);
       _presentation = std::move(p);
       init_from_internal_presentation();
       return *this;
-    }
-
-    template <typename RewritingSystem>
-    KnuthBendixImpl<RewritingSystem>::KnuthBendixImpl(
-        congruence_kind                       knd,
-        Presentation<native_word_type> const& p)
-        : KnuthBendixImpl() {
-      init(knd, p);
-    }
-
-    template <typename RewritingSystem>
-    KnuthBendixImpl<RewritingSystem>& KnuthBendixImpl<RewritingSystem>::init(
-        congruence_kind                       knd,
-        Presentation<native_word_type> const& p) {
-      // Call rvalue ref init
-      return init(knd, Presentation(p));
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -246,8 +225,8 @@ namespace libsemigroups {
       if (std::equal(first1, last1, first2, last2)) {
         return tril::TRUE;
       }
-      // TODO(1) remove allocations here, can't use _tmp_element1 here because
-      // it's used in reduce
+      // TODO(1) remove allocations here, can't use _tmp_element1 here
+      // because it's used in reduce
       native_word_type w1, w2;
       reduce_no_run_no_checks(std::back_inserter(w1), first1, last1);
       reduce_no_run_no_checks(std::back_inserter(w2), first2, last2);
@@ -285,10 +264,11 @@ namespace libsemigroups {
     // TODO(1) export a version of this for use elsewhere
     template <typename RewritingSystem>
     void KnuthBendixImpl<RewritingSystem>::report_presentation() const {
-      // NOTE: this function does the same as presentation::to_report_string,
-      // which we cannot use directly here because we don't have a presentation
-      // object to pass to it (and possibly because of some cyclic dependency
-      // that this would introduce).
+      // NOTE: this function does the same as
+      // presentation::to_report_string, which we cannot use directly here
+      // because we don't have a presentation object to pass to it (and
+      // possibly because of some cyclic dependency that this would
+      // introduce).
       size_t min = POSITIVE_INFINITY, max = 0, len = 0;
       for (auto const& rule : _rewriting_system.rules()) {
         auto rule_len = rule.first.size() + rule.second.size();
@@ -391,8 +371,8 @@ namespace libsemigroups {
     }
 
     // report_no_prefix(msg);
-    // REVIEW was it okay to remove const here? Needed to do so to maybe process
-    // some rules.
+    // REVIEW was it okay to remove const here? Needed to do so to maybe
+    // process some rules.
     template <typename RewritingSystem>
     void
     KnuthBendixImpl<RewritingSystem>::rewrite_inplace(native_word_type& w) {
@@ -475,8 +455,8 @@ namespace libsemigroups {
       if (_rewriting_system.confluent() && !stop_running()) {
         // _rewriting_system._pending_rules can be non-empty if non-reduced
         // rules were used to define the KnuthBendixImpl.  If
-        // _rewriting_system._pending_rules is non-empty, then it means that the
-        // rules in _rewriting_system might not define the system.
+        // _rewriting_system._pending_rules is non-empty, then it means that
+        // the rules in _rewriting_system might not define the system.
         report_default("KnuthBendix: the system is confluent already!\n");
         return;
       } else if (_rewriting_system.number_of_rules() >= max_rules()) {
@@ -512,23 +492,23 @@ namespace libsemigroups {
       // 2. pending (maybe part of the system in the future)
       // 3. inactive (currently unused)
       //
-      // When an overlap is detected (by calls to "overlap" below), sometimes a
-      // rule will be sent from the active list to the pending list. Its fate is
-      // determined at a later point (in "reduce"), and it will either be
-      // re-added to the active list (at the end of
-      // _rewriting_system.active_rules()), or to the inactive list (position
-      // unimportant).
+      // When an overlap is detected (by calls to "overlap" below),
+      // sometimes a rule will be sent from the active list to the pending
+      // list. Its fate is determined at a later point (in "reduce"), and it
+      // will either be re-added to the active list (at the end of
+      // _rewriting_system.active_rules()), or to the inactive list
+      // (position unimportant).
       //
-      // The aim of the loops below is to consider all overlaps between active
-      // rules **while those active rules are changing**. The cursors "first"
-      // and "second" always point at valid active rules, and have the
-      // following behaviour with respect to removal of active rules (those
-      // sent from the active to the pending list).
+      // The aim of the loops below is to consider all overlaps between
+      // active rules **while those active rules are changing**. The cursors
+      // "first" and "second" always point at valid active rules, and have
+      // the following behaviour with respect to removal of active rules
+      // (those sent from the active to the pending list).
       //
-      // Let "it" be an iterator pointing at the rule "r_{i}" being sent from
-      // the active to the pending list and let "r_{i-1}" and "r_{i+1}" be
-      // the active rules before and immediate after "r_{i}" in the active rule
-      // list (if any):
+      // Let "it" be an iterator pointing at the rule "r_{i}" being sent
+      // from the active to the pending list and let "r_{i-1}" and "r_{i+1}"
+      // be the active rules before and immediate after "r_{i}" in the
+      // active rule list (if any):
       //
       //    ... -- [ r_{i - 1} ] -- [ r_{i} ] -- [ r_{i + 1} ] -- ...
       //                              ^
@@ -557,7 +537,8 @@ namespace libsemigroups {
       //                              |
       //                              second
       //
-      // C if "first" and "it" coincide and "new_it" is _active_rules.begin(),
+      // C if "first" and "it" coincide and "new_it" is
+      // _active_rules.begin(),
       //   then "first" is set to "new_it" == _active_rules.begin().
       //
       //   [ r_{i + 1} ] -- [ r_{i + 2} ] -- ...
@@ -580,15 +561,15 @@ namespace libsemigroups {
       do {
         // Within this do-loop, active rules may become pending, but pending
         // rules can only become active/inactive at the call to
-        // _rewriting_system.reduce() in the condition evaluated at the end of
-        // the outer while-loop. In other words, the active rules list may
-        // shrink but not grow when inside this do-loop.
+        // _rewriting_system.reduce() in the condition evaluated at the end
+        // of the outer while-loop. In other words, the active rules list
+        // may shrink but not grow when inside this do-loop.
         //
         // The cursor "first" never needs to be re-initialised, because
-        // although active_rules() can grow and shrink. If it grows, then the
-        // new rules are added at the end, and so "first" will equal any
-        // surviving new rule eventually. If it shrinks, then we no longer care
-        // about comparing the removed rules to anything.
+        // although active_rules() can grow and shrink. If it grows, then
+        // the new rules are added at the end, and so "first" will equal any
+        // surviving new rule eventually. If it shrinks, then we no longer
+        // care about comparing the removed rules to anything.
         while (first.it != _rewriting_system.active_rules().end()
                && !stop_running()) {
           auto first_version = first.version;
@@ -599,8 +580,8 @@ namespace libsemigroups {
           if (first.version != first_version) {
             // In this case, either C or D above applies.
             //
-            // If C applies, then after the "continue" below and the for-loop
-            // where "second" is defined would be:
+            // If C applies, then after the "continue" below and the
+            // for-loop where "second" is defined would be:
             //
             //   [ r_{i + 1} ] -- [ r_{i + 2} ] -- ...
             //     ^                ^
@@ -618,16 +599,16 @@ namespace libsemigroups {
               ++first.it;
             }
 
-            // If D applies, then after the "continue" below and the for-loop
-            // where "second" is defined is entered:
+            // If D applies, then after the "continue" below and the
+            // for-loop where "second" is defined is entered:
             //
             //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ...
             //             ^                ^
             //             |                |
             //             second           first
             //
-            // We have already overlapped r_{i - 1} and all previous rules in
-            // the list, so no overlaps can be missed.
+            // We have already overlapped r_{i - 1} and all previous rules
+            // in the list, so no overlaps can be missed.
 
             continue;
           }
@@ -648,14 +629,16 @@ namespace libsemigroups {
             } else if (second.version != second_version) {
               // In this case B, applies and so after the "continue" below:
               //
-              //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ... -- [ r_{j} ]
+              //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ... -- [ r_{j}
+              //    ]
               //             ^                                        ^
               //             |                                        |
               //             second                                   first
               //
               // Note that in this case r_{j} is not being erased, and so
-              // "first" is not modified, and "second" assumes the next value it
-              // would have at the end of the loop. No overlaps are missed.
+              // "first" is not modified, and "second" assumes the next
+              // value it would have at the end of the loop. No overlaps are
+              // missed.
               continue;
             }
             overlap(*second.it, *first.it);

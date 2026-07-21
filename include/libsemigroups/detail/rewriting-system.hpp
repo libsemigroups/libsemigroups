@@ -195,6 +195,59 @@ namespace libsemigroups {
     };  // class RewritingSystemBase
 
     ////////////////////////////////////////////////////////////////////////
+    // RewritingSystemBaseWithOrder
+    ////////////////////////////////////////////////////////////////////////
+
+    template <template <typename, bool> typename ReductionOrder>
+    class RewritingSystemBaseWithOrder : public RewritingSystemBase {
+      ReductionOrder<Default, false> _order;
+
+     public:
+      using reduction_order = ReductionOrder<Default, false>;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + inits
+      ////////////////////////////////////////////////////////////////////////
+
+      RewritingSystemBaseWithOrder() = default;
+      RewritingSystemBaseWithOrder& init();
+
+      RewritingSystemBaseWithOrder(RewritingSystemBaseWithOrder const& that)
+          = default;
+
+      RewritingSystemBaseWithOrder(RewritingSystemBaseWithOrder&& that)
+          = default;
+
+      RewritingSystemBaseWithOrder&
+      operator=(RewritingSystemBaseWithOrder const& that)
+          = default;
+
+      RewritingSystemBaseWithOrder&
+      operator=(RewritingSystemBaseWithOrder&& that)
+          = default;
+
+      ~RewritingSystemBaseWithOrder() = default;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Public member functions
+      ////////////////////////////////////////////////////////////////////////
+
+      [[nodiscard]] reduction_order const& order() const noexcept {
+        return _order;
+      }
+
+      [[nodiscard]] reduction_order& order() noexcept {
+        return _order;
+      }
+
+      void reorder(Rule* rule) {
+        if (_order(rule->lhs(), rule->rhs())) {
+          std::swap(rule->lhs(), rule->rhs());
+        }
+      }
+    };  // class RewritingSystemBaseWithOrder
+
+    ////////////////////////////////////////////////////////////////////////
     // RuleLookup
     ////////////////////////////////////////////////////////////////////////
 
@@ -236,11 +289,15 @@ namespace libsemigroups {
     // RewritingSystemSet
     ////////////////////////////////////////////////////////////////////////
 
-    template <template <typename> typename ReductionOrder>
-    class RewritingSystemSet : public RewritingSystemBase {
+    template <template <typename, bool> typename ReductionOrder>
+    class RewritingSystemSet
+        : public RewritingSystemBaseWithOrder<ReductionOrder> {
       ////////////////////////////////////////////////////////////////////////
       // Private aliases
       ////////////////////////////////////////////////////////////////////////
+      using RewritingSystemBaseWithOrder_
+          = RewritingSystemBaseWithOrder<ReductionOrder>;
+
       using iterator = Rules::iterator;
 
       ////////////////////////////////////////////////////////////////////////
@@ -254,13 +311,13 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       using native_word_type     = Rule::native_word_type;
-      using reduction_order      = ReductionOrder<Default>;
+      using reduction_order      = ReductionOrder<Default, false>;
       using rule_const_reference = RewritingSystemBase::rule_const_reference;
 
-      template <typename Word>
+      template <typename Word, bool>
       using reduction_order_template
           = std::enable_if_t<std::is_same_v<Word, Default>,
-                             ReductionOrder<Default>>;
+                             ReductionOrder<Default, false>>;
 
       ////////////////////////////////////////////////////////////////////////
       // Constructors + initializers
@@ -334,13 +391,16 @@ namespace libsemigroups {
     // RewritingSystemTrie
     ////////////////////////////////////////////////////////////////////////
 
-    template <template <typename> typename ReductionOrder>
-    class RewritingSystemTrie : public RewritingSystemBase {
+    template <template <typename, bool> typename ReductionOrder>
+    class RewritingSystemTrie
+        : public RewritingSystemBaseWithOrder<ReductionOrder> {
       ////////////////////////////////////////////////////////////////////////
       // Private aliases
       ////////////////////////////////////////////////////////////////////////
 
       using Trie = AhoCorasickImpl;
+      using RewritingSystemBaseWithOrder_
+          = RewritingSystemBaseWithOrder<ReductionOrder>;
 
       using iterator   = Rules::iterator;
       using index_type = Trie::index_type;
@@ -362,12 +422,12 @@ namespace libsemigroups {
 
       using native_word_type     = Rule::native_word_type;
       using rule_const_reference = RewritingSystemBase::rule_const_reference;
-      using reduction_order      = ReductionOrder<Default>;
+      using reduction_order      = ReductionOrder<Default, false>;
 
-      template <typename Word>
+      template <typename Word, bool>
       using reduction_order_template
           = std::enable_if_t<std::is_same_v<Word, Default>,
-                             ReductionOrder<Default>>;
+                             ReductionOrder<Default, false>>;
 
       ////////////////////////////////////////////////////////////////////////
       // Constructors + initializers

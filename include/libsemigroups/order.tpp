@@ -465,9 +465,80 @@ namespace libsemigroups {
         alphabet, weights, first1, last1, first2, last2);
   }
 
-  template <typename Word>
-  WreathCmp<Word>& WreathCmp<Word>::init(Alphabet<Word> const&      alphabet,
-                                         std::vector<size_t> const& levels) {
+  template <typename Word, bool check>
+  LexCmp<Word, check>&
+  LexCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  LexCmp<Word, check>& LexCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  LenLexCmp<Word, check>&
+  LenLexCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  LenLexCmp<Word, check>&
+  LenLexCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  RPOCmp<Word, check>&
+  RPOCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  RPOCmp<Word, check>& RPOCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  RevRPOCmp<Word, check>&
+  RevRPOCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  RevRPOCmp<Word, check>&
+  RevRPOCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  WreathCmp<Word, check>&
+  WreathCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
+                               std::vector<size_t> const& levels) {
     detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
     if (&alphabet != &_alphabet) {
       _alphabet = alphabet;
@@ -478,9 +549,10 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename Word>
-  WreathCmp<Word>& WreathCmp<Word>::init(Alphabet<Word>&&      alphabet,
-                                         std::vector<size_t>&& levels) {
+  template <typename Word, bool check>
+  WreathCmp<Word, check>&
+  WreathCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
+                               std::vector<size_t>&& levels) {
     detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
     if (&alphabet != &_alphabet) {
       _alphabet = std::move(alphabet);
@@ -491,38 +563,10 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename Word>
-  WreathCmpNoChecks<Word>&
-  WreathCmpNoChecks<Word>::init(Alphabet<Word> const&      alphabet,
-                                std::vector<size_t> const& levels) {
-    detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
-    if (&alphabet != &_alphabet) {
-      _alphabet = alphabet;
-    }
-    if (&levels != &_levels) {
-      _levels = levels;
-    }
-    return *this;
-  }
-
-  template <typename Word>
-  WreathCmpNoChecks<Word>&
-  WreathCmpNoChecks<Word>::init(Alphabet<Word>&&      alphabet,
-                                std::vector<size_t>&& levels) {
-    detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
-    if (&alphabet != &_alphabet) {
-      _alphabet = std::move(alphabet);
-    }
-    if (&levels != &_levels) {
-      _levels = std::move(levels);
-    }
-    return *this;
-  }
-
-  template <typename Word>
-  WtLenLexCmp<Word>&
-  WtLenLexCmp<Word>::init(Alphabet<Word> const&      alphabet,
-                          std::vector<size_t> const& weights) {
+  template <typename Word, bool check>
+  WtLenLexCmp<Word, check>&
+  WtLenLexCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
+                                 std::vector<size_t> const& weights) {
     detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
     if (&alphabet != &_alphabet) {
       _alphabet = alphabet;
@@ -533,9 +577,10 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename Word>
-  WtLenLexCmp<Word>& WtLenLexCmp<Word>::init(Alphabet<Word>&&      alphabet,
-                                             std::vector<size_t>&& weights) {
+  template <typename Word, bool check>
+  WtLenLexCmp<Word, check>&
+  WtLenLexCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
+                                 std::vector<size_t>&& weights) {
     detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
     if (&alphabet != &_alphabet) {
       _alphabet = std::move(alphabet);
@@ -546,10 +591,10 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename Word>
-  WtLenLexCmpNoChecks<Word>&
-  WtLenLexCmpNoChecks<Word>::init(Alphabet<Word> const&      alphabet,
-                                  std::vector<size_t> const& weights) {
+  template <typename Word, bool check>
+  WtLexCmp<Word, check>&
+  WtLexCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
+                              std::vector<size_t> const& weights) {
     detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
     if (&alphabet != &_alphabet) {
       _alphabet = alphabet;
@@ -560,64 +605,10 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename Word>
-  WtLenLexCmpNoChecks<Word>&
-  WtLenLexCmpNoChecks<Word>::init(Alphabet<Word>&&      alphabet,
-                                  std::vector<size_t>&& weights) {
-    detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
-    if (&alphabet != &_alphabet) {
-      _alphabet = std::move(alphabet);
-    }
-    if (&weights != &_weights) {
-      _weights = std::move(weights);
-    }
-    return *this;
-  }
-
-  template <typename Word>
-  WtLexCmp<Word>& WtLexCmp<Word>::init(Alphabet<Word> const&      alphabet,
-                                       std::vector<size_t> const& weights) {
-    detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
-    if (&alphabet != &_alphabet) {
-      _alphabet = alphabet;
-    }
-    if (&weights != &_weights) {
-      _weights = weights;
-    }
-    return *this;
-  }
-
-  template <typename Word>
-  WtLexCmp<Word>& WtLexCmp<Word>::init(Alphabet<Word>&&      alphabet,
-                                       std::vector<size_t>&& weights) {
-    detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
-    if (&alphabet != &_alphabet) {
-      _alphabet = std::move(alphabet);
-    }
-    if (&weights != &_weights) {
-      _weights = std::move(weights);
-    }
-    return *this;
-  }
-
-  template <typename Word>
-  WtLexCmpNoChecks<Word>&
-  WtLexCmpNoChecks<Word>::init(Alphabet<Word> const&      alphabet,
-                               std::vector<size_t> const& weights) {
-    detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
-    if (&alphabet != &_alphabet) {
-      _alphabet = alphabet;
-    }
-    if (&weights != &_weights) {
-      _weights = weights;
-    }
-    return *this;
-  }
-
-  template <typename Word>
-  WtLexCmpNoChecks<Word>&
-  WtLexCmpNoChecks<Word>::init(Alphabet<Word>&&      alphabet,
-                               std::vector<size_t>&& weights) {
+  template <typename Word, bool check>
+  WtLexCmp<Word, check>&
+  WtLexCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
+                              std::vector<size_t>&& weights) {
     detail::throw_if_incompat_weights_or_levels(alphabet, weights, "weights");
     if (&alphabet != &_alphabet) {
       _alphabet = std::move(alphabet);

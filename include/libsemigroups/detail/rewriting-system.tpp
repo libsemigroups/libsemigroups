@@ -18,26 +18,38 @@
 namespace libsemigroups::detail {
 
   ////////////////////////////////////////////////////////////////////////
+  // RewritingSystemBaseWithOrder --- Constructors + initializers
+  ////////////////////////////////////////////////////////////////////////
+
+  template <template <typename, bool> typename ReductionOrder>
+  RewritingSystemBaseWithOrder<ReductionOrder>&
+  RewritingSystemBaseWithOrder<ReductionOrder>::init() {
+    RewritingSystemBase::init();
+    _order.init();
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // RewritingSystemSet --- Constructors + initializers
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemSet<ReductionOrder>::~RewritingSystemSet() = default;
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemSet<ReductionOrder>&
   RewritingSystemSet<ReductionOrder>::init() {
-    RewritingSystemBase::init();
+    RewritingSystemBaseWithOrder_::init();
     _set_rules.clear();
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemSet<ReductionOrder>&
   RewritingSystemSet<ReductionOrder>::operator=(
       RewritingSystemSet const& that) {
     init();
-    RewritingSystemBase::operator=(that);
+    RewritingSystemBaseWithOrder_::operator=(that);
     for (auto* rule : Rules::active_rules()) {
 #ifdef LIBSEMIGROUPS_DEBUG
       LIBSEMIGROUPS_ASSERT(_set_rules.emplace(RuleLookup(rule)).second);
@@ -52,7 +64,7 @@ namespace libsemigroups::detail {
   // RewritingSystemSet --- Public member functions
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   template <typename Iterator>
   RewritingSystemSet<ReductionOrder>&
   RewritingSystemSet<ReductionOrder>::add_rule(Iterator first1,
@@ -60,27 +72,28 @@ namespace libsemigroups::detail {
                                                Iterator first2,
                                                Iterator last2) {
     if (!std::equal(first1, last1, first2, last2)) {
-      set_cached_confluent(tril::unknown);
+      RewritingSystemBase::set_cached_confluent(tril::unknown);
       Rule* rule = Rules::add_pending_rule(first1, last1, first2, last2);
-      reorder<ReductionOrder<Default>>(rule);
+      RewritingSystemBaseWithOrder_::reorder(rule);
       // The left-hand-side of a rule must not be empty; otherwise, bad things
       // happen.
       LIBSEMIGROUPS_ASSERT(!rule->lhs().empty());
-      if (!active_rules().empty()
-          && pending_rules().size() > settings().reduction_threshold) {
+      if (!RewritingSystemBase::active_rules().empty()
+          && RewritingSystemBase::pending_rules().size()
+                 > RewritingSystemBase::settings().reduction_threshold) {
         reduce();
       }
     }
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemSet<ReductionOrder>::reduce() {
     RewritingSystemBase::sort_pending_rules();
 
     auto   start_time = std::chrono::high_resolution_clock::now();
     Ticker ticker;
-    bool   old_ticker_running = _ticker_running;
+    bool   old_ticker_running = RewritingSystemBase::_ticker_running;
 
     bool rules_added = false;
 
@@ -94,7 +107,7 @@ namespace libsemigroups::detail {
 
       // Check rule is non-trivial
       if (rule1->lhs() != rule1->rhs()) {
-        reorder<ReductionOrder<Default>>(rule1);
+        RewritingSystemBaseWithOrder_::reorder(rule1);
 
         native_word_type& lhs = rule1->lhs();
 
@@ -120,18 +133,19 @@ namespace libsemigroups::detail {
         Rules::add_inactive_rule(rule1);
       }
 
-      if (!_ticker_running && reporting_enabled()
+      if (!RewritingSystemBase::_ticker_running && reporting_enabled()
           && delta(start_time) >= std::chrono::seconds(1)) {
-        _ticker_running = true;
-        ticker(
-            [this, start_time]() { report_progress_from_thread(start_time); });
+        RewritingSystemBase::_ticker_running = true;
+        ticker([this, start_time]() {
+          RewritingSystemBase::report_progress_from_thread(start_time);
+        });
       }
     }
-    _ticker_running = old_ticker_running;
+    RewritingSystemBase::_ticker_running = old_ticker_running;
     return rules_added;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemSet<ReductionOrder>::rewrite(native_word_type& v) {
     reduce();
     rewrite_no_reduce(v);
@@ -141,7 +155,7 @@ namespace libsemigroups::detail {
   // RewritingSystemSet --- Private member functions
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemSet<ReductionOrder>::add_active_rule(Rule* new_rule) {
     // NOTE: unlike add_active_rule in RewritingSystemTrie, we do not reorder
     // new_rule, but in reduce, because we need it ordered correctly
@@ -149,8 +163,8 @@ namespace libsemigroups::detail {
     // require the rules in _set_rules to be reduced. If we add a new_rule
     // e.g. aba -> a and there is a currently active rule of the form abab ->
     // aba, then we must make abab -> aba pending before adding aba -> a.
-    LIBSEMIGROUPS_ASSERT(
-        !ReductionOrder<Default>{}(new_rule->lhs(), new_rule->rhs()));
+    LIBSEMIGROUPS_ASSERT(!RewritingSystemBaseWithOrder_::order()(
+        new_rule->lhs(), new_rule->rhs()));
 
     Rules::add_active_rule(new_rule);
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -159,10 +173,10 @@ namespace libsemigroups::detail {
     _set_rules.emplace(RuleLookup(new_rule));
 #endif
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == Rules::active_rules().size());
-    set_cached_confluent(tril::unknown);
+    RewritingSystemBase::set_cached_confluent(tril::unknown);
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   typename RewritingSystemSet<ReductionOrder>::iterator
   RewritingSystemSet<ReductionOrder>::make_active_rule_pending(iterator it) {
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -175,7 +189,7 @@ namespace libsemigroups::detail {
   }
 
   // REWRITE_FROM_LEFT from Sims, p67
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemSet<ReductionOrder>::rewrite_no_reduce(
       native_word_type& v) const {
     size_t const n = Rules::stats().min_length_lhs_rule;
@@ -216,14 +230,14 @@ namespace libsemigroups::detail {
   // Confluence
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemSet<ReductionOrder>::confluent_impl(
       std::atomic_uint64_t& seen) {
     using std::chrono::time_point;
     time_point start_time = std::chrono::high_resolution_clock::now();
 
     reduce();
-    set_cached_confluent(tril::TRUE);
+    RewritingSystemBase::set_cached_confluent(tril::TRUE);
     native_word_type word1;
     native_word_type word2;
 
@@ -268,7 +282,7 @@ namespace libsemigroups::detail {
               rewrite_no_reduce(word1);
               rewrite_no_reduce(word2);
               if (word1 != word2) {
-                set_cached_confluent(tril::FALSE);
+                RewritingSystemBase::set_cached_confluent(tril::FALSE);
                 if (reporting_enabled()) {
                   report_checking_confluence(seen, start_time);
                 }
@@ -282,11 +296,11 @@ namespace libsemigroups::detail {
     if (reporting_enabled()) {
       report_checking_confluence(seen, start_time);
     }
-    return cached_confluent();
+    return RewritingSystemBase::cached_confluent();
   }
 
   // TODO(1): Remove duplication between this function and confluent_impl
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   std::pair<size_t, size_t>
   RewritingSystemSet<ReductionOrder>::confluence_ratio() {
     reduce();
@@ -336,7 +350,7 @@ namespace libsemigroups::detail {
               rewrite_no_reduce(word1);
               rewrite_no_reduce(word2);
               if (word1 != word2) {
-                set_cached_confluent(tril::FALSE);
+                RewritingSystemBase::set_cached_confluent(tril::FALSE);
                 confluence_ratio.first--;
               }
             }
@@ -351,7 +365,7 @@ namespace libsemigroups::detail {
   // RewritingSystemSet --- Reporting
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemSet<ReductionOrder>::report_checking_confluence(
       std::atomic_uint64_t const&                           seen,
       std::chrono::high_resolution_clock::time_point const& start_time) const {
@@ -380,30 +394,30 @@ namespace libsemigroups::detail {
   // RewritingSystemTrie - constructors + initializers
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>::RewritingSystemTrie()
-      : RewritingSystemBase(),
+      : RewritingSystemBaseWithOrder_(),
         _new_rule_trie(),
         _rule_trie(0),
         _ticker_running(false),
         _trie_nodes_visited_indices() {}
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>&
   RewritingSystemTrie<ReductionOrder>::init() {
     // Do nothing to _trie_nodes_visited_indices, or _new_rule_trie
-    RewritingSystemBase::init();
+    RewritingSystemBaseWithOrder_::init();
     _rule_trie.init();
     _ticker_running = false;
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>&
   RewritingSystemTrie<ReductionOrder>::operator=(
       RewritingSystemTrie const& that) {
     init();
-    RewritingSystemBase::operator=(that);
+    RewritingSystemBaseWithOrder_::operator=(that);
     // Cannot just copy the _rule_trie because the values in it are Rule* which
     // would then point at Rule objects in "that" not "this".
     _rule_trie.init().increase_alphabet_size_by(
@@ -414,7 +428,7 @@ namespace libsemigroups::detail {
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>::~RewritingSystemTrie() = default;
 
   ////////////////////////////////////////////////////////////////////////
@@ -423,7 +437,7 @@ namespace libsemigroups::detail {
 
   // TODO(1) this is identical in RewritingSystemTrie/Set maybe should be in
   // Base?
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   template <typename Iterator>
   RewritingSystemTrie<ReductionOrder>&
   RewritingSystemTrie<ReductionOrder>::add_rule(Iterator first1,
@@ -432,10 +446,11 @@ namespace libsemigroups::detail {
                                                 Iterator last2) {
     if (!std::equal(first1, last1, first2, last2)) {
       Rule* rule = Rules::add_pending_rule(first1, last1, first2, last2);
-      reorder<ReductionOrder<Default>>(rule);
-      set_cached_confluent(tril::unknown);
-      if (!active_rules().empty()
-          && pending_rules().size() > settings().reduction_threshold) {
+      RewritingSystemBaseWithOrder_::reorder(rule);
+      RewritingSystemBase::set_cached_confluent(tril::unknown);
+      if (!RewritingSystemBase::active_rules().empty()
+          && RewritingSystemBase::pending_rules().size()
+                 > RewritingSystemBase::settings().reduction_threshold) {
         // If active_rules().empty(), then we don't process pending rules, to
         // allow construction of RewritingSystems to still be fast.
         reduce();
@@ -444,7 +459,7 @@ namespace libsemigroups::detail {
     return *this;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::reduce() {
     using aho_corasick_impl::begin_search_no_checks;
     using aho_corasick_impl::end_search_no_checks;
@@ -476,7 +491,7 @@ namespace libsemigroups::detail {
         rewrite_no_reduce(rule->rhs());
 
         if (rule->lhs() != rule->rhs()) {
-          reorder<ReductionOrder<Default>>(rule);
+          RewritingSystemBaseWithOrder_::reorder(rule);
           add_active_rule(rule);
           if (use_separate_trie) {
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -499,14 +514,15 @@ namespace libsemigroups::detail {
             && delta(start_time) >= std::chrono::seconds(1)) {
           _ticker_running = true;
           ticker([this, &start_time, &seen]() {
-            report_progress_from_thread(seen, start_time);
+            RewritingSystemBase::report_progress_from_thread(seen, start_time);
           });
         }
       }
 
       if (rules_added_this_pass) {
-        ValueGuard sg(_state);
-        _state = State::reducing_pending_rules;
+        ValueGuard sg(RewritingSystemBase::_state);
+        RewritingSystemBase::_state
+            = RewritingSystemBase::State::reducing_pending_rules;
 
         Trie* new_rule_trie = use_separate_trie ? &_new_rule_trie : &_rule_trie;
 
@@ -540,7 +556,8 @@ namespace libsemigroups::detail {
               && delta(start_time) >= std::chrono::seconds(1)) {
             _ticker_running = true;
             ticker([this, &start_time, &seen]() {
-              report_progress_from_thread(seen, start_time);
+              RewritingSystemBase::report_progress_from_thread(seen,
+                                                               start_time);
             });
           }
         }
@@ -550,7 +567,7 @@ namespace libsemigroups::detail {
     return rules_added;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::rewrite(native_word_type& v) {
     reduce();
     rewrite_no_reduce(v);
@@ -560,25 +577,25 @@ namespace libsemigroups::detail {
   // RewritingSystemTrie --- Private member functions
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::add_active_rule(Rule* new_rule) {
     // Must check negation here so we can use ReturnFalse to mean "no order"
-    LIBSEMIGROUPS_ASSERT(
-        !ReductionOrder<Default>{}(new_rule->lhs(), new_rule->rhs()));
+    LIBSEMIGROUPS_ASSERT(!RewritingSystemBaseWithOrder_::order()(
+        new_rule->lhs(), new_rule->rhs()));
     Rules::add_active_rule(new_rule);
     _rule_trie.emplace_no_checks(
         new_rule->lhs().cbegin(), new_rule->lhs().cend(), new_rule);
-    set_cached_confluent(tril::unknown);
+    RewritingSystemBase::set_cached_confluent(tril::unknown);
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   typename RewritingSystemTrie<ReductionOrder>::iterator
   RewritingSystemTrie<ReductionOrder>::make_active_rule_pending(iterator it) {
     _rule_trie.erase_no_checks((*it)->lhs());
     return Rules::make_active_rule_pending(it);
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::rewrite_no_reduce(
       native_word_type& v) const {
     // fmt::print("Rewriting {} -> ", to_printable(v));
@@ -697,7 +714,7 @@ namespace libsemigroups::detail {
   // TODO(1): Consider moving this into RewriterBase so that it can be used by
   // RewritingSystemSet. This would require making <rewrite_no_reduce> a virtual
   // function, so maybe we don't want to do this.
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::overlap_confluent(
       Rule const*       rule1,
       Rule const*       rule2,
@@ -728,11 +745,11 @@ namespace libsemigroups::detail {
       return true;
     }
 
-    set_cached_confluent(tril::FALSE);
+    RewritingSystemBase::set_cached_confluent(tril::FALSE);
     return false;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::descendants_confluent(
       Rule const* rule1,
       index_type  current_node,
@@ -765,7 +782,7 @@ namespace libsemigroups::detail {
   }
 
   // TODO(1): Remove duplication with descendants_confluent
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   std::pair<size_t, size_t>
   RewritingSystemTrie<ReductionOrder>::number_descendants_confluent(
       Rule const* rule1,
@@ -800,7 +817,7 @@ namespace libsemigroups::detail {
     return confluence_fraction;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::confluent_impl(
       std::atomic_uint64_t& seen) {
     using std::chrono::time_point;
@@ -809,7 +826,7 @@ namespace libsemigroups::detail {
     reduce();
 
     index_type link;
-    set_cached_confluent(tril::TRUE);
+    RewritingSystemBase::set_cached_confluent(tril::TRUE);
 
     // For each rule, check if any descendent of any suffix breaks
     // confluence
@@ -823,7 +840,7 @@ namespace libsemigroups::detail {
         if (!descendants_confluent(_rule_trie.node_no_checks(*node_it).value(),
                                    link,
                                    _rule_trie.node_no_checks(link).height())) {
-          set_cached_confluent(tril::FALSE);
+          RewritingSystemBase::set_cached_confluent(tril::FALSE);
           report_checking_confluence(seen, start_time);
           return false;
         }
@@ -835,7 +852,7 @@ namespace libsemigroups::detail {
     return true;
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   std::pair<size_t, size_t>
   RewritingSystemTrie<ReductionOrder>::confluence_ratio() {
     std::pair<size_t, size_t> confluence_fraction{0, 0};
@@ -868,7 +885,7 @@ namespace libsemigroups::detail {
   // RewritingSystemTrie --- Reporting
   ////////////////////////////////////////////////////////////////////////
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::report_checking_confluence(
       std::atomic_uint64_t const&                           seen,
       std::chrono::high_resolution_clock::time_point const& start_time) const {
@@ -891,7 +908,7 @@ namespace libsemigroups::detail {
     }
   }
 
-  template <template <typename> typename ReductionOrder>
+  template <template <typename, bool> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::report_reducing_rules(
       std::atomic_uint64_t const&                           seen,
       std::chrono::high_resolution_clock::time_point const& start_time) const {

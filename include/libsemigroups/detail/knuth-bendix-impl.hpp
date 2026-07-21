@@ -144,6 +144,7 @@ namespace libsemigroups {
       using rule_const_reference =
           typename RewritingSystem::rule_const_reference;
       using rewriting_system_type = RewritingSystem;
+      using reduction_order       = typename RewritingSystem::reduction_order;
 
       //////////////////////////////////////////////////////////////////////////
       // Nested classes - public
@@ -218,16 +219,34 @@ namespace libsemigroups {
 
       ~KnuthBendixImpl();
 
+      template <typename... Args>
       KnuthBendixImpl(congruence_kind                       knd,
-                      Presentation<native_word_type> const& p);
+                      Presentation<native_word_type> const& p,
+                      Args&&... args)
+          : KnuthBendixImpl() {
+        init(knd, p, std::forward<Args>(args)...);
+      }
 
+      template <typename... Args>
       KnuthBendixImpl& init(congruence_kind                       knd,
-                            Presentation<native_word_type> const& p);
+                            Presentation<native_word_type> const& p,
+                            Args&&... args) {
+        // Call rvalue ref init
+        return init(knd, Presentation(p), std::forward<Args>(args)...);
+      }
 
-      KnuthBendixImpl(congruence_kind knd, Presentation<native_word_type>&& p);
+      template <typename... Args>
+      KnuthBendixImpl(congruence_kind                  knd,
+                      Presentation<native_word_type>&& p,
+                      Args&&... args)
+          : KnuthBendixImpl() {
+        init(knd, std::move(p), std::forward<Args>(args)...);
+      }
 
+      template <typename... Args>
       KnuthBendixImpl& init(congruence_kind                  knd,
-                            Presentation<native_word_type>&& p);
+                            Presentation<native_word_type>&& p,
+                            Args&&... args);
 
       // TODO(1) construct/init from kind and KnuthBendixImpl const&, for
       // consistency with ToddCoxeterImpl
@@ -868,7 +887,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   std::ostream&
   operator<<(std::ostream&                                             os,
@@ -900,7 +919,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Word,
             typename RewritingSystem,
-            template <typename>
+            template <typename, bool>
             typename ReductionOrder>
   std::string to_human_readable_repr(
       KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);

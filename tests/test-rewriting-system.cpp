@@ -23,6 +23,7 @@
 #include <ostream>      // for basic_ostream
 #include <string>       // for basic_string
 #include <string_view>  // for literals
+#include <type_traits>  // for is_same_v
 #include <utility>      // for pair, forward
 #include <vector>       // for vector, operat...
 
@@ -67,7 +68,7 @@ namespace libsemigroups {
 
   namespace detail {
 
-    template <typename = Default>
+    template <typename = Default, bool = false>
     using NoOrder = ReturnFalse;
 
     using string_type = RewritingSystemTrie<LenLexCmp>::native_word_type;
@@ -507,6 +508,57 @@ namespace libsemigroups {
       REQUIRE(rws.confluence_ratio() == std::pair<size_t, size_t>{1, 3});
       REQUIRE(rws.confluent_known());
       REQUIRE(!rws.confluent());
+    }
+
+    LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
+                                     "017",
+                                     "WtLenLex",
+                                     "[quick]",
+                                     RewritingSystemSet<WtLenLexCmp>,
+                                     RewritingSystemTrie<WtLenLexCmp>) {
+      auto rg         = ReportGuard(false);
+      using rule_type = std::pair<std::string, std::string>;
+
+      TestType rws;
+      rws.increase_alphabet_size_by(2);
+      rws.init();
+      rws.order().init(std::vector<size_t>({1, 1}));
+      rewriting_system::add_rule(rws, "aab"_w, "bb"_w);
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::to_vector())
+              == std::vector<rule_type>({{{0, 0, 1}, {1, 1}}}));
+
+      rws.init();
+      rws.order().init({1, 3});
+      rws.increase_alphabet_size_by(2);
+      rewriting_system::add_rule(rws, "aab"_w, "bb"_w);
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::to_vector())
+              == std::vector<rule_type>({{{1, 1}, {0, 0, 1}}}));
+    }
+
+    LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
+                                     "018",
+                                     "Wreath",
+                                     "[quick]",
+                                     RewritingSystemSet<WreathCmp>,
+                                     RewritingSystemTrie<WreathCmp>) {
+      auto rg         = ReportGuard(false);
+      using rule_type = std::pair<std::string, std::string>;
+
+      static_assert(std::is_same_v<typename TestType::reduction_order,
+                                   WreathCmp<Default, false>>);
+
+      TestType rws;
+      rws.increase_alphabet_size_by(3);
+      rws.order().init({0, 0, 1});
+      rewriting_system::add_rule(rws, "ac"_w, "bc"_w);
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::to_vector())
+              == std::vector<rule_type>({{{1, 2}, {0, 2}}}));
     }
   }  // namespace detail
 }  // namespace libsemigroups
