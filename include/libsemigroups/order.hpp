@@ -84,11 +84,7 @@ namespace libsemigroups {
     //! (Definition 1.2.14, page 24).
     //!
     //! \deprecated_warning{value} Use \ref Order::rpo instead.
-    recursive [[deprecated("Use rpo instead!")]] = rev_rpo,
-
-    //! The wreath ordering, as described in \cite Sims1994aa
-    //! (Section 3.8, page 138)
-    wreath
+    recursive [[deprecated("Use rpo instead!")]] = rev_rpo
   };
 
   //! \defgroup orders_group Orders

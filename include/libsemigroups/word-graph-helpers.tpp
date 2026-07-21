@@ -65,7 +65,7 @@ namespace libsemigroups {
       namespace detail {
         template <typename Node>
         // TODO rename to _no_checks and add a checks version?
-        bool is_shortlex_standardized(WordGraphView<Node> const& wg) {
+        bool is_lenlex_standardized(WordGraphView<Node> const& wg) {
           Node current_max_node = 0;
 
           for (auto s : wg.nodes_no_checks()) {
@@ -85,7 +85,7 @@ namespace libsemigroups {
         }
 
         template <typename Node>
-        bool is_wreath_standardized(WordGraphView<Node> const& wg) {
+        bool is_rev_rpo_standardized(WordGraphView<Node> const& wg) {
           using node_type = typename WordGraphView<Node>::node_type;
 
           auto const N = wg.number_of_nodes_no_checks();
@@ -208,7 +208,7 @@ namespace libsemigroups {
         // For best performance ensure that <f> has the correct number of nodes
         // when calling this function.
         template <typename Graph>
-        bool shortlex_standardize(Graph& wg, Forest& f) {
+        bool lenlex_standardize(Graph& wg, Forest& f) {
           LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
           LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
 
@@ -262,7 +262,7 @@ namespace libsemigroups {
         }
 
         template <typename Graph>
-        bool wreath_standardize(Graph& wg, Forest& f) {
+        bool rev_rpo_standardize(Graph& wg, Forest& f) {
           LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
           LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
 
@@ -277,7 +277,7 @@ namespace libsemigroups {
         // Follow Sims' WREATH_STND literally: each letter keeps its own
         // cursor, and every discovery restarts the sweep from the first
         // letter so earlier frontier words are handled first.
-        start_wreath_standardize_search:
+        start_rev_rpo_standardize_search:
           for (label_type x = 0; x < n; ++x) {
             while (next_node[x] <= standardizer.largest_used_node()) {
               node_type const s = next_node[x];
@@ -287,7 +287,7 @@ namespace libsemigroups {
                 if (standardizer.stop_early()) {
                   return standardizer.standardize();
                 }
-                goto start_wreath_standardize_search;
+                goto start_rev_rpo_standardize_search;
               }
             }
           }
@@ -296,7 +296,7 @@ namespace libsemigroups {
         }
 
         template <typename Graph>
-        bool recursive_standardize(Graph& wg, Forest& f) {
+        bool rpo_standardize(Graph& wg, Forest& f) {
           LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
           LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
 
@@ -503,14 +503,13 @@ namespace libsemigroups {
           case Order::none:
             return false;
           case Order::lenlex:
-            return detail::shortlex_standardize(wg, f);
+            return detail::lenlex_standardize(wg, f);
           case Order::lex:
             return detail::lex_standardize(wg, f);
           case Order::rpo:
-            return detail::recursive_standardize(wg, f);
-          case Order::wreath:
-            return detail::wreath_standardize(wg, f);
+            return detail::rpo_standardize(wg, f);
           case Order::rev_rpo:
+            return detail::rev_rpo_standardize(wg, f);
             // Intentional fall-through
           default:
             return false;
@@ -523,12 +522,11 @@ namespace libsemigroups {
           case Order::none:
             return true;
           case Order::lenlex:
-            return detail::is_shortlex_standardized(wg);
-          case Order::wreath:
-            return detail::is_wreath_standardized(wg);
+            return detail::is_lenlex_standardized(wg);
+          case Order::rev_rpo:
+            return detail::is_rev_rpo_standardized(wg);
           case Order::lex:
           case Order::rpo:
-          case Order::rev_rpo:
           default:
             LIBSEMIGROUPS_EXCEPTION("not yet implemented")
         }

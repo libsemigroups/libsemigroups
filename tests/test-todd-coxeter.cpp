@@ -186,7 +186,7 @@ namespace libsemigroups {
       Order old_val   = tc.current_word_graph().standardization_order();
 
       tc.run();
-      for (auto val : {Order::lenlex, Order::lex, Order::rpo}) {
+      for (auto val : {Order::lenlex, Order::lex, Order::rpo, Order::rev_rpo}) {
         tc.standardize(val);
         REQUIRE(tc.current_word_graph().is_standardized(val));
         REQUIRE(tc.current_word_graph().is_standardized());
@@ -431,9 +431,9 @@ namespace libsemigroups {
     REQUIRE(word_of(tc, 0) == 0_w);
     REQUIRE(word_of(tc, 1) == 00_w);
     REQUIRE(word_of(tc, 2) == 1_w);
-    REQUIRE(word_of(tc, 3) == 10_w);
-    REQUIRE(word_of(tc, 4) == 100_w);
-    REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp{}));
+    REQUIRE(word_of(tc, 3) == 01_w);
+    REQUIRE(word_of(tc, 4) == 001_w);
+    REQUIRE(is_sorted(normal_forms(tc), RPOCmp{}));
 
     check_normal_forms(tc, tc.number_of_classes());
   }
@@ -474,7 +474,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.finished());
 
-    tc.standardize(Order::rpo);
+    tc.standardize(Order::rev_rpo);
     REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp{}));
     REQUIRE(
         (normal_forms(tc) | take(10) | to_vector())
@@ -2604,6 +2604,8 @@ namespace libsemigroups {
     REQUIRE(!tc.finished());
     tc.standardize(Order::rpo);
     REQUIRE(!tc.finished());
+    tc.standardize(Order::rev_rpo);
+    REQUIRE(!tc.finished());
 
     section_hlt(tc);
     section_felsch(tc);
@@ -2618,6 +2620,8 @@ namespace libsemigroups {
     tc.standardize(Order::lex);
     REQUIRE(is_sorted(normal_forms(tc), LexCmp()));
     tc.standardize(Order::rpo);
+    REQUIRE(is_sorted(normal_forms(tc), RPOCmp()));
+    tc.standardize(Order::rev_rpo);
     REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp()));
   }
 
