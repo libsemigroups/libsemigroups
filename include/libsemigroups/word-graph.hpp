@@ -2605,7 +2605,7 @@ namespace libsemigroups {
     //!
     //! This function standardizes the word graph \p wg according to the
     //! reduction order specified by \p val, and replaces the contents of the
-    //! Forest \p f with a spanning tree rooted at \c 0 for the node reachable
+    //! Forest \p f with a spanning tree rooted at \c 0 for the nodes reachable
     //! from \c 0. The spanning tree corresponds to the order \p val.
     //!
     //! \tparam Graph the type of the word graph \p wg.
