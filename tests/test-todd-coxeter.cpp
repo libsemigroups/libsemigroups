@@ -5085,7 +5085,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     ReportGuard               rg(true);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ba");
     ToddCoxeter tc(twosided, p);
     tc.strategy(options::strategy::felsch);
     tc.run_until([&tc]() {
@@ -5452,5 +5452,67 @@ namespace libsemigroups {
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(tc.run_for(std::chrono::microseconds(1)),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "134",
+                          "Higman-Sims",
+                          "[todd-coxeter][fail]") {
+    using literals::            operator""_p;
+    using std::string_literals::operator""s;
+
+    Presentation<std::string> p;
+    p.alphabet("abAB");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABab");
+
+    presentation::add_rule(p, "a^2"_p, "");
+    presentation::add_rule(p, "b^5"_p, "");
+    presentation::add_rule(p, "(ab)^11"_p, "");
+    presentation::add_rule(p, "(ab^2)^10"_p, "");
+    presentation::add_rule(p, "(a,b)^5"_p, "");
+    presentation::add_rule(p, "(a,bab)^3"_p, "");
+    presentation::add_rule(p, "(a,b^2)^6"_p, "");
+    presentation::add_rule(p, "ababab^2aBaB^2aBab^2abab(aB^2)^4"_p, "");
+    presentation::add_rule(p, "ab(ab^2(aB^2)^2)^2ab^2abab^2(aBab^2)^2"_p, "");
+    presentation::add_rule(
+        p, "abab(ab^2)^2ab(aB)^2ab(ab^2)^2ababaB^2aBaB^2"_p, "");
+    presentation::add_rule(p, "(ababab^2aBaB^2ababaB)^2"_p, "");
+    presentation::add_rule(p, "(ababab^2)^2ababaBabab(ab^2)^3ababaB"_p, "");
+    presentation::add_rule(p, "ab(abab^2)^3ababab^2aBabaB^2abaBab^2"_p, "");
+
+    presentation::balance(p, "abAB"s, "ABab"s);
+    presentation::replace_subword(p, "A"s, "a"s);
+    presentation::replace_subword(p, "B"s, "bbbb"s);
+    p.alphabet("ab");
+
+    KnuthBendix kb(congruence_kind::twosided, p);
+    kb.run_for(std::chrono::microseconds(1));
+
+    ToddCoxeter tc(twosided, to<Presentation>(kb));
+    tc.lookahead_extent(options::lookahead_extent::full);
+    size_t limit = 100000000;
+
+    while (!tc.finished()) {
+      tc.run_until([&tc, &limit]() {
+        return tc.current_word_graph().number_of_nodes_active() >= limit;
+      });
+      size_t num_lookaheads = 0;
+      while (true) {
+        num_lookaheads++;
+        size_t num_nodes = tc.current_word_graph().number_of_nodes_active();
+        tc.perform_lookahead();
+        size_t diff
+            = num_nodes - tc.current_word_graph().number_of_nodes_active();
+        if (diff <= 1000000) {
+          break;
+        }
+        if (num_lookaheads == 1) {
+          tc.standardize(Order::lenlex);
+          tc.perform_lookbehind();
+          limit *= 1.1;
+        }
+      }
+    }
   }
 }  // namespace libsemigroups
