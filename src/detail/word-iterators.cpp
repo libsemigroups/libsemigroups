@@ -125,6 +125,7 @@ namespace libsemigroups {
           _current.pop_back();
         }
         _current.resize((_current.empty() ? n + 1 : n), 0);
+        // TODO lenlex_cmp -> lenlex_cmp_no_checks
         if (!lenlex_cmp(_current, _last)) {
           _index = UNDEFINED;
         }
