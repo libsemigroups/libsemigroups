@@ -128,7 +128,7 @@ namespace libsemigroups {
       }
       // Permute the rows themselves
       detail::dynamic_array2::apply_row_permutation_no_checks(
-          p, this->_dynamic_array_2, _preim_init, _preim_next);
+          q, this->_dynamic_array_2, _preim_init, _preim_next);
     }
 
     template <typename Node>
