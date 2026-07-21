@@ -654,6 +654,8 @@ namespace libsemigroups {
     return lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
+  // TODO there's no no_checks version of lenlex_cmp for two objects
+
   //! \brief Compare two objects using len-lex with respect to an alphabet.
   //!
   //! This overload checks that both objects contain only letters belonging to
