@@ -1341,7 +1341,7 @@ namespace libsemigroups {
       }
     }
     // Permute the rows themselves
-    detail::dynamic_array2::apply_row_permutation_no_checks(p,
+    detail::dynamic_array2::apply_row_permutation_no_checks(q,
                                                             _dynamic_array_2);
     return *this;
   }
