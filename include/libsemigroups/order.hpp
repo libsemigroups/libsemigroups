@@ -4222,6 +4222,265 @@ namespace libsemigroups {
   template <typename Word>
   WtLexCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WtLexCmp<Word>;
 
+  //////////////////////////////////////////////////////////////////////
+  // Reversed weighted lex
+  //////////////////////////////////////////////////////////////////////
+
+  //! \brief Compare two ranges using reversed weighted lex without checks.
+  //!
+  //! This function applies \ref wt_lex_cmp_no_checks to the ranges read from
+  //! right to left.
+  template <typename Iterator>
+  [[nodiscard]] bool
+  rev_wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                           Iterator                   first1,
+                           Iterator                   last1,
+                           Iterator                   first2,
+                           Iterator                   last2) {
+    return wt_lex_cmp_no_checks(weights,
+                                std::make_reverse_iterator(last1),
+                                std::make_reverse_iterator(first1),
+                                std::make_reverse_iterator(last2),
+                                std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two ranges using reversed weighted lex without checks and
+  //! with a specified alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool
+  rev_wt_lex_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                           std::vector<size_t> const& weights,
+                           Iterator                   first1,
+                           Iterator                   last1,
+                           Iterator                   first2,
+                           Iterator                   last2) {
+    return wt_lex_cmp_no_checks(alphabet,
+                                weights,
+                                std::make_reverse_iterator(last1),
+                                std::make_reverse_iterator(first1),
+                                std::make_reverse_iterator(last2),
+                                std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two objects using reversed weighted lex without checks.
+  template <typename Word>
+  [[nodiscard]] bool
+  rev_wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                           Word const&                x,
+                           Word const&                y) {
+    return rev_wt_lex_cmp_no_checks(
+        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects using reversed weighted lex without checks and
+  //! with a specified alphabet.
+  template <typename Word>
+  [[nodiscard]] bool
+  rev_wt_lex_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                           std::vector<size_t> const& weights,
+                           Word const&                x,
+                           Word const&                y) {
+    return rev_wt_lex_cmp_no_checks(
+        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two ranges using reversed weighted lex and check validity.
+  template <typename Iterator>
+  [[nodiscard]] bool rev_wt_lex_cmp(std::vector<size_t> const& weights,
+                                    Iterator                   first1,
+                                    Iterator                   last1,
+                                    Iterator                   first2,
+                                    Iterator                   last2) {
+    return wt_lex_cmp(weights,
+                      std::make_reverse_iterator(last1),
+                      std::make_reverse_iterator(first1),
+                      std::make_reverse_iterator(last2),
+                      std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two ranges using reversed weighted lex and a specified
+  //! alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_wt_lex_cmp(Alphabet<Word> const&      alphabet,
+                                    std::vector<size_t> const& weights,
+                                    Iterator                   first1,
+                                    Iterator                   last1,
+                                    Iterator                   first2,
+                                    Iterator                   last2) {
+    return wt_lex_cmp(alphabet,
+                      weights,
+                      std::make_reverse_iterator(last1),
+                      std::make_reverse_iterator(first1),
+                      std::make_reverse_iterator(last2),
+                      std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two objects using reversed weighted lex and check
+  //! validity.
+  template <typename Word>
+  [[nodiscard]] bool rev_wt_lex_cmp(std::vector<size_t> const& weights,
+                                    Word const&                x,
+                                    Word const&                y) {
+    return rev_wt_lex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects using reversed weighted lex and a specified
+  //! alphabet.
+  template <typename Word>
+  [[nodiscard]] bool rev_wt_lex_cmp(Alphabet<Word> const&      alphabet,
+                                    std::vector<size_t> const& weights,
+                                    Word const&                x,
+                                    Word const&                y) {
+    return rev_wt_lex_cmp(
+        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Forward declaration of \ref RevWtLexCmp.
+  template <typename Word = Default, bool check = true>
+  class RevWtLexCmp;
+
+  //! \brief Stateful reversed weighted lex comparison functor.
+  template <typename Word, bool check>
+  class RevWtLexCmp {
+    WtLexCmp<Word, check> _wt_lex;
+
+   public:
+    RevWtLexCmp()                              = delete;
+    RevWtLexCmp(RevWtLexCmp const&)            = default;
+    RevWtLexCmp(RevWtLexCmp&&)                 = default;
+    RevWtLexCmp& operator=(RevWtLexCmp const&) = default;
+    RevWtLexCmp& operator=(RevWtLexCmp&&)      = default;
+    ~RevWtLexCmp()                             = default;
+
+    //! \brief Construct from an alphabet and weights vector.
+    RevWtLexCmp(Alphabet<Word> const&      alphabet,
+                std::vector<size_t> const& weights)
+        : _wt_lex(alphabet, weights) {}
+
+    //! \brief Construct from an alphabet and weights vector rvalues.
+    RevWtLexCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& weights)
+        : _wt_lex(std::move(alphabet), std::move(weights)) {}
+
+    //! \brief Reinitialize from an alphabet and weights vector.
+    RevWtLexCmp& init(Alphabet<Word> const&      alphabet,
+                      std::vector<size_t> const& weights) {
+      _wt_lex.init(alphabet, weights);
+      return *this;
+    }
+
+    //! \brief Reinitialize from alphabet and weights vector rvalues.
+    RevWtLexCmp& init(Alphabet<Word>&&      alphabet,
+                      std::vector<size_t>&& weights) {
+      _wt_lex.init(std::move(alphabet), std::move(weights));
+      return *this;
+    }
+
+    //! \brief Compare two words using reversed weighted lex.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    //! \brief Compare two iterator ranges using reversed weighted lex.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return _wt_lex(std::make_reverse_iterator(last1),
+                     std::make_reverse_iterator(first1),
+                     std::make_reverse_iterator(last2),
+                     std::make_reverse_iterator(first2));
+    }
+
+    //! \brief Returns the alphabet.
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _wt_lex.alphabet();
+    }
+
+    //! \brief Returns the weights.
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _wt_lex.weights();
+    }
+  };  // class RevWtLexCmp
+
+  //! \brief Reversed weighted lex comparison functor using index words.
+  template <bool check>
+  class RevWtLexCmp<Default, check> {
+    WtLexCmp<Default, check> _wt_lex;
+
+   public:
+    RevWtLexCmp()                              = default;
+    RevWtLexCmp(RevWtLexCmp const&)            = default;
+    RevWtLexCmp(RevWtLexCmp&&)                 = default;
+    RevWtLexCmp& operator=(RevWtLexCmp const&) = default;
+    RevWtLexCmp& operator=(RevWtLexCmp&&)      = default;
+    ~RevWtLexCmp()                             = default;
+
+    //! \brief Construct from a weights vector.
+    explicit RevWtLexCmp(std::vector<size_t> const& weights)
+        : _wt_lex(weights) {}
+
+    //! \brief Construct from a weights vector rvalue.
+    explicit RevWtLexCmp(std::vector<size_t>&& weights)
+        : _wt_lex(std::move(weights)) {}
+
+    //! \brief Reinitialize with an empty weights vector.
+    RevWtLexCmp& init() noexcept {
+      _wt_lex.init();
+      return *this;
+    }
+
+    //! \brief Reinitialize from a weights vector.
+    RevWtLexCmp& init(std::vector<size_t> const& weights) {
+      _wt_lex.init(weights);
+      return *this;
+    }
+
+    //! \brief Reinitialize from a weights vector rvalue.
+    RevWtLexCmp& init(std::vector<size_t>&& weights) {
+      _wt_lex.init(std::move(weights));
+      return *this;
+    }
+
+    //! \brief Compare two words using reversed weighted lex.
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    //! \brief Compare two iterator ranges using reversed weighted lex.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return _wt_lex(std::make_reverse_iterator(last1),
+                     std::make_reverse_iterator(first1),
+                     std::make_reverse_iterator(last2),
+                     std::make_reverse_iterator(first2));
+    }
+
+    //! \brief Returns the weights.
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _wt_lex.weights();
+    }
+  };  // class RevWtLexCmp<Default, check>
+
+  //! \brief Deduction guide from a weights vector.
+  RevWtLexCmp(std::vector<size_t> const&)->RevWtLexCmp<>;
+
+  //! \brief Deduction guide from a weights vector rvalue.
+  RevWtLexCmp(std::vector<size_t>&&)->RevWtLexCmp<>;
+
+  //! \brief Deduction guide from an alphabet and weights vector.
+  template <typename Word>
+  RevWtLexCmp(Alphabet<Word> const&, std::vector<size_t> const&)
+      -> RevWtLexCmp<Word>;
+
+  //! \brief Deduction guide from alphabet and weights vector rvalues.
+  template <typename Word>
+  RevWtLexCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> RevWtLexCmp<Word>;
+
 #include "order-deprecated.hpp"
 
   // end orders_group
@@ -4327,6 +4586,10 @@ namespace libsemigroups {
     //! Specialization of \ref is_well_founded for \ref WtLexCmp.
     template <bool check>
     struct is_well_founded<WtLexCmp<Default, check>> : std::true_type {};
+
+    //! \brief Reversed weighted lex order is well-founded.
+    template <bool check>
+    struct is_well_founded<RevWtLexCmp<Default, check>> : std::true_type {};
 
     //! \brief Helper variable template for \ref is_well_founded.
     //!
