@@ -1747,7 +1747,7 @@ namespace libsemigroups {
     REQUIRE(move_assigned.weights() == ba_weights);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+  LIBSEMIGROUPS_TEST_CASE("wr_cmp",
                           "058",
                           "object and iterator overloads",
                           "[quick][order]") {
@@ -1756,13 +1756,13 @@ namespace libsemigroups {
     word_type           x      = {0, 2};
     word_type           y      = {1, 2};
 
-    REQUIRE(wreath_cmp(levels, x, y));
-    REQUIRE(!wreath_cmp(levels, y, x));
-    REQUIRE(wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend()));
-    REQUIRE(wreath_cmp(levels, x, y) == wreath_cmp_no_checks(levels, x, y));
+    REQUIRE(wr_cmp(levels, x, y));
+    REQUIRE(!wr_cmp(levels, y, x));
+    REQUIRE(wr_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend()));
+    REQUIRE(wr_cmp(levels, x, y) == wr_cmp_no_checks(levels, x, y));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+  LIBSEMIGROUPS_TEST_CASE("wr_cmp",
                           "059",
                           "invalid letters",
                           "[quick][order]") {
@@ -1772,19 +1772,16 @@ namespace libsemigroups {
     word_type           invalid = {0, 2};
 
     REQUIRE_EXCEPTION_MSG(
-        std::ignore = wreath_cmp(levels, invalid, valid),
+        std::ignore = wr_cmp(levels, invalid, valid),
         "letter value not compatible with levels, expected value in [0, 2), "
         "found 2 in position 1");
     REQUIRE_EXCEPTION_MSG(
-        std::ignore = wreath_cmp(levels, valid, invalid),
+        std::ignore = wr_cmp(levels, valid, invalid),
         "letter value not compatible with levels, expected value in [0, 2), "
         "found 2 in position 1");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
-                          "060",
-                          "with alphabet",
-                          "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("wr_cmp", "060", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
     auto                rg = ReportGuard(false);
@@ -1793,31 +1790,31 @@ namespace libsemigroups {
     auto                b      = "b"s;
     auto                a      = "a"s;
 
-    REQUIRE(wreath_cmp_no_checks(alphabet, levels, b, a));
-    REQUIRE(wreath_cmp_no_checks(
+    REQUIRE(wr_cmp_no_checks(alphabet, levels, b, a));
+    REQUIRE(wr_cmp_no_checks(
         alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
-    REQUIRE(wreath_cmp(alphabet, levels, b, a));
-    REQUIRE(wreath_cmp(
-        alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
-    REQUIRE(!wreath_cmp(alphabet, levels, a, b));
+    REQUIRE(wr_cmp(alphabet, levels, b, a));
+    REQUIRE(
+        wr_cmp(alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(!wr_cmp(alphabet, levels, a, b));
 
     std::vector<size_t> short_levels = {0};
     REQUIRE_EXCEPTION_MSG(
-        std::ignore = wreath_cmp(alphabet, short_levels, a, b),
+        std::ignore = wr_cmp(alphabet, short_levels, a, b),
         "letter value not compatible with levels, expected value in [0, 1), "
         "found 1 in position 0");
-    REQUIRE_THROWS_AS(wreath_cmp(alphabet, levels, "c"s, b),
+    REQUIRE_THROWS_AS(wr_cmp(alphabet, levels, "c"s, b),
                       LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
                                    "061",
-                                   "wreath alphabet ctors",
+                                   "wr alphabet ctors",
                                    "[quick][order]",
-                                   WreathCmp<std::string>,
-                                   (WreathCmp<std::string, false>),
-                                   RevWreathCmp<std::string>,
-                                   (RevWreathCmp<std::string, false>) ) {
+                                   WrCmp<std::string>,
+                                   (WrCmp<std::string, false>),
+                                   RevWrCmp<std::string>,
+                                   (RevWrCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1864,12 +1861,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
                                    "062",
-                                   "wreath default ctors",
+                                   "wr default ctors",
                                    "[quick][order]",
-                                   WreathCmp<>,
-                                   (WreathCmp<Default, false>),
-                                   RevWreathCmp<>,
-                                   (RevWreathCmp<Default, false>) ) {
+                                   WrCmp<>,
+                                   (WrCmp<Default, false>),
+                                   RevWrCmp<>,
+                                   (RevWrCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     TestType default_constructed;
@@ -1910,7 +1907,7 @@ namespace libsemigroups {
     REQUIRE(copy_assigned.levels().empty());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
+  LIBSEMIGROUPS_TEST_CASE("WrCmp",
                           "063",
                           "deduction guides and checks",
                           "[quick][order]") {
@@ -1920,17 +1917,17 @@ namespace libsemigroups {
     Alphabet<std::string> alphabet("ba"s);
     std::vector<size_t>   levels = {0, 0};
 
-    static_assert(std::is_same_v<decltype(WreathCmp(levels)), WreathCmp<>>);
-    static_assert(std::is_same_v<decltype(WreathCmp(alphabet, levels)),
-                                 WreathCmp<std::string>>);
-    static_assert(order::is_well_founded_v<WreathCmp<>>);
-    static_assert(order::is_well_founded_v<WreathCmp<Default, false>>);
+    static_assert(std::is_same_v<decltype(WrCmp(levels)), WrCmp<>>);
+    static_assert(
+        std::is_same_v<decltype(WrCmp(alphabet, levels)), WrCmp<std::string>>);
+    static_assert(order::is_well_founded_v<WrCmp<>>);
+    static_assert(order::is_well_founded_v<WrCmp<Default, false>>);
 
-    WreathCmp checked(alphabet, levels);
+    WrCmp checked(alphabet, levels);
     REQUIRE_THROWS_AS(checked("c"s, "b"s), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
+  LIBSEMIGROUPS_TEST_CASE("WrCmp",
                           "064",
                           "explicit order tests",
                           "[quick][order]") {
@@ -1938,7 +1935,7 @@ namespace libsemigroups {
 
     Alphabet            alphabet("bac"s);
     std::vector<size_t> levels = {1, 1, 0};
-    WreathCmp           cmp{alphabet, levels};
+    WrCmp               cmp{alphabet, levels};
 
     REQUIRE(cmp("cbcc"s, "ccbc"s));
     REQUIRE(cmp("ac"s, "ca"s));
@@ -1952,12 +1949,12 @@ namespace libsemigroups {
     REQUIRE(cmp("a"s, "ababac"s));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WreathCmp", "065", "total order", "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("WrCmp", "065", "total order", "[quick][order]") {
     using std::string_literals::operator""s;
 
     Alphabet            alphabet("bac"s);
     std::vector<size_t> levels = {1, 1, 0};
-    WreathCmp           cmp{alphabet, levels};
+    WrCmp               cmp{alphabet, levels};
 
     std::vector<std::string> strings{
         "cbcb"s, "abac"s, "cb"s,   "baac"s, "cccb"s, "cbb"s,  "abb"s,  "cbca"s,
@@ -2004,10 +2001,7 @@ namespace libsemigroups {
                  "aaab"s, "aaaa"s}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
-                          "066",
-                          "generalisation",
-                          "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("WrCmp", "066", "generalisation", "[quick][order]") {
     using std::string_literals::operator""s;
 
     std::vector<std::string> strings{
@@ -2030,7 +2024,7 @@ namespace libsemigroups {
 
     Alphabet            alphabet("bac"s);
     std::vector<size_t> levels = {0, 0, 0};
-    WreathCmp           cmp{alphabet, levels};
+    WrCmp               cmp{alphabet, levels};
 
     std::sort(
         strings.begin(),
@@ -2238,7 +2232,7 @@ namespace libsemigroups {
     static_assert(order::is_well_founded_v<RevWtLexCmp<>>);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("RevWreathCmp",
+  LIBSEMIGROUPS_TEST_CASE("RevWrCmp",
                           "071",
                           "functions and functors",
                           "[quick][order]") {
@@ -2249,46 +2243,42 @@ namespace libsemigroups {
     word_type           ba      = {1, 0};
     word_type           invalid = {2};
 
-    REQUIRE(rev_wreath_cmp_no_checks(levels, ba, ab));
-    REQUIRE(rev_wreath_cmp_no_checks(
+    REQUIRE(rev_wr_cmp_no_checks(levels, ba, ab));
+    REQUIRE(rev_wr_cmp_no_checks(
         levels, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
-    REQUIRE(rev_wreath_cmp(levels, ba, ab));
-    REQUIRE(
-        rev_wreath_cmp(levels, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
-    REQUIRE(RevWreathCmp(levels)(ba, ab));
-    REQUIRE(RevWreathCmp<Default, false>(levels)(ba, ab));
+    REQUIRE(rev_wr_cmp(levels, ba, ab));
+    REQUIRE(rev_wr_cmp(levels, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(RevWrCmp(levels)(ba, ab));
+    REQUIRE(RevWrCmp<Default, false>(levels)(ba, ab));
 
     Alphabet alphabet("ab"s);
     auto     string_ab = "ab"s;
     auto     string_ba = "ba"s;
-    REQUIRE(rev_wreath_cmp_no_checks(alphabet, levels, string_ba, string_ab));
-    REQUIRE(rev_wreath_cmp_no_checks(alphabet,
-                                     levels,
-                                     string_ba.cbegin(),
-                                     string_ba.cend(),
-                                     string_ab.cbegin(),
-                                     string_ab.cend()));
-    REQUIRE(rev_wreath_cmp(alphabet, levels, string_ba, string_ab));
-    REQUIRE(rev_wreath_cmp(alphabet,
-                           levels,
-                           string_ba.cbegin(),
-                           string_ba.cend(),
-                           string_ab.cbegin(),
-                           string_ab.cend()));
-    REQUIRE(RevWreathCmp(alphabet, levels)(string_ba, string_ab));
-    REQUIRE(RevWreathCmp<std::string, false>(alphabet, levels)(string_ba,
-                                                               string_ab));
+    REQUIRE(rev_wr_cmp_no_checks(alphabet, levels, string_ba, string_ab));
+    REQUIRE(rev_wr_cmp_no_checks(alphabet,
+                                 levels,
+                                 string_ba.cbegin(),
+                                 string_ba.cend(),
+                                 string_ab.cbegin(),
+                                 string_ab.cend()));
+    REQUIRE(rev_wr_cmp(alphabet, levels, string_ba, string_ab));
+    REQUIRE(rev_wr_cmp(alphabet,
+                       levels,
+                       string_ba.cbegin(),
+                       string_ba.cend(),
+                       string_ab.cbegin(),
+                       string_ab.cend()));
+    REQUIRE(RevWrCmp(alphabet, levels)(string_ba, string_ab));
+    REQUIRE(
+        RevWrCmp<std::string, false>(alphabet, levels)(string_ba, string_ab));
 
-    REQUIRE_THROWS_AS(rev_wreath_cmp(levels, invalid, ab),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(RevWreathCmp(levels)(invalid, ab),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(rev_wr_cmp(levels, invalid, ab), LibsemigroupsException);
+    REQUIRE_THROWS_AS(RevWrCmp(levels)(invalid, ab), LibsemigroupsException);
 
-    static_assert(
-        std::is_same_v<decltype(RevWreathCmp(levels)), RevWreathCmp<>>);
-    static_assert(std::is_same_v<decltype(RevWreathCmp(alphabet, levels)),
-                                 RevWreathCmp<std::string>>);
-    static_assert(order::is_well_founded_v<RevWreathCmp<>>);
+    static_assert(std::is_same_v<decltype(RevWrCmp(levels)), RevWrCmp<>>);
+    static_assert(std::is_same_v<decltype(RevWrCmp(alphabet, levels)),
+                                 RevWrCmp<std::string>>);
+    static_assert(order::is_well_founded_v<RevWrCmp<>>);
   }
 
   LIBSEMIGROUPS_TEST_CASE("len_wt_lex_cmp",

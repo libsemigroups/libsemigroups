@@ -94,6 +94,9 @@ namespace libsemigroups {
   //! templates for comparing words or strings with respect to certain reduction
   //! orderings.
   //!
+  //! \note Those orders with prefix `Rev` or `rev_` read words from right to
+  //! left, whereas those without this prefix read from left to right.
+  //!
   //! \sa \ref Order
   //!
   //! @{
@@ -2076,7 +2079,7 @@ namespace libsemigroups {
   //! \f$A_0 < B_0\f$.
   //!
   //! The implementation of this function is inspired by the source code of
-  //! \cite Holt2018aa, specifically the function `wreath_compare`.
+  //! \cite Holt2018aa, specifically the function `wr_compare`.
   //!
   //! In the case where each generator has a unique level, this function
   //! produces the same output as \ref rev_rpo_cmp. In the case where each
@@ -2106,17 +2109,17 @@ namespace libsemigroups {
   //! that every letter pointed at by the iterators is less than the
   //! length of \p levels.
   template <typename Iterator>
-  [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
-                                          Iterator                   first1,
-                                          Iterator                   last1,
-                                          Iterator                   first2,
-                                          Iterator                   last2);
+  [[nodiscard]] bool wr_cmp_no_checks(std::vector<size_t> const& levels,
+                                      Iterator                   first1,
+                                      Iterator                   last1,
+                                      Iterator                   first2,
+                                      Iterator                   last2);
 
   //! \brief Compare two ranges using the wreath-product ordering without
   //! checks and with a specified alphabet.
   //!
   //! This overload is the same as
-  //! \ref wreath_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! \ref wr_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
   //! Iterator, Iterator), except that letters are mapped to indices using
   //! \p alphabet.
   //!
@@ -2137,15 +2140,15 @@ namespace libsemigroups {
   //! \warning It is not checked that the letters belong to \p alphabet or
   //! that their indices are valid indices into \p levels.
   template <typename Word, typename Iterator>
-  [[nodiscard]] bool wreath_cmp_no_checks(Alphabet<Word> const&      alphabet,
-                                          std::vector<size_t> const& levels,
-                                          Iterator                   first1,
-                                          Iterator                   last1,
-                                          Iterator                   first2,
-                                          Iterator                   last2);
+  [[nodiscard]] bool wr_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                      std::vector<size_t> const& levels,
+                                      Iterator                   first1,
+                                      Iterator                   last1,
+                                      Iterator                   first2,
+                                      Iterator                   last2);
 
   //! \brief Compare two objects of the same type using
-  //! \ref wreath_cmp_no_checks without checks.
+  //! \ref wr_cmp_no_checks without checks.
   //!
   //! Defined in `order.hpp`.
   //!
@@ -2162,7 +2165,7 @@ namespace libsemigroups {
   //! respect to the wreath-product ordering, and \c false otherwise.
   //!
   //! \exceptions
-  //! See \ref wreath_cmp_no_checks(std::vector<size_t> const&, Iterator,
+  //! See \ref wr_cmp_no_checks(std::vector<size_t> const&, Iterator,
   //! Iterator, Iterator, Iterator).
   //!
   //! \complexity
@@ -2171,7 +2174,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code_no_test
-  //! wreath_cmp_no_checks(
+  //! wr_cmp_no_checks(
   //!   levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
@@ -2180,14 +2183,13 @@ namespace libsemigroups {
   //! letter in \p x and \p y is less than the length of \p levels.
   //!
   //! \sa
-  //! wreath_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! wr_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
   //! Iterator, Iterator).
   template <typename Thing>
-  [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
-                                          Thing const&               x,
-                                          Thing const&               y) {
-    return wreath_cmp_no_checks(
-        levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  [[nodiscard]] bool wr_cmp_no_checks(std::vector<size_t> const& levels,
+                                      Thing const&               x,
+                                      Thing const&               y) {
+    return wr_cmp_no_checks(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects using the wreath-product ordering without
@@ -2206,11 +2208,11 @@ namespace libsemigroups {
   //! \warning It is not checked that the letters in \p x and \p y belong to
   //! \p alphabet or that their indices are valid indices into \p levels.
   template <typename Word>
-  [[nodiscard]] bool wreath_cmp_no_checks(Alphabet<Word> const&      alphabet,
-                                          std::vector<size_t> const& levels,
-                                          Word const&                x,
-                                          Word const&                y) {
-    return wreath_cmp_no_checks(
+  [[nodiscard]] bool wr_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                      std::vector<size_t> const& levels,
+                                      Word const&                x,
+                                      Word const&                y) {
+    return wr_cmp_no_checks(
         alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
@@ -2221,7 +2223,7 @@ namespace libsemigroups {
   //!
   //! After checking that every letter in both ranges is a valid index into
   //! \p levels, this function performs the same comparison as
-  //! \ref wreath_cmp_no_checks.
+  //! \ref wr_cmp_no_checks.
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
@@ -2243,20 +2245,20 @@ namespace libsemigroups {
   //! and \p last1, and \f$m\f$ is the distance between \p first2 and \p last2.
   //!
   //! \sa
-  //! wreath_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
+  //! wr_cmp_no_checks(std::vector<size_t> const&, Iterator, Iterator,
   //! Iterator, Iterator).
   template <typename Iterator>
-  [[nodiscard]] bool wreath_cmp(std::vector<size_t> const& levels,
-                                Iterator                   first1,
-                                Iterator                   last1,
-                                Iterator                   first2,
-                                Iterator                   last2);
+  [[nodiscard]] bool wr_cmp(std::vector<size_t> const& levels,
+                            Iterator                   first1,
+                            Iterator                   last1,
+                            Iterator                   first2,
+                            Iterator                   last2);
 
   //! \brief Compare two ranges using the wreath-product ordering, check
   //! validity, and use a specified alphabet.
   //!
   //! This overload is the same as
-  //! \ref wreath_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! \ref wr_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
   //! Iterator), except that letters are mapped to indices using \p alphabet.
   //!
   //! \tparam Word the type of words for \p alphabet.
@@ -2276,12 +2278,12 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if a letter does not belong to
   //! \p alphabet or its index is greater than or equal to `levels.size()`.
   template <typename Word, typename Iterator>
-  [[nodiscard]] bool wreath_cmp(Alphabet<Word> const&      alphabet,
-                                std::vector<size_t> const& levels,
-                                Iterator                   first1,
-                                Iterator                   last1,
-                                Iterator                   first2,
-                                Iterator                   last2);
+  [[nodiscard]] bool wr_cmp(Alphabet<Word> const&      alphabet,
+                            std::vector<size_t> const& levels,
+                            Iterator                   first1,
+                            Iterator                   last1,
+                            Iterator                   first2,
+                            Iterator                   last2);
 
   //! \brief Compare two objects of the same type using the wreath-product
   //! ordering and check validity.
@@ -2290,7 +2292,7 @@ namespace libsemigroups {
   //!
   //! After checking that every letter in both objects is a valid index into
   //! \p levels, this function performs the same comparison as
-  //! \ref wreath_cmp_no_checks.
+  //! \ref wr_cmp_no_checks.
   //!
   //! \tparam Thing the type of the objects to be compared.
   //!
@@ -2310,17 +2312,17 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code_no_test
-  //! wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! wr_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \end_code_no_test
   //!
   //! \sa
-  //! wreath_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
+  //! wr_cmp(std::vector<size_t> const&, Iterator, Iterator, Iterator,
   //! Iterator).
   template <typename Thing>
-  [[nodiscard]] bool wreath_cmp(std::vector<size_t> const& levels,
-                                Thing const&               x,
-                                Thing const&               y) {
-    return wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  [[nodiscard]] bool wr_cmp(std::vector<size_t> const& levels,
+                            Thing const&               x,
+                            Thing const&               y) {
+    return wr_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects using the wreath-product ordering, check
@@ -2340,16 +2342,15 @@ namespace libsemigroups {
   //! belong to \p alphabet or its index is greater than or equal to
   //! `levels.size()`.
   template <typename Word>
-  [[nodiscard]] bool wreath_cmp(Alphabet<Word> const&      alphabet,
-                                std::vector<size_t> const& levels,
-                                Word const&                x,
-                                Word const&                y) {
-    return wreath_cmp(
-        alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  [[nodiscard]] bool wr_cmp(Alphabet<Word> const&      alphabet,
+                            std::vector<size_t> const& levels,
+                            Word const&                x,
+                            Word const&                y) {
+    return wr_cmp(alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //////////////////////////////////////////////////////////////////////
-  // WreathCmp
+  // WrCmp
   //////////////////////////////////////////////////////////////////////
 
   namespace detail {
@@ -2361,41 +2362,41 @@ namespace libsemigroups {
         std::string_view           msg);
   }  // namespace detail
 
-  //! \brief Forward declaration of \ref WreathCmp.
+  //! \brief Forward declaration of \ref WrCmp.
   template <typename Word = Default, bool check = true>
-  class WreathCmp;
+  class WrCmp;
 
   //! \brief Stateful wreath-product comparison functor.
   //!
   //! This class stores an alphabet and a levels vector and compares words by
-  //! applying \ref wreath_cmp with that alphabet and levels vector. The
+  //! applying \ref wr_cmp with that alphabet and levels vector. The
   //! alphabet and levels vector must have the same size.
   //!
   //! \tparam Word the word type associated with the alphabet.
   //! \tparam check whether to check that letters belong to the alphabet.
   template <typename Word, bool check>
-  class WreathCmp {
+  class WrCmp {
     Alphabet<Word>      _alphabet;
     std::vector<size_t> _levels;
 
    public:
     //! \brief Deleted default constructor.
-    WreathCmp() = delete;
+    WrCmp() = delete;
 
     //! \brief Copy constructor.
-    WreathCmp(WreathCmp const&) = default;
+    WrCmp(WrCmp const&) = default;
 
     //! \brief Move constructor.
-    WreathCmp(WreathCmp&&) = default;
+    WrCmp(WrCmp&&) = default;
 
     //! \brief Copy assignment operator.
-    WreathCmp& operator=(WreathCmp const&) = default;
+    WrCmp& operator=(WrCmp const&) = default;
 
     //! \brief Move assignment operator.
-    WreathCmp& operator=(WreathCmp&&) = default;
+    WrCmp& operator=(WrCmp&&) = default;
 
     //! \brief Destructor.
-    ~WreathCmp() = default;
+    ~WrCmp() = default;
 
     //! \brief Construct from an alphabet and levels vector.
     //!
@@ -2408,7 +2409,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p alphabet and \p levels do not
     //! have the same size.
-    WreathCmp(Alphabet<Word> const& alphabet, std::vector<size_t> const& levels)
+    WrCmp(Alphabet<Word> const& alphabet, std::vector<size_t> const& levels)
         : _alphabet(alphabet), _levels(levels) {
       detail::throw_if_incompat_weights_or_levels(_alphabet, _levels, "levels");
     }
@@ -2423,7 +2424,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p alphabet and \p levels do not
     //! have the same size.
-    WreathCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& levels)
+    WrCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& levels)
         : _alphabet(std::move(alphabet)), _levels(std::move(levels)) {
       detail::throw_if_incompat_weights_or_levels(_alphabet, _levels, "levels");
     }
@@ -2437,8 +2438,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p alphabet and \p levels do not
     //! have the same size.
-    WreathCmp& init(Alphabet<Word> const&      alphabet,
-                    std::vector<size_t> const& levels);
+    WrCmp& init(Alphabet<Word> const&      alphabet,
+                std::vector<size_t> const& levels);
 
     //! \brief Reinitialize from an alphabet rvalue and levels vector rvalue.
     //!
@@ -2449,7 +2450,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p alphabet and \p levels do not
     //! have the same size.
-    WreathCmp& init(Alphabet<Word>&& alphabet, std::vector<size_t>&& levels);
+    WrCmp& init(Alphabet<Word>&& alphabet, std::vector<size_t>&& levels);
 
     //! \brief Compare two words using wreath-product order.
     //!
@@ -2486,8 +2487,7 @@ namespace libsemigroups {
         _alphabet.throw_if_letter_not_in_alphabet(first1, last1);
         _alphabet.throw_if_letter_not_in_alphabet(first2, last2);
       }
-      return wreath_cmp_no_checks(
-          _alphabet, _levels, first1, last1, first2, last2);
+      return wr_cmp_no_checks(_alphabet, _levels, first1, last1, first2, last2);
     }
 
     //! \brief Returns the alphabet.
@@ -2509,39 +2509,39 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& levels() const noexcept {
       return _levels;
     }
-  };  // class WreathCmp
+  };  // class WrCmp
 
   //! \brief Stateful wreath-product comparison functor.
   //!
   //! This specialization stores a levels vector and compares words whose
-  //! letters are indices by applying \ref wreath_cmp.
+  //! letters are indices by applying \ref wr_cmp.
   //!
   //! \tparam check whether to check that letters are valid indices into the
   //! levels vector.
   template <bool check>
-  class WreathCmp<Default, check> {
+  class WrCmp<Default, check> {
     std::vector<size_t> _levels;
 
    public:
     //! \brief Default constructor.
     //!
     //! Constructs a comparison object with an empty levels vector.
-    WreathCmp() = default;
+    WrCmp() = default;
 
     //! \brief Copy constructor.
-    WreathCmp(WreathCmp const&) = default;
+    WrCmp(WrCmp const&) = default;
 
     //! \brief Move constructor.
-    WreathCmp(WreathCmp&&) = default;
+    WrCmp(WrCmp&&) = default;
 
     //! \brief Copy assignment operator.
-    WreathCmp& operator=(WreathCmp const&) = default;
+    WrCmp& operator=(WrCmp const&) = default;
 
     //! \brief Move assignment operator.
-    WreathCmp& operator=(WreathCmp&&) = default;
+    WrCmp& operator=(WrCmp&&) = default;
 
     //! \brief Destructor.
-    ~WreathCmp() = default;
+    ~WrCmp() = default;
 
     //! \brief Reinitialize the comparison object.
     //!
@@ -2551,7 +2551,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    WreathCmp& init() noexcept {
+    WrCmp& init() noexcept {
       _levels.clear();
       return *this;
     }
@@ -2559,20 +2559,19 @@ namespace libsemigroups {
     //! \brief Construct from a levels vector reference.
     //!
     //! \param levels the level of each generator.
-    explicit WreathCmp(std::vector<size_t> const& levels) : _levels(levels) {}
+    explicit WrCmp(std::vector<size_t> const& levels) : _levels(levels) {}
 
     //! \brief Construct from a levels vector rvalue reference.
     //!
     //! \param levels the level of each generator.
-    explicit WreathCmp(std::vector<size_t>&& levels)
-        : _levels(std::move(levels)) {}
+    explicit WrCmp(std::vector<size_t>&& levels) : _levels(std::move(levels)) {}
 
     //! \brief Reinitialize from a levels vector reference.
     //!
     //! \param levels the level of each generator.
     //!
     //! \returns A reference to \c *this.
-    WreathCmp& init(std::vector<size_t> const& levels) {
+    WrCmp& init(std::vector<size_t> const& levels) {
       _levels = levels;
       return *this;
     }
@@ -2582,7 +2581,7 @@ namespace libsemigroups {
     //! \param levels the level of each generator.
     //!
     //! \returns A reference to \c *this.
-    WreathCmp& init(std::vector<size_t>&& levels) {
+    WrCmp& init(std::vector<size_t>&& levels) {
       _levels = std::move(levels);
       return *this;
     }
@@ -2601,9 +2600,9 @@ namespace libsemigroups {
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       if constexpr (check) {
-        return wreath_cmp(_levels, x, y);
+        return wr_cmp(_levels, x, y);
       } else {
-        return wreath_cmp_no_checks(_levels, x, y);
+        return wr_cmp_no_checks(_levels, x, y);
       }
     }
 
@@ -2625,9 +2624,9 @@ namespace libsemigroups {
                                   Iterator first2,
                                   Iterator last2) const {
       if constexpr (check) {
-        return wreath_cmp(_levels, first1, last1, first2, last2);
+        return wr_cmp(_levels, first1, last1, first2, last2);
       } else {
-        return wreath_cmp_no_checks(_levels, first1, last1, first2, last2);
+        return wr_cmp_no_checks(_levels, first1, last1, first2, last2);
       }
     }
 
@@ -2640,22 +2639,21 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& levels() const noexcept {
       return _levels;
     }
-  };  // class WreathCmp<Default, check>
+  };  // class WrCmp<Default, check>
 
   //! \brief Deduction guide from a levels vector reference.
-  WreathCmp(std::vector<size_t> const&)->WreathCmp<>;
+  WrCmp(std::vector<size_t> const&)->WrCmp<>;
 
   //! \brief Deduction guide from a levels vector rvalue reference.
-  WreathCmp(std::vector<size_t>&&)->WreathCmp<>;
+  WrCmp(std::vector<size_t>&&)->WrCmp<>;
 
   //! \brief Deduction guide from an alphabet and levels vector.
   template <typename Word>
-  WreathCmp(Alphabet<Word> const&, std::vector<size_t> const&)
-      -> WreathCmp<Word>;
+  WrCmp(Alphabet<Word> const&, std::vector<size_t> const&) -> WrCmp<Word>;
 
   //! \brief Deduction guide from alphabet and levels vector rvalues.
   template <typename Word>
-  WreathCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WreathCmp<Word>;
+  WrCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WrCmp<Word>;
 
   //////////////////////////////////////////////////////////////////////
   // Reversed wreath-product order
@@ -2664,147 +2662,145 @@ namespace libsemigroups {
   //! \brief Compare two ranges using reversed wreath-product order without
   //! checks.
   //!
-  //! This function applies \ref wreath_cmp_no_checks to the ranges read from
+  //! This function applies \ref wr_cmp_no_checks to the ranges read from
   //! right to left.
   template <typename Iterator>
-  [[nodiscard]] bool rev_wreath_cmp_no_checks(std::vector<size_t> const& levels,
-                                              Iterator                   first1,
-                                              Iterator                   last1,
-                                              Iterator                   first2,
-                                              Iterator last2) {
-    return wreath_cmp_no_checks(levels,
-                                std::make_reverse_iterator(last1),
-                                std::make_reverse_iterator(first1),
-                                std::make_reverse_iterator(last2),
-                                std::make_reverse_iterator(first2));
+  [[nodiscard]] bool rev_wr_cmp_no_checks(std::vector<size_t> const& levels,
+                                          Iterator                   first1,
+                                          Iterator                   last1,
+                                          Iterator                   first2,
+                                          Iterator                   last2) {
+    return wr_cmp_no_checks(levels,
+                            std::make_reverse_iterator(last1),
+                            std::make_reverse_iterator(first1),
+                            std::make_reverse_iterator(last2),
+                            std::make_reverse_iterator(first2));
   }
 
   //! \brief Compare two ranges using reversed wreath-product order without
   //! checks and with a specified alphabet.
   template <typename Word, typename Iterator>
-  [[nodiscard]] bool rev_wreath_cmp_no_checks(Alphabet<Word> const& alphabet,
-                                              std::vector<size_t> const& levels,
-                                              Iterator                   first1,
-                                              Iterator                   last1,
-                                              Iterator                   first2,
-                                              Iterator last2) {
-    return wreath_cmp_no_checks(alphabet,
-                                levels,
-                                std::make_reverse_iterator(last1),
-                                std::make_reverse_iterator(first1),
-                                std::make_reverse_iterator(last2),
-                                std::make_reverse_iterator(first2));
+  [[nodiscard]] bool rev_wr_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                          std::vector<size_t> const& levels,
+                                          Iterator                   first1,
+                                          Iterator                   last1,
+                                          Iterator                   first2,
+                                          Iterator                   last2) {
+    return wr_cmp_no_checks(alphabet,
+                            levels,
+                            std::make_reverse_iterator(last1),
+                            std::make_reverse_iterator(first1),
+                            std::make_reverse_iterator(last2),
+                            std::make_reverse_iterator(first2));
   }
 
   //! \brief Compare two objects using reversed wreath-product order without
   //! checks.
   template <typename Thing>
-  [[nodiscard]] bool rev_wreath_cmp_no_checks(std::vector<size_t> const& levels,
-                                              Thing const&               x,
-                                              Thing const&               y) {
-    return rev_wreath_cmp_no_checks(
+  [[nodiscard]] bool rev_wr_cmp_no_checks(std::vector<size_t> const& levels,
+                                          Thing const&               x,
+                                          Thing const&               y) {
+    return rev_wr_cmp_no_checks(
         levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects using reversed wreath-product order without
   //! checks and with a specified alphabet.
   template <typename Word>
-  [[nodiscard]] bool rev_wreath_cmp_no_checks(Alphabet<Word> const& alphabet,
-                                              std::vector<size_t> const& levels,
-                                              Word const&                x,
-                                              Word const&                y) {
-    return rev_wreath_cmp_no_checks(
+  [[nodiscard]] bool rev_wr_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                          std::vector<size_t> const& levels,
+                                          Word const&                x,
+                                          Word const&                y) {
+    return rev_wr_cmp_no_checks(
         alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two ranges using reversed wreath-product order and check
   //! validity.
   template <typename Iterator>
-  [[nodiscard]] bool rev_wreath_cmp(std::vector<size_t> const& levels,
-                                    Iterator                   first1,
-                                    Iterator                   last1,
-                                    Iterator                   first2,
-                                    Iterator                   last2) {
-    return wreath_cmp(levels,
-                      std::make_reverse_iterator(last1),
-                      std::make_reverse_iterator(first1),
-                      std::make_reverse_iterator(last2),
-                      std::make_reverse_iterator(first2));
+  [[nodiscard]] bool rev_wr_cmp(std::vector<size_t> const& levels,
+                                Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2) {
+    return wr_cmp(levels,
+                  std::make_reverse_iterator(last1),
+                  std::make_reverse_iterator(first1),
+                  std::make_reverse_iterator(last2),
+                  std::make_reverse_iterator(first2));
   }
 
   //! \brief Compare two ranges using reversed wreath-product order and a
   //! specified alphabet.
   template <typename Word, typename Iterator>
-  [[nodiscard]] bool rev_wreath_cmp(Alphabet<Word> const&      alphabet,
-                                    std::vector<size_t> const& levels,
-                                    Iterator                   first1,
-                                    Iterator                   last1,
-                                    Iterator                   first2,
-                                    Iterator                   last2) {
-    return wreath_cmp(alphabet,
-                      levels,
-                      std::make_reverse_iterator(last1),
-                      std::make_reverse_iterator(first1),
-                      std::make_reverse_iterator(last2),
-                      std::make_reverse_iterator(first2));
+  [[nodiscard]] bool rev_wr_cmp(Alphabet<Word> const&      alphabet,
+                                std::vector<size_t> const& levels,
+                                Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2) {
+    return wr_cmp(alphabet,
+                  levels,
+                  std::make_reverse_iterator(last1),
+                  std::make_reverse_iterator(first1),
+                  std::make_reverse_iterator(last2),
+                  std::make_reverse_iterator(first2));
   }
 
   //! \brief Compare two objects using reversed wreath-product order and check
   //! validity.
   template <typename Thing>
-  [[nodiscard]] bool rev_wreath_cmp(std::vector<size_t> const& levels,
-                                    Thing const&               x,
-                                    Thing const&               y) {
-    return rev_wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  [[nodiscard]] bool rev_wr_cmp(std::vector<size_t> const& levels,
+                                Thing const&               x,
+                                Thing const&               y) {
+    return rev_wr_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
   //! \brief Compare two objects using reversed wreath-product order and a
   //! specified alphabet.
   template <typename Word>
-  [[nodiscard]] bool rev_wreath_cmp(Alphabet<Word> const&      alphabet,
-                                    std::vector<size_t> const& levels,
-                                    Word const&                x,
-                                    Word const&                y) {
-    return rev_wreath_cmp(
+  [[nodiscard]] bool rev_wr_cmp(Alphabet<Word> const&      alphabet,
+                                std::vector<size_t> const& levels,
+                                Word const&                x,
+                                Word const&                y) {
+    return rev_wr_cmp(
         alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Forward declaration of \ref RevWreathCmp.
+  //! \brief Forward declaration of \ref RevWrCmp.
   template <typename Word = Default, bool check = true>
-  class RevWreathCmp;
+  class RevWrCmp;
 
   //! \brief Stateful reversed wreath-product comparison functor.
   template <typename Word, bool check>
-  class RevWreathCmp {
-    WreathCmp<Word, check> _wreath;
+  class RevWrCmp {
+    WrCmp<Word, check> _wreath;
 
    public:
-    RevWreathCmp()                               = delete;
-    RevWreathCmp(RevWreathCmp const&)            = default;
-    RevWreathCmp(RevWreathCmp&&)                 = default;
-    RevWreathCmp& operator=(RevWreathCmp const&) = default;
-    RevWreathCmp& operator=(RevWreathCmp&&)      = default;
-    ~RevWreathCmp()                              = default;
+    RevWrCmp()                           = delete;
+    RevWrCmp(RevWrCmp const&)            = default;
+    RevWrCmp(RevWrCmp&&)                 = default;
+    RevWrCmp& operator=(RevWrCmp const&) = default;
+    RevWrCmp& operator=(RevWrCmp&&)      = default;
+    ~RevWrCmp()                          = default;
 
     //! \brief Construct from an alphabet and levels vector.
-    RevWreathCmp(Alphabet<Word> const&      alphabet,
-                 std::vector<size_t> const& levels)
+    RevWrCmp(Alphabet<Word> const& alphabet, std::vector<size_t> const& levels)
         : _wreath(alphabet, levels) {}
 
     //! \brief Construct from alphabet and levels vector rvalues.
-    RevWreathCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& levels)
+    RevWrCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& levels)
         : _wreath(std::move(alphabet), std::move(levels)) {}
 
     //! \brief Reinitialize from an alphabet and levels vector.
-    RevWreathCmp& init(Alphabet<Word> const&      alphabet,
-                       std::vector<size_t> const& levels) {
+    RevWrCmp& init(Alphabet<Word> const&      alphabet,
+                   std::vector<size_t> const& levels) {
       _wreath.init(alphabet, levels);
       return *this;
     }
 
     //! \brief Reinitialize from alphabet and levels vector rvalues.
-    RevWreathCmp& init(Alphabet<Word>&&      alphabet,
-                       std::vector<size_t>&& levels) {
+    RevWrCmp& init(Alphabet<Word>&& alphabet, std::vector<size_t>&& levels) {
       _wreath.init(std::move(alphabet), std::move(levels));
       return *this;
     }
@@ -2835,43 +2831,42 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& levels() const noexcept {
       return _wreath.levels();
     }
-  };  // class RevWreathCmp
+  };  // class RevWrCmp
 
   //! \brief Reversed wreath-product comparison functor using index words.
   template <bool check>
-  class RevWreathCmp<Default, check> {
-    WreathCmp<Default, check> _wreath;
+  class RevWrCmp<Default, check> {
+    WrCmp<Default, check> _wreath;
 
    public:
-    RevWreathCmp()                               = default;
-    RevWreathCmp(RevWreathCmp const&)            = default;
-    RevWreathCmp(RevWreathCmp&&)                 = default;
-    RevWreathCmp& operator=(RevWreathCmp const&) = default;
-    RevWreathCmp& operator=(RevWreathCmp&&)      = default;
-    ~RevWreathCmp()                              = default;
+    RevWrCmp()                           = default;
+    RevWrCmp(RevWrCmp const&)            = default;
+    RevWrCmp(RevWrCmp&&)                 = default;
+    RevWrCmp& operator=(RevWrCmp const&) = default;
+    RevWrCmp& operator=(RevWrCmp&&)      = default;
+    ~RevWrCmp()                          = default;
 
     //! \brief Construct from a levels vector.
-    explicit RevWreathCmp(std::vector<size_t> const& levels)
-        : _wreath(levels) {}
+    explicit RevWrCmp(std::vector<size_t> const& levels) : _wreath(levels) {}
 
     //! \brief Construct from a levels vector rvalue.
-    explicit RevWreathCmp(std::vector<size_t>&& levels)
+    explicit RevWrCmp(std::vector<size_t>&& levels)
         : _wreath(std::move(levels)) {}
 
     //! \brief Reinitialize with an empty levels vector.
-    RevWreathCmp& init() noexcept {
+    RevWrCmp& init() noexcept {
       _wreath.init();
       return *this;
     }
 
     //! \brief Reinitialize from a levels vector.
-    RevWreathCmp& init(std::vector<size_t> const& levels) {
+    RevWrCmp& init(std::vector<size_t> const& levels) {
       _wreath.init(levels);
       return *this;
     }
 
     //! \brief Reinitialize from a levels vector rvalue.
-    RevWreathCmp& init(std::vector<size_t>&& levels) {
+    RevWrCmp& init(std::vector<size_t>&& levels) {
       _wreath.init(std::move(levels));
       return *this;
     }
@@ -2898,22 +2893,21 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<size_t> const& levels() const noexcept {
       return _wreath.levels();
     }
-  };  // class RevWreathCmp<Default, check>
+  };  // class RevWrCmp<Default, check>
 
   //! \brief Deduction guide from a levels vector.
-  RevWreathCmp(std::vector<size_t> const&)->RevWreathCmp<>;
+  RevWrCmp(std::vector<size_t> const&)->RevWrCmp<>;
 
   //! \brief Deduction guide from a levels vector rvalue.
-  RevWreathCmp(std::vector<size_t>&&)->RevWreathCmp<>;
+  RevWrCmp(std::vector<size_t>&&)->RevWrCmp<>;
 
   //! \brief Deduction guide from an alphabet and levels vector.
   template <typename Word>
-  RevWreathCmp(Alphabet<Word> const&, std::vector<size_t> const&)
-      -> RevWreathCmp<Word>;
+  RevWrCmp(Alphabet<Word> const&, std::vector<size_t> const&) -> RevWrCmp<Word>;
 
   //! \brief Deduction guide from alphabet and levels vector rvalues.
   template <typename Word>
-  RevWreathCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> RevWreathCmp<Word>;
+  RevWrCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> RevWrCmp<Word>;
 
   //////////////////////////////////////////////////////////////////////
   // Weighted len-lex
@@ -5204,13 +5198,13 @@ namespace libsemigroups {
 
     //! \brief Wreath-product order is well-founded.
     //!
-    //! Specialization of \ref is_well_founded for \ref WreathCmp.
+    //! Specialization of \ref is_well_founded for \ref WrCmp.
     template <bool check>
-    struct is_well_founded<WreathCmp<Default, check>> : std::true_type {};
+    struct is_well_founded<WrCmp<Default, check>> : std::true_type {};
 
     //! \brief Reversed wreath-product order is well-founded.
     template <bool check>
-    struct is_well_founded<RevWreathCmp<Default, check>> : std::true_type {};
+    struct is_well_founded<RevWrCmp<Default, check>> : std::true_type {};
 
     //! \brief Weighted short-lex order is well-founded.
     //!

@@ -183,11 +183,11 @@ namespace libsemigroups {
   // consumed. At this point, a final check of the remaining letters is
   // performed, and the result is returned.
   template <typename Iterator>
-  [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
-                                          Iterator                   first1,
-                                          Iterator                   last1,
-                                          Iterator                   first2,
-                                          Iterator                   last2) {
+  [[nodiscard]] bool wr_cmp_no_checks(std::vector<size_t> const& levels,
+                                      Iterator                   first1,
+                                      Iterator                   last1,
+                                      Iterator                   first2,
+                                      Iterator                   last2) {
     // Remove common prefix
     std::tie(first1, first2) = std::mismatch(first1, last1, first2, last2);
 
@@ -271,39 +271,39 @@ namespace libsemigroups {
   }
 
   template <typename Word, typename Iterator>
-  bool wreath_cmp_no_checks(Alphabet<Word> const&      alphabet,
-                            std::vector<size_t> const& levels,
-                            Iterator                   first1,
-                            Iterator                   last1,
-                            Iterator                   first2,
-                            Iterator                   last2) {
-    return wreath_cmp_no_checks(levels,
-                                detail::citow(alphabet, first1),
-                                detail::citow(alphabet, last1),
-                                detail::citow(alphabet, first2),
-                                detail::citow(alphabet, last2));
+  bool wr_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                        std::vector<size_t> const& levels,
+                        Iterator                   first1,
+                        Iterator                   last1,
+                        Iterator                   first2,
+                        Iterator                   last2) {
+    return wr_cmp_no_checks(levels,
+                            detail::citow(alphabet, first1),
+                            detail::citow(alphabet, last1),
+                            detail::citow(alphabet, first2),
+                            detail::citow(alphabet, last2));
   }
 
   template <typename Iterator>
-  bool wreath_cmp(std::vector<size_t> const& levels,
-                  Iterator                   first1,
-                  Iterator                   last1,
-                  Iterator                   first2,
-                  Iterator                   last2) {
+  bool wr_cmp(std::vector<size_t> const& levels,
+              Iterator                   first1,
+              Iterator                   last1,
+              Iterator                   first2,
+              Iterator                   last2) {
     detail::throw_if_incompat_weights_or_levels(
         levels, first1, last1, "levels");
     detail::throw_if_incompat_weights_or_levels(
         levels, first2, last2, "levels");
-    return wreath_cmp_no_checks(levels, first1, last1, first2, last2);
+    return wr_cmp_no_checks(levels, first1, last1, first2, last2);
   }
 
   template <typename Word, typename Iterator>
-  bool wreath_cmp(Alphabet<Word> const&      alphabet,
-                  std::vector<size_t> const& levels,
-                  Iterator                   first1,
-                  Iterator                   last1,
-                  Iterator                   first2,
-                  Iterator                   last2) {
+  bool wr_cmp(Alphabet<Word> const&      alphabet,
+              std::vector<size_t> const& levels,
+              Iterator                   first1,
+              Iterator                   last1,
+              Iterator                   first2,
+              Iterator                   last2) {
     alphabet.throw_if_letter_not_in_alphabet(first1, last1);
     alphabet.throw_if_letter_not_in_alphabet(first2, last2);
     detail::throw_if_incompat_weights_or_levels(levels,
@@ -314,7 +314,7 @@ namespace libsemigroups {
                                                 detail::citow(alphabet, first2),
                                                 detail::citow(alphabet, last2),
                                                 "levels");
-    return wreath_cmp_no_checks(alphabet, levels, first1, last1, first2, last2);
+    return wr_cmp_no_checks(alphabet, levels, first1, last1, first2, last2);
   }
 
   template <typename Iterator>
@@ -598,9 +598,9 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
-  WreathCmp<Word, check>&
-  WreathCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
-                               std::vector<size_t> const& levels) {
+  WrCmp<Word, check>&
+  WrCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
+                           std::vector<size_t> const& levels) {
     detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
     if (&alphabet != &_alphabet) {
       _alphabet = alphabet;
@@ -612,9 +612,8 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
-  WreathCmp<Word, check>&
-  WreathCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
-                               std::vector<size_t>&& levels) {
+  WrCmp<Word, check>& WrCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
+                                               std::vector<size_t>&& levels) {
     detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
     if (&alphabet != &_alphabet) {
       _alphabet = std::move(alphabet);

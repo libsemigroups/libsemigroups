@@ -1557,7 +1557,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "baBebaBe", "");
     presentation::add_rule(p, "BabfBabf", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
 
     std::vector<size_t>                       levels = {1, 1, 2, 2, 3, 3, 3, 3};
     KnuthBendix<std::string, RewritingSystem> kb(
@@ -1646,7 +1646,7 @@ namespace libsemigroups {
                                        {"bAbad", "dbaBa"},
                                        {"BabAe", "bAeaBABA"}}));
 
-    WreathCmp cmp{p.alphabet_v4(), levels};
+    WrCmp cmp{p.alphabet_v4(), levels};
     for (auto const& rule : kb.active_rules()) {
       REQUIRE(cmp(rule.second, rule.first));
     }
