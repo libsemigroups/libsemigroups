@@ -1213,7 +1213,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "cbcbcbcbcbcb", "");
     presentation::add_rule(p, "abCaabCaabCa", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb(
         congruence_kind::twosided, p, std::vector<size_t>({1, 1, 2, 2, 3, 3}));
     kb.run();
@@ -1462,7 +1462,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "baBebaBe", "");
     presentation::add_rule(p, "BabfBabf", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb(
         congruence_kind::twosided,
         p,
@@ -2178,7 +2178,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  // TODO impl RevWreathCmp
+  // TODO impl RevWrCmp
   //  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
   //                          "213",
   //                          "MAF: pathological/6561#8_aAbBcC_grouped",
@@ -2198,7 +2198,7 @@ namespace libsemigroups {
   //    presentation::add_rule(p, "acbbACb", "");
   //    presentation::add_rule(p, "ABabccc", "");
   //
-  //    using RewritingSystem = detail::RewritingSystemTrie<RevWreathCmp>;
+  //    using RewritingSystem = detail::RewritingSystemTrie<RevWrCmp>;
   //    KnuthBendix<std::string, RewritingSystem> kb(
   //        congruence_kind::twosided, p, std::vector<size_t>({1, 4, 2, 4, 3,
   //        4}));
@@ -2261,10 +2261,10 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  // TODO impl RevWreathCmp
+  // TODO impl RevWrCmp
   //  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
   //                          "216",
-  //                          "MAF: pathological/6561#8_aabbcc_rt_wreathprod",
+  //                          "MAF: pathological/6561#8_aabbcc_rt_Wrprod",
   //                          "[quick][maf]") {
   //    auto rg = ReportGuard(false);
   //
@@ -2281,7 +2281,7 @@ namespace libsemigroups {
   //    presentation::add_rule(p, "acbbACb", "");
   //    presentation::add_rule(p, "ABabccc", "");
   //
-  //    using RewritingSystem = detail::RewritingSystemTrie<RevWreathCmp>;
+  //    using RewritingSystem = detail::RewritingSystemTrie<RevWrCmp>;
   //    KnuthBendix<std::string, RewritingSystem> kb(
   //        congruence_kind::twosided, p, std::vector<size_t>({1, 1, 2, 2, 3,
   //        3}));
@@ -2323,7 +2323,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "218",
-                          "MAF: pathological/6561#8_aabbcc_wreathprod",
+                          "MAF: pathological/6561#8_aabbcc_Wrprod",
                           "[fail][maf]") {
     auto rg = ReportGuard(false);
 
@@ -2340,7 +2340,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbACb", "");
     presentation::add_rule(p, "ABabccc", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb(
         congruence_kind::twosided, p, std::vector<size_t>({1, 1, 2, 2, 3, 3}));
     kb.run();
@@ -2460,7 +2460,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "223",
-                          "MAF: pathological/6561#8_aAcCbB_wreathprod",
+                          "MAF: pathological/6561#8_aAcCbB_Wrprod",
                           "[fail][maf]") {
     auto rg = ReportGuard(false);
 
@@ -2477,7 +2477,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbACb", "");
     presentation::add_rule(p, "ABabccc", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb(
         congruence_kind::twosided, p, std::vector<size_t>({1, 1, 2, 2, 3, 3}));
     kb.run();
@@ -2504,7 +2504,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbACb", "");
     presentation::add_rule(p, "ABabccc", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb(
         congruence_kind::twosided, p, std::vector<size_t>({1, 2, 1, 2, 1, 2}));
     kb.run();
@@ -2549,7 +2549,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "226",
-                          "MAF: pathological/6561#8_abcABC_wreathprod",
+                          "MAF: pathological/6561#8_abcABC_Wrprod",
                           "[fail][maf]") {
     auto rg = ReportGuard(false);
 
@@ -2566,7 +2566,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbACb", "");
     presentation::add_rule(p, "ABabccc", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb(
         congruence_kind::twosided, p, std::vector<size_t>({1, 1, 1, 2, 2, 2}));
     kb.run();
@@ -2628,7 +2628,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "229",
-                          "MAF: pathological/6561#8_bBaAcC_wreathprod",
+                          "MAF: pathological/6561#8_bBaAcC_Wrprod",
                           "[fail][maf]") {
     auto rg = ReportGuard(false);
 
@@ -2645,7 +2645,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbACb", "");
     presentation::add_rule(p, "ABabccc", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb(
         congruence_kind::twosided, p, std::vector<size_t>({1, 1, 2, 2, 3, 3}));
     kb.run();
@@ -4004,7 +4004,7 @@ namespace libsemigroups {
   }
 
   // Generated by MAF
-  // TODO impl RevWreathCmp
+  // TODO impl RevWrCmp
   //  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
   //                          "266",
   //                          "MAF: onerelq/q43_uw",
@@ -4022,7 +4022,7 @@ namespace libsemigroups {
   //    presentation::add_rule(p, "uuuWu", "wUU");
   //    presentation::add_rule(p, "uuwwwUwU", "WuWWWUW");
   //
-  //    using RewritingSystem = detail::RewritingSystemTrie<RevWreathCmp>;
+  //    using RewritingSystem = detail::RewritingSystemTrie<RevWrCmp>;
   //    KnuthBendix<std::string, RewritingSystem> kb(
   //        congruence_kind::onesided, p, std::vector<size_t>({2, 2, 1, 1}));
   //
@@ -4170,7 +4170,7 @@ namespace libsemigroups {
   }
 
   // Generated by MAF
-  // TODO impl RevWreathCmp
+  // TODO impl RevWrCmp
   // LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
   //                         "269",
   //                         "MAF: onerelq/q44_uw",
@@ -4191,7 +4191,7 @@ namespace libsemigroups {
   //   presentation::add_rule(p, "z", "Uwu");
   //   presentation::add_rule(p, "wwwwUwuu", "UWuWuWW");
 
-  //   using RewritingSystem = detail::RewritingSystemTrie<RevWreathCmp>;
+  //   using RewritingSystem = detail::RewritingSystemTrie<RevWrCmp>;
   //   KnuthBendix<std::string, RewritingSystem> kb(
   //       congruence_kind::onesided, p, std::vector<size_t>({1, 1, 1, 1, 2,
   //       2}));
@@ -4385,7 +4385,7 @@ namespace libsemigroups {
   }
 
   // Generated by MAF
-  //  // TODO impl RevWreathCmp
+  //  // TODO impl RevWrCmp
   //  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
   //                          "275",
   //                          "MAF: onerelq/q7a",
@@ -4404,7 +4404,7 @@ namespace libsemigroups {
   //    presentation::add_rule(p, "yy", "Y");
   //    presentation::add_rule(p, "yxyxyxYxyxyxyxYx", "xyxYxYxyxyxyxYxY");
   //
-  //    using RewritingSystem = detail::RewritingSystemTrie<RevWreathCmp>;
+  //    using RewritingSystem = detail::RewritingSystemTrie<RevWrCmp>;
   //    KnuthBendix<std::string, RewritingSystem> kb(
   //        congruence_kind::onesided, p, std::vector<size_t>({1, 1, 3, 3, 2}));
   //
@@ -7759,7 +7759,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ababababababab", "");
     presentation::add_rule(p, "abaBabaBabaBabaBabaBabaBabaBabaBabaB", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
     kb.init(congruence_kind::twosided, p, std::vector<size_t>({1, 1, 1, 2}));
     kb.run();
@@ -9822,7 +9822,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ababaBabababaBaBaBababa", "f");
     presentation::add_rule(p, "abaBa", "h");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
 
     SECTION("2_3_13_4r") {
@@ -13137,7 +13137,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  // TODO impl RevWreathCmp
+  // TODO impl RevWrCmp
   //  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
   //                          "467",
   //                          "MAF: both/sfdo2",
@@ -13158,7 +13158,7 @@ namespace libsemigroups {
   //   presentation::add_rule(p, "baB", "Aba");
   //   presentation::add_rule(p, "aaCB", "CCa");
 
-  //   using RewritingSystem = detail::RewritingSystemTrie<RevWreathCmp>;
+  //   using RewritingSystem = detail::RewritingSystemTrie<RevWrCmp>;
   //   KnuthBendix<std::string, RewritingSystem> kb;
   //   kb.init(
   //       congruence_kind::twosided, p, std::vector<size_t>({1, 2, 1, 2, 3,
@@ -13370,7 +13370,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "Yy", "");
     presentation::add_rule(p, "yx", "xxy");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
     kb.init(congruence_kind::twosided, p, std::vector<size_t>({1, 1, 2, 2}));
     kb.run();
@@ -13393,7 +13393,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "Yy", "");
     presentation::add_rule(p, "yxxxxxxxxxxx", "xxxxxxxxxxxy");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
     kb.init(congruence_kind::twosided, p, std::vector<size_t>({1, 1, 2, 2}));
     kb.run();
@@ -13508,7 +13508,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "Yy", "");
     presentation::add_rule(p, "xxxxxxxy", "Yxxxxxxxxxxx");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
     kb.init(congruence_kind::twosided, p, std::vector<size_t>({1, 1, 2, 2}));
     kb.run();
@@ -14509,12 +14509,12 @@ namespace libsemigroups {
   // Hyperbolic Knot 4 1
   // It is clear that the third equation lets us express Z in terms of x and y
   // and that then we can express also express t this way
-  // so we use wreathprod ordering to force these generators to be eliminated
+  // so we use Wrprod ordering to force these generators to be eliminated
   // MAF can then calculate what is effectively the same automatic structure
   // as would be obtained from a presentation using just generators x and y
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "510",
-                          "MAF: automatic/hk41_wreath",
+                          "MAF: automatic/hk41_Wr",
                           "[fail][maf][automatic]") {
     auto rg = ReportGuard(false);
 
@@ -14533,7 +14533,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "YtxT", "");
     presentation::add_rule(p, "ZXyx", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<WreathCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<WrCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
     kb.init(congruence_kind::twosided,
             p,
