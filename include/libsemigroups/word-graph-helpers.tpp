@@ -152,6 +152,7 @@ namespace libsemigroups {
                 _p_inverse(wg.number_of_nodes(), UNDEFINED),
                 _swapped(false),
                 _wg(wg) {
+            _p[0]         = 0;
             _p_inverse[0] = 0;
           }
 
@@ -190,6 +191,7 @@ namespace libsemigroups {
 
           bool standardize() {
             if (_swapped) {
+              _p.resize(_largest_used_node + 1);
               _wg.standardize(_p, _p_inverse);
             }
             return _swapped;
