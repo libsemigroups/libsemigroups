@@ -315,14 +315,14 @@ using ShortLexCompare [[deprecated("Use LenLexCmp instead!")]] = LenLexCmp<>;
 //! the variants of \ref libsemigroups::lenlex_cmp and
 //! std::lexicographical_compare.
 //!
-//! \deprecated_warning{function} Use \ref libsemigroups::rev_rpo_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::rpo_cmp instead.
 template <typename Iterator>
-[[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
+[[nodiscard]] [[deprecated("Use rpo_cmp instead!")]] bool
 recursive_path_compare(Iterator first1,
                        Iterator last1,
                        Iterator first2,
                        Iterator last2) noexcept {
-  return rev_rpo_cmp(first1, last1, first2, last2);
+  return rpo_cmp(first1, last1, first2, last2);
 }
 
 //! \brief Compare two objects of the same type using
@@ -353,11 +353,11 @@ recursive_path_compare(Iterator first1,
 //! \sa
 //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
 //!
-//! \deprecated_warning{function} Use \ref libsemigroups::rev_rpo_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::rpo_cmp instead.
 template <typename Word>
-[[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
+[[nodiscard]] [[deprecated("Use rpo_cmp instead!")]] bool
 recursive_path_compare(Word const& x, Word const& y) noexcept {
-  return rev_rpo_cmp(x, y);
+  return rpo_cmp(x, y);
 }
 
 //! \brief Compare two objects via their pointers using
@@ -389,13 +389,13 @@ recursive_path_compare(Word const& x, Word const& y) noexcept {
 //! \sa
 //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
 //!
-//! \deprecated_warning{function} Use \ref libsemigroups::rev_rpo_cmp instead.
+//! \deprecated_warning{function} Use \ref libsemigroups::rpo_cmp instead.
 template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
     "provided.")]] bool
 recursive_path_compare(Word* const x, Word* const y) noexcept {
-  return rev_rpo_cmp(*x, *y);
+  return rpo_cmp(*x, *y);
 }
 
 //! \brief A stateless struct with binary call operator using
@@ -412,9 +412,8 @@ recursive_path_compare(Word* const x, Word* const y) noexcept {
 //! \sa
 //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
 //!
-//! \deprecated_warning{struct} Use \ref libsemigroups::RevRPOCmp instead.
-using RecursivePathCompare [[deprecated("Use RevRPOCmp instead!")]]
-= RevRPOCmp<>;
+//! \deprecated_warning{struct} Use \ref libsemigroups::RPOCmp instead.
+using RecursivePathCompare [[deprecated("Use RPOCmp instead!")]] = RPOCmp<>;
 
 //////////////////////////////////////////////////////////////////////
 // Weighted short-lex - deprecated
