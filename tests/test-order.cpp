@@ -2283,4 +2283,54 @@ namespace libsemigroups {
     static_assert(order::is_well_founded_v<RevWreathCmp<>>);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("len_wt_lex_cmp",
+                          "072",
+                          "length before weighted lex",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    std::vector<size_t> weights   = {100, 1};
+    word_type           expensive = {0};
+    word_type           cheap     = {1, 1};
+    word_type           mixed     = {0, 1};
+    word_type           invalid   = {2};
+
+    REQUIRE(len_wt_lex_cmp(weights, expensive, cheap));
+    REQUIRE(!wt_lex_cmp(weights, expensive, cheap));
+    REQUIRE(len_wt_lex_cmp(weights, cheap, mixed));
+    REQUIRE(len_wt_lex_cmp(
+        weights, cheap.cbegin(), cheap.cend(), mixed.cbegin(), mixed.cend()));
+    REQUIRE(len_wt_lex_cmp_no_checks(weights, expensive, cheap));
+    REQUIRE(len_wt_lex_cmp_no_checks(weights,
+                                     expensive.cbegin(),
+                                     expensive.cend(),
+                                     cheap.cbegin(),
+                                     cheap.cend()));
+
+    Alphabet alphabet("ab"s);
+    auto     string_a  = "a"s;
+    auto     string_bb = "bb"s;
+    auto     string_ab = "ab"s;
+    REQUIRE(len_wt_lex_cmp(alphabet, weights, string_a, string_bb));
+    REQUIRE(len_wt_lex_cmp(alphabet, weights, string_bb, string_ab));
+    REQUIRE(len_wt_lex_cmp(alphabet,
+                           weights,
+                           string_bb.cbegin(),
+                           string_bb.cend(),
+                           string_ab.cbegin(),
+                           string_ab.cend()));
+    REQUIRE(len_wt_lex_cmp_no_checks(alphabet, weights, string_a, string_bb));
+    REQUIRE(len_wt_lex_cmp_no_checks(alphabet,
+                                     weights,
+                                     string_bb.cbegin(),
+                                     string_bb.cend(),
+                                     string_ab.cbegin(),
+                                     string_ab.cend()));
+
+    REQUIRE_THROWS_AS(len_wt_lex_cmp(weights, invalid, cheap),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(len_wt_lex_cmp(alphabet, weights, "c"s, string_bb),
+                      LibsemigroupsException);
+  }
+
 }  // namespace libsemigroups
