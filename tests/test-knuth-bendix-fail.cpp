@@ -59,8 +59,8 @@ namespace libsemigroups {
 
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
-  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
-  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
+  using RPOTrie    = detail::RewritingSystemTrie<RPOCmp>;
+  using RPOSet     = detail::RewritingSystemSet<RPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, RPOTrie
 
@@ -114,7 +114,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
     REQUIRE(!kb.rewriting_system().confluent());
-    kb.rewriting_system().sort_pending_rules_by(detail::rev_rpo_cmp);
+    kb.rewriting_system().sort_pending_rules_by(detail::rpo_cmp);
 
     knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.rewriting_system().number_of_rules() == 0);
