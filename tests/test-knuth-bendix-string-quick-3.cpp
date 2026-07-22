@@ -52,7 +52,7 @@ namespace libsemigroups {
 
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
-  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RPOTrie    = detail::RewritingSystemTrie<RPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
 

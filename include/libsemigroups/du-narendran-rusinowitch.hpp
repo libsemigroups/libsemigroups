@@ -102,7 +102,7 @@ namespace libsemigroups {
   //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
   //!
   //! \sa
-  //! \ref rpo_cmp
+  //! \ref rev_rpo_cmp
   template <typename Word>
   Word du_narendran_rusinowitch(Presentation<Word> const& p);
 
