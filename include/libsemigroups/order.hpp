@@ -2658,6 +2658,264 @@ namespace libsemigroups {
   WreathCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WreathCmp<Word>;
 
   //////////////////////////////////////////////////////////////////////
+  // Reversed wreath-product order
+  //////////////////////////////////////////////////////////////////////
+
+  //! \brief Compare two ranges using reversed wreath-product order without
+  //! checks.
+  //!
+  //! This function applies \ref wreath_cmp_no_checks to the ranges read from
+  //! right to left.
+  template <typename Iterator>
+  [[nodiscard]] bool rev_wreath_cmp_no_checks(std::vector<size_t> const& levels,
+                                              Iterator                   first1,
+                                              Iterator                   last1,
+                                              Iterator                   first2,
+                                              Iterator last2) {
+    return wreath_cmp_no_checks(levels,
+                                std::make_reverse_iterator(last1),
+                                std::make_reverse_iterator(first1),
+                                std::make_reverse_iterator(last2),
+                                std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two ranges using reversed wreath-product order without
+  //! checks and with a specified alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_wreath_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                              std::vector<size_t> const& levels,
+                                              Iterator                   first1,
+                                              Iterator                   last1,
+                                              Iterator                   first2,
+                                              Iterator last2) {
+    return wreath_cmp_no_checks(alphabet,
+                                levels,
+                                std::make_reverse_iterator(last1),
+                                std::make_reverse_iterator(first1),
+                                std::make_reverse_iterator(last2),
+                                std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two objects using reversed wreath-product order without
+  //! checks.
+  template <typename Thing>
+  [[nodiscard]] bool rev_wreath_cmp_no_checks(std::vector<size_t> const& levels,
+                                              Thing const&               x,
+                                              Thing const&               y) {
+    return rev_wreath_cmp_no_checks(
+        levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects using reversed wreath-product order without
+  //! checks and with a specified alphabet.
+  template <typename Word>
+  [[nodiscard]] bool rev_wreath_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                              std::vector<size_t> const& levels,
+                                              Word const&                x,
+                                              Word const&                y) {
+    return rev_wreath_cmp_no_checks(
+        alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two ranges using reversed wreath-product order and check
+  //! validity.
+  template <typename Iterator>
+  [[nodiscard]] bool rev_wreath_cmp(std::vector<size_t> const& levels,
+                                    Iterator                   first1,
+                                    Iterator                   last1,
+                                    Iterator                   first2,
+                                    Iterator                   last2) {
+    return wreath_cmp(levels,
+                      std::make_reverse_iterator(last1),
+                      std::make_reverse_iterator(first1),
+                      std::make_reverse_iterator(last2),
+                      std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two ranges using reversed wreath-product order and a
+  //! specified alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_wreath_cmp(Alphabet<Word> const&      alphabet,
+                                    std::vector<size_t> const& levels,
+                                    Iterator                   first1,
+                                    Iterator                   last1,
+                                    Iterator                   first2,
+                                    Iterator                   last2) {
+    return wreath_cmp(alphabet,
+                      levels,
+                      std::make_reverse_iterator(last1),
+                      std::make_reverse_iterator(first1),
+                      std::make_reverse_iterator(last2),
+                      std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two objects using reversed wreath-product order and check
+  //! validity.
+  template <typename Thing>
+  [[nodiscard]] bool rev_wreath_cmp(std::vector<size_t> const& levels,
+                                    Thing const&               x,
+                                    Thing const&               y) {
+    return rev_wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects using reversed wreath-product order and a
+  //! specified alphabet.
+  template <typename Word>
+  [[nodiscard]] bool rev_wreath_cmp(Alphabet<Word> const&      alphabet,
+                                    std::vector<size_t> const& levels,
+                                    Word const&                x,
+                                    Word const&                y) {
+    return rev_wreath_cmp(
+        alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Forward declaration of \ref RevWreathCmp.
+  template <typename Word = Default, bool check = true>
+  class RevWreathCmp;
+
+  //! \brief Stateful reversed wreath-product comparison functor.
+  template <typename Word, bool check>
+  class RevWreathCmp {
+    WreathCmp<Word, check> _wreath;
+
+   public:
+    RevWreathCmp()                               = delete;
+    RevWreathCmp(RevWreathCmp const&)            = default;
+    RevWreathCmp(RevWreathCmp&&)                 = default;
+    RevWreathCmp& operator=(RevWreathCmp const&) = default;
+    RevWreathCmp& operator=(RevWreathCmp&&)      = default;
+    ~RevWreathCmp()                              = default;
+
+    //! \brief Construct from an alphabet and levels vector.
+    RevWreathCmp(Alphabet<Word> const&      alphabet,
+                 std::vector<size_t> const& levels)
+        : _wreath(alphabet, levels) {}
+
+    //! \brief Construct from alphabet and levels vector rvalues.
+    RevWreathCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& levels)
+        : _wreath(std::move(alphabet), std::move(levels)) {}
+
+    //! \brief Reinitialize from an alphabet and levels vector.
+    RevWreathCmp& init(Alphabet<Word> const&      alphabet,
+                       std::vector<size_t> const& levels) {
+      _wreath.init(alphabet, levels);
+      return *this;
+    }
+
+    //! \brief Reinitialize from alphabet and levels vector rvalues.
+    RevWreathCmp& init(Alphabet<Word>&&      alphabet,
+                       std::vector<size_t>&& levels) {
+      _wreath.init(std::move(alphabet), std::move(levels));
+      return *this;
+    }
+
+    //! \brief Compare two words using reversed wreath-product order.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    //! \brief Compare two iterator ranges using reversed wreath-product order.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return _wreath(std::make_reverse_iterator(last1),
+                     std::make_reverse_iterator(first1),
+                     std::make_reverse_iterator(last2),
+                     std::make_reverse_iterator(first2));
+    }
+
+    //! \brief Returns the alphabet.
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _wreath.alphabet();
+    }
+
+    //! \brief Returns the levels.
+    [[nodiscard]] std::vector<size_t> const& levels() const noexcept {
+      return _wreath.levels();
+    }
+  };  // class RevWreathCmp
+
+  //! \brief Reversed wreath-product comparison functor using index words.
+  template <bool check>
+  class RevWreathCmp<Default, check> {
+    WreathCmp<Default, check> _wreath;
+
+   public:
+    RevWreathCmp()                               = default;
+    RevWreathCmp(RevWreathCmp const&)            = default;
+    RevWreathCmp(RevWreathCmp&&)                 = default;
+    RevWreathCmp& operator=(RevWreathCmp const&) = default;
+    RevWreathCmp& operator=(RevWreathCmp&&)      = default;
+    ~RevWreathCmp()                              = default;
+
+    //! \brief Construct from a levels vector.
+    explicit RevWreathCmp(std::vector<size_t> const& levels)
+        : _wreath(levels) {}
+
+    //! \brief Construct from a levels vector rvalue.
+    explicit RevWreathCmp(std::vector<size_t>&& levels)
+        : _wreath(std::move(levels)) {}
+
+    //! \brief Reinitialize with an empty levels vector.
+    RevWreathCmp& init() noexcept {
+      _wreath.init();
+      return *this;
+    }
+
+    //! \brief Reinitialize from a levels vector.
+    RevWreathCmp& init(std::vector<size_t> const& levels) {
+      _wreath.init(levels);
+      return *this;
+    }
+
+    //! \brief Reinitialize from a levels vector rvalue.
+    RevWreathCmp& init(std::vector<size_t>&& levels) {
+      _wreath.init(std::move(levels));
+      return *this;
+    }
+
+    //! \brief Compare two words using reversed wreath-product order.
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    //! \brief Compare two iterator ranges using reversed wreath-product order.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return _wreath(std::make_reverse_iterator(last1),
+                     std::make_reverse_iterator(first1),
+                     std::make_reverse_iterator(last2),
+                     std::make_reverse_iterator(first2));
+    }
+
+    //! \brief Returns the levels.
+    [[nodiscard]] std::vector<size_t> const& levels() const noexcept {
+      return _wreath.levels();
+    }
+  };  // class RevWreathCmp<Default, check>
+
+  //! \brief Deduction guide from a levels vector.
+  RevWreathCmp(std::vector<size_t> const&)->RevWreathCmp<>;
+
+  //! \brief Deduction guide from a levels vector rvalue.
+  RevWreathCmp(std::vector<size_t>&&)->RevWreathCmp<>;
+
+  //! \brief Deduction guide from an alphabet and levels vector.
+  template <typename Word>
+  RevWreathCmp(Alphabet<Word> const&, std::vector<size_t> const&)
+      -> RevWreathCmp<Word>;
+
+  //! \brief Deduction guide from alphabet and levels vector rvalues.
+  template <typename Word>
+  RevWreathCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> RevWreathCmp<Word>;
+
+  //////////////////////////////////////////////////////////////////////
   // Weighted len-lex
   //////////////////////////////////////////////////////////////////////
 
@@ -4570,6 +4828,10 @@ namespace libsemigroups {
     //! Specialization of \ref is_well_founded for \ref WreathCmp.
     template <bool check>
     struct is_well_founded<WreathCmp<Default, check>> : std::true_type {};
+
+    //! \brief Reversed wreath-product order is well-founded.
+    template <bool check>
+    struct is_well_founded<RevWreathCmp<Default, check>> : std::true_type {};
 
     //! \brief Weighted short-lex order is well-founded.
     //!
