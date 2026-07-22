@@ -4127,6 +4127,108 @@ namespace libsemigroups {
         alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
+  //////////////////////////////////////////////////////////////////////
+  // Length then weighted lex
+  //////////////////////////////////////////////////////////////////////
+
+  //! \brief Compare two ranges first by length and then by weighted lex
+  //! without checks.
+  //!
+  //! If the ranges have different lengths, the shorter range is less. Ranges
+  //! of equal length are compared using \ref wt_lex_cmp_no_checks.
+  //!
+  //! \param weights the weights vector.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range, and \c false otherwise.
+  template <typename Iterator>
+  [[nodiscard]] bool
+  len_wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                           Iterator                   first1,
+                           Iterator                   last1,
+                           Iterator                   first2,
+                           Iterator                   last2);
+
+  //! \brief Compare two ranges first by length and then by weighted lex
+  //! without checks and with a specified alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool
+  len_wt_lex_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                           std::vector<size_t> const& weights,
+                           Iterator                   first1,
+                           Iterator                   last1,
+                           Iterator                   first2,
+                           Iterator                   last2);
+
+  //! \brief Compare two objects first by length and then by weighted lex
+  //! without checks.
+  template <typename Word>
+  [[nodiscard]] bool
+  len_wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                           Word const&                x,
+                           Word const&                y) {
+    return len_wt_lex_cmp_no_checks(
+        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects first by length and then by weighted lex
+  //! without checks and with a specified alphabet.
+  template <typename Word>
+  [[nodiscard]] bool
+  len_wt_lex_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                           std::vector<size_t> const& weights,
+                           Word const&                x,
+                           Word const&                y) {
+    return len_wt_lex_cmp_no_checks(
+        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two ranges first by length and then by weighted lex and
+  //! check validity.
+  //!
+  //! All letters are checked for compatibility with \p weights before the
+  //! comparison is performed.
+  template <typename Iterator>
+  [[nodiscard]] bool len_wt_lex_cmp(std::vector<size_t> const& weights,
+                                    Iterator                   first1,
+                                    Iterator                   last1,
+                                    Iterator                   first2,
+                                    Iterator                   last2);
+
+  //! \brief Compare two ranges first by length and then by weighted lex,
+  //! check validity, and use a specified alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool len_wt_lex_cmp(Alphabet<Word> const&      alphabet,
+                                    std::vector<size_t> const& weights,
+                                    Iterator                   first1,
+                                    Iterator                   last1,
+                                    Iterator                   first2,
+                                    Iterator                   last2);
+
+  //! \brief Compare two objects first by length and then by weighted lex and
+  //! check validity.
+  template <typename Word>
+  [[nodiscard]] bool len_wt_lex_cmp(std::vector<size_t> const& weights,
+                                    Word const&                x,
+                                    Word const&                y) {
+    return len_wt_lex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects first by length and then by weighted lex,
+  //! check validity, and use a specified alphabet.
+  template <typename Word>
+  [[nodiscard]] bool len_wt_lex_cmp(Alphabet<Word> const&      alphabet,
+                                    std::vector<size_t> const& weights,
+                                    Word const&                x,
+                                    Word const&                y) {
+    return len_wt_lex_cmp(
+        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
   //! \brief Forward declaration of \ref WtLexCmp.
   template <typename Word = Default, bool check = true>
   class WtLexCmp;
