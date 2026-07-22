@@ -5515,4 +5515,33 @@ namespace libsemigroups {
       }
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "135",
+                          "From FroidurePin",
+                          "[todd-coxeter][quick]") {
+    using Transf          = LeastTransf<5>;
+    FroidurePin<Transf> S = make<FroidurePin>(
+        {make<Transf>({1, 3, 4, 2, 3}), make<Transf>({3, 2, 1, 3, 3})});
+    ToddCoxeter<word_type> tc
+        = to<ToddCoxeter<word_type>>(onesided, S, S.right_cayley_graph());
+    todd_coxeter::add_generating_pair(
+        tc,
+        froidure_pin::factorisation(S, make<Transf>({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, make<Transf>({3, 1, 3, 3, 3})));
+    WordRange words;
+    words.alphabet_size(2).min(1).max(5);
+    tc.run();
+    REQUIRE(v4::word_graph::number_of_nodes_reachable_from(
+                tc.current_word_graph(), 0)
+            == tc.current_word_graph().number_of_nodes_active());
+    std::vector<std::vector<word_type>> const classes
+        = congruence_common::non_trivial_classes(tc, words);
+    REQUIRE(classes
+            == std::vector<std::vector<word_type>>{{{1}, {1, 1, 1}},
+                                                   {{0, 1}, {0, 1, 1, 1}},
+                                                   {{1, 0}, {1, 1, 1, 0}},
+                                                   {{1, 1}, {1, 1, 1, 1}},
+                                                   {{1, 0, 1}, {1, 1, 0, 1}}});
+  }
 }  // namespace libsemigroups
