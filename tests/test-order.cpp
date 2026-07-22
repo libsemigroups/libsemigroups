@@ -1478,7 +1478,9 @@ namespace libsemigroups {
                                    RevWtLenLexCmp<std::string>,
                                    (RevWtLenLexCmp<std::string, false>),
                                    WtLexCmp<std::string>,
-                                   (WtLexCmp<std::string, false>) ) {
+                                   (WtLexCmp<std::string, false>),
+                                   RevWtLexCmp<std::string>,
+                                   (RevWtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1516,7 +1518,9 @@ namespace libsemigroups {
                                    RevWtLenLexCmp<>,
                                    (RevWtLenLexCmp<Default, false>),
                                    WtLexCmp<>,
-                                   (WtLexCmp<Default, false>) ) {
+                                   (WtLexCmp<Default, false>),
+                                   RevWtLexCmp<>,
+                                   (RevWtLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     std::vector<size_t> ba_weights = {10, 1};
@@ -1645,7 +1649,9 @@ namespace libsemigroups {
                                    "wl alpha ctors",
                                    "[quick][order]",
                                    WtLexCmp<std::string>,
-                                   (WtLexCmp<std::string, false>) ) {
+                                   (WtLexCmp<std::string, false>),
+                                   RevWtLexCmp<std::string>,
+                                   (RevWtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1696,7 +1702,9 @@ namespace libsemigroups {
                                    "wl ctors",
                                    "[quick][order]",
                                    WtLexCmp<>,
-                                   (WtLexCmp<Default, false>) ) {
+                                   (WtLexCmp<Default, false>),
+                                   RevWtLexCmp<>,
+                                   (RevWtLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     std::vector<size_t> ba_weights = {10, 1};
@@ -2160,6 +2168,62 @@ namespace libsemigroups {
     static_assert(std::is_same_v<decltype(RevWtLenLexCmp(alphabet, equal)),
                                  RevWtLenLexCmp<std::string>>);
     static_assert(order::is_well_founded_v<RevWtLenLexCmp<>>);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevWtLexCmp",
+                          "070",
+                          "functions and functors",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    std::vector<size_t> equal   = {1, 1};
+    word_type           ab      = {0, 1};
+    word_type           ba      = {1, 0};
+    word_type           one     = {1};
+    word_type           zeros   = {0, 0};
+    word_type           invalid = {2};
+
+    REQUIRE(rev_wt_lex_cmp_no_checks(equal, ba, ab));
+    REQUIRE(rev_wt_lex_cmp_no_checks(
+        equal, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(rev_wt_lex_cmp(equal, ba, ab));
+    REQUIRE(
+        rev_wt_lex_cmp(equal, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(RevWtLexCmp(equal)(ba, ab));
+    REQUIRE(RevWtLexCmp<Default, false>(equal)(ba, ab));
+
+    std::vector<size_t> weights = {1, 2};
+    REQUIRE(rev_wt_lex_cmp(weights, zeros, one));
+
+    Alphabet alphabet("ab"s);
+    auto     string_ab = "ab"s;
+    auto     string_ba = "ba"s;
+    REQUIRE(rev_wt_lex_cmp_no_checks(alphabet, equal, string_ba, string_ab));
+    REQUIRE(rev_wt_lex_cmp_no_checks(alphabet,
+                                     equal,
+                                     string_ba.cbegin(),
+                                     string_ba.cend(),
+                                     string_ab.cbegin(),
+                                     string_ab.cend()));
+    REQUIRE(rev_wt_lex_cmp(alphabet, equal, string_ba, string_ab));
+    REQUIRE(rev_wt_lex_cmp(alphabet,
+                           equal,
+                           string_ba.cbegin(),
+                           string_ba.cend(),
+                           string_ab.cbegin(),
+                           string_ab.cend()));
+    REQUIRE(RevWtLexCmp(alphabet, equal)(string_ba, string_ab));
+    REQUIRE(
+        RevWtLexCmp<std::string, false>(alphabet, equal)(string_ba, string_ab));
+
+    REQUIRE_THROWS_AS(rev_wt_lex_cmp(equal, invalid, ab),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(RevWtLexCmp(equal)(invalid, ab), LibsemigroupsException);
+
+    static_assert(std::is_same_v<decltype(RevWtLexCmp(equal)), RevWtLexCmp<>>);
+    static_assert(std::is_same_v<decltype(RevWtLexCmp(alphabet, equal)),
+                                 RevWtLexCmp<std::string>>);
+    static_assert(order::is_well_founded_v<RevWtLexCmp<>>);
   }
 
 }  // namespace libsemigroups
