@@ -465,6 +465,68 @@ namespace libsemigroups {
         alphabet, weights, first1, last1, first2, last2);
   }
 
+  template <typename Iterator>
+  bool len_wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                                Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2) {
+    auto const length1 = last1 - first1;
+    auto const length2 = last2 - first2;
+    return length1 < length2
+           || (length1 == length2
+               && wt_lex_cmp_no_checks(weights, first1, last1, first2, last2));
+  }
+
+  template <typename Word, typename Iterator>
+  bool len_wt_lex_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                std::vector<size_t> const& weights,
+                                Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2) {
+    auto const length1 = last1 - first1;
+    auto const length2 = last2 - first2;
+    return length1 < length2
+           || (length1 == length2
+               && wt_lex_cmp_no_checks(
+                   alphabet, weights, first1, last1, first2, last2));
+  }
+
+  template <typename Iterator>
+  bool len_wt_lex_cmp(std::vector<size_t> const& weights,
+                      Iterator                   first1,
+                      Iterator                   last1,
+                      Iterator                   first2,
+                      Iterator                   last2) {
+    detail::throw_if_incompat_weights_or_levels(
+        weights, first1, last1, "weights");
+    detail::throw_if_incompat_weights_or_levels(
+        weights, first2, last2, "weights");
+    return len_wt_lex_cmp_no_checks(weights, first1, last1, first2, last2);
+  }
+
+  template <typename Word, typename Iterator>
+  bool len_wt_lex_cmp(Alphabet<Word> const&      alphabet,
+                      std::vector<size_t> const& weights,
+                      Iterator                   first1,
+                      Iterator                   last1,
+                      Iterator                   first2,
+                      Iterator                   last2) {
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    detail::throw_if_incompat_weights_or_levels(weights,
+                                                detail::citow(alphabet, first1),
+                                                detail::citow(alphabet, last1),
+                                                "weights");
+    detail::throw_if_incompat_weights_or_levels(weights,
+                                                detail::citow(alphabet, first2),
+                                                detail::citow(alphabet, last2),
+                                                "weights");
+    return len_wt_lex_cmp_no_checks(
+        alphabet, weights, first1, last1, first2, last2);
+  }
+
   template <typename Word, bool check>
   LexCmp<Word, check>&
   LexCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
