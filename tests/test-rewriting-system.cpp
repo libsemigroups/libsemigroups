@@ -541,15 +541,15 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
                                      "018",
-                                     "Wreath",
+                                     "Wr",
                                      "[quick]",
-                                     RewritingSystemSet<WreathCmp>,
-                                     RewritingSystemTrie<WreathCmp>) {
+                                     RewritingSystemSet<WrCmp>,
+                                     RewritingSystemTrie<WrCmp>) {
       auto rg         = ReportGuard(false);
       using rule_type = std::pair<std::string, std::string>;
 
       static_assert(std::is_same_v<typename TestType::reduction_order,
-                                   WreathCmp<Default, false>>);
+                                   WrCmp<Default, false>>);
 
       TestType rws;
       rws.increase_alphabet_size_by(3);
