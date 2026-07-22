@@ -1337,6 +1337,8 @@ namespace libsemigroups {
                                    (LexCmp<Default, false>),
                                    LenLexCmp<>,
                                    (LenLexCmp<Default, false>),
+                                   RevLenLexCmp<>,
+                                   (RevLenLexCmp<Default, false>),
                                    RPOCmp<>,
                                    (RPOCmp<Default, false>),
                                    RevRPOCmp<>,
@@ -1373,6 +1375,7 @@ namespace libsemigroups {
                                    "[quick][order]",
                                    LexCmp<std::string>,
                                    LenLexCmp<std::string>,
+                                   RevLenLexCmp<std::string>,
                                    RPOCmp<std::string>,
                                    RevRPOCmp<std::string>) {
     using std::string_literals::operator""s;
@@ -1420,6 +1423,7 @@ namespace libsemigroups {
                                    "[quick][order]",
                                    (LexCmp<std::string, false>),
                                    (LenLexCmp<std::string, false>),
+                                   (RevLenLexCmp<std::string, false>),
                                    (RPOCmp<std::string, false>),
                                    (RevRPOCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
@@ -2013,6 +2017,43 @@ namespace libsemigroups {
 
     REQUIRE(
         std::is_sorted(strings.begin(), strings.end(), RevRPOCmp(alphabet)));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevLenLexCmp",
+                          "067",
+                          "functions and functors",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto ab = "ab"s;
+    auto ba = "ba"s;
+
+    REQUIRE(rev_lenlex_cmp(ba, ab));
+    REQUIRE(rev_lenlex_cmp(ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(RevLenLexCmp()(ba, ab));
+    REQUIRE(RevLenLexCmp()(ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(rev_lenlex_cmp(alphabet, ab, ba));
+    REQUIRE(rev_lenlex_cmp(
+        alphabet, ab.cbegin(), ab.cend(), ba.cbegin(), ba.cend()));
+    REQUIRE(rev_lenlex_cmp_no_checks(alphabet, ab, ba));
+    REQUIRE(rev_lenlex_cmp_no_checks(
+        alphabet, ab.cbegin(), ab.cend(), ba.cbegin(), ba.cend()));
+    REQUIRE(RevLenLexCmp(alphabet)(ab, ba));
+    REQUIRE(RevLenLexCmp<std::string, false>(alphabet)(ab, ba));
+
+    REQUIRE(rev_lenlex_cmp("a"s, "aa"s));
+    REQUIRE(!rev_lenlex_cmp("aa"s, "a"s));
+
+    alphabet.init("cd"s);
+    REQUIRE_EXCEPTION_MSG(std::ignore = rev_lenlex_cmp(alphabet, ab, ba),
+                          "invalid letter 'b', valid letters are \"cd\"");
+    REQUIRE_EXCEPTION_MSG(std::ignore = RevLenLexCmp(alphabet)(ab, ba),
+                          "invalid letter 'b', valid letters are \"cd\"");
+
+    static_assert(order::is_length_non_increasing_v<RevLenLexCmp<>>);
+    static_assert(order::is_well_founded_v<RevLenLexCmp<>>);
   }
 
 }  // namespace libsemigroups

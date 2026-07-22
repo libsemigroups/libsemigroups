@@ -915,6 +915,188 @@ namespace libsemigroups {
   };  // struct LenLexCmp<Default, false>
 
   //////////////////////////////////////////////////////////////////////
+  // Reversed len-lex
+  //////////////////////////////////////////////////////////////////////
+
+  //! \brief Compare two ranges using reversed len-lex.
+  //!
+  //! This function applies \ref lenlex_cmp to the ranges read from right to
+  //! left.
+  //!
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is reversed
+  //! len-lex less than the second range, and \c false otherwise.
+  template <typename Iterator>
+  [[nodiscard]] bool rev_lenlex_cmp(Iterator first1,
+                                    Iterator last1,
+                                    Iterator first2,
+                                    Iterator last2) {
+    return lenlex_cmp(std::make_reverse_iterator(last1),
+                      std::make_reverse_iterator(first1),
+                      std::make_reverse_iterator(last2),
+                      std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two ranges using reversed len-lex without checking an
+  //! alphabet.
+  //!
+  //! This function applies \ref lenlex_cmp_no_checks to the ranges read from
+  //! right to left.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                              Iterator              first1,
+                                              Iterator              last1,
+                                              Iterator              first2,
+                                              Iterator              last2) {
+    return lenlex_cmp_no_checks(alphabet,
+                                std::make_reverse_iterator(last1),
+                                std::make_reverse_iterator(first1),
+                                std::make_reverse_iterator(last2),
+                                std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two ranges using reversed len-lex with respect to an
+  //! alphabet.
+  //!
+  //! This function applies \ref lenlex_cmp to the ranges read from right to
+  //! left.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_lenlex_cmp(Alphabet<Word> const& alphabet,
+                                    Iterator              first1,
+                                    Iterator              last1,
+                                    Iterator              first2,
+                                    Iterator              last2) {
+    return lenlex_cmp(alphabet,
+                      std::make_reverse_iterator(last1),
+                      std::make_reverse_iterator(first1),
+                      std::make_reverse_iterator(last2),
+                      std::make_reverse_iterator(first2));
+  }
+
+  //! \brief Compare two objects using reversed len-lex.
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool rev_lenlex_cmp(Word const& x, Word const& y) {
+    return rev_lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects using reversed len-lex without checking an
+  //! alphabet.
+  template <typename Word>
+  [[nodiscard]] bool rev_lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                              Word const&           x,
+                                              Word const&           y) {
+    return rev_lenlex_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects using reversed len-lex with respect to an
+  //! alphabet.
+  template <typename Word>
+  [[nodiscard]] bool rev_lenlex_cmp(Alphabet<Word> const& alphabet,
+                                    Word const&           x,
+                                    Word const&           y) {
+    return rev_lenlex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  template <typename Word = Default, bool check = true>
+  class RevLenLexCmp;
+
+  //! \brief Stateful reversed len-lex comparison functor.
+  template <typename Word, bool check>
+  class RevLenLexCmp {
+    LenLexCmp<Word, check> _lenlex;
+
+   public:
+    RevLenLexCmp()                               = delete;
+    RevLenLexCmp(RevLenLexCmp const&)            = default;
+    RevLenLexCmp(RevLenLexCmp&&)                 = default;
+    RevLenLexCmp& operator=(RevLenLexCmp const&) = default;
+    RevLenLexCmp& operator=(RevLenLexCmp&&)      = default;
+    ~RevLenLexCmp()                              = default;
+
+    //! \brief Construct from an alphabet.
+    explicit RevLenLexCmp(Alphabet<Word> const& alphabet) : _lenlex(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    explicit RevLenLexCmp(Alphabet<Word>&& alphabet)
+        : _lenlex(std::move(alphabet)) {}
+
+    //! \brief Reinitialize from an alphabet.
+    RevLenLexCmp& init(Alphabet<Word> const& alphabet) {
+      _lenlex.init(alphabet);
+      return *this;
+    }
+
+    //! \brief Reinitialize from an alphabet rvalue.
+    RevLenLexCmp& init(Alphabet<Word>&& alphabet) {
+      _lenlex.init(std::move(alphabet));
+      return *this;
+    }
+
+    //! \brief Compare two words using reversed len-lex.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    //! \brief Compare two iterator ranges using reversed len-lex.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return _lenlex(std::make_reverse_iterator(last1),
+                     std::make_reverse_iterator(first1),
+                     std::make_reverse_iterator(last2),
+                     std::make_reverse_iterator(first2));
+    }
+
+    //! \brief Returns the alphabet.
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _lenlex.alphabet();
+    }
+  };  // class RevLenLexCmp
+
+  //! \brief Stateless reversed len-lex comparison functor.
+  template <>
+  struct RevLenLexCmp<Default, true> {
+    //! \brief Reinitialize the comparison object.
+    RevLenLexCmp& init() noexcept {
+      return *this;
+    }
+
+    //! \brief Compare two words using reversed len-lex.
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    //! \brief Compare two iterator ranges using reversed len-lex.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return LenLexCmp<Default, true>()(std::make_reverse_iterator(last1),
+                                        std::make_reverse_iterator(first1),
+                                        std::make_reverse_iterator(last2),
+                                        std::make_reverse_iterator(first2));
+    }
+  };  // struct RevLenLexCmp<Default, true>
+
+  template <>
+  struct RevLenLexCmp<Default, false> : RevLenLexCmp<Default, true> {
+    //! \brief Reinitialize the comparison object.
+    RevLenLexCmp& init() noexcept {
+      return *this;
+    }
+  };  // struct RevLenLexCmp<Default, false>
+
+  //////////////////////////////////////////////////////////////////////
   // Recursive path order (RPO)
   //////////////////////////////////////////////////////////////////////
 
@@ -3610,6 +3792,7 @@ namespace libsemigroups {
   //!
   //! This namespace contains compile-time helpers for detecting properties of
   //! reduction order comparison types.
+  // TODO these should not only be specialised for Default
   namespace order {
     //! \brief Helper used to indicate whether or not an order is length
     //! non-increasing.
@@ -3628,6 +3811,11 @@ namespace libsemigroups {
     //! \ref LenLexCmp.
     template <bool check>
     struct is_length_non_increasing<LenLexCmp<Default, check>>
+        : std::true_type {};
+
+    //! \brief Reversed len-lex order is length non-increasing.
+    template <bool check>
+    struct is_length_non_increasing<RevLenLexCmp<Default, check>>
         : std::true_type {};
 
     //! \brief Helper variable template for \ref is_length_non_increasing.
@@ -3656,6 +3844,10 @@ namespace libsemigroups {
     //! Specialization of \ref is_well_founded for \ref LenLexCmp.
     template <bool check>
     struct is_well_founded<LenLexCmp<Default, check>> : std::true_type {};
+
+    //! \brief Reversed len-lex order is well-founded.
+    template <bool check>
+    struct is_well_founded<RevLenLexCmp<Default, check>> : std::true_type {};
 
     //! \brief Recursive path order is well-founded.
     //!
