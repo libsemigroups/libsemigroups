@@ -36,15 +36,16 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
-#include "libsemigroups/order.hpp"            // for LenLexCmp, shor...
-#include "libsemigroups/presentation.hpp"     // for Presentation, human_r...
-#include "libsemigroups/ranges.hpp"           // for chain, lenlex_cmp
+#include "libsemigroups/bipart.hpp"        // for Bipartition
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_ALGLIB_ENABLED
+#include "libsemigroups/constants.hpp"     // for operator==, operator!=
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
+#include "libsemigroups/order.hpp"         // for LenLexCmp, shor...
+#include "libsemigroups/presentation.hpp"  // for Presentation, human_r...
+#include "libsemigroups/ranges.hpp"        // for chain, lenlex_cmp
 #include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
 #include "libsemigroups/word-range.hpp"       // for operator+=, operator""_w
@@ -4054,22 +4055,95 @@ End;)xxx");
                           "letters, found \"abAB\"!");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "101",
-                          "to_ace_string word_type",
-                          "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
-    Presentation<word_type> p;
-    p.alphabet(2);
-    p.contains_empty_word(true);
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
 
-    presentation::add_rule(p, "00"_w, ""_w);
-    presentation::add_rule(p, "111"_w, ""_w);
-    presentation::add_rule(p, "0101"_w, ""_w);
-    REQUIRE(presentation::to_ace_string(p) == R"xxx(Group: a, b;
-wo: 4g; # workspace size, adjust as necessary
-Rel: aa, bbb, abab;
-Mess: 100000; # message frequency, adjust as necessary
-End;)xxx");
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "102",
+                                   "find_weights simple",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {2}, {1});
+    presentation::add_rule(p, {1}, {0});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == std::vector<size_t>{1, 1, 1});
+    for (size_t i = 0; i < p.rules.size(); i += 2) {
+      REQUIRE(wt_lenlex_cmp(p.rules[i + 1], p.rules[i], result.value()));
+    }
   }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "103",
+                                   "find_weights simple x2",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {0}, {1});
+    presentation::add_rule(p, {1}, {2});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == std::vector<size_t>{7, 2, 1});
+    for (size_t i = 0; i < p.rules.size(); i += 2) {
+      REQUIRE(wt_lenlex_cmp(p.rules[i + 1], p.rules[i], result.value()));
+    }
+  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "104",
+                                   "find_weights simple x3",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {0, 1}, {1});
+    presentation::add_rule(p, {1, 2}, {2});
+    presentation::add_rule(p, {2, 0}, {0});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == std::vector<size_t>{1, 1, 1});
+    for (size_t i = 0; i < p.rules.size(); i += 2) {
+      REQUIRE(wt_lenlex_cmp(p.rules[i + 1], p.rules[i], result.value()));
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "105",
+                                   "find_weights no solution",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {0}, {1});
+    presentation::add_rule(p, {1}, {2});
+    presentation::add_rule(p, {2}, {0});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(!result.has_value());
+  }
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
 }  // namespace libsemigroups

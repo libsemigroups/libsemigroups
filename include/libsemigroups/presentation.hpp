@@ -44,6 +44,7 @@
 #include "adapters.hpp"  // for Hash, EqualTo
 #include "alphabet-helpers.hpp"
 #include "alphabet.hpp"              // for Alphabet
+#include "config.hpp"                // for LIBSEMIGROUPS_ALGLIB_ENABLED
 #include "constants.hpp"             // for Max, UNDEFINED, operator==
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
 #include "is_specialization_of.hpp"  // for is_specialization_of
@@ -53,10 +54,12 @@
 #include "ukkonen.hpp"     // for GreedyReduceHelper, Ukkonen
 #include "word-range.hpp"  // for operator+
 
-#include "detail/fmt.hpp"     // for format
-#include "detail/print.hpp"   // for isprint etc
-#include "detail/string.hpp"  // for maximum_common_prefix
-#include "detail/uf.hpp"      // for Duf
+#include "detail/containers.hpp"      // for DynamicArray2
+#include "detail/fmt.hpp"             // for format
+#include "detail/print.hpp"           // for isprint etc
+#include "detail/string.hpp"          // for maximum_common_prefix
+#include "detail/uf.hpp"              // for Duf
+#include "detail/weight-finding.hpp"  // for get_weights
 
 namespace libsemigroups {
 
@@ -3428,6 +3431,32 @@ namespace libsemigroups {
                                Word const&               rhs) {
       return find_rule(p, lhs, rhs) != p.rules.end();
     }
+
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+    //! \brief Attempt to find weights such that the rules of the presentation
+    //! are oriented with respect to weighted len-lex.
+    //!
+    //! This function attempts to find a weight for each letter in the alphabet
+    //! of \p p such that, for each relation, the left-hand-side is greater than
+    //! or equal to the right-hand-side with respect to weighted len-lex. If
+    //! this succeeds (that is, if `has_value()` returns true when called on the
+    //! returned value of this function), the \f$i\f$-th value in the vector of
+    //! weights corresponds to the letter in the alphabet of \p p with index
+    //! \f$i\f$.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //!
+    //! \param p the presentation.
+    //!
+    //! \returns A \c std::optional containing a \c std::vector of weights if
+    //! the search succeeds, and \c std::nullopt otherwise.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
+    template <typename Word>
+    [[nodiscard]] std::optional<std::vector<size_t>>
+    find_weights(Presentation<Word> const& p);
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
 
   }  // namespace presentation
 

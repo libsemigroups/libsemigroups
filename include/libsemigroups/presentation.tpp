@@ -1194,7 +1194,55 @@ namespace libsemigroups {
       }
       return UNDEFINED;
     }
-  }  // namespace presentation
+
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+    template <typename Word>
+    std::optional<std::vector<size_t>>
+    find_weights(Presentation<Word> const& p) {
+      p.throw_if_bad_alphabet_or_rules();
+      size_t const               num_variables   = p.alphabet_v4().size();
+      size_t const               num_constraints = p.rules.size() / 2;
+      detail::DynamicArray2<int> coefficients(num_variables, num_constraints);
+
+      std::vector<bool> is_strict;
+      is_strict.reserve(num_constraints);
+
+      std::vector<int> row(num_variables);
+      size_t           next_row_index = 0;
+
+      for (size_t i = 0; i < p.rules.size(); i += 2) {
+        std::fill(row.begin(), row.end(), 0);
+        Word const& lhs = p.rules[i];
+        Word const& rhs = p.rules[i + 1];
+
+        // Populate row
+        for (auto const& letter : lhs) {
+          row[p.alphabet_v4().index_no_checks(letter)] += 1;
+        }
+        for (auto const& letter : rhs) {
+          row[p.alphabet_v4().index_no_checks(letter)] -= 1;
+        }
+
+        // Only consider constraints where at least one coefficient is negative;
+        // constraints where all coefficients are non-negative are trivially
+        // satisfied by any assignment of positive weights.
+        if (std::any_of(
+                row.cbegin(), row.cend(), [](int val) { return val < 0; })) {
+          std::copy(
+              row.cbegin(), row.cend(), coefficients.begin_row(next_row_index));
+          // If lhs < rhs w.r.t lenlex, then the constraint must be a strict
+          // inequality. Otherwise, the weight of the lhs can be equal to the
+          // weight of the rhs, and weighted_lenlex will still correctly orient
+          // the rule so that lhs > rhs.
+          is_strict.push_back(lenlex_cmp(lhs, rhs));
+          ++next_row_index;
+        }
+      }
+      coefficients.shrink_rows_to(next_row_index);
+      return detail::get_weights(coefficients, is_strict);
+    }
+#endif  // LIBSEMIGROUPS_ALGLIB_ENABLED
+  }     // namespace presentation
 
   template <typename Word>
   std::string to_human_readable_repr(Presentation<Word> const& p) {
