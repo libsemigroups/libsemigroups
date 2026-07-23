@@ -293,20 +293,28 @@ namespace libsemigroups {
     };  // class SubwordsRange
   }     // namespace detail
 
+  // TODO doc
   class Subwords : public detail::SubwordsSettings {
     using Settings = detail::SubwordsSettings;
 
    public:
-    Subwords()                           = default;
-    Subwords(Subwords const&)            = default;
-    Subwords(Subwords&&)                 = default;
+    // TODO doc
+    Subwords() = default;
+    // TODO doc
+    Subwords(Subwords const&) = default;
+    // TODO doc
+    Subwords(Subwords&&) = default;
+    // TODO doc
     Subwords& operator=(Subwords const&) = default;
-    Subwords& operator=(Subwords&&)      = default;
+    // TODO doc
+    Subwords& operator=(Subwords&&) = default;
 
     ~Subwords() = default;
 
+    // TODO doc
     Subwords(Settings const& settings) : Settings(settings){};
 
+    // TODO doc
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
@@ -316,6 +324,7 @@ namespace libsemigroups {
       return detail::SubwordsRange(std::forward<InputRange>(input), *this);
     }
 
+    // TODO doc
     template <typename Word>
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
       return operator()(Singleton(input));
@@ -325,20 +334,24 @@ namespace libsemigroups {
     // Settings
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO doc
     Subwords& min_length(size_t val) {
       Settings::min_length(val);
       return *this;
     }
 
+    // TODO doc
     Subwords& max_length(size_t val) {
       Settings::max_length(val);
       return *this;
     }
 
+    // TODO doc
     Subwords& proper(bool val) {
       Settings::proper(val);
       return *this;
     }
+    // TODO doc from Settings
   };
 
   class SubwordsFreq;
