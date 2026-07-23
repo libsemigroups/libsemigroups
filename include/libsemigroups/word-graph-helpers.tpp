@@ -65,7 +65,7 @@ namespace libsemigroups {
       namespace detail {
         template <typename Node>
         // TODO rename to _no_checks and add a checks version?
-        bool is_shortlex_standardized(WordGraphView<Node> const& wg) {
+        bool is_lenlex_standardized(WordGraphView<Node> const& wg) {
           Node current_max_node = 0;
 
           for (auto s : wg.nodes_no_checks()) {
@@ -84,48 +84,152 @@ namespace libsemigroups {
           return true;
         }
 
-        // For best performance ensure that <f> has the correct number of nodes
-        // when calling this function.
-        template <typename Graph>
-        bool shortlex_standardize(Graph& wg, Forest& f) {
-          LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
-          LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
+        template <typename Node>
+        bool is_rev_rpo_standardized(WordGraphView<Node> const& wg) {
+          using node_type = typename WordGraphView<Node>::node_type;
 
-          using node_type = typename Graph::node_type;
+          auto const N = wg.number_of_nodes_no_checks();
+          if (N == 0) {
+            return true;
+          }
 
-          node_type    t      = 0;
-          size_t const n      = wg.out_degree();
-          bool         result = false;
+          auto const nr_reachable = number_of_nodes_reachable_from(wg, 0);
+          if (nr_reachable <= 1) {
+            return true;
+          }
 
-          // p : new -> old and q : old -> new
-          std::vector<node_type> p(wg.number_of_nodes(), 0);
-          std::iota(p.begin(), p.end(), 0);
-          std::vector<node_type> q(p);
+          std::vector<bool>      seen(N, false);
+          std::vector<node_type> next_node(wg.out_degree_no_checks(), 0);
+          node_type              max_seen = 0;
 
-          for (node_type s = 0; s <= t; ++s) {
-            for (letter_type x = 0; x < n; ++x) {
-              node_type r = wg.target_no_checks(p[s], x);
-              if (r < wg.number_of_nodes()) {
-                r = q[r];  // new
-                if (r > t) {
-                  t++;
-                  if (r > t) {
-                    std::swap(p[t], p[r]);
-                    std::swap(q[p[t]], q[p[r]]);
-                    result = true;
-                  }
-                  if (t >= f.number_of_nodes()) {
-                    f.add_nodes(1);
-                  }
-                  f.set_parent_and_label_no_checks(t, (s == t ? r : s), x);
+          seen[0] = true;
+
+        restart:
+          for (letter_type x = 0; x < wg.out_degree_no_checks(); ++x) {
+            while (next_node[x] <= max_seen) {
+              node_type const s = next_node[x];
+              ++next_node[x];
+
+              node_type const t = wg.target_no_checks(s, x);
+              if (t < N && !seen[t]) {
+                if (t != max_seen + 1) {
+                  return false;
                 }
+                seen[t] = true;
+                ++max_seen;
+                if (static_cast<size_t>(max_seen + 1) == nr_reachable) {
+                  return true;
+                }
+                goto restart;
               }
             }
           }
-          if (result) {
-            wg.standardize(p, q);
+          return static_cast<size_t>(max_seen + 1) == nr_reachable;
+        }
+
+        template <typename Node>
+        class NodeManagedGraph;
+
+        template <typename Graph>
+        class Standardizer {
+          using node_type  = typename Graph::node_type;
+          using label_type = typename Graph::label_type;
+
+          static node_type init_max_nodes(Graph& wg) {
+            if constexpr (is_specialization_of_v<Graph, NodeManagedGraph>) {
+              return wg.number_of_nodes_active() - 1;
+            } else {
+              return wg.number_of_nodes() - 1;
+            }
           }
-          return result;
+
+         public:
+          Standardizer(Graph& wg, Forest& f)
+              : _f(f),
+                _largest_used_node(0),
+                _max_node(init_max_nodes(wg)),
+                _p(_max_node + 1),
+                _p_inverse(wg.number_of_nodes(), UNDEFINED),
+                _swapped(false),
+                _wg(wg) {
+            _p[0]         = 0;
+            _p_inverse[0] = 0;
+          }
+
+          // Follow the edge labelled <x> out of the node currently occupying
+          // position <s>. If that edge leads to a node that is larger than
+          // <_largest_used_node>, then <_largest_used_node> is incremented and
+          // p[_largest_used_node] is set to the newly discovered node.
+          //
+          // Returns true if a previously-unseen node was discovered.
+          bool try_set_next_smallest(node_type const s, label_type const x) {
+            node_type const target = _wg.target_no_checks(_p[s], x);
+            if (target == UNDEFINED || _p_inverse[target] != UNDEFINED) {
+              return false;
+            }
+            ++_largest_used_node;
+            if (_largest_used_node >= _f.number_of_nodes()) {
+              _f.add_nodes(1);
+            }
+            _p[_largest_used_node] = target;
+            _p_inverse[target]     = _largest_used_node;
+            if (target != _largest_used_node) {
+              _swapped = true;
+            }
+            _f.set_parent_and_label_no_checks(
+                _largest_used_node, (s == _largest_used_node ? target : s), x);
+            return true;
+          }
+
+          node_type largest_used_node() {
+            return _largest_used_node;
+          }
+
+          bool stop_early() {
+            return _largest_used_node >= _max_node;
+          }
+
+          bool standardize() {
+            if (_swapped) {
+              _p.resize(_largest_used_node + 1);
+              _wg.standardize(_p, _p_inverse);
+            }
+            return _swapped;
+          }
+
+         private:
+          Forest&                _f;
+          node_type              _largest_used_node;
+          node_type const        _max_node;
+          std::vector<node_type> _p;
+          std::vector<node_type> _p_inverse;
+          bool                   _swapped;
+          Graph&                 _wg;
+        };
+
+        // For best performance ensure that <f> has the correct number of nodes
+        // when calling this function.
+        template <typename Graph>
+        bool lenlex_standardize(Graph& wg, Forest& f) {
+          LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
+          LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
+
+          using node_type  = typename Graph::node_type;
+          using label_type = typename Graph::label_type;
+
+          size_t const        n = wg.out_degree();
+          Standardizer<Graph> standardizer(wg, f);
+
+          for (node_type s = 0; s <= standardizer.largest_used_node(); ++s) {
+            for (label_type x = 0; x < n; ++x) {
+              standardizer.try_set_next_smallest(s, x);
+              if (standardizer.stop_early()) {
+                return standardizer.standardize();
+              }
+            }
+          }
+
+          return standardizer.standardize();
         }
 
         template <typename Graph>
@@ -136,36 +240,19 @@ namespace libsemigroups {
           using node_type  = typename Graph::node_type;
           using label_type = typename Graph::label_type;
 
-          node_type  s = 0, t = 0;
-          label_type x      = 0;
-          auto const n      = wg.out_degree();
-          bool       result = false;
+          node_type    s = 0;
+          label_type   x = 0;
+          size_t const n = wg.out_degree();
 
-          // p : new -> old and q : old -> new
-          std::vector<node_type> p(wg.number_of_nodes(), 0);
-          std::iota(p.begin(), p.end(), 0);
-          std::vector<node_type> q(p);
+          Standardizer<Graph> standardizer(wg, f);
 
           // Perform a DFS through wg
-          while (s <= t) {
-            node_type r = wg.target_no_checks(p[s], x);
-            if (r < wg.number_of_nodes()) {
-              r = q[r];  // new
-              if (r > t) {
-                t++;
-                if (t >= f.number_of_nodes()) {
-                  f.add_nodes(1);
-                }
-                if (r > t) {
-                  std::swap(p[t], p[r]);
-                  std::swap(q[p[t]], q[p[r]]);
-                  result = true;
-                }
-                f.set_parent_and_label_no_checks(t, (s == t ? r : s), x);
-                s = t;
-                x = 0;
-                continue;
-              }
+          while (s <= standardizer.largest_used_node()
+                 && !standardizer.stop_early()) {
+            if (standardizer.try_set_next_smallest(s, x)) {
+              s = standardizer.largest_used_node();
+              x = 0;
+              continue;
             }
             x++;
             if (x == n) {  // backtrack
@@ -173,119 +260,78 @@ namespace libsemigroups {
               s = f.parent(s);
             }
           }
-          if (result) {
-            wg.standardize(p, q);
-          }
-          return result;
+          return standardizer.standardize();
         }
 
         template <typename Graph>
-        bool recursive_standardize(Graph& wg, Forest& f) {
+        bool rev_rpo_standardize(Graph& wg, Forest& f) {
           LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
           LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
 
-          using node_type = typename Graph::node_type;
+          using node_type  = typename Graph::node_type;
+          using label_type = typename Graph::label_type;
 
-          std::vector<word_type> words;
+          Standardizer<Graph> standardizer(wg, f);
+          size_t const        n = wg.out_degree();
+
+          std::vector<node_type> next_node(n, 0);
+
+        // Follow Sims' WREATH_STND literally: each letter keeps its own
+        // cursor, and every discovery restarts the sweep from the first
+        // letter so earlier frontier words are handled first.
+        start_rev_rpo_standardize_search:
+          for (label_type x = 0; x < n; ++x) {
+            while (next_node[x] <= standardizer.largest_used_node()) {
+              node_type const s = next_node[x];
+              ++next_node[x];
+
+              if (standardizer.try_set_next_smallest(s, x)) {
+                if (standardizer.stop_early()) {
+                  return standardizer.standardize();
+                }
+                goto start_rev_rpo_standardize_search;
+              }
+            }
+          }
+
+          return standardizer.standardize();
+        }
+
+        template <typename Graph>
+        bool rpo_standardize(Graph& wg, Forest& f) {
+          LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
+          LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
+
+          using node_type  = typename Graph::node_type;
+          using label_type = typename Graph::label_type;
+
+          Standardizer<Graph>    standardizer(wg, f);
           size_t const           n = wg.out_degree();
-          letter_type            a = 0;
-          node_type              s = 0, t = 0;
+          label_type             x = 0;
+          std::vector<node_type> next_node(n, 0);
 
-          std::vector<node_type> p(wg.number_of_nodes(), 0);
-          std::iota(p.begin(), p.end(), 0);
-          std::vector<node_type> q(p);
-
-          size_t max_t = number_of_nodes_reachable_from(wg, 0) - 1;
-
-          // TODO(1) move this out of here and use it in the other standardize
-          // functions
-          auto swap_if_necessary = [&wg, &f, &p, &q](node_type const   ss,
-                                                     node_type&        tt,
-                                                     letter_type const x) {
-            node_type r      = wg.target_no_checks(p[ss], x);
-            bool      result = false;
-            if (r < wg.number_of_nodes()) {
-              r = q[r];  // new
-              if (r > tt) {
-                tt++;
-                if (tt >= f.number_of_nodes()) {
-                  f.add_nodes(1);
+          while (x < n) {
+            bool            changed = false;
+            node_type const largest_this_pass
+                = standardizer.largest_used_node();
+            while (next_node[x] <= largest_this_pass) {
+              node_type const s = next_node[x];
+              ++next_node[x];
+              if (standardizer.try_set_next_smallest(s, x)) {
+                if (standardizer.stop_early()) {
+                  return standardizer.standardize();
                 }
-                if (r > tt) {
-                  std::swap(p[tt], p[r]);
-                  std::swap(q[p[tt]], q[p[r]]);
-                }
-                result = true;
-                f.set_parent_and_label_no_checks(tt, (ss == tt ? r : ss), x);
+                changed = true;
               }
             }
-            return result;
-          };
-
-          bool result = false;
-
-          while (s <= t) {
-            if (swap_if_necessary(s, t, 0)) {
-              words.push_back(word_type(t, a));
-              result = true;
-            }
-            s++;
-          }
-          a++;
-          bool new_generator = true;
-          int  x, u, w;
-          while (a < n && t < max_t) {
-            if (new_generator) {
-              w = -1;  // -1 is the empty word
-              if (swap_if_necessary(0, t, a)) {
-                result = true;
-                words.push_back({a});
-              }
-              x             = words.size() - 1;
-              u             = words.size() - 1;
-              new_generator = false;
-            }
-
-            node_type const uu = word_graph::follow_path_no_checks(
-                wg, 0, words[u].begin(), words[u].end());
-            if (uu != UNDEFINED) {
-              for (int v = 0; v < x; v++) {
-                node_type const uuv = word_graph::follow_path_no_checks(
-                    wg, uu, words[v].begin(), words[v].end() - 1);
-                if (uuv != UNDEFINED) {
-                  s = q[uuv];
-                  if (swap_if_necessary(s, t, words[v].back())) {
-                    result        = true;
-                    word_type nxt = words[u];
-                    nxt.insert(nxt.end(), words[v].begin(), words[v].end());
-                    words.push_back(std::move(nxt));
-                  }
-                }
-              }
-            }
-            w++;
-            if (static_cast<size_t>(w) < words.size()) {
-              node_type const ww = word_graph::follow_path_no_checks(
-                  wg, 0, words[w].begin(), words[w].end());
-              if (ww != UNDEFINED) {
-                s = q[ww];
-                if (swap_if_necessary(s, t, a)) {
-                  result        = true;
-                  u             = words.size();
-                  word_type nxt = words[w];
-                  nxt.push_back(a);
-                  words.push_back(std::move(nxt));
-                }
-              }
+            if (changed) {
+              x = 0;
             } else {
-              a++;
-              new_generator = true;
+              ++x;
             }
           }
-          if (result) {
-            wg.standardize(p, q);
-          }
-          return result;
+
+          return standardizer.standardize();
         }
 
         // Helper function for the two versions of is_acyclic below.
@@ -459,12 +505,13 @@ namespace libsemigroups {
           case Order::none:
             return false;
           case Order::lenlex:
-            return detail::shortlex_standardize(wg, f);
+            return detail::lenlex_standardize(wg, f);
           case Order::lex:
             return detail::lex_standardize(wg, f);
           case Order::rpo:
-            return detail::recursive_standardize(wg, f);
+            return detail::rpo_standardize(wg, f);
           case Order::rev_rpo:
+            return detail::rev_rpo_standardize(wg, f);
             // Intentional fall-through
           default:
             return false;
@@ -477,10 +524,11 @@ namespace libsemigroups {
           case Order::none:
             return true;
           case Order::lenlex:
-            return detail::is_shortlex_standardized(wg);
+            return detail::is_lenlex_standardized(wg);
+          case Order::rev_rpo:
+            return detail::is_rev_rpo_standardized(wg);
           case Order::lex:
           case Order::rpo:
-          case Order::rev_rpo:
           default:
             LIBSEMIGROUPS_EXCEPTION("not yet implemented")
         }

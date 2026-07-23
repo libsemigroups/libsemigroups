@@ -85,8 +85,6 @@ namespace libsemigroups {
     //!
     //! \deprecated_warning{value} Use \ref Order::rpo instead.
     recursive [[deprecated("Use rpo instead!")]] = rev_rpo
-
-    // wreath TODO(later)
   };
 
   //! \defgroup orders_group Orders

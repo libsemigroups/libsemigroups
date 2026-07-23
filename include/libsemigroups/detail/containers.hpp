@@ -34,10 +34,12 @@
 #include <utility>           // for forward
 #include <vector>            // for vector, allocator
 
+#include "libsemigroups/adapters.hpp"   // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/debug.hpp"      // for Hash
+
 #include "iterator.hpp"  // for ConstIteratorStateful, ConstItera...
-#include "libsemigroups/adapters.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/debug.hpp"     // for Hash
-#include "string.hpp"                  // for to_string
+#include "string.hpp"    // for to_string
 
 namespace libsemigroups {
   namespace detail {
@@ -799,19 +801,28 @@ namespace libsemigroups {
       // The following is adapted from http://bit.ly/2X4xPlK
       // TODO(1): a checks version
       // Not noexcept because std::vector::operator[] isn't
+      // p represents a partial permutation of the form old -> new. That is, if
+      // the input vector is [a, b, c], and p is [1, 2, 0], then permuted vector
+      // will be [c, a, b]. Values set to UNDEFINED are ignored.
+      // In previous versions of this function, the input permutation was of the
+      // form new -> old, so the permuted vector would have been [b, c, a].
       template <typename T, typename... Args>
-      void apply_row_permutation_no_checks(std::vector<T> p, Args&&... args) {
-        for (size_t start = 0; start < p.size(); ++start) {
-          size_t current = start;
-          while (start != p[current]) {
-            size_t next = p[current];
+      void apply_row_permutation_no_copy_no_checks(std::vector<T>& p,
+                                                   Args&&... args) {
+        for (size_t current = 0; current < p.size(); ++current) {
+          while (current != p[current] && p[current] != UNDEFINED) {
+            size_t const next = p[current];
             (std::forward<Args>(args).swap_rows(next, current), ...);
-            p[current] = current;
-            current    = next;
+            std::swap(p[next], p[current]);
           }
-          p[current] = current;
         }
       }
+
+      template <typename T, typename... Args>
+      void apply_row_permutation_no_checks(std::vector<T> p, Args&&... args) {
+        apply_row_permutation_no_copy_no_checks(p, std::forward<Args>(args)...);
+      }
+
     }  // namespace dynamic_array2
 
     // StaticVector1 wraps an array, providing it with some of the syntax of

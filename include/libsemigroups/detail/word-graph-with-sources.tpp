@@ -109,8 +109,9 @@ namespace libsemigroups {
     template <typename Node>
     void WordGraphWithSources<Node>::permute_nodes_no_checks(
         std::vector<node_type> const& p,
-        std::vector<node_type> const& q,
+        std::vector<node_type>&       q,
         size_t                        m) {
+      LIBSEMIGROUPS_ASSERT(m <= p.size());
       // p : new -> old, q = p ^ -1
       // Permute all the values in the _table, and pre-images, that relate
       // to active nodes
@@ -127,8 +128,8 @@ namespace libsemigroups {
         }
       }
       // Permute the rows themselves
-      detail::dynamic_array2::apply_row_permutation_no_checks(
-          p, this->_dynamic_array_2, _preim_init, _preim_next);
+      detail::dynamic_array2::apply_row_permutation_no_copy_no_checks(
+          q, this->_dynamic_array_2, _preim_init, _preim_next);
     }
 
     template <typename Node>

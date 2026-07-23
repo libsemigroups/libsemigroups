@@ -60,7 +60,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     tc.shrink_to_fit();
     REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(Order::rpo);
+    tc.standardize(Order::rev_rpo);
     auto w = (todd_coxeter::normal_forms(tc) | rx::to_vector());
     REQUIRE(w.size() == 21);
     REQUIRE(w
@@ -108,7 +108,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     tc.shrink_to_fit();
     REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(Order::rpo);
+    tc.standardize(Order::rev_rpo);
     auto w = (todd_coxeter::normal_forms(tc) | rx::to_vector());
     REQUIRE(w.size() == 21);
     REQUIRE(w

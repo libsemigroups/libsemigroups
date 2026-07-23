@@ -31,7 +31,7 @@ namespace libsemigroups {
 
     namespace detail {
       template <typename Node>
-      bool is_shortlex_standardized(WordGraph<Node> const& wg) {
+      bool is_lenlex_standardized(WordGraph<Node> const& wg) {
         Node current_max_node = 0;
 
         for (auto s : wg.nodes()) {
@@ -53,7 +53,7 @@ namespace libsemigroups {
       // For best performance ensure that <f> has the correct number of nodes
       // when calling this function.
       template <typename Graph>
-      bool shortlex_standardize(Graph& wg, Forest& f) {
+      bool lenlex_standardize(Graph& wg, Forest& f) {
         LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
         LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
 
@@ -146,7 +146,7 @@ namespace libsemigroups {
       }
 
       template <typename Graph>
-      bool recursive_standardize(Graph& wg, Forest& f) {
+      bool rpo_standardize(Graph& wg, Forest& f) {
         LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
         LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
 
@@ -488,11 +488,11 @@ namespace libsemigroups {
         case Order::none:
           return false;
         case Order::lenlex:
-          return detail::shortlex_standardize(wg, f);
+          return detail::lenlex_standardize(wg, f);
         case Order::lex:
           return detail::lex_standardize(wg, f);
         case Order::rpo:
-          return detail::recursive_standardize(wg, f);
+          return detail::rpo_standardize(wg, f);
         case Order::rev_rpo:
           // Intentional fall-through
         default:
@@ -506,7 +506,7 @@ namespace libsemigroups {
         case Order::none:
           return true;
         case Order::lenlex:
-          return detail::is_shortlex_standardized(wg);
+          return detail::is_lenlex_standardized(wg);
         case Order::lex:
         case Order::rpo:
         case Order::rev_rpo:
@@ -1334,6 +1334,7 @@ namespace libsemigroups {
   WordGraph<Node>::permute_nodes_no_checks(std::vector<node_type> const& p,
                                            std::vector<node_type> const& q,
                                            size_t                        m) {
+    LIBSEMIGROUPS_ASSERT(m <= p.size());
     // p : new -> old, q = p ^ -1: old -> new
     for (node_type s = 0; s < m; ++s) {
       for (auto [a, t] : labels_and_targets_no_checks(p[s])) {
@@ -1341,7 +1342,7 @@ namespace libsemigroups {
       }
     }
     // Permute the rows themselves
-    detail::dynamic_array2::apply_row_permutation_no_checks(p,
+    detail::dynamic_array2::apply_row_permutation_no_checks(q,
                                                             _dynamic_array_2);
     return *this;
   }

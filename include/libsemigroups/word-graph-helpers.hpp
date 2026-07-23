@@ -39,17 +39,18 @@
 #include <utility>           // for pair, move, make_pair
 #include <vector>            // for vector, swap
 
-#include "libsemigroups/adapters.hpp"         // for Hash
-#include "libsemigroups/config.hpp"           // for LIBSEMIGROUPS_EIGEN_...
-#include "libsemigroups/constants.hpp"        // for UNDEFINED
-#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/dot.hpp"              // for Dot
-#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/forest.hpp"           // for Forest
-#include "libsemigroups/order.hpp"            // for Order
-#include "libsemigroups/types.hpp"            // for word_type, letter_type
-#include "libsemigroups/word-graph-view.hpp"  // for WordGraphView
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/adapters.hpp"   // for Hash
+#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_EIGEN_...
+#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/dot.hpp"        // for Dot
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/forest.hpp"     // for Forest
+#include "libsemigroups/is_specialization_of.hpp"  // for is_specialization_of
+#include "libsemigroups/order.hpp"                 // for Order
+#include "libsemigroups/types.hpp"                 // for word_type, letter_type
+#include "libsemigroups/word-graph-view.hpp"       // for WordGraphView
+#include "libsemigroups/word-graph.hpp"            // for WordGraph
 
 #include "libsemigroups/detail/fmt.hpp"     // for fmt::format
 #include "libsemigroups/detail/stl.hpp"     // for HasLessEqual
@@ -2642,6 +2643,11 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
+      //! \warning It is only guaranteed that the sub-word-graph induced by the
+      //! nodes reachable from 0 will be isomorphic before and after this
+      //! operation is performed. It is possible that other parts of the word
+      //! graph will not be isomorphic before and after standardization.
+      //!
       //! \note If any target of any edge in the word graph \p wg that is out of
       //! bounds, then this is ignored by this function.
       // Not nodiscard because sometimes we just don't want the output
@@ -2670,6 +2676,11 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
+      //! \warning It is only guaranteed that the sub-word-graph induced by the
+      //! nodes reachable from 0 will be isomorphic before and after this
+      //! operation is performed. It is possible that other parts of the word
+      //! graph will not be isomorphic before and after standardization.
+      //!
       //! \note If any target of any edge in the word graph \p wg that is out of
       //! bounds, then this is ignored by this function.
       // Not nodiscard because sometimes we just don't want the output
@@ -2688,7 +2699,7 @@ namespace libsemigroups {
       //! Order::lenlex).
       //!
       //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-      //! Order::lenlex, Order::lex or Order::rpo.
+      //! Order::lenlex, Order::lex, Order::rpo, or Order::rev_rpo.
       //!
       //! \sa
       //! standardize.
@@ -2708,7 +2719,7 @@ namespace libsemigroups {
       //! Order::lenlex).
       //!
       //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-      //! Order::lenlex, Order::lex or Order::rpo.
+      //! Order::lenlex, Order::lex, Order::rpo or Order::rev_rpo.
       //!
       //! \sa
       //! standardize.

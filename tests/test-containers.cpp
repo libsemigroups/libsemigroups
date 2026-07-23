@@ -1522,9 +1522,9 @@ namespace libsemigroups {
       dynamic_array2::apply_row_permutation_no_checks(p, rv);
 
       for (size_t i = 0; i < 10; i++) {
-        REQUIRE(std::all_of(rv.begin_row(i), rv.end_row(i), [&p, &i](size_t x) {
-          return x == p[i];
-        }));
+        REQUIRE(std::all_of(rv.begin_row(p[i]),
+                            rv.end_row(p[i]),
+                            [&i](size_t x) { return x == i; }));
       }
     }
 
