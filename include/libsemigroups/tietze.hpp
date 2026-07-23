@@ -327,7 +327,7 @@ namespace libsemigroups {
 
     ~Subwords() = default;
 
-    Subwords(Settings const& settings) : Settings(settings) {};
+    Subwords(Settings const& settings) : Settings(settings){};
 
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
