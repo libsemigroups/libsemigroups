@@ -167,43 +167,7 @@ namespace libsemigroups {
         return _current;
       }
 
-      void next() {
-        while (_current_rule != _current.first.rules.size()) {
-          auto const& rule = _current.first.rules[_current_rule];
-          while (_suffix_begin < rule.size()) {
-            size_t prefix_last = rule.size();
-            if (_suffix_begin == 0) {
-              prefix_last -= proper();
-            }
-            while (_prefix_end - _suffix_begin <= max_length()
-                   && _prefix_end <= prefix_last) {
-              auto first = rule.begin() + _suffix_begin;
-              auto last  = rule.begin() + _prefix_end;
-              _current.second.assign(first, last);
-              auto [it, inserted] = _seen.emplace(_current.second, 1);
-              if (inserted) {
-                if (_prefix_end != rule.size()) {
-                  ++_prefix_end;
-                } else {
-                  advance_prefix_suffix();
-                }
-                return;
-              } else {
-                ++(*it).second;
-              }
-              ++_prefix_end;
-            }
-            advance_prefix_suffix();
-          }
-
-          ++_current_rule;
-          init_prefix_suffix();
-        }
-        if (!_input.at_end()) {
-          _input.next();
-          init_from_input();
-        }
-      }
+      void next();
 
       [[nodiscard]] bool at_end() const noexcept {
         return _input.at_end();
@@ -227,23 +191,14 @@ namespace libsemigroups {
       // Other
       ////////////////////////////////////////////////////////////////////////
 
-      [[nodiscard]] size_t frequency(Word const& w) const {
-        if (!at_end()) {
-          LIBSEMIGROUPS_EXCEPTION("TODO");
-        }
-        auto it = _seen.find(w);
-        if (it == _seen.end()) {
-          return 0;
-        } else {
-          return it->second;
-        }
-      }
+      [[nodiscard]] size_t frequency(Word const& w) const;
 
      private:
       ////////////////////////////////////////////////////////////////////////
       // Private
       ////////////////////////////////////////////////////////////////////////
 
+      // TODO to tpp
       SubwordsRange& init_from_input() {
         if (!_input.at_end()) {
           _current.first = _input.get();
@@ -255,6 +210,7 @@ namespace libsemigroups {
         return *this;
       }
 
+      // TODO to tpp
       void advance_prefix() {
         LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
         size_t const n = _current.first.rules[_current_rule].size();
@@ -265,6 +221,7 @@ namespace libsemigroups {
         }
       }
 
+      // TODO to tpp
       void init_prefix_suffix() {
         _suffix_begin = 0;
         _prefix_end   = 0;
@@ -273,6 +230,7 @@ namespace libsemigroups {
         }
       }
 
+      // TODO to tpp
       void advance_prefix_suffix() {
         LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
         ++_suffix_begin;
