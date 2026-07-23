@@ -94,226 +94,204 @@ namespace libsemigroups {
       }
     };
 
-  }  // namespace detail
+    template <typename InputRange>
+    class SubwordsRange : public detail::SubwordsSettings {
+     private:
+      using Word =
+          typename std::decay_t<typename InputRange::output_type>::word_type;
 
-  template <typename InputRange>
-  class SubwordsRange : public detail::SubwordsSettings {
-   private:
-    using Word =
-        typename std::decay_t<typename InputRange::output_type>::word_type;
+      using Settings = detail::SubwordsSettings;
 
-    using Settings = detail::SubwordsSettings;
+      std::pair<Presentation<Word>, Word> _current;
+      size_t                              _current_rule;
+      InputRange                          _input;
+      // We retain a copy of the input range so that we can re-initialise the
+      // object if/when the settings are updated.
+      InputRange                       _input_orig;
+      size_t                           _prefix_end;
+      std::unordered_map<Word, size_t> _seen;
+      size_t                           _suffix_begin;
 
-    std::pair<Presentation<Word>, Word> _current;
-    size_t                              _current_rule;
-    InputRange                          _input;
-    // We retain a copy of the input range so that we can re-initialise the
-    // object if/when the settings are updated.
-    InputRange                       _input_orig;
-    size_t                           _prefix_end;
-    std::unordered_map<Word, size_t> _seen;
-    size_t                           _suffix_begin;
+     public:
+      ////////////////////////////////////////////////////////////////////////
+      // Aliases + static data
+      ////////////////////////////////////////////////////////////////////////
 
-   public:
-    ////////////////////////////////////////////////////////////////////////
-    // Aliases + static data
-    ////////////////////////////////////////////////////////////////////////
+      using output_type = std::pair<Presentation<Word>, Word> const&;
 
-    using output_type = std::pair<Presentation<Word>, Word> const&;
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
-    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + initializers
+      ////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////////////////////
-    // Constructors + initializers
-    ////////////////////////////////////////////////////////////////////////
-    template <typename Settings_>  // TODO rm template param when out of lining
-    explicit SubwordsRange(InputRange&& input, Settings_ const& subwords)
-        : Settings(subwords),
-          _current(),
-          _current_rule(),
-          _input(std::move(input)),
-          _input_orig(_input),
-          _prefix_end(),
-          _seen(),
-          _suffix_begin() {
-      init_from_input();
-    }
+      SubwordsRange(InputRange&& input, Subwords const& subwords);
 
-    template <typename Settings>  // TODO rm template param when out of lining
-    explicit SubwordsRange(InputRange const& input, Settings const& subwords)
-        : Settings(subwords),
-          _current(),
-          _current_rule(),
-          _input(input),
-          _input_orig(_input),
-          _prefix_end(),
-          _seen(),
-          _suffix_begin() {
-      init_from_input();
-    }
+      SubwordsRange(InputRange const& input, Subwords const& subwords);
 
-    SubwordsRange(SubwordsRange const&)            = default;
-    SubwordsRange(SubwordsRange&&)                 = default;
-    SubwordsRange& operator=(SubwordsRange const&) = default;
-    SubwordsRange& operator=(SubwordsRange&&)      = default;
+      SubwordsRange(SubwordsRange const&)            = default;
+      SubwordsRange(SubwordsRange&&)                 = default;
+      SubwordsRange& operator=(SubwordsRange const&) = default;
+      SubwordsRange& operator=(SubwordsRange&&)      = default;
 
-    ~SubwordsRange() = default;
+      ~SubwordsRange() = default;
 
-    // TODO private
-    SubwordsRange& init_from_input() {
-      if (!_input.at_end()) {
-        _current.first = _input.get();
-        _current_rule  = 0;
-        _seen.clear();
-        init_prefix_suffix();
-        next();
-      }
-      return *this;
-    }
+      ////////////////////////////////////////////////////////////////////////
+      // Settings
+      ////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////////////////////
-    // Settings
-    ////////////////////////////////////////////////////////////////////////
+      using Settings::max_length;
+      using Settings::min_length;
+      using Settings::proper;
 
-    using Settings::max_length;
-    using Settings::min_length;
-    using Settings::proper;
-
-    SubwordsRange& max_length(size_t val) {
-      Settings::max_length(val);
-      _input = _input_orig;
-      init_from_input();
-      return *this;
-    }
-
-    SubwordsRange& min_length(size_t val) {
-      Settings::min_length(val);
-      _input = _input_orig;
-      init_from_input();
-      return *this;
-    }
-
-    SubwordsRange& proper(bool val) {
-      Settings::proper(val);
-      _input = _input_orig;
-      init_from_input();
-      return *this;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // rx::ranges stuff
-    ////////////////////////////////////////////////////////////////////////
-
-    // Important note, you can modify _current.second (Word), because its
-    // contents will be discarded at next call of next. You can also modify
-    // _current.first (Presentation<Word>) if you put it back into its original
-    // state before the next call to next().
-    [[nodiscard]] output_type get() const {
-      return _current;
-    }
-
-    void next() {
-      while (_current_rule != _current.first.rules.size()) {
-        auto const& rule = _current.first.rules[_current_rule];
-        while (_suffix_begin < rule.size()) {
-          size_t prefix_last = rule.size();
-          if (_suffix_begin == 0) {
-            prefix_last -= proper();
-          }
-          while (_prefix_end - _suffix_begin <= max_length()
-                 && _prefix_end <= prefix_last) {
-            auto first = rule.begin() + _suffix_begin;
-            auto last  = rule.begin() + _prefix_end;
-            _current.second.assign(first, last);
-            auto [it, inserted] = _seen.emplace(_current.second, 1);
-            if (inserted) {
-              if (_prefix_end != rule.size()) {
-                ++_prefix_end;
-              } else {
-                advance_prefix_suffix();
-              }
-              return;
-            } else {
-              ++(*it).second;
-            }
-            ++_prefix_end;
-          }
-          advance_prefix_suffix();
-        }
-
-        ++_current_rule;
-        init_prefix_suffix();
-      }
-      if (!_input.at_end()) {
-        _input.next();
+      SubwordsRange& max_length(size_t val) {
+        Settings::max_length(val);
+        _input = _input_orig;
         init_from_input();
+        return *this;
       }
-    }
 
-    [[nodiscard]] bool at_end() const noexcept {
-      return _input.at_end();
-    }
-
-    [[nodiscard]] size_t size_hint() const {
-      return std::numeric_limits<size_t>::max();
-    }
-
-    // TODO add these elsewhere in this file
-    [[nodiscard]] auto begin() const {
-      return rx::begin(*this);
-    }
-
-    // TODO add these elsewhere in this file
-    [[nodiscard]] auto end() const {
-      return rx::end(*this);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Other
-    ////////////////////////////////////////////////////////////////////////
-
-    [[nodiscard]] size_t frequency(Word const& w) const {
-      if (!at_end()) {
-        LIBSEMIGROUPS_EXCEPTION("TODO");
+      SubwordsRange& min_length(size_t val) {
+        Settings::min_length(val);
+        _input = _input_orig;
+        init_from_input();
+        return *this;
       }
-      auto it = _seen.find(w);
-      if (it == _seen.end()) {
-        return 0;
-      } else {
-        return it->second;
-      }
-    }
 
-   private:
-    ////////////////////////////////////////////////////////////////////////
-    // Private
-    ////////////////////////////////////////////////////////////////////////
-    void advance_prefix() {
-      LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
-      size_t const n = _current.first.rules[_current_rule].size();
-      if (_prefix_end + min_length() <= n) {
-        _prefix_end += min_length();
-      } else {
-        _prefix_end = n + 1;
+      SubwordsRange& proper(bool val) {
+        Settings::proper(val);
+        _input = _input_orig;
+        init_from_input();
+        return *this;
       }
-    }
 
-    void init_prefix_suffix() {
-      _suffix_begin = 0;
-      _prefix_end   = 0;
-      if (_current_rule < _current.first.rules.size()) {
+      ////////////////////////////////////////////////////////////////////////
+      // rx::ranges stuff
+      ////////////////////////////////////////////////////////////////////////
+
+      // Important note, you can modify _current.second (Word), because its
+      // contents will be discarded at next call of next. You can also modify
+      // _current.first (Presentation<Word>) if you put it back into its
+      // original state before the next call to next().
+      [[nodiscard]] output_type get() const {
+        return _current;
+      }
+
+      void next() {
+        while (_current_rule != _current.first.rules.size()) {
+          auto const& rule = _current.first.rules[_current_rule];
+          while (_suffix_begin < rule.size()) {
+            size_t prefix_last = rule.size();
+            if (_suffix_begin == 0) {
+              prefix_last -= proper();
+            }
+            while (_prefix_end - _suffix_begin <= max_length()
+                   && _prefix_end <= prefix_last) {
+              auto first = rule.begin() + _suffix_begin;
+              auto last  = rule.begin() + _prefix_end;
+              _current.second.assign(first, last);
+              auto [it, inserted] = _seen.emplace(_current.second, 1);
+              if (inserted) {
+                if (_prefix_end != rule.size()) {
+                  ++_prefix_end;
+                } else {
+                  advance_prefix_suffix();
+                }
+                return;
+              } else {
+                ++(*it).second;
+              }
+              ++_prefix_end;
+            }
+            advance_prefix_suffix();
+          }
+
+          ++_current_rule;
+          init_prefix_suffix();
+        }
+        if (!_input.at_end()) {
+          _input.next();
+          init_from_input();
+        }
+      }
+
+      [[nodiscard]] bool at_end() const noexcept {
+        return _input.at_end();
+      }
+
+      [[nodiscard]] size_t size_hint() const {
+        return std::numeric_limits<size_t>::max();
+      }
+
+      // TODO add these elsewhere in this file
+      [[nodiscard]] auto begin() const {
+        return rx::begin(*this);
+      }
+
+      // TODO add these elsewhere in this file
+      [[nodiscard]] auto end() const {
+        return rx::end(*this);
+      }
+
+      ////////////////////////////////////////////////////////////////////////
+      // Other
+      ////////////////////////////////////////////////////////////////////////
+
+      [[nodiscard]] size_t frequency(Word const& w) const {
+        if (!at_end()) {
+          LIBSEMIGROUPS_EXCEPTION("TODO");
+        }
+        auto it = _seen.find(w);
+        if (it == _seen.end()) {
+          return 0;
+        } else {
+          return it->second;
+        }
+      }
+
+     private:
+      ////////////////////////////////////////////////////////////////////////
+      // Private
+      ////////////////////////////////////////////////////////////////////////
+
+      SubwordsRange& init_from_input() {
+        if (!_input.at_end()) {
+          _current.first = _input.get();
+          _current_rule  = 0;
+          _seen.clear();
+          init_prefix_suffix();
+          next();
+        }
+        return *this;
+      }
+
+      void advance_prefix() {
+        LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
+        size_t const n = _current.first.rules[_current_rule].size();
+        if (_prefix_end + min_length() <= n) {
+          _prefix_end += min_length();
+        } else {
+          _prefix_end = n + 1;
+        }
+      }
+
+      void init_prefix_suffix() {
+        _suffix_begin = 0;
+        _prefix_end   = 0;
+        if (_current_rule < _current.first.rules.size()) {
+          advance_prefix();
+        }
+      }
+
+      void advance_prefix_suffix() {
+        LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
+        ++_suffix_begin;
+        _prefix_end = _suffix_begin;
         advance_prefix();
       }
-    }
-
-    void advance_prefix_suffix() {
-      LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
-      ++_suffix_begin;
-      _prefix_end = _suffix_begin;
-      advance_prefix();
-    }
-  };  // class SubwordsRange
+    };  // class SubwordsRange
+  }     // namespace detail
 
   class Subwords : public detail::SubwordsSettings {
     using Settings = detail::SubwordsSettings;
@@ -335,7 +313,7 @@ namespace libsemigroups {
       // TODO static_assert that InputRange::output_type is a specialization
       // of Presentation We pass *this thru so that the settings are copied
       // too
-      return SubwordsRange(std::forward<InputRange>(input), *this);
+      return detail::SubwordsRange(std::forward<InputRange>(input), *this);
     }
 
     template <typename Word>
@@ -1162,4 +1140,6 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
+
+#include "tietze.tpp"
 #endif  // LIBSEMIGROUPS_TIETZE_HPP_
