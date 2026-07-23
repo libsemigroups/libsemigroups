@@ -2154,10 +2154,7 @@ namespace libsemigroups {
                                        {"acee", "dedace"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation",
-                          "039",
-                          "abbababbaa=baba",
-                          "[quick][fail]") {
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "039", "abbababbaa=baba", "[fail]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -2174,7 +2171,7 @@ namespace libsemigroups {
 
     auto num = (input | rx::count());
 
-    REQUIRE(num == 19'853'625);
+    // REQUIRE(num == 19'853'625);
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);

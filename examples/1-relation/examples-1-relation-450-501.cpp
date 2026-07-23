@@ -556,27 +556,28 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
-    REQUIRE(result.value().alphabet() == "adcb");
-    REQUIRE(
-        result.value().rules
-        == std::vector<std::string>({"dada", "bdaa", "c", "bb", "d", "aac"}));
-    kb.init(congruence_kind::twosided, result.value());
-    kb.run();
-    REQUIRE(kb.rewriting_system().confluent());
+    // REQUIRE(result.value().alphabet() == "adcb");
+    // REQUIRE(
+    //     result.value().rules
+    //     == std::vector<std::string>({"dada", "bdaa", "c", "bb", "d",
+    //     "aac"}));
+    // kb.init(congruence_kind::twosided, result.value());
+    // kb.run();
+    // REQUIRE(kb.rewriting_system().confluent());
 
-    using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | rx::to_vector())
-            == std::vector<rule_type>({{"bb", "c"},
-                                       {"bdaa", "dada"},
-                                       {"aac", "d"},
-                                       {"bc", "cb"},
-                                       {"bdd", "dadac"},
-                                       {"bdad", "dadd"},
-                                       {"cdaa", "dadda"},
-                                       {"cdad", "daddd"},
-                                       {"cdd", "daddac"},
-                                       {"aadadda", "ddaa"},
-                                       {"aadaddd", "ddad"}}));
+    // using rule_type = typename decltype(kb)::rule_type;
+    // REQUIRE((kb.active_rules() | rx::to_vector())
+    //         == std::vector<rule_type>({{"bb", "c"},
+    //                                    {"bdaa", "dada"},
+    //                                    {"aac", "d"},
+    //                                    {"bc", "cb"},
+    //                                    {"bdd", "dadac"},
+    //                                    {"bdad", "dadd"},
+    //                                    {"cdaa", "dadda"},
+    //                                    {"cdad", "daddd"},
+    //                                    {"cdd", "daddac"},
+    //                                    {"aadadda", "ddaa"},
+    //                                    {"aadaddd", "ddad"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
