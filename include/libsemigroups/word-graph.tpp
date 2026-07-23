@@ -1334,6 +1334,7 @@ namespace libsemigroups {
   WordGraph<Node>::permute_nodes_no_checks(std::vector<node_type> const& p,
                                            std::vector<node_type> const& q,
                                            size_t                        m) {
+    LIBSEMIGROUPS_ASSERT(m <= p.size());
     // p : new -> old, q = p ^ -1: old -> new
     for (node_type s = 0; s < m; ++s) {
       for (auto [a, t] : labels_and_targets_no_checks(p[s])) {
