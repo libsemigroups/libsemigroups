@@ -107,10 +107,12 @@ namespace libsemigroups {
     std::pair<Presentation<Word>, Word> _current;
     size_t                              _current_rule;
     InputRange                          _input;
-    InputRange                          _input_orig;  // TODO comment
-    size_t                              _prefix_end;
-    std::unordered_map<Word, size_t>    _seen;
-    size_t                              _suffix_begin;
+    // We retain a copy of the input range so that we can re-initialise the
+    // object if/when the settings are updated.
+    InputRange                       _input_orig;
+    size_t                           _prefix_end;
+    std::unordered_map<Word, size_t> _seen;
+    size_t                           _suffix_begin;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -325,7 +327,7 @@ namespace libsemigroups {
 
     ~Subwords() = default;
 
-    Subwords(Settings const& settings) : Settings(settings){};
+    Subwords(Settings const& settings) : Settings(settings) {};
 
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
