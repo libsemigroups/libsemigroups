@@ -97,6 +97,10 @@ namespace libsemigroups {
     template <typename InputRange>
     class SubwordsRange : public detail::SubwordsSettings {
      private:
+      static_assert(
+          is_specialization_of_v<std::decay_t<typename InputRange::output_type>,
+                                 Presentation>);
+
       using Word =
           typename std::decay_t<typename InputRange::output_type>::word_type;
 
@@ -145,26 +149,11 @@ namespace libsemigroups {
       using Settings::min_length;
       using Settings::proper;
 
-      SubwordsRange& max_length(size_t val) {
-        Settings::max_length(val);
-        _input = _input_orig;
-        init_from_input();
-        return *this;
-      }
+      SubwordsRange& max_length(size_t val);
 
-      SubwordsRange& min_length(size_t val) {
-        Settings::min_length(val);
-        _input = _input_orig;
-        init_from_input();
-        return *this;
-      }
+      SubwordsRange& min_length(size_t val);
 
-      SubwordsRange& proper(bool val) {
-        Settings::proper(val);
-        _input = _input_orig;
-        init_from_input();
-        return *this;
-      }
+      SubwordsRange& proper(bool val);
 
       ////////////////////////////////////////////////////////////////////////
       // rx::ranges stuff

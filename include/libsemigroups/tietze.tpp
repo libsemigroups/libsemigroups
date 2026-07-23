@@ -46,6 +46,32 @@ namespace libsemigroups {
           _suffix_begin() {
       init_from_input();
     }
+
+    template <typename InputRange>
+    SubwordsRange<InputRange>&
+    SubwordsRange<InputRange>::max_length(size_t val) {
+      Settings::max_length(val);
+      _input = _input_orig;
+      init_from_input();
+      return *this;
+    }
+
+    template <typename InputRange>
+    SubwordsRange<InputRange>&
+    SubwordsRange<InputRange>::min_length(size_t val) {
+      Settings::min_length(val);
+      _input = _input_orig;
+      init_from_input();
+      return *this;
+    }
+
+    template <typename InputRange>
+    SubwordsRange<InputRange>& SubwordsRange<InputRange>::proper(bool val) {
+      Settings::proper(val);
+      _input = _input_orig;
+      init_from_input();
+      return *this;
+    }
   }  // namespace detail
 
 }  // namespace libsemigroups
