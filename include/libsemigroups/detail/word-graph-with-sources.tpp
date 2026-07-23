@@ -111,6 +111,7 @@ namespace libsemigroups {
         std::vector<node_type> const& p,
         std::vector<node_type>&       q,
         size_t                        m) {
+      LIBSEMIGROUPS_ASSERT(m <= p.size());
       // p : new -> old, q = p ^ -1
       // Permute all the values in the _table, and pre-images, that relate
       // to active nodes
