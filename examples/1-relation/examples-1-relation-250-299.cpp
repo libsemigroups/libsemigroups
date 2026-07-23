@@ -71,6 +71,30 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "acdb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"abad", "baba", "c", "bbaa", "d", "bbca"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bbca", "d"},
+                                       {"bbaa", "c"},
+                                       {"baba", "abad"},
+                                       {"baabad", "abadba"},
+                                       {"abaddba", "cbad"},
+                                       {"bbccbad", "dbaddba"},
+                                       {"bbacbad", "cbaddba"},
+                                       {"bcbad", "abadddba"},
+                                       {"abadbadba", "bacbad"},
+                                       {"abaddabad", "cbadba"},
+                                       {"bbcbacbad", "dbadbadba"},
+                                       {"cbadbadba", "abaddcbad"},
+                                       {"cbadbadabad", "abaddcbadba"},
+                                       {"abadbadabad", "bacbadba"}}));
   }
 
   // This extreme test passed in 34.902s.
@@ -98,6 +122,75 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "acdb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"bca", "ababa", "c", "aabaaba", "d", "caba"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"caba", "d"},
+                                       {"ababa", "bca"},
+                                       {"aabaaba", "c"},
+                                       {"ababc", "bcc"},
+                                       {"dabaaba", "cabc"},
+                                       {"cbca", "dba"},
+                                       {"abbca", "bd"},
+                                       {"abbd", "bdba"},
+                                       {"aabc", "d"},
+                                       {"abcca", "cba"},
+                                       {"aabd", "daba"},
+                                       {"dbaba", "cbd"},
+                                       {"abbcbd", "bcbdba"},
+                                       {"abbcc", "bcabc"},
+                                       {"dbbcc", "cbdbc"},
+                                       {"dbbca", "cbdba"},
+                                       {"dbbcbd", "cbdbbd"},
+                                       {"cbcbd", "dbbd"},
+                                       {"dbabd", "cbdabc"},
+                                       {"cbcd", "dbd"},
+                                       {"cbcc", "dbc"},
+                                       {"cabcabc", "dabdaba"},
+                                       {"cabd", "dabc"},
+                                       {"abccbd", "cbbd"},
+                                       {"cbbcc", "abcdbc"},
+                                       {"cbbca", "abcdba"},
+                                       {"cbaba", "abcd"},
+                                       {"abccd", "cbd"},
+                                       {"abccc", "cbc"},
+                                       {"abbcd", "bdabc"},
+                                       {"abcba", "bccca"},
+                                       {"ababd", "bcd"},
+                                       {"acba", "dca"},
+                                       {"dbbcd", "cbdbd"},
+                                       {"dbabcabc", "cbdabdaba"},
+                                       {"dabdabaca", "cabccba"},
+                                       {"cbbcbd", "abcdbbd"},
+                                       {"cbabd", "abcdabc"},
+                                       {"cbabcabc", "abcdabdaba"},
+                                       {"abcbbd", "bcccbd"},
+                                       {"cbbcd", "abcdbd"},
+                                       {"acbbd", "dcbd"},
+                                       {"abcbc", "bcccc"},
+                                       {"dabdabacd", "ccbbd"},
+                                       {"dabdabacc", "cabccbc"},
+                                       {"abcbd", "bcccd"},
+                                       {"acbd", "dcd"},
+                                       {"acbc", "dcc"},
+                                       {"cabccbbd", "dabdabdcd"},
+                                       {"dbabccbbd", "cbdabdabdcd"},
+                                       {"cbabccbbd", "abcdabdabdcd"},
+                                       {"abdbbd", "bccccbd"},
+                                       {"abdbd", "bccccd"},
+                                       {"abdbc", "bccccc"},
+                                       {"abdba", "bcccca"},
+                                       {"adbbd", "dccbd"},
+                                       {"adbd", "dccd"},
+                                       {"adbc", "dccc"},
+                                       {"adba", "dcca"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "252", "baaaaaabba=aaa", "[quick]") {
@@ -124,6 +217,28 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adbc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"bcccbba", "ca", "c", "aa", "d", "abb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "aa"},
+                                       {"abb", "d"},
+                                       {"baaaaada", "aaa"},
+                                       {"abaaa", "daaaaada"},
+                                       {"baaaaadd", "aad"},
+                                       {"abaad", "daaaaadd"},
+                                       {"daaaaadaaadd", "aaad"},
+                                       {"daaaaadaaada", "aaaa"},
+                                       {"baaaaaaaad", "aaaaaaadaaadd"},
+                                       {"baaaaaaaaa", "aaaaaaadaaada"},
+                                       {"daaaaadaaaaaad", "aaaaaaaadaaadd"},
+                                       {"daaaaadaaaaaaa", "aaaaaaaadaaada"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -211,6 +326,61 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "acdb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"baad", "abbaaba", "c", "abaa", "d", "babc"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"babc", "d"},
+                                       {"abbaaba", "baad"},
+                                       {"abaa", "c"},
+                                       {"cbbaaba", "abcd"},
+                                       {"abbac", "baada"},
+                                       {"abbaabc", "baadbaa"},
+                                       {"abbaad", "baadbc"},
+                                       {"abac", "cbaa"},
+                                       {"dbbaaba", "badd"},
+                                       {"cbbac", "abcda"},
+                                       {"cbbcdbc", "abcbadd"},
+                                       {"cbbaabc", "abcdbaa"},
+                                       {"cbbaad", "abcdbc"},
+                                       {"abbcdbc", "baabadd"},
+                                       {"dbbcdbc", "badbadd"},
+                                       {"dbbaad", "baddbc"},
+                                       {"dbbaabc", "baddbaa"},
+                                       {"dbbac", "badda"},
+                                       {"baabadbadd", "abbcddd"},
+                                       {"baadbbcddbadd", "abbcddbadbadd"},
+                                       {"baadbbcddd", "abbcddbadd"},
+                                       {"ababbcddd", "baaddbadd"},
+                                       {"badbadbadd", "dbbcddd"},
+                                       {"abcdbbcddd", "cbbcddbadd"},
+                                       {"abcbadbadd", "cbbcddd"},
+                                       {"aabbcddd", "cbadbadd"},
+                                       {"cbabbcddd", "abcddbadd"},
+                                       {"bcbbcddbadd", "ddbbcddd"},
+                                       {"bcbbcddd", "dbadbadd"},
+                                       {"dbabbcddbadbadd", "baddddbbcddd"},
+                                       {"dbabbcddbadd", "badddbadbadd"},
+                                       {"ababbcddbadbadd", "baadddbbcddd"},
+                                       {"ababbcddbadd", "baaddbadbadd"},
+                                       {"baddbbcddd", "dbbcddbadd"},
+                                       {"dbabbcddd", "badddbadd"},
+                                       {"abcdbbcddbadbadd", "cbbcdddbbcddd"},
+                                       {"abcdbbcddbadd", "cbbcddbadbadd"},
+                                       {"aabbcddbadbadd", "cdbbcddbadd"},
+                                       {"aabbcddbadd", "cdbbcddd"},
+                                       {"baadbbcddbadbadd", "abbcdddbbcddd"},
+                                       {"cbabbcddbadbadd", "abcdddbbcddd"},
+                                       {"cbabbcddbadd", "abcddbadbadd"},
+                                       {"baddbbcddbadd", "dbbcddbadbadd"},
+                                       {"bcbbcddbadbadd", "ddbbcddbadd"},
+                                       {"baddbbcddbadbadd", "dbbcdddbbcddd"}}));
   }
 
   // This extreme test passed in 17.046s.
@@ -241,6 +411,29 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    // Non-deterministic, so output not checked
+    // REQUIRE(result.value().alphabet() == "ecdab");
+    // REQUIRE(
+    //     result.value().rules
+    //     == std::vector<std::string>({"aea", "cacac", "c", "ba", "d", "bca",
+    //     "e", "cdc"}));
+    // kb.init(congruence_kind::twosided, result.value());
+    // kb.run();
+    // REQUIRE(kb.rewriting_system().confluent());
+    //
+    // using rule_type = typename decltype(kb)::rule_type;
+    // REQUIRE((kb.active_rules() | rx::to_vector())
+    //         == std::vector<rule_type>({{"ba", "c"},
+    //                                    {"bca", "d"},
+    //                                    {"cacac", "aea"},
+    //                                    {"cdc", "e"},
+    //                                    {"dcac", "cea"},
+    //                                    {"caaea", "aeaac"},
+    //                                    {"cacae", "aeadc"},
+    //                                    {"cde", "edc"},
+    //                                    {"daea", "ceaac"},
+    //                                    {"dcae", "ceadc"},
+    //                                    {"ccea", "eac"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "257", "baaabbbaba=aa", "[quick]") {
@@ -267,6 +460,26 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adcb");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"caad", "aa", "c", "ba", "d", "bbcc"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bbcc", "d"},
+                                       {"ba", "c"},
+                                       {"bdaadda", "daad"},
+                                       {"ca", "daaddad"},
+                                       {"daaddadad", "aa"},
+                                       {"bbcdaaddad", "da"},
+                                       {"bdaadaa", "daadaddadad"},
+                                       {"daaddadaaa", "aaaaddadad"},
+                                       {"bbcdaaddaaa", "daaaddadad"},
+                                       {"bdaaaa", "daadaddadadddadad"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "258", "aabbaabbaa=baabba", "[quick]") {
@@ -293,6 +506,26 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dabc");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"aacaacaa", "baaca", "c", "bb", "d", "abb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "bb"},
+                                       {"abb", "d"},
+                                       {"bada", "adadaa"},
+                                       {"aadadaadaa", "dada"},
+                                       {"badd", "adadad"},
+                                       {"aadadaadad", "dadd"},
+                                       {"aadadaaddada", "dadadadaadaa"},
+                                       {"aadadaaddadd", "dadadadaadad"},
+                                       {"aadaddada", "daddaadaa"},
+                                       {"aadaddadd", "daddaadad"}}));
   }
 
   // This extreme test passed in 13.054s.
@@ -323,6 +556,96 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "edcab");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"e", "adc", "c", "ba", "d", "cbb", "e", "cdcc"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "c"},
+                                       {"adc", "e"},
+                                       {"cbb", "d"},
+                                       {"cdcc", "e"},
+                                       {"be", "cdc"},
+                                       {"ade", "edcc"},
+                                       {"cbc", "da"},
+                                       {"cdce", "edcc"},
+                                       {"ebb", "cdcd"},
+                                       {"add", "cdcd"},
+                                       {"bcdcd", "cdd"},
+                                       {"cbda", "dabc"},
+                                       {"ccde", "dee"},
+                                       {"ccdc", "dec"},
+                                       {"dabb", "cbd"},
+                                       {"ebc", "cdcda"},
+                                       {"bcde", "cddcc"},
+                                       {"cdcdec", "ecdc"},
+                                       {"cdcdee", "ecde"},
+                                       {"cbdcdcd", "dabcdd"},
+                                       {"cbdec", "dacdc"},
+                                       {"cbdee", "dacde"},
+                                       {"cdcded", "ecdd"},
+                                       {"cddec", "edc"},
+                                       {"cddee", "ede"},
+                                       {"dabcdc", "cbde"},
+                                       {"ccdd", "ded"},
+                                       {"decc", "ce"},
+                                       {"ebda", "cdcdabc"},
+                                       {"ebdec", "cdcdacdc"},
+                                       {"ebdee", "cdcdacde"},
+                                       {"cdded", "edd"},
+                                       {"cbdcdedcc", "dabcddce"},
+                                       {"cedc", "dedec"},
+                                       {"cedd", "deded"},
+                                       {"cede", "dedee"},
+                                       {"cecdc", "decdec"},
+                                       {"cecdd", "decded"},
+                                       {"cecde", "decdee"},
+                                       {"dabcddcc", "cbdcde"},
+                                       {"dabcddcdec", "cbdcdecdc"},
+                                       {"dabcddcded", "cbdcdecdd"},
+                                       {"dabcddcdee", "cbdcdecde"},
+                                       {"cbded", "dacdd"},
+                                       {"ebdcdcd", "cdcdabcdd"},
+                                       {"bcce", "cddcccc"},
+                                       {"ace", "edcccc"},
+                                       {"ccce", "deecc"},
+                                       {"dabcdddec", "cbdcdedc"},
+                                       {"dabcdddee", "cbdcdede"},
+                                       {"ebded", "cdcdacdd"},
+                                       {"cbdcdedcdedec", "dabcddceedc"},
+                                       {"cbdcdedcdeded", "dabcddceedd"},
+                                       {"cbdcdedcdedee", "dabcddceede"},
+                                       {"cece", "dedeecc"},
+                                       {"dabcddded", "cbdcdedd"},
+                                       {"decdedec", "ceedc"},
+                                       {"decdeded", "ceedd"},
+                                       {"decdedee", "ceede"},
+                                       {"ebdcdedcc", "cdcdabcddce"},
+                                       {"cbdcdedcdecdec", "dabcddceecdc"},
+                                       {"cbdcdedcdecded", "dabcddceecdd"},
+                                       {"cbdcdedcdecdee", "dabcddceecde"},
+                                       {"cecce", "decdeecc"},
+                                       {"ceedcc", "decdece"},
+                                       {"decdecdec", "ceecdc"},
+                                       {"decdecded", "ceecdd"},
+                                       {"decdecdee", "ceecde"},
+                                       {"ebdcdedcdedec", "cdcdabcddceedc"},
+                                       {"ebdcdedcdeded", "cdcdabcddceedd"},
+                                       {"ebdcdedcdedee", "cdcdabcddceede"},
+                                       {"ceedcdedec", "decdeceedc"},
+                                       {"ceedcdeded", "decdeceedd"},
+                                       {"ceedcdedee", "decdeceede"},
+                                       {"ebdcdedcdecdec", "cdcdabcddceecdc"},
+                                       {"ebdcdedcdecded", "cdcdabcddceecdd"},
+                                       {"ebdcdedcdecdee", "cdcdabcddceecde"},
+                                       {"ceedcdecdec", "decdeceecdc"},
+                                       {"ceedcdecded", "decdeceecdd"},
+                                       {"ceedcdecdee", "decdeceecde"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "260", "baaabbaa=abaaa", "[standard]") {
@@ -349,6 +672,24 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dcab");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"cd", "ac", "c", "baaa", "d", "bbaa"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bbaa", "d"},
+                                       {"baaa", "c"},
+                                       {"ac", "cd"},
+                                       {"bc", "da"},
+                                       {"daddd", "cc"},
+                                       {"bdadd", "dc"},
+                                       {"bdadcc", "dcaddd"},
+                                       {"daddcc", "ccaddd"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -407,6 +748,24 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dcab");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"ccad", "aac", "c", "baa", "d", "bba"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bba", "d"},
+                                       {"baa", "c"},
+                                       {"aac", "ccad"},
+                                       {"baccad", "cac"},
+                                       {"bc", "da"},
+                                       {"dacad", "cc"},
+                                       {"baccacc", "cacacad"},
+                                       {"dacacc", "ccacad"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "263", "aabaabaaba=baabaa", "[quick]") {
@@ -433,6 +792,23 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adbc");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"cbcbcba", "bcbc", "c", "aa", "d", "aab"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "aa"},
+                                       {"aab", "d"},
+                                       {"bdaa", "ddda"},
+                                       {"bdd", "dddab"},
+                                       {"bdad", "dddd"},
+                                       {"aaddda", "ddaa"},
+                                       {"aadddd", "ddad"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "264", "abaabbaaba=baaba", "[quick]") {
@@ -459,6 +835,29 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adcb");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"acad", "cac", "c", "ba", "d", "bcac"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "c"},
+                                       {"cac", "acad"},
+                                       {"ccad", "d"},
+                                       {"caacad", "acadac"},
+                                       {"acadcad", "cad"},
+                                       {"bcad", "dcad"},
+                                       {"acadadcad", "d"},
+                                       {"bd", "dadcad"},
+                                       {"acadadadcad", "cd"},
+                                       {"bcd", "dadadcad"},
+                                       {"acadadadadcad", "ccd"},
+                                       {"bccd", "dadadadcad"},
+                                       {"cccd", "acadadadadadcad"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "265", "baaaabbaba=aa", "[quick]") {
@@ -485,6 +884,26 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adbc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"bccda", "c", "c", "aa", "d", "bbab"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>(
+                {{"c", "aa"},
+                 {"bbab", "d"},
+                 {"bbad", "dbab"},
+                 {"baa", "daaaadaada"},
+                 {"bdaaaadaadaa", "daaaada"},
+                 {"daaaadaadaaada", "aa"},
+                 {"bdaaaadaaaa", "daaaadaaadaadaaada"},
+                 {"daaaadaadaaaaa", "aaaaadaadaaada"},
+                 {"bdaaaaaa", "daaaadaaadaadaaadadaadaaada"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -514,6 +933,85 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "acdb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"abda", "baba", "c", "abba", "d", "cbba"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"baba", "abda"},
+                                       {"cbba", "d"},
+                                       {"abba", "c"},
+                                       {"baabda", "abdaba"},
+                                       {"cbbc", "dbba"},
+                                       {"abbc", "d"},
+                                       {"babc", "abdc"},
+                                       {"baabdc", "abdabc"},
+                                       {"cbbd", "dbbc"},
+                                       {"abbd", "dbba"},
+                                       {"babd", "abdd"},
+                                       {"abdabda", "bcba"},
+                                       {"baabdd", "abdabd"},
+                                       {"aabddc", "cbc"},
+                                       {"aabddd", "cbd"},
+                                       {"cabddc", "dbc"},
+                                       {"cabddd", "dbd"},
+                                       {"aabdda", "cba"},
+                                       {"cabdda", "dba"},
+                                       {"bbcba", "abddabda"},
+                                       {"abdabdd", "bcbd"},
+                                       {"abdabdc", "bcbc"},
+                                       {"abdbcba", "bdba"},
+                                       {"cabddbcba", "dabddabda"},
+                                       {"aabddbcba", "dabdda"},
+                                       {"abdbdba", "bdabdda"},
+                                       {"bbdba", "abddbcba"},
+                                       {"bbcbd", "abddabdd"},
+                                       {"bbcbc", "abddabdc"},
+                                       {"bbcabdd", "abddabdabd"},
+                                       {"bbcabdc", "abddabdabc"},
+                                       {"bbcabda", "abddabdaba"},
+                                       {"abdbcbd", "bdbd"},
+                                       {"abdbcbc", "bdbc"},
+                                       {"abdbdbd", "bdabddd"},
+                                       {"abdbdbc", "bdabddc"},
+                                       {"cabddbdba", "dabddbcba"},
+                                       {"cabddbcbd", "dabddabdd"},
+                                       {"cabddbcbc", "dabddabdc"},
+                                       {"aabddbdba", "dabddabda"},
+                                       {"aabddbcbd", "dabddd"},
+                                       {"aabddbcbc", "dabddc"},
+                                       {"abdbcabdd", "bdabdd"},
+                                       {"abdbcabdc", "bdabdc"},
+                                       {"abdbcabda", "bdabda"},
+                                       {"cabddbcabdd", "dabddabdabd"},
+                                       {"cabddbcabdc", "dabddabdabc"},
+                                       {"cabddbcabda", "dabddabdaba"},
+                                       {"abdbdabdd", "bdabddabd"},
+                                       {"abdbdabdc", "bdabddabc"},
+                                       {"abdbdabda", "bdabddaba"},
+                                       {"bbdbd", "abddbcbd"},
+                                       {"bbdbc", "abddbcbc"},
+                                       {"bbdabdd", "abddbcabdd"},
+                                       {"bbdabdc", "abddbcabdc"},
+                                       {"bbdabda", "abddbcabda"},
+                                       {"aabddbcabdd", "dabddabd"},
+                                       {"aabddbcabdc", "dabddabc"},
+                                       {"aabddbcabda", "dabddaba"},
+                                       {"cabddbdbd", "dabddbcbd"},
+                                       {"cabddbdbc", "dabddbcbc"},
+                                       {"cabddbdabdd", "dabddbcabdd"},
+                                       {"aabddbdbd", "dabddabdd"},
+                                       {"aabddbdbc", "dabddabdc"},
+                                       {"cabddbdabdc", "dabddbcabdc"},
+                                       {"cabddbdabda", "dabddbcabda"},
+                                       {"aabddbdabdd", "dabddabdabd"},
+                                       {"aabddbdabdc", "dabddabdabc"},
+                                       {"aabddbdabda", "dabddabdaba"}}));
   }
 
   // This extreme test passed in 5.120s.
@@ -544,6 +1042,29 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "acdb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"abccba", "bda", "c", "abb", "d", "cbab"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>(
+                {{"cbab", "d"},         {"abb", "c"},
+                 {"abccba", "bda"},     {"bdab", "abcd"},
+                 {"cbbda", "dccba"},    {"cbc", "db"},
+                 {"abcdb", "bdc"},      {"bdbdc", "abcdcdb"},
+                 {"bdbda", "abcdccba"}, {"bdaabcd", "abcddab"},
+                 {"dbbbda", "cbdccba"}, {"dbbc", "cbdb"},
+                 {"dbbab", "cbd"},      {"cbbdc", "dcdb"},
+                 {"cbaabcd", "ddab"},   {"abcdabcd", "bdcdab"},
+                 {"ababcd", "cdab"},    {"abccbd", "bdd"},
+                 {"dbbbdc", "cbdcdb"},  {"dbbaabcd", "cbddab"},
+                 {"cbbdd", "dccbd"},    {"bdbdd", "abcdccbd"},
+                 {"dbbbdd", "cbdccbd"}, {"abccabcd", "bddab"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "268", "aababaabaa=baaba", "[quick]") {
@@ -570,6 +1091,21 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dabc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"aaccaca", "cac", "c", "d", "d", "ba"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "d"},
+                                       {"ba", "d"},
+                                       {"aaddada", "dad"},
+                                       {"bdad", "daddada"},
+                                       {"aaddaddad", "dadaddada"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "269", "baaaaaabba=aaaa", "[quick]") {
@@ -596,6 +1132,28 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adbc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"bcccbba", "cc", "c", "aa", "d", "abb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "aa"},
+                                       {"abb", "d"},
+                                       {"baaaaada", "aaaa"},
+                                       {"abaaaa", "daaaaada"},
+                                       {"baaaaadd", "aaad"},
+                                       {"abaaad", "daaaaadd"},
+                                       {"daaaaadaadd", "aaaad"},
+                                       {"daaaaadaada", "aaaaa"},
+                                       {"baaaaaaaaad", "aaaaaaaadaadd"},
+                                       {"baaaaaaaaaa", "aaaaaaaadaada"},
+                                       {"daaaaadaaaaaad", "aaaaaaaaadaadd"},
+                                       {"daaaaadaaaaaaa", "aaaaaaaaadaada"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "270", "baaaabbaba=aaa", "[quick]") {
@@ -622,6 +1180,26 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adbc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"bccda", "ca", "c", "aa", "d", "bbab"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE(
+        (kb.active_rules() | rx::to_vector())
+        == std::vector<rule_type>({{"c", "aa"},
+                                   {"bbab", "d"},
+                                   {"bbad", "dbab"},
+                                   {"baaa", "daaaadada"},
+                                   {"bdaaaadadaa", "daaaada"},
+                                   {"daaaadadaada", "aaa"},
+                                   {"bdaaaadaaaa", "daaaadaaadadaada"},
+                                   {"daaaadadaaaaa", "aaaaaadadaada"},
+                                   {"bdaaaaaaa", "daaaadaaadadaadadadaada"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "271", "baaaaabbba=abbaa", "[quick]") {
@@ -648,6 +1226,24 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adbc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"bccdba", "dc", "c", "aa", "d", "abb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "aa"},
+                                       {"baaaadba", "daa"},
+                                       {"abb", "d"},
+                                       {"baaaadbd", "dad"},
+                                       {"baaaaddaa", "daaaaadba"},
+                                       {"abdaa", "daaaadba"},
+                                       {"baaaaddad", "daaaaadbd"},
+                                       {"abdad", "daaaadbd"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "272", "ababababa=babaaba", "[quick]") {
@@ -674,6 +1270,24 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "acdb");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"cccca", "dca", "c", "ab", "d", "bca"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bca", "d"},
+                                       {"dca", "cccca"},
+                                       {"ab", "c"},
+                                       {"bcc", "db"},
+                                       {"dcc", "ccccc"},
+                                       {"ad", "cca"},
+                                       {"accccc", "ccacc"},
+                                       {"acccca", "ccaca"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "273", "aaabababa=babaaaa", "[quick]") {
@@ -700,6 +1314,18 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dabc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"caddd", "dbcc", "c", "aa", "d", "ba"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>(
+                {{"c", "aa"}, {"ba", "d"}, {"ddaaa", "aaaddd"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -789,6 +1415,27 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adbc");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"bcda", "c", "c", "aa", "d", "abb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "aa"},
+                                       {"baada", "aa"},
+                                       {"abb", "d"},
+                                       {"abaa", "daada"},
+                                       {"baadd", "ad"},
+                                       {"abad", "daadd"},
+                                       {"daadadd", "aad"},
+                                       {"daadada", "aaa"},
+                                       {"baaaad", "aaadadd"},
+                                       {"baaaaa", "aaadada"},
+                                       {"daadaaad", "aaaadadd"},
+                                       {"daadaaaa", "aaaadada"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "276", "aabaababaa=baaba", "[quick]") {
@@ -815,6 +1462,21 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dabc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"aacacca", "cac", "c", "d", "d", "ba"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "d"},
+                                       {"ba", "d"},
+                                       {"aadadda", "dad"},
+                                       {"bdad", "dadadda"},
+                                       {"aadadddad", "dadadadda"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -844,6 +1506,26 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cdab");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"daacd", "aaac", "c", "ba", "d", "ca"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "c"},
+                                       {"aaac", "daacd"},
+                                       {"ca", "d"},
+                                       {"bdaacd", "dac"},
+                                       {"aaad", "daacda"},
+                                       {"cdaacd", "daac"},
+                                       {"bdaadaac", "dadacd"},
+                                       {"cdaadaac", "daadacd"},
+                                       {"bdaadaad", "dadacda"},
+                                       {"cdaadaad", "daadacda"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "278", "baababbba=a", "[standard]") {
@@ -870,6 +1552,26 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "bcda");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"cacbbc", "a", "c", "ba", "d", "aa"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bdcbc", "dcbbc"},
+                                       {"a", "bdcbbc"},
+                                       {"cbdcbbc", "bd"},
+                                       {"bbdcbbc", "c"},
+                                       {"bdcbbbd", "d"},
+                                       {"bdcc", "dcbc"},
+                                       {"bdcbbd", "dcbbbd"},
+                                       {"bdcbd", "dcbbd"},
+                                       {"bdbd", "dcc"},
+                                       {"cd", "dcccbbc"},
+                                       {"bdd", "dcccbbbd"}}));
   }
 
   // This extreme test passed in 10.307s.
@@ -897,6 +1599,35 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "caedb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"ad", "cc", "c", "ba", "d", "bcca", "e", "dcd"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "c"},
+                                       {"bcae", "ecc"},
+                                       {"caea", "ae"},
+                                       {"ce", "ecca"},
+                                       {"aecc", "eccaccaa"},
+                                       {"aeacc", "eccaa"},
+                                       {"aeaacae", "eaaea"},
+                                       {"aeaacc", "ea"},
+                                       {"d", "aeaaa"},
+                                       {"bcc", "aeaa"},
+                                       {"aeaaaaeaa", "e"},
+                                       {"aeaaae", "eaaeaa"},
+                                       {"aaeaaa", "cc"},
+                                       {"be", "eccaaaaaeaa"},
+                                       {"aeaae", "eccaaaeaa"},
+                                       {"aeacae", "eccaaaea"},
+                                       {"aecae", "eccaccaaaea"},
+                                       {"aee", "eccaccaccaaaeaa"},
+                                       {"aeae", "eccaccaaaeaa"}}));
   }
 
   // This extreme test passed in 16.931s.
@@ -927,6 +1658,39 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cdeab");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"acdcca", "ccaac", "c", "ba", "d", "ab", "e", "dadc"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "c"},
+                                       {"ab", "d"},
+                                       {"dadc", "e"},
+                                       {"bd", "cb"},
+                                       {"ac", "da"},
+                                       {"dadeca", "ecada"},
+                                       {"ccaaeca", "ecdaada"},
+                                       {"ccada", "eca"},
+                                       {"ccadd", "ecd"},
+                                       {"dadecd", "ecadd"},
+                                       {"ccaaecd", "ecdaadd"},
+                                       {"ddaaaeca", "aecdaada"},
+                                       {"ddaada", "aeca"},
+                                       {"be", "ccdc"},
+                                       {"ccae", "ecadc"},
+                                       {"ddaadd", "aecd"},
+                                       {"ddaaaecd", "aecdaadd"},
+                                       {"dadece", "ecade"},
+                                       {"ccaaece", "ecdaade"},
+                                       {"ddaae", "aecadc"},
+                                       {"ccade", "ece"},
+                                       {"ddaaaece", "aecdaade"},
+                                       {"ddaade", "aece"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -982,6 +1746,21 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adcb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"acdc", "d", "c", "ba", "d", "cca"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "c"},
+                                       {"cca", "d"},
+                                       {"acdc", "d"},
+                                       {"ccd", "dcdc"},
+                                       {"acdd", "dca"},
+                                       {"bd", "dcdcc"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -1011,6 +1790,30 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "bcda");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"cdcac", "adca", "c", "ba", "d", "abb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"adca", "cdcac"},
+                                       {"abb", "d"},
+                                       {"ba", "c"},
+                                       {"adcd", "cdcacbb"},
+                                       {"abc", "da"},
+                                       {"bd", "cbb"},
+                                       {"bcdcac", "cdca"},
+                                       {"acdca", "dcdcacc"},
+                                       {"adccdcac", "cdcdcdcacc"},
+                                       {"acdcd", "dcdcaccbb"},
+                                       {"acdccdcac", "dcdcaccdca"},
+                                       {"acdccdcdcdcacc", "dcdcaccdccdcac"},
+                                       {"bcdcdcdcacc", "cdccdcac"},
+                                       {"adccdcdcdcacc", "cdcdcdcaccdca"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -1069,6 +1872,30 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cdab");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"ccba", "dba", "c", "baaa", "d", "aaab"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"baaa", "c"},
+                                       {"aaab", "d"},
+                                       {"dba", "ccba"},
+                                       {"baad", "caab"},
+                                       {"bad", "cab"},
+                                       {"bd", "cb"},
+                                       {"aaac", "daaa"},
+                                       {"dc", "ccc"},
+                                       {"baaccba", "caabba"},
+                                       {"baaccc", "caabc"},
+                                       {"baccba", "cabba"},
+                                       {"baccc", "cabc"},
+                                       {"bccba", "cbba"},
+                                       {"bccc", "cbc"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -1098,6 +1925,24 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cadb");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"daca", "accca", "c", "ab", "d", "bcca"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bcca", "d"},
+                                       {"daca", "accca"},
+                                       {"ab", "c"},
+                                       {"bccc", "db"},
+                                       {"ad", "ccca"},
+                                       {"dacc", "acccc"},
+                                       {"aaccca", "cccaaca"},
+                                       {"aacccc", "cccaacc"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -1153,6 +1998,26 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dabc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"abcabca", "cbc", "c", "ba", "d", "abb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "ba"},
+                                       {"abb", "d"},
+                                       {"bda", "dadaa"},
+                                       {"adadaadaa", "dda"},
+                                       {"bdd", "dadad"},
+                                       {"adadaadad", "ddd"},
+                                       {"adadaaddda", "dddadaadaa"},
+                                       {"adadaadddd", "dddadaadad"},
+                                       {"adadadda", "dddaadaa"},
+                                       {"adadaddd", "dddaadad"}}));
   }
 
   // This extreme test passed in 3.904s.
@@ -1183,6 +2048,41 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "acedb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"abcdcc", "ccbc", "c", "ba", "d", "bb", "e", "dadc"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bb", "d"},
+                                       {"ba", "c"},
+                                       {"dadc", "e"},
+                                       {"bd", "db"},
+                                       {"bc", "da"},
+                                       {"dacda", "cec"},
+                                       {"ccda", "aec"},
+                                       {"be", "dcdc"},
+                                       {"dadaec", "ecda"},
+                                       {"dace", "cecdc"},
+                                       {"daccec", "ceaec"},
+                                       {"aecdc", "cce"},
+                                       {"aeaec", "cccec"},
+                                       {"dacdcce", "cececdc"},
+                                       {"dacdcccec", "ceceaec"},
+                                       {"dacceaec", "cecccec"},
+                                       {"ccdcce", "aececdc"},
+                                       {"ccdcccec", "aeceaec"},
+                                       {"cccecdc", "aecce"},
+                                       {"aecccec", "ccceaec"},
+                                       {"aecdaec", "ccecda"},
+                                       {"dacdccceaec", "cececccec"},
+                                       {"ccdccceaec", "aececccec"},
+                                       {"cccecdaec", "aeccecda"},
+                                       {"aeccceaec", "cccecccec"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "290", "abaabbaa=baaba", "[quick]") {
@@ -1209,6 +2109,59 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adcb");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"cda", "baca", "c", "ab", "d", "acba"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"baca", "cda"},
+                                       {"ab", "c"},
+                                       {"acba", "d"},
+                                       {"bacc", "cdc"},
+                                       {"bacd", "cdd"},
+                                       {"caca", "acda"},
+                                       {"acbc", "db"},
+                                       {"acbd", "dcba"},
+                                       {"accda", "dca"},
+                                       {"bdca", "cdcda"},
+                                       {"baacda", "cdaca"},
+                                       {"cacc", "acdc"},
+                                       {"cacd", "acdd"},
+                                       {"caacda", "acdaca"},
+                                       {"accdc", "dcc"},
+                                       {"accdd", "dcd"},
+                                       {"bdcc", "cdcdc"},
+                                       {"bdcd", "cdcdd"},
+                                       {"bdacdc", "cdcdacc"},
+                                       {"bdacdd", "cdcdacd"},
+                                       {"bdacda", "cdcdaca"},
+                                       {"baacdc", "cdacc"},
+                                       {"baacdd", "cdacd"},
+                                       {"caacdc", "acdacc"},
+                                       {"caacdd", "acdacd"},
+                                       {"acdcdc", "cdcc"},
+                                       {"acdcdd", "cdcd"},
+                                       {"acdcda", "cdca"},
+                                       {"bcdcc", "cddcdc"},
+                                       {"bcdcd", "cddcdd"},
+                                       {"ccdcc", "acddcdc"},
+                                       {"ccdcd", "acddcdd"},
+                                       {"bcdca", "cddcda"},
+                                       {"ccdca", "acddcda"},
+                                       {"aacddcdc", "dccc"},
+                                       {"aacddcdd", "dccd"},
+                                       {"bcdacdc", "cddcdacc"},
+                                       {"bcdacdd", "cddcdacd"},
+                                       {"bcdacda", "cddcdaca"},
+                                       {"ccdacdc", "acddcdacc"},
+                                       {"ccdacdd", "acddcdacd"},
+                                       {"aacddcda", "dcca"},
+                                       {"ccdacda", "acddcdaca"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -1238,6 +2191,24 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cdab");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"badcaa", "ad", "c", "bb", "d", "aca"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bb", "c"},
+                                       {"aca", "d"},
+                                       {"bad", "cadcaa"},
+                                       {"bc", "cb"},
+                                       {"acd", "dca"},
+                                       {"cadcadd", "adca"},
+                                       {"cadcada", "ad"},
+                                       {"aad", "ddcada"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "292", "baaaaabba=aa", "[quick]") {
@@ -1264,6 +2235,27 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "adbc");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"bccda", "c", "c", "aa", "d", "abb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "aa"},
+                                       {"baaaada", "aa"},
+                                       {"abb", "d"},
+                                       {"abaa", "daaaada"},
+                                       {"baaaadd", "ad"},
+                                       {"abad", "daaaadd"},
+                                       {"daaaadaaadd", "aad"},
+                                       {"daaaadaaada", "aaa"},
+                                       {"baaaaaad", "aaaaadaaadd"},
+                                       {"baaaaaaa", "aaaaadaaada"},
+                                       {"daaaadaaaaad", "aaaaaadaaadd"},
+                                       {"daaaadaaaaaa", "aaaaaadaaada"}}));
   }
 
   // This extreme test passed in 10.370s.
@@ -1294,6 +2286,48 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cedab");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"cec", "acc", "c", "ba", "d", "ca", "e", "daab"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "c"},
+                                       {"acc", "cec"},
+                                       {"daab", "e"},
+                                       {"ca", "d"},
+                                       {"bcec", "ccc"},
+                                       {"daac", "ea"},
+                                       {"dcc", "ccec"},
+                                       {"acd", "ced"},
+                                       {"bced", "ccd"},
+                                       {"daad", "eaa"},
+                                       {"dcd", "cced"},
+                                       {"ace", "cee"},
+                                       {"bcee", "cce"},
+                                       {"daaeaa", "eaaaad"},
+                                       {"dce", "ccee"},
+                                       {"eaaaab", "daae"},
+                                       {"eaaaac", "daaea"},
+                                       {"cceeecc", "ecec"},
+                                       {"cceeece", "ecee"},
+                                       {"eae", "cceeee"},
+                                       {"cceeecd", "eced"},
+                                       {"ead", "cceeed"},
+                                       {"eac", "cceeec"},
+                                       {"aeced", "ceceeecd"},
+                                       {"aecee", "ceceeece"},
+                                       {"aecec", "ceceeecc"},
+                                       {"deced", "cceceeecd"},
+                                       {"decee", "cceceeece"},
+                                       {"decec", "cceceeecc"},
+                                       {"cceeeeced", "ececeeecd"},
+                                       {"cceeeecee", "ececeeece"},
+                                       {"cceeeecec", "ececeeecc"}}));
   }
 
   // This extreme test passed in 10.067s.
@@ -1321,6 +2355,29 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cdeab");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"dc", "ec", "c", "ba", "d", "cbca", "e", "ab"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "c"},
+                                       {"ab", "e"},
+                                       {"ec", "dc"},
+                                       {"cbca", "d"},
+                                       {"be", "cb"},
+                                       {"ac", "ea"},
+                                       {"ed", "dd"},
+                                       {"cbce", "db"},
+                                       {"bdd", "cbd"},
+                                       {"bdc", "cbc"},
+                                       {"ad", "ddca"},
+                                       {"cbcdd", "dbd"},
+                                       {"cbcdc", "dbc"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -1379,6 +2436,25 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cdba");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"acdc", "cbcc", "c", "ba", "d", "bbcb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"acdc", "cbcc"},
+                                       {"ba", "c"},
+                                       {"bbcb", "d"},
+                                       {"bbcd", "dbcb"},
+                                       {"bcbcc", "ccdc"},
+                                       {"da", "bbcc"},
+                                       {"bbcccdc", "dcbcc"},
+                                       {"bccdc", "dcc"},
+                                       {"bcdcc", "ccdcdc"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "297", "baabaabba=aa", "[quick]") {
@@ -1405,6 +2481,28 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dabc");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"bcbcbba", "c", "c", "aa", "d", "abb"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"c", "aa"},
+                                       {"abb", "d"},
+                                       {"baabada", "aa"},
+                                       {"baabadd", "ad"},
+                                       {"daabada", "abaa"},
+                                       {"baabaabaa", "aaabada"},
+                                       {"daabadd", "abad"},
+                                       {"abaaabada", "daabaabaa"},
+                                       {"baabaabad", "aaabadd"},
+                                       {"abaaabadd", "daabaabad"},
+                                       {"baaaa", "aaabadda"},
+                                       {"baaad", "aaabaddd"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation",
@@ -1464,6 +2562,36 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "acdb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"bada", "abacaba", "c", "bb", "d", "baabac"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE(
+        (kb.active_rules() | rx::to_vector())
+        == std::vector<rule_type>({{"bb", "c"},
+                                   {"baabac", "d"},
+                                   {"abacaba", "bada"},
+                                   {"bd", "caabac"},
+                                   {"bc", "cb"},
+                                   {"babada", "daba"},
+                                   {"badaabac", "abacad"},
+                                   {"abacbada", "badacaba"},
+                                   {"badbada", "abacacada"},
+                                   {"babacad", "cadaabac"},
+                                   {"babacacada", "cadbada"},
+                                   {"badabacacada", "abacacadbada"},
+                                   {"badabada", "abacadaba"},
+                                   {"badabacad", "abacacadaabac"},
+                                   {"abacaabacad", "badadaabac"},
+                                   {"abacaabacacada", "badadbada"},
+                                   {"babacacadbada", "cadabacacada"},
+                                   {"badabacacadbada", "abacacadabacacada"},
+                                   {"abacaabacacadbada", "badadabacacada"}}));
   }
 
 }  // namespace libsemigroups
