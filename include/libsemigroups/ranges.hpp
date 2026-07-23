@@ -180,7 +180,11 @@ namespace libsemigroups {
 
     explicit Singleton(Thing const& thing) : _value(&thing), _at_end(false) {}
 
-    // TODO rule of 5
+    Singleton()                            = default;
+    Singleton(Singleton const&)            = default;
+    Singleton(Singleton&&)                 = default;
+    Singleton& operator=(Singleton const&) = default;
+    Singleton& operator=(Singleton&&)      = default;
 
     [[nodiscard]] output_type get() const noexcept {
       LIBSEMIGROUPS_ASSERT(!at_end());
