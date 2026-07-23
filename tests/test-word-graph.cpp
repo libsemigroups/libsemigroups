@@ -832,6 +832,104 @@ namespace libsemigroups {
             == "<WordGraph with 1,005 nodes, 1,004 edges, & out-degree 1>");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "048",
+                          "to_disparse6_string",
+                          "[quick][word-graph]") {
+    REQUIRE(word_graph::to_disparse6_string(WordGraph<uint32_t>()) == ".?n");
+    REQUIRE(word_graph::to_disparse6_string(WordGraph<uint32_t>(1)) == ".@~");
+
+    auto wg = v4::make<WordGraph<uint32_t>>(
+        3, {{1, 2}, {0, UNDEFINED}, {0, UNDEFINED}});
+    REQUIRE(word_graph::to_disparse6_string(wg) == ".Bc{f");
+
+    // This example has increasing and decreasing edges, as well as loops.
+    wg = v4::make<WordGraph<uint32_t>>(4,
+                                       {{0, 3, UNDEFINED},
+                                        {1, 2, 3},
+                                        {1, 3, UNDEFINED},
+                                        {1, UNDEFINED, UNDEFINED}});
+    REQUIRE(word_graph::to_disparse6_string(wg) == ".CgXoHe@J");
+
+    // Exercise the extended graph6 order encoding.
+    REQUIRE(word_graph::to_disparse6_string(WordGraph<uint32_t>(63))
+            == ".~??~~~");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "049",
+                          "from_disparse6_string",
+                          "[quick][word-graph]") {
+    REQUIRE(word_graph::from_disparse6_string<uint32_t>(".?n")
+            == WordGraph<uint32_t>());
+    REQUIRE(word_graph::from_disparse6_string<uint32_t>(".@~")
+            == WordGraph<uint32_t>(1));
+
+    auto wg = v4::make<WordGraph<uint32_t>>(
+        3, {{1, 2}, {0, UNDEFINED}, {0, UNDEFINED}});
+    REQUIRE(word_graph::from_disparse6_string<uint32_t>(".Bc{f") == wg);
+    REQUIRE(word_graph::from_disparse6_string<uint32_t>(".Bc{f\n") == wg);
+    REQUIRE(word_graph::from_disparse6_string<uint32_t>(
+                word_graph::to_disparse6_string(wg))
+            == wg);
+
+    wg = v4::make<WordGraph<uint32_t>>(4,
+                                       {{0, 3, UNDEFINED},
+                                        {1, 2, 3},
+                                        {1, 3, UNDEFINED},
+                                        {1, UNDEFINED, UNDEFINED}});
+    REQUIRE(word_graph::from_disparse6_string<uint32_t>(".CgXoHe@J") == wg);
+    REQUIRE(word_graph::to_disparse6_string(
+                word_graph::from_disparse6_string<uint32_t>(".CgXoHe@J"))
+            == ".CgXoHe@J");
+    REQUIRE(word_graph::to_disparse6_string(
+                word_graph::from_disparse6_string<uint32_t>(".IoCuh?oR"))
+            == ".IoCuh?oR");
+
+    auto large = word_graph::from_disparse6_string<uint32_t>(".~~??@???o??N");
+    REQUIRE(large.number_of_nodes() == 262'144);
+    REQUIRE(large.number_of_edges() == 0);
+    REQUIRE(word_graph::to_disparse6_string(large) == ".~~??@???o??N");
+
+    for (uint32_t n = 2; n < 70; ++n) {
+      WordGraph<uint32_t> graph(n, n);
+      for (uint32_t source = 0; source < n; ++source) {
+        uint32_t label = 0;
+        for (uint32_t target = 0; target < n; ++target) {
+          if (source == 0 || (3 * source + 5 * target) % 7 == 0) {
+            graph.target_no_checks(source, label++, target);
+          }
+        }
+      }
+      REQUIRE(word_graph::from_disparse6_string<uint32_t>(
+                  word_graph::to_disparse6_string(graph))
+              == graph);
+    }
+
+    auto const too_many_nodes
+        = word_graph::to_disparse6_string(WordGraph<uint16_t>(256));
+    REQUIRE(word_graph::from_disparse6_string<uint16_t>(too_many_nodes)
+            == WordGraph<uint16_t>(256));
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore
+        = word_graph::from_disparse6_string<uint8_t>(too_many_nodes),
+        "the disparse6 string in the 1st argument represents 256 nodes, but "
+        "the requested WordGraph can have at most 255 nodes");
+
+    for (auto const& invalid :
+         {"", "not disparse6", ".", ".~", ".A ", ".@?", ".Bc{f?"}) {
+      REQUIRE_EXCEPTION_MSG(
+          std::ignore = word_graph::from_disparse6_string<uint32_t>(invalid),
+          "expected the 1st argument to be a valid disparse6 string");
+    }
+
+    // This GAP Digraphs example contains two copies of the loop at node 0.
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = word_graph::from_disparse6_string<uint32_t>(".CgXo?eWCn"),
+        "the disparse6 string in the 1st argument contains multiple edges with "
+        "the same source and target");
+  }
+
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "045", "hash_value", "[quick]") {
     auto                rg = ReportGuard(false);
     WordGraph<uint32_t> wg(0, 1);
