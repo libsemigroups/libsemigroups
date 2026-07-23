@@ -56,8 +56,8 @@ namespace libsemigroups {
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
 
-  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
-  using RPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+  using RPOTrie = detail::RewritingSystemTrie<RPOCmp>;
+  using RPOSet  = detail::RewritingSystemSet<RPOCmp>;
 
   static_assert(std::is_default_constructible_v<
                 KnuthBendix<std::string, LenLexTrie, LenLexCmp>>);

@@ -75,7 +75,7 @@ RWSToLibsemigroups := function(rws, nr, comment, test_case_label)
   if rws!.ordering = "shortlex" then
     comparator := "LenLexCmp";
   elif rws!.ordering = "recursive" then
-    comparator := "RevRPOCmp";
+    comparator := "RPOCmp";
   elif rws!.ordering = "wreathprod" then
     if not IsBound(rws!.level) then
       ErrorNoReturn("a wreathprod ordering requires a level field");
@@ -83,7 +83,7 @@ RWSToLibsemigroups := function(rws, nr, comment, test_case_label)
       ErrorNoReturn("the level and generatorOrder fields must have equal ",
                     "length");
     fi;
-    comparator := "WreathCmp";
+    comparator := "WrCmp";
     order_argument := SizeTVectorToLibsemigroups(rws!.level);
   elif rws!.ordering = "wtlex" then
     if not IsBound(rws!.weight) then

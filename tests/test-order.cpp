@@ -633,31 +633,270 @@ namespace libsemigroups {
   // Recursive Path Compare
   // =========================================================================
 
+  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "037", "empty word", "[quick][order]") {
+    auto      rg = ReportGuard(false);
+    word_type w1(12_w);
+    word_type w2;
+
+    REQUIRE(!rpo_cmp(w1, w1));
+    REQUIRE(rpo_cmp(w2, w1));
+    REQUIRE(!rpo_cmp(w1, w2));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RPOCmp", "038", "empty word", "[quick][order]") {
+    auto      rg = ReportGuard(false);
+    word_type w1(12_w);
+    word_type w2;
+
+    REQUIRE(!RPOCmp()(w1, w1));
+    REQUIRE(RPOCmp()(w2, w1));
+    REQUIRE(!RPOCmp()(w1, w2));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "039", "with alphabet", "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    Alphabet alphabet("ba"s);
+
+    REQUIRE(rpo_cmp("a"s, "b"s));
+    REQUIRE(!rpo_cmp(alphabet, "a"s, "b"s));
+    REQUIRE(rpo_cmp(alphabet, "b"s, "a"s));
+    REQUIRE(!rpo_cmp_no_checks(alphabet, "a"s, "b"s));
+    REQUIRE(rpo_cmp_no_checks(alphabet, "b"s, "a"s));
+
+    auto u = "aa"s;
+    auto v = "ab"s;
+    REQUIRE(rpo_cmp(u, v));
+    REQUIRE(!rpo_cmp(alphabet, u, v));
+    REQUIRE(rpo_cmp(alphabet, u.cbegin(), u.cend(), v.cbegin(), v.cend())
+            == rpo_cmp(alphabet, u, v));
+    REQUIRE(
+        rpo_cmp_no_checks(alphabet, v.cbegin(), v.cend(), u.cbegin(), u.cend())
+        == rpo_cmp_no_checks(alphabet, v, u));
+
+    REQUIRE(!RPOCmp(alphabet)(u, v));
+    REQUIRE(RPOCmp(alphabet)(v, u));
+    REQUIRE(!RPOCmp<std::string, false>(alphabet)(u, v));
+    REQUIRE(RPOCmp<std::string, false>(alphabet)(v, u));
+
+    alphabet.init("cd"s);
+
+    REQUIRE_EXCEPTION_MSG(std::ignore = rpo_cmp(alphabet, "b"s, "aa"s),
+                          "invalid letter 'b', valid letters are \"cd\"");
+    REQUIRE_EXCEPTION_MSG(std::ignore = RPOCmp(alphabet)("b"s, "aa"s),
+                          "invalid letter 'b', valid letters are \"cd\"");
+  }
+
   LIBSEMIGROUPS_TEST_CASE("rev_rpo_cmp",
-                          "037",
-                          "empty word",
+                          "040",
+                          "random examples",
                           "[quick][order]") {
-    auto      rg = ReportGuard(false);
-    word_type w1(12_w);
-    word_type w2;
+    using std::literals::string_literals::operator""s;
+    REQUIRE(!rev_rpo_cmp(""s, ""s));
+    REQUIRE(!rev_rpo_cmp("a"s, ""s));
+    REQUIRE(!rev_rpo_cmp("b"s, ""s));
+    REQUIRE(!rev_rpo_cmp("c"s, ""s));
+    REQUIRE(!rev_rpo_cmp("c"s, "c"s));
+    REQUIRE(!rev_rpo_cmp("ab"s, ""s));
+    REQUIRE(!rev_rpo_cmp("caa"s, ""s));
+    REQUIRE(!rev_rpo_cmp("cba"s, ""s));
+    REQUIRE(!rev_rpo_cmp("cc"s, "ab"s));
+    REQUIRE(!rev_rpo_cmp("cc"s, "ba"s));
+    REQUIRE(!rev_rpo_cmp("cccb"s, ""s));
+    REQUIRE(!rev_rpo_cmp("ca"s, "aab"s));
+    REQUIRE(!rev_rpo_cmp("caa"s, "bb"s));
+    REQUIRE(!rev_rpo_cmp("cca"s, "bb"s));
+    REQUIRE(!rev_rpo_cmp("aaca"s, "c"s));
+    REQUIRE(!rev_rpo_cmp("acbb"s, "b"s));
+    REQUIRE(!rev_rpo_cmp("abcbb"s, ""s));
+    REQUIRE(!rev_rpo_cmp("cbcca"s, ""s));
+    REQUIRE(!rev_rpo_cmp("bcc"s, "aca"s));
+    REQUIRE(!rev_rpo_cmp("cbc"s, "bca"s));
+    REQUIRE(!rev_rpo_cmp("ccb"s, "aab"s));
+    REQUIRE(!rev_rpo_cmp("aacaa"s, "b"s));
+    REQUIRE(!rev_rpo_cmp("cabbb"s, "a"s));
+    REQUIRE(!rev_rpo_cmp("cbbab"s, "a"s));
+    REQUIRE(!rev_rpo_cmp("acabac"s, ""s));
+    REQUIRE(!rev_rpo_cmp("bbcbac"s, ""s));
+    REQUIRE(!rev_rpo_cmp("bcabcb"s, ""s));
+    REQUIRE(!rev_rpo_cmp("cabcaa"s, ""s));
+    REQUIRE(!rev_rpo_cmp("cbbbac"s, ""s));
+    REQUIRE(!rev_rpo_cmp("bcab"s, "bbc"s));
+    REQUIRE(!rev_rpo_cmp("aaccc"s, "ab"s));
+    REQUIRE(!rev_rpo_cmp("aabcbbc"s, ""s));
+    REQUIRE(!rev_rpo_cmp("caba"s, "aaac"s));
+    REQUIRE(!rev_rpo_cmp("accac"s, "ccb"s));
+    REQUIRE(!rev_rpo_cmp("ccaaab"s, "ac"s));
+    REQUIRE(!rev_rpo_cmp("bcaabac"s, "c"s));
+    REQUIRE(!rev_rpo_cmp("aabaacbb"s, ""s));
+    REQUIRE(!rev_rpo_cmp("bcccbabb"s, ""s));
+    REQUIRE(!rev_rpo_cmp("bbcc"s, "aaaab"s));
+    REQUIRE(!rev_rpo_cmp("acccc"s, "bbca"s));
+    REQUIRE(!rev_rpo_cmp("bcbcc"s, "caaa"s));
+    REQUIRE(!rev_rpo_cmp("cccaab"s, "aac"s));
+    REQUIRE(!rev_rpo_cmp("acabbba"s, "ac"s));
+    REQUIRE(!rev_rpo_cmp("bcabbbc"s, "bc"s));
+    REQUIRE(!rev_rpo_cmp("caaccbcb"s, "c"s));
+    REQUIRE(!rev_rpo_cmp("cc"s, "bbacabbb"s));
+    REQUIRE(!rev_rpo_cmp("acc"s, "aabcbba"s));
+    REQUIRE(!rev_rpo_cmp("acaa"s, "aababc"s));
+    REQUIRE(!rev_rpo_cmp("acaa"s, "abbabb"s));
+    REQUIRE(!rev_rpo_cmp("cbcaacca"s, "ac"s));
+    REQUIRE(!rev_rpo_cmp("caaccccaa"s, "a"s));
+    REQUIRE(!rev_rpo_cmp("aabaabcabc"s, ""s));
+    REQUIRE(!rev_rpo_cmp("abbbacacac"s, ""s));
+    REQUIRE(!rev_rpo_cmp("cbacbbaaca"s, ""s));
+    REQUIRE(!rev_rpo_cmp("bbbc"s, "abbaaba"s));
+    REQUIRE(!rev_rpo_cmp("bccbaa"s, "cabbc"s));
+    REQUIRE(!rev_rpo_cmp("abaacaaabb"s, "b"s));
+    REQUIRE(!rev_rpo_cmp("cbaacbbbbc"s, "b"s));
+    REQUIRE(!rev_rpo_cmp("ccaabc"s, "abcaaa"s));
+    REQUIRE(!rev_rpo_cmp("ccacca"s, "baaccc"s));
+    REQUIRE(!rev_rpo_cmp("aacbccc"s, "bbacc"s));
+    REQUIRE(!rev_rpo_cmp("bcacbbc"s, "bacab"s));
+    REQUIRE(!rev_rpo_cmp("cacbbac"s, "bcbac"s));
+    REQUIRE(!rev_rpo_cmp("cccacbb"s, "cccac"s));
+    REQUIRE(!rev_rpo_cmp("cbabaabb"s, "bbbb"s));
+    REQUIRE(!rev_rpo_cmp("cbacbcba"s, "baab"s));
+    REQUIRE(!rev_rpo_cmp("abcacacbb"s, "bab"s));
+    REQUIRE(!rev_rpo_cmp("abacbbcccc"s, "ac"s));
+    REQUIRE(!rev_rpo_cmp("bcacbbbccb"s, "ca"s));
+    REQUIRE(!rev_rpo_cmp("caccbbacbc"s, "ab"s));
+    REQUIRE(!rev_rpo_cmp("accaa"s, "aabaacac"s));
+    REQUIRE(!rev_rpo_cmp("acacbaa"s, "bcbabc"s));
+    REQUIRE(!rev_rpo_cmp("acbcbaca"s, "aabcb"s));
+    REQUIRE(!rev_rpo_cmp("abcbaabaa"s, "abcb"s));
+    REQUIRE(!rev_rpo_cmp("bbcacabca"s, "caaa"s));
+    REQUIRE(!rev_rpo_cmp("bcaababaa"s, "babb"s));
+    REQUIRE(!rev_rpo_cmp("cbbcbcbacc"s, "bcb"s));
+    REQUIRE(!rev_rpo_cmp("cccbbccccb"s, "aaa"s));
+    REQUIRE(!rev_rpo_cmp("acccaa"s, "cacbbaca"s));
+    REQUIRE(!rev_rpo_cmp("baccbcba"s, "ccabab"s));
+    REQUIRE(!rev_rpo_cmp("caaccbab"s, "babbcb"s));
+    REQUIRE(!rev_rpo_cmp("abcacaaab"s, "cabac"s));
+    REQUIRE(!rev_rpo_cmp("baabccccb"s, "caacb"s));
+    REQUIRE(!rev_rpo_cmp("aaabccaabc"s, "bbcc"s));
+    REQUIRE(!rev_rpo_cmp("acccba"s, "bbcabccaa"s));
+    REQUIRE(!rev_rpo_cmp("bcacac"s, "bcbaaacba"s));
+    REQUIRE(!rev_rpo_cmp("accbcacc"s, "abbbcba"s));
+    REQUIRE(!rev_rpo_cmp("ccaccacc"s, "bcbabcb"s));
+    REQUIRE(!rev_rpo_cmp("ccacac"s, "acbaacbaba"s));
+    REQUIRE(!rev_rpo_cmp("aaaccbcb"s, "acabacca"s));
+    REQUIRE(!rev_rpo_cmp("cbbbbcab"s, "babbabca"s));
+    REQUIRE(!rev_rpo_cmp("ccabaaacab"s, "aabaaa"s));
+    REQUIRE(!rev_rpo_cmp("cbccbcb"s, "aaccbbaaab"s));
+    REQUIRE(!rev_rpo_cmp("bccaccbca"s, "cacccbba"s));
+    REQUIRE(!rev_rpo_cmp("aabcacbacc"s, "bccbbca"s));
+    REQUIRE(!rev_rpo_cmp("cbcacacbab"s, "caccbaa"s));
+    REQUIRE(!rev_rpo_cmp("acacbbacab"s, "abbbccba"s));
+    REQUIRE(!rev_rpo_cmp("bcbabcacac"s, "ccababcc"s));
+    REQUIRE(!rev_rpo_cmp("abacccaaab"s, "aaaccacab"s));
+    REQUIRE(!rev_rpo_cmp("bccccbbbbc"s, "bbabccbcbb"s));
 
-    REQUIRE(!rev_rpo_cmp(w1, w1));
-    REQUIRE(rev_rpo_cmp(w2, w1));
-    REQUIRE(!rev_rpo_cmp(w1, w2));
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("RevRPOCmp", "038", "empty word", "[quick][order]") {
-    auto      rg = ReportGuard(false);
-    word_type w1(12_w);
-    word_type w2;
-
-    REQUIRE(!RevRPOCmp()(w1, w1));
-    REQUIRE(RevRPOCmp()(w2, w1));
-    REQUIRE(!RevRPOCmp()(w1, w2));
+    REQUIRE(rev_rpo_cmp(""s, "a"s));
+    REQUIRE(rev_rpo_cmp(""s, "b"s));
+    REQUIRE(rev_rpo_cmp(""s, "c"s));
+    REQUIRE(rev_rpo_cmp(""s, "ba"s));
+    REQUIRE(rev_rpo_cmp(""s, "bca"s));
+    REQUIRE(rev_rpo_cmp("a"s, "bc"s));
+    REQUIRE(rev_rpo_cmp("a"s, "cc"s));
+    REQUIRE(rev_rpo_cmp("bb"s, "bc"s));
+    REQUIRE(rev_rpo_cmp(""s, "bbbcc"s));
+    REQUIRE(rev_rpo_cmp("a"s, "aabc"s));
+    REQUIRE(rev_rpo_cmp("c"s, "ccaa"s));
+    REQUIRE(rev_rpo_cmp("ab"s, "cca"s));
+    REQUIRE(rev_rpo_cmp("baa"s, "bc"s));
+    REQUIRE(rev_rpo_cmp("abab"s, "c"s));
+    REQUIRE(rev_rpo_cmp("baaa"s, "c"s));
+    REQUIRE(rev_rpo_cmp(""s, "accabc"s));
+    REQUIRE(rev_rpo_cmp(""s, "bccbcc"s));
+    REQUIRE(rev_rpo_cmp(""s, "cbabcc"s));
+    REQUIRE(rev_rpo_cmp("a"s, "acbba"s));
+    REQUIRE(rev_rpo_cmp("c"s, "bbbac"s));
+    REQUIRE(rev_rpo_cmp("c"s, "ccbbc"s));
+    REQUIRE(rev_rpo_cmp("ab"s, "acaa"s));
+    REQUIRE(rev_rpo_cmp("ab"s, "baab"s));
+    REQUIRE(rev_rpo_cmp("bb"s, "bcba"s));
+    REQUIRE(rev_rpo_cmp("aac"s, "acb"s));
+    REQUIRE(rev_rpo_cmp("abb"s, "bba"s));
+    REQUIRE(rev_rpo_cmp(""s, "cabaacc"s));
+    REQUIRE(rev_rpo_cmp("b"s, "ccaacb"s));
+    REQUIRE(rev_rpo_cmp("bb"s, "acaac"s));
+    REQUIRE(rev_rpo_cmp("bcb"s, "ccca"s));
+    REQUIRE(rev_rpo_cmp(""s, "aacaacba"s));
+    REQUIRE(rev_rpo_cmp(""s, "bacbaaba"s));
+    REQUIRE(rev_rpo_cmp(""s, "bbbaacca"s));
+    REQUIRE(rev_rpo_cmp(""s, "cbacbbab"s));
+    REQUIRE(rev_rpo_cmp(""s, "cbccccba"s));
+    REQUIRE(rev_rpo_cmp("a"s, "bbababb"s));
+    REQUIRE(rev_rpo_cmp("ab"s, "ccaabc"s));
+    REQUIRE(rev_rpo_cmp("bb"s, "bacaaa"s));
+    REQUIRE(rev_rpo_cmp("bc"s, "cbcaac"s));
+    REQUIRE(rev_rpo_cmp("bbca"s, "acbb"s));
+    REQUIRE(rev_rpo_cmp(""s, "abcacbbcb"s));
+    REQUIRE(rev_rpo_cmp(""s, "cacabaaca"s));
+    REQUIRE(rev_rpo_cmp("b"s, "bcabbcaa"s));
+    REQUIRE(rev_rpo_cmp("b"s, "cbcbaacb"s));
+    REQUIRE(rev_rpo_cmp("abc"s, "cbabac"s));
+    REQUIRE(rev_rpo_cmp("cac"s, "cabcaa"s));
+    REQUIRE(rev_rpo_cmp("cbc"s, "cabcba"s));
+    REQUIRE(rev_rpo_cmp("aacb"s, "caaca"s));
+    REQUIRE(rev_rpo_cmp("baab"s, "aaacc"s));
+    REQUIRE(rev_rpo_cmp("caab"s, "bccaa"s));
+    REQUIRE(rev_rpo_cmp("abbbaa"s, "cca"s));
+    REQUIRE(rev_rpo_cmp(""s, "babbcbabaa"s));
+    REQUIRE(rev_rpo_cmp(""s, "cabacacabb"s));
+    REQUIRE(rev_rpo_cmp("c"s, "babaabaca"s));
+    REQUIRE(rev_rpo_cmp("bc"s, "acbbccaa"s));
+    REQUIRE(rev_rpo_cmp("aba"s, "aacaacc"s));
+    REQUIRE(rev_rpo_cmp("abc"s, "bbabbcb"s));
+    REQUIRE(rev_rpo_cmp("cbb"s, "ccbaabc"s));
+    REQUIRE(rev_rpo_cmp("bbca"s, "babacc"s));
+    REQUIRE(rev_rpo_cmp("bbabc"s, "bcabb"s));
+    REQUIRE(rev_rpo_cmp("bcabba"s, "cbbb"s));
+    REQUIRE(rev_rpo_cmp("cabaac"s, "accb"s));
+    REQUIRE(rev_rpo_cmp("c"s, "cbccbcabba"s));
+    REQUIRE(rev_rpo_cmp("ab"s, "cbacabbcc"s));
+    REQUIRE(rev_rpo_cmp("aac"s, "aaccbbac"s));
+    REQUIRE(rev_rpo_cmp("aca"s, "aabccccc"s));
+    REQUIRE(rev_rpo_cmp("babaa"s, "ccacbb"s));
+    REQUIRE(rev_rpo_cmp("bacbaca"s, "ccac"s));
+    REQUIRE(rev_rpo_cmp("aa"s, "cbbbbbcbca"s));
+    REQUIRE(rev_rpo_cmp("bc"s, "bccbcaaaca"s));
+    REQUIRE(rev_rpo_cmp("cbcbb"s, "cbbcacc"s));
+    REQUIRE(rev_rpo_cmp("babbbabc"s, "ccaa"s));
+    REQUIRE(rev_rpo_cmp("aaa"s, "cccbccaabc"s));
+    REQUIRE(rev_rpo_cmp("cbcc"s, "cccbaacca"s));
+    REQUIRE(rev_rpo_cmp("bbcbaa"s, "bcbcbcc"s));
+    REQUIRE(rev_rpo_cmp("cbcbbb"s, "bccacca"s));
+    REQUIRE(rev_rpo_cmp("bcbc"s, "aabbcccccb"s));
+    REQUIRE(rev_rpo_cmp("caaa"s, "acbabcbbab"s));
+    REQUIRE(rev_rpo_cmp("ccac"s, "abccaabcaa"s));
+    REQUIRE(rev_rpo_cmp("aabbb"s, "baccbcccc"s));
+    REQUIRE(rev_rpo_cmp("abbcab"s, "cabccaca"s));
+    REQUIRE(rev_rpo_cmp("aabbbbacb"s, "aaccc"s));
+    REQUIRE(rev_rpo_cmp("bbbcabbbc"s, "ccbab"s));
+    REQUIRE(rev_rpo_cmp("cbabbabaac"s, "bcca"s));
+    REQUIRE(rev_rpo_cmp("aacca"s, "cacccccbbb"s));
+    REQUIRE(rev_rpo_cmp("baaca"s, "abaaaabcca"s));
+    REQUIRE(rev_rpo_cmp("bbaab"s, "bbccaaacba"s));
+    REQUIRE(rev_rpo_cmp("cabbcb"s, "aaacbcbaa"s));
+    REQUIRE(rev_rpo_cmp("cabaccc"s, "acbcbcbc"s));
+    REQUIRE(rev_rpo_cmp("acaabc"s, "bcaccccbbc"s));
+    REQUIRE(rev_rpo_cmp("acccca"s, "cbacacacca"s));
+    REQUIRE(rev_rpo_cmp("aaacabcc"s, "cbcbbbbc"s));
+    REQUIRE(rev_rpo_cmp("aacacacc"s, "baccacbc"s));
+    REQUIRE(rev_rpo_cmp("ccbaabba"s, "ccbabcca"s));
+    REQUIRE(rev_rpo_cmp("cabacbcbb"s, "bcbcccc"s));
+    REQUIRE(rev_rpo_cmp("acbacacb"s, "cbaacbccb"s));
+    REQUIRE(rev_rpo_cmp("bcbbbbbb"s, "bacababcb"s));
+    REQUIRE(rev_rpo_cmp("ccaababc"s, "aacbccbab"s));
+    REQUIRE(rev_rpo_cmp("aaaacbacba"s, "ccbbacb"s));
+    REQUIRE(rev_rpo_cmp("bcbabcbbc"s, "acbbabcacb"s));
   }
 
   LIBSEMIGROUPS_TEST_CASE("rev_rpo_cmp",
-                          "039",
+                          "041",
                           "with alphabet",
                           "[quick][order]") {
     using std::string_literals::operator""s;
@@ -671,7 +910,7 @@ namespace libsemigroups {
     REQUIRE(rev_rpo_cmp_no_checks(alphabet, "b"s, "a"s));
 
     auto u = "aa"s;
-    auto v = "ab"s;
+    auto v = "ba"s;
     REQUIRE(rev_rpo_cmp(u, v));
     REQUIRE(!rev_rpo_cmp(alphabet, u, v));
     REQUIRE(rev_rpo_cmp(alphabet, u.cbegin(), u.cend(), v.cbegin(), v.cend())
@@ -680,256 +919,14 @@ namespace libsemigroups {
                 alphabet, v.cbegin(), v.cend(), u.cbegin(), u.cend())
             == rev_rpo_cmp_no_checks(alphabet, v, u));
 
-    REQUIRE(!RevRPOCmp(alphabet)(u, v));
-    REQUIRE(RevRPOCmp(alphabet)(v, u));
     REQUIRE(!RevRPOCmp<std::string, false>(alphabet)(u, v));
     REQUIRE(RevRPOCmp<std::string, false>(alphabet)(v, u));
 
     alphabet.init("cd"s);
 
-    REQUIRE_EXCEPTION_MSG(std::ignore = rev_rpo_cmp(alphabet, "b"s, "aa"s),
+    REQUIRE_EXCEPTION_MSG(static_cast<void>(rev_rpo_cmp(alphabet, "b"s, "aa"s)),
                           "invalid letter 'b', valid letters are \"cd\"");
-    REQUIRE_EXCEPTION_MSG(std::ignore = RevRPOCmp(alphabet)("b"s, "aa"s),
-                          "invalid letter 'b', valid letters are \"cd\"");
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("rpo_cmp",
-                          "040",
-                          "random examples",
-                          "[quick][order]") {
-    using std::literals::string_literals::operator""s;
-    REQUIRE(!rpo_cmp(""s, ""s));
-    REQUIRE(!rpo_cmp("a"s, ""s));
-    REQUIRE(!rpo_cmp("b"s, ""s));
-    REQUIRE(!rpo_cmp("c"s, ""s));
-    REQUIRE(!rpo_cmp("c"s, "c"s));
-    REQUIRE(!rpo_cmp("ab"s, ""s));
-    REQUIRE(!rpo_cmp("caa"s, ""s));
-    REQUIRE(!rpo_cmp("cba"s, ""s));
-    REQUIRE(!rpo_cmp("cc"s, "ab"s));
-    REQUIRE(!rpo_cmp("cc"s, "ba"s));
-    REQUIRE(!rpo_cmp("cccb"s, ""s));
-    REQUIRE(!rpo_cmp("ca"s, "aab"s));
-    REQUIRE(!rpo_cmp("caa"s, "bb"s));
-    REQUIRE(!rpo_cmp("cca"s, "bb"s));
-    REQUIRE(!rpo_cmp("aaca"s, "c"s));
-    REQUIRE(!rpo_cmp("acbb"s, "b"s));
-    REQUIRE(!rpo_cmp("abcbb"s, ""s));
-    REQUIRE(!rpo_cmp("cbcca"s, ""s));
-    REQUIRE(!rpo_cmp("bcc"s, "aca"s));
-    REQUIRE(!rpo_cmp("cbc"s, "bca"s));
-    REQUIRE(!rpo_cmp("ccb"s, "aab"s));
-    REQUIRE(!rpo_cmp("aacaa"s, "b"s));
-    REQUIRE(!rpo_cmp("cabbb"s, "a"s));
-    REQUIRE(!rpo_cmp("cbbab"s, "a"s));
-    REQUIRE(!rpo_cmp("acabac"s, ""s));
-    REQUIRE(!rpo_cmp("bbcbac"s, ""s));
-    REQUIRE(!rpo_cmp("bcabcb"s, ""s));
-    REQUIRE(!rpo_cmp("cabcaa"s, ""s));
-    REQUIRE(!rpo_cmp("cbbbac"s, ""s));
-    REQUIRE(!rpo_cmp("bcab"s, "bbc"s));
-    REQUIRE(!rpo_cmp("aaccc"s, "ab"s));
-    REQUIRE(!rpo_cmp("aabcbbc"s, ""s));
-    REQUIRE(!rpo_cmp("caba"s, "aaac"s));
-    REQUIRE(!rpo_cmp("accac"s, "ccb"s));
-    REQUIRE(!rpo_cmp("ccaaab"s, "ac"s));
-    REQUIRE(!rpo_cmp("bcaabac"s, "c"s));
-    REQUIRE(!rpo_cmp("aabaacbb"s, ""s));
-    REQUIRE(!rpo_cmp("bcccbabb"s, ""s));
-    REQUIRE(!rpo_cmp("bbcc"s, "aaaab"s));
-    REQUIRE(!rpo_cmp("acccc"s, "bbca"s));
-    REQUIRE(!rpo_cmp("bcbcc"s, "caaa"s));
-    REQUIRE(!rpo_cmp("cccaab"s, "aac"s));
-    REQUIRE(!rpo_cmp("acabbba"s, "ac"s));
-    REQUIRE(!rpo_cmp("bcabbbc"s, "bc"s));
-    REQUIRE(!rpo_cmp("caaccbcb"s, "c"s));
-    REQUIRE(!rpo_cmp("cc"s, "bbacabbb"s));
-    REQUIRE(!rpo_cmp("acc"s, "aabcbba"s));
-    REQUIRE(!rpo_cmp("acaa"s, "aababc"s));
-    REQUIRE(!rpo_cmp("acaa"s, "abbabb"s));
-    REQUIRE(!rpo_cmp("cbcaacca"s, "ac"s));
-    REQUIRE(!rpo_cmp("caaccccaa"s, "a"s));
-    REQUIRE(!rpo_cmp("aabaabcabc"s, ""s));
-    REQUIRE(!rpo_cmp("abbbacacac"s, ""s));
-    REQUIRE(!rpo_cmp("cbacbbaaca"s, ""s));
-    REQUIRE(!rpo_cmp("bbbc"s, "abbaaba"s));
-    REQUIRE(!rpo_cmp("bccbaa"s, "cabbc"s));
-    REQUIRE(!rpo_cmp("abaacaaabb"s, "b"s));
-    REQUIRE(!rpo_cmp("cbaacbbbbc"s, "b"s));
-    REQUIRE(!rpo_cmp("ccaabc"s, "abcaaa"s));
-    REQUIRE(!rpo_cmp("ccacca"s, "baaccc"s));
-    REQUIRE(!rpo_cmp("aacbccc"s, "bbacc"s));
-    REQUIRE(!rpo_cmp("bcacbbc"s, "bacab"s));
-    REQUIRE(!rpo_cmp("cacbbac"s, "bcbac"s));
-    REQUIRE(!rpo_cmp("cccacbb"s, "cccac"s));
-    REQUIRE(!rpo_cmp("cbabaabb"s, "bbbb"s));
-    REQUIRE(!rpo_cmp("cbacbcba"s, "baab"s));
-    REQUIRE(!rpo_cmp("abcacacbb"s, "bab"s));
-    REQUIRE(!rpo_cmp("abacbbcccc"s, "ac"s));
-    REQUIRE(!rpo_cmp("bcacbbbccb"s, "ca"s));
-    REQUIRE(!rpo_cmp("caccbbacbc"s, "ab"s));
-    REQUIRE(!rpo_cmp("accaa"s, "aabaacac"s));
-    REQUIRE(!rpo_cmp("acacbaa"s, "bcbabc"s));
-    REQUIRE(!rpo_cmp("acbcbaca"s, "aabcb"s));
-    REQUIRE(!rpo_cmp("abcbaabaa"s, "abcb"s));
-    REQUIRE(!rpo_cmp("bbcacabca"s, "caaa"s));
-    REQUIRE(!rpo_cmp("bcaababaa"s, "babb"s));
-    REQUIRE(!rpo_cmp("cbbcbcbacc"s, "bcb"s));
-    REQUIRE(!rpo_cmp("cccbbccccb"s, "aaa"s));
-    REQUIRE(!rpo_cmp("acccaa"s, "cacbbaca"s));
-    REQUIRE(!rpo_cmp("baccbcba"s, "ccabab"s));
-    REQUIRE(!rpo_cmp("caaccbab"s, "babbcb"s));
-    REQUIRE(!rpo_cmp("abcacaaab"s, "cabac"s));
-    REQUIRE(!rpo_cmp("baabccccb"s, "caacb"s));
-    REQUIRE(!rpo_cmp("aaabccaabc"s, "bbcc"s));
-    REQUIRE(!rpo_cmp("acccba"s, "bbcabccaa"s));
-    REQUIRE(!rpo_cmp("bcacac"s, "bcbaaacba"s));
-    REQUIRE(!rpo_cmp("accbcacc"s, "abbbcba"s));
-    REQUIRE(!rpo_cmp("ccaccacc"s, "bcbabcb"s));
-    REQUIRE(!rpo_cmp("ccacac"s, "acbaacbaba"s));
-    REQUIRE(!rpo_cmp("aaaccbcb"s, "acabacca"s));
-    REQUIRE(!rpo_cmp("cbbbbcab"s, "babbabca"s));
-    REQUIRE(!rpo_cmp("ccabaaacab"s, "aabaaa"s));
-    REQUIRE(!rpo_cmp("cbccbcb"s, "aaccbbaaab"s));
-    REQUIRE(!rpo_cmp("bccaccbca"s, "cacccbba"s));
-    REQUIRE(!rpo_cmp("aabcacbacc"s, "bccbbca"s));
-    REQUIRE(!rpo_cmp("cbcacacbab"s, "caccbaa"s));
-    REQUIRE(!rpo_cmp("acacbbacab"s, "abbbccba"s));
-    REQUIRE(!rpo_cmp("bcbabcacac"s, "ccababcc"s));
-    REQUIRE(!rpo_cmp("abacccaaab"s, "aaaccacab"s));
-    REQUIRE(!rpo_cmp("bccccbbbbc"s, "bbabccbcbb"s));
-
-    REQUIRE(rpo_cmp(""s, "a"s));
-    REQUIRE(rpo_cmp(""s, "b"s));
-    REQUIRE(rpo_cmp(""s, "c"s));
-    REQUIRE(rpo_cmp(""s, "ba"s));
-    REQUIRE(rpo_cmp(""s, "bca"s));
-    REQUIRE(rpo_cmp("a"s, "bc"s));
-    REQUIRE(rpo_cmp("a"s, "cc"s));
-    REQUIRE(rpo_cmp("bb"s, "bc"s));
-    REQUIRE(rpo_cmp(""s, "bbbcc"s));
-    REQUIRE(rpo_cmp("a"s, "aabc"s));
-    REQUIRE(rpo_cmp("c"s, "ccaa"s));
-    REQUIRE(rpo_cmp("ab"s, "cca"s));
-    REQUIRE(rpo_cmp("baa"s, "bc"s));
-    REQUIRE(rpo_cmp("abab"s, "c"s));
-    REQUIRE(rpo_cmp("baaa"s, "c"s));
-    REQUIRE(rpo_cmp(""s, "accabc"s));
-    REQUIRE(rpo_cmp(""s, "bccbcc"s));
-    REQUIRE(rpo_cmp(""s, "cbabcc"s));
-    REQUIRE(rpo_cmp("a"s, "acbba"s));
-    REQUIRE(rpo_cmp("c"s, "bbbac"s));
-    REQUIRE(rpo_cmp("c"s, "ccbbc"s));
-    REQUIRE(rpo_cmp("ab"s, "acaa"s));
-    REQUIRE(rpo_cmp("ab"s, "baab"s));
-    REQUIRE(rpo_cmp("bb"s, "bcba"s));
-    REQUIRE(rpo_cmp("aac"s, "acb"s));
-    REQUIRE(rpo_cmp("abb"s, "bba"s));
-    REQUIRE(rpo_cmp(""s, "cabaacc"s));
-    REQUIRE(rpo_cmp("b"s, "ccaacb"s));
-    REQUIRE(rpo_cmp("bb"s, "acaac"s));
-    REQUIRE(rpo_cmp("bcb"s, "ccca"s));
-    REQUIRE(rpo_cmp(""s, "aacaacba"s));
-    REQUIRE(rpo_cmp(""s, "bacbaaba"s));
-    REQUIRE(rpo_cmp(""s, "bbbaacca"s));
-    REQUIRE(rpo_cmp(""s, "cbacbbab"s));
-    REQUIRE(rpo_cmp(""s, "cbccccba"s));
-    REQUIRE(rpo_cmp("a"s, "bbababb"s));
-    REQUIRE(rpo_cmp("ab"s, "ccaabc"s));
-    REQUIRE(rpo_cmp("bb"s, "bacaaa"s));
-    REQUIRE(rpo_cmp("bc"s, "cbcaac"s));
-    REQUIRE(rpo_cmp("bbca"s, "acbb"s));
-    REQUIRE(rpo_cmp(""s, "abcacbbcb"s));
-    REQUIRE(rpo_cmp(""s, "cacabaaca"s));
-    REQUIRE(rpo_cmp("b"s, "bcabbcaa"s));
-    REQUIRE(rpo_cmp("b"s, "cbcbaacb"s));
-    REQUIRE(rpo_cmp("abc"s, "cbabac"s));
-    REQUIRE(rpo_cmp("cac"s, "cabcaa"s));
-    REQUIRE(rpo_cmp("cbc"s, "cabcba"s));
-    REQUIRE(rpo_cmp("aacb"s, "caaca"s));
-    REQUIRE(rpo_cmp("baab"s, "aaacc"s));
-    REQUIRE(rpo_cmp("caab"s, "bccaa"s));
-    REQUIRE(rpo_cmp("abbbaa"s, "cca"s));
-    REQUIRE(rpo_cmp(""s, "babbcbabaa"s));
-    REQUIRE(rpo_cmp(""s, "cabacacabb"s));
-    REQUIRE(rpo_cmp("c"s, "babaabaca"s));
-    REQUIRE(rpo_cmp("bc"s, "acbbccaa"s));
-    REQUIRE(rpo_cmp("aba"s, "aacaacc"s));
-    REQUIRE(rpo_cmp("abc"s, "bbabbcb"s));
-    REQUIRE(rpo_cmp("cbb"s, "ccbaabc"s));
-    REQUIRE(rpo_cmp("bbca"s, "babacc"s));
-    REQUIRE(rpo_cmp("bbabc"s, "bcabb"s));
-    REQUIRE(rpo_cmp("bcabba"s, "cbbb"s));
-    REQUIRE(rpo_cmp("cabaac"s, "accb"s));
-    REQUIRE(rpo_cmp("c"s, "cbccbcabba"s));
-    REQUIRE(rpo_cmp("ab"s, "cbacabbcc"s));
-    REQUIRE(rpo_cmp("aac"s, "aaccbbac"s));
-    REQUIRE(rpo_cmp("aca"s, "aabccccc"s));
-    REQUIRE(rpo_cmp("babaa"s, "ccacbb"s));
-    REQUIRE(rpo_cmp("bacbaca"s, "ccac"s));
-    REQUIRE(rpo_cmp("aa"s, "cbbbbbcbca"s));
-    REQUIRE(rpo_cmp("bc"s, "bccbcaaaca"s));
-    REQUIRE(rpo_cmp("cbcbb"s, "cbbcacc"s));
-    REQUIRE(rpo_cmp("babbbabc"s, "ccaa"s));
-    REQUIRE(rpo_cmp("aaa"s, "cccbccaabc"s));
-    REQUIRE(rpo_cmp("cbcc"s, "cccbaacca"s));
-    REQUIRE(rpo_cmp("bbcbaa"s, "bcbcbcc"s));
-    REQUIRE(rpo_cmp("cbcbbb"s, "bccacca"s));
-    REQUIRE(rpo_cmp("bcbc"s, "aabbcccccb"s));
-    REQUIRE(rpo_cmp("caaa"s, "acbabcbbab"s));
-    REQUIRE(rpo_cmp("ccac"s, "abccaabcaa"s));
-    REQUIRE(rpo_cmp("aabbb"s, "baccbcccc"s));
-    REQUIRE(rpo_cmp("abbcab"s, "cabccaca"s));
-    REQUIRE(rpo_cmp("aabbbbacb"s, "aaccc"s));
-    REQUIRE(rpo_cmp("bbbcabbbc"s, "ccbab"s));
-    REQUIRE(rpo_cmp("cbabbabaac"s, "bcca"s));
-    REQUIRE(rpo_cmp("aacca"s, "cacccccbbb"s));
-    REQUIRE(rpo_cmp("baaca"s, "abaaaabcca"s));
-    REQUIRE(rpo_cmp("bbaab"s, "bbccaaacba"s));
-    REQUIRE(rpo_cmp("cabbcb"s, "aaacbcbaa"s));
-    REQUIRE(rpo_cmp("cabaccc"s, "acbcbcbc"s));
-    REQUIRE(rpo_cmp("acaabc"s, "bcaccccbbc"s));
-    REQUIRE(rpo_cmp("acccca"s, "cbacacacca"s));
-    REQUIRE(rpo_cmp("aaacabcc"s, "cbcbbbbc"s));
-    REQUIRE(rpo_cmp("aacacacc"s, "baccacbc"s));
-    REQUIRE(rpo_cmp("ccbaabba"s, "ccbabcca"s));
-    REQUIRE(rpo_cmp("cabacbcbb"s, "bcbcccc"s));
-    REQUIRE(rpo_cmp("acbacacb"s, "cbaacbccb"s));
-    REQUIRE(rpo_cmp("bcbbbbbb"s, "bacababcb"s));
-    REQUIRE(rpo_cmp("ccaababc"s, "aacbccbab"s));
-    REQUIRE(rpo_cmp("aaaacbacba"s, "ccbbacb"s));
-    REQUIRE(rpo_cmp("bcbabcbbc"s, "acbbabcacb"s));
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "041", "with alphabet", "[quick][order]") {
-    using std::string_literals::operator""s;
-
-    Alphabet alphabet("ba"s);
-
-    REQUIRE(rpo_cmp("a"s, "b"s));
-    REQUIRE(!rpo_cmp(alphabet, "a"s, "b"s));
-    REQUIRE(rpo_cmp(alphabet, "b"s, "a"s));
-    REQUIRE(!rpo_cmp_no_checks(alphabet, "a"s, "b"s));
-    REQUIRE(rpo_cmp_no_checks(alphabet, "b"s, "a"s));
-
-    auto u = "aa"s;
-    auto v = "ba"s;
-    REQUIRE(rpo_cmp(u, v));
-    REQUIRE(!rpo_cmp(alphabet, u, v));
-    REQUIRE(rpo_cmp(alphabet, u.cbegin(), u.cend(), v.cbegin(), v.cend())
-            == rpo_cmp(alphabet, u, v));
-    REQUIRE(
-        rpo_cmp_no_checks(alphabet, v.cbegin(), v.cend(), u.cbegin(), u.cend())
-        == rpo_cmp_no_checks(alphabet, v, u));
-
-    REQUIRE(!RPOCmp<std::string, false>(alphabet)(u, v));
-    REQUIRE(RPOCmp<std::string, false>(alphabet)(v, u));
-
-    alphabet.init("cd"s);
-
-    REQUIRE_EXCEPTION_MSG(static_cast<void>(rpo_cmp(alphabet, "b"s, "aa"s)),
-                          "invalid letter 'b', valid letters are \"cd\"");
-    REQUIRE_EXCEPTION_MSG(static_cast<void>(RPOCmp(alphabet)("b"s, "aa"s)),
+    REQUIRE_EXCEPTION_MSG(static_cast<void>(RevRPOCmp(alphabet)("b"s, "aa"s)),
                           "invalid letter 'b', valid letters are \"cd\"");
   }
 
@@ -1076,69 +1073,11 @@ namespace libsemigroups {
   }
 
   // =========================================================================
-  // rpo_cmp with alphabet
-  // =========================================================================
-
-  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "044", "with alphabet", "[quick][order]") {
-    using std::string_literals::operator""s;
-
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
-
-    auto strings = (sr | rx::to_vector());
-
-    std::sort(
-        strings.begin(), strings.end(), [](auto const& lhop, auto const& rhop) {
-          return rpo_cmp(lhop, rhop);
-        });
-
-    REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ab"s,   "aab"s,
-                                    "aaab"s, "ba"s,   "aba"s,  "aaba"s, "baa"s,
-                                    "abaa"s, "baaa"s, "bb"s,   "abb"s,  "aabb"s,
-                                    "bab"s,  "abab"s, "baab"s, "bba"s,  "abba"s,
-                                    "baba"s, "bbaa"s, "bbb"s,  "abbb"s, "babb"s,
-                                    "bbab"s, "bbba"s, "bbbb"s}));
-
-    Alphabet alphabet("ba"s);
-
-    std::sort(strings.begin(),
-              strings.end(),
-              [&alphabet](auto const& lhop, auto const& rhop) {
-                return rpo_cmp(alphabet, lhop, rhop);
-              });
-
-    REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ba"s,   "bba"s,
-                                    "bbba"s, "ab"s,   "bab"s,  "bbab"s, "abb"s,
-                                    "babb"s, "abbb"s, "aa"s,   "baa"s,  "bbaa"s,
-                                    "aba"s,  "baba"s, "abba"s, "aab"s,  "baab"s,
-                                    "abab"s, "aabb"s, "aaa"s,  "baaa"s, "abaa"s,
-                                    "aaba"s, "aaab"s, "aaaa"s}));
-
-    std::sort(strings.begin(), strings.end(), RPOCmp());
-
-    REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ab"s,   "aab"s,
-                                    "aaab"s, "ba"s,   "aba"s,  "aaba"s, "baa"s,
-                                    "abaa"s, "baaa"s, "bb"s,   "abb"s,  "aabb"s,
-                                    "bab"s,  "abab"s, "baab"s, "bba"s,  "abba"s,
-                                    "baba"s, "bbaa"s, "bbb"s,  "abbb"s, "babb"s,
-                                    "bbab"s, "bbba"s, "bbbb"s}));
-
-    std::sort(strings.begin(), strings.end(), RPOCmp(alphabet));
-
-    REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ba"s,   "bba"s,
-                                    "bbba"s, "ab"s,   "bab"s,  "bbab"s, "abb"s,
-                                    "babb"s, "abbb"s, "aa"s,   "baa"s,  "bbaa"s,
-                                    "aba"s,  "baba"s, "abba"s, "aab"s,  "baab"s,
-                                    "abab"s, "aabb"s, "aaa"s,  "baaa"s, "abaa"s,
-                                    "aaba"s, "aaab"s, "aaaa"s}));
-  }
-
-  // =========================================================================
   // rev_rpo_cmp with alphabet
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("rev_rpo_cmp",
-                          "045",
+                          "044",
                           "with alphabet",
                           "[quick][order]") {
     using std::string_literals::operator""s;
@@ -1153,6 +1092,64 @@ namespace libsemigroups {
           return rev_rpo_cmp(lhop, rhop);
         });
 
+    REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ab"s,   "aab"s,
+                                    "aaab"s, "ba"s,   "aba"s,  "aaba"s, "baa"s,
+                                    "abaa"s, "baaa"s, "bb"s,   "abb"s,  "aabb"s,
+                                    "bab"s,  "abab"s, "baab"s, "bba"s,  "abba"s,
+                                    "baba"s, "bbaa"s, "bbb"s,  "abbb"s, "babb"s,
+                                    "bbab"s, "bbba"s, "bbbb"s}));
+
+    Alphabet alphabet("ba"s);
+
+    std::sort(strings.begin(),
+              strings.end(),
+              [&alphabet](auto const& lhop, auto const& rhop) {
+                return rev_rpo_cmp(alphabet, lhop, rhop);
+              });
+
+    REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ba"s,   "bba"s,
+                                    "bbba"s, "ab"s,   "bab"s,  "bbab"s, "abb"s,
+                                    "babb"s, "abbb"s, "aa"s,   "baa"s,  "bbaa"s,
+                                    "aba"s,  "baba"s, "abba"s, "aab"s,  "baab"s,
+                                    "abab"s, "aabb"s, "aaa"s,  "baaa"s, "abaa"s,
+                                    "aaba"s, "aaab"s, "aaaa"s}));
+
+    std::sort(strings.begin(), strings.end(), RevRPOCmp());
+
+    REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ab"s,   "aab"s,
+                                    "aaab"s, "ba"s,   "aba"s,  "aaba"s, "baa"s,
+                                    "abaa"s, "baaa"s, "bb"s,   "abb"s,  "aabb"s,
+                                    "bab"s,  "abab"s, "baab"s, "bba"s,  "abba"s,
+                                    "baba"s, "bbaa"s, "bbb"s,  "abbb"s, "babb"s,
+                                    "bbab"s, "bbba"s, "bbbb"s}));
+
+    std::sort(strings.begin(), strings.end(), RevRPOCmp(alphabet));
+
+    REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ba"s,   "bba"s,
+                                    "bbba"s, "ab"s,   "bab"s,  "bbab"s, "abb"s,
+                                    "babb"s, "abbb"s, "aa"s,   "baa"s,  "bbaa"s,
+                                    "aba"s,  "baba"s, "abba"s, "aab"s,  "baab"s,
+                                    "abab"s, "aabb"s, "aaa"s,  "baaa"s, "abaa"s,
+                                    "aaba"s, "aaab"s, "aaaa"s}));
+  }
+
+  // =========================================================================
+  // rpo_cmp with alphabet
+  // =========================================================================
+
+  LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "045", "with alphabet", "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    StringRange sr;
+    sr.alphabet("ab").min(2).max(5);
+
+    auto strings = (sr | rx::to_vector());
+
+    std::sort(
+        strings.begin(), strings.end(), [](auto const& lhop, auto const& rhop) {
+          return rpo_cmp(lhop, rhop);
+        });
+
     REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ba"s,   "baa"s,
                                     "baaa"s, "ab"s,   "aba"s,  "abaa"s, "aab"s,
                                     "aaba"s, "aaab"s, "bb"s,   "bba"s,  "bbaa"s,
@@ -1165,7 +1162,7 @@ namespace libsemigroups {
     std::sort(strings.begin(),
               strings.end(),
               [&alphabet](auto const& lhop, auto const& rhop) {
-                return rev_rpo_cmp(alphabet, lhop, rhop);
+                return rpo_cmp(alphabet, lhop, rhop);
               });
 
     REQUIRE(strings == std::vector({"bb"s,   "bbb"s,  "bbbb"s, "ab"s,   "abb"s,
@@ -1175,7 +1172,7 @@ namespace libsemigroups {
                                     "baba"s, "bbaa"s, "aaa"s,  "aaab"s, "aaba"s,
                                     "abaa"s, "baaa"s, "aaaa"s}));
 
-    std::sort(strings.begin(), strings.end(), RevRPOCmp());
+    std::sort(strings.begin(), strings.end(), RPOCmp());
 
     REQUIRE(strings == std::vector({"aa"s,   "aaa"s,  "aaaa"s, "ba"s,   "baa"s,
                                     "baaa"s, "ab"s,   "aba"s,  "abaa"s, "aab"s,
@@ -1186,7 +1183,7 @@ namespace libsemigroups {
 
     alphabet.init("cd"s);
     REQUIRE_EXCEPTION_MSG(
-        std::sort(strings.begin(), strings.end(), RevRPOCmp(alphabet)),
+        std::sort(strings.begin(), strings.end(), RPOCmp(alphabet)),
         "invalid letter 'a', valid letters are \"cd\"");
   }
 
@@ -1335,12 +1332,16 @@ namespace libsemigroups {
                                    "[quick][order]",
                                    LexCmp<>,
                                    (LexCmp<Default, false>),
+                                   RevLexCmp<>,
+                                   (RevLexCmp<Default, false>),
                                    LenLexCmp<>,
                                    (LenLexCmp<Default, false>),
-                                   RPOCmp<>,
-                                   (RPOCmp<Default, false>),
+                                   RevLenLexCmp<>,
+                                   (RevLenLexCmp<Default, false>),
                                    RevRPOCmp<>,
-                                   (RevRPOCmp<Default, false>) ) {
+                                   (RevRPOCmp<Default, false>),
+                                   RPOCmp<>,
+                                   (RPOCmp<Default, false>) ) {
     using std::string_literals::operator""s;
 
     auto rg = ReportGuard(false);
@@ -1372,9 +1373,11 @@ namespace libsemigroups {
                                    "alphabet comparator API",
                                    "[quick][order]",
                                    LexCmp<std::string>,
+                                   RevLexCmp<std::string>,
                                    LenLexCmp<std::string>,
-                                   RPOCmp<std::string>,
-                                   RevRPOCmp<std::string>) {
+                                   RevLenLexCmp<std::string>,
+                                   RevRPOCmp<std::string>,
+                                   RPOCmp<std::string>) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1419,9 +1422,11 @@ namespace libsemigroups {
                                    "alpha no-check API",
                                    "[quick][order]",
                                    (LexCmp<std::string, false>),
+                                   (RevLexCmp<std::string, false>),
                                    (LenLexCmp<std::string, false>),
-                                   (RPOCmp<std::string, false>),
-                                   (RevRPOCmp<std::string, false>) ) {
+                                   (RevLenLexCmp<std::string, false>),
+                                   (RevRPOCmp<std::string, false>),
+                                   (RPOCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1467,8 +1472,14 @@ namespace libsemigroups {
                                    "[quick][order]",
                                    WtLenLexCmp<std::string>,
                                    (WtLenLexCmp<std::string, false>),
+                                   RevWtLenLexCmp<std::string>,
+                                   (RevWtLenLexCmp<std::string, false>),
                                    WtLexCmp<std::string>,
-                                   (WtLexCmp<std::string, false>) ) {
+                                   (WtLexCmp<std::string, false>),
+                                   RevWtLexCmp<std::string>,
+                                   (RevWtLexCmp<std::string, false>),
+                                   RevLenWtLexCmp<std::string>,
+                                   (RevLenWtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1503,8 +1514,14 @@ namespace libsemigroups {
                                    "[quick][order]",
                                    WtLenLexCmp<>,
                                    (WtLenLexCmp<Default, false>),
+                                   RevWtLenLexCmp<>,
+                                   (RevWtLenLexCmp<Default, false>),
                                    WtLexCmp<>,
-                                   (WtLexCmp<Default, false>) ) {
+                                   (WtLexCmp<Default, false>),
+                                   RevWtLexCmp<>,
+                                   (RevWtLexCmp<Default, false>),
+                                   RevLenWtLexCmp<>,
+                                   (RevLenWtLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     std::vector<size_t> ba_weights = {10, 1};
@@ -1538,7 +1555,9 @@ namespace libsemigroups {
                                    "wll alpha ctors",  // codespell:ignore
                                    "[quick][order]",
                                    WtLenLexCmp<std::string>,
-                                   (WtLenLexCmp<std::string, false>) ) {
+                                   (WtLenLexCmp<std::string, false>),
+                                   RevWtLenLexCmp<std::string>,
+                                   (RevWtLenLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1589,7 +1608,9 @@ namespace libsemigroups {
                                    "wll ctors",  // codespell:ignore
                                    "[quick][order]",
                                    WtLenLexCmp<>,
-                                   (WtLenLexCmp<Default, false>) ) {
+                                   (WtLenLexCmp<Default, false>),
+                                   RevWtLenLexCmp<>,
+                                   (RevWtLenLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     std::vector<size_t> ba_weights = {10, 1};
@@ -1629,7 +1650,11 @@ namespace libsemigroups {
                                    "wl alpha ctors",
                                    "[quick][order]",
                                    WtLexCmp<std::string>,
-                                   (WtLexCmp<std::string, false>) ) {
+                                   (WtLexCmp<std::string, false>),
+                                   RevWtLexCmp<std::string>,
+                                   (RevWtLexCmp<std::string, false>),
+                                   RevLenWtLexCmp<std::string>,
+                                   (RevLenWtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1680,7 +1705,11 @@ namespace libsemigroups {
                                    "wl ctors",
                                    "[quick][order]",
                                    WtLexCmp<>,
-                                   (WtLexCmp<Default, false>) ) {
+                                   (WtLexCmp<Default, false>),
+                                   RevWtLexCmp<>,
+                                   (RevWtLexCmp<Default, false>),
+                                   RevLenWtLexCmp<>,
+                                   (RevLenWtLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     std::vector<size_t> ba_weights = {10, 1};
@@ -1715,7 +1744,7 @@ namespace libsemigroups {
     REQUIRE(move_assigned.weights() == ba_weights);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+  LIBSEMIGROUPS_TEST_CASE("wr_cmp",
                           "058",
                           "object and iterator overloads",
                           "[quick][order]") {
@@ -1724,13 +1753,13 @@ namespace libsemigroups {
     word_type           x      = {0, 2};
     word_type           y      = {1, 2};
 
-    REQUIRE(wreath_cmp(levels, x, y));
-    REQUIRE(!wreath_cmp(levels, y, x));
-    REQUIRE(wreath_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend()));
-    REQUIRE(wreath_cmp(levels, x, y) == wreath_cmp_no_checks(levels, x, y));
+    REQUIRE(wr_cmp(levels, x, y));
+    REQUIRE(!wr_cmp(levels, y, x));
+    REQUIRE(wr_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend()));
+    REQUIRE(wr_cmp(levels, x, y) == wr_cmp_no_checks(levels, x, y));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
+  LIBSEMIGROUPS_TEST_CASE("wr_cmp",
                           "059",
                           "invalid letters",
                           "[quick][order]") {
@@ -1740,19 +1769,16 @@ namespace libsemigroups {
     word_type           invalid = {0, 2};
 
     REQUIRE_EXCEPTION_MSG(
-        std::ignore = wreath_cmp(levels, invalid, valid),
+        std::ignore = wr_cmp(levels, invalid, valid),
         "letter value not compatible with levels, expected value in [0, 2), "
         "found 2 in position 1");
     REQUIRE_EXCEPTION_MSG(
-        std::ignore = wreath_cmp(levels, valid, invalid),
+        std::ignore = wr_cmp(levels, valid, invalid),
         "letter value not compatible with levels, expected value in [0, 2), "
         "found 2 in position 1");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("wreath_cmp",
-                          "060",
-                          "with alphabet",
-                          "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("wr_cmp", "060", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
     auto                rg = ReportGuard(false);
@@ -1761,29 +1787,31 @@ namespace libsemigroups {
     auto                b      = "b"s;
     auto                a      = "a"s;
 
-    REQUIRE(wreath_cmp_no_checks(alphabet, levels, b, a));
-    REQUIRE(wreath_cmp_no_checks(
+    REQUIRE(wr_cmp_no_checks(alphabet, levels, b, a));
+    REQUIRE(wr_cmp_no_checks(
         alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
-    REQUIRE(wreath_cmp(alphabet, levels, b, a));
-    REQUIRE(wreath_cmp(
-        alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
-    REQUIRE(!wreath_cmp(alphabet, levels, a, b));
+    REQUIRE(wr_cmp(alphabet, levels, b, a));
+    REQUIRE(
+        wr_cmp(alphabet, levels, b.cbegin(), b.cend(), a.cbegin(), a.cend()));
+    REQUIRE(!wr_cmp(alphabet, levels, a, b));
 
     std::vector<size_t> short_levels = {0};
     REQUIRE_EXCEPTION_MSG(
-        std::ignore = wreath_cmp(alphabet, short_levels, a, b),
+        std::ignore = wr_cmp(alphabet, short_levels, a, b),
         "letter value not compatible with levels, expected value in [0, 1), "
         "found 1 in position 0");
-    REQUIRE_THROWS_AS(wreath_cmp(alphabet, levels, "c"s, b),
+    REQUIRE_THROWS_AS(wr_cmp(alphabet, levels, "c"s, b),
                       LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
                                    "061",
-                                   "wreath alphabet ctors",
+                                   "wr alphabet ctors",
                                    "[quick][order]",
-                                   WreathCmp<std::string>,
-                                   (WreathCmp<std::string, false>) ) {
+                                   WrCmp<std::string>,
+                                   (WrCmp<std::string, false>),
+                                   RevWrCmp<std::string>,
+                                   (RevWrCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
     auto                  rg = ReportGuard(false);
@@ -1830,10 +1858,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order",
                                    "062",
-                                   "wreath default ctors",
+                                   "wr default ctors",
                                    "[quick][order]",
-                                   WreathCmp<>,
-                                   (WreathCmp<Default, false>) ) {
+                                   WrCmp<>,
+                                   (WrCmp<Default, false>),
+                                   RevWrCmp<>,
+                                   (RevWrCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
 
     TestType default_constructed;
@@ -1874,7 +1904,7 @@ namespace libsemigroups {
     REQUIRE(copy_assigned.levels().empty());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
+  LIBSEMIGROUPS_TEST_CASE("WrCmp",
                           "063",
                           "deduction guides and checks",
                           "[quick][order]") {
@@ -1884,17 +1914,17 @@ namespace libsemigroups {
     Alphabet<std::string> alphabet("ba"s);
     std::vector<size_t>   levels = {0, 0};
 
-    static_assert(std::is_same_v<decltype(WreathCmp(levels)), WreathCmp<>>);
-    static_assert(std::is_same_v<decltype(WreathCmp(alphabet, levels)),
-                                 WreathCmp<std::string>>);
-    static_assert(order::is_well_founded_v<WreathCmp<>>);
-    static_assert(order::is_well_founded_v<WreathCmp<Default, false>>);
+    static_assert(std::is_same_v<decltype(WrCmp(levels)), WrCmp<>>);
+    static_assert(
+        std::is_same_v<decltype(WrCmp(alphabet, levels)), WrCmp<std::string>>);
+    static_assert(order::is_well_founded_v<WrCmp<>>);
+    static_assert(order::is_well_founded_v<WrCmp<Default, false>>);
 
-    WreathCmp checked(alphabet, levels);
+    WrCmp checked(alphabet, levels);
     REQUIRE_THROWS_AS(checked("c"s, "b"s), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
+  LIBSEMIGROUPS_TEST_CASE("WrCmp",
                           "064",
                           "explicit order tests",
                           "[quick][order]") {
@@ -1902,7 +1932,7 @@ namespace libsemigroups {
 
     Alphabet            alphabet("bac"s);
     std::vector<size_t> levels = {1, 1, 0};
-    WreathCmp           cmp{alphabet, levels};
+    WrCmp               cmp{alphabet, levels};
 
     REQUIRE(cmp("cbcc"s, "ccbc"s));
     REQUIRE(cmp("ac"s, "ca"s));
@@ -1916,12 +1946,12 @@ namespace libsemigroups {
     REQUIRE(cmp("a"s, "ababac"s));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WreathCmp", "065", "total order", "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("WrCmp", "065", "total order", "[quick][order]") {
     using std::string_literals::operator""s;
 
     Alphabet            alphabet("bac"s);
     std::vector<size_t> levels = {1, 1, 0};
-    WreathCmp           cmp{alphabet, levels};
+    WrCmp               cmp{alphabet, levels};
 
     std::vector<std::string> strings{
         "cbcb"s, "abac"s, "cb"s,   "baac"s, "cccb"s, "cbb"s,  "abb"s,  "cbca"s,
@@ -1968,10 +1998,7 @@ namespace libsemigroups {
                  "aaab"s, "aaaa"s}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WreathCmp",
-                          "066",
-                          "generalisation",
-                          "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("WrCmp", "066", "generalisation", "[quick][order]") {
     using std::string_literals::operator""s;
 
     std::vector<std::string> strings{
@@ -1994,7 +2021,7 @@ namespace libsemigroups {
 
     Alphabet            alphabet("bac"s);
     std::vector<size_t> levels = {0, 0, 0};
-    WreathCmp           cmp{alphabet, levels};
+    WrCmp               cmp{alphabet, levels};
 
     std::sort(
         strings.begin(),
@@ -2011,8 +2038,354 @@ namespace libsemigroups {
         strings.end(),
         [&cmp](auto const& lhop, auto const& rhop) { return cmp(lhop, rhop); });
 
+    REQUIRE(std::is_sorted(strings.begin(), strings.end(), RPOCmp(alphabet)));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevLenLexCmp",
+                          "067",
+                          "functions and functors",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto ab = "ab"s;
+    auto ba = "ba"s;
+
+    REQUIRE(rev_lenlex_cmp(ba, ab));
+    REQUIRE(rev_lenlex_cmp(ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(RevLenLexCmp()(ba, ab));
+    REQUIRE(RevLenLexCmp()(ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(rev_lenlex_cmp(alphabet, ab, ba));
+    REQUIRE(rev_lenlex_cmp(
+        alphabet, ab.cbegin(), ab.cend(), ba.cbegin(), ba.cend()));
+    REQUIRE(rev_lenlex_cmp_no_checks(alphabet, ab, ba));
+    REQUIRE(rev_lenlex_cmp_no_checks(
+        alphabet, ab.cbegin(), ab.cend(), ba.cbegin(), ba.cend()));
+    REQUIRE(RevLenLexCmp(alphabet)(ab, ba));
+    REQUIRE(RevLenLexCmp<std::string, false>(alphabet)(ab, ba));
+
+    REQUIRE(rev_lenlex_cmp("a"s, "aa"s));
+    REQUIRE(!rev_lenlex_cmp("aa"s, "a"s));
+
+    alphabet.init("cd"s);
+    REQUIRE_EXCEPTION_MSG(std::ignore = rev_lenlex_cmp(alphabet, ab, ba),
+                          "invalid letter 'b', valid letters are \"cd\"");
+    REQUIRE_EXCEPTION_MSG(std::ignore = RevLenLexCmp(alphabet)(ab, ba),
+                          "invalid letter 'b', valid letters are \"cd\"");
+
+    static_assert(order::is_length_non_increasing_v<RevLenLexCmp<>>);
+    static_assert(order::is_well_founded_v<RevLenLexCmp<>>);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevLexCmp",
+                          "068",
+                          "functions and functors",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto ab = "ab"s;
+    auto ba = "ba"s;
+
+    REQUIRE(rev_lex_cmp(ba, ab));
+    REQUIRE(rev_lex_cmp(ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(RevLexCmp()(ba, ab));
+    REQUIRE(RevLexCmp()(ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(rev_lex_cmp(alphabet, ab, ba));
     REQUIRE(
-        std::is_sorted(strings.begin(), strings.end(), RevRPOCmp(alphabet)));
+        rev_lex_cmp(alphabet, ab.cbegin(), ab.cend(), ba.cbegin(), ba.cend()));
+    REQUIRE(rev_lex_cmp_no_checks(alphabet, ab, ba));
+    REQUIRE(rev_lex_cmp_no_checks(
+        alphabet, ab.cbegin(), ab.cend(), ba.cbegin(), ba.cend()));
+    REQUIRE(RevLexCmp(alphabet)(ab, ba));
+    REQUIRE(RevLexCmp<std::string, false>(alphabet)(ab, ba));
+
+    REQUIRE(rev_lex_cmp("a"s, "aa"s));
+    REQUIRE(!rev_lex_cmp("aa"s, "a"s));
+    REQUIRE(rev_lex_cmp("aa"s, "b"s));
+    REQUIRE(!rev_lex_cmp("b"s, "aa"s));
+
+    alphabet.init("cd"s);
+    REQUIRE_EXCEPTION_MSG(std::ignore = rev_lex_cmp(alphabet, ab, ba),
+                          "invalid letter 'b', valid letters are \"cd\"");
+    REQUIRE_EXCEPTION_MSG(std::ignore = RevLexCmp(alphabet)(ab, ba),
+                          "invalid letter 'b', valid letters are \"cd\"");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevWtLenLexCmp",
+                          "069",
+                          "functions and functors",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    std::vector<size_t> equal   = {1, 1};
+    word_type           ab      = {0, 1};
+    word_type           ba      = {1, 0};
+    word_type           one     = {1};
+    word_type           zeros   = {0, 0};
+    word_type           invalid = {2};
+
+    REQUIRE(rev_wt_lenlex_cmp_no_checks(equal, ba, ab));
+    REQUIRE(rev_wt_lenlex_cmp_no_checks(
+        equal, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(rev_wt_lenlex_cmp(equal, ba, ab));
+    REQUIRE(rev_wt_lenlex_cmp(
+        equal, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(RevWtLenLexCmp(equal)(ba, ab));
+    REQUIRE(RevWtLenLexCmp<Default, false>(equal)(ba, ab));
+
+    std::vector<size_t> weights = {1, 2};
+    REQUIRE(rev_wt_lenlex_cmp(weights, one, zeros));
+
+    Alphabet alphabet("ab"s);
+    auto     string_ab = "ab"s;
+    auto     string_ba = "ba"s;
+    REQUIRE(rev_wt_lenlex_cmp_no_checks(alphabet, equal, string_ba, string_ab));
+    REQUIRE(rev_wt_lenlex_cmp_no_checks(alphabet,
+                                        equal,
+                                        string_ba.cbegin(),
+                                        string_ba.cend(),
+                                        string_ab.cbegin(),
+                                        string_ab.cend()));
+    REQUIRE(rev_wt_lenlex_cmp(alphabet, equal, string_ba, string_ab));
+    REQUIRE(rev_wt_lenlex_cmp(alphabet,
+                              equal,
+                              string_ba.cbegin(),
+                              string_ba.cend(),
+                              string_ab.cbegin(),
+                              string_ab.cend()));
+    REQUIRE(RevWtLenLexCmp(alphabet, equal)(string_ba, string_ab));
+    REQUIRE(RevWtLenLexCmp<std::string, false>(alphabet, equal)(string_ba,
+                                                                string_ab));
+
+    REQUIRE_THROWS_AS(rev_wt_lenlex_cmp(equal, invalid, ab),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(RevWtLenLexCmp(equal)(invalid, ab),
+                      LibsemigroupsException);
+
+    static_assert(
+        std::is_same_v<decltype(RevWtLenLexCmp(equal)), RevWtLenLexCmp<>>);
+    static_assert(std::is_same_v<decltype(RevWtLenLexCmp(alphabet, equal)),
+                                 RevWtLenLexCmp<std::string>>);
+    static_assert(order::is_well_founded_v<RevWtLenLexCmp<>>);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevWtLexCmp",
+                          "070",
+                          "functions and functors",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    std::vector<size_t> equal   = {1, 1};
+    word_type           ab      = {0, 1};
+    word_type           ba      = {1, 0};
+    word_type           one     = {1};
+    word_type           zeros   = {0, 0};
+    word_type           invalid = {2};
+
+    REQUIRE(rev_wt_lex_cmp_no_checks(equal, ba, ab));
+    REQUIRE(rev_wt_lex_cmp_no_checks(
+        equal, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(rev_wt_lex_cmp(equal, ba, ab));
+    REQUIRE(
+        rev_wt_lex_cmp(equal, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(RevWtLexCmp(equal)(ba, ab));
+    REQUIRE(RevWtLexCmp<Default, false>(equal)(ba, ab));
+
+    std::vector<size_t> weights = {1, 2};
+    REQUIRE(rev_wt_lex_cmp(weights, zeros, one));
+
+    Alphabet alphabet("ab"s);
+    auto     string_ab = "ab"s;
+    auto     string_ba = "ba"s;
+    REQUIRE(rev_wt_lex_cmp_no_checks(alphabet, equal, string_ba, string_ab));
+    REQUIRE(rev_wt_lex_cmp_no_checks(alphabet,
+                                     equal,
+                                     string_ba.cbegin(),
+                                     string_ba.cend(),
+                                     string_ab.cbegin(),
+                                     string_ab.cend()));
+    REQUIRE(rev_wt_lex_cmp(alphabet, equal, string_ba, string_ab));
+    REQUIRE(rev_wt_lex_cmp(alphabet,
+                           equal,
+                           string_ba.cbegin(),
+                           string_ba.cend(),
+                           string_ab.cbegin(),
+                           string_ab.cend()));
+    REQUIRE(RevWtLexCmp(alphabet, equal)(string_ba, string_ab));
+    REQUIRE(
+        RevWtLexCmp<std::string, false>(alphabet, equal)(string_ba, string_ab));
+
+    REQUIRE_THROWS_AS(rev_wt_lex_cmp(equal, invalid, ab),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(RevWtLexCmp(equal)(invalid, ab), LibsemigroupsException);
+
+    static_assert(std::is_same_v<decltype(RevWtLexCmp(equal)), RevWtLexCmp<>>);
+    static_assert(std::is_same_v<decltype(RevWtLexCmp(alphabet, equal)),
+                                 RevWtLexCmp<std::string>>);
+    static_assert(order::is_well_founded_v<RevWtLexCmp<>>);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevWrCmp",
+                          "071",
+                          "functions and functors",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    std::vector<size_t> levels  = {0, 0};
+    word_type           ab      = {0, 1};
+    word_type           ba      = {1, 0};
+    word_type           invalid = {2};
+
+    REQUIRE(rev_wr_cmp_no_checks(levels, ba, ab));
+    REQUIRE(rev_wr_cmp_no_checks(
+        levels, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(rev_wr_cmp(levels, ba, ab));
+    REQUIRE(rev_wr_cmp(levels, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(RevWrCmp(levels)(ba, ab));
+    REQUIRE(RevWrCmp<Default, false>(levels)(ba, ab));
+
+    Alphabet alphabet("ab"s);
+    auto     string_ab = "ab"s;
+    auto     string_ba = "ba"s;
+    REQUIRE(rev_wr_cmp_no_checks(alphabet, levels, string_ba, string_ab));
+    REQUIRE(rev_wr_cmp_no_checks(alphabet,
+                                 levels,
+                                 string_ba.cbegin(),
+                                 string_ba.cend(),
+                                 string_ab.cbegin(),
+                                 string_ab.cend()));
+    REQUIRE(rev_wr_cmp(alphabet, levels, string_ba, string_ab));
+    REQUIRE(rev_wr_cmp(alphabet,
+                       levels,
+                       string_ba.cbegin(),
+                       string_ba.cend(),
+                       string_ab.cbegin(),
+                       string_ab.cend()));
+    REQUIRE(RevWrCmp(alphabet, levels)(string_ba, string_ab));
+    REQUIRE(
+        RevWrCmp<std::string, false>(alphabet, levels)(string_ba, string_ab));
+
+    REQUIRE_THROWS_AS(rev_wr_cmp(levels, invalid, ab), LibsemigroupsException);
+    REQUIRE_THROWS_AS(RevWrCmp(levels)(invalid, ab), LibsemigroupsException);
+
+    static_assert(std::is_same_v<decltype(RevWrCmp(levels)), RevWrCmp<>>);
+    static_assert(std::is_same_v<decltype(RevWrCmp(alphabet, levels)),
+                                 RevWrCmp<std::string>>);
+    static_assert(order::is_well_founded_v<RevWrCmp<>>);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("len_wt_lex_cmp",
+                          "072",
+                          "length before weighted lex",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    std::vector<size_t> weights   = {100, 1};
+    word_type           expensive = {0};
+    word_type           cheap     = {1, 1};
+    word_type           mixed     = {0, 1};
+    word_type           invalid   = {2};
+
+    REQUIRE(len_wt_lex_cmp(weights, expensive, cheap));
+    REQUIRE(!wt_lex_cmp(weights, expensive, cheap));
+    REQUIRE(len_wt_lex_cmp(weights, cheap, mixed));
+    REQUIRE(len_wt_lex_cmp(
+        weights, cheap.cbegin(), cheap.cend(), mixed.cbegin(), mixed.cend()));
+    REQUIRE(len_wt_lex_cmp_no_checks(weights, expensive, cheap));
+    REQUIRE(len_wt_lex_cmp_no_checks(weights,
+                                     expensive.cbegin(),
+                                     expensive.cend(),
+                                     cheap.cbegin(),
+                                     cheap.cend()));
+
+    Alphabet alphabet("ab"s);
+    auto     string_a  = "a"s;
+    auto     string_bb = "bb"s;
+    auto     string_ab = "ab"s;
+    REQUIRE(len_wt_lex_cmp(alphabet, weights, string_a, string_bb));
+    REQUIRE(len_wt_lex_cmp(alphabet, weights, string_bb, string_ab));
+    REQUIRE(len_wt_lex_cmp(alphabet,
+                           weights,
+                           string_bb.cbegin(),
+                           string_bb.cend(),
+                           string_ab.cbegin(),
+                           string_ab.cend()));
+    REQUIRE(len_wt_lex_cmp_no_checks(alphabet, weights, string_a, string_bb));
+    REQUIRE(len_wt_lex_cmp_no_checks(alphabet,
+                                     weights,
+                                     string_bb.cbegin(),
+                                     string_bb.cend(),
+                                     string_ab.cbegin(),
+                                     string_ab.cend()));
+
+    REQUIRE_THROWS_AS(len_wt_lex_cmp(weights, invalid, cheap),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(len_wt_lex_cmp(alphabet, weights, "c"s, string_bb),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevLenWtLexCmp",
+                          "073",
+                          "functions and functors",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    std::vector<size_t> equal     = {1, 1};
+    std::vector<size_t> weights   = {100, 1};
+    word_type           ab        = {0, 1};
+    word_type           ba        = {1, 0};
+    word_type           expensive = {0};
+    word_type           cheap     = {1, 1};
+    word_type           invalid   = {2};
+
+    REQUIRE(rev_len_wt_lex_cmp(equal, ba, ab));
+    REQUIRE(rev_len_wt_lex_cmp(
+        equal, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(rev_len_wt_lex_cmp_no_checks(equal, ba, ab));
+    REQUIRE(rev_len_wt_lex_cmp_no_checks(
+        equal, ba.cbegin(), ba.cend(), ab.cbegin(), ab.cend()));
+    REQUIRE(RevLenWtLexCmp(equal)(ba, ab));
+    REQUIRE(RevLenWtLexCmp<Default, false>(equal)(ba, ab));
+
+    REQUIRE(rev_len_wt_lex_cmp(weights, expensive, cheap));
+    REQUIRE(!rev_wt_lex_cmp(weights, expensive, cheap));
+
+    Alphabet alphabet("ab"s);
+    auto     string_ab = "ab"s;
+    auto     string_ba = "ba"s;
+    REQUIRE(rev_len_wt_lex_cmp(alphabet, equal, string_ba, string_ab));
+    REQUIRE(rev_len_wt_lex_cmp(alphabet,
+                               equal,
+                               string_ba.cbegin(),
+                               string_ba.cend(),
+                               string_ab.cbegin(),
+                               string_ab.cend()));
+    REQUIRE(
+        rev_len_wt_lex_cmp_no_checks(alphabet, equal, string_ba, string_ab));
+    REQUIRE(rev_len_wt_lex_cmp_no_checks(alphabet,
+                                         equal,
+                                         string_ba.cbegin(),
+                                         string_ba.cend(),
+                                         string_ab.cbegin(),
+                                         string_ab.cend()));
+    REQUIRE(RevLenWtLexCmp(alphabet, equal)(string_ba, string_ab));
+    REQUIRE(RevLenWtLexCmp<std::string, false>(alphabet, equal)(string_ba,
+                                                                string_ab));
+
+    REQUIRE_THROWS_AS(rev_len_wt_lex_cmp(equal, invalid, ab),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(RevLenWtLexCmp(equal)(invalid, ab),
+                      LibsemigroupsException);
+
+    static_assert(
+        std::is_same_v<decltype(RevLenWtLexCmp(equal)), RevLenWtLexCmp<>>);
+    static_assert(std::is_same_v<decltype(RevLenWtLexCmp(alphabet, equal)),
+                                 RevLenWtLexCmp<std::string>>);
+    static_assert(order::is_length_non_increasing_v<RevLenWtLexCmp<>>);
+    static_assert(order::is_well_founded_v<RevLenWtLexCmp<>>);
   }
 
 }  // namespace libsemigroups
