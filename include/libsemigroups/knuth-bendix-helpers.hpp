@@ -363,6 +363,7 @@ namespace libsemigroups {
     //! \warning The result may depend on the amount of time allowed for each
     //! Knuth-Bendix run, the number of threads, and the order in which the
     //! search is explored.
+    // TODO rm TietzeExplorer
     template <typename Word, typename RewritingSystem>
     class TietzeExplorer : public Runner {
      private:
