@@ -318,9 +318,10 @@ namespace libsemigroups {
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      // TODO static_assert that InputRange::output_type is a specialization
-      // of Presentation We pass *this thru so that the settings are copied
-      // too
+      static_assert(
+          is_specialization_of_v<std::decay_t<typename InputRange::output_type>,
+                                 Presentation>);
+      // We pass *this thru so that the settings are copied too
       return detail::SubwordsRange(std::forward<InputRange>(input), *this);
     }
 
