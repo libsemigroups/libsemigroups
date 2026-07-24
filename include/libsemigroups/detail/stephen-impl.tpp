@@ -228,9 +228,14 @@ namespace libsemigroups {
       // NodeManager) and number_active_nodes (in WordGraph), this is super
       // confusing!
       size_t const N = _word_graph.number_of_nodes_active();
+
+      // accept_state() may call run, so we get the value before attempting to
+      // modify the graph
+      StephenImpl<PresentationType>::node_type const accept_state
+          = StephenImpl<PresentationType>::accept_state();
+
       _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
-      _word_graph.merge_nodes_no_checks(accept_state(),
-                                        that.initial_state() + N);
+      _word_graph.merge_nodes_no_checks(accept_state, that.initial_state() + N);
       _word_graph.process_coincidences();
       _accept_state = UNDEFINED;
       _finished     = false;
