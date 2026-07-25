@@ -53,6 +53,8 @@ namespace libsemigroups {
 
   namespace detail {
 
+    ////////////////////////////////////////////////////////////////////////
+
     class SubwordsSettings {
       size_t _max_length;
       size_t _min_length;
@@ -198,45 +200,13 @@ namespace libsemigroups {
       // Private
       ////////////////////////////////////////////////////////////////////////
 
-      // TODO to tpp
-      SubwordsRange& init_from_input() {
-        if (!_input.at_end()) {
-          _current.first = _input.get();
-          _current_rule  = 0;
-          _seen.clear();
-          init_prefix_suffix();
-          next();
-        }
-        return *this;
-      }
+      SubwordsRange& init_from_input();
 
-      // TODO to tpp
-      void advance_prefix() {
-        LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
-        size_t const n = _current.first.rules[_current_rule].size();
-        if (_prefix_end + min_length() <= n) {
-          _prefix_end += min_length();
-        } else {
-          _prefix_end = n + 1;
-        }
-      }
+      void advance_prefix();
 
-      // TODO to tpp
-      void init_prefix_suffix() {
-        _suffix_begin = 0;
-        _prefix_end   = 0;
-        if (_current_rule < _current.first.rules.size()) {
-          advance_prefix();
-        }
-      }
+      void init_prefix_suffix();
 
-      // TODO to tpp
-      void advance_prefix_suffix() {
-        LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
-        ++_suffix_begin;
-        _prefix_end = _suffix_begin;
-        advance_prefix();
-      }
+      void advance_prefix_suffix();
     };  // class SubwordsRange
   }     // namespace detail
 

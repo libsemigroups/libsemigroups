@@ -130,5 +130,45 @@ namespace libsemigroups {
         return it->second;
       }
     }
+
+    template <typename InputRange>
+    SubwordsRange<InputRange>& SubwordsRange<InputRange>::init_from_input() {
+      if (!_input.at_end()) {
+        _current.first = _input.get();
+        _current_rule  = 0;
+        _seen.clear();
+        init_prefix_suffix();
+        next();
+      }
+      return *this;
+    }
+
+    template <typename InputRange>
+    void SubwordsRange<InputRange>::advance_prefix() {
+      LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
+      size_t const n = _current.first.rules[_current_rule].size();
+      if (_prefix_end + min_length() <= n) {
+        _prefix_end += min_length();
+      } else {
+        _prefix_end = n + 1;
+      }
+    }
+
+    template <typename InputRange>
+    void SubwordsRange<InputRange>::init_prefix_suffix() {
+      _suffix_begin = 0;
+      _prefix_end   = 0;
+      if (_current_rule < _current.first.rules.size()) {
+        advance_prefix();
+      }
+    }
+
+    template <typename InputRange>
+    void SubwordsRange<InputRange>::advance_prefix_suffix() {
+      LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
+      ++_suffix_begin;
+      _prefix_end = _suffix_begin;
+      advance_prefix();
+    }
   }  // namespace detail
 }  // namespace libsemigroups
