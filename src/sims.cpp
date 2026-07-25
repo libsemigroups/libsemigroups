@@ -630,7 +630,7 @@ namespace libsemigroups {
 
       letter_type     a        = current.generator + 1;
       size_type const M        = _felsch_graph.number_of_active_nodes();
-      size_type const N        = _felsch_graph.number_of_edges();
+      size_type const N        = _felsch_graph.definitions().size();
       size_type const num_gens = _felsch_graph.out_degree();
       auto&           stats    = _sims1or2->stats();
 
