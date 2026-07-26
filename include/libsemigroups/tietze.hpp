@@ -245,7 +245,7 @@ namespace libsemigroups {
     ~Subwords() = default;
 
     // TODO doc
-    Subwords(Settings const& settings) : Settings(settings){};
+    explicit Subwords(Settings const& settings) : Settings(settings) {}
 
     ////////////////////////////////////////////////////////////////////////
     // Call operator
@@ -393,9 +393,9 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // TODO doc
     explicit SubwordsFreq(Score&& score)
-        : Settings(), _score(std::move(score)){};
+        : Settings(), _score(std::move(score)) {}
     // TODO doc
-    explicit SubwordsFreq(Score const& score) : Settings(), _score(score){};
+    explicit SubwordsFreq(Score const& score) : Settings(), _score(score) {}
     // TODO doc
     SubwordsFreq(SubwordsFreq const&) = default;
     // TODO doc
@@ -478,8 +478,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
-    // TODO? init functions?
-    TietzeAddGeneratorsRange(InputRange const& input)
+    // TODO init functions?
+    explicit TietzeAddGeneratorsRange(InputRange const& input)
         : _input(input), _get_presentation() {
       if (!_input.at_end()) {
         auto const& value = _input.get();
@@ -534,7 +534,7 @@ namespace libsemigroups {
 
    private:
     InputRange _input;
-    // TODO?? remove, just modify the incoming presentation, then unmodify it
+    // TODO remove, just modify the incoming presentation, then unmodify it?
     Presentation<native_word_type> _get_presentation;
 
    public:
@@ -549,8 +549,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
-    // TODO? init functions?
-    TietzeAddRelationRange(InputRange const& input)
+    // TODO init functions?
+    explicit TietzeAddRelationRange(InputRange const& input)
         : _input(input), _get_presentation() {
       if (!_input.at_end()) {
         auto const& value = _input.get();
@@ -652,7 +652,6 @@ namespace libsemigroups {
       [[nodiscard]] bool finished_impl() const override {
         return _finished;
       }
-
     };  // class FindIfRunner
 
     ////////////////////////////////////////////////////////////////////////
@@ -841,7 +840,7 @@ namespace libsemigroups {
     size_t _number_of_threads;
     size_t _input_range_count;
 
-    FindIf(Func&& func)
+    explicit FindIf(Func&& func)
         : _func(std::forward<Func>(func)),
           _number_of_threads(1),
           _input_range_count(std::numeric_limits<size_t>::max()) {}
@@ -893,7 +892,7 @@ namespace libsemigroups {
     static constexpr bool is_idempotent = true;
     using output_type                   = Presentation<Word> const&;
 
-    AllAlphabetOrdersRange(InputRange&& input)
+    explicit AllAlphabetOrdersRange(InputRange&& input)
         : _alphabet_orig(), _input(std::move(input)), _perm(), _presentation() {
       if (!_input.at_end()) {
         _presentation  = _input.get();
@@ -903,7 +902,7 @@ namespace libsemigroups {
       }
     }
 
-    AllAlphabetOrdersRange(InputRange const& input)
+    explicit AllAlphabetOrdersRange(InputRange const& input)
         : AllAlphabetOrdersRange(InputRange(input)) {}
 
     [[nodiscard]] output_type get() const {
@@ -970,7 +969,7 @@ namespace libsemigroups {
     static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
     using output_type                   = Presentation<Word> const&;
 
-    AllAlphabetOrderExtsRange(InputRange&& input)
+    explicit AllAlphabetOrderExtsRange(InputRange&& input)
         : _get_presentation(), _index(), _input(std::move(input)) {
       if (!_input.at_end()) {
         _get_presentation = _input.get();
@@ -982,7 +981,7 @@ namespace libsemigroups {
       }
     }
 
-    AllAlphabetOrderExtsRange(InputRange const& input)
+    explicit AllAlphabetOrderExtsRange(InputRange const& input)
         : AllAlphabetOrderExtsRange(InputRange(input)) {}
 
     [[nodiscard]] output_type get() const {
@@ -1235,7 +1234,7 @@ namespace libsemigroups {
     KnuthBendix<Word, RewritingSystem> _kb;
 
    public:
-    PedersenPestov(KnuthBendix<Word, RewritingSystem> const& kb)
+    explicit PedersenPestov(KnuthBendix<Word, RewritingSystem> const& kb)
         : Settings(), _kb(kb) {
       min_length(2);
       max_length(6);
@@ -1308,7 +1307,7 @@ namespace libsemigroups {
     static constexpr bool is_idempotent = true;
     using output_type                   = Presentation<Word> const&;
 
-    AllRuleOrdersRange(InputRange&& input)
+    explicit AllRuleOrdersRange(InputRange&& input)
         : _input(std::move(input)), _max_perm(), _perm(0), _presentation() {
       if (!_input.at_end()) {
         _presentation = _input.get();
@@ -1317,7 +1316,7 @@ namespace libsemigroups {
       }
     }
 
-    AllRuleOrdersRange(InputRange const& input)
+    explicit AllRuleOrdersRange(InputRange const& input)
         : AllRuleOrdersRange(InputRange(input)) {}
 
     [[nodiscard]] output_type get() const {
