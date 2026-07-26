@@ -141,11 +141,11 @@ namespace libsemigroups {
     presentation::add_rule(p, "abab", "ba");
     auto subwords = (p | SubwordsFreq());
 
-    REQUIRE(subwords.size_hint() == std::numeric_limits<size_t>::max());
+    REQUIRE(subwords.size_hint() == 0);
 
     REQUIRE((subwords | rx::transform([](auto& tup) {
                return std::pair(std::get<1>(tup), std::get<2>(tup));
-             })
+             })  // TODO remove the rx::take's as appropriate
              | rx::take(8) | rx::to_vector())
             == std::vector<std::pair<std::string, size_t>>({{"", 6},
                                                             {"a", 3},

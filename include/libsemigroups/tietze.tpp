@@ -170,5 +170,77 @@ namespace libsemigroups {
       _prefix_end = _suffix_begin;
       advance_prefix();
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // SubwordsFreqRange
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename InputRange>
+    SubwordsFreqRange<InputRange>::SubwordsFreqRange(
+        InputRange const&   input,
+        SubwordsFreq const& settings)
+        : Settings(settings),
+          _index(UNDEFINED),
+          _input(input),
+          _input_orig(_input),
+          _output_for_current_input() {
+      init_from_input();
+    }
+
+    template <typename InputRange>
+    SubwordsFreqRange<InputRange>&
+    SubwordsFreqRange<InputRange>::min_length(size_t val) {
+      Settings::min_length(val);
+      _input = _input_orig;
+      init_from_input();
+      return *this;
+    }
+
+    template <typename InputRange>
+    SubwordsFreqRange<InputRange>&
+    SubwordsFreqRange<InputRange>::max_length(size_t val) {
+      Settings::max_length(val);
+      _input = _input_orig;
+      init_from_input();
+      return *this;
+    }
+
+    template <typename InputRange>
+    SubwordsFreqRange<InputRange>&
+    SubwordsFreqRange<InputRange>::proper(bool val) {
+      Settings::proper(val);
+      _input = _input_orig;
+      init_from_input();
+      return *this;
+    }
+
+    template <typename InputRange>
+    void SubwordsFreqRange<InputRange>::next() {
+      ++_index;
+      if (_index < _output_for_current_input.size()) {
+        return;
+      }
+      _input.next();
+      init_from_input();
+    }
+
+    template <typename InputRange>
+    void SubwordsFreqRange<InputRange>::init_from_input() {
+      if (!_input.at_end()) {
+        _index = 0;
+        _output_for_current_input.clear();
+        // NOTE we pass *this to Subwords so that the settings are copied
+        auto subwords = Subwords(*this)(_input.get());
+        while (!subwords.at_end()) {
+          auto& [p, w] = subwords.get();
+          _output_for_current_input.emplace_back(p, w, 0);
+          subwords.next();
+        }
+        // Now subwords is at_end(), so we can call frequency
+        for (auto& [_, w, freq] : _output_for_current_input) {
+          freq = subwords.frequency(w);
+        }
+      }
+    }
   }  // namespace detail
 }  // namespace libsemigroups

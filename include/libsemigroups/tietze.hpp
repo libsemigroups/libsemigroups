@@ -55,7 +55,11 @@ namespace libsemigroups {
   namespace detail {
 
     ////////////////////////////////////////////////////////////////////////
+    // SubwordsSettings
+    ////////////////////////////////////////////////////////////////////////
 
+    // Class containing the common settings for SubwordsRange, Subwords,
+    // SubwordsFreq, and SubwordsFreqRange
     class SubwordsSettings {
       size_t _max_length;
       size_t _min_length;
@@ -96,6 +100,10 @@ namespace libsemigroups {
         _proper = val;
       }
     };
+
+    ////////////////////////////////////////////////////////////////////////
+    // SubwordsRange
+    ////////////////////////////////////////////////////////////////////////
 
     template <typename InputRange>
     class SubwordsRange : public detail::SubwordsSettings {
@@ -294,42 +302,17 @@ namespace libsemigroups {
       std::vector<value_type> _output_for_current_input;
 
      public:
-      // TODO replace Settings_ -> SubwordsFreq when out of lining, and
-      // remove template
-      template <typename Settings_>
-      SubwordsFreqRange(InputRange const& input, Settings_ const& settings)
-          : Settings(settings),
-            _index(UNDEFINED),
-            _input(input),
-            _input_orig(_input),
-            _output_for_current_input() {
-        init_from_input();
-      }
+      SubwordsFreqRange(InputRange const& input, SubwordsFreq const& settings);
 
       using Settings::max_length;
       using Settings::min_length;
       using Settings::proper;
 
-      SubwordsFreqRange& min_length(size_t val) {
-        Settings::min_length(val);
-        _input = _input_orig;
-        init_from_input();
-        return *this;
-      }
+      SubwordsFreqRange& min_length(size_t val);
 
-      SubwordsFreqRange& max_length(size_t val) {
-        Settings::max_length(val);
-        _input = _input_orig;
-        init_from_input();
-        return *this;
-      }
+      SubwordsFreqRange& max_length(size_t val);
 
-      SubwordsFreqRange& proper(bool val) {
-        Settings::proper(val);
-        _input = _input_orig;
-        init_from_input();
-        return *this;
-      }
+      SubwordsFreqRange& proper(bool val);
 
       [[nodiscard]] bool at_end() const noexcept {
         // The second part of the expression below is in case !_input.at_end()
@@ -342,45 +325,24 @@ namespace libsemigroups {
         return _output_for_current_input[_index];
       }
 
-      void next() {
-        ++_index;
-        if (_index < _output_for_current_input.size()) {
-          return;
-        }
-        _input.next();
-        init_from_input();
-      }
+      void next();
 
       [[nodiscard]] size_t size_hint() const {
-        return std::numeric_limits<size_t>::max();
+        return 0;
       }
 
      private:
-      void init_from_input() {
-        if (!_input.at_end()) {
-          _index = 0;
-          _output_for_current_input.clear();
-          // NOTE we pass *this to Subwords so that the settings are copied
-          auto subwords = Subwords(*this)(_input.get());
-          while (!subwords.at_end()) {
-            auto& [p, w] = subwords.get();
-            _output_for_current_input.emplace_back(p, w, 0);
-            subwords.next();
-          }
-          // Now subwords is at_end(), so we can call frequency
-          for (auto& [_, w, freq] : _output_for_current_input) {
-            freq = subwords.frequency(w);
-          }
-        }
-      }
-    };
-  }  // namespace detail
+      void init_from_input();
+    };  // class SubwordsFreqRange
+  }     // namespace detail
 
+  // TODO doc
   class SubwordsFreq : public detail::SubwordsSettings {
    private:
     using Settings = detail::SubwordsSettings;
 
    public:
+    // TODO doc
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
@@ -388,26 +350,31 @@ namespace libsemigroups {
       return detail::SubwordsFreqRange(std::forward<InputRange>(input), *this);
     }
 
+    // TODO doc
     template <typename Word>
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
       return operator()(Singleton(input));
     }
 
+    // TODO doc
     SubwordsFreq& min_length(size_t val) {
       Settings::min_length(val);
       return *this;
     }
 
+    // TODO doc
     SubwordsFreq& max_length(size_t val) {
       Settings::max_length(val);
       return *this;
     }
 
+    // TODO doc
     SubwordsFreq& proper(bool val) {
       Settings::proper(val);
       return *this;
     }
-  };
+    // TODO doc other things from Settings
+  };  // class SubwordsFreq
 
   template <typename InputRange>
   class TietzeAddGeneratorsRange {
