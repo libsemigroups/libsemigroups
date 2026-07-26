@@ -173,14 +173,29 @@ namespace libsemigroups {
     bool         _at_end;
 
    public:
+    // TODO doc
     using output_type = Thing const&;
 
-    static constexpr bool is_finite     = true;
+    // TODO doc
+    static constexpr bool is_finite = true;
+    // TODO doc
     static constexpr bool is_idempotent = true;
 
+    // TODO doc
     explicit Singleton(Thing const& thing) : _value(&thing), _at_end(false) {}
 
-    // TODO rule of 5
+    // TODO doc
+    Singleton() = default;
+    // TODO doc
+    Singleton(Singleton const&) = default;
+    // TODO doc
+    Singleton(Singleton&&) = default;
+    // TODO doc
+    Singleton& operator=(Singleton const&) = default;
+    // TODO doc
+    Singleton& operator=(Singleton&&) = default;
+
+    ~Singleton() = default;
 
     [[nodiscard]] output_type get() const noexcept {
       LIBSEMIGROUPS_ASSERT(!at_end());
@@ -200,6 +215,7 @@ namespace libsemigroups {
     }
   };
 
+  // TODO to detail
   template <typename InputRange>
   class RefRange {
    public:
