@@ -48,8 +48,9 @@
 // * out of line
 
 namespace libsemigroups {
-
-  class Subwords;  // forward decl
+  // forward decls
+  class Subwords;
+  class SubwordsFreq;
 
   namespace detail {
 
@@ -203,9 +204,7 @@ namespace libsemigroups {
       SubwordsRange& init_from_input();
 
       void advance_prefix();
-
       void init_prefix_suffix();
-
       void advance_prefix_suffix();
     };  // class SubwordsRange
   }     // namespace detail
@@ -272,110 +271,110 @@ namespace libsemigroups {
     // TODO doc from Settings
   };
 
-  class SubwordsFreq;
+  namespace detail {
+    template <typename InputRange>
+    class SubwordsFreqRange : public detail::SubwordsSettings {
+      using Settings = detail::SubwordsSettings;
+      using Word =
+          typename std::decay_t<typename InputRange::output_type>::word_type;
+      using value_type = std::tuple<Presentation<Word>, Word, size_t>;
 
-  template <typename InputRange>
-  class SubwordsFreqRange : public detail::SubwordsSettings {
-    using Settings = detail::SubwordsSettings;
-    using Word =
-        typename std::decay_t<typename InputRange::output_type>::word_type;
-    using value_type = std::tuple<Presentation<Word>, Word, size_t>;
+     public:
+      using output_type = value_type const&;
+      // TODO static assert that InputRange::output_type =
+      // std::pair(Presentation<Word>, Word)
 
-   public:
-    using output_type = value_type const&;
-    // TODO static assert that InputRange::output_type =
-    // std::pair(Presentation<Word>, Word)
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
-    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+     private:
+      size_t                  _index;
+      InputRange              _input;
+      InputRange              _input_orig;
+      std::vector<value_type> _output_for_current_input;
 
-   private:
-    size_t                  _index;
-    InputRange              _input;
-    InputRange              _input_orig;
-    std::vector<value_type> _output_for_current_input;
-
-   public:
-    // TODO replace Settings_ -> SubwordsFreq when out of lining, and
-    // remove template
-    template <typename Settings_>
-    SubwordsFreqRange(InputRange const& input, Settings_ const& settings)
-        : Settings(settings),
-          _index(UNDEFINED),
-          _input(input),
-          _input_orig(_input),
-          _output_for_current_input() {
-      init_from_input();
-    }
-
-    using Settings::max_length;
-    using Settings::min_length;
-    using Settings::proper;
-
-    SubwordsFreqRange& min_length(size_t val) {
-      Settings::min_length(val);
-      _input = _input_orig;
-      init_from_input();
-      return *this;
-    }
-
-    SubwordsFreqRange& max_length(size_t val) {
-      Settings::max_length(val);
-      _input = _input_orig;
-      init_from_input();
-      return *this;
-    }
-
-    SubwordsFreqRange& proper(bool val) {
-      Settings::proper(val);
-      _input = _input_orig;
-      init_from_input();
-      return *this;
-    }
-
-    [[nodiscard]] bool at_end() const noexcept {
-      // The second part of the expression below is in case !_input.at_end()
-      // but _input.get() is empty.
-      return _input.at_end() || _index >= _output_for_current_input.size();
-    }
-
-    [[nodiscard]] output_type get() const {
-      LIBSEMIGROUPS_ASSERT(!at_end());
-      return _output_for_current_input[_index];
-    }
-
-    void next() {
-      ++_index;
-      if (_index < _output_for_current_input.size()) {
-        return;
+     public:
+      // TODO replace Settings_ -> SubwordsFreq when out of lining, and
+      // remove template
+      template <typename Settings_>
+      SubwordsFreqRange(InputRange const& input, Settings_ const& settings)
+          : Settings(settings),
+            _index(UNDEFINED),
+            _input(input),
+            _input_orig(_input),
+            _output_for_current_input() {
+        init_from_input();
       }
-      _input.next();
-      init_from_input();
-    }
 
-    [[nodiscard]] size_t size_hint() const {
-      return std::numeric_limits<size_t>::max();
-    }
+      using Settings::max_length;
+      using Settings::min_length;
+      using Settings::proper;
 
-   private:
-    void init_from_input() {
-      if (!_input.at_end()) {
-        _index = 0;
-        _output_for_current_input.clear();
-        // NOTE we pass *this to Subwords so that the settings are copied
-        auto subwords = Subwords(*this)(_input.get());
-        while (!subwords.at_end()) {
-          auto& [p, w] = subwords.get();
-          _output_for_current_input.emplace_back(p, w, 0);
-          subwords.next();
+      SubwordsFreqRange& min_length(size_t val) {
+        Settings::min_length(val);
+        _input = _input_orig;
+        init_from_input();
+        return *this;
+      }
+
+      SubwordsFreqRange& max_length(size_t val) {
+        Settings::max_length(val);
+        _input = _input_orig;
+        init_from_input();
+        return *this;
+      }
+
+      SubwordsFreqRange& proper(bool val) {
+        Settings::proper(val);
+        _input = _input_orig;
+        init_from_input();
+        return *this;
+      }
+
+      [[nodiscard]] bool at_end() const noexcept {
+        // The second part of the expression below is in case !_input.at_end()
+        // but _input.get() is empty.
+        return _input.at_end() || _index >= _output_for_current_input.size();
+      }
+
+      [[nodiscard]] output_type get() const {
+        LIBSEMIGROUPS_ASSERT(!at_end());
+        return _output_for_current_input[_index];
+      }
+
+      void next() {
+        ++_index;
+        if (_index < _output_for_current_input.size()) {
+          return;
         }
-        // Now subwords is at_end(), so we can call frequency
-        for (auto& [_, w, freq] : _output_for_current_input) {
-          freq = subwords.frequency(w);
+        _input.next();
+        init_from_input();
+      }
+
+      [[nodiscard]] size_t size_hint() const {
+        return std::numeric_limits<size_t>::max();
+      }
+
+     private:
+      void init_from_input() {
+        if (!_input.at_end()) {
+          _index = 0;
+          _output_for_current_input.clear();
+          // NOTE we pass *this to Subwords so that the settings are copied
+          auto subwords = Subwords(*this)(_input.get());
+          while (!subwords.at_end()) {
+            auto& [p, w] = subwords.get();
+            _output_for_current_input.emplace_back(p, w, 0);
+            subwords.next();
+          }
+          // Now subwords is at_end(), so we can call frequency
+          for (auto& [_, w, freq] : _output_for_current_input) {
+            freq = subwords.frequency(w);
+          }
         }
       }
-    }
-  };
+    };
+  }  // namespace detail
 
   class SubwordsFreq : public detail::SubwordsSettings {
    private:
@@ -386,7 +385,7 @@ namespace libsemigroups {
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
       // Pass *this to pass thru the settings
-      return SubwordsFreqRange(std::forward<InputRange>(input), *this);
+      return detail::SubwordsFreqRange(std::forward<InputRange>(input), *this);
     }
 
     template <typename Word>
