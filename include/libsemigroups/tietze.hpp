@@ -185,15 +185,15 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] size_t size_hint() const {
-        return std::numeric_limits<size_t>::max();
+        return 0;
       }
 
-      // TODO add these elsewhere in this file
+      // TODO add these elsewhere in this file or remove them
       [[nodiscard]] auto begin() const {
         return rx::begin(*this);
       }
 
-      // TODO add these elsewhere in this file
+      // TODO add these elsewhere in this file or remove them
       [[nodiscard]] auto end() const {
         return rx::end(*this);
       }
@@ -222,6 +222,10 @@ namespace libsemigroups {
     using Settings = detail::SubwordsSettings;
 
    public:
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors + initializers
+    ////////////////////////////////////////////////////////////////////////
+
     // TODO doc
     Subwords() = default;
     // TODO doc
@@ -237,6 +241,10 @@ namespace libsemigroups {
 
     // TODO doc
     Subwords(Settings const& settings) : Settings(settings){};
+
+    ////////////////////////////////////////////////////////////////////////
+    // Call operator
+    ////////////////////////////////////////////////////////////////////////
 
     // TODO doc
     template <typename InputRange,
@@ -282,27 +290,48 @@ namespace libsemigroups {
   namespace detail {
     template <typename InputRange>
     class SubwordsFreqRange : public detail::SubwordsSettings {
-      using Settings = detail::SubwordsSettings;
+      static_assert(
+          is_specialization_of_v<std::decay_t<typename InputRange::output_type>,
+                                 Presentation>);
       using Word =
           typename std::decay_t<typename InputRange::output_type>::word_type;
+
+      using Settings = detail::SubwordsSettings;
+
       using value_type = std::tuple<Presentation<Word>, Word, size_t>;
 
-     public:
-      using output_type = value_type const&;
-      // TODO static assert that InputRange::output_type =
-      // std::pair(Presentation<Word>, Word)
-
-      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
-
      private:
-      size_t                  _index;
-      InputRange              _input;
+      size_t     _index;
+      InputRange _input;
+      // We retain a copy of the input range so that we can re-initialise the
+      // object if/when the settings are updated.
       InputRange              _input_orig;
       std::vector<value_type> _output_for_current_input;
 
      public:
+      using output_type = value_type const&;
+
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + initializers
+      ////////////////////////////////////////////////////////////////////////
+
       SubwordsFreqRange(InputRange const& input, SubwordsFreq const& settings);
+
+      // TODO rvalue reference from InputRange and SubwordsFreq
+
+      SubwordsFreqRange(SubwordsFreqRange const&)            = default;
+      SubwordsFreqRange(SubwordsFreqRange&&)                 = default;
+      SubwordsFreqRange& operator=(SubwordsFreqRange const&) = default;
+      SubwordsFreqRange& operator=(SubwordsFreqRange&&)      = default;
+
+      ~SubwordsFreqRange() = default;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Settings
+      ////////////////////////////////////////////////////////////////////////
 
       using Settings::max_length;
       using Settings::min_length;
@@ -314,11 +343,9 @@ namespace libsemigroups {
 
       SubwordsFreqRange& proper(bool val);
 
-      [[nodiscard]] bool at_end() const noexcept {
-        // The second part of the expression below is in case !_input.at_end()
-        // but _input.get() is empty.
-        return _input.at_end() || _index >= _output_for_current_input.size();
-      }
+      ////////////////////////////////////////////////////////////////////////
+      // rx::ranges stuff
+      ////////////////////////////////////////////////////////////////////////
 
       [[nodiscard]] output_type get() const {
         LIBSEMIGROUPS_ASSERT(!at_end());
@@ -327,9 +354,17 @@ namespace libsemigroups {
 
       void next();
 
+      [[nodiscard]] bool at_end() const noexcept {
+        // The second part of the expression below is in case !_input.at_end()
+        // but _input.get() is empty.
+        return _input.at_end() || _index >= _output_for_current_input.size();
+      }
+
       [[nodiscard]] size_t size_hint() const {
         return 0;
       }
+
+      // TODO begin/end?
 
      private:
       void init_from_input();
@@ -342,10 +377,32 @@ namespace libsemigroups {
     using Settings = detail::SubwordsSettings;
 
    public:
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors + initializers
+    ////////////////////////////////////////////////////////////////////////
+    // TODO doc
+    SubwordsFreq() = default;
+    // TODO doc
+    SubwordsFreq(SubwordsFreq const&) = default;
+    // TODO doc
+    SubwordsFreq(SubwordsFreq&&) = default;
+    // TODO doc
+    SubwordsFreq& operator=(SubwordsFreq const&) = default;
+    // TODO doc
+    SubwordsFreq& operator=(SubwordsFreq&&) = default;
+
+    ~SubwordsFreq() = default;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Call operator
+    ////////////////////////////////////////////////////////////////////////
     // TODO doc
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
+      static_assert(
+          is_specialization_of_v<std::decay_t<typename InputRange::output_type>,
+                                 Presentation>);
       // Pass *this to pass thru the settings
       return detail::SubwordsFreqRange(std::forward<InputRange>(input), *this);
     }
@@ -355,6 +412,10 @@ namespace libsemigroups {
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
       return operator()(Singleton(input));
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Settings
+    ////////////////////////////////////////////////////////////////////////
 
     // TODO doc
     SubwordsFreq& min_length(size_t val) {
@@ -375,6 +436,8 @@ namespace libsemigroups {
     }
     // TODO doc other things from Settings
   };  // class SubwordsFreq
+
+  // HERE
 
   template <typename InputRange>
   class TietzeAddGeneratorsRange {

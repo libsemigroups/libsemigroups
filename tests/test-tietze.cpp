@@ -89,7 +89,7 @@ namespace libsemigroups {
 
     auto subwords = (p | Subwords());
 
-    REQUIRE(subwords.size_hint() == std::numeric_limits<size_t>::max());
+    REQUIRE(subwords.size_hint() == 0);
 
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
@@ -183,7 +183,7 @@ namespace libsemigroups {
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
              | rx::count())
             == 24);
-    REQUIRE(subwords.size_hint() == std::numeric_limits<size_t>::max());
+    REQUIRE(subwords.size_hint() == 0);
     subwords.min_length(1);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
