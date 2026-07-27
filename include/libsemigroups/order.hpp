@@ -614,12 +614,23 @@ namespace libsemigroups {
     LexCmp<Word, check> _lex;
 
    public:
-    RevLexCmp()                            = delete;
-    RevLexCmp(RevLexCmp const&)            = default;
-    RevLexCmp(RevLexCmp&&)                 = default;
+    //! \brief Deleted default constructor.
+    RevLexCmp() = delete;
+
+    //! \brief Copy constructor.
+    RevLexCmp(RevLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevLexCmp(RevLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevLexCmp& operator=(RevLexCmp const&) = default;
-    RevLexCmp& operator=(RevLexCmp&&)      = default;
-    ~RevLexCmp()                           = default;
+
+    //! \brief Move assignment operator.
+    RevLexCmp& operator=(RevLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevLexCmp() = default;
 
     //! \brief Construct from an alphabet.
     explicit RevLexCmp(Alphabet<Word> const& alphabet) : _lex(alphabet) {}
@@ -1198,12 +1209,23 @@ namespace libsemigroups {
     LenLexCmp<Word, check> _lenlex;
 
    public:
-    RevLenLexCmp()                               = delete;
-    RevLenLexCmp(RevLenLexCmp const&)            = default;
-    RevLenLexCmp(RevLenLexCmp&&)                 = default;
+    //! \brief Deleted default constructor.
+    RevLenLexCmp() = delete;
+
+    //! \brief Copy constructor.
+    RevLenLexCmp(RevLenLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevLenLexCmp(RevLenLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevLenLexCmp& operator=(RevLenLexCmp const&) = default;
-    RevLenLexCmp& operator=(RevLenLexCmp&&)      = default;
-    ~RevLenLexCmp()                              = default;
+
+    //! \brief Move assignment operator.
+    RevLenLexCmp& operator=(RevLenLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevLenLexCmp() = default;
 
     //! \brief Construct from an alphabet.
     explicit RevLenLexCmp(Alphabet<Word> const& alphabet) : _lenlex(alphabet) {}
@@ -1380,8 +1402,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! This function compares two objects of the same type using \ref
-  //! rev_rpo_cmp.
+  //! This function compares two objects of the same type using
+  //! \ref rev_rpo_cmp.
   //!
   //! \tparam Word the type of the objects to be compared.
   //!
@@ -2780,12 +2802,23 @@ namespace libsemigroups {
     WrCmp<Word, check> _wreath;
 
    public:
-    RevWrCmp()                           = delete;
-    RevWrCmp(RevWrCmp const&)            = default;
-    RevWrCmp(RevWrCmp&&)                 = default;
+    //! \brief Deleted default constructor.
+    RevWrCmp() = delete;
+
+    //! \brief Copy constructor.
+    RevWrCmp(RevWrCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevWrCmp(RevWrCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevWrCmp& operator=(RevWrCmp const&) = default;
-    RevWrCmp& operator=(RevWrCmp&&)      = default;
-    ~RevWrCmp()                          = default;
+
+    //! \brief Move assignment operator.
+    RevWrCmp& operator=(RevWrCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevWrCmp() = default;
 
     //! \brief Construct from an alphabet and levels vector.
     RevWrCmp(Alphabet<Word> const& alphabet, std::vector<size_t> const& levels)
@@ -2842,12 +2875,23 @@ namespace libsemigroups {
     WrCmp<Default, check> _wreath;
 
    public:
-    RevWrCmp()                           = default;
-    RevWrCmp(RevWrCmp const&)            = default;
-    RevWrCmp(RevWrCmp&&)                 = default;
+    //! \brief Default constructor.
+    RevWrCmp() = default;
+
+    //! \brief Copy constructor.
+    RevWrCmp(RevWrCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevWrCmp(RevWrCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevWrCmp& operator=(RevWrCmp const&) = default;
-    RevWrCmp& operator=(RevWrCmp&&)      = default;
-    ~RevWrCmp()                          = default;
+
+    //! \brief Move assignment operator.
+    RevWrCmp& operator=(RevWrCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevWrCmp() = default;
 
     //! \brief Construct from a levels vector.
     explicit RevWrCmp(std::vector<size_t> const& levels) : _wreath(levels) {}
@@ -3705,12 +3749,23 @@ namespace libsemigroups {
     WtLenLexCmp<Word, check> _wt_lenlex;
 
    public:
-    RevWtLenLexCmp()                                 = delete;
-    RevWtLenLexCmp(RevWtLenLexCmp const&)            = default;
-    RevWtLenLexCmp(RevWtLenLexCmp&&)                 = default;
+    //! \brief Deleted default constructor.
+    RevWtLenLexCmp() = delete;
+
+    //! \brief Copy constructor.
+    RevWtLenLexCmp(RevWtLenLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevWtLenLexCmp(RevWtLenLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevWtLenLexCmp& operator=(RevWtLenLexCmp const&) = default;
-    RevWtLenLexCmp& operator=(RevWtLenLexCmp&&)      = default;
-    ~RevWtLenLexCmp()                                = default;
+
+    //! \brief Move assignment operator.
+    RevWtLenLexCmp& operator=(RevWtLenLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevWtLenLexCmp() = default;
 
     //! \brief Construct from an alphabet and weights vector.
     RevWtLenLexCmp(Alphabet<Word> const&      alphabet,
@@ -3769,12 +3824,23 @@ namespace libsemigroups {
     WtLenLexCmp<Default, check> _wt_lenlex;
 
    public:
-    RevWtLenLexCmp()                                 = default;
-    RevWtLenLexCmp(RevWtLenLexCmp const&)            = default;
-    RevWtLenLexCmp(RevWtLenLexCmp&&)                 = default;
+    //! \brief Default constructor.
+    RevWtLenLexCmp() = default;
+
+    //! \brief Copy constructor.
+    RevWtLenLexCmp(RevWtLenLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevWtLenLexCmp(RevWtLenLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevWtLenLexCmp& operator=(RevWtLenLexCmp const&) = default;
-    RevWtLenLexCmp& operator=(RevWtLenLexCmp&&)      = default;
-    ~RevWtLenLexCmp()                                = default;
+
+    //! \brief Move assignment operator.
+    RevWtLenLexCmp& operator=(RevWtLenLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevWtLenLexCmp() = default;
 
     //! \brief Construct from a weights vector.
     explicit RevWtLenLexCmp(std::vector<size_t> const& weights)
@@ -4699,12 +4765,23 @@ namespace libsemigroups {
     WtLexCmp<Word, check> _wt_lex;
 
    public:
-    RevLenWtLexCmp()                                 = delete;
-    RevLenWtLexCmp(RevLenWtLexCmp const&)            = default;
-    RevLenWtLexCmp(RevLenWtLexCmp&&)                 = default;
+    //! \brief Deleted default constructor.
+    RevLenWtLexCmp() = delete;
+
+    //! \brief Copy constructor.
+    RevLenWtLexCmp(RevLenWtLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevLenWtLexCmp(RevLenWtLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevLenWtLexCmp& operator=(RevLenWtLexCmp const&) = default;
-    RevLenWtLexCmp& operator=(RevLenWtLexCmp&&)      = default;
-    ~RevLenWtLexCmp()                                = default;
+
+    //! \brief Move assignment operator.
+    RevLenWtLexCmp& operator=(RevLenWtLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevLenWtLexCmp() = default;
 
     //! \brief Construct from an alphabet and weights vector.
     RevLenWtLexCmp(Alphabet<Word> const&      alphabet,
@@ -4775,12 +4852,23 @@ namespace libsemigroups {
     WtLexCmp<Default, check> _wt_lex;
 
    public:
-    RevLenWtLexCmp()                                 = default;
-    RevLenWtLexCmp(RevLenWtLexCmp const&)            = default;
-    RevLenWtLexCmp(RevLenWtLexCmp&&)                 = default;
+    //! \brief Default constructor.
+    RevLenWtLexCmp() = default;
+
+    //! \brief Copy constructor.
+    RevLenWtLexCmp(RevLenWtLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevLenWtLexCmp(RevLenWtLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevLenWtLexCmp& operator=(RevLenWtLexCmp const&) = default;
-    RevLenWtLexCmp& operator=(RevLenWtLexCmp&&)      = default;
-    ~RevLenWtLexCmp()                                = default;
+
+    //! \brief Move assignment operator.
+    RevLenWtLexCmp& operator=(RevLenWtLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevLenWtLexCmp() = default;
 
     //! \brief Construct from a weights vector.
     explicit RevLenWtLexCmp(std::vector<size_t> const& weights)
@@ -4974,12 +5062,23 @@ namespace libsemigroups {
     WtLexCmp<Word, check> _wt_lex;
 
    public:
-    RevWtLexCmp()                              = delete;
-    RevWtLexCmp(RevWtLexCmp const&)            = default;
-    RevWtLexCmp(RevWtLexCmp&&)                 = default;
+    //! \brief Deleted default constructor.
+    RevWtLexCmp() = delete;
+
+    //! \brief Copy constructor.
+    RevWtLexCmp(RevWtLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevWtLexCmp(RevWtLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevWtLexCmp& operator=(RevWtLexCmp const&) = default;
-    RevWtLexCmp& operator=(RevWtLexCmp&&)      = default;
-    ~RevWtLexCmp()                             = default;
+
+    //! \brief Move assignment operator.
+    RevWtLexCmp& operator=(RevWtLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevWtLexCmp() = default;
 
     //! \brief Construct from an alphabet and weights vector.
     RevWtLexCmp(Alphabet<Word> const&      alphabet,
@@ -5038,12 +5137,23 @@ namespace libsemigroups {
     WtLexCmp<Default, check> _wt_lex;
 
    public:
-    RevWtLexCmp()                              = default;
-    RevWtLexCmp(RevWtLexCmp const&)            = default;
-    RevWtLexCmp(RevWtLexCmp&&)                 = default;
+    //! \brief Default constructor.
+    RevWtLexCmp() = default;
+
+    //! \brief Copy constructor.
+    RevWtLexCmp(RevWtLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevWtLexCmp(RevWtLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
     RevWtLexCmp& operator=(RevWtLexCmp const&) = default;
-    RevWtLexCmp& operator=(RevWtLexCmp&&)      = default;
-    ~RevWtLexCmp()                             = default;
+
+    //! \brief Move assignment operator.
+    RevWtLexCmp& operator=(RevWtLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~RevWtLexCmp() = default;
 
     //! \brief Construct from a weights vector.
     explicit RevWtLexCmp(std::vector<size_t> const& weights)
