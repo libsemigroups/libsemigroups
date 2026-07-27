@@ -1478,6 +1478,8 @@ namespace libsemigroups {
                                    (WtLexCmp<std::string, false>),
                                    RevWtLexCmp<std::string>,
                                    (RevWtLexCmp<std::string, false>),
+                                   LenWtLexCmp<std::string>,
+                                   (LenWtLexCmp<std::string, false>),
                                    RevLenWtLexCmp<std::string>,
                                    (RevLenWtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
@@ -1520,6 +1522,8 @@ namespace libsemigroups {
                                    (WtLexCmp<Default, false>),
                                    RevWtLexCmp<>,
                                    (RevWtLexCmp<Default, false>),
+                                   LenWtLexCmp<>,
+                                   (LenWtLexCmp<Default, false>),
                                    RevLenWtLexCmp<>,
                                    (RevLenWtLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
@@ -1653,6 +1657,8 @@ namespace libsemigroups {
                                    (WtLexCmp<std::string, false>),
                                    RevWtLexCmp<std::string>,
                                    (RevWtLexCmp<std::string, false>),
+                                   LenWtLexCmp<std::string>,
+                                   (LenWtLexCmp<std::string, false>),
                                    RevLenWtLexCmp<std::string>,
                                    (RevLenWtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
@@ -1708,6 +1714,8 @@ namespace libsemigroups {
                                    (WtLexCmp<Default, false>),
                                    RevWtLexCmp<>,
                                    (RevWtLexCmp<Default, false>),
+                                   LenWtLexCmp<>,
+                                   (LenWtLexCmp<Default, false>),
                                    RevLenWtLexCmp<>,
                                    (RevLenWtLexCmp<Default, false>) ) {
     auto rg = ReportGuard(false);
@@ -2301,6 +2309,11 @@ namespace libsemigroups {
                                      cheap.cbegin(),
                                      cheap.cend()));
 
+    REQUIRE(LenWtLexCmp(weights)(expensive, cheap));
+    REQUIRE(LenWtLexCmp<Default, false>(weights)(expensive, cheap));
+    REQUIRE(!LenWtLexCmp(weights)(cheap, expensive));
+    REQUIRE(!LenWtLexCmp<Default, false>(weights)(cheap, expensive));
+
     Alphabet alphabet("ab"s);
     auto     string_a  = "a"s;
     auto     string_bb = "bb"s;
@@ -2325,6 +2338,19 @@ namespace libsemigroups {
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(len_wt_lex_cmp(alphabet, weights, "c"s, string_bb),
                       LibsemigroupsException);
+
+    REQUIRE(LenWtLexCmp(alphabet, weights)(string_a, string_bb));
+    REQUIRE(LenWtLexCmp<std::string, false>(alphabet, weights)(string_a,
+                                                               string_bb));
+    REQUIRE_THROWS_AS(LenWtLexCmp(weights)(invalid, cheap),
+                      LibsemigroupsException);
+
+    static_assert(
+        std::is_same_v<decltype(LenWtLexCmp(weights)), LenWtLexCmp<>>);
+    static_assert(std::is_same_v<decltype(LenWtLexCmp(alphabet, weights)),
+                                 LenWtLexCmp<std::string>>);
+    static_assert(order::is_length_non_increasing_v<LenWtLexCmp<>>);
+    static_assert(order::is_well_founded_v<LenWtLexCmp<>>);
   }
 
   LIBSEMIGROUPS_TEST_CASE("RevLenWtLexCmp",

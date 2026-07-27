@@ -3914,7 +3914,6 @@ namespace libsemigroups {
   RevWtLenLexCmp(Alphabet<Word>&&, std::vector<size_t>&&)
       -> RevWtLenLexCmp<Word>;
 
-  // here
   //////////////////////////////////////////////////////////////////////
   // Weighted lex
   //////////////////////////////////////////////////////////////////////
@@ -4933,6 +4932,188 @@ namespace libsemigroups {
         alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
+  //! \brief Forward declaration of \ref LenWtLexCmp.
+  template <typename Word = Default, bool check = true>
+  class LenWtLexCmp;
+
+  //! \brief Length and weighted lex comparison functor.
+  template <typename Word, bool check>
+  class LenWtLexCmp {
+    WtLexCmp<Word, check> _wt_lex;
+
+   public:
+    //! \brief Deleted default constructor.
+    LenWtLexCmp() = delete;
+
+    //! \brief Copy constructor.
+    LenWtLexCmp(LenWtLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    LenWtLexCmp(LenWtLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    LenWtLexCmp& operator=(LenWtLexCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    LenWtLexCmp& operator=(LenWtLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~LenWtLexCmp() = default;
+
+    //! \brief Construct from an alphabet and weights vector.
+    LenWtLexCmp(Alphabet<Word> const&      alphabet,
+                std::vector<size_t> const& weights)
+        : _wt_lex(alphabet, weights) {}
+
+    //! \brief Construct from alphabet and weights vector rvalues.
+    LenWtLexCmp(Alphabet<Word>&& alphabet, std::vector<size_t>&& weights)
+        : _wt_lex(std::move(alphabet), std::move(weights)) {}
+
+    //! \brief Reinitialize from an alphabet and weights vector.
+    LenWtLexCmp& init(Alphabet<Word> const&      alphabet,
+                      std::vector<size_t> const& weights) {
+      _wt_lex.init(alphabet, weights);
+      return *this;
+    }
+
+    //! \brief Reinitialize from alphabet and weights vector rvalues.
+    LenWtLexCmp& init(Alphabet<Word>&&      alphabet,
+                      std::vector<size_t>&& weights) {
+      _wt_lex.init(std::move(alphabet), std::move(weights));
+      return *this;
+    }
+
+    //! \brief Compare two words by length then weighted lex.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    //! \brief Compare two ranges by length then weighted lex.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      if constexpr (check) {
+        return len_wt_lex_cmp(_wt_lex.alphabet(),
+                              _wt_lex.weights(),
+                              first1,
+                              last1,
+                              first2,
+                              last2);
+      } else {
+        return len_wt_lex_cmp_no_checks(_wt_lex.alphabet(),
+                                        _wt_lex.weights(),
+                                        first1,
+                                        last1,
+                                        first2,
+                                        last2);
+      }
+    }
+
+    //! \brief Returns the alphabet.
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _wt_lex.alphabet();
+    }
+
+    //! \brief Returns the weights.
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _wt_lex.weights();
+    }
+  };  // class LenWtLexCmp
+
+  //! \brief Length then weighted lex comparison functor using index
+  //! words.
+  template <bool check>
+  class LenWtLexCmp<Default, check> {
+    WtLexCmp<Default, check> _wt_lex;
+
+   public:
+    //! \brief Default constructor.
+    LenWtLexCmp() = default;
+
+    //! \brief Copy constructor.
+    LenWtLexCmp(LenWtLexCmp const&) = default;
+
+    //! \brief Move constructor.
+    LenWtLexCmp(LenWtLexCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    LenWtLexCmp& operator=(LenWtLexCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    LenWtLexCmp& operator=(LenWtLexCmp&&) = default;
+
+    //! \brief Default destructor.
+    ~LenWtLexCmp() = default;
+
+    //! \brief Construct from a weights vector.
+    explicit LenWtLexCmp(std::vector<size_t> const& weights)
+        : _wt_lex(weights) {}
+
+    //! \brief Construct from a weights vector rvalue.
+    explicit LenWtLexCmp(std::vector<size_t>&& weights)
+        : _wt_lex(std::move(weights)) {}
+
+    //! \brief Reinitialize with an empty weights vector.
+    LenWtLexCmp& init() noexcept {
+      _wt_lex.init();
+      return *this;
+    }
+
+    //! \brief Reinitialize from a weights vector.
+    LenWtLexCmp& init(std::vector<size_t> const& weights) {
+      _wt_lex.init(weights);
+      return *this;
+    }
+
+    //! \brief Reinitialize from a weights vector rvalue.
+    LenWtLexCmp& init(std::vector<size_t>&& weights) {
+      _wt_lex.init(std::move(weights));
+      return *this;
+    }
+
+    //! \brief Compare two words by length then weighted lex.
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    }
+
+    //! \brief Compare two ranges by length then weighted lex.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      if constexpr (check) {
+        return len_wt_lex_cmp(_wt_lex.weights(), first1, last1, first2, last2);
+      } else {
+        return len_wt_lex_cmp_no_checks(
+            _wt_lex.weights(), first1, last1, first2, last2);
+      }
+    }
+
+    //! \brief Returns the weights.
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
+      return _wt_lex.weights();
+    }
+  };  // class LenWtLexCmp<Default, check>
+
+  //! \brief Deduction guide from a weights vector.
+  LenWtLexCmp(std::vector<size_t> const&)->LenWtLexCmp<>;
+
+  //! \brief Deduction guide from a weights vector rvalue.
+  LenWtLexCmp(std::vector<size_t>&&)->LenWtLexCmp<>;
+
+  //! \brief Deduction guide from an alphabet and weights vector.
+  template <typename Word>
+  LenWtLexCmp(Alphabet<Word> const&, std::vector<size_t> const&)
+      -> LenWtLexCmp<Word>;
+
+  //! \brief Deduction guide from alphabet and weights vector rvalues.
+  template <typename Word>
+  LenWtLexCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> LenWtLexCmp<Word>;
+
   //////////////////////////////////////////////////////////////////////
   // Reversed length then weighted lex
   //////////////////////////////////////////////////////////////////////
@@ -5272,7 +5453,12 @@ namespace libsemigroups {
     struct is_length_non_increasing<RevLenLexCmp<Default, check>>
         : std::true_type {};
 
-    //! \brief Length-weight-reverse-lex order is length non-increasing.
+    //! \brief Length then weighted lex order is length non-increasing.
+    template <bool check>
+    struct is_length_non_increasing<LenWtLexCmp<Default, check>>
+        : std::true_type {};
+
+    //! \brief Reversed Length then weighted lex order is length non-increasing.
     template <bool check>
     struct is_length_non_increasing<RevLenWtLexCmp<Default, check>>
         : std::true_type {};
@@ -5350,7 +5536,11 @@ namespace libsemigroups {
     template <bool check>
     struct is_well_founded<RevWtLexCmp<Default, check>> : std::true_type {};
 
-    //! \brief Length-weight-reverse-lex order is well-founded.
+    //! \brief Length then weighted lex order is well-founded.
+    template <bool check>
+    struct is_well_founded<LenWtLexCmp<Default, check>> : std::true_type {};
+
+    //! \brief Reversed Length then weighted lex order is well-founded.
     template <bool check>
     struct is_well_founded<RevLenWtLexCmp<Default, check>> : std::true_type {};
 
