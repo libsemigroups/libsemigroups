@@ -18,7 +18,6 @@
 // TODO(later)
 // * The other examples from Sims' book (Chap.s 5 and 6) which use
 //   reduction orderings different from shortlex
-// * Examples from MAF
 
 #include "libsemigroups/order.hpp"
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
