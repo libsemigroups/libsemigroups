@@ -32,9 +32,6 @@ namespace libsemigroups {
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
 
-  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
-  using RPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
-
   using literals::operator""_w;
 
   namespace detail {
