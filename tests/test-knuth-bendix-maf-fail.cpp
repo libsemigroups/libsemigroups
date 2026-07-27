@@ -4517,10 +4517,10 @@ namespace libsemigroups {
 
   // Free abelian group of rank 2 - this ordering gives a finite confluent set
   // Ran for approx. 6 minutes didn't terminate
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "277",
-                                   "MAF: subgroups/ab2_abAB",
-                                   "[fail][subgroups][maf]") {
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "277",
+                          "MAF: subgroups/ab2_abAB",
+                          "[fail][subgroups][maf]") {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
