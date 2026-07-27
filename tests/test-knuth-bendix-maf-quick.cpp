@@ -5634,4 +5634,33 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "467",
+                          "MAF: both/sfdo2",
+                          "[quick][maf][both]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("aAbBcC").contains_empty_word(true);
+
+    presentation::add_rule(p, "aA", "");
+    presentation::add_rule(p, "Aa", "");
+    presentation::add_rule(p, "bB", "");
+    presentation::add_rule(p, "Bb", "");
+    presentation::add_rule(p, "cC", "");
+    presentation::add_rule(p, "Cc", "");
+    presentation::add_rule(p, "Ba", "Ab");
+    presentation::add_rule(p, "abC", "Ca");
+    presentation::add_rule(p, "baB", "Aba");
+    presentation::add_rule(p, "aaCB", "CCa");
+
+    using RewritingSystem = detail::RewritingSystemTrie<RevWrCmp>;
+    KnuthBendix<std::string, RewritingSystem> kb;
+    kb.init(
+        congruence_kind::twosided, p, std::vector<size_t>({1, 2, 1, 2, 3, 4}));
+    kb.run();
+    REQUIRE(kb.rewriting_system().number_of_rules() == 15);
+    REQUIRE(kb.number_of_classes() == 60);
+  }
+
 }  // namespace libsemigroups
