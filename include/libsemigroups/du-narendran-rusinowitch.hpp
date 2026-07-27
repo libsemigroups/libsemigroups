@@ -77,17 +77,17 @@ namespace libsemigroups {
   //!
   //! This file contains documentation for a function that finds on ordering on
   //! a presentation's alphabet such that the rules are oriented with respect to
-  //! the recursive path ordering. The implementation is based on the algorithm
-  //! provided in Section 4 of \cite Du2026aa.
+  //! the reverse recursive path ordering. The implementation is based on the
+  //! algorithm provided in Section 4 of \cite Du2026aa.
 
   //! \ingroup du_narendran_rusinowitch_group
   //!
   //! \brief Return an ordered alphabet such that the rules are oriented with
-  //! respect to RPO.
+  //! respect to reverse recursive path order.
   //!
   //! This function returns the alphabet of \p p ordered so that the rules of
   //! \p p satisfy \f$x_i \to y_i \f$ and \f$x_i > y_i\f$ with respect to
-  //! recursive path order and the returned alphabet order. The returned
+  //! reverse recursive path order and the returned alphabet order. The returned
   //! alphabet is empty if this fails, or if the alphabet was empty to begin
   //! with.
   //!

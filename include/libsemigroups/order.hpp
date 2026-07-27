@@ -1314,19 +1314,26 @@ namespace libsemigroups {
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using the recursive
-  //! path comparison described in \cite Jantzen2012aa (Definition 1.2.14, page
-  //! 24).
+  //! path comparison, based on the description in \cite Jantzen2012aa
+  //! (Definition 1.2.14, page 24).
+  //!
+  //! In the literature, recursive path order is sometimes defined in the way
+  //! that `libsemigroups` defines reversed recursive path order. This
+  //! distinction is so that, in `libsemigroups`, recursive path order is a
+  //! special case of wreath product order, and reverse recursive path order is
+  //! a special case of reverse wreath product order. The following definition
+  //! is used in `libsemigroups` for recursive path order.
   //!
   //! If \f$u, v\in X ^ {*}\f$, then
   //! \f$u < v\f$ if and only if one of the following conditions holds:
   //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
-  //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
+  //! 2. \f$u = u'a\f$ and \f$v = v'b\f$ for some \f$a,b \in X\f$, \f$u',v'\in
   //!    X ^ {*}\f$ and:
   //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
   //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
   //!   3. \f$a > b\f$ and \f$u < v'\f$.
   //!
-  //! This documentation and the implementation of \ref rev_rpo_cmp
+  //! This documentation and the implementation of \ref rpo_cmp
   //! is based on the source code of \cite Holt2018aa, specifically the function
   //! `rec_compare`.
   //!
@@ -1348,10 +1355,10 @@ namespace libsemigroups {
   //! This function has significantly worse performance than all
   //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   template <typename Iterator>
-  [[nodiscard]] bool rev_rpo_cmp(Iterator first1,
-                                 Iterator last1,
-                                 Iterator first2,
-                                 Iterator last2) noexcept;
+  [[nodiscard]] bool rpo_cmp(Iterator first1,
+                             Iterator last1,
+                             Iterator first2,
+                             Iterator last2) noexcept;
 
   //! \brief Compare two ranges using recursive path order without checks.
   //!
@@ -1368,11 +1375,11 @@ namespace libsemigroups {
   //! \returns The boolean value \c true if the first range is less than the
   //! second range with respect to recursive path order, and \c false otherwise.
   template <typename Word, typename Iterator>
-  [[nodiscard]] bool rev_rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
-                                           Iterator              first1,
-                                           Iterator              last1,
-                                           Iterator              first2,
-                                           Iterator              last2);
+  [[nodiscard]] bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Iterator              first1,
+                                       Iterator              last1,
+                                       Iterator              first2,
+                                       Iterator              last2);
 
   //! \brief Compare two ranges using recursive path order and an alphabet.
   //!
@@ -1388,389 +1395,6 @@ namespace libsemigroups {
   //!
   //! \returns The boolean value \c true if the first range is less than the
   //! second range with respect to recursive path order, and \c false otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter in either range does not
-  //! belong to \p alphabet.
-  template <typename Word, typename Iterator>
-  [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
-                                 Iterator              first1,
-                                 Iterator              last1,
-                                 Iterator              first2,
-                                 Iterator              last2);
-
-  //! \brief Compare two objects of the same type using \ref rev_rpo_cmp.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using
-  //! \ref rev_rpo_cmp.
-  //!
-  //! \tparam Word the type of the objects to be compared.
-  //!
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is less than \p y with respect
-  //! to the recursive path ordering, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \par Possible Implementation
-  //! \code_no_test
-  //! rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  //! \end_code_no_test
-  //!
-  //! \sa
-  //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <typename Word>
-  [[nodiscard]] bool rev_rpo_cmp(Word const& x, Word const& y) noexcept {
-    return rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  //! \brief Compare two objects using recursive path order and an alphabet.
-  //!
-  //! \param alphabet the alphabet used to map letters to indices.
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is less than \p y with
-  //! respect to recursive path order, and \c false otherwise.
-  //!
-  //! \throws LibsemigroupsException if any letter in either object does not
-  //! belong to \p alphabet.
-  template <typename Word>
-  [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
-                                 Word const&           x,
-                                 Word const&           y) {
-    return rev_rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  //! \brief Compare two objects using recursive path order without checks.
-  //!
-  //! This overload maps letters through \p alphabet before applying recursive
-  //! path order. It does not check that letters in \p x or \p y belong to
-  //! \p alphabet.
-  //!
-  //! \param alphabet the alphabet used to map letters to indices.
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is less than \p y with
-  //! respect to recursive path order, and \c false otherwise.
-  template <typename Word>
-  [[nodiscard]] bool rev_rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
-                                           Word const&           x,
-                                           Word const&           y) {
-    return rev_rpo_cmp_no_checks(
-        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  template <typename Word = Default, bool check = true>
-  class RevRPOCmp;
-
-  //! \brief Stateful recursive path order comparison functor.
-  //!
-  //! This class stores an alphabet and compares words in recursive path order
-  //! with respect to that alphabet.
-  //!
-  //! \tparam Word the word type associated with the alphabet.
-  //! \tparam check whether to check that letters belong to the alphabet.
-  template <typename Word, bool check>
-  class RevRPOCmp {
-    Alphabet<Word> _alphabet;
-
-   public:
-    //! \brief Deleted default constructor.
-    RevRPOCmp() = delete;
-
-    //! \brief Copy constructor.
-    RevRPOCmp(RevRPOCmp const&) = default;
-
-    //! \brief Move constructor.
-    RevRPOCmp(RevRPOCmp&&) = default;
-
-    //! \brief Copy assignment operator.
-    RevRPOCmp& operator=(RevRPOCmp const&) = default;
-
-    //! \brief Move assignment operator.
-    RevRPOCmp& operator=(RevRPOCmp&&) = default;
-
-    //! \brief Destructor.
-    ~RevRPOCmp() = default;
-
-    //! \brief Construct from an alphabet.
-    //!
-    //! The alphabet is copied and used by the call operator.
-    //!
-    //! \param alphabet the alphabet used to compare letters.
-    explicit RevRPOCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
-
-    //! \brief Construct from an alphabet rvalue reference.
-    //!
-    //! The alphabet is moved into the comparison object and used by the call
-    //! operator.
-    //!
-    //! \param alphabet the alphabet used to compare letters.
-    explicit RevRPOCmp(Alphabet<Word>&& alphabet)
-        : _alphabet(std::move(alphabet)) {}
-
-    //! \brief Reinitialize from an alphabet.
-    //!
-    //! Replaces the stored alphabet with a copy of \p alphabet.
-    //!
-    //! \param alphabet the alphabet used to compare letters.
-    //!
-    //! \returns A reference to \c *this.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    RevRPOCmp& init(Alphabet<Word> const& alphabet);
-
-    //! \brief Reinitialize from an alphabet rvalue.
-    //!
-    //! Replaces the stored alphabet by moving from \p alphabet.
-    //!
-    //! \param alphabet the alphabet used to compare letters.
-    //!
-    //! \returns A reference to \c *this.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    RevRPOCmp& init(Alphabet<Word>&& alphabet);
-
-    //! \brief  Call operator that compares \p x and \p y using
-    //! \ref rev_rpo_cmp.
-    //!
-    //! Call operator that compares \p x and \p y using
-    //! \ref rev_rpo_cmp.
-    //!
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is less than \p y with
-    //! respect to the recursive path ordering, and \c false otherwise.
-    //!
-    //! \throws LibsemigroupsException if \c check is \c true and a letter in
-    //! \p x or \p y does not belong to the stored alphabet.
-    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      if constexpr (check) {
-        return rev_rpo_cmp(_alphabet, x, y);
-      } else {
-        return rev_rpo_cmp_no_checks(_alphabet, x, y);
-      }
-    }
-
-    //! \brief Call operator that compares two iterator ranges.
-    //!
-    //! \param first1 beginning iterator of first object for comparison.
-    //! \param last1 ending iterator of first object for comparison.
-    //! \param first2 beginning iterator of second object for comparison.
-    //! \param last2 ending iterator of second object for comparison.
-    //!
-    //! \returns The boolean value \c true if the first range is less than
-    //! the second range with respect to this comparison object, and \c false
-    //! otherwise.
-    //!
-    //! \throws LibsemigroupsException if \c check is \c true and a letter in
-    //! either range does not belong to the stored alphabet.
-    template <typename Iterator>
-    [[nodiscard]] bool operator()(Iterator first1,
-                                  Iterator last1,
-                                  Iterator first2,
-                                  Iterator last2) const {
-      if constexpr (check) {
-        return rev_rpo_cmp(_alphabet, first1, last1, first2, last2);
-      } else {
-        return rev_rpo_cmp_no_checks(_alphabet, first1, last1, first2, last2);
-      }
-    }
-
-    //! \brief Returns the alphabet.
-    //!
-    //! \returns The stored alphabet.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
-      return _alphabet;
-    }
-  };  // class RevRPOCmp
-
-  //! \brief A stateless struct with binary call operator using
-  //! \ref rev_rpo_cmp.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! A stateless struct with binary call operator using
-  //! \ref rev_rpo_cmp.
-  //!
-  //! This only exists to be used as a template parameter, and has no
-  //! advantages over using \ref rev_rpo_cmp otherwise.
-  //!
-  //! \sa
-  //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <>
-  struct RevRPOCmp<Default, true> {
-    //! \brief Reinitialize the comparison object.
-    //!
-    //! This function has no effect because this specialization is stateless.
-    //!
-    //! \returns A reference to \c *this.
-    //!
-    //! \exceptions
-    //! \noexcept
-    RevRPOCmp& init() noexcept {
-      return *this;
-    }
-
-    //! \brief  Call operator that compares \p x and \p y using
-    //! \ref rev_rpo_cmp.
-    //!
-    //! Call operator that compares \p x and \p y using
-    //! \ref rev_rpo_cmp.
-    //!
-    //! \tparam Word the type of the objects to be compared.
-    //!
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is less than \p y with
-    //! respect to the recursive path ordering, and \c false otherwise.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Word>
-    [[nodiscard]] bool operator()(Word const& x, Word const& y) const noexcept {
-      return rev_rpo_cmp(x, y);
-    }
-
-    //! \brief Call operator that compares two iterator ranges.
-    //!
-    //! \param first1 beginning iterator of first object for comparison.
-    //! \param last1 ending iterator of first object for comparison.
-    //! \param first2 beginning iterator of second object for comparison.
-    //! \param last2 ending iterator of second object for comparison.
-    //!
-    //! \returns The boolean value \c true if the first range is less than
-    //! the second range with respect to this comparison object, and \c false
-    //! otherwise.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Iterator>
-    [[nodiscard]] bool operator()(Iterator first1,
-                                  Iterator last1,
-                                  Iterator first2,
-                                  Iterator last2) const noexcept {
-      return rev_rpo_cmp(first1, last1, first2, last2);
-    }
-  };  // struct RevRPOCmp<Default, true>
-
-  template <>
-  struct RevRPOCmp<Default, false> : RevRPOCmp<Default, true> {
-    //! \brief Reinitialize the comparison object.
-    //!
-    //! This function has no effect because this specialization is stateless.
-    //!
-    //! \returns A reference to \c *this.
-    //!
-    //! \exceptions
-    //! \noexcept
-    RevRPOCmp& init() noexcept {
-      return *this;
-    }
-  };  // struct RevRPOCmp<Default, false>
-
-  //////////////////////////////////////////////////////////////////////
-  // Reversed recursive path order (RPO)
-  //////////////////////////////////////////////////////////////////////
-
-  //! \brief Compare two objects of the same type using the reversed recursive
-  //! path comparison.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using the reversed
-  //! recursive path comparison. This is the same as applying the recursive path
-  //! comparison described in \cite Jantzen2012aa (Definition 1.2.14, page 24)
-  //! to the reversed words in `[first1, last1)`, `[first2, last2)`.
-  //!
-  //! If \f$u, v\in X ^ {*}\f$, then
-  //! \f$u < v\f$ if and only if one of the following conditions holds:
-  //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
-  //! 2. \f$u = u'a\f$ and \f$v = v'b\f$ for some \f$a,b \in X\f$, \f$u',v'\in
-  //!    X ^ {*}\f$ and:
-  //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
-  //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
-  //!   3. \f$a > b\f$ and \f$u < v'\f$.
-  //!
-  //! This documentation and the implementation of \ref rpo_cmp
-  //! is based on the source code of \cite Holt2018aa, specifically the function
-  //! `rt_rec_compare`.
-  //!
-  //! \tparam Iterator the type of iterators that are the arguments.
-  //!
-  //! \param first1 beginning iterator of first object for comparison.
-  //! \param last1 ending iterator of first object for comparison.
-  //! \param first2 beginning iterator of second object for comparison.
-  //! \param last2 ending iterator of second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the range `[first1, last1)` is less
-  //! than the range `[first2, last2)` with respect to the reversed recursive
-  //! path ordering, and \c false otherwise.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \warning
-  //! This function has significantly worse performance than all
-  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
-  template <typename Iterator>
-  [[nodiscard]] bool rpo_cmp(Iterator first1,
-                             Iterator last1,
-                             Iterator first2,
-                             Iterator last2) noexcept;
-
-  //! \brief Compare two ranges using reversed recursive path order without
-  //! checks.
-  //!
-  //! This overload maps letters through \p alphabet before applying reversed
-  //! recursive path order. It does not check that the letters in the ranges
-  //! belong to \p alphabet.
-  //!
-  //! \param alphabet the alphabet used to map letters to indices.
-  //! \param first1 beginning iterator of first object for comparison.
-  //! \param last1 ending iterator of first object for comparison.
-  //! \param first2 beginning iterator of second object for comparison.
-  //! \param last2 ending iterator of second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the first range is less than the
-  //! second range with respect to reversed recursive path order, and \c false
-  //! otherwise.
-  template <typename Word, typename Iterator>
-  [[nodiscard]] bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
-                                       Iterator              first1,
-                                       Iterator              last1,
-                                       Iterator              first2,
-                                       Iterator              last2);
-
-  //! \brief Compare two ranges using reversed recursive path order and an
-  //! alphabet.
-  //!
-  //! This overload checks that both ranges contain only letters belonging to
-  //! \p alphabet, then applies reversed recursive path order to the
-  //! corresponding alphabet indices.
-  //!
-  //! \param alphabet the alphabet used to map letters to indices.
-  //! \param first1 beginning iterator of first object for comparison.
-  //! \param last1 ending iterator of first object for comparison.
-  //! \param first2 beginning iterator of second object for comparison.
-  //! \param last2 ending iterator of second object for comparison.
-  //!
-  //! \returns The boolean value \c true if the first range is less than the
-  //! second range with respect to reversed recursive path order, and \c false
-  //! otherwise.
   //!
   //! \throws LibsemigroupsException if any letter in either range does not
   //! belong to \p alphabet.
@@ -1794,7 +1418,7 @@ namespace libsemigroups {
   //! \param y const reference to the second object for comparison.
   //!
   //! \returns The boolean value \c true if \p x is less than \p y with respect
-  //! to the reversed recursive path ordering, and \c false otherwise.
+  //! to the recursive path ordering, and \c false otherwise.
   //!
   //! \exceptions
   //! \noexcept
@@ -1806,42 +1430,19 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  template <typename Word,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  template <typename Word>
   [[nodiscard]] bool rpo_cmp(Word const& x, Word const& y) noexcept {
     return rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects using reversed recursive path order without
-  //! checks.
-  //!
-  //! This overload maps letters through \p alphabet before applying reversed
-  //! recursive path order. It does not check that letters in \p x or \p y
-  //! belong to \p alphabet.
+  //! \brief Compare two objects using recursive path order and an alphabet.
   //!
   //! \param alphabet the alphabet used to map letters to indices.
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //!
   //! \returns The boolean value \c true if \p x is less than \p y with
-  //! respect to reversed recursive path order, and \c false otherwise.
-  template <typename Word>
-  [[nodiscard]] bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
-                                       Word const&           x,
-                                       Word const&           y) {
-    return rpo_cmp_no_checks(
-        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  //! \brief Compare two objects using reversed recursive path order and an
-  //! alphabet.
-  //!
-  //! \param alphabet the alphabet used to map letters to indices.
-  //! \param x const reference to the first object for comparison.
-  //! \param y const reference to the second object for comparison.
-  //!
-  //! \returns The boolean value \c true if \p x is less than \p y with
-  //! respect to reversed recursive path order, and \c false otherwise.
+  //! respect to recursive path order, and \c false otherwise.
   //!
   //! \throws LibsemigroupsException if any letter in either object does not
   //! belong to \p alphabet.
@@ -1852,13 +1453,33 @@ namespace libsemigroups {
     return rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
+  //! \brief Compare two objects using recursive path order without checks.
+  //!
+  //! This overload maps letters through \p alphabet before applying recursive
+  //! path order. It does not check that letters in \p x or \p y belong to
+  //! \p alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to recursive path order, and \c false otherwise.
+  template <typename Word>
+  [[nodiscard]] bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                       Word const&           x,
+                                       Word const&           y) {
+    return rpo_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
   template <typename Word = Default, bool check = true>
   class RPOCmp;
 
-  //! \brief Stateful reversed recursive path order comparison functor.
+  //! \brief Stateful recursive path order comparison functor.
   //!
-  //! This class stores an alphabet and compares words in reversed recursive
-  //! path order with respect to that alphabet.
+  //! This class stores an alphabet and compares words in recursive path order
+  //! with respect to that alphabet.
   //!
   //! \tparam Word the word type associated with the alphabet.
   //! \tparam check whether to check that letters belong to the alphabet.
@@ -1935,7 +1556,7 @@ namespace libsemigroups {
     //! \param y const reference to the second object for comparison.
     //!
     //! \returns The boolean value \c true if \p x is less than \p y with
-    //! respect to the reversed recursive path ordering, and \c false otherwise.
+    //! respect to the recursive path ordering, and \c false otherwise.
     //!
     //! \throws LibsemigroupsException if \c check is \c true and a letter in
     //! \p x or \p y does not belong to the stored alphabet.
@@ -2022,7 +1643,7 @@ namespace libsemigroups {
     //! \param y const reference to the second object for comparison.
     //!
     //! \returns The boolean value \c true if \p x is less than \p y with
-    //! respect to the reversed recursive path ordering, and \c false otherwise.
+    //! respect to the recursive path ordering, and \c false otherwise.
     //!
     //! \exceptions
     //! \noexcept
@@ -2067,6 +1688,399 @@ namespace libsemigroups {
       return *this;
     }
   };  // struct RPOCmp<Default, false>
+
+  //////////////////////////////////////////////////////////////////////
+  // Reversed recursive path order (RPO)
+  //////////////////////////////////////////////////////////////////////
+
+  //! \brief Compare two objects of the same type using the reversed recursive
+  //! path comparison.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using the reversed
+  //! recursive path comparison. This is the same as applying the recursive path
+  //! comparison to the reversed words in `[first1, last1)`, `[first2, last2)`.
+  //!
+  //! In the literature, recursive path order is sometimes defined in the way
+  //! that `libsemigroups` defines reversed recursive path order. This
+  //! distinction is so that, in `libsemigroups`, recursive path order is a
+  //! special case of wreath product order, and reverse recursive path order is
+  //! a special case of reverse wreath product order. The following definition
+  //! is used in `libsemigroups` for reversed recursive path order, and is taken
+  //! from \cite Jantzen2012aa (Definition 1.2.14, page 24).
+  //!
+  //! If \f$u, v\in X ^ {*}\f$, then
+  //! \f$u < v\f$ if and only if one of the following conditions holds:
+  //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
+  //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
+  //!    X ^ {*}\f$ and:
+  //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
+  //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
+  //!   3. \f$a > b\f$ and \f$u < v'\f$.
+  //!
+  //! This documentation and the implementation of \ref rev_rpo_cmp
+  //! is based on the source code of \cite Holt2018aa, specifically the function
+  //! `rt_rec_compare`.
+  //!
+  //! \tparam Iterator the type of iterators that are the arguments.
+  //!
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is less
+  //! than the range `[first2, last2)` with respect to the reversed recursive
+  //! path ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  //!
+  //! \warning
+  //! This function has significantly worse performance than all
+  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
+  template <typename Iterator>
+  [[nodiscard]] bool rev_rpo_cmp(Iterator first1,
+                                 Iterator last1,
+                                 Iterator first2,
+                                 Iterator last2) noexcept;
+
+  //! \brief Compare two ranges using reversed recursive path order without
+  //! checks.
+  //!
+  //! This overload maps letters through \p alphabet before applying reversed
+  //! recursive path order. It does not check that the letters in the ranges
+  //! belong to \p alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range with respect to reversed recursive path order, and \c false
+  //! otherwise.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                           Iterator              first1,
+                                           Iterator              last1,
+                                           Iterator              first2,
+                                           Iterator              last2);
+
+  //! \brief Compare two ranges using reversed recursive path order and an
+  //! alphabet.
+  //!
+  //! This overload checks that both ranges contain only letters belonging to
+  //! \p alphabet, then applies reversed recursive path order to the
+  //! corresponding alphabet indices.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range with respect to reversed recursive path order, and \c false
+  //! otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either range does not
+  //! belong to \p alphabet.
+  template <typename Word, typename Iterator>
+  [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
+                                 Iterator              first1,
+                                 Iterator              last1,
+                                 Iterator              first2,
+                                 Iterator              last2);
+
+  //! \brief Compare two objects of the same type using \ref rev_rpo_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using
+  //! \ref rev_rpo_cmp.
+  //!
+  //! \tparam Word the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with respect
+  //! to the reversed recursive path ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! \end_code_no_test
+  //!
+  //! \sa
+  //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool rev_rpo_cmp(Word const& x, Word const& y) noexcept {
+    return rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects using reversed recursive path order without
+  //! checks.
+  //!
+  //! This overload maps letters through \p alphabet before applying reversed
+  //! recursive path order. It does not check that letters in \p x or \p y
+  //! belong to \p alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to reversed recursive path order, and \c false otherwise.
+  template <typename Word>
+  [[nodiscard]] bool rev_rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                                           Word const&           x,
+                                           Word const&           y) {
+    return rev_rpo_cmp_no_checks(
+        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects using reversed recursive path order and an
+  //! alphabet.
+  //!
+  //! \param alphabet the alphabet used to map letters to indices.
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with
+  //! respect to reversed recursive path order, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either object does not
+  //! belong to \p alphabet.
+  template <typename Word>
+  [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
+                                 Word const&           x,
+                                 Word const&           y) {
+    return rev_rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  template <typename Word = Default, bool check = true>
+  class RevRPOCmp;
+
+  //! \brief Stateful reversed recursive path order comparison functor.
+  //!
+  //! This class stores an alphabet and compares words in reversed recursive
+  //! path order with respect to that alphabet.
+  //!
+  //! \tparam Word the word type associated with the alphabet.
+  //! \tparam check whether to check that letters belong to the alphabet.
+  template <typename Word, bool check>
+  class RevRPOCmp {
+    Alphabet<Word> _alphabet;
+
+   public:
+    //! \brief Deleted default constructor.
+    RevRPOCmp() = delete;
+
+    //! \brief Copy constructor.
+    RevRPOCmp(RevRPOCmp const&) = default;
+
+    //! \brief Move constructor.
+    RevRPOCmp(RevRPOCmp&&) = default;
+
+    //! \brief Copy assignment operator.
+    RevRPOCmp& operator=(RevRPOCmp const&) = default;
+
+    //! \brief Move assignment operator.
+    RevRPOCmp& operator=(RevRPOCmp&&) = default;
+
+    //! \brief Destructor.
+    ~RevRPOCmp() = default;
+
+    //! \brief Construct from an alphabet.
+    //!
+    //! The alphabet is copied and used by the call operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RevRPOCmp(Alphabet<Word> const& alphabet) : _alphabet(alphabet) {}
+
+    //! \brief Construct from an alphabet rvalue reference.
+    //!
+    //! The alphabet is moved into the comparison object and used by the call
+    //! operator.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    explicit RevRPOCmp(Alphabet<Word>&& alphabet)
+        : _alphabet(std::move(alphabet)) {}
+
+    //! \brief Reinitialize from an alphabet.
+    //!
+    //! Replaces the stored alphabet with a copy of \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    RevRPOCmp& init(Alphabet<Word> const& alphabet);
+
+    //! \brief Reinitialize from an alphabet rvalue.
+    //!
+    //! Replaces the stored alphabet by moving from \p alphabet.
+    //!
+    //! \param alphabet the alphabet used to compare letters.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    RevRPOCmp& init(Alphabet<Word>&& alphabet);
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the reversed recursive path ordering, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! \p x or \p y does not belong to the stored alphabet.
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
+      if constexpr (check) {
+        return rev_rpo_cmp(_alphabet, x, y);
+      } else {
+        return rev_rpo_cmp_no_checks(_alphabet, x, y);
+      }
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    //!
+    //! \throws LibsemigroupsException if \c check is \c true and a letter in
+    //! either range does not belong to the stored alphabet.
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      if constexpr (check) {
+        return rev_rpo_cmp(_alphabet, first1, last1, first2, last2);
+      } else {
+        return rev_rpo_cmp_no_checks(_alphabet, first1, last1, first2, last2);
+      }
+    }
+
+    //! \brief Returns the alphabet.
+    //!
+    //! \returns The stored alphabet.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Alphabet<Word> const& alphabet() const noexcept {
+      return _alphabet;
+    }
+  };  // class RevRPOCmp
+
+  //! \brief A stateless struct with binary call operator using
+  //! \ref rev_rpo_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! A stateless struct with binary call operator using
+  //! \ref rev_rpo_cmp.
+  //!
+  //! This only exists to be used as a template parameter, and has no
+  //! advantages over using \ref rev_rpo_cmp otherwise.
+  //!
+  //! \sa
+  //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  template <>
+  struct RevRPOCmp<Default, true> {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    RevRPOCmp& init() noexcept {
+      return *this;
+    }
+
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! \tparam Word the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the reversed recursive path ordering, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Word>
+    [[nodiscard]] bool operator()(Word const& x, Word const& y) const noexcept {
+      return rev_rpo_cmp(x, y);
+    }
+
+    //! \brief Call operator that compares two iterator ranges.
+    //!
+    //! \param first1 beginning iterator of first object for comparison.
+    //! \param last1 ending iterator of first object for comparison.
+    //! \param first2 beginning iterator of second object for comparison.
+    //! \param last2 ending iterator of second object for comparison.
+    //!
+    //! \returns The boolean value \c true if the first range is less than
+    //! the second range with respect to this comparison object, and \c false
+    //! otherwise.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const noexcept {
+      return rev_rpo_cmp(first1, last1, first2, last2);
+    }
+  };  // struct RevRPOCmp<Default, true>
+
+  template <>
+  struct RevRPOCmp<Default, false> : RevRPOCmp<Default, true> {
+    //! \brief Reinitialize the comparison object.
+    //!
+    //! This function has no effect because this specialization is stateless.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    RevRPOCmp& init() noexcept {
+      return *this;
+    }
+  };  // struct RevRPOCmp<Default, false>
 
   //////////////////////////////////////////////////////////////////////
   // Wreath-product
