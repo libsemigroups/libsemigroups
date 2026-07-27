@@ -1320,8 +1320,8 @@ namespace libsemigroups {
   //! In the literature, recursive path order is sometimes defined in the way
   //! that `libsemigroups` defines reversed recursive path order. This
   //! distinction is so that, in `libsemigroups`, recursive path order is a
-  //! special case of wreath product order, and reverse recursive path order is
-  //! a special case of reverse wreath product order. The following definition
+  //! special case of wreath-product order, and reverse recursive path order is
+  //! a special case of reverse wreath-product order. The following definition
   //! is used in `libsemigroups` for recursive path order.
   //!
   //! If \f$u, v\in X ^ {*}\f$, then
@@ -1705,8 +1705,8 @@ namespace libsemigroups {
   //! In the literature, recursive path order is sometimes defined in the way
   //! that `libsemigroups` defines reversed recursive path order. This
   //! distinction is so that, in `libsemigroups`, recursive path order is a
-  //! special case of wreath product order, and reverse recursive path order is
-  //! a special case of reverse wreath product order. The following definition
+  //! special case of wreath-product order, and reverse recursive path order is
+  //! a special case of reverse wreath-product order. The following definition
   //! is used in `libsemigroups` for reversed recursive path order, and is taken
   //! from \cite Jantzen2012aa (Definition 1.2.14, page 24).
   //!

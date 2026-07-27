@@ -160,7 +160,7 @@ namespace libsemigroups {
   }
 
   // This algorithm determines if the first sequence (word 1) is strictly
-  // smaller than the second sequence (word 2) with respect to a wreath product
+  // smaller than the second sequence (word 2) with respect to a wreath-product
   // order. Generators are assigned levels. Differences between generators at
   // higher levels dominate differences at lower levels. Differences within the
   // same level are determined by len-lex.
