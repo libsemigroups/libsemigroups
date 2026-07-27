@@ -71,6 +71,41 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Iterator>
+  bool rpo_cmp(Iterator first1,
+               Iterator last1,
+               Iterator first2,
+               Iterator last2) noexcept {
+    return rev_rpo_cmp(std::make_reverse_iterator(last1),
+                       std::make_reverse_iterator(first1),
+                       std::make_reverse_iterator(last2),
+                       std::make_reverse_iterator(first2));
+  }
+
+  template <typename Word, typename Iterator>
+  bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
+                         Iterator              first1,
+                         Iterator              last1,
+                         Iterator              first2,
+                         Iterator              last2) {
+    return rev_rpo_cmp_no_checks(alphabet,
+                                 std::make_reverse_iterator(last1),
+                                 std::make_reverse_iterator(first1),
+                                 std::make_reverse_iterator(last2),
+                                 std::make_reverse_iterator(first2));
+  }
+
+  template <typename Word, typename Iterator>
+  bool rpo_cmp(Alphabet<Word> const& alphabet,
+               Iterator              first1,
+               Iterator              last1,
+               Iterator              first2,
+               Iterator              last2) {
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    return rpo_cmp_no_checks(alphabet, first1, last1, first2, last2);
+  }
+
+  template <typename Iterator>
   bool rev_rpo_cmp(Iterator first1,
                    Iterator last1,
                    Iterator first2,
@@ -122,41 +157,6 @@ namespace libsemigroups {
     alphabet.throw_if_letter_not_in_alphabet(first1, last1);
     alphabet.throw_if_letter_not_in_alphabet(first2, last2);
     return rev_rpo_cmp_no_checks(alphabet, first1, last1, first2, last2);
-  }
-
-  template <typename Iterator>
-  bool rpo_cmp(Iterator first1,
-               Iterator last1,
-               Iterator first2,
-               Iterator last2) noexcept {
-    return rev_rpo_cmp(std::make_reverse_iterator(last1),
-                       std::make_reverse_iterator(first1),
-                       std::make_reverse_iterator(last2),
-                       std::make_reverse_iterator(first2));
-  }
-
-  template <typename Word, typename Iterator>
-  bool rpo_cmp_no_checks(Alphabet<Word> const& alphabet,
-                         Iterator              first1,
-                         Iterator              last1,
-                         Iterator              first2,
-                         Iterator              last2) {
-    return rev_rpo_cmp_no_checks(alphabet,
-                                 std::make_reverse_iterator(last1),
-                                 std::make_reverse_iterator(first1),
-                                 std::make_reverse_iterator(last2),
-                                 std::make_reverse_iterator(first2));
-  }
-
-  template <typename Word, typename Iterator>
-  bool rpo_cmp(Alphabet<Word> const& alphabet,
-               Iterator              first1,
-               Iterator              last1,
-               Iterator              first2,
-               Iterator              last2) {
-    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
-    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
-    return rpo_cmp_no_checks(alphabet, first1, last1, first2, last2);
   }
 
   // This algorithm determines if the first sequence (word 1) is strictly
@@ -563,6 +563,23 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  RPOCmp<Word, check>&
+  RPOCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = alphabet;
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
+  RPOCmp<Word, check>& RPOCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
+    if (&alphabet != &_alphabet) {
+      _alphabet = std::move(alphabet);
+    }
+    return *this;
+  }
+
+  template <typename Word, bool check>
   RevRPOCmp<Word, check>&
   RevRPOCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
     if (&alphabet != &_alphabet) {
@@ -574,23 +591,6 @@ namespace libsemigroups {
   template <typename Word, bool check>
   RevRPOCmp<Word, check>&
   RevRPOCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
-    if (&alphabet != &_alphabet) {
-      _alphabet = std::move(alphabet);
-    }
-    return *this;
-  }
-
-  template <typename Word, bool check>
-  RPOCmp<Word, check>&
-  RPOCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
-    if (&alphabet != &_alphabet) {
-      _alphabet = alphabet;
-    }
-    return *this;
-  }
-
-  template <typename Word, bool check>
-  RPOCmp<Word, check>& RPOCmp<Word, check>::init(Alphabet<Word>&& alphabet) {
     if (&alphabet != &_alphabet) {
       _alphabet = std::move(alphabet);
     }
