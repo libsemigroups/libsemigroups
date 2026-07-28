@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/tietze.hpp"
 namespace libsemigroups {
 
   namespace detail {
@@ -268,6 +269,31 @@ namespace libsemigroups {
         _get_presentation = value.first;
         presentation::replace_word_with_new_generator(_get_presentation,
                                                       value.second);
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // TietzeAddRelationRange
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename InputRange>
+    void TietzeAddRelationRange<InputRange>::init_from_input() {
+      if (!_input.at_end()) {
+        auto const& value = _input.get();
+        _get_presentation = std::get<0>(value);
+        presentation::add_rule(
+            _get_presentation, std::get<1>(value), std::get<2>(value));
+      }
+    }
+
+    template <typename InputRange>
+    void TietzeAddRelationRange<InputRange>::next() {
+      _input.next();
+      if (!_input.at_end()) {
+        auto const& value = _input.get();
+        _get_presentation = std::get<0>(value);
+        presentation::add_rule(
+            _get_presentation, std::get<1>(value), std::get<2>(value));
       }
     }
   }  // namespace detail

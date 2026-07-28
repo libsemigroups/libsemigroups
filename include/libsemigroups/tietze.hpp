@@ -523,8 +523,6 @@ namespace libsemigroups {
         return _input.size_hint();
       }
 
-      // TODO begin/end?
-
      private:
       void init_from_input();
     };  // class TietzeAddGeneratorRange
@@ -566,38 +564,50 @@ namespace libsemigroups {
   namespace detail {
     template <typename InputRange>
     class TietzeAddRelationRange {
+      // TODO add static assertion that the InputRange has the correct type of
+      // output, whatever that is
      public:
       using native_word_type = std::
           tuple_element_t<1, std::decay_t<typename InputRange::output_type>>;
 
      private:
-      InputRange _input;
-      // TODO remove, just modify the incoming presentation, then unmodify it?
+      InputRange                     _input;
       Presentation<native_word_type> _get_presentation;
 
      public:
       ////////////////////////////////////////////////////////////////////////
       // Aliases
       ////////////////////////////////////////////////////////////////////////
-      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
       using output_type = Presentation<native_word_type> const&;
+
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
       ////////////////////////////////////////////////////////////////////////
       // Constructors + initializers
       ////////////////////////////////////////////////////////////////////////
+
+      TietzeAddRelationRange()                              = default;
+      TietzeAddRelationRange(TietzeAddRelationRange const&) = default;
+      TietzeAddRelationRange(TietzeAddRelationRange&&)      = default;
+      TietzeAddRelationRange& operator=(TietzeAddRelationRange const&)
+          = default;
+      TietzeAddRelationRange& operator=(TietzeAddRelationRange&&) = default;
+
+      ~TietzeAddRelationRange() = default;
+
       // TODO init functions?
+
       explicit TietzeAddRelationRange(InputRange const& input)
           : _input(input), _get_presentation() {
-        if (!_input.at_end()) {
-          auto const& value = _input.get();
-          _get_presentation = std::get<0>(value);
-          presentation::add_rule(
-              _get_presentation, std::get<1>(value), std::get<2>(value));
-        }
+        init_from_input();
       }
-      // TODO rval ref constructor
+
+      explicit TietzeAddRelationRange(InputRange&& input)
+          : _input(std::move(input)), _get_presentation() {
+        init_from_input();
+      }
 
       ////////////////////////////////////////////////////////////////////////
       // rx::ranges stuff
@@ -607,17 +617,7 @@ namespace libsemigroups {
         return _get_presentation;
       }
 
-      // TODO try_get_and_advance
-
-      void next() {
-        _input.next();
-        if (!_input.at_end()) {
-          auto const& value = _input.get();
-          _get_presentation = std::get<0>(value);
-          presentation::add_rule(
-              _get_presentation, std::get<1>(value), std::get<2>(value));
-        }
-      }
+      void next();
 
       [[nodiscard]] bool at_end() const {
         return _input.at_end();
@@ -626,6 +626,9 @@ namespace libsemigroups {
       [[nodiscard]] size_t size_hint() const {
         return _input.size_hint();
       }
+
+     private:
+      void init_from_input();
     };  // class TietzeAddRelationRange
   }  // namespace detail
 
