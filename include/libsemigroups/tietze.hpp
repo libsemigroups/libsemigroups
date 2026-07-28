@@ -191,16 +191,6 @@ namespace libsemigroups {
         return 0;
       }
 
-      // TODO add these elsewhere in this file or remove them
-      [[nodiscard]] auto begin() const {
-        return rx::begin(*this);
-      }
-
-      // TODO add these elsewhere in this file or remove them
-      [[nodiscard]] auto end() const {
-        return rx::end(*this);
-      }
-
       ////////////////////////////////////////////////////////////////////////
       // Other
       ////////////////////////////////////////////////////////////////////////
@@ -264,6 +254,8 @@ namespace libsemigroups {
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
       return operator()(Singleton(input));
     }
+
+    // TODO operator()(Presentation<Word>&&)
 
     ////////////////////////////////////////////////////////////////////////
     // Settings
@@ -458,12 +450,12 @@ namespace libsemigroups {
   };  // class SubwordsFreq
 
   ////////////////////////////////////////////////////////////////////////
-  // TietzeAddGeneratorsRange
+  // TietzeAddGeneratorRange
   ////////////////////////////////////////////////////////////////////////
 
   namespace detail {
     template <typename InputRange>
-    class TietzeAddGeneratorsRange {
+    class TietzeAddGeneratorRange {
       // TODO add static assertion that the InputRange has the correct type of
       // output, whatever that is
      public:
@@ -488,23 +480,23 @@ namespace libsemigroups {
       // Constructors + initializers
       ////////////////////////////////////////////////////////////////////////
 
-      TietzeAddGeneratorsRange()                                = default;
-      TietzeAddGeneratorsRange(TietzeAddGeneratorsRange const&) = default;
-      TietzeAddGeneratorsRange(TietzeAddGeneratorsRange&&)      = default;
-      TietzeAddGeneratorsRange& operator=(TietzeAddGeneratorsRange const&)
+      TietzeAddGeneratorRange()                               = default;
+      TietzeAddGeneratorRange(TietzeAddGeneratorRange const&) = default;
+      TietzeAddGeneratorRange(TietzeAddGeneratorRange&&)      = default;
+      TietzeAddGeneratorRange& operator=(TietzeAddGeneratorRange const&)
           = default;
-      TietzeAddGeneratorsRange& operator=(TietzeAddGeneratorsRange&&) = default;
+      TietzeAddGeneratorRange& operator=(TietzeAddGeneratorRange&&) = default;
 
-      ~TietzeAddGeneratorsRange() = default;
+      ~TietzeAddGeneratorRange() = default;
 
       // TODO init functions?
 
-      explicit TietzeAddGeneratorsRange(InputRange const& input)
+      explicit TietzeAddGeneratorRange(InputRange const& input)
           : _input(input), _get_presentation() {
         init_from_input();
       }
 
-      explicit TietzeAddGeneratorsRange(InputRange&& input)
+      explicit TietzeAddGeneratorRange(InputRange&& input)
           : _input(std::move(input)), _get_presentation() {
         init_from_input();
       }
@@ -531,17 +523,37 @@ namespace libsemigroups {
 
      private:
       void init_from_input();
-    };  // class TietzeAddGeneratorsRange
+    };  // class TietzeAddGeneratorRange
   }  // namespace detail
 
   // TODO doc
-  struct TietzeAddGenerators {
+  struct TietzeAddGenerator {
+    // TODO doc
+    TietzeAddGenerator() = default;
+    // TODO doc
+    TietzeAddGenerator(TietzeAddGenerator const&) = default;
+    // TODO doc
+    TietzeAddGenerator(TietzeAddGenerator&&) = default;
+    // TODO doc
+    TietzeAddGenerator& operator=(TietzeAddGenerator const&) = default;
+    // TODO doc
+    TietzeAddGenerator& operator=(TietzeAddGenerator&&) = default;
+
+    ~TietzeAddGenerator() = default;
+
     // TODO doc
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      return detail::TietzeAddGeneratorsRange(std::forward<InputRange>(input));
+      return detail::TietzeAddGeneratorRange(std::forward<InputRange>(input));
     }
-  };
+
+    template <typename Word>
+    [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
+      return operator()(Singleton(input));
+    }
+
+    // TODO operator()(Presentation<Word>&&)
+  };  // struct TietzeAddGenerator
 
   template <typename InputRange>
   class TietzeAddRelationRange {

@@ -248,11 +248,11 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // TietzeAddGeneratorsRange
+    // TietzeAddGeneratorRange
     ////////////////////////////////////////////////////////////////////////
 
     template <typename InputRange>
-    void TietzeAddGeneratorsRange<InputRange>::next() {
+    void TietzeAddGeneratorRange<InputRange>::next() {
       _input.next();
       if (!_input.at_end()) {
         _get_presentation = _input.get().first;
@@ -262,7 +262,7 @@ namespace libsemigroups {
     }
 
     template <typename InputRange>
-    void TietzeAddGeneratorsRange<InputRange>::init_from_input() {
+    void TietzeAddGeneratorRange<InputRange>::init_from_input() {
       if (!_input.at_end()) {
         auto const& value = _input.get();
         _get_presentation = value.first;

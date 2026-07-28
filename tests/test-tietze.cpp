@@ -36,7 +36,7 @@
 #include "libsemigroups/knuth-bendix.hpp"              // for KnuthBendix
 #include "libsemigroups/presentation.hpp"              // for Presentation
 #include "libsemigroups/ranges.hpp"           // for iterator_range, to_vector
-#include "libsemigroups/tietze.hpp"           // for TietzeAddGeneratorsRange
+#include "libsemigroups/tietze.hpp"           // for TietzeAddGeneratorRange
 #include "libsemigroups/to-presentation.hpp"  // for to
 #include "libsemigroups/word-range.hpp"       // for operator""_w
 
@@ -107,7 +107,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Subwords", "000", "strings", "[quick]") {
     using rx::operator|;
-    auto      rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -160,7 +160,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("SubwordsFreq", "001", "strings", "[quick]") {
     using rx::operator|;
-    auto      rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -201,7 +201,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Subwords", "002", "word_type", "[quick]") {
     using literals::operator""_w;
-    using rx::      operator|;
+    using rx::operator|;
 
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -285,7 +285,7 @@ namespace libsemigroups {
                  "yxyxyxyxyx", "yxyxyxyxyxy"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("TietzeAddGenerators", "004", "strings", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("TietzeAddGenerator", "004", "strings", "[quick]") {
     using rx::operator|;
 
     auto                      rg = ReportGuard(false);
@@ -301,7 +301,7 @@ namespace libsemigroups {
                 {"a", "ab", "aba", "abab", "b", "ba", "bab"}));
 
     REQUIRE(
-        (subwords | TietzeAddGenerators()
+        (subwords | TietzeAddGenerator()
          | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector())
         == std::vector<std::vector<std::string>>({{"cbcb", "bc", "c", "a"},
                                                   {"cc", "ba", "c", "ab"},
@@ -311,7 +311,7 @@ namespace libsemigroups {
                                                   {"acb", "c", "c", "ba"},
                                                   {"ac", "ba", "c", "bab"}}));
 
-    auto tmp = (subwords | TietzeAddGenerators() | Subwords().min_length(2));
+    auto tmp = (subwords | TietzeAddGenerator() | Subwords().min_length(2));
 
     REQUIRE((tmp
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
@@ -322,8 +322,8 @@ namespace libsemigroups {
                  "bab", "ac",  "aca",  "acac", "ca",  "cac", "ac",  "acb",
                  "cb",  "ba",  "ac",   "ba",   "bab", "ab"}));
 
-    REQUIRE((subwords | TietzeAddGenerators() | Subwords().min_length(2)
-             | TietzeAddGenerators()
+    REQUIRE((subwords | TietzeAddGenerator() | Subwords().min_length(2)
+             | TietzeAddGenerator()
              | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector())
             == std::vector<std::vector<std::string>>(
                 {{"dd", "bc", "c", "a", "d", "cb"},
@@ -361,8 +361,8 @@ namespace libsemigroups {
     strings.alphabet("ab").min(2).max(4);
     REQUIRE(
         (strings | rx::transform([&p](auto& w) { return std::pair(p, w); })
-         | TietzeAddGenerators()
-         | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector())
+         | TietzeAddGenerator() | rx::transform([](auto& p) { return p.rules; })
+         | rx::to_vector())
         == std::vector<std::vector<std::string>>({{"abab", "ba", "c", "aa"},
                                                   {"cc", "ba", "c", "ab"},
                                                   {"acb", "c", "c", "ba"},
@@ -388,7 +388,7 @@ namespace libsemigroups {
 
     KnuthBendix kb(congruence_kind::twosided, p);
 
-    REQUIRE(!(p | Subwords().min_length(1) | TietzeAddGenerators()
+    REQUIRE(!(p | Subwords().min_length(1) | TietzeAddGenerator()
               | FindIf([kb](auto const& p) mutable {
                   kb.init(congruence_kind::twosided, p);
                   kb.run_for(std::chrono::milliseconds(5));
@@ -409,8 +409,8 @@ namespace libsemigroups {
     KnuthBendix kb(congruence_kind::twosided, p);
 
     auto result
-        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerator()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerator()
            | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
                                      static std::atomic_size_t count = 0;
                                      ReportGuard               rg(true);
@@ -448,7 +448,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("AllAlphabetOrders", "007", "strings", "[quick]") {
     using rx::operator|;
-    auto      rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abc");
@@ -509,9 +509,9 @@ namespace libsemigroups {
                           "[fail]") {
     // https://math.stackexchange.com/questions/4942596
 
-    using rx::                  operator|;
-    using literals::            operator""_p;
-    auto                        rg = ReportGuard(true);
+    using rx::operator|;
+    using literals::operator""_p;
+    auto rg = ReportGuard(true);
     using std::string_literals::operator""s;
 
     Presentation<std::string> p;
@@ -575,7 +575,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FindIf", "010", "baabaa=aba", "[quick]") {
-    using rx::                operator|;
+    using rx::operator|;
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -586,7 +586,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
         congruence_kind::twosided, p);
     auto result
-        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerator()
            | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
                kb.init(congruence_kind::twosided, p);
                kb.run_for(std::chrono::milliseconds(4));
@@ -612,7 +612,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FindIf", "011", "baaabaaa=aba", "[fail]") {
-    using rx::                operator|;
+    using rx::operator|;
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -621,11 +621,10 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
         congruence_kind::twosided, p);
-    auto input
-        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | AllAlphabetOrders());
+    auto input = (p | Subwords().min_length(1).proper(true)
+                  | TietzeAddGenerator() | Subwords().min_length(1).proper(true)
+                  | TietzeAddGenerator() | Subwords().min_length(1).proper(true)
+                  | TietzeAddGenerator() | AllAlphabetOrders());
 
     size_t num = (input | rx::count());
 
@@ -658,8 +657,8 @@ namespace libsemigroups {
     // kb_rev_rpo(
     //     congruence_kind::twosided, p);
     auto result
-        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerator()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerator()
            | AllAlphabetOrders()
            | FindIf([kb_rpo](auto const& p) mutable {
                kb_rpo.init(congruence_kind::twosided, p);
@@ -706,7 +705,7 @@ namespace libsemigroups {
   // Fails after ~8s
   LIBSEMIGROUPS_TEST_CASE("FindIf", "013", "baaababaaa=aaba", "[fail]") {
     using rx::operator|;
-    auto      rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ba");
@@ -715,10 +714,9 @@ namespace libsemigroups {
 
     KnuthBendix kb(congruence_kind::twosided, p);
 
-    auto range
-        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | AllAlphabetOrders());
+    auto range = (p | Subwords().min_length(1).proper(true)
+                  | TietzeAddGenerator() | Subwords().min_length(1).proper(true)
+                  | TietzeAddGenerator() | AllAlphabetOrders());
 
     size_t num = (range | rx::count());
 
@@ -737,7 +735,7 @@ namespace libsemigroups {
   // Fails in about 9 minutes
   LIBSEMIGROUPS_TEST_CASE("FindIf", "014", "aabbaab=aba", "[fail]") {
     using rx::operator|;
-    auto      rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ba");
@@ -749,9 +747,9 @@ namespace libsemigroups {
     KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>> kb_rev_rpo(
         congruence_kind::twosided, p);
     auto result
-        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerator()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerator()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerator()
            | AllAlphabetOrders()
            | FindIf([kb_rpo, kb_rev_rpo](auto const& p) mutable {
                kb_rpo.init(congruence_kind::twosided, p);
@@ -821,7 +819,7 @@ namespace libsemigroups {
                         result.alphabet(pair.first.alphabet());
                         return std::pair(result, pair.second);
                       })
-                    | TietzeAddGenerators() | AllAlphabetOrderExts());
+                    | TietzeAddGenerator() | AllAlphabetOrderExts());
 
       auto num = (input | rx::count());
       REQUIRE(num == 654);
@@ -1066,9 +1064,9 @@ namespace libsemigroups {
                           "[fail]") {
     // https://math.stackexchange.com/questions/4942596
 
-    using rx::                  operator|;
-    using literals::            operator""_p;
-    auto                        rg = ReportGuard(false);
+    using rx::operator|;
+    using literals::operator""_p;
+    auto rg = ReportGuard(false);
     using std::string_literals::operator""s;
 
     Presentation<std::string> p;
@@ -1122,8 +1120,8 @@ namespace libsemigroups {
 
   // Takes about 2.4s
   LIBSEMIGROUPS_TEST_CASE("FindIf", "019", "baaabaaba=a", "[standard]") {
-    using rx::                  operator|;
-    using literals::            operator""_p;
+    using rx::operator|;
+    using literals::operator""_p;
     using std::string_literals::operator""s;
 
     auto rg = ReportGuard(false);
@@ -1169,8 +1167,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FindIf", "020", "baaaaaabba=aabaaa", "[extreme]") {
-    using rx::                  operator|;
-    using literals::            operator""_p;
+    using rx::operator|;
+    using literals::operator""_p;
     using std::string_literals::operator""s;
 
     auto rg = ReportGuard(false);
@@ -1203,8 +1201,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FindIf", "021", "abaababaaa=baaabaa", "[standard]") {
-    using rx::                  operator|;
-    using literals::            operator""_p;
+    using rx::operator|;
+    using literals::operator""_p;
     using std::string_literals::operator""s;
 
     auto rg = ReportGuard(false);
@@ -1238,8 +1236,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FindIf", "022", "abbaabbaba=babbaa", "[standard]") {
-    using rx::                  operator|;
-    using literals::            operator""_p;
+    using rx::operator|;
+    using literals::operator""_p;
     using std::string_literals::operator""s;
 
     auto rg = ReportGuard(false);
@@ -1273,7 +1271,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("AllRuleOrders", "018", "strings", "[quick]") {
     using rx::operator|;
-    auto      rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abcdef");
