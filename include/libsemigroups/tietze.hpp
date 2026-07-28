@@ -146,16 +146,16 @@ namespace libsemigroups {
       // Constructors + initializers
       ////////////////////////////////////////////////////////////////////////
 
-      SubwordsRange(InputRange&& input, Subwords const& subwords);
-
-      SubwordsRange(InputRange const& input, Subwords const& subwords);
-
+      SubwordsRange()                                = default;
       SubwordsRange(SubwordsRange const&)            = default;
       SubwordsRange(SubwordsRange&&)                 = default;
       SubwordsRange& operator=(SubwordsRange const&) = default;
       SubwordsRange& operator=(SubwordsRange&&)      = default;
 
       ~SubwordsRange() = default;
+
+      SubwordsRange(InputRange&& input, Subwords const& subwords);
+      SubwordsRange(InputRange const& input, Subwords const& subwords);
 
       ////////////////////////////////////////////////////////////////////////
       // Settings
@@ -461,74 +461,85 @@ namespace libsemigroups {
   // TietzeAddGeneratorsRange
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename InputRange>
-  class TietzeAddGeneratorsRange {
-   public:
-    using native_word_type
-        = std::tuple_element_t<1,
-                               std::decay_t<typename InputRange::output_type>>;
+  namespace detail {
+    template <typename InputRange>
+    class TietzeAddGeneratorsRange {
+      // TODO add static assertion that the InputRange has the correct type of
+      // output, whatever that is
+     public:
+      using native_word_type = std::
+          tuple_element_t<1, std::decay_t<typename InputRange::output_type>>;
 
-   private:
-    InputRange _input;
-    // TODO remove, just modify the incoming presentation, then unmodify it
-    Presentation<native_word_type> _get_presentation;
+     private:
+      InputRange                     _input;
+      Presentation<native_word_type> _get_presentation;
 
-   public:
-    ////////////////////////////////////////////////////////////////////////
-    // Aliases
-    ////////////////////////////////////////////////////////////////////////
-    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+     public:
+      ////////////////////////////////////////////////////////////////////////
+      // Aliases + static data
+      ////////////////////////////////////////////////////////////////////////
 
-    using output_type = Presentation<native_word_type> const&;
+      using output_type = Presentation<native_word_type> const&;
 
-    ////////////////////////////////////////////////////////////////////////
-    // Constructors + initializers
-    ////////////////////////////////////////////////////////////////////////
-    // TODO init functions?
-    explicit TietzeAddGeneratorsRange(InputRange const& input)
-        : _input(input), _get_presentation() {
-      if (!_input.at_end()) {
-        auto const& value = _input.get();
-        _get_presentation = value.first;
-        presentation::replace_word_with_new_generator(_get_presentation,
-                                                      value.second);
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + initializers
+      ////////////////////////////////////////////////////////////////////////
+
+      TietzeAddGeneratorsRange()                                = default;
+      TietzeAddGeneratorsRange(TietzeAddGeneratorsRange const&) = default;
+      TietzeAddGeneratorsRange(TietzeAddGeneratorsRange&&)      = default;
+      TietzeAddGeneratorsRange& operator=(TietzeAddGeneratorsRange const&)
+          = default;
+      TietzeAddGeneratorsRange& operator=(TietzeAddGeneratorsRange&&) = default;
+
+      ~TietzeAddGeneratorsRange() = default;
+
+      // TODO init functions?
+
+      explicit TietzeAddGeneratorsRange(InputRange const& input)
+          : _input(input), _get_presentation() {
+        init_from_input();
       }
-    }
-    // TODO rval ref constructor
 
-    ////////////////////////////////////////////////////////////////////////
-    // rx::ranges stuff
-    ////////////////////////////////////////////////////////////////////////
-
-    [[nodiscard]] output_type get() const {
-      return _get_presentation;
-    }
-
-    // TODO try_get_and_advance
-
-    void next() {
-      _input.next();
-      if (!_input.at_end()) {
-        _get_presentation = _input.get().first;
-        presentation::replace_word_with_new_generator(_get_presentation,
-                                                      _input.get().second);
+      explicit TietzeAddGeneratorsRange(InputRange&& input)
+          : _input(std::move(input)), _get_presentation() {
+        init_from_input();
       }
-    }
 
-    [[nodiscard]] bool at_end() const {
-      return _input.at_end();
-    }
+      ////////////////////////////////////////////////////////////////////////
+      // rx::ranges stuff
+      ////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] size_t size_hint() const {
-      return _input.size_hint();
-    }
-  };  // class TietzeAddGeneratorsRange
+      [[nodiscard]] output_type get() const {
+        return _get_presentation;
+      }
 
+      void next();
+
+      [[nodiscard]] bool at_end() const {
+        return _input.at_end();
+      }
+
+      [[nodiscard]] size_t size_hint() const {
+        return _input.size_hint();
+      }
+
+      // TODO begin/end?
+
+     private:
+      void init_from_input();
+    };  // class TietzeAddGeneratorsRange
+  }  // namespace detail
+
+  // TODO doc
   struct TietzeAddGenerators {
+    // TODO doc
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      return TietzeAddGeneratorsRange(std::forward<InputRange>(input));
+      return detail::TietzeAddGeneratorsRange(std::forward<InputRange>(input));
     }
   };
 

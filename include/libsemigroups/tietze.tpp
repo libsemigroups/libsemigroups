@@ -246,5 +246,29 @@ namespace libsemigroups {
                   _score);
       }
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // TietzeAddGeneratorsRange
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename InputRange>
+    void TietzeAddGeneratorsRange<InputRange>::next() {
+      _input.next();
+      if (!_input.at_end()) {
+        _get_presentation = _input.get().first;
+        presentation::replace_word_with_new_generator(_get_presentation,
+                                                      _input.get().second);
+      }
+    }
+
+    template <typename InputRange>
+    void TietzeAddGeneratorsRange<InputRange>::init_from_input() {
+      if (!_input.at_end()) {
+        auto const& value = _input.get();
+        _get_presentation = value.first;
+        presentation::replace_word_with_new_generator(_get_presentation,
+                                                      value.second);
+      }
+    }
   }  // namespace detail
 }  // namespace libsemigroups
