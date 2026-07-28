@@ -549,6 +549,7 @@ namespace libsemigroups {
       return detail::TietzeAddGeneratorRange(std::forward<InputRange>(input));
     }
 
+    // TODO doc
     template <typename Word>
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
       return operator()(Singleton(input));
@@ -647,11 +648,13 @@ namespace libsemigroups {
 
     ~TietzeAddRelation() = default;
 
+    // TODO doc
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) const {
       return detail::TietzeAddRelationRange(std::forward<InputRange>(input));
     }
 
+    // TODO doc
     template <typename Word>
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
       return operator()(Singleton(input));
