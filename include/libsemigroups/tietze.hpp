@@ -54,8 +54,12 @@
 namespace libsemigroups {
   // forward decls
   class Subwords;
+
   template <typename Score>
   class SubwordsFreq;
+
+  template <typename Func>
+  struct FindIf;
 
   namespace detail {
 
@@ -555,81 +559,105 @@ namespace libsemigroups {
     // TODO operator()(Presentation<Word>&&)
   };  // struct TietzeAddGenerator
 
-  template <typename InputRange>
-  class TietzeAddRelationRange {
-   public:
-    using native_word_type
-        = std::tuple_element_t<1,
-                               std::decay_t<typename InputRange::output_type>>;
+  ////////////////////////////////////////////////////////////////////////
+  // TietzeAddRelationRange
+  ////////////////////////////////////////////////////////////////////////
 
-   private:
-    InputRange _input;
-    // TODO remove, just modify the incoming presentation, then unmodify it?
-    Presentation<native_word_type> _get_presentation;
+  namespace detail {
+    template <typename InputRange>
+    class TietzeAddRelationRange {
+     public:
+      using native_word_type = std::
+          tuple_element_t<1, std::decay_t<typename InputRange::output_type>>;
 
-   public:
-    ////////////////////////////////////////////////////////////////////////
-    // Aliases
-    ////////////////////////////////////////////////////////////////////////
-    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+     private:
+      InputRange _input;
+      // TODO remove, just modify the incoming presentation, then unmodify it?
+      Presentation<native_word_type> _get_presentation;
 
-    using output_type = Presentation<native_word_type> const&;
+     public:
+      ////////////////////////////////////////////////////////////////////////
+      // Aliases
+      ////////////////////////////////////////////////////////////////////////
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
-    ////////////////////////////////////////////////////////////////////////
-    // Constructors + initializers
-    ////////////////////////////////////////////////////////////////////////
-    // TODO init functions?
-    explicit TietzeAddRelationRange(InputRange const& input)
-        : _input(input), _get_presentation() {
-      if (!_input.at_end()) {
-        auto const& value = _input.get();
-        _get_presentation = std::get<0>(value);
-        presentation::add_rule(
-            _get_presentation, std::get<1>(value), std::get<2>(value));
+      using output_type = Presentation<native_word_type> const&;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + initializers
+      ////////////////////////////////////////////////////////////////////////
+      // TODO init functions?
+      explicit TietzeAddRelationRange(InputRange const& input)
+          : _input(input), _get_presentation() {
+        if (!_input.at_end()) {
+          auto const& value = _input.get();
+          _get_presentation = std::get<0>(value);
+          presentation::add_rule(
+              _get_presentation, std::get<1>(value), std::get<2>(value));
+        }
       }
-    }
-    // TODO rval ref constructor
+      // TODO rval ref constructor
 
-    ////////////////////////////////////////////////////////////////////////
-    // rx::ranges stuff
-    ////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
+      // rx::ranges stuff
+      ////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] output_type get() const {
-      return _get_presentation;
-    }
-
-    // TODO try_get_and_advance
-
-    void next() {
-      _input.next();
-      if (!_input.at_end()) {
-        auto const& value = _input.get();
-        _get_presentation = std::get<0>(value);
-        presentation::add_rule(
-            _get_presentation, std::get<1>(value), std::get<2>(value));
+      [[nodiscard]] output_type get() const {
+        return _get_presentation;
       }
-    }
 
-    [[nodiscard]] bool at_end() const {
-      return _input.at_end();
-    }
+      // TODO try_get_and_advance
 
-    [[nodiscard]] size_t size_hint() const {
-      return _input.size_hint();
-    }
-  };  // class TietzeAddRelationRange
+      void next() {
+        _input.next();
+        if (!_input.at_end()) {
+          auto const& value = _input.get();
+          _get_presentation = std::get<0>(value);
+          presentation::add_rule(
+              _get_presentation, std::get<1>(value), std::get<2>(value));
+        }
+      }
 
+      [[nodiscard]] bool at_end() const {
+        return _input.at_end();
+      }
+
+      [[nodiscard]] size_t size_hint() const {
+        return _input.size_hint();
+      }
+    };  // class TietzeAddRelationRange
+  }  // namespace detail
+
+  // TODO doc
   struct TietzeAddRelation {
+    // TODO doc
+    TietzeAddRelation() = default;
+    // TODO doc
+    TietzeAddRelation(TietzeAddRelation const&) = default;
+    // TODO doc
+    TietzeAddRelation(TietzeAddRelation&&) = default;
+    // TODO doc
+    TietzeAddRelation& operator=(TietzeAddRelation const&) = default;
+    // TODO doc
+    TietzeAddRelation& operator=(TietzeAddRelation&&) = default;
+
+    ~TietzeAddRelation() = default;
+
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      return TietzeAddRelationRange(std::forward<InputRange>(input));
+      return detail::TietzeAddRelationRange(std::forward<InputRange>(input));
     }
-  };
 
-  template <typename Func>
-  struct FindIf;
+    template <typename Word>
+    [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
+      return operator()(Singleton(input));
+    }
 
+    // TODO operator()(Presentation<Word>&&)
+  };  // struct TietzeAddRelation
+
+  // HERE
   template <typename InputRange, typename Func>
   class FindIfRange : public Runner {
     using input_type
