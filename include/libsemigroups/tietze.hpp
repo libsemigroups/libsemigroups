@@ -166,9 +166,7 @@ namespace libsemigroups {
       using Settings::proper;
 
       SubwordsRange& max_length(size_t val);
-
       SubwordsRange& min_length(size_t val);
-
       SubwordsRange& proper(bool val);
 
       ////////////////////////////////////////////////////////////////////////
@@ -214,13 +212,12 @@ namespace libsemigroups {
       // Private
       ////////////////////////////////////////////////////////////////////////
 
-      SubwordsRange& init_from_input();
-
+      void init_from_input();
       void advance_prefix();
       void init_prefix_suffix();
       void advance_prefix_suffix();
     };  // class SubwordsRange
-  }     // namespace detail
+  }  // namespace detail
 
   // TODO doc
   class Subwords : public detail::SubwordsSettings {
@@ -293,6 +290,10 @@ namespace libsemigroups {
   };
 
   namespace detail {
+    ////////////////////////////////////////////////////////////////////////
+    // SubwordsFreqRange
+    ////////////////////////////////////////////////////////////////////////
+
     template <typename InputRange, typename Score>
     class SubwordsFreqRange : public detail::SubwordsSettings {
       static_assert(
@@ -305,7 +306,6 @@ namespace libsemigroups {
 
       using value_type = std::tuple<Presentation<Word>, Word, size_t>;
 
-     private:
       size_t     _index;
       InputRange _input;
       // We retain a copy of the input range so that we can re-initialise the
@@ -315,6 +315,10 @@ namespace libsemigroups {
       Score                   _score;
 
      public:
+      ////////////////////////////////////////////////////////////////////////
+      // Aliases + static data
+      ////////////////////////////////////////////////////////////////////////
+
       using output_type = value_type const&;
 
       static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
@@ -346,9 +350,7 @@ namespace libsemigroups {
       using Settings::proper;
 
       SubwordsFreqRange& min_length(size_t val);
-
       SubwordsFreqRange& max_length(size_t val);
-
       SubwordsFreqRange& proper(bool val);
 
       ////////////////////////////////////////////////////////////////////////
@@ -377,7 +379,7 @@ namespace libsemigroups {
      private:
       void init_from_input();
     };  // class SubwordsFreqRange
-  }     // namespace detail
+  }  // namespace detail
 
   // TODO doc
   template <typename Score>
@@ -391,11 +393,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
-    // TODO doc
-    explicit SubwordsFreq(Score&& score)
-        : Settings(), _score(std::move(score)) {}
-    // TODO doc
-    explicit SubwordsFreq(Score const& score) : Settings(), _score(score) {}
+
     // TODO doc
     SubwordsFreq(SubwordsFreq const&) = default;
     // TODO doc
@@ -407,9 +405,16 @@ namespace libsemigroups {
 
     ~SubwordsFreq() = default;
 
+    // TODO doc
+    explicit SubwordsFreq(Score&& score)
+        : Settings(), _score(std::move(score)) {}
+    // TODO doc
+    explicit SubwordsFreq(Score const& score) : Settings(), _score(score) {}
+
     ////////////////////////////////////////////////////////////////////////
     // Call operator
     ////////////////////////////////////////////////////////////////////////
+
     // TODO doc
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
@@ -452,7 +457,9 @@ namespace libsemigroups {
     // TODO doc other things from Settings
   };  // class SubwordsFreq
 
-  // HERE
+  ////////////////////////////////////////////////////////////////////////
+  // TietzeAddGeneratorsRange
+  ////////////////////////////////////////////////////////////////////////
 
   template <typename InputRange>
   class TietzeAddGeneratorsRange {

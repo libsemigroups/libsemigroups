@@ -132,7 +132,7 @@ namespace libsemigroups {
     }
 
     template <typename InputRange>
-    SubwordsRange<InputRange>& SubwordsRange<InputRange>::init_from_input() {
+    void SubwordsRange<InputRange>::init_from_input() {
       if (!_input.at_end()) {
         _current.first = _input.get();
         _current_rule  = 0;
@@ -140,7 +140,6 @@ namespace libsemigroups {
         init_prefix_suffix();
         next();
       }
-      return *this;
     }
 
     template <typename InputRange>
