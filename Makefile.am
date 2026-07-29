@@ -1771,6 +1771,7 @@ examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-300-349.c
 examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-350-399.cpp
 examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-400-449.cpp
 examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-450-501.cpp
+examples_1_relation_SOURCES += examples/1-relation/examples-1-relation-unresolved.cpp
 examples_1_relation_SOURCES += tests/test-main.cpp
 examples_1_relation_SOURCES += $(CATCH2_SOURCES)
 examples_1_relation_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
