@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import ast
 import itertools
-import json
 import re
 import sys
 from dataclasses import dataclass
@@ -35,14 +34,6 @@ REDUCTION_ORDERS = {
     "RPOTrie": ("recursive path order", "RPOCmp"),
     "RevRPOTrie": ("reversed recursive path order", "RevRPOCmp"),
 }
-
-
-@dataclass(frozen=True)
-class PageLink:
-    """The test number and flat relation used by a navigation link."""
-
-    number: str
-    relation: str
 
 
 @dataclass(frozen=True)
@@ -157,50 +148,9 @@ def find_source_and_block(
         location = source if source is not None else source_dir
         raise ValueError(f"test case {number} was not found in {location}")
     if len(found) != 1:
-        locations = ", ".join(
-            source_location(path, match) for path, match, _ in found
-        )
-        raise ValueError(
-            f"test case {number} was found more than once: {locations}"
-        )
+        locations = ", ".join(source_location(path, match) for path, match, _ in found)
+        raise ValueError(f"test case {number} was found more than once: {locations}")
     return found[0]
-
-
-def navigation_links(
-    number: str, source: Path | None, source_dir: Path
-) -> tuple[PageLink | None, PageLink | None]:
-    """Return links to the adjacent non-failing test cases."""
-
-    sources = {candidate.resolve() for candidate in source_dir.glob(SOURCE_GLOB)}
-    if source is not None:
-        sources.add(source.resolve())
-
-    links = {}
-    locations = {}
-    for candidate in sorted(sources):
-        if not candidate.is_file():
-            continue
-        for match, _ in test_case_blocks(candidate.read_text()):
-            if "[fail]" in match.group("tags"):
-                continue
-            test_number = match.group("number")
-            if test_number in links:
-                duplicate_locations = ", ".join(
-                    [locations[test_number], source_location(candidate, match)]
-                )
-                raise ValueError(
-                    f"test case {test_number} was found more than once: "
-                    f"{duplicate_locations}"
-                )
-            relation = cpp_string_value(f'"{match.group("description")}"')
-            links[test_number] = PageLink(test_number, relation)
-            locations[test_number] = source_location(candidate, match)
-
-    previous_numbers = [value for value in links if value < number]
-    next_numbers = [value for value in links if value > number]
-    previous_page = links[max(previous_numbers)] if previous_numbers else None
-    next_page = links[min(next_numbers)] if next_numbers else None
-    return previous_page, next_page
 
 
 def extract_string_after(pattern: str, text: str, description: str) -> str:
@@ -236,7 +186,7 @@ def pair_words(words: list[str], description: str) -> list[tuple[str, str]]:
 
     if len(words) % 2 != 0:
         raise ValueError(f"{description} contains an odd number of words")
-    return list(zip(words[::2], words[1::2]))
+    return list(zip(words[::2], words[1::2], strict=True))
 
 
 def extract_active_rules(text: str) -> list[tuple[str, str]]:
@@ -410,63 +360,43 @@ def latex_rewriting_system(rules: list[tuple[str, str]]) -> list[str]:
     return result
 
 
-def markdown_page(
-    example: Example,
-    previous_page: PageLink | None = None,
-    next_page: PageLink | None = None,
-) -> str:
+def markdown_page(example: Example) -> str:
     """Render ``example`` as a MkDocs-style Markdown page."""
 
     if len(example.input_rules) != 1:
         raise ValueError("the input presentation does not have exactly one relation")
     lhs, rhs = example.input_rules[0]
-    title = f"#{example.number} {lhs or '1'}={rhs or '1'}"
-    navigation = []
-    if previous_page is not None:
-        navigation.append(
-            f"Previous: [#{previous_page.number} {previous_page.relation}]"
-            f"({previous_page.number}.md)"
-        )
-    if next_page is not None:
-        navigation.append(
-            f"Next: [#{next_page.number} {next_page.relation}]"
-            f"({next_page.number}.md)"
-        )
+    title = f"#\\#{example.number} {lhs or '1'}={rhs or '1'}"
     generator_order = " < ".join(
         latex_flat_word(letter) for letter in example.modified_alphabet
     )
     lines = [
-        "---",
-        f"title: {json.dumps(title, ensure_ascii=False)}",
-        "---",
+        title,
         "",
-        f"# {title}",
+        "## Original presentation",
         "",
-        " · ".join(navigation),
-        "",
-        "Original presentation:",
-        "",
-        "$$",
+        "\\(",
         *latex_presentation(example.input_alphabet, example.input_rules),
-        "$$",
+        "\\)",
         "",
-        "Modified presentation:",
+        "## Modified presentation",
         "",
-        "$$",
+        "\\(",
         *latex_presentation(
             "".join(sorted(example.modified_alphabet)), example.modified_rules
         ),
-        "$$",
+        "\\)",
+        "",
+        "## Complete rewriting system",
         "",
         (
-            f"Complete rewriting system: using {example.reduction_order_name} "
-            f"(`{example.reduction_order_comparator}`) with "
-            f"\\({generator_order}\\)"
+            f"Using {example.reduction_order_name} (`{example.reduction_order_comparator}`) with "
+            f"\\({generator_order}\\):"
         ),
         "",
-        "$$",
+        "\\(",
         *latex_rewriting_system(example.active_rules),
-        "$$",
+        "\\)",
         "",
         (f"<!-- Generated from {example.source.name}, test case {example.number}. -->"),
         "",
@@ -481,10 +411,7 @@ def main() -> int:
     try:
         number = normalize_test_number(args.test_case)
         example = parse_example(number, args.source, args.source_dir)
-        previous_page, next_page = navigation_links(
-            number, args.source, args.source_dir
-        )
-        page = markdown_page(example, previous_page, next_page)
+        page = markdown_page(example)
         if args.output is None:
             sys.stdout.write(page)
         else:
