@@ -296,5 +296,105 @@ namespace libsemigroups {
             _get_presentation, std::get<1>(value), std::get<2>(value));
       }
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // FindIfRange::FindIfRunner
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename InputRange, typename Func>
+    FindIfRange<InputRange, Func>::FindIfRunner::FindIfRunner(
+        FindIfRange* enclosing,
+        Func const&  func)
+        : Runner(),
+          _enclosing(enclosing),
+          _finished(false),
+          _func(func),
+          _result(std::nullopt) {
+      Runner::report_prefix("FindIf");
+    }
+
+    template <typename InputRange, typename Func>
+    void FindIfRange<InputRange, Func>::FindIfRunner::run_impl() {
+      ReportGuard rg(false);
+      input_type  input;
+
+      while (!stopped() && _enclosing->try_get_and_advance(input)) {
+        ++_enclosing->_counter;
+        if (_func(input)) {
+          _result   = input;
+          _finished = true;
+          return;
+        }
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // FindIfRange
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename InputRange, typename Func>
+    FindIfRange<InputRange, Func>::FindIfRange(InputRange const&   input_range,
+                                               Func&&              func,
+                                               FindIf<Func> const& other)
+        : _counter(0),
+          _finished(false),
+          _func(std::move(func)),
+          _input_range(input_range),
+          _input_range_count(other.total()),
+          _mtx(),
+          _number_of_threads(other.number_of_threads()),
+          _race() {
+      Runner::report_prefix("FindIf");
+      _race.report_prefix("FindIf");
+    }
+
+    template <typename InputRange, typename Func>
+    FindIfRange<InputRange, Func>::FindIfRange(InputRange const&   input_range,
+                                               Func const&         func,
+                                               FindIf<Func> const& other)
+        : _counter(0),
+          _finished(false),
+          _func(func),
+          _input_range(input_range),
+          _input_range_count(other.total()),
+          _mtx(),
+          _number_of_threads(other.number_of_threads()),
+          _race() {
+      Runner::report_prefix("FindIf");
+      _race.report_prefix("FindIf");
+    }
+
+    template <typename InputRange, typename Func>
+    FindIfRange<InputRange, Func>::FindIfRange(InputRange&&        input_range,
+                                               Func&&              func,
+                                               FindIf<Func> const& other)
+        : _counter(0),
+          _finished(false),
+          _func(std::move(func)),
+          _input_range(std::move(input_range)),
+          _input_range_count(other.total()),
+          _mtx(),
+          _number_of_threads(other.number_of_threads()),
+          _race() {
+      Runner::report_prefix("FindIf");
+      _race.report_prefix("FindIf");
+    }
+
+    template <typename InputRange, typename Func>
+    FindIfRange<InputRange, Func>::FindIfRange(InputRange&&        input_range,
+                                               Func const&         func,
+                                               FindIf<Func> const& other)
+        : _counter(0),
+          _finished(false),
+          _func(func),
+          _input_range(std::move(input_range)),
+          _input_range_count(other.total()),
+          _mtx(),
+          _number_of_threads(other.number_of_threads()),
+          _race() {
+      Runner::report_prefix("FindIf");
+      _race.report_prefix("FindIf");
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups
