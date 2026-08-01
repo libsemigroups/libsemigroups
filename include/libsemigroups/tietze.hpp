@@ -747,13 +747,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       // TODO implement next, at_end etc
-      [[nodiscard]] std::optional<input_type> get() {
-        Runner::run();
-        if (_race.winner() == nullptr) {
-          return std::nullopt;
-        }
-        return std::static_pointer_cast<FindIfRunner>(_race.winner())->result();
-      }
+      [[nodiscard]] std::optional<input_type> get();
 
       ////////////////////////////////////////////////////////////////////////
       // Settings
@@ -763,15 +757,7 @@ namespace libsemigroups {
         return _number_of_threads;
       }
 
-      FindIfRange& number_of_threads(size_t val) {
-        if (val == 0) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the argument (number of threads) must be at least 1, found {}",
-              val);
-        }
-        _number_of_threads = val;
-        return *this;
-      }
+      FindIfRange& number_of_threads(size_t val);
 
       [[nodiscard]] size_t total() const noexcept {
         return _input_range_count;
@@ -783,69 +769,11 @@ namespace libsemigroups {
       }
 
      private:
-      [[nodiscard]] bool try_get_and_advance(input_reference result) {
-        std::lock_guard lg(_mtx);
-        if (!_input_range.at_end()) {
-          result = _input_range.get();
-          _input_range.next();
-          return true;
-        }
-        return false;
-      }
+      [[nodiscard]] bool try_get_and_advance(input_reference result);
 
-      void report_progress_from_thread() const {
-        using ::libsemigroups::detail::group_digits;
-        using ::libsemigroups::detail::string_time;
-        if (delta(start_time()) >= std::chrono::milliseconds(500)) {
-          if (_input_range_count != std::numeric_limits<size_t>::max()) {
-            size_t count         = _counter.load();
-            auto   num_runs      = group_digits(_input_range_count);
-            auto   elapsed       = delta(start_time());
-            auto   mean_run_time = elapsed / count;
-            auto   estimate      = _input_range_count * mean_run_time;
-            fmt::print("#0: FindIf: {:>{}} / {} ({:>4.1f}%) @ ~{} "
-                       "per run | {:>7} / {:<}\n",
-                       group_digits(count),
-                       num_runs.size(),
-                       num_runs,
-                       static_cast<float>(100 * count) / _input_range_count,
-                       string_time(mean_run_time),
-                       string_time(elapsed),
-                       fmt::format("~{}", string_time(estimate)));
-          } else {
-            size_t count         = _counter.load();
-            auto   elapsed       = delta(start_time());
-            auto   mean_run_time = elapsed / count;
-            fmt::print("#0: FindIf: {} @ ~{} per run | {}\n",
-                       group_digits(count),
-                       string_time(mean_run_time),
-                       string_time(elapsed));
-          }
-        }
-      }
+      void report_progress_from_thread() const;
 
-      void run_impl() override {
-        using std::chrono::duration_cast;
-        using std::chrono::seconds;
-
-        // TODO this is bad if there are already existing runners, i.e. their
-        // function may not be the same as _func
-        while (_race.number_of_runners() < number_of_threads()) {
-          _race.add_runner(std::make_shared<FindIfRunner>(this, _func));
-        }
-
-        Ticker ticker;
-        if ((!running_for()
-             || duration_cast<seconds>(running_for_how_long()) >= seconds(1))) {
-          ticker([this]() { report_progress_from_thread(); });
-        }
-        _race.run_until([this]() { return this->stopped(); });
-
-        // TODO report_after_run();
-        if (_race.finished() || !stopped()) {
-          _finished = true;
-        }
-      }
+      void run_impl() override;
 
       [[nodiscard]] bool finished_impl() const override {
         return _finished;

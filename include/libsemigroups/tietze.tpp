@@ -396,5 +396,95 @@ namespace libsemigroups {
       _race.report_prefix("FindIf");
     }
 
+    template <typename InputRange, typename Func>
+    [[nodiscard]] std::optional<
+        typename FindIfRange<InputRange, Func>::input_type>
+    FindIfRange<InputRange, Func>::get() {
+      Runner::run();
+      if (_race.winner() == nullptr) {
+        return std::nullopt;
+      }
+      return std::static_pointer_cast<FindIfRunner>(_race.winner())->result();
+    }
+
+    template <typename InputRange, typename Func>
+    FindIfRange<InputRange, Func>&
+    FindIfRange<InputRange, Func>::number_of_threads(size_t val) {
+      if (val == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument (number of threads) must be at least 1, found {}",
+            val);
+      }
+      _number_of_threads = val;
+      return *this;
+    }
+
+    template <typename InputRange, typename Func>
+    [[nodiscard]] bool FindIfRange<InputRange, Func>::try_get_and_advance(
+        typename FindIfRange<InputRange, Func>::input_reference result) {
+      std::lock_guard lg(_mtx);
+      if (!_input_range.at_end()) {
+        result = _input_range.get();
+        _input_range.next();
+        return true;
+      }
+      return false;
+    }
+
+    template <typename InputRange, typename Func>
+    void FindIfRange<InputRange, Func>::report_progress_from_thread() const {
+      using ::libsemigroups::detail::group_digits;
+      using ::libsemigroups::detail::string_time;
+      if (delta(start_time()) >= std::chrono::milliseconds(500)) {
+        if (_input_range_count != std::numeric_limits<size_t>::max()) {
+          size_t count         = _counter.load();
+          auto   num_runs      = group_digits(_input_range_count);
+          auto   elapsed       = delta(start_time());
+          auto   mean_run_time = elapsed / count;
+          auto   estimate      = _input_range_count * mean_run_time;
+          fmt::print("#0: FindIf: {:>{}} / {} ({:>4.1f}%) @ ~{} "
+                     "per run | {:>7} / {:<}\n",
+                     group_digits(count),
+                     num_runs.size(),
+                     num_runs,
+                     static_cast<float>(100 * count) / _input_range_count,
+                     string_time(mean_run_time),
+                     string_time(elapsed),
+                     fmt::format("~{}", string_time(estimate)));
+        } else {
+          size_t count         = _counter.load();
+          auto   elapsed       = delta(start_time());
+          auto   mean_run_time = elapsed / count;
+          fmt::print("#0: FindIf: {} @ ~{} per run | {}\n",
+                     group_digits(count),
+                     string_time(mean_run_time),
+                     string_time(elapsed));
+        }
+      }
+    }
+
+    template <typename InputRange, typename Func>
+    void FindIfRange<InputRange, Func>::run_impl() {
+      using std::chrono::duration_cast;
+      using std::chrono::seconds;
+
+      // TODO this is bad if there are already existing runners, i.e. their
+      // function may not be the same as _func
+      while (_race.number_of_runners() < number_of_threads()) {
+        _race.add_runner(std::make_shared<FindIfRunner>(this, _func));
+      }
+
+      Ticker ticker;
+      if ((!running_for()
+           || duration_cast<seconds>(running_for_how_long()) >= seconds(1))) {
+        ticker([this]() { report_progress_from_thread(); });
+      }
+      _race.run_until([this]() { return this->stopped(); });
+
+      // TODO report_after_run();
+      if (_race.finished() || !stopped()) {
+        _finished = true;
+      }
+    }
   }  // namespace detail
 }  // namespace libsemigroups
