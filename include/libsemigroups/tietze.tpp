@@ -16,10 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/tietze.hpp"
 namespace libsemigroups {
 
-  namespace detail {
+  namespace detail {  // TODO use detail:: instead
     ////////////////////////////////////////////////////////////////////////
     // SubwordsRange
     ////////////////////////////////////////////////////////////////////////
@@ -507,4 +506,81 @@ namespace libsemigroups {
     _number_of_threads = val;
     return *this;
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // AllAlphabetOrdersRange
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename InputRange>
+  detail::AllAlphabetOrdersRange<InputRange>::AllAlphabetOrdersRange(
+      InputRange&& input)
+      : _alphabet_orig(), _input(std::move(input)), _perm(), _presentation() {
+    if (!_input.at_end()) {
+      _presentation  = _input.get();
+      _alphabet_orig = _presentation.alphabet();
+      _perm.resize(_alphabet_orig.size());
+      std::iota(_perm.begin(), _perm.end(), 0);
+    }
+  }
+
+  template <typename InputRange>
+  void detail::AllAlphabetOrdersRange<InputRange>::next() {
+    if (std::next_permutation(_perm.begin(), _perm.end())) {
+      std::string alphabet_next;
+      alphabet_next = _alphabet_orig;
+      detail::apply_permutation(alphabet_next, _perm);
+      _presentation.alphabet(alphabet_next);
+      return;
+    }
+    _input.next();
+    if (!_input.at_end()) {
+      _presentation  = _input.get();
+      _alphabet_orig = _presentation.alphabet();
+      _perm.resize(_alphabet_orig.size());
+      std::iota(_perm.begin(), _perm.end(), 0);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // AllAlphabetOrderExtsRange
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename InputRange>
+  detail::AllAlphabetOrderExtsRange<InputRange>::AllAlphabetOrderExtsRange(
+      InputRange&& input)
+      : _get_presentation(), _index(), _input(std::move(input)) {
+    if (!_input.at_end()) {
+      _get_presentation = _input.get();
+      if (!_get_presentation.alphabet().empty()) {
+        _index = _get_presentation.alphabet().size() - 1;
+      } else {
+        _index = 0;
+      }
+    }
+  }
+
+  template <typename InputRange>
+  void detail::AllAlphabetOrderExtsRange<InputRange>::next() {
+    if (at_end()) {
+      return;
+    }
+    if (_index > 0) {
+      _index--;
+      auto new_alphabet = _get_presentation.alphabet();
+      std::swap(new_alphabet[_index], new_alphabet[_index + 1]);
+      _get_presentation.alphabet(new_alphabet);
+      return;
+    }
+    LIBSEMIGROUPS_ASSERT(!_input.at_end());
+    _input.next();
+    if (!_input.at_end()) {
+      _get_presentation = _input.get();
+      if (!_get_presentation.alphabet().empty()) {
+        _index = _get_presentation.alphabet().size() - 1;
+      } else {
+        _index = 0;
+      }
+    }
+  }
+
 }  // namespace libsemigroups

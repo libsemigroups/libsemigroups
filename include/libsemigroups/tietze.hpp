@@ -16,6 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO:
+// * check static_assertions
+
 #ifndef LIBSEMIGROUPS_TIETZE_HPP_
 #define LIBSEMIGROUPS_TIETZE_HPP_
 
@@ -781,6 +784,10 @@ namespace libsemigroups {
     };  // class FindIfRange
   }  // namespace detail
 
+  ////////////////////////////////////////////////////////////////////////
+  // FindIf
+  ////////////////////////////////////////////////////////////////////////
+
   // TODO doc
   template <typename Func>
   class FindIf {
@@ -789,198 +796,231 @@ namespace libsemigroups {
     size_t _input_range_count;
 
    public:
-    FindIf()                         = default;
-    FindIf(FindIf const&)            = default;
-    FindIf(FindIf&&)                 = default;
-    FindIf& operator=(FindIf const&) = default;
-    FindIf& operator=(FindIf&&)      = default;
-    ~FindIf()                        = default;
+    // TODO doc
+    FindIf() = delete;
 
+    // TODO doc
+    FindIf(FindIf const&) = default;
+    // TODO doc
+    FindIf(FindIf&&) = default;
+    // TODO doc
+    FindIf& operator=(FindIf const&) = default;
+    // TODO doc
+    FindIf& operator=(FindIf&&) = default;
+    ~FindIf()                   = default;
+
+    // TODO doc
     explicit FindIf(Func&& func);
 
+    // TODO doc
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) {
       return detail::FindIfRange(std::forward<InputRange>(input), _func, *this);
     }
 
+    // TODO doc
     [[nodiscard]] size_t number_of_threads() const noexcept {
       return _number_of_threads;
     }
 
+    // TODO doc
     FindIf& number_of_threads(size_t val);
 
+    // TODO doc
     [[nodiscard]] size_t total() const noexcept {
       return _input_range_count;
     }
 
+    // TODO doc
     FindIf& total(size_t val) {
       _input_range_count = val;
       return *this;
     }
   };  // class FindIf
 
-  template <typename InputRange>
-  class AllAlphabetOrdersRange {
-    using Word =
-        typename std::decay_t<typename InputRange::output_type>::word_type;
+  ////////////////////////////////////////////////////////////////////////
+  // AllAlphabetOrdersRange
+  ////////////////////////////////////////////////////////////////////////
 
-    Word                _alphabet_orig;
-    InputRange          _input;
-    std::vector<size_t> _perm;
-    Presentation<Word>  _presentation;
+  namespace detail {
+    template <typename InputRange>
+    class AllAlphabetOrdersRange {
+      static_assert(
+          is_specialization_of_v<std::decay_t<typename InputRange::output_type>,
+                                 Presentation>);
 
-   public:
-    ////////////////////////////////////////////////////////////////////////
-    // Aliases
-    ////////////////////////////////////////////////////////////////////////
-    static constexpr bool is_finite     = true;  // TODO depends on InputRange
-    static constexpr bool is_idempotent = true;
-    using output_type                   = Presentation<Word> const&;
+      using Word =
+          typename std::decay_t<typename InputRange::output_type>::word_type;
 
-    explicit AllAlphabetOrdersRange(InputRange&& input)
-        : _alphabet_orig(), _input(std::move(input)), _perm(), _presentation() {
-      if (!_input.at_end()) {
-        _presentation  = _input.get();
-        _alphabet_orig = _presentation.alphabet();
-        _perm.resize(_alphabet_orig.size());
-        std::iota(_perm.begin(), _perm.end(), 0);
+      Word                _alphabet_orig;
+      InputRange          _input;
+      std::vector<size_t> _perm;
+      Presentation<Word>  _presentation;
+
+     public:
+      ////////////////////////////////////////////////////////////////////////
+      // Aliases + static data
+      ////////////////////////////////////////////////////////////////////////
+
+      using output_type = Presentation<Word> const&;
+
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + initializers
+      ////////////////////////////////////////////////////////////////////////
+
+      AllAlphabetOrdersRange()                              = default;
+      AllAlphabetOrdersRange(AllAlphabetOrdersRange const&) = default;
+      AllAlphabetOrdersRange(AllAlphabetOrdersRange&&)      = default;
+      AllAlphabetOrdersRange& operator=(AllAlphabetOrdersRange const&)
+          = default;
+      AllAlphabetOrdersRange& operator=(AllAlphabetOrdersRange&&) = default;
+
+      explicit AllAlphabetOrdersRange(InputRange&& input);
+
+      explicit AllAlphabetOrdersRange(InputRange const& input)
+          : AllAlphabetOrdersRange(InputRange(input)) {}
+
+      ~AllAlphabetOrdersRange() = default;
+
+      ////////////////////////////////////////////////////////////////////////
+      // rx::ranges stuff
+      ////////////////////////////////////////////////////////////////////////
+
+      [[nodiscard]] output_type get() const {
+        return _presentation;
       }
-    }
 
-    explicit AllAlphabetOrdersRange(InputRange const& input)
-        : AllAlphabetOrdersRange(InputRange(input)) {}
+      void next();
 
-    [[nodiscard]] output_type get() const {
-      return _presentation;
-    }
-
-    void next() {
-      if (std::next_permutation(_perm.begin(), _perm.end())) {
-        std::string alphabet_next;
-        alphabet_next = _alphabet_orig;
-        detail::apply_permutation(alphabet_next, _perm);
-        _presentation.alphabet(alphabet_next);
-        return;
+      [[nodiscard]] bool at_end() const {
+        return _input.at_end();
       }
-      _input.next();
-      if (!_input.at_end()) {
-        _presentation  = _input.get();
-        _alphabet_orig = _presentation.alphabet();
-        _perm.resize(_alphabet_orig.size());
-        std::iota(_perm.begin(), _perm.end(), 0);
+
+      [[nodiscard]] size_t size_hint() const {
+        // We opt for 0 instead of std::numeric_limits<size_t>::max() because it
+        // seems that rx::ranges uses this to std::vector::reserve in some
+        // places, and using the max possible value leads to exceptions being
+        // thrown.
+        return 0;
       }
-    }
+    };  // class AllAlphabetOrdersRange
+  }  // namespace detail
 
-    [[nodiscard]] bool at_end() const {
-      return _input.at_end();
-    }
+  ////////////////////////////////////////////////////////////////////////
+  // AllAlphabetOrders
+  ////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] size_t size_hint() const {
-      // We opt for 0 instead of std::numeric_limits<size_t>::max() because it
-      // seems that rx::ranges uses this to std::vector::reserve in some places,
-      // and using the max possible value leads to exceptions being thrown.
-      return 0;
-    }
-  };
-
+  // TODO doc
   struct AllAlphabetOrders {
+    // TODO doc
+    AllAlphabetOrders() = default;
+    // TODO doc
+    AllAlphabetOrders(AllAlphabetOrders const&) = default;
+    // TODO doc
+    AllAlphabetOrders(AllAlphabetOrders&&) = default;
+    // TODO doc
+    AllAlphabetOrders& operator=(AllAlphabetOrders const&) = default;
+    // TODO doc
+    AllAlphabetOrders& operator=(AllAlphabetOrders&&) = default;
+
+    ~AllAlphabetOrders() = default;
+
+    // TODO doc
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      return AllAlphabetOrdersRange(std::forward<InputRange>(input));
+      return detail::AllAlphabetOrdersRange(std::forward<InputRange>(input));
     }
 
+    // TODO doc
     template <typename Word>
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
       return operator()(Singleton(input));
     }
-  };
+  };  // struct AllAlphabetOrders
 
-  template <typename InputRange>
-  class AllAlphabetOrderExtsRange {
-    // TODO static assert
-    using Word =
-        typename std::decay_t<typename InputRange::output_type>::word_type;
+  namespace detail {
+    template <typename InputRange>
+    class AllAlphabetOrderExtsRange {
+      // TODO static assert
+      using Word =
+          typename std::decay_t<typename InputRange::output_type>::word_type;
 
-    Presentation<Word> _get_presentation;
-    size_t             _index;
-    InputRange         _input;
+      Presentation<Word> _get_presentation;
+      size_t             _index;
+      InputRange         _input;
 
-   public:
-    ////////////////////////////////////////////////////////////////////////
-    // Aliases
-    ////////////////////////////////////////////////////////////////////////
-    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
-    using output_type                   = Presentation<Word> const&;
+     public:
+      ////////////////////////////////////////////////////////////////////////
+      // Aliases + static data
+      ////////////////////////////////////////////////////////////////////////
 
-    explicit AllAlphabetOrderExtsRange(InputRange&& input)
-        : _get_presentation(), _index(), _input(std::move(input)) {
-      if (!_input.at_end()) {
-        _get_presentation = _input.get();
-        if (!_get_presentation.alphabet().empty()) {
-          _index = _get_presentation.alphabet().size() - 1;
-        } else {
-          _index = 0;
-        }
+      using output_type = Presentation<Word> const&;
+
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + initializers
+      ////////////////////////////////////////////////////////////////////////
+
+      AllAlphabetOrderExtsRange()                                 = default;
+      AllAlphabetOrderExtsRange(AllAlphabetOrderExtsRange const&) = default;
+      AllAlphabetOrderExtsRange(AllAlphabetOrderExtsRange&&)      = default;
+      AllAlphabetOrderExtsRange& operator=(AllAlphabetOrderExtsRange const&)
+          = default;
+      AllAlphabetOrderExtsRange& operator=(AllAlphabetOrderExtsRange&&)
+          = default;
+
+      ~AllAlphabetOrderExtsRange() = default;
+
+      explicit AllAlphabetOrderExtsRange(InputRange&& input);
+
+      explicit AllAlphabetOrderExtsRange(InputRange const& input)
+          : AllAlphabetOrderExtsRange(InputRange(input)) {}
+
+      ////////////////////////////////////////////////////////////////////////
+      // rx::ranges stuff
+      ////////////////////////////////////////////////////////////////////////
+
+      [[nodiscard]] output_type get() const {
+        return _get_presentation;
       }
-    }
 
-    explicit AllAlphabetOrderExtsRange(InputRange const& input)
-        : AllAlphabetOrderExtsRange(InputRange(input)) {}
+      void next();
 
-    [[nodiscard]] output_type get() const {
-      return _get_presentation;
-    }
-
-    void next() {
-      if (at_end()) {
-        return;
+      [[nodiscard]] bool at_end() const {
+        return _input.at_end();
       }
-      if (_index > 0) {
-        _index--;
-        auto new_alphabet = _get_presentation.alphabet();
-        std::swap(new_alphabet[_index], new_alphabet[_index + 1]);
-        _get_presentation.alphabet(new_alphabet);
-        return;
-      }
-      LIBSEMIGROUPS_ASSERT(!_input.at_end());
-      _input.next();
-      if (!_input.at_end()) {
-        _get_presentation = _input.get();
-        if (!_get_presentation.alphabet().empty()) {
-          _index = _get_presentation.alphabet().size() - 1;
-        } else {
-          _index = 0;
-        }
-      }
-    }
 
-    [[nodiscard]] bool at_end() const {
-      return _input.at_end();
-    }
-
-    [[nodiscard]] size_t size_hint() const {
-      // Can't guess this because we don't know what _input might contain.
-      // We opt for 0 instead of std::numeric_limits<size_t>::max() because it
-      // seems that rx::ranges uses this to std::vector::reserve in some places,
-      // and using the max possible value leads to exceptions being thrown.
-      return 0;
-    }
-  };
+      [[nodiscard]] size_t size_hint() const {
+        // Can't guess this because we don't know what _input might contain.
+        // We opt for 0 instead of std::numeric_limits<size_t>::max() because it
+        // seems that rx::ranges uses this to std::vector::reserve in some
+        // places, and using the max possible value leads to exceptions being
+        // thrown.
+        return 0;
+      }
+    };
+    // class AllAlphabetOrderExtsRange
+  }  // namespace detail
 
   struct AllAlphabetOrderExts {
+    // TODO static assert
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      return AllAlphabetOrderExtsRange(std::forward<InputRange>(input));
+      return detail::AllAlphabetOrderExtsRange(std::forward<InputRange>(input));
     }
 
     template <typename Word>
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
       return operator()(Singleton(input));
     }
-  };
+  };  // struct AllAlphabetOrderExts
 
   ////////////////////////////////////////////////////////////////////////
   // PedersenPestov
