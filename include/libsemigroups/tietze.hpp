@@ -59,7 +59,7 @@ namespace libsemigroups {
   class SubwordsFreq;
 
   template <typename Func>
-  struct FindIf;
+  class FindIf;
 
   namespace detail {
 
@@ -781,17 +781,22 @@ namespace libsemigroups {
     };  // class FindIfRange
   }  // namespace detail
 
-  // TODO struct -> class
+  // TODO doc
   template <typename Func>
-  struct FindIf {
+  class FindIf {
     Func   _func;
     size_t _number_of_threads;
     size_t _input_range_count;
 
-    explicit FindIf(Func&& func)
-        : _func(std::forward<Func>(func)),
-          _number_of_threads(1),
-          _input_range_count(std::numeric_limits<size_t>::max()) {}
+   public:
+    FindIf()                         = default;
+    FindIf(FindIf const&)            = default;
+    FindIf(FindIf&&)                 = default;
+    FindIf& operator=(FindIf const&) = default;
+    FindIf& operator=(FindIf&&)      = default;
+    ~FindIf()                        = default;
+
+    explicit FindIf(Func&& func);
 
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) {
@@ -802,15 +807,7 @@ namespace libsemigroups {
       return _number_of_threads;
     }
 
-    FindIf& number_of_threads(size_t val) {
-      if (val == 0) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the argument (number of threads) must be at least 1, found {}",
-            val);
-      }
-      _number_of_threads = val;
-      return *this;
-    }
+    FindIf& number_of_threads(size_t val);
 
     [[nodiscard]] size_t total() const noexcept {
       return _input_range_count;
@@ -820,7 +817,7 @@ namespace libsemigroups {
       _input_range_count = val;
       return *this;
     }
-  };
+  };  // class FindIf
 
   template <typename InputRange>
   class AllAlphabetOrdersRange {

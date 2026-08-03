@@ -487,4 +487,24 @@ namespace libsemigroups {
       }
     }
   }  // namespace detail
+
+  ////////////////////////////////////////////////////////////////////////
+  // FindIf
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Func>
+  FindIf<Func>::FindIf(Func&& func)
+      : _func(std::forward<Func>(func)),
+        _number_of_threads(1),
+        _input_range_count(std::numeric_limits<size_t>::max()) {}
+
+  template <typename Func>
+  FindIf<Func>& FindIf<Func>::number_of_threads(size_t val) {
+    if (val == 0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (number of threads) must be at least 1, found {}", val);
+    }
+    _number_of_threads = val;
+    return *this;
+  }
 }  // namespace libsemigroups
