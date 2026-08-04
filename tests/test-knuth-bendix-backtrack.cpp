@@ -20,12 +20,22 @@
 #include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, oper...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/presentation.hpp"  // for add_rule
+#include <type_traits>  // for is_default_constructible_v, is_copy_constructi...
 
-#include "libsemigroups/detail/knuth-bendix-backtrack-impl.hpp"  // for ValueGuard::Va...
+#include "libsemigroups/presentation.hpp"  // for Presentation, presentation...
+
+#include "libsemigroups/detail/knuth-bendix-backtrack-impl.hpp"  // for Knuth...
 
 namespace libsemigroups {
   using literals::operator""_w;
+
+  using KnuthBendixBacktrack = detail::KnuthBendixBacktrack;
+
+  static_assert(!std::is_default_constructible_v<KnuthBendixBacktrack>);
+  static_assert(std::is_copy_constructible_v<KnuthBendixBacktrack>);
+  static_assert(std::is_move_constructible_v<KnuthBendixBacktrack>);
+  static_assert(!std::is_copy_assignable_v<KnuthBendixBacktrack>);
+  static_assert(!std::is_move_assignable_v<KnuthBendixBacktrack>);
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
                           "000",
@@ -133,6 +143,64 @@ namespace libsemigroups {
     ++kbb;
     expected.rules = {"b", "a"};
     REQUIRE(*kbb == expected);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+                          "002",
+                          "constructors",
+                          "[quick]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "a", "b");
+
+    KnuthBendixBacktrack kbb(p, 100, 10);
+    KnuthBendixBacktrack copy(kbb);
+    REQUIRE(copy == kbb);
+    REQUIRE(*copy == *kbb);
+    REQUIRE(copy.operator->() != kbb.operator->());
+
+    KnuthBendixBacktrack moved(std::move(copy));
+    REQUIRE(moved == kbb);
+    REQUIRE(*moved == *kbb);
+
+    p.alphabet("abc");
+    presentation::add_rule(p, "b", "c");
+    REQUIRE(kbb->alphabet() == "ab");
+    REQUIRE(kbb->rules == std::vector<std::string>{"a", "b"});
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+                          "003",
+                          "accessors and comparison",
+                          "[quick]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "a", "b");
+
+    KnuthBendixBacktrack kbb_1(p, 100, 10);
+    KnuthBendixBacktrack kbb_2(p, 100, 10);
+    KnuthBendixBacktrack kbb_3(p, 101, 10);
+
+    auto const& presentation = *kbb_1;
+    REQUIRE(kbb_1.operator->() == &presentation);
+    REQUIRE(kbb_1->alphabet() == "ab");
+    REQUIRE(kbb_1->rules == std::vector<std::string>{"a", "b"});
+
+    REQUIRE(kbb_1 == kbb_2);
+    REQUIRE(!(kbb_1 != kbb_2));
+    REQUIRE(kbb_1 != kbb_3);
+    REQUIRE(!(kbb_1 == kbb_3));
+
+    // Forward iterator multi-pass guarantee
+    kbb_1++;
+    kbb_2++;
+    REQUIRE(kbb_1 == kbb_2);
+    bool res{((void) [](auto x) { ++x; }(kbb_1), *kbb_1) == *kbb_1};
+    REQUIRE(res);
+
+    auto const before = kbb_1++;
+    REQUIRE(before == kbb_2);
+    REQUIRE(before != kbb_1);
   }
 
 }  // namespace libsemigroups
