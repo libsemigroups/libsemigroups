@@ -55,7 +55,10 @@
 // * out of line
 
 namespace libsemigroups {
-  // forward decls
+  ////////////////////////////////////////////////////////////////////////
+  // Forward decls
+  ////////////////////////////////////////////////////////////////////////
+
   class Subwords;
 
   template <typename Score>
@@ -1004,8 +1007,7 @@ namespace libsemigroups {
         // thrown.
         return 0;
       }
-    };
-    // class AllAlphabetOrderExtsRange
+    };  // class AllAlphabetOrderExtsRange
   }  // namespace detail
 
   struct AllAlphabetOrderExts {
@@ -1023,7 +1025,7 @@ namespace libsemigroups {
   };  // struct AllAlphabetOrderExts
 
   ////////////////////////////////////////////////////////////////////////
-  // PedersenPestov
+  // PedersenPestovRange
   ////////////////////////////////////////////////////////////////////////
 
   template <size_t Depth,
