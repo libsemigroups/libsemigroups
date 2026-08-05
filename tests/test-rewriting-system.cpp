@@ -582,5 +582,38 @@ namespace libsemigroups {
       // rws.reduce();
     }
 
+    LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
+                                     "020",
+                                     "max_rewriting_depth",
+                                     "[quick]",
+                                     RewritingSystemSet<LenLexCmp>,
+                                     RewritingSystemTrie<LenLexCmp>) {
+      auto     rg = ReportGuard(false);
+      TestType rws;
+      REQUIRE(rws.settings().max_rewriting_depth == POSITIVE_INFINITY);
+      rws.increase_alphabet_size_by(1);
+      rewriting_system::add_rule(rws, "aa"_w, "a"_w);
+
+      // words that require 9 rewrite steps
+      string_type word1{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+      string_type word2(word1);
+      string_type word3(word1);
+      string_type word4(word1);
+
+      // word that requires 8 rewrite steps
+      string_type word5{0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+      REQUIRE_NOTHROW(rws.rewrite(word1));
+
+      rws.settings().max_rewriting_depth = 10;
+      REQUIRE_NOTHROW(rws.rewrite(word2));
+
+      rws.settings().max_rewriting_depth = 9;
+      REQUIRE_NOTHROW(rws.rewrite(word3));
+
+      rws.settings().max_rewriting_depth = 8;
+      REQUIRE_THROWS_AS(rws.rewrite(word4), LibsemigroupsException);
+      REQUIRE_NOTHROW(rws.rewrite(word5));
+    }
   }  // namespace detail
 }  // namespace libsemigroups

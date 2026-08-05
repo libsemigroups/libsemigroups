@@ -290,7 +290,8 @@ namespace libsemigroups::detail {
     }
 
     // position of the start of the unread suffix of the input word
-    size_t pos = n - 1;
+    size_t pos                = n - 1;
+    size_t number_of_rewrites = 0;
 
     RuleLookup lookup;
 
@@ -303,6 +304,13 @@ namespace libsemigroups::detail {
         // lookup in _set_rules doesn't necessarily mean that we have found a
         // rule whose lhs is contained in [v.begin(), v.begin() + pos), that's
         // why we do the second check in the if-condition above.
+        ++number_of_rewrites;
+        if (number_of_rewrites
+            > RewritingSystemBase::settings().max_rewriting_depth) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "rewriting has exceeded the maximum rewrite depth, {}",
+              RewritingSystemBase::settings().max_rewriting_depth);
+        }
         Rule const* rule = (*it).rule();
         LIBSEMIGROUPS_ASSERT(is_suffix(v.begin(),
                                        v.begin() + pos,
@@ -804,6 +812,7 @@ namespace libsemigroups::detail {
     //    }
 
     // NEW VERSION
+    size_t number_of_rewrites = 0;
     _trie_nodes_visited_indices.clear();
     index_type current = _rule_trie.root;
     _trie_nodes_visited_indices.push_back(current);
@@ -820,6 +829,13 @@ namespace libsemigroups::detail {
         _trie_nodes_visited_indices.push_back(current);
         pos++;
       } else {
+        ++number_of_rewrites;
+        if (number_of_rewrites
+            > RewritingSystemBase::settings().max_rewriting_depth) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "rewriting has exceeded the maximum rewrite depth, {}",
+              RewritingSystemBase::settings().max_rewriting_depth);
+        }
         // Everything here is off by one because we read everything up to and
         // including the pos-th character in "v"
         Rule const* rule = _rule_trie.node_no_checks(current).value();
