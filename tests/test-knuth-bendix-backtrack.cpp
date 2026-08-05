@@ -22,13 +22,17 @@
 
 #include <type_traits>  // for is_default_constructible_v, is_copy_constructi...
 
+#include "libsemigroups/adapters.hpp"      // for ReturnFalse
 #include "libsemigroups/presentation.hpp"  // for Presentation, presentation...
 
 #include "libsemigroups/detail/knuth-bendix-backtrack-impl.hpp"  // for Knuth...
+#include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemTrie
 
 namespace libsemigroups {
   using literals::operator""_w;
 
+  template <typename = Default, bool = false>
+  using NoOrder              = ReturnFalse;
   using KnuthBendixBacktrack = detail::KnuthBendixBacktrack;
 
   static_assert(!std::is_default_constructible_v<KnuthBendixBacktrack>);
@@ -41,6 +45,8 @@ namespace libsemigroups {
                           "000",
                           "simple test 0",
                           "[quick]") {
+    ReportGuard rg(false);
+
     Presentation<std::string> p;
     p.alphabet("abc");
     presentation::add_rule(p, "baa", "c");
@@ -129,6 +135,8 @@ namespace libsemigroups {
                           "001",
                           "simple test 1",
                           "[quick]") {
+    ReportGuard rg(false);
+
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "a", "b");
@@ -149,6 +157,8 @@ namespace libsemigroups {
                           "002",
                           "constructors",
                           "[quick]") {
+    ReportGuard rg(false);
+
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "a", "b");
@@ -173,6 +183,8 @@ namespace libsemigroups {
                           "003",
                           "accessors and comparison",
                           "[quick]") {
+    ReportGuard rg(false);
+
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "a", "b");
@@ -201,6 +213,49 @@ namespace libsemigroups {
     auto const before = kbb_1++;
     REQUIRE(before == kbb_2);
     REQUIRE(before != kbb_1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+                          "004",
+                          "confluence",
+                          "[quick]") {
+    ReportGuard               rg(false);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule(p, "baa", "c");
+    presentation::add_rule(p, "aba", "cc");
+
+    v4::ToWord to_word("abc");
+
+    detail::KnuthBendixBacktrack         kbb(p, 100, 20);
+    detail::RewritingSystemTrie<NoOrder> rws1;
+    rws1.increase_alphabet_size_by(3);
+
+    for (size_t i = 0; i < kbb->rules.size(); i += 2) {
+      detail::rewriting_system::add_rule(
+          rws1, to_word(kbb->rules[i]), to_word(kbb->rules[i + 1]));
+    }
+    REQUIRE(rws1.confluent());
+
+    ++kbb;
+    detail::RewritingSystemTrie<NoOrder> rws2;
+    rws2.increase_alphabet_size_by(3);
+
+    for (size_t i = 0; i < kbb->rules.size(); i += 2) {
+      detail::rewriting_system::add_rule(
+          rws2, to_word(kbb->rules[i]), to_word(kbb->rules[i + 1]));
+    }
+    REQUIRE(rws2.confluent());
+
+    ++kbb;
+    detail::RewritingSystemTrie<NoOrder> rws3;
+    rws3.increase_alphabet_size_by(3);
+
+    for (size_t i = 0; i < kbb->rules.size(); i += 2) {
+      detail::rewriting_system::add_rule(
+          rws3, to_word(kbb->rules[i]), to_word(kbb->rules[i + 1]));
+    }
+    REQUIRE(rws3.confluent());
   }
 
 }  // namespace libsemigroups
