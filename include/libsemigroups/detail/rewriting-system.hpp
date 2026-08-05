@@ -31,11 +31,12 @@
 #include <type_traits>    // for enable_if_t, is_same_v
 #include <unordered_map>  // for unordered_map
 
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/order.hpp"   // for lenlex_cmp
-#include "libsemigroups/runner.hpp"  // for delta
-#include "libsemigroups/types.hpp"   // for u8string
+#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGRUOPS_EXCEPTION
+#include "libsemigroups/order.hpp"      // for lenlex_cmp
+#include "libsemigroups/runner.hpp"     // for delta
+#include "libsemigroups/types.hpp"      // for u8string
 
 #include "aho-corasick-impl.hpp"  // for AhoCorasickImpl
 #include "multi-view.hpp"         // for MultiView
@@ -59,6 +60,7 @@ namespace libsemigroups {
      private:
       struct Settings {
         size_t reduction_threshold = 128;
+        size_t max_rewriting_depth = POSITIVE_INFINITY;
       };
 
       mutable std::atomic<bool>                     _cached_confluent;
