@@ -468,12 +468,14 @@ namespace libsemigroups {
       REQUIRE(other_other_copy.trie().number_of_nodes() == 1);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystem",
-                            "015",
-                            "is_terminating",
-                            "[quick]") {
-      auto                         rg = ReportGuard(false);
-      RewritingSystemTrie<NoOrder> rws;
+    LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
+                                     "015",
+                                     "is_terminating",
+                                     "[quick]",
+                                     RewritingSystemSet<NoOrder>,
+                                     RewritingSystemTrie<NoOrder>) {
+      auto     rg = ReportGuard(false);
+      TestType rws;
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "bbb"_w, "aa"_w);
       rewriting_system::add_rule(rws, "bbb"_w, "ccc"_w);
@@ -563,12 +565,14 @@ namespace libsemigroups {
                | rx::to_vector())
               == std::vector<rule_type>({{{1, 2}, {0, 2}}}));
     }
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystem",
-                            "019",
-                            "is_terminating x2",
-                            "[quick]") {
-      auto                         rg = ReportGuard(false);
-      RewritingSystemTrie<NoOrder> rws;
+    LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
+                                     "019",
+                                     "is_terminating x2",
+                                     "[quick]",
+                                     RewritingSystemSet<NoOrder>,
+                                     RewritingSystemTrie<NoOrder>) {
+      auto     rg = ReportGuard(false);
+      TestType rws;
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "aa"_w, "bab"_w);
       rewriting_system::add_rule(rws, "ab"_w, "aa"_w);
