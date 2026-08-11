@@ -29,6 +29,61 @@ namespace libsemigroups::detail {
     return *this;
   }
 
+  template <template <typename, bool> typename ReductionOrder>
+  tril RewritingSystemBaseWithOrder<
+      ReductionOrder>::is_length_non_increasing_no_reduce() const noexcept {
+    if constexpr (order::is_length_non_increasing_v<
+                      ReductionOrder<Default, true>>) {
+      RewritingSystemBase::set_cached_terminating(tril::TRUE);
+      return tril::TRUE;
+    }
+
+    if (RewritingSystemBase::is_reduced() != tril::TRUE) {
+      return tril::unknown;
+    }
+
+    for (auto const& rule : RewritingSystemBase::rules()) {
+      if (rule.first.size() < rule.second.size()) {
+        return tril::FALSE;
+      }
+    }
+
+    return tril::TRUE;
+  }
+
+  template <template <typename, bool> typename ReductionOrder>
+  tril RewritingSystemBaseWithOrder<ReductionOrder>::is_terminating_no_reduce()
+      const noexcept {
+    if (RewritingSystemBase::terminating_known()) {
+      if (RewritingSystemBase::cached_terminating() == true) {
+        return tril::TRUE;
+      }
+      return tril::FALSE;
+    }
+
+    tril result = tril::unknown;
+
+    if constexpr (order::is_well_founded_v<ReductionOrder<Default, true>>) {
+      result = tril::TRUE;
+    } else if (is_length_non_increasing_no_reduce() == tril::TRUE) {
+      result = tril::TRUE;
+    } else {
+      for (auto const& rule : RewritingSystemBase::rules()) {
+        if (std::search(rule.second.begin(),
+                        rule.second.end(),
+                        rule.first.begin(),
+                        rule.first.end())
+            != rule.second.end()) {
+          result = tril::FALSE;
+          break;
+        }
+      }
+    }
+
+    RewritingSystemBase::set_cached_terminating(result);
+    return result;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // RewritingSystemSet --- Constructors + initializers
   ////////////////////////////////////////////////////////////////////////
@@ -73,6 +128,7 @@ namespace libsemigroups::detail {
                                                Iterator last2) {
     if (!std::equal(first1, last1, first2, last2)) {
       RewritingSystemBase::set_cached_confluent(tril::unknown);
+      RewritingSystemBase::set_cached_terminating(tril::unknown);
       Rule* rule = Rules::add_pending_rule(first1, last1, first2, last2);
       RewritingSystemBaseWithOrder_::reorder(rule);
       // The left-hand-side of a rule must not be empty; otherwise, bad things
@@ -88,7 +144,41 @@ namespace libsemigroups::detail {
   }
 
   template <template <typename, bool> typename ReductionOrder>
+  bool RewritingSystemSet<ReductionOrder>::is_length_non_increasing() noexcept {
+    if constexpr (order::is_length_non_increasing_v<
+                      ReductionOrder<Default, true>>) {
+      RewritingSystemBase::set_cached_terminating(tril::TRUE);
+      return true;
+    }
+
+    reduce();
+    return RewritingSystemBaseWithOrder_::is_length_non_increasing_no_reduce()
+           == tril::TRUE;
+  }
+
+  template <template <typename, bool> typename ReductionOrder>
+  tril RewritingSystemSet<ReductionOrder>::is_terminating() noexcept {
+    if constexpr (order::is_well_founded_v<ReductionOrder<Default, true>>) {
+      RewritingSystemBase::set_cached_terminating(tril::TRUE);
+      return tril::TRUE;
+    }
+    tril result = RewritingSystemBaseWithOrder_::is_terminating_no_reduce();
+    if (result == tril::unknown) {
+      reduce();
+      result = RewritingSystemBaseWithOrder_::is_terminating_no_reduce();
+    }
+    return result;
+  }
+
+  template <template <typename, bool> typename ReductionOrder>
   bool RewritingSystemSet<ReductionOrder>::reduce() {
+    // If a system is not terminating, then reduction might make it terminating,
+    // provided it can actually finish!
+    if (RewritingSystemBase::terminating_known()
+        && !RewritingSystemBase::cached_terminating()) {
+      RewritingSystemBase::set_cached_terminating(tril::unknown);
+    }
+
     RewritingSystemBase::sort_pending_rules();
 
     auto   start_time = std::chrono::high_resolution_clock::now();
@@ -174,6 +264,7 @@ namespace libsemigroups::detail {
 #endif
     LIBSEMIGROUPS_ASSERT(_set_rules.size() == Rules::active_rules().size());
     RewritingSystemBase::set_cached_confluent(tril::unknown);
+    RewritingSystemBase::set_cached_terminating(tril::unknown);
   }
 
   template <template <typename, bool> typename ReductionOrder>
@@ -258,8 +349,8 @@ namespace libsemigroups::detail {
           }
           // TODO(1): Remove duplication between this and
           // RewritingSystemTrie::overlap_confluent
-          // Find longest common prefix of suffix B of rule1.lhs() defined by it
-          // and R = rule2.lhs()
+          // Find longest common prefix of suffix B of rule1.lhs() defined by
+          // it and R = rule2.lhs()
           auto prefix = maximum_common_prefix(it,
                                               rule1->lhs().cend(),
                                               rule2->lhs().cbegin(),
@@ -397,10 +488,8 @@ namespace libsemigroups::detail {
   template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>::RewritingSystemTrie()
       : RewritingSystemBaseWithOrder_(),
-        _cached_terminating(false),
         _new_rule_trie(),
         _rule_trie(0),
-        _terminating_known(false),
         _ticker_running(false),
         _trie_nodes_visited_indices() {}
 
@@ -409,10 +498,8 @@ namespace libsemigroups::detail {
   RewritingSystemTrie<ReductionOrder>::init() {
     // Do nothing to _trie_nodes_visited_indices, or _new_rule_trie
     RewritingSystemBaseWithOrder_::init();
-    _cached_terminating = false;
     _rule_trie.init();
-    _terminating_known = false;
-    _ticker_running    = false;
+    _ticker_running = false;
     return *this;
   }
 
@@ -422,15 +509,13 @@ namespace libsemigroups::detail {
       RewritingSystemTrie const& that) {
     init();
     RewritingSystemBaseWithOrder_::operator=(that);
-    // Cannot just copy the _rule_trie because the values in it are Rule* which
-    // would then point at Rule objects in "that" not "this".
+    // Cannot just copy the _rule_trie because the values in it are Rule*
+    // which would then point at Rule objects in "that" not "this".
     _rule_trie.init().increase_alphabet_size_by(
         that._rule_trie.alphabet_size());
     for (Rule* rule : Rules::active_rules()) {
       _rule_trie.insert_no_checks(rule->lhs(), rule);
     }
-    _cached_terminating = that._cached_terminating;
-    _terminating_known  = that._terminating_known;
     return *this;
   }
 
@@ -454,7 +539,7 @@ namespace libsemigroups::detail {
       Rule* rule = Rules::add_pending_rule(first1, last1, first2, last2);
       RewritingSystemBaseWithOrder_::reorder(rule);
       RewritingSystemBase::set_cached_confluent(tril::unknown);
-      set_cached_terminating(tril::unknown);
+      RewritingSystemBase::set_cached_terminating(tril::unknown);
       if (!RewritingSystemBase::active_rules().empty()
           && RewritingSystemBase::pending_rules().size()
                  > RewritingSystemBase::settings().reduction_threshold) {
@@ -467,83 +552,29 @@ namespace libsemigroups::detail {
   }
 
   template <template <typename, bool> typename ReductionOrder>
-  tril RewritingSystemTrie<ReductionOrder>::is_length_non_increasing_no_reduce()
-      const noexcept {
-    if constexpr (order::is_length_non_increasing_v<
-                      ReductionOrder<Default, true>>) {
-      set_cached_terminating(tril::TRUE);
-      return tril::TRUE;
-    }
-
-    if (RewritingSystemBase::is_reduced() != tril::TRUE) {
-      return tril::unknown;
-    }
-
-    for (auto const& rule : RewritingSystemBase::rules()) {
-      if (rule.first.size() < rule.second.size()) {
-        return tril::FALSE;
-      }
-    }
-
-    return tril::TRUE;
-  }
-
-  template <template <typename, bool> typename ReductionOrder>
   bool
   RewritingSystemTrie<ReductionOrder>::is_length_non_increasing() noexcept {
     if constexpr (order::is_length_non_increasing_v<
                       ReductionOrder<Default, true>>) {
-      set_cached_terminating(tril::TRUE);
+      RewritingSystemBase::set_cached_terminating(tril::TRUE);
       return true;
     }
 
     reduce();
-    return is_length_non_increasing_no_reduce() == tril::TRUE;
-  }
-
-  template <template <typename, bool> typename ReductionOrder>
-  tril RewritingSystemTrie<ReductionOrder>::is_terminating_no_reduce()
-      const noexcept {
-    if (_terminating_known) {
-      if (_cached_terminating == true) {
-        return tril::TRUE;
-      }
-      return tril::FALSE;
-    }
-
-    tril result = tril::unknown;
-
-    if constexpr (order::is_well_founded_v<ReductionOrder<Default, true>>) {
-      result = tril::TRUE;
-    } else if (is_length_non_increasing_no_reduce() == tril::TRUE) {
-      result = tril::TRUE;
-    } else {
-      for (auto const& rule : RewritingSystemBase::rules()) {
-        if (std::search(rule.second.begin(),
-                        rule.second.end(),
-                        rule.first.begin(),
-                        rule.first.end())
-            != rule.second.end()) {
-          result = tril::FALSE;
-          break;
-        }
-      }
-    }
-
-    set_cached_terminating(result);
-    return result;
+    return RewritingSystemBaseWithOrder_::is_length_non_increasing_no_reduce()
+           == tril::TRUE;
   }
 
   template <template <typename, bool> typename ReductionOrder>
   tril RewritingSystemTrie<ReductionOrder>::is_terminating() noexcept {
     if constexpr (order::is_well_founded_v<ReductionOrder<Default, true>>) {
-      set_cached_terminating(tril::TRUE);
+      RewritingSystemBase::set_cached_terminating(tril::TRUE);
       return tril::TRUE;
     }
-    tril result = is_terminating_no_reduce();
+    tril result = RewritingSystemBaseWithOrder_::is_terminating_no_reduce();
     if (result == tril::unknown) {
       reduce();
-      result = is_terminating_no_reduce();
+      result = RewritingSystemBaseWithOrder_::is_terminating_no_reduce();
     }
     return result;
   }
@@ -555,8 +586,9 @@ namespace libsemigroups::detail {
 
     // If a system is not terminating, then reduction might make it terminating,
     // provided it can actually finish!
-    if (_terminating_known && !_cached_terminating) {
-      set_cached_terminating(tril::unknown);
+    if (RewritingSystemBase::terminating_known()
+        && !RewritingSystemBase::cached_terminating()) {
+      RewritingSystemBase::set_cached_terminating(tril::unknown);
     }
 
     auto                 start_time = std::chrono::high_resolution_clock::now();
@@ -681,7 +713,7 @@ namespace libsemigroups::detail {
     _rule_trie.emplace_no_checks(
         new_rule->lhs().cbegin(), new_rule->lhs().cend(), new_rule);
     RewritingSystemBase::set_cached_confluent(tril::unknown);
-    set_cached_terminating(tril::unknown);
+    RewritingSystemBase::set_cached_terminating(tril::unknown);
   }
 
   template <template <typename, bool> typename ReductionOrder>
@@ -689,9 +721,6 @@ namespace libsemigroups::detail {
   RewritingSystemTrie<ReductionOrder>::make_active_rule_pending(iterator it) {
     _rule_trie.erase_no_checks((*it)->lhs());
     return Rules::make_active_rule_pending(it);
-    if (_terminating_known && !_cached_terminating) {
-      set_cached_terminating(tril::unknown);
-    }
   }
 
   template <template <typename, bool> typename ReductionOrder>
@@ -805,20 +834,6 @@ namespace libsemigroups::detail {
       }
     }
     // fmt::print("{}\n", to_printable(v));
-  }
-
-  template <template <typename, bool> typename ReductionOrder>
-  void
-  RewritingSystemTrie<ReductionOrder>::set_cached_terminating(tril val) const {
-    if (val == tril::TRUE) {
-      _terminating_known  = true;
-      _cached_terminating = true;
-    } else if (val == tril::FALSE) {
-      _terminating_known  = true;
-      _cached_terminating = false;
-    } else {
-      _terminating_known = false;
-    }
   }
 
   ////////////////////////////////////////////////////////////////////////

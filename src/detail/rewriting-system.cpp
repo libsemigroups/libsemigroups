@@ -52,17 +52,21 @@ namespace libsemigroups {
 
     RewritingSystemBase::RewritingSystemBase()
         : _cached_confluent(false),
+          _cached_terminating(false),
           _confluence_known(false),
           _pending_rules_comparator(lhs_lex_cmp),
+          _terminating_known(false),
           _state(State::none),
           _ticker_running(false) {}
 
     RewritingSystemBase& RewritingSystemBase::init() {
       Rules::init();
       _cached_confluent         = false;
+      _cached_terminating       = false;
       _confluence_known         = false;
       _pending_rules_comparator = lhs_lex_cmp;
       _state                    = State::none;
+      _terminating_known        = false;
       _ticker_running           = false;
       return *this;
     }
@@ -71,10 +75,12 @@ namespace libsemigroups {
     RewritingSystemBase::operator=(RewritingSystemBase const& that) {
       Rules::operator=(that);
       _cached_confluent         = that._cached_confluent.load();
+      _cached_terminating       = that._cached_terminating;
       _confluence_known         = that._confluence_known.load();
       _pending_rules_comparator = that._pending_rules_comparator;
       _state                    = that._state;
       _ticker_running           = that._ticker_running;
+      _terminating_known        = that._terminating_known;
 
       return *this;
     }
@@ -83,10 +89,12 @@ namespace libsemigroups {
     RewritingSystemBase::operator=(RewritingSystemBase&& that) {
       Rules::operator=(std::move(that));
       _cached_confluent         = that._cached_confluent.load();
+      _cached_terminating       = that._cached_terminating;
       _confluence_known         = that._confluence_known.load();
       _pending_rules_comparator = std::move(that._pending_rules_comparator);
       _state                    = that._state;
       _ticker_running           = std::move(that._ticker_running);
+      _terminating_known        = that._terminating_known;
       return *this;
     }
 
@@ -112,6 +120,18 @@ namespace libsemigroups {
         _cached_confluent = false;
       } else {
         _confluence_known = false;
+      }
+    }
+
+    void RewritingSystemBase::set_cached_terminating(tril val) const {
+      if (val == tril::TRUE) {
+        _terminating_known  = true;
+        _cached_terminating = true;
+      } else if (val == tril::FALSE) {
+        _terminating_known  = true;
+        _cached_terminating = false;
+      } else {
+        _terminating_known = false;
       }
     }
 

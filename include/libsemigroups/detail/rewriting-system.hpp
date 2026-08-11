@@ -62,9 +62,11 @@ namespace libsemigroups {
       };
 
       mutable std::atomic<bool>                     _cached_confluent;
+      mutable bool                                  _cached_terminating;
       mutable std::atomic<bool>                     _confluence_known;
       Settings                                      _settings;
       std::function<bool(Rule const*, Rule const*)> _pending_rules_comparator;
+      mutable bool                                  _terminating_known;
 
      protected:
       enum class State : uint8_t {
@@ -155,6 +157,10 @@ namespace libsemigroups {
         return _settings;
       }
 
+      [[nodiscard]] bool terminating_known() const {
+        return _terminating_known;
+      }
+
      protected:
       void sort_pending_rules();
 
@@ -165,7 +171,13 @@ namespace libsemigroups {
         return _cached_confluent;
       }
 
+      bool cached_terminating() const noexcept {
+        return _cached_terminating;
+      }
+
       void set_cached_confluent(tril val) const;
+
+      void set_cached_terminating(tril val) const;
 
       ////////////////////////////////////////////////////////////////////////
       // Member functions - protected
@@ -245,6 +257,10 @@ namespace libsemigroups {
           std::swap(rule->lhs(), rule->rhs());
         }
       }
+
+      [[nodiscard]] tril is_length_non_increasing_no_reduce() const noexcept;
+
+      [[nodiscard]] tril is_terminating_no_reduce() const noexcept;
     };  // class RewritingSystemBaseWithOrder
 
     ////////////////////////////////////////////////////////////////////////
@@ -355,6 +371,11 @@ namespace libsemigroups {
 
       [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
 
+      // Might never terminate if rws.reduce() doesn't terminate
+      [[nodiscard]] bool is_length_non_increasing() noexcept;
+
+      [[nodiscard]] tril is_terminating() noexcept;
+
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
       bool reduce();
@@ -409,11 +430,9 @@ namespace libsemigroups {
       // Private data
       ////////////////////////////////////////////////////////////////////////
 
-      mutable bool                                    _cached_terminating;
       Trie                                            _new_rule_trie;
       std::function<bool(RewritingSystemTrie const&)> _use_new_rule_trie;
       Trie                                            _rule_trie;
-      mutable bool                                    _terminating_known;
       bool                                            _ticker_running;
       mutable std::vector<index_type> _trie_nodes_visited_indices;
 
@@ -470,16 +489,12 @@ namespace libsemigroups {
         return *this;
       }
 
-      [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
-
       // Might never terminate if rws.reduce() doesn't terminate
       [[nodiscard]] bool is_length_non_increasing() noexcept;
 
-      [[nodiscard]] tril is_length_non_increasing_no_reduce() const noexcept;
-
       [[nodiscard]] tril is_terminating() noexcept;
 
-      [[nodiscard]] tril is_terminating_no_reduce() const noexcept;
+      [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
 
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
@@ -512,15 +527,9 @@ namespace libsemigroups {
 
       void add_active_rule(Rule* new_rule);
 
-      bool cached_terminating() const noexcept {
-        return _cached_terminating;
-      }
-
       iterator make_active_rule_pending(iterator it);
 
       void rewrite_no_reduce(native_word_type& u) const;
-
-      void set_cached_terminating(tril val) const;
 
       ////////////////////////////////////////////////////////////////////////
       // Confluence
