@@ -43,7 +43,8 @@ namespace libsemigroups {
   using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
 
-  LIBSEMIGROUPS_TEST_CASE("1-relation", "600", "ababbabaa=baaba", "[fail]") {
+  // Takes approx. 14s
+  LIBSEMIGROUPS_TEST_CASE("1-relation", "600", "ababbabaa=baaba", "[extreme]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -56,7 +57,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
 
     auto input
-        = (p | pedersen_pestov<2>(kb).min_length(2).max_length(4).proper(true));
+        = (p | pedersen_pestov<3>(kb).min_length(3).max_length(4).proper(true));
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -67,6 +68,35 @@ namespace libsemigroups {
     auto result = (input | find_if).get();
 
     REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "aecdb");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"aeaa", "ca", "c", "baab", "d", "abb", "e", "bdab"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"bdab", "e"},
+                                       {"baab", "c"},
+                                       {"ca", "aeaa"},
+                                       {"abb", "d"},
+                                       {"bdd", "eb"},
+                                       {"bdac", "eaab"},
+                                       {"bdae", "edab"},
+                                       {"bad", "cb"},
+                                       {"baac", "aeaaab"},
+                                       {"abc", "daab"},
+                                       {"abe", "ddab"},
+                                       {"cd", "aead"},
+                                       {"baae", "aeadab"},
+                                       {"bdaaead", "eaabd"},
+                                       {"bdaaeaa", "eaaba"},
+                                       {"baaaead", "aeaaabd"},
+                                       {"baaaeaa", "aeaaaba"},
+                                       {"abaead", "daabd"},
+                                       {"abaeaa", "daaba"}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("1-relation", "601", "baaabababa=abbaaa", "[fail]") {
