@@ -600,6 +600,16 @@ namespace libsemigroups {
     using RewriteTrie [[deprecated]]     = RewritingSystemTrie<LenLexCmp>;
     using RewriteFromLeft [[deprecated]] = RewritingSystemSet<LenLexCmp>;
 
+    // Variable template that checks if a type has a trie member functions
+    // TODO (0): Remove this when there is a better way to determine which type
+    // of rewriter we are using.
+    template <typename, typename = void>
+    constexpr bool has_trie = false;
+
+    template <typename T>
+    constexpr bool has_trie<T, std::void_t<decltype(std::declval<T>().trie())>>
+        = true;
+
   }  // namespace detail
 }  // namespace libsemigroups
 
