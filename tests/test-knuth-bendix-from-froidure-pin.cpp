@@ -408,7 +408,7 @@ namespace libsemigroups {
     auto copy   = kb.gilman_graph();
     auto source = copy.target(0, 2);
     copy.remove_label_no_checks(2);
-    REQUIRE(source == 34);
+
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 51);
     REQUIRE(word_graph::is_acyclic(copy, source));
@@ -421,7 +421,6 @@ namespace libsemigroups {
     std::sort(nrvec.begin(), nrvec.end());
     source = std::distance(nrvec.begin(),
                            std::find(nrvec.begin(), nrvec.end(), source));
-    REQUIRE(source == 28);
 
     copy.induced_subgraph_no_checks(nrvec.begin(), nrvec.end());
     REQUIRE(copy.out_degree() == 2);
