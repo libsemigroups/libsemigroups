@@ -2643,10 +2643,10 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
-      //! \warning It is only guaranteed that the sub-word-graph induced by the
-      //! nodes reachable from 0 will be isomorphic before and after this
-      //! operation is performed. It is possible that other parts of the word
-      //! graph will not be isomorphic before and after standardization.
+      //! \warning If there are nodes in the \p wg that are not reachable from
+      //! the node \c 0, then this function may not preserve \p wg up to
+      //! isomorphism. However, the isomorphism type of the sub-word-graph
+      //! consisting of those nodes reachable from the node \c 0 is preserved.
       //!
       //! \note If any target of any edge in the word graph \p wg that is out of
       //! bounds, then this is ignored by this function.
@@ -2676,10 +2676,10 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
-      //! \warning It is only guaranteed that the sub-word-graph induced by the
-      //! nodes reachable from 0 will be isomorphic before and after this
-      //! operation is performed. It is possible that other parts of the word
-      //! graph will not be isomorphic before and after standardization.
+      //! \warning If there are nodes in the \p wg that are not reachable from
+      //! the node \c 0, then this function may not preserve \p wg up to
+      //! isomorphism. However, the isomorphism type of the sub-word-graph
+      //! consisting of those nodes reachable from the node \c 0 is preserved.
       //!
       //! \note If any target of any edge in the word graph \p wg that is out of
       //! bounds, then this is ignored by this function.
