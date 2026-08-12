@@ -61,13 +61,15 @@ namespace libsemigroups {
 
     RewritingSystemBase& RewritingSystemBase::init() {
       Rules::init();
-      _cached_confluent         = false;
-      _cached_terminating       = false;
-      _confluence_known         = false;
-      _pending_rules_comparator = lhs_lex_cmp;
-      _state                    = State::none;
-      _terminating_known        = false;
-      _ticker_running           = false;
+      _cached_confluent             = false;
+      _cached_terminating           = false;
+      _confluence_known             = false;
+      _settings.reduction_threshold = 128;
+      _settings.max_rewriting_depth = POSITIVE_INFINITY;
+      _pending_rules_comparator     = lhs_lex_cmp;
+      _terminating_known            = false;
+      _state                        = State::none;
+      _ticker_running               = false;
       return *this;
     }
 
@@ -78,9 +80,10 @@ namespace libsemigroups {
       _cached_terminating       = that._cached_terminating;
       _confluence_known         = that._confluence_known.load();
       _pending_rules_comparator = that._pending_rules_comparator;
+      _settings                 = that._settings;
+      _terminating_known        = that._terminating_known;
       _state                    = that._state;
       _ticker_running           = that._ticker_running;
-      _terminating_known        = that._terminating_known;
 
       return *this;
     }
@@ -92,9 +95,10 @@ namespace libsemigroups {
       _cached_terminating       = that._cached_terminating;
       _confluence_known         = that._confluence_known.load();
       _pending_rules_comparator = std::move(that._pending_rules_comparator);
+      _settings                 = that._settings;
+      _terminating_known        = that._terminating_known;
       _state                    = that._state;
       _ticker_running           = std::move(that._ticker_running);
-      _terminating_known        = that._terminating_known;
       return *this;
     }
 
