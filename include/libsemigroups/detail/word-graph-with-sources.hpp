@@ -155,7 +155,8 @@ namespace libsemigroups {
       void induced_subgraph_no_checks(node_type first, node_type last);
 
       // The permutation q must map the valid nodes to the [0, .. , n), where
-      // n is the number of valid nodes, and p = q ^ -1.
+      // n is the number of valid nodes, and p = q ^ -1. The vector q is not
+      // const because it is modified in-place.
       void permute_nodes_no_checks(std::vector<node_type> const& p,
                                    std::vector<node_type>&       q,
                                    size_t                        n);

@@ -106,6 +106,9 @@ namespace libsemigroups {
       }
     }
 
+    // The vector q is not const because apply_row_permutation_no_copy_no_checks
+    // modifies q in order to permute the array in-place without allocating
+    // additional memory.
     template <typename Node>
     void WordGraphWithSources<Node>::permute_nodes_no_checks(
         std::vector<node_type> const& p,
