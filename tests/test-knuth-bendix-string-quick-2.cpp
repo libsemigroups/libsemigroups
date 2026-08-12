@@ -852,7 +852,9 @@ namespace libsemigroups {
                                    "kbmag/standalone/kb_data/237",
                                    "[quick][knuth-bendix][kbmag]",
                                    LenLexSet,
-                                   LenLexTrie) {
+                                   LenLexTrie,
+                                   RPOSet,
+                                   RPOTrie) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBc");
@@ -866,45 +868,53 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
+    // This number can be set as low as seven and the LenLex tests will still
+    // pass
+    kb.rewriting_system().settings().max_rewriting_depth = 50;
 
-    kb.run();
-    REQUIRE(kb.rewriting_system().confluent());
-    REQUIRE(kb.rewriting_system().number_of_rules() == 32);
-    using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
-            == std::vector<rule_type>({{"Aa", ""},
-                                       {"Ac", "b"},
-                                       {"BA", "c"},
-                                       {"BB", "b"},
-                                       {"Bb", ""},
-                                       {"Bc", "bA"},
-                                       {"aA", ""},
-                                       {"ab", "c"},
-                                       {"bB", ""},
-                                       {"ba", "AB"},
-                                       {"bb", "B"},
-                                       {"bc", "A"},
-                                       {"cB", "a"},
-                                       {"ca", "B"},
-                                       {"cb", "aB"},
-                                       {"cc", ""},
-                                       {"BaB", "bAb"},
-                                       {"bAB", "Ba"},
-                                       {"cAB", "aBa"},
-                                       {"AAAA", "aaa"},
-                                       {"AAAb", "aaac"},
-                                       {"aaaa", "AAA"},
-                                       {"bAbA", "Bac"},
-                                       {"cAAA", "Baaa"},
-                                       {"cAbA", "aBac"},
-                                       {"ABaaa", "bAAA"},
-                                       {"Baaac", "cAAb"},
-                                       {"bAABaac", "BacAAb"},
-                                       {"cAABaac", "aBacAAb"},
-                                       {"BaaaBaaa", "cAAbAAA"},
-                                       {"bAABaaBaaa", "BacAAbAAA"},
-                                       {"cAABaaBaaa", "aBacAAbAAA"}}));
-    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    if constexpr (std::is_same_v<TestType, RPOSet>
+                  || std::is_same_v<TestType, RPOTrie>) {
+      REQUIRE_THROWS_AS(kb.run(), LibsemigroupsException);
+    } else {
+      kb.run();
+      REQUIRE(kb.rewriting_system().confluent());
+      REQUIRE(kb.rewriting_system().number_of_rules() == 32);
+      using rule_type = typename decltype(kb)::rule_type;
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>({{"Aa", ""},
+                                         {"Ac", "b"},
+                                         {"BA", "c"},
+                                         {"BB", "b"},
+                                         {"Bb", ""},
+                                         {"Bc", "bA"},
+                                         {"aA", ""},
+                                         {"ab", "c"},
+                                         {"bB", ""},
+                                         {"ba", "AB"},
+                                         {"bb", "B"},
+                                         {"bc", "A"},
+                                         {"cB", "a"},
+                                         {"ca", "B"},
+                                         {"cb", "aB"},
+                                         {"cc", ""},
+                                         {"BaB", "bAb"},
+                                         {"bAB", "Ba"},
+                                         {"cAB", "aBa"},
+                                         {"AAAA", "aaa"},
+                                         {"AAAb", "aaac"},
+                                         {"aaaa", "AAA"},
+                                         {"bAbA", "Bac"},
+                                         {"cAAA", "Baaa"},
+                                         {"cAbA", "aBac"},
+                                         {"ABaaa", "bAAA"},
+                                         {"Baaac", "cAAb"},
+                                         {"bAABaac", "BacAAb"},
+                                         {"cAABaac", "aBacAAb"},
+                                         {"BaaaBaaa", "cAAbAAA"},
+                                         {"bAABaaBaaa", "BacAAbAAA"},
+                                         {"cAABaaBaaa", "aBacAAbAAA"}}));
+      REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    }
   }
 
   // Cyclic group of order 2.
@@ -1426,7 +1436,8 @@ namespace libsemigroups {
     REQUIRE(kb3.presentation().rules.size() / 2 == 1);
   }
 
-  // RPO very slow here
+  // RPO very slow her. RPOTrie seems to be spending most of its time doing
+  // SearchIterator things
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "054",
                                    "small overlap 1",
