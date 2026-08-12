@@ -154,7 +154,7 @@ namespace libsemigroups {
           // p[_largest_used_node] is set to the newly discovered node.
           //
           // Returns true if a previously-unseen node was discovered.
-          bool try_set_next_smallest(node_type const s, label_type const x) {
+          bool try_set_next_smallest(node_type s, label_type x) {
             node_type const target = _wg.target_no_checks(_p[s], x);
             if (target == UNDEFINED || _p_inverse[target] != UNDEFINED) {
               return false;
