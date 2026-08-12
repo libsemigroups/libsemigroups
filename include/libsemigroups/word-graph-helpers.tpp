@@ -135,23 +135,15 @@ namespace libsemigroups {
           using node_type  = typename Graph::node_type;
           using label_type = typename Graph::label_type;
 
-          static node_type init_max_nodes(Graph& wg) {
-            if constexpr (is_specialization_of_v<Graph, NodeManagedGraph>) {
-              return wg.number_of_nodes_active() - 1;
-            } else {
-              return wg.number_of_nodes() - 1;
-            }
-          }
-
          public:
           Standardizer(Graph& wg, Forest& f)
               : _f(f),
                 _largest_used_node(0),
-                _max_node(init_max_nodes(wg)),
-                _p(_max_node + 1),
+                _p(),
                 _p_inverse(wg.number_of_nodes(), UNDEFINED),
                 _swapped(false),
                 _wg(wg) {
+            _p.resize(max_node() + 1);
             _p[0]         = 0;
             _p_inverse[0] = 0;
           }
@@ -186,7 +178,7 @@ namespace libsemigroups {
           }
 
           bool stop_early() {
-            return _largest_used_node >= _max_node;
+            return _largest_used_node >= max_node();
           }
 
           bool standardize() {
@@ -198,9 +190,16 @@ namespace libsemigroups {
           }
 
          private:
+          node_type max_node() const noexcept {
+            if constexpr (is_specialization_of_v<Graph, NodeManagedGraph>) {
+              return _wg.number_of_nodes_active() - 1;
+            } else {
+              return _wg.number_of_nodes() - 1;
+            }
+          }
+
           Forest&                _f;
           node_type              _largest_used_node;
-          node_type const        _max_node;
           std::vector<node_type> _p;
           std::vector<node_type> _p_inverse;
           bool                   _swapped;
