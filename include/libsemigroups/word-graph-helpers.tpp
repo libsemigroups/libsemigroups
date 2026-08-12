@@ -137,11 +137,11 @@ namespace libsemigroups {
 
          public:
           Standardizer(Graph& wg, Forest& f)
-              : _f(f),
+              : _forest(f),
                 _largest_used_node(0),
                 _p(),
                 _p_inverse(wg.number_of_nodes(), UNDEFINED),
-                _swapped(false),
+                _is_non_trivial_permutation(false),
                 _wg(wg) {
             _p.resize(max_node() + 1);
             _p[0]         = 0;
@@ -160,15 +160,15 @@ namespace libsemigroups {
               return false;
             }
             ++_largest_used_node;
-            if (_largest_used_node >= _f.number_of_nodes()) {
-              _f.add_nodes(1);
+            if (_largest_used_node >= _forest.number_of_nodes()) {
+              _forest.add_nodes(1);
             }
             _p[_largest_used_node] = target;
             _p_inverse[target]     = _largest_used_node;
             if (target != _largest_used_node) {
-              _swapped = true;
+              _is_non_trivial_permutation = true;
             }
-            _f.set_parent_and_label_no_checks(
+            _forest.set_parent_and_label_no_checks(
                 _largest_used_node, (s == _largest_used_node ? target : s), x);
             return true;
           }
@@ -182,11 +182,11 @@ namespace libsemigroups {
           }
 
           bool standardize() {
-            if (_swapped) {
+            if (_is_non_trivial_permutation) {
               _p.resize(_largest_used_node + 1);
               _wg.standardize(_p, _p_inverse);
             }
-            return _swapped;
+            return _is_non_trivial_permutation;
           }
 
          private:
@@ -198,11 +198,11 @@ namespace libsemigroups {
             }
           }
 
-          Forest&                _f;
+          Forest&                _forest;
           node_type              _largest_used_node;
           std::vector<node_type> _p;
           std::vector<node_type> _p_inverse;
-          bool                   _swapped;
+          bool                   _is_non_trivial_permutation;
           Graph&                 _wg;
         };
 
