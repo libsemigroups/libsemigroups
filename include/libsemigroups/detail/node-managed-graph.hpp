@@ -218,6 +218,8 @@ namespace libsemigroups {
       template <typename Functor = Noop>
       bool process_coincidences(Functor&& = Noop{});
 
+      // q is not not const here because permute_nodes_no_checks changes q in
+      // place.
       void standardize(std::vector<node_type> const& p,
                        std::vector<node_type>&       q) {
         auto& c = lookahead_cursor();
