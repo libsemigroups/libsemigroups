@@ -185,5 +185,18 @@ namespace libsemigroups {
       }
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // RewritingSystemBase - private mem fns
+    ////////////////////////////////////////////////////////////////////////
+    void RewritingSystemBase::throw_if_rewiting_depth_exceeded(
+        size_t num_rewrites) const {
+      if (num_rewrites > settings().max_rewriting_depth) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "rewriting has exceeded the maximum rewrite depth, "
+            "settings().max_rewriting_depth = {}",
+            RewritingSystemBase::settings().max_rewriting_depth);
+      }
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups

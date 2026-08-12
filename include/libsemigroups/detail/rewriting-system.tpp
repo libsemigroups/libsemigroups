@@ -305,12 +305,8 @@ namespace libsemigroups::detail {
         // rule whose lhs is contained in [v.begin(), v.begin() + pos), that's
         // why we do the second check in the if-condition above.
         ++number_of_rewrites;
-        if (number_of_rewrites
-            > RewritingSystemBase::settings().max_rewriting_depth) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "rewriting has exceeded the maximum rewrite depth, {}",
-              RewritingSystemBase::settings().max_rewriting_depth);
-        }
+        RewritingSystemBase::throw_if_rewiting_depth_exceeded(
+            number_of_rewrites);
         Rule const* rule = (*it).rule();
         LIBSEMIGROUPS_ASSERT(is_suffix(v.begin(),
                                        v.begin() + pos,
@@ -830,12 +826,8 @@ namespace libsemigroups::detail {
         pos++;
       } else {
         ++number_of_rewrites;
-        if (number_of_rewrites
-            > RewritingSystemBase::settings().max_rewriting_depth) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "rewriting has exceeded the maximum rewrite depth, {}",
-              RewritingSystemBase::settings().max_rewriting_depth);
-        }
+        RewritingSystemBase::throw_if_rewiting_depth_exceeded(
+            number_of_rewrites);
         // Everything here is off by one because we read everything up to and
         // including the pos-th character in "v"
         Rule const* rule = _rule_trie.node_no_checks(current).value();

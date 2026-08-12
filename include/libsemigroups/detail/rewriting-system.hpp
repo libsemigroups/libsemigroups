@@ -194,6 +194,8 @@ namespace libsemigroups {
         report_progress_from_thread(0, start_time);
       }
 
+      void throw_if_rewiting_depth_exceeded(size_t num_rewrites) const;
+
      private:
       [[nodiscard]] virtual bool confluent_impl(std::atomic_uint64_t& seen) = 0;
 
