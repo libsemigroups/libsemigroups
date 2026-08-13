@@ -615,11 +615,11 @@ namespace libsemigroups {
                    typename PresentationType::word_type const& w);
 
     //! \brief Returns a range object containing all words accepted by a
-    //! Stephen instance in short-lex order.
+    //! Stephen instance in lenlex order.
     //!
     //! This function triggers the algorithm implemented in this class (if it
     //! hasn't been triggered already) and then returns a range object
-    //! containing all words accepted by a Stephen instance in short-lex order.
+    //! containing all words accepted by a Stephen instance in lenlex order.
     //!
     //! \tparam PresentationType must be a specialisation of \ref Presentation
     //! or \ref InversePresentation where `PresentationType::word_type` is
@@ -628,7 +628,7 @@ namespace libsemigroups {
     //! \param s the Stephen instance.
     //!
     //! \returns A range object containing all words accepted by \p s
-    //! in short-lex order.
+    //! in lenlex order.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
     //! the construction of \p s or with Stephen::init or if no word was set
@@ -681,12 +681,12 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Returns a range object containing all the words (in short-lex
+    //! \brief Returns a range object containing all the words (in lenlex
     //! order) that are left factors of Stephen::word.
     //!
     //! This function triggers the algorithm implemented in this class (if it
     //! hasn't been triggered already) and then returns a range object
-    //! containing all the words (in short-lex order) that are left factors of
+    //! containing all the words (in lenlex order) that are left factors of
     //! Stephen::word.
     //!
     //! \tparam PresentationType must be a specialisation of \ref Presentation
@@ -695,7 +695,7 @@ namespace libsemigroups {
     //!
     //! \param s the Stephen instance.
     //!
-    //! \returns A range object containing all the words (in short-lex
+    //! \returns A range object containing all the words (in lenlex
     //! order) that are left factors of Stephen::word.
     //!
     //! \throws LibsemigroupsException if no presentation was set at

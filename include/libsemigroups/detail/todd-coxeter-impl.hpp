@@ -1562,7 +1562,7 @@ namespace libsemigroups {
       //! \ldots, n - 1\}\f$ where \f$n\f$ is the number of classes in the
       //! congruence if \ref presentation contains the empty word; or the
       //! number of classes plus one if \ref presentation does not contain
-      //! the empty word. The returned WordGraph is also short-lex
+      //! the empty word. The returned WordGraph is also lenlex
       //! standardized. The returned WordGraph will usually be complete and
       //! compatible with the relations of the \ref presentation and with
       //! the \ref ToddCoxeter::generating_pairs. The WordGraph may not be
@@ -1607,7 +1607,7 @@ namespace libsemigroups {
       //!
       //! This function returns a const reference to a spanning tree (a
       //! \ref Forest) for the underlying WordGraph (returned by
-      //! \ref word_graph) with the nodes appearing in short-lex order. This
+      //! \ref word_graph) with the nodes appearing in lenlex order. This
       //! function triggers a full congruence enumeration.
       //!
       //! \returns A const reference to a spanning tree of the underlying
@@ -1638,11 +1638,11 @@ namespace libsemigroups {
       //!   order;
       //! * Order::lenlex implies that:
       //!   - the return value of \ref ToddCoxeter::reduce will be the
-      //!   short-lex least word belonging to a given congruence class;
+      //!   lenlex least word belonging to a given congruence class;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
-      //!   in short-lex order;
-      //!   - the classes of the congruence will be indexed in short-lex order
-      //!   on the short-lex least word;
+      //!   in lenlex order;
+      //!   - the classes of the congruence will be indexed in lenlex order
+      //!   on the lenlex least word;
       //! * Order::lex implies that:
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   ordered lexicographically.
@@ -1851,7 +1851,7 @@ namespace libsemigroups {
       //! This function performs a "lookbehind" which is
       //! defined as follows. For every node \c n in the so-far computed
       //! \ref WordGraph (obtained from \ref current_word_graph) we
-      //! use the current word graph to rewrite the current short-lex least path
+      //! use the current word graph to rewrite the current lenlex least path
       //! from the initial node to \c n. If this rewritten word is not equal to
       //! the original word, and it also labels a path from the initial node in
       //! the current word graph to a node \c m, then \c m and \c n represent
