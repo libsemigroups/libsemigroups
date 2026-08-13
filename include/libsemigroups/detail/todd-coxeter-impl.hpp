@@ -1915,7 +1915,7 @@ namespace libsemigroups {
       //! decide whether or not to collapse nodes. For example, it might be the
       //! case that \p collapser uses a \ref_knuth_bendix instance to determine
       //! whether or not nodes in the graph represent the same class of the
-      //! congruence. More specifically, the shortlex least path from the
+      //! congruence. More specifically, the lenlex least path from the
       //! initial node to every node \c n is rewritten using \p collapser, and
       //! if the rewritten word labels a path in the graph to a node \c m, then
       //! it is assumed that \c m and \c n represent the same class of the

@@ -257,11 +257,11 @@ namespace libsemigroups {
 
   //! \ingroup ranges_group
   //!
-  //! \brief Check if a range is shortlex less than another.
+  //! \brief Check if a range is lenlex less than another.
   //!
   //! Defined in `ranges.hpp`.
   //!
-  //! This function checks if the range \p r1 is shortlex less than
+  //! This function checks if the range \p r1 is lenlex less than
   //! the range \p r2, using `operator<` on the items in the ranges.
   //! This is analogous to \ref lenlex_cmp.
   //!
@@ -271,12 +271,12 @@ namespace libsemigroups {
   //! \param r1 the first range.
   //! \param r2 the second range.
   //!
-  //! \returns \c true if the range \p r1 is shortlex less than the
+  //! \returns \c true if the range \p r1 is lenlex less than the
   //! range \p r2, and \c false it not.
   template <typename Range1, typename Range2>
   bool lenlex_cmp(Range1 r1, Range2 r2);
 
-  // TODO(1) recursive_path_compare?
+  // TODO(1) rpo_cmp?
 
   ////////////////////////////////////////////////////////////////////////
   // Custom combinators
