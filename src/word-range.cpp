@@ -294,11 +294,10 @@ namespace libsemigroups {
 
   std::string to_human_readable_repr(WordRange const& wr, size_t max_width) {
     using detail::group_digits;
-    word_type   first = wr.first();
-    word_type   last  = wr.last();
-    std::string order = (wr.order() == Order::lex) ? "lex" : "shortlex";
-    size_t      count = wr.count();
-    std::string out;
+    word_type const& first = wr.first();
+    word_type const& last  = wr.last();
+    size_t const     count = wr.count();
+    std::string      out;
 
     bool print_short = false;
 
@@ -313,7 +312,7 @@ namespace libsemigroups {
                         first,
                         last,
                         group_digits(wr.alphabet_size()),
-                        order);
+                        wr.order());
     }
 
     if (out.size() > max_width) {
@@ -325,7 +324,7 @@ namespace libsemigroups {
           "<WordRange of length {} with letters in [0, {}) in {} order>",
           group_digits(count),
           group_digits(wr.alphabet_size()),
-          order);
+          wr.order());
     }
 
     return out;
@@ -486,12 +485,11 @@ namespace libsemigroups {
   std::string to_human_readable_repr(StringRange const& sr, size_t max_width) {
     using detail::group_digits;
 
-    std::string first    = sr.first();
-    std::string last     = sr.last();
-    std::string alphabet = sr.alphabet();
-    std::string order    = (sr.order() == Order::lex) ? "lex" : "shortlex";
-    size_t      count    = sr.count();
-    std::string out;
+    std::string const& first    = sr.first();
+    std::string const& last     = sr.last();
+    std::string const& alphabet = sr.alphabet();
+    size_t const       count    = sr.count();
+    std::string        out;
 
     bool print_short = false;
 
@@ -508,7 +506,7 @@ namespace libsemigroups {
           first,
           last,
           alphabet,
-          order);
+          sr.order());
     }
 
     if (out.size() > max_width) {
@@ -516,8 +514,9 @@ namespace libsemigroups {
     }
 
     if (print_short) {
-      out = fmt::format(
-          "<StringRange of length {} in {} order>", group_digits(count), order);
+      out = fmt::format("<StringRange of length {} in {} order>",
+                        group_digits(count),
+                        sr.order());
     }
 
     return out;
