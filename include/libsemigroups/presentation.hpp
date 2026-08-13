@@ -1435,9 +1435,9 @@ namespace libsemigroups {
     template <typename Word>
     void reduce_complements(Presentation<Word>& p);
 
-    //! \brief Sort the left-hand and right-hand side of each rule by shortlex.
+    //! \brief Sort the left-hand and right-hand side of each rule by lenlex.
     //!
-    //! Sort each rule \f$u = v\f$ so that the left-hand side is shortlex
+    //! Sort each rule \f$u = v\f$ so that the left-hand side is lenlex
     //! greater than the right-hand side.
     //!
     //! \tparam Word the type of the words in the presentation.
@@ -1485,10 +1485,10 @@ namespace libsemigroups {
     template <typename Word, typename Compare>
     void sort_rules(Presentation<Word>& p, Compare cmp);
 
-    //! \brief Sort all of the rules by shortlex.
+    //! \brief Sort all of the rules by lenlex.
     //!
     //! Sort the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ so that
-    //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is the shortlex order.
+    //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is the lenlex order.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation to sort.
@@ -1519,10 +1519,10 @@ namespace libsemigroups {
     template <typename Word, typename Compare>
     bool are_rules_sorted(Presentation<Word> const& p, Compare cmp);
 
-    //! \brief Check the rules are sorted relative to shortlex.
+    //! \brief Check the rules are sorted relative to lenlex.
     //!
     //! Check if the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ satisfy
-    //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is shortlex order.
+    //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is lenlex order.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation to check.

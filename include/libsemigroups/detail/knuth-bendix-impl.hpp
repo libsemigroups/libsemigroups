@@ -808,7 +808,7 @@ namespace libsemigroups {
       //!
       //! The Gilman WordGraph is a digraph where the labels of the paths from
       //! the initial node (corresponding to the empty word) correspond to the
-      //! shortlex normal forms of the semigroup elements.
+      //! lenlex normal forms of the semigroup elements.
       //!
       //! The semigroup is finite if the graph is acyclic, and infinite
       //! otherwise.

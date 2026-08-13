@@ -311,10 +311,10 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! WordRange words;
-  //! words.order(Order::lenlex)  // words in shortlex order
-  //!      .alphabet_size(2)        // on 2 letters
-  //!      .min(1)                  // of length in the range from 1
-  //!      .max(5);                 // to 5
+  //! words.order(Order::lenlex)  // words in lenlex order
+  //!      .alphabet_size(2)      // on 2 letters
+  //!      .min(1)                // of length in the range from 1
+  //!      .max(5);               // to 5
   //! \endcode
   class WordRange {
    public:
@@ -399,7 +399,7 @@ namespace libsemigroups {
     [[nodiscard]] size_t size_hint() const noexcept {
       return number_of_words(_alphabet_size, _first.size(), _last.size())
              - _visited;
-      // This is only the actual size if _order is shortlex
+      // This is only the actual size if _order is lenlex
     }
 
     //! \brief The actual size of the range.
@@ -1602,10 +1602,10 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! StringRange strings;
-  //! strings.order(Order::lenlex) // strings in shortlex order
-  //!        .alphabet("ab")         // on 2 letters
-  //!        .min(1)                 // of length in the range from 1
-  //!        .max(5);                // to 5
+  //! strings.order(Order::lenlex) // strings in lenlex order
+  //!        .alphabet("ab")       // on 2 letters
+  //!        .min(1)               // of length in the range from 1
+  //!        .max(5);              // to 5
   //! \endcode
   //!
   //! \sa WordRange

@@ -36,7 +36,7 @@
 
 #include "alphabet-class.hpp"  // for Alphabet
 #include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
-#include "ranges.hpp"          // for shortlex_compare
+#include "ranges.hpp"          // for lenlex_cmp
 
 #include "detail/citow.hpp"  // for citow
 
