@@ -194,7 +194,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
                           "009",
-                          "same weight fallback to shortlex",
+                          "same weight fallback to lenlex",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {1, 1, 1, 1, 1};
@@ -272,7 +272,7 @@ namespace libsemigroups {
     std::vector<size_t> w1      = {0, 1, 1};  // weight = 2 + 1 + 1 = 4
     std::vector<size_t> w2      = {3, 1};     // weight = 3 + 1 = 4
 
-    // Same weight, so falls back to shortlex (w2 < w1 because w2 is shorter)
+    // Same weight, so falls back to lenlex (w2 < w1 because w2 is shorter)
     REQUIRE(!wt_lenlex_cmp_no_checks(weights, w1, w2));
     REQUIRE(wt_lenlex_cmp_no_checks(weights, w2, w1));
   }
@@ -283,14 +283,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("wt_lenlex_cmp_no_checks",
                           "014",
-                          "uniform weights (shortlex)",
+                          "uniform weights (lenlex)",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {1, 1, 1, 1, 1};
     word_type           w1      = {0, 1};  // weight = 2
     word_type           w2      = {2, 3};  // weight = 2
 
-    // Same weight and length, so pure shortlex: {0,1} < {2,3}
+    // Same weight and length, so pure lenlex: {0,1} < {2,3}
     REQUIRE(wt_lenlex_cmp_no_checks(weights, w1, w2));
     REQUIRE(!wt_lenlex_cmp_no_checks(weights, w2, w1));
   }

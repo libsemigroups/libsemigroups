@@ -17,9 +17,8 @@
 
 // TODO(later)
 // * The other examples from Sims' book (Chap.s 5 and 6) which use
-//   reduction orderings different from shortlex
+//   reduction orderings different from lenlex
 
-#include "libsemigroups/order.hpp"
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #include <algorithm>    // for fill
@@ -37,6 +36,7 @@
 #include "libsemigroups/exception.hpp"           // for LibsemigroupsException
 #include "libsemigroups/knuth-bendix.hpp"        // for KnuthBendix, normal_f...
 #include "libsemigroups/obvinf.hpp"              // for is_obviously_infinite
+#include "libsemigroups/order.hpp"               // for LenLexCmp
 #include "libsemigroups/paths.hpp"               // for Paths
 #include "libsemigroups/presentation.hpp"        // for add_rule, Presentation
 #include "libsemigroups/ranges.hpp"              // for equal

@@ -22,7 +22,6 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #pragma GCC diagnostic ignored "-Wunused-result"
 
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/libsemigroups.hpp"  // for *
 #include "test-main.hpp"                    // for LIBSEMIGROUPS_TEST_CASE
 
@@ -34,7 +33,6 @@ namespace libsemigroups {
                           "000",
                           "./include/libsemigroups/action.hpp:59",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
     o.add_generator(
@@ -62,7 +60,7 @@ namespace libsemigroups {
                           "001",
                           "./include/libsemigroups/action.hpp:141",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
+    auto rg = ReportGuard(true);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
     o.add_generator(
@@ -91,7 +89,6 @@ namespace libsemigroups {
                           "002",
                           "./include/libsemigroups/cong-class.hpp:145",
                           "[docs][quick]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
@@ -108,7 +105,6 @@ namespace libsemigroups {
                           "003",
                           "./include/libsemigroups/freeband.hpp:75",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     bool example
         = freeband_equal_to({0, 1, 2, 3, 2, 1, 0}, {0, 1, 2, 3, 2, 3, 2, 1, 0});
     REQUIRE(example == true);
@@ -138,7 +134,6 @@ namespace libsemigroups {
                           "004",
                           "./include/libsemigroups/froidure-pin-base.hpp:1338",
                           "[docs][quick]") {
-    auto               rg = ReportGuard(false);
     FroidurePin<BMat8> S;
     S.add_generator(
         BMat8({{1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}}));
@@ -173,7 +168,6 @@ namespace libsemigroups {
                           "005",
                           "./include/libsemigroups/froidure-pin-base.hpp:1442",
                           "[docs][quick]") {
-    auto               rg = ReportGuard(false);
     FroidurePin<BMat8> S;
     S.add_generator(
         BMat8({{1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}}));
@@ -208,7 +202,6 @@ namespace libsemigroups {
                           "006",
                           "./include/libsemigroups/is_specialization_of.hpp:46",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE(is_specialization_of_v<std::vector<int>, std::vector> == true);
     REQUIRE(is_specialization_of_v<std::vector<int>, std::unordered_map>
             == false);
@@ -219,18 +212,16 @@ namespace libsemigroups {
                           "007",
                           "./include/libsemigroups/is_specialization_of.hpp:75",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE(is_specialization_of_v<std::vector<int>, std::vector> == true);
     REQUIRE(is_specialization_of_v<std::vector<int>, std::unordered_map>
             == false);
   }
 
-  // knuth-bendix-class.hpp: Line 72
+  // knuth-bendix-class.hpp: Line 78
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "008",
-                          "./include/libsemigroups/knuth-bendix-class.hpp:72",
+                          "./include/libsemigroups/knuth-bendix-class.hpp:78",
                           "[docs][quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abcd");
@@ -253,12 +244,11 @@ namespace libsemigroups {
                           "009",
                           "./include/libsemigroups/konieczny.hpp:69",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
-    auto S  = make<Konieczny>(
+    auto S = make<Konieczny>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-          BMat8({{1, 0, 0, 0}, {1, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-          BMat8({{0, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}})});
+         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+         BMat8({{1, 0, 0, 0}, {1, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{0, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}})});
     S.size();                   // returns 63'904
     S.number_of_idempotents();  // returns 2'360
   }
@@ -268,7 +258,6 @@ namespace libsemigroups {
                           "010",
                           "./include/libsemigroups/matrix-class.hpp:270",
                           "[docs][quick]") {
-    auto rg   = ReportGuard(false);
     using Mat = BMat8;
     Mat m({{1, 1}, {0, 0}});
   }
@@ -278,7 +267,6 @@ namespace libsemigroups {
                           "011",
                           "./include/libsemigroups/matrix-class.hpp:1216",
                           "[docs][quick]") {
-    auto rg   = ReportGuard(false);
     using Mat = IntMat<>;
     Mat m(2, 3);  // construct a 2 x 3 matrix
   }
@@ -288,7 +276,6 @@ namespace libsemigroups {
                           "012",
                           "./include/libsemigroups/matrix-class.hpp:1239",
                           "[docs][quick]") {
-    auto rg   = ReportGuard(false);
     using Mat = BMat<>;
     Mat m({1, 1, 0, 0});
   }
@@ -298,7 +285,6 @@ namespace libsemigroups {
                           "013",
                           "./include/libsemigroups/matrix-class.hpp:1262",
                           "[docs][quick]") {
-    auto rg   = ReportGuard(false);
     using Mat = IntMat<>;
     Mat m({{1, 1}, {0, 0}});
   }
@@ -308,7 +294,6 @@ namespace libsemigroups {
                           "014",
                           "./include/libsemigroups/matrix-class.hpp:2009",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] BMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -320,7 +305,6 @@ namespace libsemigroups {
                           "015",
                           "./include/libsemigroups/matrix-class.hpp:2205",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] IntMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -332,7 +316,6 @@ namespace libsemigroups {
                           "016",
                           "./include/libsemigroups/matrix-class.hpp:2419",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] MaxPlusMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -344,7 +327,6 @@ namespace libsemigroups {
                           "017",
                           "./include/libsemigroups/matrix-class.hpp:2633",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] MinPlusMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -356,7 +338,6 @@ namespace libsemigroups {
                           "018",
                           "./include/libsemigroups/matrix-class.hpp:2857",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     // construct an uninitialized 3 x 3 static matrix with threshold 11
     [[maybe_unused]] MaxPlusTruncMat<11, 3> m3_11;
     // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
@@ -373,7 +354,6 @@ namespace libsemigroups {
                           "019",
                           "./include/libsemigroups/matrix-class.hpp:3204",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     // construct an uninitialized 3 x 3 static matrix with threshold 11
     [[maybe_unused]] MinPlusTruncMat<11, 3> m3_11;
     // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
@@ -390,7 +370,6 @@ namespace libsemigroups {
                           "020",
                           "./include/libsemigroups/matrix-class.hpp:3552",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     // construct an uninitialized 3 x 3 static matrix with threshold
     // 11, period 2
     [[maybe_unused]] NTPMat<11, 2, 3> m3_11_2;
@@ -409,7 +388,6 @@ namespace libsemigroups {
                           "021",
                           "./include/libsemigroups/matrix-class.hpp:4358",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     // default construct an uninitialized 3 x 3 static matrix
     ProjMaxPlusMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -421,28 +399,25 @@ namespace libsemigroups {
                           "022",
                           "./include/libsemigroups/matrix-helpers.hpp:241",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
-    auto x  = make<ProjMaxPlusMat<>>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+    auto x = make<ProjMaxPlusMat<>>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
     // returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}
     matrix::pow(x, 100);
   }
 
-  // matrix-helpers.hpp: Line 799
+  // matrix-helpers.hpp: Line 805
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "023",
-                          "./include/libsemigroups/matrix-helpers.hpp:799",
+                          "./include/libsemigroups/matrix-helpers.hpp:805",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
-    auto x  = make<BMat<>>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
+    auto x = make<BMat<>>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
     matrix::row_space_size(x);  // returns 7
   }
 
-  // presentation.hpp: Line 935
+  // presentation.hpp: Line 978
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "024",
-                          "./include/libsemigroups/presentation.hpp:935",
+                          "./include/libsemigroups/presentation.hpp:978",
                           "[docs][quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     presentation::to_report_string(p);
     // "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], ∑(|u| + |v|) = 0"
@@ -453,7 +428,6 @@ namespace libsemigroups {
                           "025",
                           "./include/libsemigroups/ranges.hpp:87",
                           "[docs][quick]") {
-    auto      rg = ReportGuard(false);
     using rx::operator|;
     auto      wg = make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
     Paths     p(wg);
@@ -467,7 +441,6 @@ namespace libsemigroups {
                           "026",
                           "./include/libsemigroups/schreier-sims.hpp:167",
                           "[docs][quick]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<5> S;
     using Perm = decltype(S)::element_type;
     S.add_generator(Perm({1, 0, 2, 3, 4}));
@@ -480,7 +453,6 @@ namespace libsemigroups {
                           "027",
                           "./include/libsemigroups/todd-coxeter-class.hpp:80",
                           "[docs][quick]") {
-    auto rg       = ReportGuard(false);
     using options = detail::ToddCoxeterImpl::options;
 
     Presentation<word_type> p;
@@ -500,7 +472,6 @@ namespace libsemigroups {
                           "028",
                           "./include/libsemigroups/todd-coxeter-class.hpp:96",
                           "[docs][quick]") {
-    auto rg       = ReportGuard(false);
     using options = detail::ToddCoxeterImpl::options;
 
     Presentation<word_type> p;
@@ -553,7 +524,6 @@ namespace libsemigroups {
                           "029",
                           "./include/libsemigroups/word-graph.hpp:1581",
                           "[docs][quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(1);
@@ -567,7 +537,6 @@ namespace libsemigroups {
                           "030",
                           "./include/libsemigroups/word-graph.hpp:1629",
                           "[docs][quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(4);
     wg.add_to_out_degree(1);
@@ -586,7 +555,6 @@ namespace libsemigroups {
                           "031",
                           "./include/libsemigroups/word-graph.hpp:2066",
                           "[docs][quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(4);
     wg.add_to_out_degree(4);
@@ -605,7 +573,6 @@ namespace libsemigroups {
                           "032",
                           "./include/libsemigroups/word-graph.hpp:2150",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(word_graph::is_strictly_cyclic(wg) == false);
   }
@@ -615,7 +582,6 @@ namespace libsemigroups {
                           "033",
                           "./include/libsemigroups/word-graph.hpp:2964",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     // Construct a word graph with 5 nodes and 10 edges (7 specified)
     auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   }
@@ -625,7 +591,6 @@ namespace libsemigroups {
                           "034",
                           "./include/libsemigroups/word-range.hpp:183",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     std::vector<word_type>(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
                            cend_wilo(2, 3, {0}, {1, 1, 1}));
     // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
@@ -636,7 +601,6 @@ namespace libsemigroups {
                           "035",
                           "./include/libsemigroups/word-range.hpp:253",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     std::vector<word_type>(cbegin_wislo(2, {0}, {0, 0, 0}),
                            cend_wislo(2, {0}, {0, 0, 0}));
     // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
@@ -647,10 +611,9 @@ namespace libsemigroups {
                           "036",
                           "./include/libsemigroups/word-range.hpp:313",
                           "[docs][quick]") {
-    auto      rg = ReportGuard(false);
     WordRange words;
     words
-        .order(Order::lenlex)  // words in shortlex order
+        .order(Order::lenlex)  // words in lenlex order
         .alphabet_size(2)      // on 2 letters
         .min(1)                // of length in the range from 1
         .max(5);               // to 5
@@ -661,7 +624,6 @@ namespace libsemigroups {
                           "037",
                           "./include/libsemigroups/word-range.hpp:761",
                           "[docs][quick]") {
-    auto   rg = ReportGuard(false);
     ToWord toword("bac");
     REQUIRE(toword("bac") == 012_w);
     REQUIRE(toword("bababbbcbc") == 0101000202_w);
@@ -675,7 +637,6 @@ namespace libsemigroups {
                           "038",
                           "./include/libsemigroups/word-range.hpp:1050",
                           "[docs][quick]") {
-    auto        rg = ReportGuard(false);
     using rx::  operator|;
     StringRange strings;
     strings.alphabet("ab").first("a").last("bbbb");
@@ -693,7 +654,6 @@ namespace libsemigroups {
                           "039",
                           "./include/libsemigroups/word-range.hpp:1155",
                           "[docs][quick]") {
-    auto     rg = ReportGuard(false);
     ToString tostring("bac");
     REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
     REQUIRE(tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2})) == "baabaabc");
@@ -707,7 +667,6 @@ namespace libsemigroups {
                           "040",
                           "./include/libsemigroups/word-range.hpp:1406",
                           "[docs][quick]") {
-    auto      rg = ReportGuard(false);
     using rx::operator|;
     WordRange words;
     words.alphabet_size(1).min(0).max(10);
@@ -723,21 +682,19 @@ namespace libsemigroups {
                           "041",
                           "./include/libsemigroups/word-range.hpp:1604",
                           "[docs][quick]") {
-    auto        rg = ReportGuard(false);
     StringRange strings;
     strings
-        .order(Order::lenlex)  // strings in shortlex order
+        .order(Order::lenlex)  // strings in lenlex order
         .alphabet("ab")        // on 2 letters
         .min(1)                // of length in the range from 1
         .max(5);               // to 5
   }
 
-  // word-range.hpp: Line 2326
+  // word-range.hpp: Line 2344
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "042",
-                          "./include/libsemigroups/word-range.hpp:2326",
+                          "./include/libsemigroups/word-range.hpp:2344",
                           "[docs][quick]") {
-    auto rg = ReportGuard(false);
     using namespace words;
     word_type w = 012345_w;
     prod(w, 0, 5, 2);               // {0, 2, 4}
