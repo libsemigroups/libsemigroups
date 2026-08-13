@@ -271,7 +271,7 @@ namespace libsemigroups {
     _first         = {};
     _last          = {};
     _order         = Order::lenlex;
-    _upper_bound   = 0;  // does nothing if _order is shortlex
+    _upper_bound   = 0;  // does nothing if _order is lenlex
     _visited       = 0;
     return *this;
   }

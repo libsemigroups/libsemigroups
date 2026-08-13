@@ -567,7 +567,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "081",
                                    "(from kbmag/standalone/kb_data/ab2)",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -603,7 +603,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "082",
                                    "kbmag/standalone/kb_data/d22",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -681,7 +681,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "083",
                                    "(from kbmag/standalone/kb_data/degen1)",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -700,7 +700,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "084",
                                    "(from kbmag/standalone/kb_data/s4)",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 

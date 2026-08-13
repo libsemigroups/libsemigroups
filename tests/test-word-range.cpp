@@ -748,8 +748,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToString",
                           "025",
-                          "shortlex | alphabet = a | min = 0 | max = 10",
-                          "[shortlex][quick]") {
+                          "lenlex | alphabet = a | min = 0 | max = 10",
+                          "[lenlex][quick]") {
     auto      rg = ReportGuard(false);
     WordRange words;
     words.alphabet_size(1).min(0).max(10);
@@ -774,8 +774,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "026",
-                          "shortlex | corner cases",
-                          "[shortlex][quick]") {
+                          "lenlex | corner cases",
+                          "[lenlex][quick]") {
     auto        rg = ReportGuard(false);
     StringRange strings;
     strings.alphabet("ab").last("").first("bbaaab");
@@ -818,8 +818,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "027",
-                          "shortlex | alphabet = ab | min = 1 | max = 4",
-                          "[shortlex][quick]") {
+                          "lenlex | alphabet = ab | min = 1 | max = 4",
+                          "[lenlex][quick]") {
     auto        rg = ReportGuard(false);
     StringRange strings;
 
@@ -866,8 +866,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "028",
-                          "shortlex | alphabet = abc | min = 0 | max = 13",
-                          "[shortlex][quick][no-valgrind]") {
+                          "lenlex | alphabet = abc | min = 0 | max = 13",
+                          "[lenlex][quick][no-valgrind]") {
     auto        rg = ReportGuard(false);
     StringRange strings;
     strings.alphabet("abc").max(13);
@@ -878,8 +878,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "029",
-                          "shortlex | code coverage",
-                          "[shortlex][quick]") {
+                          "lenlex | code coverage",
+                          "[lenlex][quick]") {
     auto        rg    = ReportGuard(false);
     auto        first = "aaa";
     auto        last  = "bbbb";
@@ -992,7 +992,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordRange", "031", "parsing", "[shortlex][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "031", "parsing", "[lenlex][quick]") {
     auto rg = ReportGuard(false);
     REQUIRE(words::parse("cd(ab)^2ef") == "cdababef");
     REQUIRE("cd(ab)^2ef"_p == "cdababef");
