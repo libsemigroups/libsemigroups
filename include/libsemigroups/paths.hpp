@@ -146,12 +146,12 @@ namespace libsemigroups {
   //! Returns an iterator for pislo (Path And Node In Short Lex Order).
   //!
   //! Returns a forward iterator pointing to a pair consisting of the edge
-  //! labels of the first path (in short-lex order) starting at \p source
+  //! labels of the first path (in lenlex order) starting at \p source
   //! with length in the range \f$[min, max)\f$ and the last node of that
   //! path.
   //!
   //! If incremented, the iterator will point to the next least edge
-  //! labelling of a path (in short-lex order), and its last node, with
+  //! labelling of a path (in lenlex order), and its last node, with
   //! length in the range \f$[min, max)\f$.  Iterators of the type returned
   //! by this function are equal whenever they point to equal objects.
   //!
@@ -165,7 +165,7 @@ namespace libsemigroups {
   //! An iterator \c it of type \c detail::const_pislo_iterator pointing to a
   //! `std::pair` where:
   //! * \c it->first is a \ref word_type consisting of the edge
-  //! labels of the first path (in short-lex order) from \p source of
+  //! labels of the first path (in lenlex order) from \p source of
   //! length in the range \f$[min, max)\f$; and
   //! * \c it->second is the last node on the path from \p source labelled by
   //! \c it->first, a value of \ref WordGraph::node_type.
@@ -303,11 +303,11 @@ namespace libsemigroups {
   //! Order).
   //!
   //! Returns a forward iterator pointing to the edge labels of the first
-  //! path (in short-lex order) starting at the node \p source and ending
+  //! path (in lenlex order) starting at the node \p source and ending
   //! at the node \p target with length in the range \f$[min, max)\f$.
   //!
   //! If incremented, the iterator will point to the next least edge
-  //! labelling of a path (in short-lex order).  Iterators of the type
+  //! labelling of a path (in lenlex order).  Iterators of the type
   //! returned by this function are equal whenever they point to equal
   //! objects.
   //!
@@ -321,7 +321,7 @@ namespace libsemigroups {
   //! \returns
   //! An iterator \c it of type \c detail::const_pstislo_iterator pointing to a
   //! \ref word_type consisting of the edge labels of the first
-  //! path (in short-lex order) from the node \p source to the node \p target
+  //! path (in lenlex order) from the node \p source to the node \p target
   //! with length in the range \f$[min, max)\f$ (if any).
   //!
   //! \throws LibsemigroupsException if \p target or \p source is not a node

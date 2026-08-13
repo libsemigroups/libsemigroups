@@ -44,7 +44,7 @@ namespace libsemigroups {
     //!
     //! Defined in `kambites-helpers.hpp`.
     //!
-    //! This function returns a range object containing short-lex normal forms
+    //! This function returns a range object containing lenlex normal forms
     //! of the classes of the congruence represented by a \ref_kambites
     //! instance.
     //!

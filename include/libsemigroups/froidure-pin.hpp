@@ -1439,7 +1439,7 @@ namespace libsemigroups {
     //!
     //! Return type for const random access iterators pointing at the elements
     //! of a FroidurePin object in the order they were enumerated (i.e. in
-    //! short-lex order of the minimum word in the generators).
+    //! lenlex order of the minimum word in the generators).
     using const_iterator
         = detail::BruidhinnConstIterator<element_type,
                                          std::vector<internal_element_type>>;
@@ -1454,7 +1454,7 @@ namespace libsemigroups {
     //! \ref cend_idempotents.
     //!
     //! A type for const random access iterators through the idempotents, in
-    //! order of generation (short-lex order).
+    //! order of generation (lenlex order).
     //!
     //! \sa const_iterator.
     using const_iterator_idempotents = const_iterator_pair_first;
@@ -2268,7 +2268,7 @@ namespace libsemigroups {
     //! \brief Returns a word containing a minimal factorisation (in the
     //! generators) of an element.
     //!
-    //! This function returns the short-lex minimum word (if any) in the
+    //! This function returns the lenlex minimum word (if any) in the
     //! generators that evaluates to \p x.
     //!
     //! \tparam Element the type of the elements in the FroidurePin instance.
@@ -2294,7 +2294,7 @@ namespace libsemigroups {
     //! \brief Modify a word in-place to contain a minimal factorisation (in the
     //! generators) of an element.
     //!
-    //! This function returns the short-lex minimum word (if any) in the
+    //! This function returns the lenlex minimum word (if any) in the
     //! generators that evaluates to \p x.
     //!
     //! \tparam Element the type of the elements in the FroidurePin instance.
@@ -2346,7 +2346,7 @@ namespace libsemigroups {
     //! \brief Modify a word in-place to contain a minimal factorisation (in the
     //! generators) of an element.
     //!
-    //! This function returns the short-lex minimum word (if any) in the
+    //! This function returns the lenlex minimum word (if any) in the
     //! generators that evaluates to \p x.
     //! The key difference between this function and
     //! froidure_pin::minimal_factorisation(word_type&, const_reference), is

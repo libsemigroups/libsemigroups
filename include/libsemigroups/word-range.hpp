@@ -221,8 +221,8 @@ namespace libsemigroups {
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //!
   //! Returns a forward iterator used to iterate over words in
-  //! short-lexicographic order (wislo). If incremented, the iterator will point
-  //! to the next least short-lex word after \p w over an \p n letter alphabet.
+  //! lenlex order (wislo). If incremented, the iterator will point
+  //! to the next least lenlex word after \p w over an \p n letter alphabet.
   //! Iterators of the type returned by this function are equal whenever they
   //! are obtained by advancing the return value of any call to \c cbegin_wislo
   //! by the same amount, or they are both obtained by any call to
