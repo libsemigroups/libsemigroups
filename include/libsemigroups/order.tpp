@@ -712,6 +712,27 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  std::string to_human_readable_repr(RevWrCmp<Word, check> const& cmp) {
+    if (cmp.levels().size() < 10) {
+      return fmt::format("<RevWrCmp object over {} with levels {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.levels()));
+    }
+    return fmt::format("<RevWrCmp object over {} with {} levels>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.levels().size());
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(RevWrCmp<Default, check> const& cmp) {
+    if (cmp.levels().size() < 10) {
+      return fmt::format("<RevWrCmp object with levels {}>",
+                         detail::to_printable(cmp.levels()));
+    }
+    return fmt::format("<RevWrCmp object with {} levels>", cmp.levels().size());
+  }
+
+  template <typename Word, bool check>
   WtLenLexCmp<Word, check>&
   WtLenLexCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
                                  std::vector<size_t> const& weights) {
