@@ -653,6 +653,17 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  std::string to_human_readable_repr(RevRPOCmp<Word, check> const& cmp) {
+    return fmt::format("<RevRPOCmp object over {}>",
+                       to_human_readable_repr(cmp.alphabet()));
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(RevRPOCmp<Default, check> const&) {
+    return "<RevRPOCmp object>";
+  }
+
+  template <typename Word, bool check>
   WrCmp<Word, check>&
   WrCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
                            std::vector<size_t> const& levels) {
