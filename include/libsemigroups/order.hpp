@@ -2874,6 +2874,39 @@ namespace libsemigroups {
     }
   };  // class WrCmp<Default, check>
 
+  //! \relates WrCmp
+  //!
+  //! \brief Return a human readable representation of a wreath-product
+  //! comparison functor with an alphabet.
+  //!
+  //! \tparam Word the word type associated with the alphabet.
+  //! \tparam check whether to check that letters belong to the alphabet.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word, bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(WrCmp<Word, check> const& cmp);
+
+  //! \relates WrCmp
+  //!
+  //! \brief Return a human readable representation of a wreath-product
+  //! comparison functor on index words.
+  //!
+  //! \tparam check whether to check arguments.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(WrCmp<Default, check> const& cmp);
+
   //! \brief Deduction guide from a levels vector reference.
   WrCmp(std::vector<size_t> const&)->WrCmp<>;
 
