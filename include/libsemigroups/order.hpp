@@ -1821,6 +1821,39 @@ namespace libsemigroups {
     }
   };  // struct RPOCmp<Default, false>
 
+  //! \relates RPOCmp
+  //!
+  //! \brief Return a human readable representation of a stateful recursive
+  //! path order comparison functor.
+  //!
+  //! \tparam Word the word type associated with the alphabet.
+  //! \tparam check whether to check that letters belong to the alphabet.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word, bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(RPOCmp<Word, check> const& cmp);
+
+  //! \relates RPOCmp
+  //!
+  //! \brief Return a human readable representation of a stateless recursive
+  //! path order comparison functor.
+  //!
+  //! \tparam check whether to check arguments.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(RPOCmp<Default, check> const& cmp);
+
   //////////////////////////////////////////////////////////////////////
   // Reversed recursive path order (RPO)
   //////////////////////////////////////////////////////////////////////
