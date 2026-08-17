@@ -2321,6 +2321,38 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("RevWtLenLexCmp",
+                          "081",
+                          "to_human_readable_repr",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg      = ReportGuard(false);
+    std::vector<size_t> weights = {2, 1};
+
+    REQUIRE(to_human_readable_repr(RevWtLenLexCmp(weights))
+            == "<RevWtLenLexCmp object with weights [2, 1]>");
+    REQUIRE(to_human_readable_repr(RevWtLenLexCmp<Default, false>(weights))
+            == "<RevWtLenLexCmp object with weights [2, 1]>");
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(to_human_readable_repr(RevWtLenLexCmp(alphabet, weights))
+            == "<RevWtLenLexCmp object over <alphabet \"ba\"> with weights "
+               "[2, 1]>");
+    REQUIRE(to_human_readable_repr(
+                RevWtLenLexCmp<std::string, false>(alphabet, weights))
+            == "<RevWtLenLexCmp object over <alphabet \"ba\"> with weights "
+               "[2, 1]>");
+
+    std::vector<size_t> large_weights(10, 1);
+    REQUIRE(to_human_readable_repr(RevWtLenLexCmp(large_weights))
+            == "<RevWtLenLexCmp object with 10 weights>");
+    REQUIRE(to_human_readable_repr(
+                RevWtLenLexCmp(Alphabet<word_type>(10), large_weights))
+            == "<RevWtLenLexCmp object over <alphabet with 10 letters> with "
+               "10 weights>");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevWtLenLexCmp",
                           "069",
                           "functions and functors",
                           "[quick][order]") {
