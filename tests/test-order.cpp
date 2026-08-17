@@ -2133,6 +2133,29 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("RevLexCmp",
+                          "074",
+                          "to_human_readable_repr",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto rg = ReportGuard(false);
+
+    REQUIRE(to_human_readable_repr(RevLexCmp<>()) == "<RevLexCmp object>");
+    REQUIRE(to_human_readable_repr(RevLexCmp<Default, false>())
+            == "<RevLexCmp object>");
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(to_human_readable_repr(RevLexCmp(alphabet))
+            == "<RevLexCmp object over <alphabet \"ba\">>");
+    REQUIRE(to_human_readable_repr(RevLexCmp<std::string, false>(alphabet))
+            == "<RevLexCmp object over <alphabet \"ba\">>");
+
+    Alphabet<word_type> large_alphabet(10);
+    REQUIRE(to_human_readable_repr(RevLexCmp(large_alphabet))
+            == "<RevLexCmp object over <alphabet with 10 letters>>");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevLexCmp",
                           "068",
                           "functions and functors",
                           "[quick][order]") {

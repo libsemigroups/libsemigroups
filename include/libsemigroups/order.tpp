@@ -556,6 +556,17 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  std::string to_human_readable_repr(RevLexCmp<Word, check> const& cmp) {
+    return fmt::format("<RevLexCmp object over {}>",
+                       to_human_readable_repr(cmp.alphabet()));
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(RevLexCmp<Default, check> const&) {
+    return "<RevLexCmp object>";
+  }
+
+  template <typename Word, bool check>
   LenLexCmp<Word, check>&
   LenLexCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
     if (&alphabet != &_alphabet) {
