@@ -1002,6 +1002,29 @@ namespace libsemigroups {
   // lenlex_cmp with alphabet
   // =========================================================================
 
+  LIBSEMIGROUPS_TEST_CASE("LexCmp",
+                          "033",
+                          "to_human_readable_repr",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto rg = ReportGuard(false);
+
+    REQUIRE(to_human_readable_repr(LexCmp<>()) == "<LexCmp object>");
+    REQUIRE(to_human_readable_repr(LexCmp<Default, false>())
+            == "<LexCmp object>");
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(to_human_readable_repr(LexCmp(alphabet))
+            == "<LexCmp object over <alphabet \"ba\">>");
+    REQUIRE(to_human_readable_repr(LexCmp<std::string, false>(alphabet))
+            == "<LexCmp object over <alphabet \"ba\">>");
+
+    Alphabet<word_type> large_alphabet(10);
+    REQUIRE(to_human_readable_repr(LexCmp(large_alphabet))
+            == "<LexCmp object over <alphabet with 10 letters>>");
+  }
+
   LIBSEMIGROUPS_TEST_CASE("lenlex_cmp",
                           "043",
                           "with alphabet",
