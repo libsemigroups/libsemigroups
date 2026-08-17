@@ -741,6 +741,39 @@ namespace libsemigroups {
     }
   };  // struct RevLexCmp<Default, false>
 
+  //! \relates RevLexCmp
+  //!
+  //! \brief Return a human readable representation of a stateful reversed
+  //! lexicographic comparison functor.
+  //!
+  //! \tparam Word the word type associated with the alphabet.
+  //! \tparam check whether to check that letters belong to the alphabet.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word, bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(RevLexCmp<Word, check> const& cmp);
+
+  //! \relates RevLexCmp
+  //!
+  //! \brief Return a human readable representation of a stateless reversed
+  //! lexicographic comparison functor.
+  //!
+  //! \tparam check whether to check arguments.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(RevLexCmp<Default, check> const& cmp);
+
   //////////////////////////////////////////////////////////////////////
   // Len-lex
   //////////////////////////////////////////////////////////////////////
