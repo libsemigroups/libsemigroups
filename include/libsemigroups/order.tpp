@@ -877,4 +877,26 @@ namespace libsemigroups {
                        cmp.weights().size());
   }
 
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(LenWtLexCmp<Word, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<LenWtLexCmp object over {} with weights {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<LenWtLexCmp object over {} with {} weights>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.weights().size());
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(LenWtLexCmp<Default, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<LenWtLexCmp object with weights {}>",
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<LenWtLexCmp object with {} weights>",
+                       cmp.weights().size());
+  }
+
 }  // namespace libsemigroups
