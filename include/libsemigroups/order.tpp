@@ -563,6 +563,17 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  std::string to_human_readable_repr(LenLexCmp<Word, check> const& cmp) {
+    return fmt::format("<LenLexCmp object over {}>",
+                       to_human_readable_repr(cmp.alphabet()));
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(LenLexCmp<Default, check> const&) {
+    return "<LenLexCmp object>";
+  }
+
+  template <typename Word, bool check>
   RPOCmp<Word, check>&
   RPOCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
     if (&alphabet != &_alphabet) {

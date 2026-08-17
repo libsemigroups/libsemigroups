@@ -1072,6 +1072,29 @@ namespace libsemigroups {
                           "invalid letter 'b', valid letters are \"cd\"");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("LenLexCmp",
+                          "032",
+                          "to_human_readable_repr",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto rg = ReportGuard(false);
+
+    REQUIRE(to_human_readable_repr(LenLexCmp<>()) == "<LenLexCmp object>");
+    REQUIRE(to_human_readable_repr(LenLexCmp<Default, false>())
+            == "<LenLexCmp object>");
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(to_human_readable_repr(LenLexCmp(alphabet))
+            == "<LenLexCmp object over <alphabet \"ba\">>");
+    REQUIRE(to_human_readable_repr(LenLexCmp<std::string, false>(alphabet))
+            == "<LenLexCmp object over <alphabet \"ba\">>");
+
+    Alphabet<word_type> large_alphabet(10);
+    REQUIRE(to_human_readable_repr(LenLexCmp(large_alphabet))
+            == "<LenLexCmp object over <alphabet with 10 letters>>");
+  }
+
   // =========================================================================
   // rev_rpo_cmp with alphabet
   // =========================================================================
