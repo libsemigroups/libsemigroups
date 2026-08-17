@@ -2403,6 +2403,36 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("RevWrCmp",
+                          "079",
+                          "to_human_readable_repr",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg     = ReportGuard(false);
+    std::vector<size_t> levels = {0, 1};
+
+    REQUIRE(to_human_readable_repr(RevWrCmp(levels))
+            == "<RevWrCmp object with levels [0, 1]>");
+    REQUIRE(to_human_readable_repr(RevWrCmp<Default, false>(levels))
+            == "<RevWrCmp object with levels [0, 1]>");
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(to_human_readable_repr(RevWrCmp(alphabet, levels))
+            == "<RevWrCmp object over <alphabet \"ba\"> with levels [0, 1]>");
+    REQUIRE(
+        to_human_readable_repr(RevWrCmp<std::string, false>(alphabet, levels))
+        == "<RevWrCmp object over <alphabet \"ba\"> with levels [0, 1]>");
+
+    std::vector<size_t> large_levels(10, 0);
+    REQUIRE(to_human_readable_repr(RevWrCmp(large_levels))
+            == "<RevWrCmp object with 10 levels>");
+    REQUIRE(
+        to_human_readable_repr(RevWrCmp(Alphabet<word_type>(10), large_levels))
+        == "<RevWrCmp object over <alphabet with 10 letters> with 10 "
+           "levels>");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RevWrCmp",
                           "071",
                           "functions and functors",
                           "[quick][order]") {
