@@ -761,6 +761,28 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  std::string to_human_readable_repr(WtLenLexCmp<Word, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<WtLenLexCmp object over {} with weights {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<WtLenLexCmp object over {} with {} weights>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.weights().size());
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(WtLenLexCmp<Default, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<WtLenLexCmp object with weights {}>",
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<WtLenLexCmp object with {} weights>",
+                       cmp.weights().size());
+  }
+
+  template <typename Word, bool check>
   WtLexCmp<Word, check>&
   WtLexCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
                               std::vector<size_t> const& weights) {
