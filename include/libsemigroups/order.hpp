@@ -1403,6 +1403,39 @@ namespace libsemigroups {
     }
   };  // struct RevLenLexCmp<Default, false>
 
+  //! \relates RevLenLexCmp
+  //!
+  //! \brief Return a human readable representation of a stateful reversed
+  //! len-lex comparison functor.
+  //!
+  //! \tparam Word the word type associated with the alphabet.
+  //! \tparam check whether to check that letters belong to the alphabet.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word, bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(RevLenLexCmp<Word, check> const& cmp);
+
+  //! \relates RevLenLexCmp
+  //!
+  //! \brief Return a human readable representation of a stateless reversed
+  //! len-lex comparison functor.
+  //!
+  //! \tparam check whether to check arguments.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(RevLenLexCmp<Default, check> const& cmp);
+
   //////////////////////////////////////////////////////////////////////
   // Recursive path order (RPO)
   //////////////////////////////////////////////////////////////////////
