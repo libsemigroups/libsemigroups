@@ -1959,6 +1959,33 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WrCmp",
+                          "078",
+                          "to_human_readable_repr",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg     = ReportGuard(false);
+    std::vector<size_t> levels = {0, 1};
+
+    REQUIRE(to_human_readable_repr(WrCmp(levels))
+            == "<WrCmp object with levels [0, 1]>");
+    REQUIRE(to_human_readable_repr(WrCmp<Default, false>(levels))
+            == "<WrCmp object with levels [0, 1]>");
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(to_human_readable_repr(WrCmp(alphabet, levels))
+            == "<WrCmp object over <alphabet \"ba\"> with levels [0, 1]>");
+    REQUIRE(to_human_readable_repr(WrCmp<std::string, false>(alphabet, levels))
+            == "<WrCmp object over <alphabet \"ba\"> with levels [0, 1]>");
+
+    std::vector<size_t> large_levels(10, 0);
+    REQUIRE(to_human_readable_repr(WrCmp(large_levels))
+            == "<WrCmp object with 10 levels>");
+    REQUIRE(to_human_readable_repr(WrCmp(Alphabet<word_type>(10), large_levels))
+            == "<WrCmp object over <alphabet with 10 letters> with 10 levels>");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WrCmp",
                           "063",
                           "deduction guides and checks",
                           "[quick][order]") {
