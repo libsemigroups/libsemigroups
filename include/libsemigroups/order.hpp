@@ -2247,6 +2247,39 @@ namespace libsemigroups {
     }
   };  // struct RevRPOCmp<Default, false>
 
+  //! \relates RevRPOCmp
+  //!
+  //! \brief Return a human readable representation of a stateful reversed
+  //! recursive path order comparison functor.
+  //!
+  //! \tparam Word the word type associated with the alphabet.
+  //! \tparam check whether to check that letters belong to the alphabet.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word, bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(RevRPOCmp<Word, check> const& cmp);
+
+  //! \relates RevRPOCmp
+  //!
+  //! \brief Return a human readable representation of a stateless reversed
+  //! recursive path order comparison functor.
+  //!
+  //! \tparam check whether to check arguments.
+  //! \param cmp the comparison functor.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <bool check>
+  [[nodiscard]] std::string
+  to_human_readable_repr(RevRPOCmp<Default, check> const& cmp);
+
   //////////////////////////////////////////////////////////////////////
   // Wreath-product
   //////////////////////////////////////////////////////////////////////

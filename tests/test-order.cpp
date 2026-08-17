@@ -2095,6 +2095,29 @@ namespace libsemigroups {
     REQUIRE(std::is_sorted(strings.begin(), strings.end(), RPOCmp(alphabet)));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("RevRPOCmp",
+                          "077",
+                          "to_human_readable_repr",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto rg = ReportGuard(false);
+
+    REQUIRE(to_human_readable_repr(RevRPOCmp<>()) == "<RevRPOCmp object>");
+    REQUIRE(to_human_readable_repr(RevRPOCmp<Default, false>())
+            == "<RevRPOCmp object>");
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(to_human_readable_repr(RevRPOCmp(alphabet))
+            == "<RevRPOCmp object over <alphabet \"ba\">>");
+    REQUIRE(to_human_readable_repr(RevRPOCmp<std::string, false>(alphabet))
+            == "<RevRPOCmp object over <alphabet \"ba\">>");
+
+    Alphabet<word_type> large_alphabet(10);
+    REQUIRE(to_human_readable_repr(RevRPOCmp(large_alphabet))
+            == "<RevRPOCmp object over <alphabet with 10 letters>>");
+  }
+
   LIBSEMIGROUPS_TEST_CASE("RPOCmp",
                           "076",
                           "to_human_readable_repr",
