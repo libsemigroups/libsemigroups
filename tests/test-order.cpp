@@ -570,6 +570,38 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
+                          "080",
+                          "to_human_readable_repr",
+                          "[quick][order]") {
+    using std::string_literals::operator""s;
+
+    auto                rg      = ReportGuard(false);
+    std::vector<size_t> weights = {2, 1};
+
+    REQUIRE(to_human_readable_repr(WtLenLexCmp(weights))
+            == "<WtLenLexCmp object with weights [2, 1]>");
+    REQUIRE(to_human_readable_repr(WtLenLexCmp<Default, false>(weights))
+            == "<WtLenLexCmp object with weights [2, 1]>");
+
+    Alphabet alphabet("ba"s);
+    REQUIRE(to_human_readable_repr(WtLenLexCmp(alphabet, weights))
+            == "<WtLenLexCmp object over <alphabet \"ba\"> with weights [2, "
+               "1]>");
+    REQUIRE(to_human_readable_repr(
+                WtLenLexCmp<std::string, false>(alphabet, weights))
+            == "<WtLenLexCmp object over <alphabet \"ba\"> with weights [2, "
+               "1]>");
+
+    std::vector<size_t> large_weights(10, 1);
+    REQUIRE(to_human_readable_repr(WtLenLexCmp(large_weights))
+            == "<WtLenLexCmp object with 10 weights>");
+    REQUIRE(to_human_readable_repr(
+                WtLenLexCmp(Alphabet<word_type>(10), large_weights))
+            == "<WtLenLexCmp object over <alphabet with 10 letters> with 10 "
+               "weights>");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WtLenLexCmp",
                           "034",
                           "use in std::set",
                           "[quick][order]") {
