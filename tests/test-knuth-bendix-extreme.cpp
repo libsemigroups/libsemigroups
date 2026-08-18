@@ -336,7 +336,7 @@ namespace libsemigroups {
   // which is the same as the group, together with the empty word. This
   // is a very difficult calculation indeed, however.
   //
-  // KBMAG does not seem to terminate when SHORTLEX order is used.
+  // KBMAG does not seem to terminate when lenlex order is used.
   //
   // [999]: KnuthBendix: kbmag/f27monoid - RPOTrie .....29.123s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
