@@ -2771,6 +2771,7 @@ namespace libsemigroups {
       //!
       //! \sa
       //! standardize.
+      // TODO(1): Add is_standardized_no_checks?
       template <typename Node>
       bool is_standardized(WordGraphView<Node> const& wg,
                            Order                      val = Order::lenlex);
