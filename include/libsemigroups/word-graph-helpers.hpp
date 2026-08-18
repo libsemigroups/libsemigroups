@@ -2643,14 +2643,14 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
+      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! bounds, then this is ignored by this function.
+      // Not nodiscard because sometimes we just don't want the output
+      //!
       //! \warning If there are nodes in the \p wg that are not reachable from
       //! the node \c 0, then this function may not preserve \p wg up to
       //! isomorphism. However, the isomorphism type of the sub-word-graph
       //! consisting of those nodes reachable from the node \c 0 is preserved.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      // Not nodiscard because sometimes we just don't want the output
       template <typename Graph>
       bool standardize_no_checks(Graph& wg, Forest& f, Order val);
 
@@ -2709,14 +2709,14 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
+      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! bounds, then this is ignored by this function.
+      // Not nodiscard because sometimes we just don't want the output
+      //!
       //! \warning If there are nodes in the \p wg that are not reachable from
       //! the node \c 0, then this function may not preserve \p wg up to
       //! isomorphism. However, the isomorphism type of the sub-word-graph
       //! consisting of those nodes reachable from the node \c 0 is preserved.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      // Not nodiscard because sometimes we just don't want the output
       template <typename Graph>
       std::pair<bool, Forest> standardize_no_checks(Graph& wg,
                                                     Order  val = Order::lenlex);
