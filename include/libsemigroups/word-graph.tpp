@@ -89,7 +89,7 @@ namespace libsemigroups {
           }
         }
         if (result) {
-          wg.standardize(p, q);
+          wg.standardize_no_checks(p, q);
         }
         return result;
       }
@@ -140,7 +140,7 @@ namespace libsemigroups {
           }
         }
         if (result) {
-          wg.standardize(p, q);
+          wg.standardize_no_checks(p, q);
         }
         return result;
       }
@@ -249,7 +249,7 @@ namespace libsemigroups {
           }
         }
         if (result) {
-          wg.standardize(p, q);
+          wg.standardize_no_checks(p, q);
         }
         return result;
       }

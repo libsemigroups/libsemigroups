@@ -184,7 +184,7 @@ namespace libsemigroups {
           bool standardize() {
             if (_is_non_trivial_permutation) {
               _p.resize(_largest_used_node + 1);
-              _wg.standardize(_p, _p_inverse);
+              _wg.standardize_no_checks(_p, _p_inverse);
             }
             return _is_non_trivial_permutation;
           }
@@ -484,14 +484,14 @@ namespace libsemigroups {
       }  // namespace detail
 
       template <typename Graph>
-      std::pair<bool, Forest> standardize(Graph& wg, Order val) {
+      std::pair<bool, Forest> standardize_no_checks(Graph& wg, Order val) {
         Forest f;
-        bool   result = standardize(wg, f, val);
+        bool   result = standardize_no_checks(wg, f, val);
         return std::make_pair(result, f);
       }
 
       template <typename Graph>
-      bool standardize(Graph& wg, Forest& f, Order val) {
+      bool standardize_no_checks(Graph& wg, Forest& f, Order val) {
         if (wg.number_of_nodes() == 0) {
           return false;
         }
