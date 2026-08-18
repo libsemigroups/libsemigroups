@@ -58,6 +58,10 @@
 #include "matrix.hpp"
 #endif
 
+// TODO(1): Add a comment to the relevant places in the doc that says a properly
+// formed WordGraph never has any target that is >= number_of_nodes() and !=
+// UNDEFINED.
+
 namespace libsemigroups {
 
   //! \defgroup word_graph_group Word graphs and related functionality
