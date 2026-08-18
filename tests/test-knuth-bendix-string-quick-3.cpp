@@ -1419,7 +1419,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "156",
-                          "weighted len-lex",
+                          "weighted lenlex",
                           "[quick][knuth-bendix]") {
     auto rg = ReportGuard(false);
 
