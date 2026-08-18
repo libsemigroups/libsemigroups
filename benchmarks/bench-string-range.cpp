@@ -40,7 +40,7 @@ namespace libsemigroups {
       REQUIRE(is_sorted(strings, LexCmp()));
     };
 
-    BENCHMARK("3-letter alphabet + length 0 to 13 + shortlex") {
+    BENCHMARK("3-letter alphabet + length 0 to 13 + lenlex") {
       StringRange strings;
       std::string last(13, 'c');
       strings.alphabet("abc").first("").last(last).order(Order::lenlex);

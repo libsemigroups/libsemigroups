@@ -2356,7 +2356,7 @@ namespace libsemigroups {
                           "059",
                           "(from kbmag/standalone/kb_data/degen4b) "
                           "(KnuthBendix 065)",
-                          "[extreme][todd-coxeter][kbmag][shortlex]") {
+                          "[extreme][todd-coxeter][kbmag][lenlex]") {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
