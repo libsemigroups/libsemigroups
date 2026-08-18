@@ -1068,6 +1068,8 @@ namespace libsemigroups {
                           "048",
                           "rpo standardization | textbook example",
                           "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
     auto wg = v4::make<WordGraph<size_t>>(
         6, {{1, 3}, {2}, {0, 5}, {4}, {UNDEFINED, 2}, {0}});
 
@@ -1088,6 +1090,8 @@ namespace libsemigroups {
                           "049",
                           "rpo standardization | permuted textbook example",
                           "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
     auto canonical = v4::make<WordGraph<size_t>>(
         6, {{1, 3}, {2}, {0, 5}, {4}, {UNDEFINED, 2}, {0}});
     auto permuted = canonical;
@@ -1122,6 +1126,8 @@ namespace libsemigroups {
                           "050",
                           "rpo standardization | recursive three-letter case",
                           "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
     auto wg = v4::make<WordGraph<size_t>>(
         7, {{1, 3, 5}, {2, 4}, {}, {6}, {}, {4}, {}});
 
@@ -1145,6 +1151,8 @@ namespace libsemigroups {
                           "051",
                           "random standardization",
                           "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
     WordGraph wg = WordGraph<size_t>::random(5000, 8);
     REQUIRE(wg.number_of_nodes() == 5000);
     REQUIRE(wg.number_of_edges() == 40000);
@@ -1183,6 +1191,8 @@ namespace libsemigroups {
                           "052",
                           "all words standardization",
                           "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
     // Construct the WordGraph such that the paths from 0 are labelled by the
     // words with length in [0, max_depth), consisting of letters in
     // [0, num_letters).
