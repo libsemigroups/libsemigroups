@@ -1212,8 +1212,8 @@ namespace libsemigroups {
       return permute_nodes_no_checks(p, q, p.size());
     }
 
-    WordGraph& standardize(std::vector<node_type> const& p,
-                           std::vector<node_type> const& q) {
+    WordGraph& standardize_no_checks(std::vector<node_type> const& p,
+                                     std::vector<node_type> const& q) {
       return permute_nodes_no_checks(p, q, p.size());
     }
 #endif

@@ -159,7 +159,7 @@ namespace libsemigroups {
       }
 
       WordGraph<Node> result = wg;
-      result.standardize(p, q);
+      result.standardize_no_checks(p, q);
 
       std::vector<word_type> ordered_words;
       ordered_words.reserve(p.size());
@@ -1100,7 +1100,7 @@ namespace libsemigroups {
     for (size_t i = 0; i < p.size(); ++i) {
       q[p[i]] = i;
     }
-    permuted.standardize(q, p);
+    permuted.standardize_no_checks(q, p);
 
     REQUIRE(v4::word_graph::is_standardized(canonical, Order::rpo));
     REQUIRE(permuted

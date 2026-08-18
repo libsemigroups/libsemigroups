@@ -2652,7 +2652,40 @@ namespace libsemigroups {
       //! bounds, then this is ignored by this function.
       // Not nodiscard because sometimes we just don't want the output
       template <typename Graph>
-      bool standardize(Graph& wg, Forest& f, Order val);
+      bool standardize_no_checks(Graph& wg, Forest& f, Order val);
+
+      //! \brief Standardizes a word graph in-place.
+      //!
+      //! This function standardizes the word graph \p wg according to the
+      //! reduction order specified by \p val, and replaces the contents of the
+      //! Forest \p f with a spanning tree rooted at \c 0 for the node reachable
+      //! from \c 0. The spanning tree corresponds to the order \p val.
+      //!
+      //! \tparam Graph the type of the word graph \p wg.
+      //!
+      //! \param wg the word graph.
+      //! \param f the Forest object to store the spanning tree.
+      //! \param val the order to use for standardization.
+      //!
+      //! \returns
+      //! This function returns \c true if the word graph \p wg is modified by
+      //! this function (i.e. it was not standardized already), and \c false
+      //! otherwise.
+      //!
+      //! \throws LibsemigroupsException if any target or any label of \p wg is
+      //! out of bounds.
+      //!
+      //! \warning If there are nodes in the \p wg that are not reachable from
+      //! the node \c 0, then this function may not preserve \p wg up to
+      //! isomorphism. However, the isomorphism type of the sub-word-graph
+      //! consisting of those nodes reachable from the node \c 0 is preserved.
+      //!
+      // Not nodiscard because sometimes we just don't want the output
+      template <typename Graph>
+      bool standardize(Graph& wg, Forest& f, Order val) {
+        libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
+        return standardize_no_checks(wg, f, val);
+      }
 
       //! \brief Standardizes a word graph in-place.
       //!
@@ -2685,7 +2718,42 @@ namespace libsemigroups {
       //! bounds, then this is ignored by this function.
       // Not nodiscard because sometimes we just don't want the output
       template <typename Graph>
-      std::pair<bool, Forest> standardize(Graph& wg, Order val = Order::lenlex);
+      std::pair<bool, Forest> standardize_no_checks(Graph& wg,
+                                                    Order  val = Order::lenlex);
+
+      //! \brief Standardizes a word graph in-place.
+      //!
+      //! This function standardizes the word graph \p wg according to the
+      //! reduction order specified by \p val, and returns a Forest object
+      //! containing a spanning tree rooted at \c 0 for the node reachable from
+      //! \c 0. The spanning tree corresponds to the order \p val.
+      //!
+      //! \tparam Graph the type of the word graph \p wg.
+      //!
+      //! \param wg the word graph.
+      //! \param val the order to use for standardization.
+      //!
+      //! \returns
+      //! A std::pair the first entry of which is \c true if the word graph
+      //! \p wg is modified by this function (i.e. it was not standardized
+      //! already), and
+      //! \c false otherwise. The second entry is a Forest object containing a
+      //! spanning tree for \p wg.
+      //!
+      //! \throws LibsemigroupsException if any target or any label of \p wg is
+      //! out of bounds.
+      //!
+      //! \warning If there are nodes in the \p wg that are not reachable from
+      //! the node \c 0, then this function may not preserve \p wg up to
+      //! isomorphism. However, the isomorphism type of the sub-word-graph
+      //! consisting of those nodes reachable from the node \c 0 is preserved.
+      // Not nodiscard because sometimes we just don't want the output
+      template <typename Graph>
+      std::pair<bool, Forest> standardize(Graph& wg,
+                                          Order  val = Order::lenlex) {
+        libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
+        return standardize_no_checks(wg, val);
+      }
 
       //! \brief Check if a word graph is standardized.
       //!

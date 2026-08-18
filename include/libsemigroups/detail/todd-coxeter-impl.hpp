@@ -369,7 +369,7 @@ namespace libsemigroups {
         ////////////////////////////////////////////////////////////////////////
 
         using FelschGraph_::presentation;
-        using FelschGraph_::standardize;
+        using FelschGraph_::standardize_no_checks;
         using FelschGraph_::target_no_checks;
 
         ////////////////////////////////////////////////////////////////////////
