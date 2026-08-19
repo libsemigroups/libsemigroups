@@ -581,10 +581,10 @@ namespace libsemigroups {
     //! node.
     //!
     //! \returns A \c bool.
-    template <typename Thing,
-              typename std::enable_if_t<
-                  !std::is_same_v<std::decay_t<Thing>, std::string>>>
-    [[nodiscard]] bool is_node(Thing&& thing) const {
+    template <typename Thing, typename SFINAE = bool>
+    [[nodiscard]] auto is_node(Thing&& thing) const
+        -> std::enable_if_t<!std::is_same_v<std::decay_t<Thing>, std::string>,
+                            SFINAE> {
       return is_node(detail::dot_to_string(std::forward<Thing>(thing)));
     }
 
