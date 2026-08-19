@@ -92,7 +92,7 @@ namespace libsemigroups {
         }
 
         template <typename Node>
-        bool is_rpo_standardized(WordGraphView<Node> const& wg) {
+        bool is_rev_rpo_standardized(WordGraphView<Node> const& wg) {
           using node_type = typename WordGraphView<Node>::node_type;
 
           auto const N = wg.number_of_nodes_no_checks();
@@ -111,7 +111,7 @@ namespace libsemigroups {
 
           seen[0] = true;
 
-        restart:
+        start_is_rev_rpo_standardized:
           for (letter_type x = 0; x < wg.out_degree_no_checks(); ++x) {
             while (next_node[x] <= max_seen) {
               node_type const s = next_node[x];
@@ -127,7 +127,7 @@ namespace libsemigroups {
                 if (static_cast<size_t>(max_seen + 1) == nr_reachable) {
                   return true;
                 }
-                goto restart;
+                goto start_is_rev_rpo_standardized;
               }
             }
           }
@@ -278,40 +278,6 @@ namespace libsemigroups {
           using node_type  = typename Graph::node_type;
           using label_type = typename Graph::label_type;
 
-          Standardizer<Graph> standardizer(wg, f);
-          size_t const        n = wg.out_degree();
-
-          std::vector<node_type> next_node(n, 0);
-
-        // Follow Sims' WREATH_STND literally: each letter keeps its own
-        // cursor, and every discovery restarts the sweep from the first
-        // letter so earlier frontier words are handled first.
-        start_rpo_standardize_search:
-          for (label_type x = 0; x < n; ++x) {
-            while (next_node[x] <= standardizer.largest_used_node()) {
-              node_type const s = next_node[x];
-              ++next_node[x];
-
-              if (standardizer.try_set_next_smallest(s, x)) {
-                if (standardizer.stop_early()) {
-                  return standardizer.standardize();
-                }
-                goto start_rpo_standardize_search;
-              }
-            }
-          }
-
-          return standardizer.standardize();
-        }
-
-        template <typename Graph>
-        bool rev_rpo_standardize(Graph& wg, Forest& f) {
-          LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
-          LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
-
-          using node_type  = typename Graph::node_type;
-          using label_type = typename Graph::label_type;
-
           Standardizer<Graph>    standardizer(wg, f);
           size_t const           n = wg.out_degree();
           label_type             x = 0;
@@ -335,6 +301,40 @@ namespace libsemigroups {
               x = 0;
             } else {
               ++x;
+            }
+          }
+
+          return standardizer.standardize();
+        }
+
+        template <typename Graph>
+        bool rev_rpo_standardize(Graph& wg, Forest& f) {
+          LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
+          LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
+
+          using node_type  = typename Graph::node_type;
+          using label_type = typename Graph::label_type;
+
+          Standardizer<Graph> standardizer(wg, f);
+          size_t const        n = wg.out_degree();
+
+          std::vector<node_type> next_node(n, 0);
+
+        // Follow Sims' WREATH_STND literally: each letter keeps its own
+        // cursor, and every discovery restarts the sweep from the first
+        // letter so earlier frontier words are handled first.
+        start_rev_rpo_standardize_search:
+          for (label_type x = 0; x < n; ++x) {
+            while (next_node[x] <= standardizer.largest_used_node()) {
+              node_type const s = next_node[x];
+              ++next_node[x];
+
+              if (standardizer.try_set_next_smallest(s, x)) {
+                if (standardizer.stop_early()) {
+                  return standardizer.standardize();
+                }
+                goto start_rev_rpo_standardize_search;
+              }
             }
           }
 
@@ -532,9 +532,9 @@ namespace libsemigroups {
             return true;
           case Order::lenlex:
             return detail::is_lenlex_standardized(wg);
-          case Order::rpo:
-            return detail::is_rpo_standardized(wg);
           case Order::rev_rpo:
+            return detail::is_rev_rpo_standardized(wg);
+          case Order::rpo:
           case Order::lex:
           default:
             LIBSEMIGROUPS_EXCEPTION("not yet implemented")
