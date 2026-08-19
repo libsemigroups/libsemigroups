@@ -19,6 +19,13 @@
 // This file contains helper functions for word graphs and word graph views
 
 namespace libsemigroups {
+  namespace detail {
+    // Forward decl
+    template <typename Node>
+    class NodeManagedGraph;
+
+  }  // namespace detail
+
   namespace v4 {
     //////////////////////////////////////////////////////////////////////////////
     // Helper namespace
@@ -127,11 +134,10 @@ namespace libsemigroups {
           return static_cast<size_t>(max_seen + 1) == nr_reachable;
         }
 
-        template <typename Node>
-        class NodeManagedGraph;
-
         template <typename Graph>
         class Standardizer {
+          static_assert(std::is_same_v<std::decay_t<Graph>, Graph>);
+
           using node_type  = typename Graph::node_type;
           using label_type = typename Graph::label_type;
 
@@ -190,8 +196,10 @@ namespace libsemigroups {
           }
 
          private:
-          node_type max_node() const noexcept {
-            if constexpr (is_specialization_of_v<Graph, NodeManagedGraph>) {
+          inline node_type max_node() const noexcept {
+            if constexpr (std::is_base_of_v<libsemigroups::detail::
+                                                NodeManagedGraph<node_type>,
+                                            Graph>) {
               return _wg.number_of_nodes_active() - 1;
             } else {
               return _wg.number_of_nodes() - 1;
