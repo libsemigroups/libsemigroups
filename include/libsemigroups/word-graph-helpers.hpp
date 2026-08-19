@@ -25,6 +25,7 @@
 #include <initializer_list>  // for initializer_list
 #include <iosfwd>            // for ostream
 #include <iterator>          // for empty
+#include <limits>            // for numeric_limits
 #include <numeric>           // for iota
 #include <queue>             // for queue
 #include <random>            // for mt19937, random_device
@@ -3729,6 +3730,73 @@ namespace libsemigroups {
                                               std::string const& suffix = "");
 
   }  // namespace v4
+
+  namespace word_graph {
+
+    //! \brief Constructs a word graph from a disparse6 string.
+    //!
+    //! This function decodes the directed, unlabelled graph represented by
+    //! \p input. The returned word graph has the smallest out-degree that can
+    //! contain the decoded graph. At each node, outgoing edges are labelled
+    //! consecutively from \c 0 in increasing order of target.
+    //!
+    //! Directed edges and loops are supported. This conversion does not
+    //! support multiple unlabelled edges with the same source and target;
+    //! disparse6 strings containing such edges are rejected.
+    //!
+    //! \tparam Node the type of the nodes of the returned WordGraph.
+    //!
+    //! \param input the disparse6 string to decode.
+    //!
+    //! \returns A word graph representing \p input.
+    //!
+    //! \throws LibsemigroupsException if \p input is not a valid disparse6
+    //! string, contains multiple edges, or represents more nodes than can be
+    //! represented by \p Node.
+    //!
+    //! \par Complexity
+    // codespell:begin-ignore
+    //! \f$O(m \log m + nd)\f$ time and \f$O(m)\f$ additional space, where
+    //! \f$n\f$ is the number of nodes, \f$m\f$ is the number of edges, and
+    //! \f$d\f$ is the maximum out-degree of a node.
+    // codespell:end-ignore
+    //!
+    //! \sa
+    //! to_disparse6_string.
+    template <typename Node>
+    [[nodiscard]] WordGraph<Node>
+    from_disparse6_string(std::string const& input);
+
+    //! \brief Returns a disparse6 representation of a word graph.
+    //!
+    //! This function returns a string containing the directed, unlabelled
+    //! graph underlying \p wg in disparse6 format. Undefined transitions are
+    //! omitted. Directed edges and loops are preserved; edge labels are not
+    //! represented by the disparse6 format.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns A disparse6 string representing \p wg.
+    //!
+    //! \throws LibsemigroupsException if `wg.number_of_nodes()` is greater
+    //! than \f$2^{36} - 1\f$, the largest order supported by disparse6.
+    //!
+    //! \par Complexity
+    // codespell:begin-ignore
+    //! \f$O(nd + m \log m)\f$ time and \f$O(m)\f$ additional space, where
+    //! \f$n\f$ is the number of nodes, \f$d\f$ is the out-degree, and
+    //! \f$m\f$ is the number of defined transitions in \p wg.
+    // codespell:end-ignore
+    //!
+    //! \sa
+    //! [The GAP Digraphs package documentation for graph6 formats]
+    //! (https://docs.gap-system.org/pkg/digraphs/doc/chap9.html#X7B997A237BFA20AE).
+    template <typename Node>
+    [[nodiscard]] std::string to_disparse6_string(WordGraph<Node> const& wg);
+
+  }  // namespace word_graph
 }  // namespace libsemigroups
 
 #include "libsemigroups/word-graph-helpers.tpp"

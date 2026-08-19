@@ -746,6 +746,334 @@ namespace libsemigroups {
                                   next_postorder_num);
       }
 
+    }  // namespace word_graph
+  }    // namespace v4
+
+  namespace word_graph {
+
+    namespace detail {
+      [[noreturn]] inline void throw_invalid_disparse_string() {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected the 1st argument to be a valid disparse6 string");
+      }
+    }  // namespace detail
+
+    template <typename Node>
+    WordGraph<Node> from_disparse6_string(std::string const& input) {
+      size_t end = input.size();
+      if (end != 0 && input[end - 1] == '\n') {
+        --end;
+      }
+      if (end != 0 && input[end - 1] == '\r') {
+        --end;
+      }
+      if (end < 2 || input[0] != '.') {
+        detail::throw_invalid_disparse_string();
+      }
+
+      for (size_t i = 1; i < end; ++i) {
+        auto const value = static_cast<unsigned char>(input[i]);
+        if (value < 63 || value > 126) {
+          detail::throw_invalid_disparse_string();
+        }
+      }
+      auto six_bit_value = [&input](size_t pos) -> uint64_t {
+        return static_cast<unsigned char>(input[pos]) - 63;
+      };
+
+      size_t   pos = 1;
+      uint64_t n   = six_bit_value(pos++);
+      if (n == 63) {
+        if (pos == end) {
+          detail::throw_invalid_disparse_string();
+        }
+        n = six_bit_value(pos++);
+        if (n < 63) {
+          if (end - pos < 2) {
+            detail::throw_invalid_disparse_string();
+          }
+          n = (n << 12) | (six_bit_value(pos) << 6) | six_bit_value(pos + 1);
+          pos += 2;
+          if (n < 63) {
+            detail::throw_invalid_disparse_string();
+          }
+        } else {
+          if (end - pos < 6) {
+            detail::throw_invalid_disparse_string();
+          }
+          n = 0;
+          for (size_t i = 0; i < 6; ++i) {
+            n = (n << 6) | six_bit_value(pos++);
+          }
+          if (n < (uint64_t{1} << 18)) {
+            detail::throw_invalid_disparse_string();
+          }
+        }
+      }
+
+      uint64_t const max_node_count
+          = static_cast<uint64_t>(std::numeric_limits<Node>::max());
+      uint64_t const max_size
+          = static_cast<uint64_t>(std::numeric_limits<size_t>::max());
+      if (n > max_node_count || n > max_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the disparse6 string in the 1st argument represents {} nodes, "
+            "but the requested WordGraph can have at most {} nodes",
+            n,
+            std::min(max_node_count, max_size));
+      }
+
+      size_t const payload_chars = end - pos;
+      if (payload_chars > std::numeric_limits<size_t>::max() / 6) {
+        detail::throw_invalid_disparse_string();
+      }
+      size_t const number_of_bits = payload_chars * 6;
+      auto         bit_at         = [&input, pos](size_t bit_pos) {
+        auto const value
+            = static_cast<unsigned char>(input[pos + bit_pos / 6]) - 63;
+        return (value & (1U << (5 - bit_pos % 6))) != 0;
+      };
+
+      size_t bit_pos  = 0;
+      auto   read_bit = [&bit_at, &bit_pos, number_of_bits]() {
+        if (bit_pos == number_of_bits) {
+          detail::throw_invalid_disparse_string();
+        }
+        return bit_at(bit_pos++);
+      };
+
+      size_t k = 1;
+      for (uint64_t value = n; value > 1; value >>= 1) {
+        ++k;
+      }
+      auto read_binary = [&read_bit, k]() {
+        uint64_t value = 0;
+        for (size_t i = 0; i < k; ++i) {
+          value = (value << 1) | read_bit();
+        }
+        return value;
+      };
+
+      using edge_type = std::pair<uint64_t, uint64_t>;
+      std::vector<edge_type> edges;
+
+      // Decode decreasing edges up to the mandatory (1, n) separator.
+      uint64_t v         = 0;
+      bool     separator = false;
+      while (number_of_bits - bit_pos >= k + 1) {
+        bool const     increment = read_bit();
+        uint64_t const x         = read_binary();
+        if (increment && x == n) {
+          separator = true;
+          break;
+        }
+        if (x >= n) {
+          detail::throw_invalid_disparse_string();
+        }
+        if (increment) {
+          ++v;
+        }
+        if (x > v) {
+          v = x;
+        } else {
+          if (v >= n || x == v) {
+            detail::throw_invalid_disparse_string();
+          }
+          edges.emplace_back(v, x);
+        }
+      }
+      if (!separator) {
+        detail::throw_invalid_disparse_string();
+      }
+
+      // Decode increasing edges; at most five trailing one-bits are padding.
+      v = 0;
+      while (bit_pos != number_of_bits) {
+        size_t const remaining = number_of_bits - bit_pos;
+        bool         all_ones  = true;
+        for (size_t i = bit_pos; i < number_of_bits; ++i) {
+          if (!bit_at(i)) {
+            all_ones = false;
+            break;
+          }
+        }
+        if (remaining <= 5 && all_ones) {
+          bit_pos = number_of_bits;
+          break;
+        }
+        if (remaining < k + 1) {
+          detail::throw_invalid_disparse_string();
+        }
+
+        bool const     increment = read_bit();
+        uint64_t const x         = read_binary();
+        if (x >= n) {
+          detail::throw_invalid_disparse_string();
+        }
+        if (increment) {
+          ++v;
+        }
+        if (x > v) {
+          v = x;
+        } else {
+          if (v >= n) {
+            detail::throw_invalid_disparse_string();
+          }
+          edges.emplace_back(x, v);
+        }
+      }
+
+      std::sort(edges.begin(), edges.end());
+      size_t   max_out_degree = 0;
+      size_t   current_degree = 0;
+      uint64_t current_source = n;
+      for (auto const& edge : edges) {
+        if (edge.first == current_source) {
+          ++current_degree;
+        } else {
+          current_source = edge.first;
+          current_degree = 1;
+        }
+        max_out_degree = std::max(max_out_degree, current_degree);
+      }
+      if (std::adjacent_find(edges.cbegin(), edges.cend()) != edges.cend()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the disparse6 string in the 1st argument contains multiple "
+            "edges with the same source and target");
+      }
+
+      WordGraph<Node> result(static_cast<size_t>(n), max_out_degree);
+      current_source = n;
+      size_t label   = 0;
+      for (auto const& [source, target] : edges) {
+        if (source != current_source) {
+          current_source = source;
+          label          = 0;
+        }
+        result.target_no_checks(static_cast<Node>(source),
+                                static_cast<Node>(label++),
+                                static_cast<Node>(target));
+      }
+      return result;
+    }
+
+    template <typename Node>
+    std::string to_disparse6_string(WordGraph<Node> const& wg) {
+      constexpr uint64_t MAX_NUMBER_OF_NODES = (uint64_t{1} << 36) - 1;
+
+      uint64_t const n = wg.number_of_nodes();
+      if (n > MAX_NUMBER_OF_NODES) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected the number of nodes in the 1st argument (word graph) "
+            "to be at most {}, but found {}",
+            MAX_NUMBER_OF_NODES,
+            n);
+      }
+
+      std::string result          = ".";
+      auto        append_six_bits = [&result](uint64_t value) {
+        result.push_back(static_cast<char>(value + 63));
+      };
+
+      // The order is encoded as in graph6.
+      if (n < 63) {
+        append_six_bits(n);
+      } else if (n < (uint64_t{1} << 18)) {
+        append_six_bits(63);
+        append_six_bits(n >> 12);
+        append_six_bits((n >> 6) & 63);
+        append_six_bits(n & 63);
+      } else {
+        append_six_bits(63);
+        append_six_bits(63);
+        for (int shift = 30; shift >= 0; shift -= 6) {
+          append_six_bits((n >> shift) & 63);
+        }
+      }
+
+      // A disparse6 edge is encoded as a sparse6-style pair (b, x). For a
+      // decreasing edge, v is its source and x its target. For an increasing
+      // edge, v is its target and x its source. Thus v >= x in both streams.
+      using edge_type = std::pair<uint64_t, uint64_t>;
+      std::vector<edge_type> decreasing;
+      std::vector<edge_type> increasing;
+      decreasing.reserve(wg.number_of_edges());
+      increasing.reserve(wg.number_of_edges());
+
+      for (auto source : wg.nodes()) {
+        for (auto target : wg.targets_no_checks(source)) {
+          if (target == UNDEFINED) {
+            continue;
+          } else if (source > target) {
+            decreasing.emplace_back(source, target);
+          } else {
+            increasing.emplace_back(target, source);
+          }
+        }
+      }
+      std::sort(decreasing.begin(), decreasing.end());
+      std::sort(increasing.begin(), increasing.end());
+
+      size_t  bit_count  = 0;
+      uint8_t block      = 0;
+      auto    append_bit = [&result, &bit_count, &block](bool bit) {
+        block = static_cast<uint8_t>((block << 1) | bit);
+        if (++bit_count == 6) {
+          result.push_back(static_cast<char>(block + 63));
+          bit_count = 0;
+          block     = 0;
+        }
+      };
+
+      uint64_t k = 1;
+      for (uint64_t value = n; value > 1; value >>= 1) {
+        ++k;
+      }
+      auto append_binary = [&append_bit, k](uint64_t value) {
+        for (uint64_t mask = uint64_t{1} << (k - 1); mask != 0; mask >>= 1) {
+          append_bit((value & mask) != 0);
+        }
+      };
+
+      auto append_edges
+          = [&append_bit, &append_binary](std::vector<edge_type> const& edges) {
+              uint64_t v = 0;
+              for (auto const& [next_v, x] : edges) {
+                if (next_v == v) {
+                  append_bit(false);
+                } else if (next_v == v + 1) {
+                  append_bit(true);
+                  ++v;
+                } else {
+                  append_bit(true);
+                  append_binary(next_v);
+                  v = next_v;
+                  append_bit(false);
+                }
+                append_binary(x);
+              }
+            };
+
+      append_edges(decreasing);
+
+      // (1, n) separates the decreasing and increasing edge streams.
+      append_bit(true);
+      append_binary(n);
+
+      append_edges(increasing);
+
+      // As in sparse6, trailing one-bits fill the last six-bit character.
+      while (bit_count != 0) {
+        append_bit(true);
+      }
+      return result;
+    }
+
+  }  // namespace word_graph
+
+  namespace v4 {
+    namespace word_graph {
+
       template <typename Node>
       std::vector<Node> topological_sort(WordGraphView<Node> const& wg) {
         std::vector<Node> order;
