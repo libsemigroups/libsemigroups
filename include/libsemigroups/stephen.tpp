@@ -144,7 +144,9 @@ namespace libsemigroups {
         result.add_node(n).add_attr("shape", "box");
       }
       result.add_edge("initial", s.initial_state());
-      result.add_edge(s.accept_state(), "accept");
+      if (s.finished()) {
+        result.add_edge(s.accept_state(), "accept");
+      }
 
       size_t max_letters = s.presentation().alphabet().size();
       if constexpr (is_specialization_of_v<PresentationType,
