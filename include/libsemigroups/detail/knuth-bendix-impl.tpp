@@ -678,69 +678,163 @@ namespace libsemigroups {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
         LIBSEMIGROUPS_ASSERT(_rewriting_system.confluent());
-        std::unordered_map<Rule::native_word_type, size_t> prefixes;
-        prefixes.emplace(Rule::native_word_type(), 0);
-        size_t n = 1;
-        for (auto const& rule : _rewriting_system.rules()) {
-          prefixes_string(prefixes, rule.first, n);
-        }
+        // TODO (0): do something to make this not one massive function
+        if constexpr (has_trie<RewritingSystem>) {
+          // The Gilman-graph <G> is produced from the rule trie <T> as follows.
+          // The nodes <N> of <G> are the non-terminal nodes in <T>. For every
+          // <n> in <N> and <a> in the alphabet of <T>, define <m> in <N> to be
+          // the result of reading <a> at <n> in <T> (following suffix links if
+          // necessary). If <m> is terminal or undefined, do nothing. Otherwise,
+          // add the edge (<n>, <a>, <m>) to <G>.
+          auto const& trie = _rewriting_system.trie();
+          auto const& p    = internal_presentation();
 
-        _gilman_graph_node_labels.resize(prefixes.size(),
-                                         Rule::native_word_type());
-        for (auto const& p : prefixes) {
-          _gilman_graph_node_labels[p.second] = p.first;
-        }
+          using index_type = typename std::decay_t<decltype(trie)>::index_type;
 
-        _gilman_graph.add_nodes(prefixes.size());
-        _gilman_graph.add_to_out_degree(
-            internal_presentation().alphabet().size());
+          size_t const num_nodes = trie.number_of_nodes()
+                                   - std::distance(trie.cbegin_terminal_nodes(),
+                                                   trie.cend_terminal_nodes());
+          bool const onesided_presentation
+              = (kind() != congruence_kind::twosided
+                 && !internal_generating_pairs().empty());
+          size_t const out_degree = (onesided_presentation)
+                                        ? p.alphabet().size() - 1
+                                        : p.alphabet().size();
 
-        for (auto& p : prefixes) {
-          for (auto i : internal_presentation().alphabet()) {
-            auto s  = p.first + native_word_type({i});
-            auto it = prefixes.find(s);
-            if (it != prefixes.end()) {
-              _gilman_graph.target(p.second, i, it->second);
-            } else {
-              auto t = s;
-              _rewriting_system.rewrite(t);
-              if (t == s) {
-                while (!s.empty()) {
-                  s  = native_word_type(s.begin() + 1, s.end());
-                  it = prefixes.find(s);
-                  if (it != prefixes.end()) {
-                    _gilman_graph.target(p.second, i, it->second);
-                    break;
+          // The out_degree will correspond to the largest letter used in the
+          // node labels
+          LIBSEMIGROUPS_ASSERT(out_degree
+                               < std::numeric_limits<unsigned char>::max());
+
+          std::vector<index_type> old_nodes(num_nodes, UNDEFINED);
+          std::unordered_map<index_type, index_type> new_nodes;
+
+          _gilman_graph.add_nodes(num_nodes);
+          _gilman_graph.add_to_out_degree(out_degree);
+          _gilman_graph_node_labels.resize(num_nodes, native_word_type());
+
+          // Make sure the Gilman-graph starts from the node represented by the
+          // octo if the presentation is one-sided.
+          if (onesided_presentation) {
+            letter_type const octo = p.index(p.alphabet().back());
+            index_type const  src  = trie.traverse_no_checks(0, octo);
+            old_nodes[0]           = src;
+            new_nodes.emplace(src, 0);
+          } else {
+            old_nodes[0] = 0;
+            new_nodes.emplace(0, 0);
+          }
+
+          index_type largest_used_node = 0;
+          index_type next_node         = 0;
+
+          // Traverse the trie in breadth-first order, updating the gilman graph
+          // every time a new non-terminal node is found.
+          // TODO (1): Changing the order the nodes are traversed would change
+          // the normal forms of the graph. Therefore, we should probably make
+          // this more general/integrate with the standardization stuff so that
+          // normal forms don't have to be lenlex normal forms.
+          while (next_node <= largest_used_node) {
+            native_word_type const parent_label
+                = _gilman_graph_node_labels[next_node];
+            for (unsigned char i = 0; i < out_degree; ++i) {
+              index_type const old_target
+                  = trie.traverse_no_checks(old_nodes[next_node], i);
+              if (old_target != UNDEFINED
+                  && !trie.node_no_checks(old_target).terminal()) {
+                index_type new_target;
+                auto       it = new_nodes.find(old_target);
+                if (it == new_nodes.end()) {
+                  ++largest_used_node;
+                  old_nodes[largest_used_node] = old_target;
+                  new_nodes.emplace(old_target, largest_used_node);
+                  new_target = largest_used_node;
+
+                  native_word_type new_label(parent_label);
+                  new_label.push_back(static_cast<char>(i));
+                  _gilman_graph_node_labels[new_target] = new_label;
+                } else {
+                  new_target = it->second;
+                }
+                _gilman_graph.target_no_checks(next_node, i, new_target);
+              }
+            }
+            ++next_node;
+          }
+
+          // Remove any nodes that we never actually reached. This should only
+          // be possible if the presentation was one-sided.
+          if (largest_used_node + 1 < num_nodes) {
+            LIBSEMIGROUPS_ASSERT(onesided_presentation);
+            _gilman_graph.induced_subgraph_no_checks(0, largest_used_node + 1);
+          }
+        } else {
+          std::unordered_map<Rule::native_word_type, size_t> prefixes;
+          prefixes.emplace(Rule::native_word_type(), 0);
+          size_t n = 1;
+          for (auto const& rule : _rewriting_system.rules()) {
+            prefixes_string(prefixes, rule.first, n);
+          }
+
+          _gilman_graph_node_labels.resize(prefixes.size(),
+                                           Rule::native_word_type());
+          for (auto const& p : prefixes) {
+            _gilman_graph_node_labels[p.second] = p.first;
+          }
+
+          _gilman_graph.add_nodes(prefixes.size());
+          _gilman_graph.add_to_out_degree(
+              internal_presentation().alphabet().size());
+
+          for (auto& p : prefixes) {
+            for (auto i : internal_presentation().alphabet()) {
+              auto s  = p.first + native_word_type({i});
+              auto it = prefixes.find(s);
+              if (it != prefixes.end()) {
+                _gilman_graph.target(p.second, i, it->second);
+              } else {
+                auto t = s;
+                _rewriting_system.rewrite(t);
+                if (t == s) {
+                  while (!s.empty()) {
+                    s  = native_word_type(s.begin() + 1, s.end());
+                    it = prefixes.find(s);
+                    if (it != prefixes.end()) {
+                      _gilman_graph.target(p.second, i, it->second);
+                      break;
+                    }
                   }
                 }
               }
             }
           }
-        }
-        if (kind() != congruence_kind::twosided
-            && !internal_generating_pairs().empty()) {
-          auto const& p    = internal_presentation();
-          auto        octo = p.index(p.alphabet().back());
-          auto        src  = _gilman_graph.target_no_checks(0, octo);
-          LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
-          _gilman_graph.remove_label_no_checks(octo);
-          auto nodes = v4::word_graph::nodes_reachable_from(_gilman_graph, src);
-          LIBSEMIGROUPS_ASSERT(std::find(nodes.cbegin(), nodes.cend(), src)
-                               != nodes.cend());
-          // This is a bit awkward, it exists to ensure
-          // that node 0 in the induced subdigraph is src.
-          std::vector<decltype(src)> sorted_nodes(nodes.cbegin(), nodes.cend());
-          // The order which nodes come out of nodes_reachable_from is
-          // non-deterministic and so we sort the nodes
-          std::sort(sorted_nodes.begin(), sorted_nodes.end());
-          if (sorted_nodes[0] != src) {
-            std::iter_swap(
-                sorted_nodes.begin(),
-                std::find(sorted_nodes.begin(), sorted_nodes.end(), src));
-          }
+          if (kind() != congruence_kind::twosided
+              && !internal_generating_pairs().empty()) {
+            auto const& p    = internal_presentation();
+            auto        octo = p.index(p.alphabet().back());
+            auto        src  = _gilman_graph.target_no_checks(0, octo);
+            LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
+            _gilman_graph.remove_label_no_checks(octo);
+            auto nodes
+                = v4::word_graph::nodes_reachable_from(_gilman_graph, src);
+            LIBSEMIGROUPS_ASSERT(std::find(nodes.cbegin(), nodes.cend(), src)
+                                 != nodes.cend());
+            // This is a bit awkward, it exists to ensure
+            // that node 0 in the induced subdigraph is src.
+            std::vector<decltype(src)> sorted_nodes(nodes.cbegin(),
+                                                    nodes.cend());
+            // The order which nodes come out of nodes_reachable_from is
+            // non-deterministic and so we sort the nodes
+            std::sort(sorted_nodes.begin(), sorted_nodes.end());
+            if (sorted_nodes[0] != src) {
+              std::iter_swap(
+                  sorted_nodes.begin(),
+                  std::find(sorted_nodes.begin(), sorted_nodes.end(), src));
+            }
 
-          _gilman_graph.induced_subgraph_no_checks(sorted_nodes.cbegin(),
-                                                   sorted_nodes.cend());
+            _gilman_graph.induced_subgraph_no_checks(sorted_nodes.cbegin(),
+                                                     sorted_nodes.cend());
+          }
         }
       }
       return _gilman_graph;
