@@ -58,7 +58,10 @@ namespace libsemigroups {
   using RPOTrie = detail::RewritingSystemTrie<RPOCmp>;
   using RPOSet  = detail::RewritingSystemSet<RPOCmp>;
 
-#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RevRPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+
+#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RevRPOTrie, RevRPOSet
 
   // Fibonacci group F(2,5) - monoid presentation - has order 12 (group
   // elements + empty word)
@@ -105,7 +108,7 @@ namespace libsemigroups {
               {"a", "b", "c", "d", "e", "aa", "ac", "ad", "bb", "be", "aad"}));
       REQUIRE(kb.number_of_classes() == 11);
       REQUIRE(nf.min(1).max(POSITIVE_INFINITY).count() == 11);
-    } else if (std::is_same_v<order, RPOCmp<Default, false>>) {
+    } else if (std::is_same_v<order, RevRPOCmp<Default, false>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 5);
     }
 
@@ -136,14 +139,14 @@ namespace libsemigroups {
   }
 
   // trivial group - BHN presentation
-  // RPOTrie is very slow here
+  // RevRPOTrie is very slow here
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "028",
                                    "kbmag/standalone/kb_data/degen4a",
                                    "[quick][knuth-bendix][kbmag][no-valgrind]",
                                    LenLexSet,
                                    LenLexTrie,
-                                   RPOSet) {
+                                   RevRPOSet) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -305,7 +308,7 @@ namespace libsemigroups {
                                            "AB",
                                            "Ba",
                                            "BA"}));
-    } else if (std::is_same_v<order, RPOCmp<Default, false>>) {
+    } else if (std::is_same_v<order, RevRPOCmp<Default, false>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 72);
     }
 
@@ -680,7 +683,7 @@ namespace libsemigroups {
                                           {"BabB", "abab"},
                                           {"Baaba", "abaaB"},
                                           {"Bababa", "ababaB"}}}));
-    } else if (std::is_same_v<order, RPOCmp<Default, false>>) {
+    } else if (std::is_same_v<order, RevRPOCmp<Default, false>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 4);
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
               == std::vector<rule_type>({{"B", "bb"},
@@ -835,7 +838,7 @@ namespace libsemigroups {
                    {"dc", "y"},  {"dd", "by"},  {"dy", "a"},  {"ya", "b"},
                    {"yb", "by"}, {"yc", "bb"},  {"yd", "a"},  {"yy", "ac"},
                    {"aaa", "y"}, {"aac", "by"}, {"bbb", "a"}, {"bby", "aad"}}));
-    } else if (std::is_same_v<order, RPOCmp<Default, false>>) {
+    } else if (std::is_same_v<order, RevRPOCmp<Default, false>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 5);
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
               == std::vector<rule_type>({{"b", "aaaa"},
@@ -847,7 +850,7 @@ namespace libsemigroups {
   }
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
-  // both RPOTrie + RPOSet very slow here
+  // both RevRPOTrie + RevRPOSet very slow here
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "038",
                                    "kbmag/standalone/kb_data/237",
@@ -999,7 +1002,7 @@ namespace libsemigroups {
                                           {"baabba", "abbaab"},
                                           {"bbaabb", "abba"}}}));
       // codespell:end-ignore
-    } else if (std::is_same_v<order, RPOCmp<Default, false>>) {
+    } else if (std::is_same_v<order, RevRPOCmp<Default, false>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 11);
       // codespell:begin-ignore
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
@@ -1110,7 +1113,7 @@ namespace libsemigroups {
   }
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
-  // at least RPOSet very slow here
+  // at least RevRPOSet very slow here
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "044",
                                    "KnuthBendix 071 again",
@@ -1261,7 +1264,7 @@ namespace libsemigroups {
     using order = typename TestType::reduction_order;
     if constexpr (std::is_same_v<order, LenLexCmp<Default, false>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 11);
-    } else if (std::is_same_v<order, RPOCmp<Default, false>>) {
+    } else if (std::is_same_v<order, RevRPOCmp<Default, false>>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 5);
     }
     REQUIRE(kb.rewriting_system().confluent());
@@ -1351,7 +1354,7 @@ namespace libsemigroups {
                    "AC", "AD",  "AY",  "AF",  "BA",  "BD", "BY", "CY",
                    "DB", "ABA", "ABD", "ABY", "ACY", "ADB"}));
       // codespell:end-ignore
-    } else if (std::is_same_v<order, RPOCmp<Default, false>>) {
+    } else if (std::is_same_v<order, RevRPOCmp<Default, false>>) {
       REQUIRE((knuth_bendix::normal_forms(kb) | to_vector())
               == std::vector<std::string>(
                   {"",           "A",          "B",         "AB",
@@ -1427,7 +1430,7 @@ namespace libsemigroups {
     REQUIRE(kb3.presentation().rules.size() / 2 == 1);
   }
 
-  // RPO very slow here
+  // RevRPO very slow here
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "054",
                                    "small overlap 1",

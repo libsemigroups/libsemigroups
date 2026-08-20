@@ -60,6 +60,11 @@ namespace libsemigroups {
   using RPOTrie = detail::RewritingSystemTrie<RPOCmp>;
   using RPOSet  = detail::RewritingSystemSet<RPOCmp>;
 
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RevRPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+
+#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RevRPOTrie, RevRPOSet
+
   static_assert(std::is_default_constructible_v<
                 KnuthBendix<std::string, LenLexTrie, LenLexCmp>>);
   static_assert(
@@ -70,8 +75,6 @@ namespace libsemigroups {
   static_assert(
       std::is_same_v<typename detail::KnuthBendixImpl<>::reduction_order,
                      LenLexCmp<Default, false>>);
-
-#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "000",
@@ -826,7 +829,7 @@ namespace libsemigroups {
                                    "017",
                                    "non-trivial classes",
                                    "[quick][knuth-bendix]",
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     using order = typename TestType::reduction_order;
 
     auto                      rg = ReportGuard(false);
@@ -1073,8 +1076,8 @@ namespace libsemigroups {
                                    "994",
                                    "kbmag/verifynilp",
                                    "[quick][knuth-bendix][kbmag][recursive]",
-                                   RPOTrie,
-                                   RPOSet) {
+                                   RevRPOTrie,
+                                   RevRPOSet) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -1124,8 +1127,8 @@ namespace libsemigroups {
                                    "996",
                                    "kbmag/nonhopf",
                                    "[quick][knuth-bendix][kbmag][recursive]",
-                                   RPOTrie,
-                                   RPOSet) {
+                                   RevRPOTrie,
+                                   RevRPOSet) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
 
@@ -1156,8 +1159,8 @@ namespace libsemigroups {
                                    "997",
                                    "kbmag/freenilpc3",
                                    "[quick][knuth-bendix][kbmag][recursive]",
-                                   RPOTrie,
-                                   RPOSet) {
+                                   RevRPOTrie,
+                                   RevRPOSet) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -1214,8 +1217,8 @@ namespace libsemigroups {
                                    "998",
                                    "kbmag/nilp2",
                                    "[quick][knuth-bendix][kbmag][recursive]",
-                                   RPOTrie,
-                                   RPOSet) {
+                                   RevRPOTrie,
+                                   RevRPOSet) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("cCbBaA"s).contains_empty_word(true);
