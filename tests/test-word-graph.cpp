@@ -1241,4 +1241,16 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "053", "spanning_tree", "[quick]") {
+    WordGraphView wgv(binary_tree(16));
+    REQUIRE(wgv.number_of_nodes() == 65535);
+
+    Forest f;
+    v4::word_graph::spanning_tree_no_checks(wgv, 0, f, 0);
+
+    for (size_t depth = 0; depth != 16; ++depth) {
+      v4::word_graph::spanning_tree_no_checks(wgv, 0, f, depth);
+      REQUIRE(f.number_of_nodes() == std::pow(2, depth + 1) - 1);
+    }
+  }
 }  // namespace libsemigroups

@@ -2434,7 +2434,8 @@ namespace libsemigroups {
       //! nodes reachable from a given node in a word graph.
       //!
       //! This function replaces the content of the Forest \p f with a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
+      //! tree of the nodes reachable from \p root in the word graph \p wg
+      //! by a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph.
       //! \tparam Node2 the type of the node \p root.
@@ -2442,6 +2443,8 @@ namespace libsemigroups {
       //! \param wg the word graph.
       //! \param root the source node.
       //! \param f the Forest object to hold the result.
+      //! \param max_depth the maximum depth of the tree (defaults to
+      //! \ref POSITIVE_INFINITY).
       //!
       //! \note If any target of any edge in the word graph \p wg that is out of
       //! bounds, then this is ignored by this function.
@@ -2452,13 +2455,15 @@ namespace libsemigroups {
       template <typename Node1, typename Node2>
       void spanning_tree_no_checks(WordGraphView<Node1> const& wg,
                                    Node2                       root,
-                                   Forest&                     f);
+                                   Forest&                     f,
+                                   size_t max_depth = POSITIVE_INFINITY);
 
       //! \brief Replace the contents of a Forest by a spanning tree of the
       //! nodes reachable from a given node in a word graph.
       //!
       //! This function replaces the content of the Forest \p f with a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
+      //! tree of the nodes reachable from \p root in the word graph \p wg
+      //! by a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph.
       //! \tparam Node2 the type of the node \p root.
@@ -2466,6 +2471,8 @@ namespace libsemigroups {
       //! \param wg the word graph.
       //! \param root the source node.
       //! \param f the Forest object to hold the result.
+      //! \param max_depth the maximum depth of the tree (defaults to
+      //! \ref POSITIVE_INFINITY).
       //!
       //! \note If any target of any edge in the word graph \p wg that is out of
       //! bounds, then this is ignored by this function.
@@ -2476,15 +2483,18 @@ namespace libsemigroups {
       template <typename Node1, typename Node2>
       void spanning_tree_no_checks(WordGraph<Node1> const& wg,
                                    Node2                   root,
-                                   Forest&                 f) {
-        return spanning_tree_no_checks(WordGraphView<Node1>(wg), root, f);
+                                   Forest&                 f,
+                                   size_t max_depth = POSITIVE_INFINITY) {
+        return spanning_tree_no_checks(
+            WordGraphView<Node1>(wg), root, f, max_depth);
       }
 
       //! \brief Replace the contents of a Forest by a spanning tree of the
       //! nodes reachable from a given node in a word graph.
       //!
       //! This function replaces the content of the Forest \p f with a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
+      //! tree of the nodes reachable from \p root in the word graph \p wg
+      //! by a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph.
       //! \tparam Node2 the type of the node \p root.
@@ -2492,6 +2502,8 @@ namespace libsemigroups {
       //! \param wg the word graph.
       //! \param root the source node.
       //! \param f the Forest object to hold the result.
+      //! \param max_depth the maximum depth of the tree (defaults to
+      //! \ref POSITIVE_INFINITY).
       //!
       //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
       //! greater than or equal to WordGraphView::number_of_nodes.
@@ -2499,13 +2511,17 @@ namespace libsemigroups {
       //! \note If any target of any edge in the word graph \p wg that is out of
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
-      void spanning_tree(WordGraphView<Node1> const& wg, Node2 root, Forest& f);
+      void spanning_tree(WordGraphView<Node1> const& wg,
+                         Node2                       root,
+                         Forest&                     f,
+                         size_t max_depth = POSITIVE_INFINITY);
 
       //! \brief Replace the contents of a Forest by a spanning tree of the
       //! nodes reachable from a given node in a word graph.
       //!
       //! This function replaces the content of the Forest \p f with a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
+      //! tree of the nodes reachable from \p root in the word graph \p wg
+      //! by a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph.
       //! \tparam Node2 the type of the node \p root.
@@ -2513,6 +2529,8 @@ namespace libsemigroups {
       //! \param wg the word graph.
       //! \param root the source node.
       //! \param f the Forest object to hold the result.
+      //! \param max_depth the maximum depth of the tree (defaults to
+      //! \ref POSITIVE_INFINITY).
       //!
       //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
       //! greater than or equal to WordGraph::number_of_nodes.
@@ -2520,21 +2538,27 @@ namespace libsemigroups {
       //! \note If any target of any edge in the word graph \p wg that is out of
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
-      void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f) {
-        spanning_tree(WordGraphView<Node1>(wg), root, f);
+      void spanning_tree(WordGraph<Node1> const& wg,
+                         Node2                   root,
+                         Forest&                 f,
+                         size_t max_depth = POSITIVE_INFINITY) {
+        spanning_tree(WordGraphView<Node1>(wg), root, f, max_depth);
       }
 
       //! \brief Returns a Forest containing a spanning tree of the nodes
       //! reachable from a given node in a word graph.
       //!
       //! This function returns a Forest containing a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
+      //! tree of the nodes reachable from \p root in the word graph \p wg
+      //! by a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph.
       //! \tparam Node2 the type of the node \p root.
       //!
       //! \param wg the word graph.
       //! \param root the source node.
+      //! \param max_depth the maximum depth of the tree (defaults to
+      //! \ref POSITIVE_INFINITY).
       //!
       //! \returns A Forest object containing a spanning tree.
       //!
@@ -2546,19 +2570,24 @@ namespace libsemigroups {
       //! WordGraphView::number_of_nodes).
       template <typename Node1, typename Node2>
       [[nodiscard]] Forest
-      spanning_tree_no_checks(WordGraphView<Node1> const& wg, Node2 root);
+      spanning_tree_no_checks(WordGraphView<Node1> const& wg,
+                              Node2                       root,
+                              size_t max_depth = POSITIVE_INFINITY);
 
       //! \brief Returns a Forest containing a spanning tree of the nodes
       //! reachable from a given node in a word graph.
       //!
       //! This function returns a Forest containing a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
+      //! tree of the nodes reachable from \p root in the word graph \p wg
+      //! by a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph.
       //! \tparam Node2 the type of the node \p root.
       //!
       //! \param wg the word graph.
       //! \param root the source node.
+      //! \param max_depth the maximum depth of the tree (defaults to
+      //! \ref POSITIVE_INFINITY).
       //!
       //! \returns A Forest object containing a spanning tree.
       //!
@@ -2570,21 +2599,27 @@ namespace libsemigroups {
       //! WordGraph::number_of_nodes).
       template <typename Node1, typename Node2>
       [[nodiscard]] Forest spanning_tree_no_checks(WordGraph<Node1> const& wg,
-                                                   Node2 root) {
-        return spanning_tree_no_checks(WordGraphView<Node1>(wg), root);
+                                                   Node2                   root,
+                                                   size_t max_depth
+                                                   = POSITIVE_INFINITY) {
+        return spanning_tree_no_checks(
+            WordGraphView<Node1>(wg), root, max_depth);
       }
 
       //! \brief Returns a Forest containing a spanning tree of the nodes
       //! reachable from a given node in a word graph.
       //!
       //! This function returns a Forest containing a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
+      //! tree of the nodes reachable from \p root in the word graph \p wg
+      //! by a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph.
       //! \tparam Node2 the type of the node \p root.
       //!
       //! \param wg the word graph.
       //! \param root the source node.
+      //! \param max_depth the maximum depth of the tree (defaults to
+      //! \ref POSITIVE_INFINITY).
       //!
       //! \returns A Forest object containing a spanning tree.
       //!
@@ -2595,19 +2630,23 @@ namespace libsemigroups {
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
       [[nodiscard]] Forest spanning_tree(WordGraphView<Node1> const& wg,
-                                         Node2                       root);
+                                         Node2                       root,
+                                         size_t max_depth = POSITIVE_INFINITY);
 
       //! \brief Returns a Forest containing a spanning tree of the nodes
       //! reachable from a given node in a word graph.
       //!
       //! This function returns a Forest containing a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
+      //! tree of the nodes reachable from \p root in the word graph \p wg
+      //! by a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph.
       //! \tparam Node2 the type of the node \p root.
       //!
       //! \param wg the word graph.
       //! \param root the source node.
+      //! \param max_depth the maximum depth of the tree (defaults to
+      //! \ref POSITIVE_INFINITY).
       //!
       //! \returns A Forest object containing a spanning tree.
       //!
@@ -2618,8 +2657,9 @@ namespace libsemigroups {
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
       [[nodiscard]] Forest spanning_tree(WordGraph<Node1> const& wg,
-                                         Node2                   root) {
-        return spanning_tree(WordGraphView<Node1>(wg), root);
+                                         Node2                   root,
+                                         size_t max_depth = POSITIVE_INFINITY) {
+        return spanning_tree(WordGraphView<Node1>(wg), root, max_depth);
       }
 
       //! \brief Standardizes a word graph in-place.
