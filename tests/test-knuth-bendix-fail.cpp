@@ -59,10 +59,14 @@ namespace libsemigroups {
 
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
-  using RPOTrie    = detail::RewritingSystemTrie<RPOCmp>;
-  using RPOSet     = detail::RewritingSystemSet<RPOCmp>;
 
-#define REWRITING_SYSTEM_TYPES LenLexTrie, RPOTrie
+  using RPOTrie = detail::RewritingSystemTrie<RPOCmp>;
+  using RPOSet  = detail::RewritingSystemSet<RPOCmp>;
+
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RevRPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+
+#define REWRITING_SYSTEM_TYPES LenLexTrie, RevRPOTrie
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "110",
@@ -90,7 +94,7 @@ namespace libsemigroups {
                                    "111",
                                    "kbmag/standalone/kb_data/verifynilp",
                                    "[fail][knuth-bendix][kbmag]",
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     auto        rg    = ReportGuard();
     std::string lphbt = "hHgGfFyYdDcCbBaA";
     std::string invrs = "HhGgFfYyDdCcBbAa";
@@ -114,7 +118,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
     REQUIRE(!kb.rewriting_system().confluent());
-    kb.rewriting_system().sort_pending_rules_by(detail::rpo_cmp);
+    kb.rewriting_system().sort_pending_rules_by(detail::rev_rpo_cmp);
 
     knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.rewriting_system().number_of_rules() == 0);

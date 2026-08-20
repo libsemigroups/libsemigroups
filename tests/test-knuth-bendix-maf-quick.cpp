@@ -5626,7 +5626,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "srslsrslsrsl", "");
     presentation::add_rule(p, "j", "");
 
-    using RewritingSystem = detail::RewritingSystemTrie<RPOCmp>;
+    using RewritingSystem = detail::RewritingSystemTrie<RevRPOCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
     kb.init(congruence_kind::twosided, p);
     kb.run();
