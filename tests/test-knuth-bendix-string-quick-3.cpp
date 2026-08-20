@@ -55,6 +55,7 @@ namespace libsemigroups {
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
   using RPOTrie    = detail::RewritingSystemTrie<RPOCmp>;
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
 
@@ -1235,7 +1236,7 @@ namespace libsemigroups {
                                    "114",
                                    "hard 2-generated 1-relation monoid",
                                    "[quick][knuth-bendix][tietze-explorer]",
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     auto rg = ReportGuard(false);
     fmt::print("\n");
     Presentation<std::string> p;
@@ -1263,12 +1264,11 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "KnuthBendix",
-      "099",
-      "Giles Gardam (https://arxiv.org/abs/2102.11818)",
-      "[quick][tietze-explorer][no-valgrind]",
-      RPOTrie) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "099",
+                                   "Gardam (https://arxiv.org/abs/2102.11818)",
+                                   "[quick][tietze-explorer][no-valgrind]",
+                                   RevRPOTrie) {
     auto rg = ReportGuard(false);
     fmt::print("\n");
     Presentation<std::string> p;
