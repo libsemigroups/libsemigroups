@@ -275,6 +275,7 @@ namespace libsemigroups {
     //! std::string_view to be used for the parameter \p lphbt.
     //!
     //! \warning This function is only enabled if \ref word_type is std::string.
+    // TODO(later) deprecate
     template <typename Return = Presentation&>
     auto alphabet(std::string_view lphbt)
         -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return&> {
@@ -287,6 +288,7 @@ namespace libsemigroups {
     //! string literals to be used for the parameter \p lphbt.
     //!
     //! \warning This function is only enabled if \ref word_type is std::string.
+    // TODO(later) deprecate
     template <typename Return = Presentation&>
     auto alphabet(char const* lphbt)
         -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return> {
