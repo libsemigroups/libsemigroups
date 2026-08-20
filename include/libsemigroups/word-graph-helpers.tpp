@@ -863,34 +863,31 @@ namespace libsemigroups {
       template <typename Node1, typename Node2>
       std::unordered_set<Node1>
       nodes_reachable_from_no_checks(WordGraphView<Node1> const& wg,
-                                     Node2                       source) {
+                                     Node2                       source,
+                                     size_t                      max_depth) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
-        std::unordered_set<Node1> seen;
-        std::stack<Node1>         stack;
-        stack.push(source);
+        std::unordered_set<Node1>            seen;
+        std::stack<std::pair<Node1, size_t>> stack;
+        stack.emplace(source, 0);
 
         size_t const N = wg.number_of_nodes_no_checks();
 
         while (!stack.empty()) {
-          Node1 n = stack.top();
+          auto [s, depth] = stack.top();
           stack.pop();
-          if (seen.insert(n).second) {
-            for (auto t : wg.targets_no_checks(n)) {
+          if (seen.insert(s).second && depth < max_depth) {
+            for (auto t : wg.targets_no_checks(s)) {
               if (t < N) {
-                stack.push(t);
+                // If we did see "t" before it "depth + 1" will never be
+                // accessed again, so it doesn't matter that it is wrong. O/w if
+                // "t" has not been seen before the "depth + 1" is its correct
+                // depth.
+                stack.emplace(t, depth + 1);
               }
             }
           }
         }
         return seen;
-      }
-
-      template <typename Node1, typename Node2>
-      std::unordered_set<Node1>
-      nodes_reachable_from(WordGraphView<Node1> const& wg, Node2 source) {
-        static_assert(sizeof(Node2) <= sizeof(Node1));
-        wg.throw_if_node_out_of_bounds(source);
-        return nodes_reachable_from_no_checks(wg, source);
       }
 
       template <typename Node1, typename Node2>

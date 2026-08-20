@@ -2109,16 +2109,82 @@ namespace libsemigroups {
       }
 
       //! \brief Returns the std::unordered_set of nodes reachable from a given
+      //! node in a word graph.
+      //!
+      //! This function returns a std::unordered_set consisting of all the nodes
+      //! in the word graph \p wg that are reachable from \p source
+      //! via a path of length at most \p max_depth.
+      //!
+      //! \tparam Node1 the node type of the word graph.
+      //! \tparam Node2 the type of the node \p source.
+      //!
+      //! \param wg the word graph.
+      //! \param source the source node.
+      //! \param max_depth the maximum distance from source
+      //! (defaults to \ref POSITIVE_INFINITY).
+      //!
+      //! \returns A std::unordered_set consisting of all the nodes in the word
+      //! graph \p wg that are reachable from \p source.
+      //!
+      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! bounds, then this is ignored by this function.
+      //!
+      //! \warning The arguments are not checked, and in particular it is
+      //! assumed that \p source is a node of \p wg (i.e. less than
+      //! WordGraph::number_of_nodes).
+      template <typename Node1, typename Node2>
+      [[nodiscard]] std::unordered_set<Node1>
+      nodes_reachable_from_no_checks(WordGraphView<Node1> const& wg,
+                                     Node2                       source,
+                                     size_t max_depth = POSITIVE_INFINITY);
+
+      //! \brief Returns the std::unordered_set of nodes reachable from a given
+      //! node in a word graph.
+      //!
+      //! This function returns a std::unordered_set consisting of all the nodes
+      //! in the word graph \p wg that are reachable from \p source
+      //! via a path of length at most \p max_depth.
+      //!
+      //! \tparam Node1 the node type of the word graph.
+      //! \tparam Node2 the type of the node \p source.
+      //!
+      //! \param wg the word graph.
+      //! \param source the source node.
+      //! \param max_depth the maximum distance from source
+      //! (defaults to \ref POSITIVE_INFINITY).
+      //!
+      //! \returns A std::unordered_set consisting of all the nodes in the word
+      //! graph \p wg that are reachable from \p source.
+      //!
+      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! bounds, then this is ignored by this function.
+      //!
+      //! \warning The arguments are not checked, and in particular it is
+      //! assumed that \p source is a node of \p wg (i.e. less than
+      //! WordGraph::number_of_nodes).
+      template <typename Node1, typename Node2>
+      [[nodiscard]] std::unordered_set<Node1>
+      nodes_reachable_from_no_checks(WordGraph<Node1> const& wg,
+                                     Node2                   source,
+                                     size_t max_depth = POSITIVE_INFINITY) {
+        return nodes_reachable_from_no_checks(
+            WordGraphView(wg), source, max_depth);
+      }
+
+      //! \brief Returns the std::unordered_set of nodes reachable from a given
       //! node in a word graph view.
       //!
       //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph view \p wg that are reachable from \p source.
+      //! in the word graph view \p wg that are reachable from \p source
+      //! via a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph view.
       //! \tparam Node2 the type of the node \p source.
       //!
       //! \param wg the word graph view.
       //! \param source the source node.
+      //! \param max_depth the maximum distance from source
+      //! (defaults to \ref POSITIVE_INFINITY).
       //!
       //! \returns A std::unordered_set consisting of all the nodes in the word
       //! graph view \p wg that are reachable from \p source.
@@ -2137,19 +2203,28 @@ namespace libsemigroups {
       // node
       template <typename Node1, typename Node2>
       [[nodiscard]] std::unordered_set<Node1>
-      nodes_reachable_from(WordGraphView<Node1> const& wg, Node2 source);
+      nodes_reachable_from(WordGraphView<Node1> const& wg,
+                           Node2                       source,
+                           size_t                      max_depth) {
+        static_assert(sizeof(Node2) <= sizeof(Node1));
+        wg.throw_if_node_out_of_bounds(source);
+        return nodes_reachable_from_no_checks(wg, source, max_depth);
+      }
 
       //! \brief Returns the std::unordered_set of nodes reachable from a given
       //! node in a word graph.
       //!
       //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph \p wg that are reachable from \p source.
+      //! in the word graph \p wg that are reachable from \p source
+      //! via a path of length at most \p max_depth.
       //!
       //! \tparam Node1 the node type of the word graph.
       //! \tparam Node2 the type of the node \p source.
       //!
       //! \param wg the word graph.
       //! \param source the source node.
+      //! \param max_depth the maximum distance from source
+      //! (defaults to \ref POSITIVE_INFINITY).
       //!
       //! \returns A std::unordered_set consisting of all the nodes in the word
       //! graph \p wg that are reachable from \p source.
@@ -2168,8 +2243,139 @@ namespace libsemigroups {
       // node
       template <typename Node1, typename Node2>
       [[nodiscard]] std::unordered_set<Node1>
-      nodes_reachable_from(WordGraph<Node1> const& wg, Node2 source) {
-        return nodes_reachable_from(WordGraphView<Node1>(wg), source);
+      nodes_reachable_from(WordGraph<Node1> const& wg,
+                           Node2                   source,
+                           size_t max_depth = POSITIVE_INFINITY) {
+        return nodes_reachable_from(
+            WordGraphView<Node1>(wg), source, max_depth);
+      }
+
+      //! \brief Returns the number of nodes reachable from a given node in a
+      //! word graph view.
+      //!
+      //! This function returns the number of nodes in the word graph view \p wg
+      //! that are reachable from \p source via a path of length at most
+      //! \p max_depth.
+      //!
+      //! \tparam Node1 the node type of the word graph.
+      //! \tparam Node2 the type of the node \p source.
+      //!
+      //! \param wg the word graph.
+      //! \param source the source node.
+      //! \param max_depth the maximum distance from source
+      //! (defaults to \ref POSITIVE_INFINITY).
+      //!
+      //! \returns The number of nodes in the word graph \p wg that are
+      //! reachable from \p source.
+      //!
+      //! \throws LibsemigroupsException if \p source is out of bounds (greater
+      //! than or equal to WordGraphView::number_of_nodes).
+      //!
+      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! bounds, then this is ignored by this function.
+      template <typename Node1, typename Node2>
+      [[nodiscard]] size_t
+      number_of_nodes_reachable_from(WordGraphView<Node1> const& wg,
+                                     Node2                       source,
+                                     size_t max_depth = POSITIVE_INFINITY) {
+        return nodes_reachable_from(wg, source, max_depth).size();
+      }
+
+      //! \brief Returns the number of nodes reachable from a given node in a
+      //! word graph.
+      //!
+      //! This function returns the number of nodes in the word graph \p wg that
+      //! are reachable from \p source via a path of length at most
+      //! \p max_depth.
+      //!
+      //! \tparam Node1 the node type of the word graph.
+      //! \tparam Node2 the type of the node \p source.
+      //!
+      //! \param wg the word graph.
+      //! \param source the source node.
+      //! \param max_depth the maximum distance from source
+      //! (defaults to \ref POSITIVE_INFINITY).
+      //!
+      //! \returns The number of nodes in the word graph \p wg that are
+      //! reachable from \p source.
+      //!
+      //! \throws LibsemigroupsException if \p source is out of bounds (greater
+      //! than or equal to WordGraph::number_of_nodes).
+      //!
+      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! bounds, then this is ignored by this function.
+      template <typename Node1, typename Node2>
+      [[nodiscard]] size_t
+      number_of_nodes_reachable_from(WordGraph<Node1> const& wg,
+                                     Node2                   source,
+                                     size_t max_depth = POSITIVE_INFINITY) {
+        return number_of_nodes_reachable_from(
+            WordGraphView<Node1>(wg), source, max_depth);
+      }
+
+      //! \brief Returns the number of nodes reachable from a given node in a
+      //! word graph.
+      //!
+      //! This function returns the number of nodes in the word graph \p wg that
+      //! are reachable from \p source via a path of length at most
+      //! \p max_depth.
+      //!
+      //! \tparam Node1 the node type of the word graph.
+      //! \tparam Node2 the type of the node \p source.
+      //!
+      //! \param wg the word graph.
+      //! \param source the source node.
+      //! \param max_depth the maximum distance from source
+      //! (defaults to \ref POSITIVE_INFINITY).
+      //!
+      //! \returns The number of nodes in the word graph \p wg that are
+      //! reachable from \p source.
+      //!
+      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! bounds, then this is ignored by this function.
+      //!
+      //! \warning The arguments are not checked, and in particular it is
+      //! assumed that \p source is a node of \p wg (i.e. less than
+      //! WordGraphView::number_of_nodes).
+      template <typename Node1, typename Node2>
+      [[nodiscard]] size_t number_of_nodes_reachable_from_no_checks(
+          WordGraphView<Node1> const& wg,
+          Node2                       source,
+          size_t                      max_depth = POSITIVE_INFINITY) {
+        return nodes_reachable_from_no_checks(wg, source, max_depth).size();
+      }
+
+      //! \brief Returns the number of nodes reachable from a given node in a
+      //! word graph.
+      //!
+      //! This function returns the number of nodes in the word graph \p wg that
+      //! are reachable from \p source via a path of length at most
+      //! \p max_depth.
+      //!
+      //! \tparam Node1 the node type of the word graph.
+      //! \tparam Node2 the type of the node \p source.
+      //!
+      //! \param wg the word graph.
+      //! \param source the source node.
+      //! \param max_depth the maximum distance from source
+      //! (defaults to \ref POSITIVE_INFINITY).
+      //!
+      //! \returns The number of nodes in the word graph \p wg that are
+      //! reachable from \p source.
+      //!
+      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! bounds, then this is ignored by this function.
+      //!
+      //! \warning The arguments are not checked, and in particular it is
+      //! assumed that \p source is a node of \p wg (i.e. less than
+      //! WordGraph::number_of_nodes).
+      template <typename Node1, typename Node2>
+      [[nodiscard]] size_t number_of_nodes_reachable_from_no_checks(
+          WordGraph<Node1> const& wg,
+          Node2                   source,
+          size_t                  max_depth = POSITIVE_INFINITY) {
+        return number_of_nodes_reachable_from_no_checks(
+            WordGraphView<Node1>(wg), source, max_depth);
       }
 
       //! \brief Returns the std::unordered_set of nodes that can reach a given
@@ -2222,31 +2428,6 @@ namespace libsemigroups {
         return ancestors_of(WordGraphView<Node1>(wg), target);
       }
 
-      //! \brief Returns the std::unordered_set of nodes reachable from a given
-      //! node in a word graph.
-      //!
-      //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph \p wg that are reachable from \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns A std::unordered_set consisting of all the nodes in the word
-      //! graph \p wg that are reachable from \p source.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p source is a node of \p wg (i.e. less than
-      //! WordGraph::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::unordered_set<Node1>
-      nodes_reachable_from_no_checks(WordGraph<Node1> const& wg, Node2 source);
-
       //! \brief Returns the std::unordered_set of nodes that can reach a given
       //! node in a word graph.
       //!
@@ -2297,110 +2478,6 @@ namespace libsemigroups {
       [[nodiscard]] std::unordered_set<Node1>
       ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 target) {
         return ancestors_of_no_checks(WordGraphView<Node1>(wg), target);
-      }
-
-      //! \brief Returns the number of nodes reachable from a given node in a
-      //! word graph view.
-      //!
-      //! This function returns the number of nodes in the word graph view \p wg
-      //! that are reachable from \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns The number of nodes in the word graph \p wg that are
-      //! reachable from \p source.
-      //!
-      //! \throws LibsemigroupsException if \p source is out of bounds (greater
-      //! than or equal to WordGraphView::number_of_nodes).
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] size_t
-      number_of_nodes_reachable_from(WordGraphView<Node1> const& wg,
-                                     Node2                       source) {
-        return nodes_reachable_from(wg, source).size();
-      }
-
-      //! \brief Returns the number of nodes reachable from a given node in a
-      //! word graph.
-      //!
-      //! This function returns the number of nodes in the word graph \p wg that
-      //! are reachable from \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns The number of nodes in the word graph \p wg that are
-      //! reachable from \p source.
-      //!
-      //! \throws LibsemigroupsException if \p source is out of bounds (greater
-      //! than or equal to WordGraph::number_of_nodes).
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] size_t
-      number_of_nodes_reachable_from(WordGraph<Node1> const& wg, Node2 source) {
-        return number_of_nodes_reachable_from(WordGraphView<Node1>(wg), source);
-      }
-
-      //! \brief Returns the number of nodes reachable from a given node in a
-      //! word graph.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns The number of nodes in the word graph \p wg that are
-      //! reachable from \p source.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p source is a node of \p wg (i.e. less than
-      //! WordGraphView::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] size_t
-      number_of_nodes_reachable_from_no_checks(WordGraphView<Node1> const& wg,
-                                               Node2 source) {
-        return nodes_reachable_from_no_checks(wg, source).size();
-      }
-
-      //! \brief Returns the number of nodes reachable from a given node in a
-      //! word graph.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns The number of nodes in the word graph \p wg that are
-      //! reachable from \p source.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p source is a node of \p wg (i.e. less than
-      //! WordGraph::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] size_t
-      number_of_nodes_reachable_from_no_checks(WordGraph<Node1> const& wg,
-                                               Node2                   source) {
-        return number_of_nodes_reachable_from_no_checks(
-            WordGraphView<Node1>(wg), source);
       }
 
       //! \brief Construct a random connected acyclic word graph with given
