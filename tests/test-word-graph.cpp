@@ -43,54 +43,54 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
 
   namespace {
-    std::vector<word_type> rpo_blocks(word_type const& word,
-                                      letter_type      largest_letter) {
-      std::vector<word_type> result(1);
-      for (auto letter : word) {
-        if (letter == largest_letter) {
-          result.emplace_back();
-        } else {
-          result.back().push_back(letter);
-        }
+
+    bool rpo_cmp_recursive_impl(word_type& lhs, word_type& rhs) {
+      if (rhs.empty()) {
+        return false;
       }
-      return result;
+      if (lhs.empty()) {
+        return true;
+      }
+
+      auto const a = lhs.front();
+      auto const b = rhs.front();
+
+      if (a == b) {
+        lhs.erase(lhs.begin());
+        rhs.erase(rhs.begin());
+      } else if (a < b) {
+        lhs.erase(lhs.begin());
+      } else {
+        rhs.erase(rhs.begin());
+      }
+
+      return rpo_cmp_recursive_impl(lhs, rhs);
     }
 
-    bool rpo_less(word_type const& lhs,
-                  word_type const& rhs,
-                  size_t           alphabet_size) {
-      if (alphabet_size <= 1) {
-        return lhs.size() < rhs.size();
-      }
+    bool rpo_cmp_recursive(word_type lhs, word_type rhs) {
+      auto [common_suffix_lhs, common_suffix_rhs]
+          = std::mismatch(lhs.rbegin(), lhs.rend(), rhs.rbegin(), rhs.rend());
 
-      auto const largest_letter = static_cast<letter_type>(alphabet_size - 1);
-      auto const lhs_blocks     = rpo_blocks(lhs, largest_letter);
-      auto const rhs_blocks     = rpo_blocks(rhs, largest_letter);
-
-      if (lhs_blocks.size() != rhs_blocks.size()) {
-        return lhs_blocks.size() < rhs_blocks.size();
-      }
-
-      for (size_t i = 0; i < lhs_blocks.size(); ++i) {
-        if (rpo_less(lhs_blocks[i], rhs_blocks[i], alphabet_size - 1)) {
-          return true;
-        }
-        if (rpo_less(rhs_blocks[i], lhs_blocks[i], alphabet_size - 1)) {
-          return false;
-        }
-      }
-      return false;
+      lhs.erase(common_suffix_lhs.base(), lhs.end());
+      rhs.erase(common_suffix_rhs.base(), rhs.end());
+      return rpo_cmp_recursive_impl(lhs, rhs);
     }
 
-    template <typename Node>
-    std::vector<word_type> minimal_rpo_words(WordGraph<Node> const& wg) {
+    bool rev_rpo_cmp_recursive(word_type lhs, word_type rhs) {
+      std::reverse(lhs.begin(), lhs.end());
+      std::reverse(rhs.begin(), rhs.end());
+      return rpo_cmp_recursive(lhs, rhs);
+    }
+
+    template <typename Node, typename Func>
+    std::vector<word_type> minimal_words(WordGraph<Node> const& wg, Func cmp) {
       struct Candidate {
         word_type word;
         Node      node;
       };
 
-      // This best-first search computes the true minimal word of each
-      // reachable state directly from the rpo order, independently of the
+      // This best-first search computes the minimal word of each
+      // reachable node directly from the given order, independently of the
       // standardization routine under test.
       auto const nr_reachable
           = v4::word_graph::number_of_nodes_reachable_from(wg, 0);
@@ -103,11 +103,11 @@ namespace libsemigroups {
         auto const it = std::min_element(
             frontier.cbegin(),
             frontier.cend(),
-            [&wg](Candidate const& lhs, Candidate const& rhs) {
-              if (rpo_less(lhs.word, rhs.word, wg.out_degree())) {
+            [&cmp](Candidate const& lhs, Candidate const& rhs) {
+              if (cmp(lhs.word, rhs.word)) {
                 return true;
               }
-              if (rpo_less(rhs.word, lhs.word, wg.out_degree())) {
+              if (cmp(rhs.word, lhs.word)) {
                 return false;
               }
               return lhs.node < rhs.node;
@@ -115,8 +115,7 @@ namespace libsemigroups {
         REQUIRE(it != frontier.cend());
 
         auto current = *it;
-        frontier.erase(frontier.begin()
-                       + static_cast<std::ptrdiff_t>(it - frontier.cbegin()));
+        frontier.erase(it);
         if (seen[current.node]) {
           continue;
         }
@@ -136,18 +135,18 @@ namespace libsemigroups {
       return result;
     }
 
-    template <typename Node>
+    template <typename Node, typename Func>
     std::pair<WordGraph<Node>, std::vector<word_type>>
-    canonical_rpo_standardization(WordGraph<Node> const& wg) {
-      auto const minimal_words = minimal_rpo_words(wg);
+    canonical_standardization(WordGraph<Node> const& wg, Func cmp) {
+      std::vector<word_type> const min_words = minimal_words(wg, cmp);
 
       std::vector<Node> p(wg.number_of_nodes());
       std::iota(p.begin(), p.end(), static_cast<Node>(0));
-      std::sort(p.begin(), p.end(), [&minimal_words, &wg](Node lhs, Node rhs) {
-        if (rpo_less(minimal_words[lhs], minimal_words[rhs], wg.out_degree())) {
+      std::sort(p.begin(), p.end(), [&min_words, &cmp](Node lhs, Node rhs) {
+        if (cmp(min_words[lhs], min_words[rhs])) {
           return true;
         }
-        if (rpo_less(minimal_words[rhs], minimal_words[lhs], wg.out_degree())) {
+        if (cmp(min_words[rhs], min_words[lhs])) {
           return false;
         }
         return lhs < rhs;
@@ -164,7 +163,7 @@ namespace libsemigroups {
       std::vector<word_type> ordered_words;
       ordered_words.reserve(p.size());
       for (auto node : p) {
-        ordered_words.push_back(minimal_words[node]);
+        ordered_words.push_back(min_words[node]);
       }
       return {std::move(result), std::move(ordered_words)};
     }
@@ -1066,7 +1065,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "048",
-                          "rpo standardization | textbook example",
+                          "rev_rpo standardization | textbook example",
                           "[quick][word-graph]") {
     auto rg = ReportGuard(false);
 
@@ -1075,20 +1074,20 @@ namespace libsemigroups {
 
     auto const expected_words
         = std::vector<word_type>({{}, {0}, {0, 0}, {1}, {1, 0}, {0, 0, 1}});
-    REQUIRE(minimal_rpo_words(wg) == expected_words);
-    REQUIRE(v4::word_graph::is_standardized(wg, Order::rpo));
+    REQUIRE(minimal_words(wg, rev_rpo_cmp_recursive) == expected_words);
+    REQUIRE(v4::word_graph::is_standardized(wg, Order::rev_rpo));
 
     Forest f;
-    REQUIRE(!v4::word_graph::standardize(wg, f, Order::rpo));
-    REQUIRE(v4::word_graph::is_standardized(wg, Order::rpo));
-    REQUIRE(
-        std::is_sorted(expected_words.begin(), expected_words.end(), RPOCmp()));
+    REQUIRE(!v4::word_graph::standardize(wg, f, Order::rev_rpo));
+    REQUIRE(v4::word_graph::is_standardized(wg, Order::rev_rpo));
+    REQUIRE(std::is_sorted(
+        expected_words.begin(), expected_words.end(), RevRPOCmp()));
     REQUIRE(words_from_forest(f) == expected_words);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "049",
-                          "rpo standardization | permuted textbook example",
+                          "rev_rpo standardization | permuted textbook example",
                           "[quick][word-graph]") {
     auto rg = ReportGuard(false);
 
@@ -1106,45 +1105,47 @@ namespace libsemigroups {
     }
     permuted.standardize_no_checks(q, p);
 
-    REQUIRE(v4::word_graph::is_standardized(canonical, Order::rpo));
+    REQUIRE(v4::word_graph::is_standardized(canonical, Order::rev_rpo));
     REQUIRE(permuted
             == v4::make<WordGraph<size_t>>(
                 6, {{2, 4}, {0}, {3}, {0, 1}, {5}, {UNDEFINED, 3}}));
 
-    REQUIRE(!v4::word_graph::is_standardized(permuted, Order::rpo));
+    REQUIRE(!v4::word_graph::is_standardized(permuted, Order::rev_rpo));
 
     Forest f;
-    REQUIRE(v4::word_graph::standardize(permuted, f, Order::rpo));
+    REQUIRE(v4::word_graph::standardize(permuted, f, Order::rev_rpo));
     REQUIRE(permuted == canonical);
-    REQUIRE(v4::word_graph::is_standardized(permuted, Order::rpo));
-    REQUIRE(words_from_forest(f) == minimal_rpo_words(canonical));
+    REQUIRE(v4::word_graph::is_standardized(permuted, Order::rev_rpo));
+    REQUIRE(words_from_forest(f)
+            == minimal_words(canonical, rev_rpo_cmp_recursive));
     auto const words = words_from_forest(f);
-    REQUIRE(std::is_sorted(words.begin(), words.end(), RPOCmp()));
+    REQUIRE(std::is_sorted(words.begin(), words.end(), RevRPOCmp()));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph",
-                          "050",
-                          "rpo standardization | recursive three-letter case",
-                          "[quick][word-graph]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "WordGraph",
+      "050",
+      "rev_rpo standardization | recursive three-letter case",
+      "[quick][word-graph]") {
     auto rg = ReportGuard(false);
 
     auto wg = v4::make<WordGraph<size_t>>(
         7, {{1, 3, 5}, {2, 4}, {}, {6}, {}, {4}, {}});
 
-    auto const expected = canonical_rpo_standardization(wg);
+    auto const expected = canonical_standardization(wg, rev_rpo_cmp_recursive);
 
-    REQUIRE(!v4::word_graph::is_standardized(wg, Order::rpo));
+    REQUIRE(!v4::word_graph::is_standardized(wg, Order::rev_rpo));
 
     Forest f;
-    REQUIRE(v4::word_graph::standardize(wg, f, Order::rpo));
+    REQUIRE(v4::word_graph::standardize(wg, f, Order::rev_rpo));
     REQUIRE(wg == expected.first);
-    REQUIRE(v4::word_graph::is_standardized(wg, Order::rpo));
+    REQUIRE(v4::word_graph::is_standardized(wg, Order::rev_rpo));
     REQUIRE(words_from_forest(f) == expected.second);
     REQUIRE(
         expected.second
         == std::vector<word_type>({{}, {0}, {0, 0}, {1}, {1, 0}, {0, 1}, {2}}));
     REQUIRE(std::is_sorted(
-        expected.second.begin(), expected.second.end(), RPOCmp()));
+        expected.second.begin(), expected.second.end(), RevRPOCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
