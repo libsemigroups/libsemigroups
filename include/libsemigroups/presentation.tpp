@@ -1249,6 +1249,22 @@ namespace libsemigroups {
     return _inverses[Presentation<Word>::index(x)];
   }
 
+  namespace presentation {
+    template <typename Word>
+    Word inverse_alphabet_no_checks(InversePresentation<Word> const& p) {
+      std::unordered_set<typename InversePresentation<Word>::letter_type> _seen;
+
+      Word result;
+      for (auto a : p.alphabet()) {
+        if (_seen.emplace(a).second) {
+          _seen.emplace(p.inverse(a));
+          result.push_back(a);
+        }
+      }
+      return result;
+    }
+  }  // namespace presentation
+
   namespace v4 {
     ////////////////////////////////////////////////////////////////////////
     // Presentation + function -> Presentation
