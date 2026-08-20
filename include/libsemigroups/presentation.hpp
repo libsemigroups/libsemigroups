@@ -204,6 +204,11 @@ namespace libsemigroups {
     [[nodiscard]] Alphabet<word_type> const& alphabet_v4() const noexcept {
       return _alphabet;
     }
+
+    Presentation const& alphabet_v4(Alphabet<Word> const& new_alphabet) {
+      // TODO(v4) we can do better than this!
+      return alphabet(new_alphabet.letters());
+    }
 #endif
 
     //! \brief Set the alphabet by size.
