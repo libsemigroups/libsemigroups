@@ -26,14 +26,15 @@
 #define LIBSEMIGROUPS_PRESENTATION_HPP_
 
 #include <algorithm>         // for reverse, sort
+#include <cctype>            // for isprint
 #include <cmath>             // for pow
 #include <cstring>           // for size_t, strlen
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
-#include <limits>            // for numeric_limits
 #include <map>               // for map
 #include <numeric>           // for accumulate
 #include <string>            // for basic_string, operator==
+#include <string_view>       // for string_view
 #include <tuple>             // for tie, tuple
 #include <type_traits>       // for enable_if_t
 #include <unordered_map>     // for operator==, operator!=
@@ -42,10 +43,11 @@
 #include <vector>            // for vector, operator!=
 
 #include "adapters.hpp"              // for Hash, EqualTo
-#include "alphabet-helpers.hpp"      // for TODO
-#include "alphabet.hpp"              // for Alphabet
+#include "alphabet-class.hpp"        // for Alphabet
+#include "alphabet-helpers.hpp"      // for add_letter
 #include "constants.hpp"             // for Max, UNDEFINED, operator==
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
 #include "is_specialization_of.hpp"  // for is_specialization_of
 #include "order.hpp"                 // for LenLexCmp
 #include "ranges.hpp"      // for seq, operator|, rx, take, chain, is_sorted
@@ -3757,6 +3759,46 @@ namespace libsemigroups {
       presentation::throw_if_bad_inverses(*this, inverses());
     }
   };  // class InversePresentation
+
+  namespace presentation {
+    //! \brief Return an inverse semigroup generating set.
+    //!
+    //! This function returns an inverse semigroup generating set of the
+    //! semigroup defined by an inverse presentation. More specifically, for
+    //! every letter \f$x\f$ in the alphabet of \p p the returned \c Word
+    //! contains precisely one of \f$x\f$ and \f$x^{-1}\f$.
+    //!
+    //! \param p the InversePresentation
+    //! \returns the inverse semigroup generating set.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments.
+    //!
+    //! \sa inverse_alphabet
+    template <typename Word>
+    Word inverse_alphabet_no_checks(InversePresentation<Word> const& p);
+
+    //! \brief Return an inverse semigroup generating set.
+    //!
+    //! This function returns an inverse semigroup generating set of the
+    //! semigroup defined by an inverse presentation. More specifically, for
+    //! every letter \f$x\f$ in the alphabet of \p p the returned \c Word
+    //! contains precisely one of \f$x\f$ and \f$x^{-1}\f$.
+    //!
+    //! \param p the InversePresentation
+    //! \returns the inverse semigroup generating set.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_rules_or_inverses()` throws.
+    //!
+    //! \sa inverse_alphabet
+    template <typename Word>
+    Word inverse_alphabet(InversePresentation<Word> const& p) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+      return inverse_alphabet_no_checks(p);
+    }
+
+  }  // namespace presentation
 
   //! \ingroup presentations_group
   //!
