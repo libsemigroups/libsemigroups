@@ -613,6 +613,29 @@ namespace libsemigroups {
       return it->second;
     }
 
+    //! \brief Remove a node from the represented graph.
+    //!
+    //! This function removes a node with name obtained from \p thing by
+    //! converting it to a std::string (unless they are std::string,
+    //! std::string_view, or `char const*` already) using std::to_string.
+    //!
+    //! \tparam Thing the type of the argument.
+    //!
+    //! \param thing the object to use as the name of a node.
+    //!
+    //! \throws LibsemigroupsException if there is no node with name
+    //! `std::to_string(thing)`.
+    template <typename Thing>
+    void rm_node(Thing&& thing) {
+      auto name_str = detail::dot_to_string(std::forward<Thing>(thing));
+      auto it       = _nodes.find(name_str);
+      if (it == _nodes.end()) {
+        LIBSEMIGROUPS_EXCEPTION("there is no node named {} to remove!",
+                                name_str);
+      }
+      _nodes.erase(it);
+    }
+
     //! \brief Return a node from the represented graph.
     //!
     //! This function returns a reference to a node with name obtained from
