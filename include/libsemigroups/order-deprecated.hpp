@@ -273,91 +273,23 @@ using ShortLexCompare [[deprecated("Use LenLexCmp instead!")]] = LenLexCmp<>;
 // Recursive path order (RPO) - deprecated
 //////////////////////////////////////////////////////////////////////
 
-//! \brief Compare two objects of the same type using the reversed recursive
-//! path comparison.
-//!
-//! Defined in `order-deprecated.hpp`.
-//!
-//! This function compares two objects of the same type using the reversed
-//! recursive path comparison. This is the same as applying the recursive path
-//! comparison described in \cite Jantzen2012aa (Definition 1.2.14, page 24)
-//! to the reversed words in `[first1, last1)`, `[first2, last2)`.
-//!
-//! If \f$u, v\in X ^ {*}\f$, then
-//! \f$u < v\f$ if and only if one of the following conditions holds:
-//! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
-//! 2. \f$u = u'a\f$ and \f$v = v'b\f$ for some \f$a,b \in X\f$, \f$u',v'\in
-//!    X ^ {*}\f$ and:
-//!   1. \f$a = b\f$ and \f$u' < v'\f$; or
-//!   2. \f$a < b\f$ and \f$u  < v'\f$; or
-//!   3. \f$a > b\f$ and \f$u' < v\f$.
-//!
-//! This documentation and the implementation of
-//! \ref libsemigroups::recursive_path_compare is based on the source code of
-//! \cite Holt2018aa, specifically the function `rt_rec_compare`.
-//!
-//! \tparam Iterator the type of iterators that are the arguments.
-//!
-//! \param first1 beginning iterator of first object for comparison.
-//! \param last1 ending iterator of first object for comparison.
-//! \param first2 beginning iterator of second object for comparison.
-//! \param last2 ending iterator of second object for comparison.
-//!
-//! \returns The boolean value \c true if the range `[first1, last1)` is less
-//! than the range `[first2, last2)` with respect to the reversed recursive
-//! path ordering, and \c false otherwise.
-//!
-//! \exceptions
-//! \noexcept
-//!
-//! \warning
-//! This function has significantly worse performance than all
-//! the variants of \ref libsemigroups::lenlex_cmp and
-//! std::lexicographical_compare.
-//!
-//! \deprecated_warning{function} Use \ref libsemigroups::rpo_cmp instead.
+//! \copydoc libsemigroups::rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+//! \deprecated_warning{function} Use \ref libsemigroups::rev_rpo_cmp instead.
 template <typename Iterator>
-[[nodiscard]] [[deprecated("Use rpo_cmp instead!")]] bool
+[[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
 recursive_path_compare(Iterator first1,
                        Iterator last1,
                        Iterator first2,
                        Iterator last2) noexcept {
-  return rpo_cmp(first1, last1, first2, last2);
+  return rev_rpo_cmp(first1, last1, first2, last2);
 }
 
-//! \brief Compare two objects of the same type using
-//! \ref libsemigroups::recursive_path_compare.
-//!
-//! Defined in `order-deprecated.hpp`.
-//!
-//! This function compares two objects of the same type using
-//! \ref libsemigroups::recursive_path_compare.
-//!
-//! \tparam Word the type of the objects to be compared.
-//!
-//! \param x const reference to the first object for comparison.
-//! \param y const reference to the second object for comparison.
-//!
-//! \returns The boolean value \c true if \p x is less than \p y with respect
-//! to the recursive path ordering, and \c false otherwise.
-//!
-//! \exceptions
-//! \noexcept
-//!
-//! \par Possible Implementation
-//! \code_no_test
-//! recursive_path_compare(
-//!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
-//! \end_code_no_test
-//!
-//! \sa
-//! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
-//!
-//! \deprecated_warning{function} Use \ref libsemigroups::rpo_cmp instead.
+//! \copydoc libsemigroups::rev_rpo_cmp(Word const&, Word const&)
+//! \deprecated_warning{function} Use \ref libsemigroups::rev_rpo_cmp instead.
 template <typename Word>
-[[nodiscard]] [[deprecated("Use rpo_cmp instead!")]] bool
+[[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
 recursive_path_compare(Word const& x, Word const& y) noexcept {
-  return rpo_cmp(x, y);
+  return rev_rpo_cmp(x, y);
 }
 
 //! \brief Compare two objects via their pointers using
@@ -389,31 +321,19 @@ recursive_path_compare(Word const& x, Word const& y) noexcept {
 //! \sa
 //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
 //!
-//! \deprecated_warning{function} Use \ref libsemigroups::rpo_cmp instead.
+//! \deprecated_warning{function}.
 template <typename Word>
 [[nodiscard]] [[deprecated(
     "This function will be removed in v4, and no alternative "
     "provided.")]] bool
 recursive_path_compare(Word* const x, Word* const y) noexcept {
-  return rpo_cmp(*x, *y);
+  return rev_rpo_cmp(*x, *y);
 }
 
-//! \brief A stateless struct with binary call operator using
-//! \ref libsemigroups::recursive_path_compare.
-//!
-//! Defined in `order-deprecated.hpp`.
-//!
-//! A stateless struct with binary call operator using
-//! \ref libsemigroups::recursive_path_compare.
-//!
-//! This only exists to be used as a template parameter, and has no
-//! advantages over using \ref libsemigroups::recursive_path_compare otherwise.
-//!
-//! \sa
-//! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
-//!
+//! \copydoc libsemigroups::RevRpoCmp
 //! \deprecated_warning{struct} Use \ref libsemigroups::RPOCmp instead.
-using RecursivePathCompare [[deprecated("Use RPOCmp instead!")]] = RPOCmp<>;
+using RecursivePathCompare [[deprecated("Use RevRPOCmp instead!")]]
+= RevRPOCmp<>;
 
 //////////////////////////////////////////////////////////////////////
 // Weighted short-lex - deprecated

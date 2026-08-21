@@ -80,11 +80,12 @@ namespace libsemigroups {
     //! right-to-left before ordering.
     rev_rpo,
 
-    //! The recursive path ordering, as described in \cite Jantzen2012aa
-    //! (Definition 1.2.14, page 24).
+    //! The reversed recursive path ordering, based on the description in
+    //! \cite Jantzen2012aa (Definition 1.2.14, page 24), where words are read
+    //! right-to-left before ordering.
     //!
-    //! \deprecated_warning{value} Use \ref Order::rpo instead.
-    recursive [[deprecated("Use rpo instead!")]] = rpo
+    //! \deprecated_warning{value} Use \ref Order::rev_rpo instead.
+    recursive [[deprecated("Use rev_rpo instead!")]] = rev_rpo
   };
 
   //! \defgroup orders_group Orders
