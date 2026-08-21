@@ -2679,7 +2679,7 @@ namespace libsemigroups {
     //! Order::lenlex).
     //!
     //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-    //! Order::lenlex, Order::lex or Order::rpo.
+    //! Order::lenlex.
     //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.

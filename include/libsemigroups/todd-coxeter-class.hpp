@@ -119,13 +119,13 @@ namespace libsemigroups {
   //! // {0_w,
   //! //  1_w,
   //! //  2_w,
-  //! //  21_w,
   //! //  12_w,
+  //! //  21_w,
   //! //  121_w,
   //! //  22_w,
-  //! //  221_w,
+  //! //  122_w,
   //! //  212_w,
-  //! //  2121_w}
+  //! //  1212_w};
   //! tc.standardize(Order::lex);
   //! todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector();
   //! // {0_w,
