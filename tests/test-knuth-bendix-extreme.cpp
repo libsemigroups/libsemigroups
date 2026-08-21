@@ -78,17 +78,21 @@ namespace libsemigroups {
 
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
-  using RPOTrie    = detail::RewritingSystemTrie<RPOCmp>;
-  using RPOSet     = detail::RewritingSystemSet<RPOCmp>;
 
-#define REWRITING_SYSTEM_TYPES LenLexTrie, RPOTrie
+  using RPOTrie = detail::RewritingSystemTrie<RPOCmp>;
+  using RPOSet  = detail::RewritingSystemSet<RPOCmp>;
+
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RevRPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+
+#define REWRITING_SYSTEM_TYPES LenLexTrie, RevRPOTrie
 
   ////////////////////////////////////////////////////////////////////////
   // Extreme tests
   ////////////////////////////////////////////////////////////////////////
 
   // Fibonacci group F(2,7) - order 29 - works better with largish tidyint
-  // [102]: KnuthBendix: kbmag/standalone/kb_data/f27 - RPOTrie
+  // [102]: KnuthBendix: kbmag/standalone/kb_data/f27 - RevRPOTrie
   // -- plain Knuth-Bendix ......4.681s
   // -- by_overlap_length ......5.677s
   // [102]: KnuthBendix: kbmag/standalone/kb_data/f27 - LenLexTrie
@@ -128,7 +132,7 @@ namespace libsemigroups {
     REQUIRE(kb.finished());
     REQUIRE(kb.rewriting_system().confluent());
 
-    if constexpr (std::is_same_v<TestType, RPOTrie>) {
+    if constexpr (std::is_same_v<TestType, RevRPOTrie>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 14);
     } else {
       REQUIRE(kb.rewriting_system().number_of_rules() == 194);
@@ -139,7 +143,7 @@ namespace libsemigroups {
 
   // Mathieu group M_11
   // [103]: KnuthBendix: kbmag/standalone/kb_data/m11 - LenLexTrie ......6.062s
-  // [103]: KnuthBendix: kbmag/standalone/kb_data/m11 - RPOTrie ......2.913s
+  // [103]: KnuthBendix: kbmag/standalone/kb_data/m11 - RevRPOTrie ......2.913s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "103",
                                    "kbmag/standalone/kb_data/m11",
@@ -162,7 +166,7 @@ namespace libsemigroups {
 
     knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.rewriting_system().confluent());
-    if constexpr (std::is_same_v<TestType, RPOTrie>) {
+    if constexpr (std::is_same_v<TestType, RevRPOTrie>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 741);
     } else {
       REQUIRE(kb.rewriting_system().number_of_rules() == 1'731);
@@ -192,7 +196,7 @@ namespace libsemigroups {
   // Works quickest with large value of tidyint
   // [105]: KnuthBendix: kbmag/standalone/kb_data/degen4b - LenLexTrie
   // ......2.600s
-  // [105]: KnuthBendix: kbmag/standalone/kb_data/degen4b - RPOTrie
+  // [105]: KnuthBendix: kbmag/standalone/kb_data/degen4b - RevRPOTrie
   // .......790ms
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "105",
@@ -222,7 +226,7 @@ namespace libsemigroups {
   // value of tidyint works better.
   // [106]: KnuthBendix: kbmag/standalone/kb_data/f27_2gen - LenLexTrie
   // ......8.602s
-  // [106]: KnuthBendix: kbmag/standalone/kb_data/f27_2gen - RPOTrie
+  // [106]: KnuthBendix: kbmag/standalone/kb_data/f27_2gen - RevRPOTrie
   // ......3.956s
   // Takes > 19s (knuth_bendix), didn't run to the end
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -248,7 +252,7 @@ namespace libsemigroups {
 
     knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.rewriting_system().confluent());
-    if constexpr (std::is_same_v<TestType, RPOTrie>) {
+    if constexpr (std::is_same_v<TestType, RevRPOTrie>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 4);
     } else {
       REQUIRE(kb.rewriting_system().number_of_rules() == 19);
@@ -259,7 +263,7 @@ namespace libsemigroups {
   // [107]: KnuthBendix: Example 6.6 in Sims - LenLexTrie
   // -- plain Knuth-Bendix ......6.405s
   // -- by overlap length ......5.439s
-  // [107]: KnuthBendix: Example 6.6 in Sims - RPOTrie
+  // [107]: KnuthBendix: Example 6.6 in Sims - RevRPOTrie
   // -- plain Knuth-Bendix ......2.691s
   // -- by overlap length ......2.483s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -286,7 +290,7 @@ namespace libsemigroups {
     SECTION("by overlap length") {
       knuth_bendix::by_overlap_length(kb);
     }
-    if constexpr (std::is_same_v<TestType, RPOTrie>) {
+    if constexpr (std::is_same_v<TestType, RevRPOTrie>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 408);
     } else {
       REQUIRE(kb.rewriting_system().number_of_rules() == 1'026);
@@ -296,7 +300,7 @@ namespace libsemigroups {
   }
 
   // [108]: KnuthBendix: kbmag/standalone/kb_data/f27 - LenLexTrie ......3.072s
-  // [108]: KnuthBendix: kbmag/standalone/kb_data/f27 - RPOTrie .....20.083s
+  // [108]: KnuthBendix: kbmag/standalone/kb_data/f27 - RevRPOTrie .....20.083s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "108",
                                    "kbmag/standalone/kb_data/f27monoid",
@@ -324,7 +328,7 @@ namespace libsemigroups {
     knuth_bendix::by_overlap_length(kb);
     // Fails to terminate, or is very slow, with knuth_bendix
     REQUIRE(kb.rewriting_system().confluent());
-    if constexpr (std::is_same_v<TestType, RPOTrie>) {
+    if constexpr (std::is_same_v<TestType, RevRPOTrie>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 7);
     } else {
       REQUIRE(kb.rewriting_system().number_of_rules() == 47);
@@ -338,12 +342,12 @@ namespace libsemigroups {
   //
   // KBMAG does not seem to terminate when lenlex order is used.
   //
-  // [999]: KnuthBendix: kbmag/f27monoid - RPOTrie .....29.123s
+  // [999]: KnuthBendix: kbmag/f27monoid - RevRPOTrie .....29.123s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "999",
                                    "kbmag/f27monoid",
                                    "[extreme][knuth-bendix][kbmag]",
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
@@ -370,7 +374,7 @@ namespace libsemigroups {
   // [109]: KnuthBendix: kbmag/standalone/kb_data/l32ext - LenLexTrie
   // -- plain Knuth-Bendix ......6.502s
   // -- by overlap length ......5.480s
-  // [109]: KnuthBendix: kbmag/standalone/kb_data/l32ext - RPOTrie
+  // [109]: KnuthBendix: kbmag/standalone/kb_data/l32ext - RevRPOTrie
   // -- plain Knuth-Bendix ......2.713s
   // -- by overlap length ......2.622s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -401,7 +405,7 @@ namespace libsemigroups {
     }
 
     REQUIRE(kb.rewriting_system().confluent());
-    if constexpr (std::is_same_v<TestType, RPOTrie>) {
+    if constexpr (std::is_same_v<TestType, RevRPOTrie>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 408);
     } else {
       REQUIRE(kb.rewriting_system().number_of_rules() == 1'026);
@@ -414,7 +418,7 @@ namespace libsemigroups {
 
   // [117]: KnuthBendix: example with undecidable word problem - LenLexTrie
   // .....10.056s
-  //  [117]: KnuthBendix: example with undecidable word problem - RPOTrie
+  //  [117]: KnuthBendix: example with undecidable word problem - RevRPOTrie
   //  .....10.052s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "117",
@@ -438,11 +442,11 @@ namespace libsemigroups {
   // [146]: KnuthBendix: process millions of pending rules - LenLexTrie
   // -- sorted by lhs_rev_lex_cmp ......5.979s
   // -- sorted by lhs_lex_cmp ......6.223s
-  // -- sorted by rpo_cmp ......6.279s
-  // [146]: KnuthBendix: process millions of pending rules - RPOTrie
+  // -- sorted by rev_rpo_cmp ......6.279s
+  // [146]: KnuthBendix: process millions of pending rules - RevRPOTrie
   // -- sorted by lhs_rev_lex_cmp ......5.810s
   // -- sorted by lhs_lex_cmp ......6.241s
-  // -- sorted by rpo_cmp ......6.300s
+  // -- sorted by rev_rpo_cmp ......6.300s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "146",
                                    "process millions of pending rules",
@@ -469,8 +473,8 @@ namespace libsemigroups {
       k.rewriting_system().reduce();
       REQUIRE(k.rewriting_system().number_of_rules() == 2'045'649);
     }
-    SECTION("sorted by rpo_cmp") {
-      k.rewriting_system().sort_pending_rules_by(detail::rpo_cmp);
+    SECTION("sorted by rev_rpo_cmp") {
+      k.rewriting_system().sort_pending_rules_by(detail::rev_rpo_cmp);
       k.rewriting_system().reduce();
       REQUIRE(k.rewriting_system().number_of_rules() == 2'041'466);
     }
@@ -491,14 +495,14 @@ namespace libsemigroups {
   // presentation here was derived by first applying the NQA to find the
   // maximal nilpotent quotient, and then introducing new generators for
   // the PCP generators.
-  // [932]: KnuthBendix: kbmag/heinnilp - RPOTrie
+  // [932]: KnuthBendix: kbmag/heinnilp - RevRPOTrie
   // -- using a separate trie for new rules .....15.710s
   // -- NOT using a separate trie for new rules ......9.897s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "932",
                                    "kbmag/heinnilp",
                                    "[extreme][knuth-bendix][kbmag][recursive]",
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
@@ -517,7 +521,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
     kb.rewriting_system().settings().reduction_threshold = 1024;
-    kb.rewriting_system().sort_pending_rules_by(detail::rpo_cmp);
+    kb.rewriting_system().sort_pending_rules_by(detail::rev_rpo_cmp);
     SECTION("using a separate trie for new rules") {
       kb.rewriting_system().use_new_rule_trie([](auto const&) { return true; });
     }
@@ -555,12 +559,12 @@ namespace libsemigroups {
              {"ya", "ayf"},   {"yb", "by"},     {"yc", "cy"},   {"yd", "dy"}}));
 
     REQUIRE(std::all_of(rules1.begin(), rules1.end(), [&p](auto const& rule) {
-      return rpo_cmp(p.alphabet_v4(), rule.second, rule.first);
+      return rev_rpo_cmp(p.alphabet_v4(), rule.second, rule.first);
     }));
   }
 
   // [144]: KnuthBendix: process pending rules x3 - LenLexTrie .....25.231s
-  // [144]: KnuthBendix: process pending rules x3 - RPOTrie .....25.169s
+  // [144]: KnuthBendix: process pending rules x3 - RevRPOTrie .....25.169s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "144",
                                    "process pending rules x3",
@@ -585,7 +589,7 @@ namespace libsemigroups {
   }
 
   // [118]: KnuthBendix: process pending rules x1 - LenLexTrie .....22.597s
-  // [118]: KnuthBendix: process pending rules x1 - RPOTrie .....22.983s
+  // [118]: KnuthBendix: process pending rules x1 - RevRPOTrie .....22.983s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "118",
                                    "process pending rules x1",
@@ -609,7 +613,7 @@ namespace libsemigroups {
 
   // [139]: KnuthBendix: partial_transformation_monoid5 - LenLexTrie
   // ......6.295s
-  // [139]: KnuthBendix: partial_transformation_monoid5 - RPOTrie
+  // [139]: KnuthBendix: partial_transformation_monoid5 - RevRPOTrie
   // .......262ms
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "139",
@@ -661,7 +665,7 @@ namespace libsemigroups {
                                    "057",
                                    "1-relation hard case",
                                    "[extreme][knuth-bendix][tietze-explorer]",
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ba");
@@ -695,12 +699,12 @@ namespace libsemigroups {
     REQUIRE(!dora.number_of_threads(4).result().has_value());
   }
 
-  // Fails with depth_max(3) + RPOTrie too in ~10 minutes
+  // Fails with depth_max(3) + RevRPOTrie too in ~10 minutes
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "151",
                                    "baaabaaa = aba",
                                    "[extreme][tietze-explorer]",
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -726,7 +730,7 @@ namespace libsemigroups {
                                    "152",
                                    "baa(ba)^N=a",
                                    "[extreme][tietze-explorer]",
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;

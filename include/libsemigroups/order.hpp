@@ -56,7 +56,7 @@ namespace libsemigroups {
     //! No ordering.
     none = 0,
 
-    //! The len-lex ordering. Words are first ordered by length, and then
+    //! The lenlex ordering. Words are first ordered by length, and then
     //! lexicographically.
     lenlex,
 
@@ -80,11 +80,12 @@ namespace libsemigroups {
     //! right-to-left before ordering.
     rev_rpo,
 
-    //! The recursive path ordering, as described in \cite Jantzen2012aa
-    //! (Definition 1.2.14, page 24).
+    //! The reversed recursive path ordering, based on the description in
+    //! \cite Jantzen2012aa (Definition 1.2.14, page 24), where words are read
+    //! right-to-left before ordering.
     //!
-    //! \deprecated_warning{value} Use \ref Order::rpo instead.
-    recursive [[deprecated("Use rpo instead!")]] = rpo
+    //! \deprecated_warning{value} Use \ref Order::rev_rpo instead.
+    recursive [[deprecated("Use rev_rpo instead!")]] = rev_rpo
   };
 
   //! \defgroup orders_group Orders
@@ -773,15 +774,15 @@ namespace libsemigroups {
   to_human_readable_repr(RevLexCmp<Default, check> const& cmp);
 
   //////////////////////////////////////////////////////////////////////
-  // Len-lex
+  // Lenlex
   //////////////////////////////////////////////////////////////////////
 
-  //! \brief Compare two objects of the same type using the len-lex reduction
+  //! \brief Compare two objects of the same type using the lenlex reduction
   //! ordering.
   //!
   //! Defined in `order.hpp`.
   //!
-  //! This function compares two objects of the same type using the len-lex
+  //! This function compares two objects of the same type using the lenlex
   //! reduction ordering.
   //!
   //! \tparam Iterator the type of iterators that are the parameters.
@@ -792,7 +793,7 @@ namespace libsemigroups {
   //! \param last2 ending iterator of second object for comparison.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! len-lex less than the range `[first2, last2)`, and \c false
+  //! lenlex less than the range `[first2, last2)`, and \c false
   //! otherwise.
   //!
   //! \exceptions
@@ -825,7 +826,7 @@ namespace libsemigroups {
                && std::lexicographical_compare(first1, last1, first2, last2));
   }
 
-  //! \brief Compare two ranges using len-lex without checking an alphabet.
+  //! \brief Compare two ranges using lenlex without checking an alphabet.
   //!
   //! This overload orders first by length and then lexicographically using
   //! \p alphabet to map letters to indices. It does not check that the
@@ -837,7 +838,7 @@ namespace libsemigroups {
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
   //!
-  //! \returns The boolean value \c true if the first range is len-lex less
+  //! \returns The boolean value \c true if the first range is lenlex less
   //! than the second range, and \c false otherwise.
   template <typename Word, typename Iterator>
   [[nodiscard]] bool lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
@@ -850,7 +851,7 @@ namespace libsemigroups {
                && lex_cmp_no_checks(alphabet, first1, last1, first2, last2));
   }
 
-  //! \brief Compare two ranges using len-lex with respect to an alphabet.
+  //! \brief Compare two ranges using lenlex with respect to an alphabet.
   //!
   //! This overload checks that both ranges contain only letters belonging to
   //! \p alphabet, then orders first by length and then lexicographically using
@@ -862,7 +863,7 @@ namespace libsemigroups {
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
   //!
-  //! \returns The boolean value \c true if the first range is len-lex less
+  //! \returns The boolean value \c true if the first range is lenlex less
   //! than the second range, and \c false otherwise.
   //!
   //! \throws LibsemigroupsException if any letter in either range does not
@@ -890,7 +891,7 @@ namespace libsemigroups {
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x is len-lex less than \p y,
+  //! \returns The boolean value \c true if \p x is lenlex less than \p y,
   //! and \c false otherwise.
   //!
   //! \exceptions
@@ -915,7 +916,7 @@ namespace libsemigroups {
 
   // TODO there's no no_checks version of lenlex_cmp for two objects
 
-  //! \brief Compare two objects using len-lex with respect to an alphabet.
+  //! \brief Compare two objects using lenlex with respect to an alphabet.
   //!
   //! This overload checks that both objects contain only letters belonging to
   //! \p alphabet, then orders first by length and then lexicographically using
@@ -925,7 +926,7 @@ namespace libsemigroups {
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x is len-lex less than \p y
+  //! \returns The boolean value \c true if \p x is lenlex less than \p y
   //! with respect to \p alphabet, and \c false otherwise.
   //!
   //! \throws LibsemigroupsException if any letter in either object does not
@@ -937,7 +938,7 @@ namespace libsemigroups {
     return lenlex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects using len-lex without checking an alphabet.
+  //! \brief Compare two objects using lenlex without checking an alphabet.
   //!
   //! This overload orders first by length and then lexicographically using
   //! \p alphabet to map letters to indices. It does not check that the
@@ -947,7 +948,7 @@ namespace libsemigroups {
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x is len-lex less than \p y
+  //! \returns The boolean value \c true if \p x is lenlex less than \p y
   //! with respect to \p alphabet, and \c false otherwise.
   template <typename Word>
   [[nodiscard]] bool lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
@@ -960,9 +961,9 @@ namespace libsemigroups {
   template <typename Word = Default, bool check = true>
   class LenLexCmp;
 
-  //! \brief Stateful len-lex comparison functor.
+  //! \brief Stateful lenlex comparison functor.
   //!
-  //! This class stores an alphabet and compares words in len-lex order with
+  //! This class stores an alphabet and compares words in lenlex order with
   //! respect to that alphabet.
   //!
   //! \tparam Word the word type associated with the alphabet.
@@ -1038,7 +1039,7 @@ namespace libsemigroups {
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
     //!
-    //! \returns The boolean value \c true if \p x is len-lex less than \p y,
+    //! \returns The boolean value \c true if \p x is lenlex less than \p y,
     //! and \c false otherwise.
     //!
     //! \exceptions
@@ -1128,7 +1129,7 @@ namespace libsemigroups {
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
     //!
-    //! \returns The boolean value \c true if \p x is len-lex less than \p y,
+    //! \returns The boolean value \c true if \p x is lenlex less than \p y,
     //! and \c false otherwise.
     //!
     //! \exceptions
@@ -1177,7 +1178,7 @@ namespace libsemigroups {
 
   //! \relates LenLexCmp
   //!
-  //! \brief Return a human readable representation of a stateful len-lex
+  //! \brief Return a human readable representation of a stateful lenlex
   //! comparison functor.
   //!
   //! \tparam Word the word type associated with the alphabet.
@@ -1194,7 +1195,7 @@ namespace libsemigroups {
 
   //! \relates LenLexCmp
   //!
-  //! \brief Return a human readable representation of a stateless len-lex
+  //! \brief Return a human readable representation of a stateless lenlex
   //! comparison functor.
   //!
   //! \tparam check whether to check arguments.
@@ -1209,10 +1210,10 @@ namespace libsemigroups {
   to_human_readable_repr(LenLexCmp<Default, check> const& cmp);
 
   //////////////////////////////////////////////////////////////////////
-  // Reversed len-lex
+  // Reversed lenlex
   //////////////////////////////////////////////////////////////////////
 
-  //! \brief Compare two ranges using reversed len-lex.
+  //! \brief Compare two ranges using reversed lenlex.
   //!
   //! This function applies \ref lenlex_cmp to the ranges read from right to
   //! left.
@@ -1223,7 +1224,7 @@ namespace libsemigroups {
   //! \param last2 ending iterator of second object for comparison.
   //!
   //! \returns The boolean value \c true if the first range is reversed
-  //! len-lex less than the second range, and \c false otherwise.
+  //! lenlex less than the second range, and \c false otherwise.
   template <typename Iterator>
   [[nodiscard]] bool rev_lenlex_cmp(Iterator first1,
                                     Iterator last1,
@@ -1235,7 +1236,7 @@ namespace libsemigroups {
                       std::make_reverse_iterator(first2));
   }
 
-  //! \brief Compare two ranges using reversed len-lex without checking an
+  //! \brief Compare two ranges using reversed lenlex without checking an
   //! alphabet.
   //!
   //! This function applies \ref lenlex_cmp_no_checks to the ranges read from
@@ -1253,7 +1254,7 @@ namespace libsemigroups {
                                 std::make_reverse_iterator(first2));
   }
 
-  //! \brief Compare two ranges using reversed len-lex with respect to an
+  //! \brief Compare two ranges using reversed lenlex with respect to an
   //! alphabet.
   //!
   //! This function applies \ref lenlex_cmp to the ranges read from right to
@@ -1271,14 +1272,14 @@ namespace libsemigroups {
                       std::make_reverse_iterator(first2));
   }
 
-  //! \brief Compare two objects using reversed len-lex.
+  //! \brief Compare two objects using reversed lenlex.
   template <typename Word,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
   [[nodiscard]] bool rev_lenlex_cmp(Word const& x, Word const& y) {
     return rev_lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects using reversed len-lex without checking an
+  //! \brief Compare two objects using reversed lenlex without checking an
   //! alphabet.
   template <typename Word>
   [[nodiscard]] bool rev_lenlex_cmp_no_checks(Alphabet<Word> const& alphabet,
@@ -1288,7 +1289,7 @@ namespace libsemigroups {
         alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects using reversed len-lex with respect to an
+  //! \brief Compare two objects using reversed lenlex with respect to an
   //! alphabet.
   template <typename Word>
   [[nodiscard]] bool rev_lenlex_cmp(Alphabet<Word> const& alphabet,
@@ -1300,7 +1301,7 @@ namespace libsemigroups {
   template <typename Word = Default, bool check = true>
   class RevLenLexCmp;
 
-  //! \brief Stateful reversed len-lex comparison functor.
+  //! \brief Stateful reversed lenlex comparison functor.
   template <typename Word, bool check>
   class RevLenLexCmp {
     LenLexCmp<Word, check> _lenlex;
@@ -1343,12 +1344,12 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \brief Compare two words using reversed len-lex.
+    //! \brief Compare two words using reversed lenlex.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
 
-    //! \brief Compare two iterator ranges using reversed len-lex.
+    //! \brief Compare two iterator ranges using reversed lenlex.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -1366,7 +1367,7 @@ namespace libsemigroups {
     }
   };  // class RevLenLexCmp
 
-  //! \brief Stateless reversed len-lex comparison functor.
+  //! \brief Stateless reversed lenlex comparison functor.
   template <>
   struct RevLenLexCmp<Default, true> {
     //! \brief Reinitialize the comparison object.
@@ -1374,13 +1375,13 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \brief Compare two words using reversed len-lex.
+    //! \brief Compare two words using reversed lenlex.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
 
-    //! \brief Compare two iterator ranges using reversed len-lex.
+    //! \brief Compare two iterator ranges using reversed lenlex.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -1404,7 +1405,7 @@ namespace libsemigroups {
   //! \relates RevLenLexCmp
   //!
   //! \brief Return a human readable representation of a stateful reversed
-  //! len-lex comparison functor.
+  //! lenlex comparison functor.
   //!
   //! \tparam Word the word type associated with the alphabet.
   //! \tparam check whether to check that letters belong to the alphabet.
@@ -1421,7 +1422,7 @@ namespace libsemigroups {
   //! \relates RevLenLexCmp
   //!
   //! \brief Return a human readable representation of a stateless reversed
-  //! len-lex comparison functor.
+  //! lenlex comparison functor.
   //!
   //! \tparam check whether to check arguments.
   //! \param cmp the comparison functor.
@@ -1445,27 +1446,20 @@ namespace libsemigroups {
   //!
   //! This function compares two objects of the same type using the recursive
   //! path comparison, based on the description in \cite Jantzen2012aa
-  //! (Definition 1.2.14, page 24).
-  //!
-  //! In the literature, recursive path order is sometimes defined in the way
-  //! that `libsemigroups` defines reversed recursive path order. This
-  //! distinction is so that, in `libsemigroups`, recursive path order is a
-  //! special case of wreath-product order, and reverse recursive path order is
-  //! a special case of reverse wreath-product order. The following definition
-  //! is used in `libsemigroups` for recursive path order.
+  //! (Definition 1.2.14, page 24) and \cite Dershowitz1982aa (Definition 5,
+  //! page 289). The following definition is used in `libsemigroups`.
   //!
   //! If \f$u, v\in X ^ {*}\f$, then
   //! \f$u < v\f$ if and only if one of the following conditions holds:
   //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
-  //! 2. \f$u = u'a\f$ and \f$v = v'b\f$ for some \f$a,b \in X\f$, \f$u',v'\in
+  //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
   //!    X ^ {*}\f$ and:
   //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
-  //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
-  //!   3. \f$a > b\f$ and \f$u < v'\f$.
+  //!   2. \f$a < b\f$ and \f$u' < v\f$; or
+  //!   3. \f$a > b\f$ and \f$u  \leq v'\f$.
   //!
-  //! This documentation and the implementation of \ref rpo_cmp
-  //! is based on the source code of \cite Holt2018aa, specifically the function
-  //! `rec_compare`.
+  //! The implementation of \ref rpo_cmp is based on the source code of
+  //! \cite Holt2018aa, specifically the function `rt_rec_compare`.
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
@@ -1480,10 +1474,6 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \noexcept
-  //!
-  //! \warning
-  //! This function has significantly worse performance than all
-  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   template <typename Iterator>
   [[nodiscard]] bool rpo_cmp(Iterator first1,
                              Iterator last1,
@@ -1856,35 +1846,10 @@ namespace libsemigroups {
   // Reversed recursive path order (RPO)
   //////////////////////////////////////////////////////////////////////
 
-  //! \brief Compare two objects of the same type using the reversed recursive
-  //! path comparison.
+  //! \brief Compare two ranges using reversed recursive path compare.
   //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using the reversed
-  //! recursive path comparison. This is the same as applying the recursive path
-  //! comparison to the reversed words in `[first1, last1)`, `[first2, last2)`.
-  //!
-  //! In the literature, recursive path order is sometimes defined in the way
-  //! that `libsemigroups` defines reversed recursive path order. This
-  //! distinction is so that, in `libsemigroups`, recursive path order is a
-  //! special case of wreath-product order, and reverse recursive path order is
-  //! a special case of reverse wreath-product order. The following definition
-  //! is used in `libsemigroups` for reversed recursive path order, and is taken
-  //! from \cite Jantzen2012aa (Definition 1.2.14, page 24).
-  //!
-  //! If \f$u, v\in X ^ {*}\f$, then
-  //! \f$u < v\f$ if and only if one of the following conditions holds:
-  //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
-  //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
-  //!    X ^ {*}\f$ and:
-  //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
-  //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
-  //!   3. \f$a > b\f$ and \f$u < v'\f$.
-  //!
-  //! This documentation and the implementation of \ref rev_rpo_cmp
-  //! is based on the source code of \cite Holt2018aa, specifically the function
-  //! `rt_rec_compare`.
+  //! This function applies \ref libsemigroups::rpo_cmp to the ranges read from
+  //! right to left.
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
@@ -1893,16 +1858,12 @@ namespace libsemigroups {
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
   //!
-  //! \returns The boolean value \c true if the range `[first1, last1)` is less
-  //! than the range `[first2, last2)` with respect to the reversed recursive
-  //! path ordering, and \c false otherwise.
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range with respect to reversed recursive path order, and \c false
+  //! otherwise.
   //!
   //! \exceptions
   //! \noexcept
-  //!
-  //! \warning
-  //! This function has significantly worse performance than all
-  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   template <typename Iterator>
   [[nodiscard]] bool rev_rpo_cmp(Iterator first1,
                                  Iterator last1,
@@ -1958,12 +1919,13 @@ namespace libsemigroups {
                                  Iterator              first2,
                                  Iterator              last2);
 
-  //! \brief Compare two objects of the same type using \ref rev_rpo_cmp.
+  //! \brief Compare two objects of the same type using
+  //! \ref libsemigroups::rev_rpo_cmp.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using
-  //! \ref rev_rpo_cmp.
+  //! \ref libsemigroups::rev_rpo_cmp.
   //!
   //! \tparam Word the type of the objects to be compared.
   //!
@@ -2288,14 +2250,14 @@ namespace libsemigroups {
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using a
-  //! wreath-product of len-lex comparisons as described in \cite Sims1994aa
+  //! wreath-product of lenlex comparisons as described in \cite Sims1994aa
   //! (Chapter 2.1). Generators are assigned levels. Differences between
   //! generators at higher levels dominate differences at lower levels.
-  //! Differences within the same level are determined by len-lex.
+  //! Differences within the same level are determined by lenlex.
   //!
   //! Suppose that \f$X\f$ is the disjoint union of non-empty sets
   //! \f$X_1, \dots, X_n\f$ referred to as levels, and for \f$1 \leq i \leq
-  //! n\f$, let \f$<_i\f$ be a len-lex ordering of \f$X_i\f$. We define \f$<\f$
+  //! n\f$, let \f$<_i\f$ be a lenlex ordering of \f$X_i\f$. We define \f$<\f$
   //! to be \f$<_1 \wr \dots \wr <_n\f$. Next suppose that \f$U, V\in X ^
   //! {*}\f$. If \f$U\f$ and \f$V\f$ have a common prefix, that is \f$U = AB\f$
   //! and \f$V = AC\f$, then \f$U < V\f$ if and only if \f$B < C\f$. Therefore,
@@ -2314,10 +2276,10 @@ namespace libsemigroups {
   //! \f$A_0 < B_0\f$.
   //!
   //! The implementation of this function is inspired by the source code of
-  //! \cite Holt2018aa, specifically the function `wr_compare`.
+  //! \cite Holt2018aa, specifically the function `wreath_compare`.
   //!
   //! In the case where each generator has a unique level, this function
-  //! produces the same output as \ref rpo_cmp. In the case where each
+  //! produces the same output as \ref rev_rpo_cmp. In the case where each
   //! generator has the same level, this function produces the same output as
   //! \ref lenlex_cmp.
   //!
@@ -3229,20 +3191,20 @@ namespace libsemigroups {
   RevWrCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> RevWrCmp<Word>;
 
   //////////////////////////////////////////////////////////////////////
-  // Weighted len-lex
+  // Weighted lenlex
   //////////////////////////////////////////////////////////////////////
 
-  //! \brief Compare two objects of the same type using the weighted len-lex
+  //! \brief Compare two objects of the same type using the weighted lenlex
   //! ordering without checks.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using the weighted
-  //! len-lex ordering. The weight of a word is computed by adding up the
+  //! lenlex ordering. The weight of a word is computed by adding up the
   //! weights of the letters in the word, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //! Heavier words come later in the ordering than all lighter words. Amongst
-  //! words of equal weight, len-lex ordering is used.
+  //! words of equal weight, lenlex ordering is used.
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
@@ -3253,7 +3215,7 @@ namespace libsemigroups {
   //! \param last2 ending iterator of second object for comparison.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! weighted len-lex less than the range `[first2, last2)`, and \c false
+  //! weighted lenlex less than the range `[first2, last2)`, and \c false
   //! otherwise.
   //!
   //! \exceptions
@@ -3278,7 +3240,7 @@ namespace libsemigroups {
                                              Iterator                   first2,
                                              Iterator                   last2);
 
-  //! \brief Compare two ranges using the weighted len-lex ordering without
+  //! \brief Compare two ranges using the weighted lenlex ordering without
   //! checks and with a specified alphabet.
   //!
   //! This overload is the same as
@@ -3297,7 +3259,7 @@ namespace libsemigroups {
   //! \param last2 ending iterator of second object for comparison.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! weighted len-lex less than the range `[first2, last2)`, and \c false
+  //! weighted lenlex less than the range `[first2, last2)`, and \c false
   //! otherwise.
   //!
   //! \warning
@@ -3326,7 +3288,7 @@ namespace libsemigroups {
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x is weighted len-lex less
+  //! \returns The boolean value \c true if \p x is weighted lenlex less
   //! than \p y, and \c false otherwise.
   //!
   //! \exceptions
@@ -3369,7 +3331,7 @@ namespace libsemigroups {
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x is weighted len-lex less than
+  //! \returns The boolean value \c true if \p x is weighted lenlex less than
   //! \p y, and \c false otherwise.
   //!
   //! \warning
@@ -3384,17 +3346,17 @@ namespace libsemigroups {
         alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects of the same type using the weighted len-lex
+  //! \brief Compare two objects of the same type using the weighted lenlex
   //! ordering and check validity.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using the weighted
-  //! len-lex ordering. The weight of a word is computed by adding up the
+  //! lenlex ordering. The weight of a word is computed by adding up the
   //! weights of the letters in the word, where the `i`th index of the weights
   //! vector corresponds to the weight of the `i`th letter in the alphabet.
   //! Heavier words come later in the ordering than all lighter words. Amongst
-  //! words of equal weight, len-lex ordering is used.
+  //! words of equal weight, lenlex ordering is used.
   //!
   //! After checking that all letters in both ranges are valid indices into
   //! the weights vector, this function performs the same as
@@ -3409,7 +3371,7 @@ namespace libsemigroups {
   //! \param last2 ending iterator of second object for comparison.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! weighted len-lex less than the range `[first2, last2)`, and \c false
+  //! weighted lenlex less than the range `[first2, last2)`, and \c false
   //! otherwise.
   //!
   //! \throws LibsemigroupsException if any letter in either range is not a
@@ -3431,7 +3393,7 @@ namespace libsemigroups {
                                    Iterator                   first2,
                                    Iterator                   last2);
 
-  //! \brief Compare two ranges using the weighted len-lex ordering and with a
+  //! \brief Compare two ranges using the weighted lenlex ordering and with a
   //! specified alphabet.
   //!
   //! This overload is the same as
@@ -3450,7 +3412,7 @@ namespace libsemigroups {
   //! \param last2 ending iterator of second object for comparison.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
-  //! weighted len-lex less than the range `[first2, last2)`, and \c false
+  //! weighted lenlex less than the range `[first2, last2)`, and \c false
   //! otherwise.
   //!
   //! \throws LibsemigroupsException if any letter in either range has an index
@@ -3482,7 +3444,7 @@ namespace libsemigroups {
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x is weighted len-lex less
+  //! \returns The boolean value \c true if \p x is weighted lenlex less
   //! than \p y, and \c false otherwise.
   //!
   //! \throws LibsemigroupsException if any letter in \p x or \p y is not a
@@ -3518,7 +3480,7 @@ namespace libsemigroups {
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //!
-  //! \returns The boolean value \c true if \p x is weighted len-lex less than
+  //! \returns The boolean value \c true if \p x is weighted lenlex less than
   //! \p y, and \c false otherwise.
   //!
   //! \throws LibsemigroupsException if any letter in \p x or \p y has an
@@ -3536,7 +3498,7 @@ namespace libsemigroups {
   template <typename Word = Default, bool check = true>
   class WtLenLexCmp;
 
-  //! \brief Stateful weighted len-lex comparison functor.
+  //! \brief Stateful weighted lenlex comparison functor.
   //!
   //! This class stores an alphabet and a weights vector and compares words by
   //! applying \ref wt_lenlex_cmp with that alphabet and weights vector. The
@@ -3635,7 +3597,7 @@ namespace libsemigroups {
     //! \param x const reference to the first word for comparison.
     //! \param y const reference to the second word for comparison.
     //!
-    //! \returns The boolean value \c true if \p x is weighted len-lex less
+    //! \returns The boolean value \c true if \p x is weighted lenlex less
     //! than \p y, and \c false otherwise.
     //!
     //! \throws LibsemigroupsException if \c check is \c true and a letter in
@@ -3652,7 +3614,7 @@ namespace libsemigroups {
     //! \param last2 ending iterator of second object for comparison.
     //!
     //! \returns The boolean value \c true if the first range is weighted
-    //! len-lex less than the second range, and \c false otherwise.
+    //! lenlex less than the second range, and \c false otherwise.
     //!
     //! \throws LibsemigroupsException if \c check is \c true and a letter in
     //! either range does not belong to the stored alphabet.
@@ -3693,7 +3655,7 @@ namespace libsemigroups {
     }
   };  // class WtLenLexCmp
 
-  //! \brief Stateful weighted len-lex comparison functor.
+  //! \brief Stateful weighted lenlex comparison functor.
   //!
   //! Defined in `order.hpp`.
   //!
@@ -3813,7 +3775,7 @@ namespace libsemigroups {
     //! \param x const reference to the first object for comparison.
     //! \param y const reference to the second object for comparison.
     //!
-    //! \returns The boolean value \c true if \p x is weighted len-lex less
+    //! \returns The boolean value \c true if \p x is weighted lenlex less
     //! than \p y, and \c false otherwise.
     //!
     //! \throws LibsemigroupsException if \c check is \c true and a letter is
@@ -3843,7 +3805,7 @@ namespace libsemigroups {
     //! \param last2 ending iterator of second object for comparison.
     //!
     //! \returns The boolean value \c true if the first range is weighted
-    //! len-lex less than the second range, and \c false otherwise.
+    //! lenlex less than the second range, and \c false otherwise.
     //!
     //! \throws LibsemigroupsException if \c check is \c true and a letter is
     //! not a valid index into the weights vector.
@@ -3875,7 +3837,7 @@ namespace libsemigroups {
 
   //! \relates WtLenLexCmp
   //!
-  //! \brief Return a human readable representation of a weighted len-lex
+  //! \brief Return a human readable representation of a weighted lenlex
   //! comparison functor with an alphabet.
   //!
   //! \tparam Word the word type associated with the alphabet.
@@ -3892,7 +3854,7 @@ namespace libsemigroups {
 
   //! \relates WtLenLexCmp
   //!
-  //! \brief Return a human readable representation of a weighted len-lex
+  //! \brief Return a human readable representation of a weighted lenlex
   //! comparison functor on index words.
   //!
   //! \tparam check whether to check arguments.
@@ -3924,10 +3886,10 @@ namespace libsemigroups {
   WtLenLexCmp(Alphabet<Word>&&, std::vector<size_t>&&) -> WtLenLexCmp<Word>;
 
   //////////////////////////////////////////////////////////////////////
-  // Reversed weighted len-lex
+  // Reversed weighted lenlex
   //////////////////////////////////////////////////////////////////////
 
-  //! \brief Compare two ranges using reversed weighted len-lex without
+  //! \brief Compare two ranges using reversed weighted lenlex without
   //! checks.
   //!
   //! This function applies \ref wt_lenlex_cmp_no_checks to the ranges read
@@ -3946,7 +3908,7 @@ namespace libsemigroups {
                                    std::make_reverse_iterator(first2));
   }
 
-  //! \brief Compare two ranges using reversed weighted len-lex without
+  //! \brief Compare two ranges using reversed weighted lenlex without
   //! checks and with a specified alphabet.
   template <typename Word, typename Iterator>
   [[nodiscard]] bool
@@ -3964,7 +3926,7 @@ namespace libsemigroups {
                                    std::make_reverse_iterator(first2));
   }
 
-  //! \brief Compare two objects using reversed weighted len-lex without
+  //! \brief Compare two objects using reversed weighted lenlex without
   //! checks.
   template <typename Word>
   [[nodiscard]] bool
@@ -3975,7 +3937,7 @@ namespace libsemigroups {
         weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects using reversed weighted len-lex without
+  //! \brief Compare two objects using reversed weighted lenlex without
   //! checks and with a specified alphabet.
   template <typename Word>
   [[nodiscard]] bool
@@ -3987,7 +3949,7 @@ namespace libsemigroups {
         alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two ranges using reversed weighted len-lex and check
+  //! \brief Compare two ranges using reversed weighted lenlex and check
   //! validity.
   template <typename Iterator>
   [[nodiscard]] bool rev_wt_lenlex_cmp(std::vector<size_t> const& weights,
@@ -4002,7 +3964,7 @@ namespace libsemigroups {
                          std::make_reverse_iterator(first2));
   }
 
-  //! \brief Compare two ranges using reversed weighted len-lex and a
+  //! \brief Compare two ranges using reversed weighted lenlex and a
   //! specified alphabet.
   template <typename Word, typename Iterator>
   [[nodiscard]] bool rev_wt_lenlex_cmp(Alphabet<Word> const&      alphabet,
@@ -4019,7 +3981,7 @@ namespace libsemigroups {
                          std::make_reverse_iterator(first2));
   }
 
-  //! \brief Compare two objects using reversed weighted len-lex and check
+  //! \brief Compare two objects using reversed weighted lenlex and check
   //! validity.
   template <typename Word>
   [[nodiscard]] bool rev_wt_lenlex_cmp(std::vector<size_t> const& weights,
@@ -4029,7 +3991,7 @@ namespace libsemigroups {
         weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  //! \brief Compare two objects using reversed weighted len-lex and a
+  //! \brief Compare two objects using reversed weighted lenlex and a
   //! specified alphabet.
   template <typename Word>
   [[nodiscard]] bool rev_wt_lenlex_cmp(Alphabet<Word> const&      alphabet,
@@ -4044,7 +4006,7 @@ namespace libsemigroups {
   template <typename Word = Default, bool check = true>
   class RevWtLenLexCmp;
 
-  //! \brief Stateful reversed weighted len-lex comparison functor.
+  //! \brief Stateful reversed weighted lenlex comparison functor.
   template <typename Word, bool check>
   class RevWtLenLexCmp {
     WtLenLexCmp<Word, check> _wt_lenlex;
@@ -4091,12 +4053,12 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \brief Compare two words using reversed weighted len-lex.
+    //! \brief Compare two words using reversed weighted lenlex.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
 
-    //! \brief Compare two iterator ranges using reversed weighted len-lex.
+    //! \brief Compare two iterator ranges using reversed weighted lenlex.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -4119,7 +4081,7 @@ namespace libsemigroups {
     }
   };  // class RevWtLenLexCmp
 
-  //! \brief Reversed weighted len-lex comparison functor using index words.
+  //! \brief Reversed weighted lenlex comparison functor using index words.
   template <bool check>
   class RevWtLenLexCmp<Default, check> {
     WtLenLexCmp<Default, check> _wt_lenlex;
@@ -4169,13 +4131,13 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \brief Compare two words using reversed weighted len-lex.
+    //! \brief Compare two words using reversed weighted lenlex.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
       return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
     }
 
-    //! \brief Compare two iterator ranges using reversed weighted len-lex.
+    //! \brief Compare two iterator ranges using reversed weighted lenlex.
     template <typename Iterator>
     [[nodiscard]] bool operator()(Iterator first1,
                                   Iterator last1,
@@ -4196,7 +4158,7 @@ namespace libsemigroups {
   //! \relates RevWtLenLexCmp
   //!
   //! \brief Return a human readable representation of a reversed weighted
-  //! len-lex comparison functor with an alphabet.
+  //! lenlex comparison functor with an alphabet.
   //!
   //! \tparam Word the word type associated with the alphabet.
   //! \tparam check whether to check that letters belong to the alphabet.
@@ -4213,7 +4175,7 @@ namespace libsemigroups {
   //! \relates RevWtLenLexCmp
   //!
   //! \brief Return a human readable representation of a reversed weighted
-  //! len-lex comparison functor on index words.
+  //! lenlex comparison functor on index words.
   //!
   //! \tparam check whether to check arguments.
   //! \param cmp the comparison functor.
@@ -5900,7 +5862,7 @@ namespace libsemigroups {
     template <typename Thing>
     struct is_length_non_increasing : std::false_type {};
 
-    //! \brief len-lex order is length non-increasing.
+    //! \brief lenlex order is length non-increasing.
     //!
     //! Specialization of \ref is_length_non_increasing for
     //! \ref LenLexCmp.
@@ -5908,7 +5870,7 @@ namespace libsemigroups {
     struct is_length_non_increasing<LenLexCmp<Default, check>>
         : std::true_type {};
 
-    //! \brief Reversed len-lex order is length non-increasing.
+    //! \brief Reversed lenlex order is length non-increasing.
     template <bool check>
     struct is_length_non_increasing<RevLenLexCmp<Default, check>>
         : std::true_type {};
@@ -5944,27 +5906,27 @@ namespace libsemigroups {
     template <typename Thing>
     struct is_well_founded : std::false_type {};
 
-    //! \brief len-lex order is well-founded.
+    //! \brief lenlex order is well-founded.
     //!
     //! Specialization of \ref is_well_founded for \ref LenLexCmp.
     template <bool check>
     struct is_well_founded<LenLexCmp<Default, check>> : std::true_type {};
 
-    //! \brief Reversed len-lex order is well-founded.
+    //! \brief Reversed lenlex order is well-founded.
     template <bool check>
     struct is_well_founded<RevLenLexCmp<Default, check>> : std::true_type {};
 
     //! \brief Recursive path order is well-founded.
     //!
-    //! Specialization of \ref is_well_founded for \ref RevRPOCmp.
-    template <bool check>
-    struct is_well_founded<RevRPOCmp<Default, check>> : std::true_type {};
-
-    //! \brief Reverse recursive path order is well-founded.
-    //!
     //! Specialization of \ref is_well_founded for \ref RPOCmp.
     template <bool check>
     struct is_well_founded<RPOCmp<Default, check>> : std::true_type {};
+
+    //! \brief Reverse recursive path order is well-founded.
+    //!
+    //! Specialization of \ref is_well_founded for \ref RevRPOCmp.
+    template <bool check>
+    struct is_well_founded<RevRPOCmp<Default, check>> : std::true_type {};
 
     //! \brief Wreath-product order is well-founded.
     //!
@@ -5982,7 +5944,7 @@ namespace libsemigroups {
     template <bool check>
     struct is_well_founded<WtLenLexCmp<Default, check>> : std::true_type {};
 
-    //! \brief Reversed weighted len-lex order is well-founded.
+    //! \brief Reversed weighted lenlex order is well-founded.
     template <bool check>
     struct is_well_founded<RevWtLenLexCmp<Default, check>> : std::true_type {};
 

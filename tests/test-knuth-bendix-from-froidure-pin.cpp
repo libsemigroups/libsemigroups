@@ -65,7 +65,10 @@ namespace libsemigroups {
   using RPOTrie = detail::RewritingSystemTrie<RPOCmp>;
   using RPOSet  = detail::RewritingSystemSet<RPOCmp>;
 
-#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RevRPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+
+#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RevRPOTrie, RevRPOSet
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "119",
@@ -584,8 +587,8 @@ namespace libsemigroups {
                                    "995",
                                    "finite semigroup congruence",
                                    "[quick][congruence][knuth-bendix]",
-                                   RPOTrie,
-                                   RPOSet) {
+                                   RevRPOTrie,
+                                   RevRPOSet) {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
     FroidurePin<Transf> S;

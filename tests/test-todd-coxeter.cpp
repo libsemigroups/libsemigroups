@@ -425,7 +425,7 @@ namespace libsemigroups {
     //   }
     // }
 
-    tc.standardize(Order::rpo);
+    tc.standardize(Order::rev_rpo);
     REQUIRE(tc.current_word_graph().is_standardized());
 
     REQUIRE(word_of(tc, 0) == 0_w);
@@ -433,7 +433,7 @@ namespace libsemigroups {
     REQUIRE(word_of(tc, 2) == 1_w);
     REQUIRE(word_of(tc, 3) == 10_w);
     REQUIRE(word_of(tc, 4) == 100_w);
-    REQUIRE(is_sorted(normal_forms(tc), RPOCmp{}));
+    REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp{}));
 
     check_normal_forms(tc, tc.number_of_classes());
   }
@@ -474,8 +474,8 @@ namespace libsemigroups {
 
     REQUIRE(tc.finished());
 
-    tc.standardize(Order::rpo);
-    REQUIRE(is_sorted(normal_forms(tc), RPOCmp{}));
+    tc.standardize(Order::rev_rpo);
+    REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp{}));
     REQUIRE(
         (normal_forms(tc) | take(10) | to_vector())
         == std::vector(

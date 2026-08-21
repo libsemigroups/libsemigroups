@@ -60,7 +60,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     tc.shrink_to_fit();
     REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(Order::rpo);
+    tc.standardize(Order::rev_rpo);
     auto w = (todd_coxeter::normal_forms(tc) | rx::to_vector());
     REQUIRE(w.size() == 21);
     REQUIRE(w
@@ -69,7 +69,7 @@ namespace libsemigroups {
                             001_w,  11_w,    110_w,   1100_w, 11000_w, 011_w,
                             0110_w, 01100_w, 011000_w}));
     REQUIRE(std::unique(w.begin(), w.end()) == w.end());
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), RPOCmp{}));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), RevRPOCmp{}));
     REQUIRE((todd_coxeter::normal_forms(tc) | rx::all_of([&tc](auto const& u) {
                return todd_coxeter::word_of(tc, todd_coxeter::index_of(tc, u))
                       == u;
@@ -108,7 +108,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     tc.shrink_to_fit();
     REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(Order::rpo);
+    tc.standardize(Order::rev_rpo);
     auto w = (todd_coxeter::normal_forms(tc) | rx::to_vector());
     REQUIRE(w.size() == 21);
     REQUIRE(w
@@ -117,7 +117,7 @@ namespace libsemigroups {
                  "baaa", "ab",   "aba",   "abaa", "abaaa", "aab",   "bb",
                  "bba",  "bbaa", "bbaaa", "abb",  "abba",  "abbaa", "abbaaa"}));
     REQUIRE(std::unique(w.begin(), w.end()) == w.end());
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), RPOCmp{}));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), RevRPOCmp{}));
     REQUIRE((todd_coxeter::normal_forms(tc) | rx::all_of([&tc](auto const& u) {
                return todd_coxeter::word_of(tc, todd_coxeter::index_of(tc, u))
                       == u;

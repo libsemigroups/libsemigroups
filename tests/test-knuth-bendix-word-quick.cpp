@@ -65,6 +65,7 @@ namespace libsemigroups {
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
   using RPOTrie    = detail::RewritingSystemTrie<RPOCmp>;
   using RPOSet     = detail::RewritingSystemSet<RPOCmp>;
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
 
 // TODO update to use RPO also
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
@@ -98,7 +99,7 @@ namespace libsemigroups {
                                    "non-trivial classes x 4",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES,
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     using order = typename TestType::reduction_order;
 
     auto                    rg = ReportGuard(false);

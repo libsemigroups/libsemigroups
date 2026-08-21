@@ -23,6 +23,11 @@
 // Narendran and Rusinowitch's article "Inferring RPO symbol orderings"
 // (https://doi.org/10.1016/j.jlamp.2026.101126).
 
+// TODO(1): Turn this into an iterator over all possible alphabets
+// TODO(1): Add a function that infers the an alphabet order for rev RPO by
+// looking at longest prefixes without a letter, rather than suffixes.
+// TODO(1): Add a function that infers an alphabet order for wreath order.
+
 #ifndef LIBSEMIGROUPS_DU_NARENDRAN_RUSINOWITCH_HPP_
 #define LIBSEMIGROUPS_DU_NARENDRAN_RUSINOWITCH_HPP_
 
@@ -75,19 +80,19 @@ namespace libsemigroups {
 
   //! \defgroup du_narendran_rusinowitch_group Du-Narendran-Rusinowitch
   //!
-  //! This file contains documentation for a function that finds on ordering on
+  //! This file contains documentation for a function that finds an ordering on
   //! a presentation's alphabet such that the rules are oriented with respect to
-  //! the reverse recursive path ordering. The implementation is based on the
-  //! algorithm provided in Section 4 of \cite Du2026aa.
+  //! the recursive path ordering. The implementation is based on the algorithm
+  //! provided in Section 4 of \cite Du2026aa.
 
   //! \ingroup du_narendran_rusinowitch_group
   //!
   //! \brief Return an ordered alphabet such that the rules are oriented with
-  //! respect to reverse recursive path order.
+  //! respect to recursive path order.
   //!
   //! This function returns the alphabet of \p p ordered so that the rules of
   //! \p p satisfy \f$x_i \to y_i \f$ and \f$x_i > y_i\f$ with respect to
-  //! reverse recursive path order and the returned alphabet order. The returned
+  //! recursive path order and the returned alphabet order. The returned
   //! alphabet is empty if this fails, or if the alphabet was empty to begin
   //! with.
   //!
@@ -102,7 +107,7 @@ namespace libsemigroups {
   //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
   //!
   //! \sa
-  //! \ref rev_rpo_cmp
+  //! \ref rpo_cmp
   template <typename Word>
   Word du_narendran_rusinowitch(Presentation<Word> const& p);
 
