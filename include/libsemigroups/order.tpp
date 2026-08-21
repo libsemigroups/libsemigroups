@@ -163,7 +163,7 @@ namespace libsemigroups {
   // smaller than the second sequence (word 2) with respect to a wreath-product
   // order. Generators are assigned levels. Differences between generators at
   // higher levels dominate differences at lower levels. Differences within the
-  // same level are determined by len-lex.
+  // same level are determined by lenlex.
   //
   // The words are read from right to left, and the dominant level is stored in
   // the variable <relevant_level>. This level is the highest level that is
