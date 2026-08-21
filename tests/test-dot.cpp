@@ -161,4 +161,24 @@ namespace libsemigroups {
     REQUIRE(d.is_node("cat:dog"));
     REQUIRE(d.is_node("cat"));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Dot", "009", "rm_node", "[dot][quick]") {
+    auto rg = ReportGuard(false);
+    Dot  d;
+    d.add_node("cat");
+    d.add_node("dog");
+    d.add_node(42);
+
+    REQUIRE_NOTHROW(d.rm_node("cat"));
+    REQUIRE(!d.is_node("cat"));
+    REQUIRE(d.is_node("dog"));
+    REQUIRE((d.nodes() | count()) == 2);
+    REQUIRE(d.to_string() == "digraph {\n\n  42\n  dog\n}");
+
+    REQUIRE_NOTHROW(d.rm_node(42));
+    REQUIRE(!d.is_node(42));
+    REQUIRE((d.nodes() | count()) == 1);
+    REQUIRE_EXCEPTION_MSG(d.rm_node("cat"),
+                          "there is no node named cat to remove!");
+  }
 }  // namespace libsemigroups
