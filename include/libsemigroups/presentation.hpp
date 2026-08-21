@@ -26,14 +26,15 @@
 #define LIBSEMIGROUPS_PRESENTATION_HPP_
 
 #include <algorithm>         // for reverse, sort
+#include <cctype>            // for isprint
 #include <cmath>             // for pow
 #include <cstring>           // for size_t, strlen
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
-#include <limits>            // for numeric_limits
 #include <map>               // for map
 #include <numeric>           // for accumulate
 #include <string>            // for basic_string, operator==
+#include <string_view>       // for string_view
 #include <tuple>             // for tie, tuple
 #include <type_traits>       // for enable_if_t
 #include <unordered_map>     // for operator==, operator!=
@@ -41,11 +42,12 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "adapters.hpp"  // for Hash, EqualTo
-#include "alphabet-helpers.hpp"
-#include "alphabet.hpp"              // for Alphabet
+#include "adapters.hpp"              // for Hash, EqualTo
+#include "alphabet-class.hpp"        // for Alphabet
+#include "alphabet-helpers.hpp"      // for add_letter
 #include "constants.hpp"             // for Max, UNDEFINED, operator==
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
 #include "is_specialization_of.hpp"  // for is_specialization_of
 #include "order.hpp"                 // for LenLexCmp
 #include "ranges.hpp"      // for seq, operator|, rx, take, chain, is_sorted
@@ -204,6 +206,11 @@ namespace libsemigroups {
     [[nodiscard]] Alphabet<word_type> const& alphabet_v4() const noexcept {
       return _alphabet;
     }
+
+    Presentation const& alphabet_v4(Alphabet<Word> const& new_alphabet) {
+      // TODO(v4) we can do better than this!
+      return alphabet(new_alphabet.letters());
+    }
 #endif
 
     //! \brief Set the alphabet by size.
@@ -275,6 +282,7 @@ namespace libsemigroups {
     //! std::string_view to be used for the parameter \p lphbt.
     //!
     //! \warning This function is only enabled if \ref word_type is std::string.
+    // TODO(later) deprecate
     template <typename Return = Presentation&>
     auto alphabet(std::string_view lphbt)
         -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return&> {
@@ -287,6 +295,7 @@ namespace libsemigroups {
     //! string literals to be used for the parameter \p lphbt.
     //!
     //! \warning This function is only enabled if \ref word_type is std::string.
+    // TODO(later) deprecate
     template <typename Return = Presentation&>
     auto alphabet(char const* lphbt)
         -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return> {
@@ -1801,6 +1810,8 @@ namespace libsemigroups {
     //! presentation.
     template <typename Word>
     void normalize_alphabet(Presentation<Word>& p);
+    // TODO(later) any function that touches the alphabet requires a version of
+    // InversePresentation, which also touches the inverses
 
     //! \brief Change or re-order the alphabet.
     //!
@@ -3589,7 +3600,64 @@ namespace libsemigroups {
       Presentation<Word>::throw_if_bad_alphabet_or_rules();
       presentation::throw_if_bad_inverses(*this, inverses());
     }
-  };
+  };  // class InversePresentation
+
+  namespace presentation {
+    //! \brief Return an inverse semigroup generating set.
+    //!
+    //! This function returns an inverse semigroup generating set of the
+    //! semigroup defined by an inverse presentation. More specifically, for
+    //! every letter \f$x\f$ in the alphabet of \p p the returned \c Word
+    //! contains precisely one of \f$x\f$ and \f$x^{-1}\f$.
+    //!
+    //! \param p the InversePresentation
+    //! \returns the inverse semigroup generating set.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments.
+    //!
+    //! \sa inverse_alphabet
+    template <typename Word>
+    Word inverse_alphabet_no_checks(InversePresentation<Word> const& p);
+
+    //! \brief Return an inverse semigroup generating set.
+    //!
+    //! This function returns an inverse semigroup generating set of the
+    //! semigroup defined by an inverse presentation. More specifically, for
+    //! every letter \f$x\f$ in the alphabet of \p p the returned \c Word
+    //! contains precisely one of \f$x\f$ and \f$x^{-1}\f$.
+    //!
+    //! \param p the InversePresentation
+    //! \returns the inverse semigroup generating set.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_rules_or_inverses()` throws.
+    //!
+    //! \sa inverse_alphabet
+    template <typename Word>
+    Word inverse_alphabet(InversePresentation<Word> const& p) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+      return inverse_alphabet_no_checks(p);
+    }
+
+    //! \brief Normalize the alphabet to \f$\{0, \ldots, n - 1\}\f$.
+    //!
+    //! Modify the presentation in-place so that the alphabet is \f$\{0, \ldots,
+    //! n - 1\}\f$ (or equivalent) and rewrites the inverses and the rules to
+    //! use this alphabet.
+    //!
+    //! If the alphabet is already normalized, then no changes are made to the
+    //! presentation.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses throws
+    //! on the initial presentation.
+    template <typename Word>
+    void normalize_alphabet(InversePresentation<Word>& p);
+  }  // namespace presentation
 
   //! \ingroup presentations_group
   //!

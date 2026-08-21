@@ -134,37 +134,186 @@ namespace libsemigroups {
       return is_left_factor_no_checks(s, w);
     }
 
+  }  // namespace stephen
+
+  namespace detail {
     template <typename PresentationType>
-    Dot dot(Stephen<PresentationType>& s) {
+    Dot stephen_dot(Stephen<PresentationType>&                  s,
+                    typename PresentationType::word_type const& alphabet,
+                    size_t                                      radius,
+                    bool use_inverse_literals) {
+      using Word = typename PresentationType::word_type;
+
+      if constexpr (is_specialization_of_v<PresentationType, Presentation>) {
+        LIBSEMIGROUPS_ASSERT(!use_inverse_literals);
+      }
+
+      static std::string_view const empty  = "\u03B5";
+      static std::string_view const inv    = "\u207B\u00B9";
+      std::string                   font   = "STIX Two Text";
+      static std::string_view const italic = " Italic";
+      if (std::is_same_v<Word, std::string>) {
+        font += italic;
+      }
+
+      auto const& p    = s.presentation();
+      auto const& wg   = s.word_graph_no_run();
+      auto const  root = s.initial_state();
+
+      throw_if_duplicates(alphabet.begin(), alphabet.end(), "alphabet");
+      // Check that alphabet contains only letters in p.alphabet()
+      auto invalid_it = std::find_if_not(
+          alphabet.cbegin(), alphabet.cend(), [&p](auto letter) {
+            return p.alphabet_v4().contains(letter);
+          });
+      if (invalid_it != alphabet.cend()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the alphabet {} contains invalid letters, expected values in {} "
+            "but found {} in position {}",
+            to_printable(alphabet),
+            to_printable(p.alphabet()),
+            *invalid_it,
+            std::distance(alphabet.cbegin(), invalid_it));
+      }
+
+      {
+        // Check that we can render generators as single characters properly.
+        // It's okay if there are letters in p.alphabet() that can't be
+        // rendered, as long as all of the letters in "alphabet" are
+        // renderable.
+        auto it = std::find_if_not(
+            alphabet.begin(), alphabet.end(), [](auto letter) {
+              if constexpr (std::is_same_v<Word, std::string>) {
+                return std::isprint(letter) || letter < 10;
+              } else {
+                return letter < 10;
+              }
+            });
+        // Too large generators like "10" will be rendered as "10", making
+        // words like "110" impossible to parse.
+        if (it != alphabet.end()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the alphabet {} contains letters that may render ambiguously, "
+              "expected a printable char or a value <= 9 but found {} in "
+              "position {}",
+              to_printable(alphabet),
+              to_printable(*it),
+              std::distance(alphabet.begin(), it));
+        }
+      }
+
+      if (Dot::colors.size() < alphabet.size()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the alphabet contains too many letters, expected at most {} (= "
+            "Dot::colors.size()), found {}",
+            Dot::colors.size(),
+            alphabet.size());
+      }
+
       Dot result;
-      result.kind(Dot::Kind::digraph);
       result.add_node("initial").add_attr("style", "invis");
       result.add_node("accept").add_attr("style", "invis");
-      for (auto n : s.word_graph_no_run().nodes()) {
-        result.add_node(n).add_attr("shape", "box");
+
+      auto to_print = [](auto letter) {
+        if (!std::isprint(letter)) {
+          return static_cast<char>('0' + letter);
+        }
+        return static_cast<char>(letter);
+      };
+
+      // Strictly speaking it isn't necessary to get both "nodes" and "f" below,
+      // but we do because it's convenient and this is for drawing a picture and
+      // so shouldn't be done when the number of nodes is large.
+      auto nodes = v4::word_graph::nodes_reachable_from(wg, root, radius);
+      auto f     = v4::word_graph::spanning_tree_no_checks(wg, root, radius);
+      for (auto n : nodes) {
+        std::string label;
+        f.path_from_root_no_checks(std::back_inserter(label), n);
+        auto& node = result.add_node(n).add_attr("shape", "box");
+        if (n == root) {
+          node.add_attr("label", empty);
+          node.add_attr("fontname", "STIX Two Text Italic");
+        } else {
+          for (auto it = label.begin(); it != label.end(); ++it) {
+            // At this point label consists of indices, not letters!
+            auto const letter = p.letter_no_checks(*it);
+            if constexpr (is_specialization_of_v<PresentationType,
+                                                 InversePresentation>) {
+              if (use_inverse_literals
+                  && std::find(alphabet.begin(), alphabet.end(), letter)
+                         == alphabet.end()) {
+                size_t pos = std::distance(label.begin(), it);
+                *it        = to_print(p.inverse(letter));
+                // Stupid cygwin is not standard compliant, and label.insert has
+                // return type void, so we can't just use it = label.insert(...)
+                // below like normal people. Hence the shenanigans with "pos"
+                label.insert(it + 1, inv.begin(), inv.end());
+                it = label.begin() + pos + inv.size();
+                continue;
+              }
+            }
+            *it = to_print(letter);
+          }
+          node.add_attr("label", std::move(label));
+          node.add_attr("fontname", font);
+        }
       }
+
       result.add_edge("initial", s.initial_state());
-      result.add_edge(s.accept_state(), "accept");
-
-      size_t max_letters = s.presentation().alphabet().size();
-      if constexpr (is_specialization_of_v<PresentationType,
-                                           InversePresentation>) {
-        max_letters /= 2;
+      if (s.finished()) {
+        // We check this because accept_state() calls run() and we don't want
+        // to modify "s".
+        result.add_edge(s.accept_state(), "accept");
       }
 
-      for (auto n : s.word_graph_no_run().nodes()) {
-        for (size_t a = 0; a < max_letters; ++a) {
-          auto m = s.word_graph_no_run().target(n, a);
-          if (m != UNDEFINED) {
-            result.add_edge(n, m)
-                .add_attr("color", result.colors[a])
-                .add_attr("label", a)
-                .add_attr("minlen", 2);
+      for (auto src : s.word_graph_no_run().nodes()) {
+        for (auto letter : alphabet) {
+          auto const index = p.index_no_checks(letter);
+          auto const tgt   = wg.target(src, index);
+          if (result.is_node(src) && tgt != UNDEFINED && result.is_node(tgt)) {
+            result.add_edge(src, tgt)
+                .add_attr("color", result.colors[index])
+                // The next line uses std::string since if we just pass
+                // to_print(letter) it's interpreted as an integer.
+                .add_attr("label", std::string(1, to_print(letter)))
+                .add_attr("fontname", font);
           }
         }
       }
       return result;
     }
+  }  // namespace detail
+
+  namespace stephen {
+    template <typename Word>
+    Dot dot(Stephen<Presentation<Word>>& s, size_t radius) {
+      return detail::stephen_dot(s, s.presentation().alphabet(), radius, false);
+    }
+
+    template <typename Word>
+    Dot dot(Stephen<Presentation<Word>>& s,
+            Word const&                  alphabet,
+            size_t                       radius) {
+      return detail::stephen_dot(s, alphabet, radius, false);
+    }
+
+    template <typename Word>
+    Dot dot(Stephen<InversePresentation<Word>>& s,
+            size_t                              radius,
+            bool                                use_inverse_literals) {
+      auto alphabet
+          = presentation::inverse_alphabet_no_checks(s.presentation());
+      return detail::stephen_dot(s, alphabet, radius, use_inverse_literals);
+    }
+
+    template <typename Word>
+    Dot dot(Stephen<InversePresentation<Word>>& s,
+            Word const&                         alphabet,
+            size_t                              radius,
+            bool                                use_inverse_literals) {
+      return detail::stephen_dot(s, alphabet, radius, use_inverse_literals);
+    }
+
   }  // namespace stephen
 
   template <typename PresentationType>

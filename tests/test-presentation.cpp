@@ -19,7 +19,6 @@
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <algorithm>         // for all_of, equal, fill, sort
-#include <cctype>            // for isprint
 #include <chrono>            // for milliseconds
 #include <cmath>             // for pow
 #include <cstddef>           // for size_t
@@ -36,13 +35,12 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
-#include "libsemigroups/order.hpp"            // for LenLexCmp, shor...
+#include "libsemigroups/bipart.hpp"                // for Bipartition
+#include "libsemigroups/constants.hpp"             // for operator==, operator!=
+#include "libsemigroups/exception.hpp"             // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"          // for FroidurePin
+#include "libsemigroups/knuth-bendix-helpers.hpp"  // for redundant_rule
+#include "libsemigroups/order.hpp"                 // for LenLexCmp, shor...
 #include "libsemigroups/presentation.hpp"     // for Presentation, human_r...
 #include "libsemigroups/ranges.hpp"           // for chain, lenlex_cmp
 #include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
@@ -50,7 +48,6 @@
 #include "libsemigroups/word-range.hpp"       // for operator+=, operator""_w
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector, operat...
-#include "libsemigroups/detail/int-range.hpp"   // for IntRange
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
 #include "libsemigroups/detail/string.hpp"      // for operator<<
 
@@ -61,8 +58,6 @@ namespace libsemigroups {
   using literals::operator""_w;
   using StaticVector = detail::StaticVector1<uint16_t, 64>;
   using std::string_literals::operator""s;
-
-  struct LibsemigroupsException;  // forward decl
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "000",
@@ -4071,5 +4066,82 @@ wo: 4g; # workspace size, adjust as necessary
 Rel: aa, bbb, abab;
 Mess: 100000; # message frequency, adjust as necessary
 End;)xxx");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "102",
+                          "inverse_alphabet_no_checks (word_type)",
+                          "[quick][presentation]") {
+    auto                           rg = ReportGuard(false);
+    InversePresentation<word_type> p;
+
+    p.alphabet(0123_w);
+    p.inverses(2301_w);
+    REQUIRE(presentation::inverse_alphabet_no_checks(p) == "01"_w);
+
+    p.alphabet(0213_w);
+    p.inverses(2031_w);
+    REQUIRE(presentation::inverse_alphabet_no_checks(p) == "01"_w);
+
+    p.alphabet(0213_w);
+    p.inverses(2013_w);
+    REQUIRE(presentation::inverse_alphabet_no_checks(p) == "013"_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "103",
+                          "inverse_alphabet_no_checks (std::string)",
+                          "[quick][presentation]") {
+    auto                             rg = ReportGuard(false);
+    InversePresentation<std::string> p;
+    p.alphabet("abAB");
+    p.inverses("ABab");
+
+    REQUIRE(presentation::inverse_alphabet_no_checks(p) == "ab");
+
+    p.alphabet("aAbB");
+    p.inverses("AaBb");
+    REQUIRE(presentation::inverse_alphabet_no_checks(p) == "ab");
+
+    p.alphabet("aAbB");
+    p.inverses("AabB");
+    REQUIRE(presentation::inverse_alphabet_no_checks(p) == "abB");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "104",
+                          "normalize_alphabet (InversePresentation<word_type>)",
+                          "[quick][presentation]") {
+    auto                           rg = ReportGuard(false);
+    InversePresentation<word_type> p;
+    p.alphabet({5, 7, 3, 9});
+    p.inverses({7, 5, 9, 3});
+    presentation::add_rule(p, {5, 3, 7}, {9, 5});
+
+    presentation::normalize_alphabet(p);
+
+    REQUIRE(p.alphabet() == word_type({0, 1, 2, 3}));
+    REQUIRE(p.rules == std::vector<word_type>({{0, 2, 1}, {3, 0}}));
+    REQUIRE(p.inverses() == word_type({1, 0, 3, 2}));
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "Presentation",
+      "105",
+      "normalize_alphabet (InversePresentation<std::string>)",
+      "[quick][presentation]") {
+    auto                             rg = ReportGuard(false);
+    InversePresentation<std::string> p;
+    p.alphabet("xXyY");
+    p.inverses("XxYy");
+    presentation::add_rule(p, "xyX", "Yx");
+
+    presentation::normalize_alphabet(p);
+
+    REQUIRE(p.alphabet() == "abcd");
+    REQUIRE(p.rules == std::vector<std::string>({"acb", "da"}));
+    REQUIRE(p.inverses() == "badc");
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
   }
 }  // namespace libsemigroups

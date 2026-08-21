@@ -863,34 +863,31 @@ namespace libsemigroups {
       template <typename Node1, typename Node2>
       std::unordered_set<Node1>
       nodes_reachable_from_no_checks(WordGraphView<Node1> const& wg,
-                                     Node2                       source) {
+                                     Node2                       source,
+                                     size_t                      max_depth) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
-        std::unordered_set<Node1> seen;
-        std::stack<Node1>         stack;
-        stack.push(source);
+        std::unordered_set<Node1>            seen;
+        std::stack<std::pair<Node1, size_t>> stack;
+        stack.emplace(source, 0);
 
         size_t const N = wg.number_of_nodes_no_checks();
 
         while (!stack.empty()) {
-          Node1 n = stack.top();
+          auto [s, depth] = stack.top();
           stack.pop();
-          if (seen.insert(n).second) {
-            for (auto t : wg.targets_no_checks(n)) {
+          if (seen.insert(s).second && depth < max_depth) {
+            for (auto t : wg.targets_no_checks(s)) {
               if (t < N) {
-                stack.push(t);
+                // If we did see "t" before it "depth + 1" will never be
+                // accessed again, so it doesn't matter that it is wrong. O/w if
+                // "t" has not been seen before the "depth + 1" is its correct
+                // depth.
+                stack.emplace(t, depth + 1);
               }
             }
           }
         }
         return seen;
-      }
-
-      template <typename Node1, typename Node2>
-      std::unordered_set<Node1>
-      nodes_reachable_from(WordGraphView<Node1> const& wg, Node2 source) {
-        static_assert(sizeof(Node2) <= sizeof(Node1));
-        wg.throw_if_node_out_of_bounds(source);
-        return nodes_reachable_from_no_checks(wg, source);
       }
 
       template <typename Node1, typename Node2>
@@ -1564,24 +1561,28 @@ namespace libsemigroups {
       template <typename Node1, typename Node2>
       void spanning_tree_no_checks(WordGraphView<Node1> const& wg,
                                    Node2                       root,
-                                   Forest&                     f) {
+                                   Forest&                     f,
+                                   size_t                      max_depth) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
         using node_type = typename WordGraphView<Node1>::node_type;
         f.init(1);
         size_t const N = wg.number_of_nodes_no_checks();
 
-        std::queue<node_type> queue;
-        queue.push(static_cast<node_type>(root));
+        std::queue<std::pair<node_type, size_t>> queue;
+        queue.emplace(static_cast<node_type>(root), 0);
+
         do {
-          node_type s = queue.front();
-          for (auto [a, t] : wg.labels_and_targets_no_checks(s)) {
-            if (t < N && t != static_cast<node_type>(root)) {
-              if (t >= f.number_of_nodes()) {
-                f.add_nodes(t - f.number_of_nodes() + 1);
-              }
-              if (f.parent_no_checks(t) == UNDEFINED) {
-                f.set_parent_and_label_no_checks(t, s, a);
-                queue.push(t);
+          auto [s, depth] = queue.front();
+          if (depth < max_depth) {
+            for (auto [a, t] : wg.labels_and_targets_no_checks(s)) {
+              if (t < N && t != static_cast<node_type>(root)) {
+                if (t >= f.number_of_nodes()) {
+                  f.add_nodes(t - f.number_of_nodes() + 1);
+                }
+                if (f.parent_no_checks(t) == UNDEFINED) {
+                  f.set_parent_and_label_no_checks(t, s, a);
+                  queue.emplace(t, depth + 1);
+                }
               }
             }
           }
@@ -1592,26 +1593,30 @@ namespace libsemigroups {
       template <typename Node1, typename Node2>
       void spanning_tree(WordGraphView<Node1> const& wg,
                          Node2                       root,
-                         Forest&                     f) {
+                         Forest&                     f,
+                         size_t                      max_depth) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
         wg.throw_if_node_out_of_bounds(root);
-        return spanning_tree_no_checks(wg, root, f);
+        return spanning_tree_no_checks(wg, root, f, max_depth);
       }
 
       template <typename Node1, typename Node2>
-      Forest spanning_tree(WordGraphView<Node1> const& wg, Node2 root) {
+      Forest spanning_tree(WordGraphView<Node1> const& wg,
+                           Node2                       root,
+                           size_t                      max_depth) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
         Forest f;
-        spanning_tree(wg, root, f);
+        spanning_tree(wg, root, f, max_depth);
         return f;
       }
 
       template <typename Node1, typename Node2>
       Forest spanning_tree_no_checks(WordGraphView<Node1> const& wg,
-                                     Node2                       root) {
+                                     Node2                       root,
+                                     size_t                      max_depth) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
         Forest f;
-        spanning_tree_no_checks(wg, root, f);
+        spanning_tree_no_checks(wg, root, f, max_depth);
         return f;
       }
     }  // namespace word_graph
