@@ -1810,6 +1810,8 @@ namespace libsemigroups {
     //! presentation.
     template <typename Word>
     void normalize_alphabet(Presentation<Word>& p);
+    // TODO(later) any function that touches the alphabet requires a version of
+    // InversePresentation, which also touches the inverses
 
     //! \brief Change or re-order the alphabet.
     //!
@@ -3638,6 +3640,23 @@ namespace libsemigroups {
       return inverse_alphabet_no_checks(p);
     }
 
+    //! \brief Normalize the alphabet to \f$\{0, \ldots, n - 1\}\f$.
+    //!
+    //! Modify the presentation in-place so that the alphabet is \f$\{0, \ldots,
+    //! n - 1\}\f$ (or equivalent) and rewrites the inverses and the rules to
+    //! use this alphabet.
+    //!
+    //! If the alphabet is already normalized, then no changes are made to the
+    //! presentation.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses throws
+    //! on the initial presentation.
+    template <typename Word>
+    void normalize_alphabet(InversePresentation<Word>& p);
   }  // namespace presentation
 
   //! \ingroup presentations_group

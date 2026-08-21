@@ -1253,6 +1253,35 @@ namespace libsemigroups {
       }
       return result;
     }
+
+    template <typename Word>
+    void normalize_alphabet(InversePresentation<Word>& p) {
+      using letter_type = typename Presentation<Word>::letter_type;
+
+      p.throw_if_bad_alphabet_rules_or_inverses();
+
+      for (auto& rule : p.rules) {
+        std::for_each(rule.begin(), rule.end(), [&p](letter_type& x) {
+          x = words::human_readable_letter<Word>(p.index(x));
+        });
+      }
+
+      Alphabet<Word> new_alphabet(p.alphabet_v4().size());
+      Word           new_inverses(p.inverses());
+
+      std::for_each(new_inverses.begin(),
+                    new_inverses.end(),
+                    [&p, &new_alphabet](auto& letter) {
+                      letter = new_alphabet.letter(p.index_no_checks(letter));
+                    });
+
+      p.alphabet_v4(new_alphabet);
+      p.inverses_no_checks(new_inverses);
+
+#ifdef LIBSEMIGROUPS_DEBUG
+      p.throw_if_bad_alphabet_rules_or_inverses();
+#endif
+    }
   }  // namespace presentation
 
   namespace v4 {
@@ -1362,8 +1391,9 @@ namespace libsemigroups {
         std::is_same_v<InversePresentation<Word>, Thing<Word>>,
         InversePresentation<Word>> {
       InversePresentation<Word> result(p);
-      presentation::normalize_alphabet(
-          result);  // calls p.throw_if_bad_alphabet_or_rules
+      presentation::normalize_alphabet(static_cast<Presentation<Word>&>(
+          result));  // calls p.throw_if_bad_alphabet_or_rules
+
       result.alphabet(2 * result.alphabet().size());
       auto invs = result.alphabet();
 
