@@ -45,6 +45,7 @@ namespace libsemigroups {
     // repeated element and "pos" is the position of the first occurrence of
     // that element. Returns {last, std::distance(first, last)} if not
     // duplicates.
+    // TODO(later) move to exception.hpp
     template <typename Iterator>
     std::pair<Iterator, size_t> find_duplicates(
         Iterator                                                    first,

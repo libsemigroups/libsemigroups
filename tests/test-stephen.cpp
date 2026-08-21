@@ -33,6 +33,8 @@
 #include <utility>        // for forward
 #include <vector>         // for vector
 
+#include <fstream>
+
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"              // for UNDEFINED
@@ -2116,6 +2118,463 @@ namespace libsemigroups {
     InversePresentation<word_type> p;
     REQUIRE_EXCEPTION_MSG(detail::StephenImpl{p},
                           "the presentation must not have 0 generators");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "063",
+                          "dot - partially run (std::string)",
+                          "[stephen][quick]") {
+    using std::literals::operator""s;
+
+    auto rg = ReportGuard(false);
+
+    InversePresentation<std::string> p;
+    p.alphabet("AabBCc");  // TODO(later) can't chain with .inverses because
+                           // p.alphabet() returns Presentation const&)
+    p.inverses("aABbcC");
+    p.contains_empty_word(true);
+    p.rules = {"acb", "", "aCb", ""};
+
+    Stephen s(p);
+    stephen::set_word(s, ""s);
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+    REQUIRE(stephen::dot(s, "ac"s, 0).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+})vogon");
+    REQUIRE(stephen::dot(s, "ac"s, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="a", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="b⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="b⁻¹a", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="b⁻¹b⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  1 -> 2  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  2 -> 1  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  5 -> 6  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  6 -> 5  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+})vogon");
+    REQUIRE(stephen::dot(s, "ABC"s, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="A⁻¹", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="B", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="BA⁻¹", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="BB", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 2  [color="#ff7f00", fontname="STIX Two Text Italic", label="B"]
+  1 -> 0  [color="#00ff00", fontname="STIX Two Text Italic", label="A"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text Italic", label="C"]
+  2 -> 6  [color="#ff7f00", fontname="STIX Two Text Italic", label="B"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text Italic", label="C"]
+  5 -> 2  [color="#00ff00", fontname="STIX Two Text Italic", label="A"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text Italic", label="C"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text Italic", label="C"]
+})vogon");
+    REQUIRE(stephen::dot(s, "abc"s, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="a", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="b⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="b⁻¹a", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="b⁻¹b⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  1 -> 2  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text Italic", label="b"]
+  2 -> 1  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  5 -> 6  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text Italic", label="b"]
+  6 -> 5  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "064",
+                          "dot - partially run (word_type)",
+                          "[stephen][quick]") {
+    using std::literals::operator""s;
+
+    auto rg = ReportGuard(false);
+
+    InversePresentation<word_type> p;
+    //         "AabBCc"
+    p.alphabet("102345"_w);
+    p.inverses("013254"_w);
+    p.contains_empty_word(true);
+    p.rules = {"052"_w, ""_w, "042"_w, ""_w};
+
+    Stephen s(p);
+    stephen::set_word(s, ""_w);
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+
+    REQUIRE(stephen::dot(s, "05"_w, 0).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+})vogon");
+    REQUIRE(stephen::dot(s, "05"_w, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text", label="0", shape="box"]
+  2  [fontname="STIX Two Text", label="2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text", label="2⁻¹0", shape="box"]
+  6  [fontname="STIX Two Text", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text", label="0"]
+  1 -> 2  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text", label="0"]
+  2 -> 1  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  5 -> 6  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  6 -> 5  [color="#4604ac", fontname="STIX Two Text", label="5"]
+})vogon");
+    REQUIRE(stephen::dot(s, "134"_w, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text", label="1⁻¹", shape="box"]
+  2  [fontname="STIX Two Text", label="3", shape="box"]
+  5  [fontname="STIX Two Text", label="31⁻¹", shape="box"]
+  6  [fontname="STIX Two Text", label="33", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 2  [color="#ff7f00", fontname="STIX Two Text", label="3"]
+  1 -> 0  [color="#00ff00", fontname="STIX Two Text", label="1"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text", label="4"]
+  2 -> 6  [color="#ff7f00", fontname="STIX Two Text", label="3"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text", label="4"]
+  5 -> 2  [color="#00ff00", fontname="STIX Two Text", label="1"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text", label="4"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text", label="4"]
+})vogon");
+    REQUIRE(stephen::dot(s, "025"_w, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text", label="0", shape="box"]
+  2  [fontname="STIX Two Text", label="2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text", label="2⁻¹0", shape="box"]
+  6  [fontname="STIX Two Text", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text", label="0"]
+  1 -> 2  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text", label="0"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text", label="2"]
+  2 -> 1  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  5 -> 6  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text", label="2"]
+  6 -> 5  [color="#4604ac", fontname="STIX Two Text", label="5"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "065",
+                          "dot exceptions",
+                          "[stephen][quick]") {
+    auto rg = ReportGuard(false);
+
+    InversePresentation<word_type> p;
+    p.alphabet({0, 10, 1});
+    p.inverses({0, 10, 1});
+    Stephen s(p);
+    stephen::set_word(s, 0_w).run();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s),
+        "the alphabet [0, 10, 1] contains letters that may render "
+        "ambiguously, expected a printable char or a value <= 9 but found 10 "
+        "in position 1");
+
+    p.alphabet({12, 1});
+    p.inverses({12, 1});
+    Stephen t(p);
+    stephen::set_word(t, 1_w).run();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(t),
+        "the alphabet [12, 1] contains letters that may render ambiguously, "
+        "expected a printable char or a value <= 9 but found 12 in position "
+        "0");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "066",
+                          "dot optional alphabet exceptions",
+                          "[stephen][quick]") {
+    auto rg = ReportGuard(false);
+
+    InversePresentation<word_type> p;
+    p.alphabet({0, 1, 2});
+    p.inverses({0, 1, 2});
+    Stephen s(p);
+    stephen::set_word(s, 0_w).run();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s, word_type({0, 3, 1}), 1),
+        "the alphabet [0, 3, 1] contains invalid letters, expected values in "
+        "[0, 1, 2] but found 3 in position 1");
+
+    InversePresentation<std::string> q;
+    q.alphabet("aA");
+    q.inverses("Aa");
+    Stephen t(q);
+    stephen::set_word(t, "a"s).run();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(t, "aZ"s, 1),
+        "the alphabet \"aZ\" contains invalid letters, expected values in "
+        "\"aA\" but found Z in position 1");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "067",
+                          "dot - duplicate optional alphabet (std::string)",
+                          "[stephen][quick]") {
+    auto rg = ReportGuard(false);
+
+    InversePresentation<std::string> p;
+    p.alphabet("aA");
+    p.inverses("Aa");
+    Stephen s(p);
+    stephen::set_word(s, "a"s).run();
+
+    REQUIRE_EXCEPTION_MSG(std::ignore = stephen::dot(s, "aa"s),
+                          "duplicate alphabet value, found 'a' in position 1, "
+                          "first occurrence in position 0");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "068",
+                          "dot - duplicate optional alphabet (word_type)",
+                          "[stephen][quick]") {
+    auto rg = ReportGuard(false);
+
+    InversePresentation<word_type> p;
+    p.alphabet({0, 1});
+    p.inverses({1, 0});
+    Stephen s(p);
+    stephen::set_word(s, 0_w).run();
+
+    REQUIRE_EXCEPTION_MSG(std::ignore = stephen::dot(s, "00"_w),
+                          "duplicate alphabet value, found 0 in position 1, "
+                          "first occurrence in position 0");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "069",
+                          "dot - non-printable alphabet (std::string)",
+                          "[stephen][quick]") {
+    auto rg = ReportGuard(false);
+
+    InversePresentation<std::string> p;
+    p.alphabet({1, 0, 2, 3, 4, 5});
+    p.inverses({0, 1, 3, 2, 5, 4});
+    p.contains_empty_word(true);
+    p.rules = {{0, 5, 2}, {}, {0, 4, 2}, {}};
+
+    Stephen s(p);
+    stephen::set_word(s, {});
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+
+    Dot d = stephen::dot(s, 3);
+    REQUIRE(d.to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="1⁻¹", shape="box"]
+  13  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹1⁻¹", shape="box"]
+  14  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹2⁻¹", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="2⁻¹", shape="box"]
+  3  [fontname="STIX Two Text Italic", label="1⁻¹1⁻¹", shape="box"]
+  4  [fontname="STIX Two Text Italic", label="1⁻¹2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="2⁻¹1⁻¹", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  1 -> 0  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  3 -> 1  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  3 -> 4  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  4 -> 1  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  4 -> 3  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  5 -> 2  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  13 -> 6  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  13 -> 14  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  14 -> 6  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  14 -> 13  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "070",
+                          "dot - mixed non-/printable alphabet (std::string)",
+                          "[stephen][quick]") {
+    auto rg = ReportGuard(false);
+
+    InversePresentation<std::string> p;
+    p.alphabet({1, 97, 2, 3, 4, 5});
+    p.inverses({97, 1, 3, 2, 5, 4});
+    p.contains_empty_word(true);
+    p.rules = {{97, 5, 2}, {}, {97, 4, 2}, {}};
+
+    Stephen s(p);
+    stephen::set_word(s, {});
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+
+    Dot d = stephen::dot(s, std::string({97, 2, 4}), 3);
+    REQUIRE(d.to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="a", shape="box"]
+  13  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹a", shape="box"]
+  14  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹2⁻¹", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="2⁻¹", shape="box"]
+  3  [fontname="STIX Two Text Italic", label="aa", shape="box"]
+  4  [fontname="STIX Two Text Italic", label="a2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="2⁻¹a", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  1 -> 3  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  3 -> 4  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  4 -> 1  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  4 -> 3  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  6 -> 13  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  13 -> 14  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  14 -> 6  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  14 -> 13  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "071",
+                          "dot - non-printable alphabet (std::string)",
+                          "[stephen][quick]") {
+    auto rg = ReportGuard(false);
+
+    InversePresentation<std::string> p;
+    p.alphabet({1, 127, 2, 3, 4, 5});
+    p.inverses({127, 1, 3, 2, 5, 4});
+    p.contains_empty_word(true);
+    p.rules = {{127, 5, 2}, {}, {127, 4, 2}, {}};
+    Stephen s(p);
+    stephen::set_word(s, {});
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s, std::string({127, 2, 4}), 3),
+        "the alphabet (char values) [127, 2, 4] contains letters that may "
+        "render ambiguously, expected a printable char or a value <= 9 but "
+        "found (char with value) 127 in position 0");
+
+    Dot d = stephen::dot(s, 3);
+    REQUIRE(d.to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="1⁻¹", shape="box"]
+  13  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹1⁻¹", shape="box"]
+  14  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹2⁻¹", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="2⁻¹", shape="box"]
+  3  [fontname="STIX Two Text Italic", label="1⁻¹1⁻¹", shape="box"]
+  4  [fontname="STIX Two Text Italic", label="1⁻¹2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="2⁻¹1⁻¹", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  1 -> 0  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  3 -> 1  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  3 -> 4  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  4 -> 1  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  4 -> 3  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  5 -> 2  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  13 -> 6  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  13 -> 14  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  14 -> 6  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  14 -> 13  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "072",
+                          "dot - too many colors",
+                          "[stephen][quick]") {
+    auto rg = ReportGuard(false);
+
+    std::string const                alphabet = "abcdefghijklmnopqrstuvwxy";
+    InversePresentation<std::string> p;
+    p.alphabet(alphabet);
+    p.inverses(alphabet);
+    Stephen s(p);
+    stephen::set_word(s, "a"s).run();
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s),
+        "the alphabet contains too many letters, expected at most 24 (= "
+        "Dot::colors.size()), found 25");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "073",
+                          "dot - Presentation overloads",
+                          "[stephen][quick]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(0_w);
+    Stephen s(p);
+    stephen::set_word(s, 0_w).run();
+
+    std::string const expected = R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text", label="0", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  1 -> accept
+  0 -> 1  [color="#00ff00", fontname="STIX Two Text", label="0"]
+})vogon";
+    REQUIRE(stephen::dot(s).to_string() == expected);
+    REQUIRE(stephen::dot(s, 0_w).to_string() == expected);
   }
 
   // TODO(2): the examples from Stephen's paper/thesis?
