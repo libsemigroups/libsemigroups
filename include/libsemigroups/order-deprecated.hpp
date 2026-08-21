@@ -320,7 +320,6 @@ recursive_path_compare(Word const& x, Word const& y) noexcept {
 //!
 //! \sa
 //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
-//!
 //! \deprecated_warning{function}.
 template <typename Word>
 [[nodiscard]] [[deprecated(
