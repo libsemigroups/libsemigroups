@@ -1446,27 +1446,20 @@ namespace libsemigroups {
   //!
   //! This function compares two objects of the same type using the recursive
   //! path comparison, based on the description in \cite Jantzen2012aa
-  //! (Definition 1.2.14, page 24).
-  //!
-  //! In the literature, recursive path order is sometimes defined in the way
-  //! that `libsemigroups` defines reversed recursive path order. This
-  //! distinction is so that, in `libsemigroups`, recursive path order is a
-  //! special case of wreath-product order, and reverse recursive path order is
-  //! a special case of reverse wreath-product order. The following definition
-  //! is used in `libsemigroups` for recursive path order.
+  //! (Definition 1.2.14, page 24) and \cite Dershowitz1982aa (Definition 5,
+  //! page 289). The following definition is used in `libsemigroups`.
   //!
   //! If \f$u, v\in X ^ {*}\f$, then
   //! \f$u < v\f$ if and only if one of the following conditions holds:
   //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
-  //! 2. \f$u = u'a\f$ and \f$v = v'b\f$ for some \f$a,b \in X\f$, \f$u',v'\in
+  //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
   //!    X ^ {*}\f$ and:
   //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
-  //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
-  //!   3. \f$a > b\f$ and \f$u < v'\f$.
+  //!   2. \f$a < b\f$ and \f$u' < v\f$; or
+  //!   3. \f$a > b\f$ and \f$u  \leq v'\f$.
   //!
-  //! This documentation and the implementation of \ref rpo_cmp
-  //! is based on the source code of \cite Holt2018aa, specifically the function
-  //! `rec_compare`.
+  //! The implementation of \ref rpo_cmp is based on the source code of
+  //! \cite Holt2018aa, specifically the function `rt_rec_compare`.
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
@@ -1481,10 +1474,6 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \noexcept
-  //!
-  //! \warning
-  //! This function has significantly worse performance than all
-  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   template <typename Iterator>
   [[nodiscard]] bool rpo_cmp(Iterator first1,
                              Iterator last1,
@@ -1857,35 +1846,10 @@ namespace libsemigroups {
   // Reversed recursive path order (RPO)
   //////////////////////////////////////////////////////////////////////
 
-  //! \brief Compare two objects of the same type using the reversed recursive
-  //! path comparison.
+  //! \brief Compare two ranges using reversed recursive path compare.
   //!
-  //! Defined in `order.hpp`.
-  //!
-  //! This function compares two objects of the same type using the reversed
-  //! recursive path comparison. This is the same as applying the recursive path
-  //! comparison to the reversed words in `[first1, last1)`, `[first2, last2)`.
-  //!
-  //! In the literature, recursive path order is sometimes defined in the way
-  //! that `libsemigroups` defines reversed recursive path order. This
-  //! distinction is so that, in `libsemigroups`, recursive path order is a
-  //! special case of wreath-product order, and reverse recursive path order is
-  //! a special case of reverse wreath-product order. The following definition
-  //! is used in `libsemigroups` for reversed recursive path order, and is taken
-  //! from \cite Jantzen2012aa (Definition 1.2.14, page 24).
-  //!
-  //! If \f$u, v\in X ^ {*}\f$, then
-  //! \f$u < v\f$ if and only if one of the following conditions holds:
-  //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
-  //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
-  //!    X ^ {*}\f$ and:
-  //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
-  //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
-  //!   3. \f$a > b\f$ and \f$u < v'\f$.
-  //!
-  //! This documentation and the implementation of \ref rev_rpo_cmp
-  //! is based on the source code of \cite Holt2018aa, specifically the function
-  //! `rt_rec_compare`.
+  //! This function applies \ref libsemigroups::rpo_cmp to the ranges read from
+  //! right to left.
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
@@ -1894,16 +1858,12 @@ namespace libsemigroups {
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
   //!
-  //! \returns The boolean value \c true if the range `[first1, last1)` is less
-  //! than the range `[first2, last2)` with respect to the reversed recursive
-  //! path ordering, and \c false otherwise.
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range with respect to reversed recursive path order, and \c false
+  //! otherwise.
   //!
   //! \exceptions
   //! \noexcept
-  //!
-  //! \warning
-  //! This function has significantly worse performance than all
-  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   template <typename Iterator>
   [[nodiscard]] bool rev_rpo_cmp(Iterator first1,
                                  Iterator last1,
@@ -1959,12 +1919,13 @@ namespace libsemigroups {
                                  Iterator              first2,
                                  Iterator              last2);
 
-  //! \brief Compare two objects of the same type using \ref rev_rpo_cmp.
+  //! \brief Compare two objects of the same type using
+  //! \ref libsemigroups::rev_rpo_cmp.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using
-  //! \ref rev_rpo_cmp.
+  //! \ref libsemigroups::rev_rpo_cmp.
   //!
   //! \tparam Word the type of the objects to be compared.
   //!
@@ -5957,15 +5918,15 @@ namespace libsemigroups {
 
     //! \brief Recursive path order is well-founded.
     //!
-    //! Specialization of \ref is_well_founded for \ref RevRPOCmp.
-    template <bool check>
-    struct is_well_founded<RevRPOCmp<Default, check>> : std::true_type {};
-
-    //! \brief Reverse recursive path order is well-founded.
-    //!
     //! Specialization of \ref is_well_founded for \ref RPOCmp.
     template <bool check>
     struct is_well_founded<RPOCmp<Default, check>> : std::true_type {};
+
+    //! \brief Reverse recursive path order is well-founded.
+    //!
+    //! Specialization of \ref is_well_founded for \ref RevRPOCmp.
+    template <bool check>
+    struct is_well_founded<RevRPOCmp<Default, check>> : std::true_type {};
 
     //! \brief Wreath-product order is well-founded.
     //!

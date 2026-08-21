@@ -500,13 +500,13 @@ namespace libsemigroups {
     // {0_w,
     //  1_w,
     //  2_w,
-    //  21_w,
     //  12_w,
+    //  21_w,
     //  121_w,
     //  22_w,
-    //  221_w,
+    //  122_w,
     //  212_w,
-    //  2121_w}
+    //  1212_w};
     tc.standardize(Order::lex);
     todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector();
     // {0_w,
@@ -521,10 +521,10 @@ namespace libsemigroups {
     //  0121212121_w};
   }
 
-  // word-graph.hpp: Line 1581
+  // word-graph.hpp: Line 1585
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "029",
-                          "./include/libsemigroups/word-graph.hpp:1581",
+                          "./include/libsemigroups/word-graph.hpp:1585",
                           "[docs][quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(2);
@@ -534,10 +534,10 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_acyclic(wg) == false);
   }
 
-  // word-graph.hpp: Line 1629
+  // word-graph.hpp: Line 1633
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "030",
-                          "./include/libsemigroups/word-graph.hpp:1629",
+                          "./include/libsemigroups/word-graph.hpp:1633",
                           "[docs][quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(4);
@@ -552,10 +552,10 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_acyclic(wg, 3) == true);
   }
 
-  // word-graph.hpp: Line 2066
+  // word-graph.hpp: Line 2070
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "031",
-                          "./include/libsemigroups/word-graph.hpp:2066",
+                          "./include/libsemigroups/word-graph.hpp:2070",
                           "[docs][quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(4);
@@ -570,19 +570,19 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_reachable_no_checks(wg, 3, 2) == false);
   }
 
-  // word-graph.hpp: Line 2150
+  // word-graph.hpp: Line 2154
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "032",
-                          "./include/libsemigroups/word-graph.hpp:2150",
+                          "./include/libsemigroups/word-graph.hpp:2154",
                           "[docs][quick]") {
     auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(word_graph::is_strictly_cyclic(wg) == false);
   }
 
-  // word-graph.hpp: Line 2964
+  // word-graph.hpp: Line 2968
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "033",
-                          "./include/libsemigroups/word-graph.hpp:2964",
+                          "./include/libsemigroups/word-graph.hpp:2968",
                           "[docs][quick]") {
     // Construct a word graph with 5 nodes and 10 edges (7 specified)
     auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
