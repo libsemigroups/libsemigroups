@@ -2276,10 +2276,10 @@ namespace libsemigroups {
   //! \f$A_0 < B_0\f$.
   //!
   //! The implementation of this function is inspired by the source code of
-  //! \cite Holt2018aa, specifically the function `wr_compare`.
+  //! \cite Holt2018aa, specifically the function `wreath_compare`.
   //!
   //! In the case where each generator has a unique level, this function
-  //! produces the same output as \ref rpo_cmp. In the case where each
+  //! produces the same output as \ref rev_rpo_cmp. In the case where each
   //! generator has the same level, this function produces the same output as
   //! \ref lenlex_cmp.
   //!
