@@ -4154,4 +4154,41 @@ End;)xxx");
     p.inverses("AabB");
     REQUIRE(presentation::inverse_alphabet_no_checks(p) == "abB");
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "104",
+                          "normalize_alphabet (InversePresentation<word_type>)",
+                          "[quick][presentation]") {
+    auto                           rg = ReportGuard(false);
+    InversePresentation<word_type> p;
+    p.alphabet({5, 7, 3, 9});
+    p.inverses({7, 5, 9, 3});
+    presentation::add_rule(p, {5, 3, 7}, {9, 5});
+
+    presentation::normalize_alphabet(p);
+
+    REQUIRE(p.alphabet() == word_type({0, 1, 2, 3}));
+    REQUIRE(p.rules == std::vector<word_type>({{0, 2, 1}, {3, 0}}));
+    REQUIRE(p.inverses() == word_type({1, 0, 3, 2}));
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "Presentation",
+      "105",
+      "normalize_alphabet (InversePresentation<std::string>)",
+      "[quick][presentation]") {
+    auto                             rg = ReportGuard(false);
+    InversePresentation<std::string> p;
+    p.alphabet("xXyY");
+    p.inverses("XxYy");
+    presentation::add_rule(p, "xyX", "Yx");
+
+    presentation::normalize_alphabet(p);
+
+    REQUIRE(p.alphabet() == "abcd");
+    REQUIRE(p.rules == std::vector<std::string>({"acb", "da"}));
+    REQUIRE(p.inverses() == "badc");
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
+  }
 }  // namespace libsemigroups
