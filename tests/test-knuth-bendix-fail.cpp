@@ -51,6 +51,8 @@
 #include "libsemigroups/detail/string.hpp"  // for random_string, operator<<
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   using literals::operator""_w;
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
@@ -72,7 +74,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("abcde");
+    p.alphabet("abcde"s);
     presentation::add_rule(p, "ac", "ca");
     presentation::add_rule(p, "ad", "da");
     presentation::add_rule(p, "bc", "cb");
@@ -182,7 +184,7 @@ namespace libsemigroups {
           {
             Presentation<std::string> p;
             p.contains_empty_word(true);
-            p.alphabet("ab");
+            p.alphabet("ab"s);
             presentation::add_rule(p, lhs, rhs);
             KnuthBendix<std::string, TestType> k(twosided, p);
             k.run_for(std::chrono::milliseconds(10));
@@ -195,7 +197,7 @@ namespace libsemigroups {
           if (try_again) {
             Presentation<std::string> p;
             p.contains_empty_word(true);
-            p.alphabet("ba");
+            p.alphabet("ba"s);
             presentation::add_rule(p, lhs, rhs);
             KnuthBendix<std::string, TestType> k(twosided, p);
             k.run_for(std::chrono::milliseconds(10));

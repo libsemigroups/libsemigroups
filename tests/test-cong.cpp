@@ -38,6 +38,7 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using std::literals::operator""s;
 
   using congruence::contains;
   using congruence::non_trivial_classes;
@@ -303,7 +304,7 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abBe");
+    p.alphabet("abBe"s);
     presentation::add_identity_rules(p, 'e');
     presentation::add_rule(p, "aa", "e");
     presentation::add_rule(p, "BB", "b");
@@ -387,7 +388,7 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "ab", "ba");
     presentation::add_rule(p, "a", "b");
     presentation::reverse(p);
@@ -475,7 +476,7 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("a");
+    p.alphabet("a"s);
     Congruence cong(twosided, p);
     cong.run();
     REQUIRE(congruence::contains(cong, "aa", "aa"));
@@ -587,7 +588,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Congruence", "026", "contains", "[quick][cong]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     REQUIRE(!p.contains_empty_word());
     Congruence cong(twosided, p);
     congruence::add_generating_pair(cong, "aa", "a");
@@ -835,7 +836,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abe");
+    p.alphabet("abe"s);
     presentation::add_identity_rules(p, 'e');
     presentation::add_rule(p, "abb", "bb");
     presentation::add_rule(p, "bbb", "bb");
@@ -935,7 +936,7 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefg");
+    p.alphabet("abcdefg"s);
     presentation::add_rule(p, "abcd", "aaaeaa");
     Congruence cong(twosided, p);
     congruence::add_generating_pair(cong, "ef", "dg");
@@ -977,7 +978,7 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "abab", "aaaaaaa");
     presentation::add_rule(p, "ba", "ababbb");
@@ -1002,7 +1003,7 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefg");
+    p.alphabet("abcdefg"s);
     presentation::add_rule(p, "abcd", "aaaeaa");
     Congruence cong(twosided, p);
     congruence::add_generating_pair(cong, "ef", "dg");
@@ -1020,7 +1021,7 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "bab", "ba");
     Congruence c(twosided, p);
     REQUIRE(c.report_prefix() == "Congruence");

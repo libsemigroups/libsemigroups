@@ -46,6 +46,8 @@
 #include "libsemigroups/detail/string.hpp"  // for operator""_w
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr onesided = congruence_kind::onesided;
 
@@ -382,7 +384,7 @@ namespace libsemigroups {
 
     presentation::reverse(p);
     REQUIRE(!p.contains_empty_word());
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     KnuthBendix<std::string, TestType> kb(twosided, p);
     ToString                           to_string;
 

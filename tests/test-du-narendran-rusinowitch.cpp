@@ -23,13 +23,14 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using std::literals::operator""s;
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
                           "000",
                           "Simple test 1",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcde");
+    p.alphabet("abcde"s);
     p.rules = {"dbcbace", "cbbaec", "bcbad", "badbc"};
 
     REQUIRE(du_narendran_rusinowitch(p) == "edcab");
@@ -40,7 +41,7 @@ namespace libsemigroups {
                           "Simple test 2",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.rules = {"a", "cc", "d", "bcc", "bccb", "c", "cccb", "bccc"};
 
     REQUIRE(du_narendran_rusinowitch(p) == "bcda");
@@ -51,7 +52,7 @@ namespace libsemigroups {
                           "Simple test 3",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("aAbBc");
+    p.alphabet("aAbBc"s);
     p.contains_empty_word(true);
     p.rules = {"AA", "bc",     "bB",  "",     "Bb", "",    "Abc", "bcA",
                "a",  "cbA",    "AB",  "bbAb", "cc", "BB",  "cbb", "bbc",
@@ -65,7 +66,7 @@ namespace libsemigroups {
                           "Simple test 4",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     p.rules = {"bbba",
                "d",
@@ -174,7 +175,7 @@ namespace libsemigroups {
                           "Simple test 5",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     p.rules = {
         "c", "bdad", "ab", "d", "ddad", "a", "adad", "ddaa", "aad", "ddddaa"};
@@ -187,7 +188,7 @@ namespace libsemigroups {
                           "Simple test 6",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     // codespell:begin-ignore
     p.rules
@@ -203,7 +204,7 @@ namespace libsemigroups {
                           "Simple test 7",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     p.rules = {"ac",       "a",
                "dc",       "d",
@@ -262,7 +263,7 @@ namespace libsemigroups {
                           "Simple test 8",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     p.rules = {"ddabd",
                "dddab",
@@ -355,7 +356,7 @@ namespace libsemigroups {
                           "Simple test 9",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     p.rules = {"ddabd",
                "dddab",
@@ -470,7 +471,7 @@ namespace libsemigroups {
                           "Empty rules + alphabet",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("");
+    p.alphabet(""s);
     p.contains_empty_word(true);
     REQUIRE(du_narendran_rusinowitch(p) == "");
   }
@@ -480,7 +481,7 @@ namespace libsemigroups {
                           "Empty rules",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     REQUIRE(du_narendran_rusinowitch(p) == "abcd");
   }
@@ -490,7 +491,7 @@ namespace libsemigroups {
                           "Unused letters",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcdefghij");
+    p.alphabet("abcdefghij"s);
     p.contains_empty_word(true);
     p.rules = {"j", ""};
     REQUIRE(du_narendran_rusinowitch(p) == "jihgfedcba");
@@ -501,7 +502,7 @@ namespace libsemigroups {
                           "Cyclic rules",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.rules = {"a", "b", "b", "c", "c", "d", "d", "a"};
     REQUIRE(du_narendran_rusinowitch(p) == "");
   }
@@ -511,7 +512,7 @@ namespace libsemigroups {
                           "Common suffixes",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     p.rules = {"abac", "acac", "acac", "abac"};
     REQUIRE(du_narendran_rusinowitch(p) == "");
   }
@@ -521,7 +522,7 @@ namespace libsemigroups {
                           "Equal rules",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     p.rules = {"abac", "abac"};
     REQUIRE(du_narendran_rusinowitch(p) == "cba");
   }
@@ -531,7 +532,7 @@ namespace libsemigroups {
                           "Common suffix and prefix",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     // p.rules = {"aaaaaababaaaaaa", "a"};
     // REQUIRE(du_narendran_rusinowitch(p) == "cba");
     p.rules = {"a", "aaaaaababaaaaaa"};

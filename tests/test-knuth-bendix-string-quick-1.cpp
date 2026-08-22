@@ -48,6 +48,8 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   using namespace rx;
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
@@ -78,7 +80,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     p.rules = {"ab", "ba", "ac", "ca",  "aa", "a",  "ac", "a",  "ca", "a", "bb",
                "bb", "bc", "cb", "bbb", "b",  "bc", "b",  "cb", "b",  "a", "b"};
 
@@ -108,7 +110,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule_no_checks(p, "ac", "ca");
     presentation::add_rule_no_checks(p, "aa", "a");
     presentation::add_rule_no_checks(p, "ac", "a");
@@ -140,7 +142,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("012");
+    p.alphabet("012"s);
     presentation::add_rule_no_checks(p, "01", "10");
     presentation::add_rule_no_checks(p, "02", "20");
     presentation::add_rule_no_checks(p, "00", "0");
@@ -190,7 +192,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("01");
+    p.alphabet("01"s);
     presentation::add_rule_no_checks(p, "000", "");
     presentation::add_rule_no_checks(p, "111", "");
     presentation::add_rule_no_checks(p, "010101", "");
@@ -248,7 +250,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule_no_checks(p, "ab", "");
     presentation::add_rule_no_checks(p, "ba", "");
     presentation::add_rule_no_checks(p, "cd", "");
@@ -290,7 +292,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("aAbB");
+    p.alphabet("aAbB"s);
     presentation::add_inverse_rules(p, "AaBb");
     presentation::add_rule_no_checks(p, "ba", "ab");
 
@@ -329,7 +331,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule_no_checks(p, "aa", "");
     presentation::add_rule_no_checks(p, "bbb", "");
     presentation::add_rule_no_checks(p, "ababab", "");
@@ -378,7 +380,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("Bab");
+    p.alphabet("Bab"s);
     presentation::add_rule_no_checks(p, "aa", "");
     presentation::add_rule_no_checks(p, "bB", "");
     presentation::add_rule_no_checks(p, "bbb", "");
@@ -422,7 +424,7 @@ namespace libsemigroups {
     auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     p.contains_empty_word(true);
 
     presentation::add_rule_no_checks(p, "aa", "");
@@ -469,7 +471,7 @@ namespace libsemigroups {
     auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("012");
+    p.alphabet("012"s);
 
     presentation::add_rule_no_checks(p, "000", "2");
     presentation::add_rule_no_checks(p, "111", "2");
@@ -521,7 +523,7 @@ namespace libsemigroups {
     auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abAB");
+    p.alphabet("abAB"s);
     p.contains_empty_word(true);
 
     presentation::add_rule_no_checks(p, "aaaaaaa", "");
@@ -574,7 +576,7 @@ namespace libsemigroups {
     using order                  = typename TestType::reduction_order;
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcde");
+    p.alphabet("abcde"s);
 
     presentation::add_rule_no_checks(p, "ab", "c");
     presentation::add_rule_no_checks(p, "bc", "d");
@@ -612,7 +614,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
 
     presentation::add_rule_no_checks(p, "a", "abb");
     presentation::add_rule_no_checks(p, "b", "baa");
@@ -638,7 +640,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule(p, "a", "abb");
     presentation::add_rule(p, "b", "baa");
     presentation::add_rule(p, "c", "abbabababaaababababab");
@@ -663,7 +665,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p1;
     p1.contains_empty_word(true);
-    p1.alphabet("abcd");
+    p1.alphabet("abcd"s);
     presentation::add_rule_no_checks(p1, "ab", "");
     presentation::add_rule_no_checks(p1, "ba", "");
     presentation::add_rule_no_checks(p1, "cd", "");
@@ -672,7 +674,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p2;
     p2.contains_empty_word(true);
-    p2.alphabet("01");
+    p2.alphabet("01"s);
     presentation::add_rule_no_checks(p2, "000", "");
     presentation::add_rule_no_checks(p2, "111", "");
     presentation::add_rule_no_checks(p2, "010101", "");
@@ -757,7 +759,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("abc");
+    p.alphabet("abc"s);
 
     presentation::add_rule_no_checks(p, "aa", "");
     presentation::add_rule_no_checks(p, "bc", "");
@@ -828,7 +830,7 @@ namespace libsemigroups {
 
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule_no_checks(p, "ab", "ba");
     presentation::add_rule_no_checks(p, "ac", "ca");
     presentation::add_rule_no_checks(p, "aa", "a");
@@ -943,7 +945,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule_no_checks(p, "ab", "ba");
     presentation::add_rule_no_checks(p, "ac", "ca");
     presentation::add_rule_no_checks(p, "aa", "a");
@@ -975,7 +977,7 @@ namespace libsemigroups {
 
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule_no_checks(p, "ab", "ba");
     presentation::add_rule_no_checks(p, "ac", "ca");
     presentation::add_rule_no_checks(p, "aa", "a");
@@ -1075,7 +1077,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("hHgGfFyYdDcCbBaA").contains_empty_word(true);
+    p.alphabet("hHgGfFyYdDcCbBaA"s).contains_empty_word(true);
 
     // presentation::add_inverse_rules(p, "HhGgFfYyDdCcBbAa");
     presentation::add_rule(p, "BAba", "c");
@@ -1126,7 +1128,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
 
-    p.contains_empty_word(true).alphabet("aAbB");
+    p.contains_empty_word(true).alphabet("aAbB"s);
     presentation::add_inverse_rules(p, "AaBb");
     presentation::add_rule(p, "Baab", "aaa");
 
@@ -1158,7 +1160,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("eEdDcCbBaA").contains_empty_word(true);
+    p.alphabet("eEdDcCbBaA"s).contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "EeDdCcBbAa");
     presentation::add_rule(p, "BAba", "c");
@@ -1215,7 +1217,7 @@ namespace libsemigroups {
                                    RPOSet) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("cCbBaA").contains_empty_word(true);
+    p.alphabet("cCbBaA"s).contains_empty_word(true);
     presentation::add_inverse_rules(p, "CcBbAa");
     presentation::add_rule_no_checks(p, "ba", "abc");
     presentation::add_rule_no_checks(p, "ca", "ac");
@@ -1239,7 +1241,7 @@ namespace libsemigroups {
                                    LenLexTrie) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc").contains_empty_word(true);
+    p.alphabet("abc"s).contains_empty_word(true);
 
     SECTION("order #1") {
       presentation::add_rule(p, "bbac", "");
@@ -1278,7 +1280,7 @@ namespace libsemigroups {
     size_t const q  = 11;
 
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, pow("a", std::pow(5, n)), "a");
     presentation::add_rule(p, "aba", "b");
     presentation::add_rule(p, "ab", pow("b", q) + "a");
@@ -1375,7 +1377,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("abAB");
+    p.alphabet("abAB"s);
     presentation::add_rule(p, "Abba", "BB");
     presentation::add_rule(p, "Baab", "AA");
 

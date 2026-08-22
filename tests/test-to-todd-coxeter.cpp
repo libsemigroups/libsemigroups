@@ -25,6 +25,8 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   using literals::operator""_w;
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
@@ -196,7 +198,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abB");
+    p.alphabet("abB"s);
     presentation::add_rule_no_checks(p, "bb", "B");
     presentation::add_rule_no_checks(p, "BaB", "aba");
     presentation::add_rule_no_checks(p, "a", "b");

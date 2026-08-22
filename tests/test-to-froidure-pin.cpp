@@ -38,6 +38,7 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using std::literals::operator""s;
 
   using RewritingSystemTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using RewritingSystemSet  = detail::RewritingSystemSet<LenLexCmp>;
@@ -147,7 +148,7 @@ namespace libsemigroups {
                           "[quick][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefg");
+    p.alphabet("abcdefg"s);
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
     check_from_ke(p);
@@ -161,7 +162,7 @@ namespace libsemigroups {
                           "[quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "bababa", "aba");
     REQUIRE_THROWS_AS(check_from_ke(p), LibsemigroupsException);
     REQUIRE_THROWS_AS(
@@ -233,7 +234,7 @@ namespace libsemigroups {
                           "[quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abBe");
+    p.alphabet("abBe"s);
     presentation::add_identity_rules(p, 'e');
     presentation::add_rule(p, "aa", "e");
     presentation::add_rule(p, "BB", "b");
@@ -323,7 +324,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>", "010", "exceptions", "[quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaaa", "aaa");
     presentation::add_rule(p, "bbbbbbbb", "bb");
     presentation::add_rule(p, "ab", "ba");

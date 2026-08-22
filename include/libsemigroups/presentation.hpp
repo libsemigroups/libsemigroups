@@ -81,7 +81,7 @@ namespace libsemigroups {
   //! * `to<Presentation>` functions \ref to_presentation_group "here".
 
   struct [[deprecated("Use is_specialization_of_v<Thing, Presentation> "
-                      "instead")]] PresentationBase {};
+                      "instead")]] PresentationBase{};
 
   //! \ingroup presentations_group
   //!
@@ -295,7 +295,7 @@ namespace libsemigroups {
     //!
     //! \warning This function is only enabled if \ref word_type is std::string.
     template <typename Return = Presentation&>
-    auto alphabet(char const* lphbt)
+    [[deprecated]] auto alphabet(char const* lphbt)
         -> std::enable_if_t<std::is_same_v<std::string, native_word_type>,
                             Return> {
       return alphabet(std::string(lphbt));

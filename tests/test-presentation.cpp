@@ -60,7 +60,7 @@ namespace libsemigroups {
 
   using literals::operator""_w;
   using StaticVector = detail::StaticVector1<uint16_t, 64>;
-  using std::string_literals::operator""s;
+  using std::literals::operator""s;
 
   struct LibsemigroupsException;  // forward decl
 
@@ -91,9 +91,9 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     REQUIRE(p.alphabet() == "abc");
-    REQUIRE_THROWS_AS(p.alphabet("aa"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(p.alphabet("aa"s), LibsemigroupsException);
     REQUIRE(p.alphabet() == "abc");
     presentation::add_rule_no_checks(p, "aaa", "a");
     REQUIRE(std::distance(p.rules.cbegin(), p.rules.cend()) == 2);
@@ -193,7 +193,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     REQUIRE(p.alphabet() == "abc");
     REQUIRE(p.letter_no_checks(0) == 'a');
     REQUIRE(p.letter_no_checks(1) == 'b');
@@ -201,7 +201,7 @@ namespace libsemigroups {
     p.alphabet(4);
     REQUIRE(p.alphabet().size() == 4);
     p.throw_if_bad_alphabet_or_rules();
-    REQUIRE_THROWS_AS(p.alphabet("abb"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(p.alphabet("abb"s), LibsemigroupsException);
 
     presentation::add_rule_no_checks(p, "abca", "aa");
     presentation::add_rule_no_checks(p, "eb", "af");
@@ -460,7 +460,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, "abcb", "aa");
     REQUIRE_THROWS_AS(presentation::add_zero_rules(p, '0'),
                       LibsemigroupsException);
-    p.alphabet("abc0");
+    p.alphabet("abc0"s);
     presentation::add_zero_rules(p, '0');
     REQUIRE(p.rules
             == std::vector<std::string>({"abcb",
@@ -661,7 +661,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(false);
 
-    p.alphabet("aAbBcCe");
+    p.alphabet("aAbBcCe"s);
     presentation::add_identity_rules(p, 'e');
 
     presentation::add_inverse_rules(p, "AaBbCce", 'e');
@@ -957,7 +957,7 @@ namespace libsemigroups {
     REQUIRE_EXCEPTION_MSG(presentation::balance(p, {2, 1}, {1, 2}),
                           "invalid letter (char with value) 2, valid letters "
                           "are (char values) [0, 1]");
-    p.alphabet("ab").contains_empty_word(true);
+    p.alphabet("ab"s).contains_empty_word(true);
     p.rules = {"aaaaaaaaa", "b"};
     presentation::balance(p, "ab"s, "ba"s);
     REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
@@ -970,7 +970,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("ab").contains_empty_word(true);
+    p.alphabet("ab"s).contains_empty_word(true);
 
     p.rules = {"aaaaaaaaa", "b"};
     presentation::balance_no_checks(p, "ba"s);
@@ -1005,7 +1005,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc").contains_empty_word(true);
+    p.alphabet("abc"s).contains_empty_word(true);
 
     p.rules = {"ab",
                "",
@@ -1579,7 +1579,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefghi");
+    p.alphabet("abcdefghi"s);
     presentation::add_rule(p, "d", "ffg");
     presentation::add_rule(p, "bcbc", "cc");
     presentation::add_rule(p, "bbb", "d");
@@ -1687,7 +1687,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "ba", "abaaabaa");
     presentation::replace_word_with_new_generator(p, "ba");
     presentation::change_alphabet(p, "abc");
@@ -1741,7 +1741,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("axy");
+    p.alphabet("axy"s);
     presentation::normalize_alphabet(p);
     REQUIRE(p.alphabet() == "abc");
     Presentation<word_type> q;
@@ -1757,21 +1757,21 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     using words::human_readable_letter;
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "baabaa", "ababa");
     REQUIRE(presentation::first_unused_letter(p) == 'c');
-    p.alphabet("abcdefghijklmnopq");
+    p.alphabet("abcdefghijklmnopq"s);
     REQUIRE(presentation::first_unused_letter(p) == 'r');
-    p.alphabet("abcdefghijklmnopqrstuvwxyz");
+    p.alphabet("abcdefghijklmnopqrstuvwxyz"s);
     REQUIRE(presentation::first_unused_letter(p) == 'A');
-    p.alphabet("abcdefgijklmnopqrstuvwxyz");
+    p.alphabet("abcdefgijklmnopqrstuvwxyz"s);
     REQUIRE(presentation::first_unused_letter(p) == 'h');
     p.alphabet("abcdefghijklmnopqrstuvwxyzABCD"
-               "EFGHIJKLMNOPQRSTUVWXYZ");
+               "EFGHIJKLMNOPQRSTUVWXYZ"s);
     REQUIRE(presentation::first_unused_letter(p) == '0');
     p.alphabet("abcdefghijklmnopqrstuvwxyzABCD"
-               "EFGHIJKLMNOPQRSTUVWXYZ02");
+               "EFGHIJKLMNOPQRSTUVWXYZ02"s);
     REQUIRE(presentation::first_unused_letter(p) == '1');
     std::string const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHI"
                                 "JKLMNOPQRSTUVWXYZ0123456789";
@@ -1796,7 +1796,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("a");
+    p.alphabet("a"s);
     presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaa", "a");
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaaaa");
     presentation::replace_word_with_new_generator(p, "aaaaaa");
@@ -1806,11 +1806,11 @@ namespace libsemigroups {
     p.rules = std::vector<std::string>({"bba", "a", "b", "aaaaaaaa"});
     REQUIRE(presentation::length(p) == 13);
 
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "baaaaaaaaaaaaaaaaaaa", "a");
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaaaa");
 
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.rules.clear();
     presentation::add_rule(p, "aaaaaaaaaaaaaaaa", "a");
     presentation::add_rule(p, "bbbbbbbbbbbbbbbb", "b");
@@ -1902,7 +1902,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.rules.clear();
     presentation::add_rule(p, "aaaaaaaaaaaaaaaa", "a");
     presentation::add_rule(p, "bbbbbbbbbbbbbbbb", "b");
@@ -1930,7 +1930,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p1;
-    p1.alphabet("ab");
+    p1.alphabet("ab"s);
     p1.rules.clear();
     presentation::add_rule(p1, "aaaaaa", "a");
     presentation::add_rule(p1, "bbbbbb", "b");
@@ -1952,7 +1952,7 @@ namespace libsemigroups {
     REQUIRE(p1 != q1);
 
     Presentation<std::string> p2;
-    p2.alphabet("ab");
+    p2.alphabet("ab"s);
     presentation::add_rule(p2, "aaaaaaaaaaaaaaaa", "a");
     presentation::add_rule(p2, "bbbbbbbbbbbbbbbb", "b");
     presentation::add_rule(p2, "abb", "baa");
@@ -1969,7 +1969,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaaaaab", "aaaaaaaaab");
     REQUIRE(presentation::strongly_compress(p));
     REQUIRE(p.rules == decltype(p.rules)({"a", "aa"}));
@@ -1984,7 +1984,7 @@ namespace libsemigroups {
         == decltype(p.rules)({"aaaaaaaaaaaaaaaaaaa", "baaaaaaaaaaaaaaaaa"}));
 
     // Only works for 1-relation monoids at present
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaaaaab", "aaaaaaaaab");
     presentation::add_rule(p, "aaaaaaaab", "aaaaaaaaab");
     REQUIRE(!presentation::strongly_compress(p));
@@ -1997,7 +1997,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "abaaaabab", "abbabaaaab");
     REQUIRE(presentation::strongly_compress(p));
     REQUIRE(p.rules == decltype(p.rules)({"abccdae", "fgeabccd"}));
@@ -2017,7 +2017,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aabb", "aaabaaab");
     REQUIRE(presentation::strongly_compress(p));
     presentation::reverse(p);
@@ -2055,7 +2055,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.rules = {"aabb", "aaabaab"};
     REQUIRE(presentation::strongly_compress(p));
     REQUIRE(p.rules == decltype(p.rules)({"abc", "aabdab"}));
@@ -2076,7 +2076,7 @@ namespace libsemigroups {
     REQUIRE(!lenlex_cmp(chain(prefix1, suffix1), chain(prefix2, suffix2)));
 
     Presentation<std::string> p;
-    p.alphabet("bacd");
+    p.alphabet("bacd"s);
     p.rules = {"baabbabaa",
                "abaaba",
                "abbaba",
@@ -2622,7 +2622,7 @@ namespace libsemigroups {
 
     {
       Presentation<std::string> p;
-      p.alphabet("ab");
+      p.alphabet("ab"s);
       REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet('c'),
                             "invalid letter \'c\', valid letters are \"ab\"");
       if constexpr (std::is_unsigned_v<char>) {
@@ -2649,7 +2649,7 @@ namespace libsemigroups {
       }
       REQUIRE_EXCEPTION_MSG(
           p.alphabet(257), "expected a value in the range [0, 257), found 257");
-      REQUIRE_EXCEPTION_MSG(p.alphabet("aba"),
+      REQUIRE_EXCEPTION_MSG(p.alphabet("aba"s),
                             "invalid alphabet \"aba\", duplicate letter 'a'!");
       REQUIRE_EXCEPTION_MSG(p.alphabet(std::string({0, 1, 0})),
                             "invalid alphabet (char values) [0, 1, 0], "
@@ -2664,7 +2664,7 @@ namespace libsemigroups {
       REQUIRE_EXCEPTION_MSG(
           presentation::add_inverse_rules(p, {'b', 'a', 'c'}, 'a'),
           "invalid inverses, the identity is 'a', but 'a' ^ -1 = 'b'");
-      p.alphabet("abc");
+      p.alphabet("abc"s);
       REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, "aab"),
                             "invalid inverses, the letter 'a' is duplicated!");
       REQUIRE_EXCEPTION_MSG(
@@ -2774,25 +2774,25 @@ namespace libsemigroups {
 
     {
       Presentation<std::string> p;
-      p.alphabet("ab");
+      p.alphabet("ab"s);
       p.add_generator();
       REQUIRE(p.alphabet() == "abc");
     }
     {
       Presentation<std::string> p;
-      p.alphabet("ac");
+      p.alphabet("ac"s);
       p.add_generator();
       REQUIRE(p.alphabet() == "acb");
     }
     {
       Presentation<std::string> p;
-      p.alphabet("ac");
+      p.alphabet("ac"s);
       p.add_generator('b');
       REQUIRE(p.alphabet() == "acb");
     }
     {
       Presentation<std::string> p;
-      p.alphabet("ac");
+      p.alphabet("ac"s);
       REQUIRE_EXCEPTION_MSG(p.add_generator('c'),
                             "the argument 'c' already belongs to the alphabet "
                             "\"ac\", expected an unused letter");
@@ -2912,14 +2912,14 @@ namespace libsemigroups {
     }
     {
       Presentation<std::string> p;
-      p.alphabet("a");
+      p.alphabet("a"s);
       REQUIRE(to_human_readable_repr(p)
               == "<semigroup presentation with 1 "
                  "letter, 0 rules, and length 0>");
     }
     {
       Presentation<std::string> p;
-      p.alphabet("a");
+      p.alphabet("a"s);
       presentation::add_rule_no_checks(p, "aa", "a");
       REQUIRE(to_human_readable_repr(p)
               == "<semigroup presentation with 1 "
@@ -2944,7 +2944,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
 
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     v4::ToWord to_word(p.alphabet());
     REQUIRE(to_word("aaabbbab") == word_type({0, 0, 0, 1, 1, 1, 0, 1}));
 
@@ -2960,7 +2960,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
 
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     ToString to_string(p.alphabet());
     REQUIRE(to_string(word_type({0, 0, 0, 1, 1, 1, 0, 1})) == "aaabbbab");
 
@@ -2981,7 +2981,7 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(presentation::to_gap_string(p, var_name));
 
     p.init();
-    p.alphabet("byr");
+    p.alphabet("byr"s);
     presentation::add_rule(p, "byyb", "ybr");
     presentation::add_rule(p, "yb", "by");
     presentation::add_rule(p, "rby", "yb");
@@ -3218,7 +3218,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaa", "bbb");
     presentation::add_rule(p, "ababa", "aaabaabaaabaa");
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aba");
@@ -3230,7 +3230,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc").contains_empty_word(true);
+    p.alphabet("abc"s).contains_empty_word(true);
     presentation::add_rule(p, "aaaaa", "bbb");
     presentation::add_rule(p, "cba", "aaccaca");
     presentation::add_rule(p, "aba", "");
@@ -3299,7 +3299,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc").contains_empty_word(true);
+    p.alphabet("abc"s).contains_empty_word(true);
     presentation::add_rule(p, "aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb");
     presentation::add_rule(p, "cccccccccccccc", "aaaaba");
     presentation::add_rule(p, "bbb", "bbbbab");
@@ -3318,7 +3318,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb");
     presentation::add_rule(p, "ddddcc", "aaaaba");
     presentation::add_rule(p, "bbb", "bbbbab");
@@ -3336,7 +3336,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "bbb");
     presentation::add_rule(p,
                            "ababa",
@@ -3352,7 +3352,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcABC").contains_empty_word(true);
+    p.alphabet("abcABC"s).contains_empty_word(true);
     presentation::add_rule(p, "aBCbac", "bACbaacA");
     presentation::add_rule(p, "accAABab", "");
 
@@ -3458,7 +3458,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     // Intentionally use no_checks in next line to test this specific function
     presentation::add_cyclic_conjugates_no_checks(p, "bca");
     p.contains_empty_word(true);
@@ -3505,7 +3505,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "adc"s),
                           "invalid letter 'd', valid letters are \"abc\"");
     REQUIRE_EXCEPTION_MSG(
@@ -3523,7 +3523,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     REQUIRE_NOTHROW(presentation::throw_if_bad_inverses(p, "ab"s, "ab"s));
     REQUIRE_NOTHROW(presentation::throw_if_bad_inverses(p, "ab"s, "ba"s));
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "bc"s, "ac"s),
@@ -3544,7 +3544,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc").contains_empty_word(true);
+    p.alphabet("abc"s).contains_empty_word(true);
     p.rules = {"aaa", "", "ba", "", "ba", "ab"};
     REQUIRE(presentation::is_rule(p, "ba"s, "ab"s));
     REQUIRE(!presentation::is_rule(p, "ba"s, "aa"s));
@@ -3564,7 +3564,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc").contains_empty_word(true);
+    p.alphabet("abc"s).contains_empty_word(true);
     p.rules = {"aaa", "", "ba", "", "ba", "ab"};
 
     auto it = presentation::find_rule(p, "ba"s, "ab"s);
@@ -3587,7 +3587,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc").contains_empty_word(true);
+    p.alphabet("abc"s).contains_empty_word(true);
     p.rules = {"aaa", "", "ba", "", "ba", "ab"};
 
     REQUIRE(presentation::index_rule(p, "ba"s, "ab"s) == 4);
@@ -4004,7 +4004,7 @@ namespace libsemigroups {
                           "[quick]") {
     auto                             rg = ReportGuard(false);
     InversePresentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.inverses("ABCabc");
     REQUIRE(p.inverses() == "ABCabc");
 
@@ -4018,7 +4018,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     p.contains_empty_word(true);
     presentation::add_rule_no_checks(p, "aBCbac", "");
     presentation::add_rule_no_checks(p, "bACbaacA", "");
@@ -4036,7 +4036,7 @@ End;)xxx");
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.contains_empty_word(true);
     using literals::operator""_p;
 
@@ -4072,7 +4072,7 @@ End;)xxx");
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.contains_empty_word(true);
     using literals::operator""_p;
 
@@ -4095,7 +4095,7 @@ End;)xxx");
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abAB");
+    p.alphabet("abAB"s);
     REQUIRE_EXCEPTION_MSG(presentation::to_ace_string(p),
                           "expected alphabet to consist only of lowercase "
                           "letters, found \"abAB\"!");

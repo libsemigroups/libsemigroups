@@ -34,6 +34,7 @@
 #include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemSet, Rewri...
 
 namespace libsemigroups {
+  using std::literals::operator""s;
 
   using literals::operator""_w;
 
@@ -79,7 +80,7 @@ namespace libsemigroups {
 
     Presentation<TestType> p;
     if constexpr (std::is_same_v<TestType, std::string>) {
-      p.alphabet("abB");
+      p.alphabet("abB"s);
       presentation::add_rule_no_checks(p, "bb", "B");
       presentation::add_rule_no_checks(p, "BaB", "aba");
       presentation::add_rule_no_checks(p, "a", "b");
@@ -125,7 +126,7 @@ namespace libsemigroups {
 
     Presentation<Word> p;
     if constexpr (std::is_same_v<Word, std::string>) {
-      p.alphabet("abB");
+      p.alphabet("abB"s);
       presentation::add_rule_no_checks(p, "bb", "B");
       presentation::add_rule_no_checks(p, "BaB", "aba");
       presentation::add_rule_no_checks(p, "a", "b");
