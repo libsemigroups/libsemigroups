@@ -3154,6 +3154,52 @@ namespace libsemigroups {
     ip.throw_if_bad_alphabet_rules_or_inverses();
   }
 
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "067",
+                          "fluent modifiers",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+
+    using inverse_presentation_type = InversePresentation<std::string>;
+    inverse_presentation_type p;
+    static_assert(
+        std::is_same_v<decltype(p.alphabet("aA")), inverse_presentation_type&>);
+    static_assert(std::is_same_v<decltype(p.alphabet()), std::string const&>);
+    static_assert(std::is_same_v<decltype(p.contains_empty_word()), bool>);
+
+    auto& result = p.alphabet("aA").contains_empty_word(true).inverses("Aa");
+    REQUIRE(&result == &p);
+    REQUIRE(p.alphabet() == "aA");
+    REQUIRE(p.inverses() == "Aa");
+    REQUIRE(p.contains_empty_word());
+
+    REQUIRE(&p.init() == &p);
+    REQUIRE(p.alphabet().empty());
+    REQUIRE(p.inverses().empty());
+    REQUIRE_FALSE(p.contains_empty_word());
+
+    InversePresentation<word_type> q;
+    static_assert(std::is_same_v<decltype(q.add_generator()),
+                                 InversePresentation<word_type>::letter_type>);
+    word_type lhs = {0, 0};
+    word_type rhs = {1};
+    auto&     other_result
+        = q.alphabet(word_type({0, 1}))
+              .add_generator(2)
+              .remove_generator(2)
+              .add_generator_no_checks(2)
+              .remove_generator_no_checks(2)
+              .add_rule_no_checks(
+                  lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend())
+              .add_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend())
+              .alphabet_from_rules()
+              .inverses({1, 0});
+    REQUIRE(&other_result == &q);
+    REQUIRE(q.alphabet() == word_type({0, 1}));
+    REQUIRE(q.inverses() == word_type({1, 0}));
+    REQUIRE(q.rules == std::vector<word_type>({lhs, rhs, lhs, rhs}));
+  }
+
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "067",
                           "longest_subword_reducing_length #01",
