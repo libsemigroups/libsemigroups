@@ -3468,7 +3468,9 @@ namespace libsemigroups {
     word_type _inverses;
 
    public:
-    using Presentation<Word>::Presentation;
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors + initializers
+    ////////////////////////////////////////////////////////////////////////
 
     InversePresentation()                                      = default;
     InversePresentation(InversePresentation const&)            = default;
@@ -3478,7 +3480,21 @@ namespace libsemigroups {
 
     ~InversePresentation() = default;
 
-    // TODO(later) init functions
+    //! \brief Remove the alphabet, rules, and inverses.
+    //!
+    //! This function clears the alphabet, rules, and inverses, putting the
+    //! presentation back into the state it would be in if it was newly
+    //! default constructed.
+    //!
+    //! \returns A reference to `this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    InversePresentation& init() {
+      Presentation<Word>::init();
+      _inverses.clear();
+      return *this;
+    }
 
     //! \brief Construct an InversePresentation from a Presentation reference.
     //!
@@ -3500,6 +3516,100 @@ namespace libsemigroups {
     //! \param p an rvalue reference to the Presentation to construct from.
     explicit InversePresentation(Presentation<Word>&& p)
         : Presentation<Word>(p), _inverses() {}
+
+    ////////////////////////////////////////////////////////////////////////
+    // Overrides of Presentation mem fns
+    ////////////////////////////////////////////////////////////////////////
+
+    // The following mostly exist so that the return type of the mem fns is
+    // correct, even though they do nothing special here.
+
+    using Presentation<Word>::add_generator;
+    using Presentation<Word>::contains_empty_word;
+
+    //! \copydoc Presentation<Word>::alphabet() const
+    [[nodiscard]] word_type const& alphabet() const noexcept {
+      return Presentation<Word>::alphabet();
+    }
+
+    //! \copydoc Presentation<Word>::alphabet(size_type)
+    InversePresentation& alphabet(size_type n) {
+      Presentation<Word>::alphabet(n);
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::alphabet(word_type const&)
+    InversePresentation& alphabet(word_type const& lphbt) {
+      Presentation<Word>::alphabet(lphbt);
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::alphabet(word_type&&)
+    InversePresentation& alphabet(word_type&& lphbt) {
+      Presentation<Word>::alphabet(std::move(lphbt));
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::alphabet_from_rules
+    InversePresentation& alphabet_from_rules() {
+      Presentation<Word>::alphabet_from_rules();
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::add_rule_no_checks
+    template <typename Iterator1, typename Iterator2>
+    InversePresentation& add_rule_no_checks(Iterator1 lhs_begin,
+                                            Iterator1 lhs_end,
+                                            Iterator2 rhs_begin,
+                                            Iterator2 rhs_end) {
+      Presentation<Word>::add_rule_no_checks(
+          lhs_begin, lhs_end, rhs_begin, rhs_end);
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::add_rule
+    template <typename Iterator1, typename Iterator2>
+    InversePresentation& add_rule(Iterator1 lhs_begin,
+                                  Iterator1 lhs_end,
+                                  Iterator2 rhs_begin,
+                                  Iterator2 rhs_end) {
+      Presentation<Word>::add_rule(lhs_begin, lhs_end, rhs_begin, rhs_end);
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::add_generator_no_checks
+    InversePresentation& add_generator_no_checks(letter_type x) {
+      Presentation<Word>::add_generator_no_checks(x);
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::add_generator(letter_type)
+    InversePresentation& add_generator(letter_type x) {
+      Presentation<Word>::add_generator(x);
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::remove_generator_no_checks
+    InversePresentation& remove_generator_no_checks(letter_type x) {
+      Presentation<Word>::remove_generator_no_checks(x);
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::remove_generator
+    InversePresentation& remove_generator(letter_type x) {
+      Presentation<Word>::remove_generator(x);
+      return *this;
+    }
+
+    //! \copydoc Presentation<Word>::contains_empty_word(bool)
+    InversePresentation& contains_empty_word(bool val) noexcept {
+      Presentation<Word>::contains_empty_word(val);
+      return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // InversePresentation specific mem fns
+    ////////////////////////////////////////////////////////////////////////
 
     //! \brief Set the inverse of each letter in the alphabet.
     //!
@@ -3589,7 +3699,7 @@ namespace libsemigroups {
       Presentation<Word>::throw_if_bad_alphabet_or_rules();
       presentation::throw_if_bad_inverses(*this, inverses());
     }
-  };
+  };  // class InversePresentation
 
   //! \ingroup presentations_group
   //!
