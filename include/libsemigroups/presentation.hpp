@@ -522,6 +522,8 @@ namespace libsemigroups {
     //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if \p x is in `p.alphabet()`.
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn "add_letter_no_checks"
     Presentation& add_generator(native_letter_type x) {
       _alphabet.add_letter(x);
       return *this;
@@ -560,6 +562,8 @@ namespace libsemigroups {
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the letter \p x is not a generator, then bad things will
     //! happen.
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn "add_letter_no_checks"
     Presentation& remove_generator_no_checks(native_letter_type x) {
       _alphabet.remove_letter_no_checks(x);
       return *this;
@@ -578,6 +582,8 @@ namespace libsemigroups {
     //! \complexity
     //! Average case: linear in the length of the alphabet, worst case:
     //! quadratic in the length of the alphabet.
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn "add_letter_no_checks"
     Presentation& remove_generator(native_letter_type x) {
       _alphabet.remove_letter(x);
       return *this;
@@ -712,28 +718,6 @@ namespace libsemigroups {
       throw_if_bad_rules();
     }
   };  // class Presentation
-
-  //! \ingroup presentations_group
-  //!
-  //! \brief Deduction guide.
-  //!
-  //! Defined in `presentation.hpp`.
-  //!
-  //! Deduction guide to construct a `Presentation<Word>` from a
-  //! `Presentation<Word> const&`.
-  template <typename Word>
-  Presentation(Presentation<Word> const&) -> Presentation<Word>;
-
-  //! \ingroup presentations_group
-  //!
-  //! \brief Deduction guide.
-  //!
-  //! Defined in `presentation.hpp`.
-  //!
-  //! Deduction guide to construct a `Presentation<Word>` from a
-  //! `Presentation<Word>&&`.
-  template <typename Word>
-  Presentation(Presentation<Word>&&) -> Presentation<Word>;
 
   //! \ingroup presentations_group
   //!
