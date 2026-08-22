@@ -41,8 +41,8 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "adapters.hpp"  // for Hash, EqualTo
-#include "alphabet-helpers.hpp"
+#include "adapters.hpp"              // for Hash, EqualTo
+#include "alphabet-helpers.hpp"      // for TODO
 #include "alphabet.hpp"              // for Alphabet
 #include "constants.hpp"             // for Max, UNDEFINED, operator==
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
@@ -279,8 +279,10 @@ namespace libsemigroups {
     //! std::string_view to be used for the parameter \p lphbt.
     //!
     //! \warning This function is only enabled if \ref word_type is std::string.
+    //!
+    //! \deprecated_warning
     template <typename Return = Presentation&>
-    auto alphabet(std::string_view lphbt)
+    [[deprecated]] auto alphabet(std::string_view lphbt)
         -> std::enable_if_t<std::is_same_v<std::string, native_word_type>,
                             Return&> {
       return alphabet(std::string(lphbt));
@@ -305,7 +307,7 @@ namespace libsemigroups {
     //! std::initializer_list to be used for the parameter \p lphbt.
     // There's some weirdness with {0} being interpreted as a string_view, which
     // means that the next overload is required
-    Presentation&
+    [[deprecated]] Presentation&
     alphabet(std::initializer_list<typename native_word_type::value_type> const&
                  lphbt) {
       return alphabet(native_word_type(lphbt));
