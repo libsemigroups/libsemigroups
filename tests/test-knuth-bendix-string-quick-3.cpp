@@ -740,7 +740,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet({0, 1, 2});
+    p.alphabet(std::string({0, 1, 2}));
     presentation::add_rule(p, {0, 1}, {1, 0});
     presentation::add_rule(p, {0, 2}, {2, 0});
     presentation::add_rule(p, {0, 0}, {0});

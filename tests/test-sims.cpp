@@ -510,7 +510,7 @@ namespace libsemigroups {
     // sims::dot_poset("example-004", S.cbegin(16), S.cend(16));
 
     MinimalRepOrc orc;
-    auto          d = orc.presentation(p)
+    auto d = orc.presentation(p)
                  .target_size(15)
                  .number_of_threads(std::thread::hardware_concurrency())
                  .word_graph();
@@ -744,7 +744,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
-    p.alphabet({0, 1});
+    p.alphabet(01_w);
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 11_w, 1_w);
     presentation::add_rule(p, 0101_w, 0_w);
@@ -772,7 +772,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
-    p.alphabet({0, 1});
+    p.alphabet(01_w);
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 11_w, 1_w);
     presentation::add_rule(p, 0101_w, 0_w);
@@ -857,7 +857,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
-    p.alphabet({0, 1, 2});
+    p.alphabet(012_w);
     presentation::add_rule(p, 010_w, 00_w);
     presentation::add_rule(p, 22_w, 00_w);
     presentation::add_rule(p, 000_w, 00_w);
@@ -876,11 +876,11 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
-    p.alphabet({0, 1, 2});
+    p.alphabet(012_w);
     presentation::add_rule(p, {0, 1, 0}, {0, 0});
 
     Presentation<word_type> e;
-    e.alphabet({0, 1});
+    e.alphabet(01_w);
     REQUIRE_NOTHROW(Sims1().presentation(p).presentation(e));
     REQUIRE_NOTHROW(Sims1());
     Sims1 S;
@@ -1442,7 +1442,7 @@ namespace libsemigroups {
     REQUIRE(SPP2.number_of_congruences(3) == 14);
 
     Presentation<word_type> q;
-    q.alphabet({0, 1});
+    q.alphabet(01_w);
     q.contains_empty_word(true);
     presentation::add_rule(q, 000_w, 0_w);
     presentation::add_rule(q, 111_w, ""_w);
@@ -2695,7 +2695,7 @@ namespace libsemigroups {
 
     Presentation<word_type> q;
 
-    q.alphabet({0, 1});
+    q.alphabet(01_w);
     q.contains_empty_word(true);
     presentation::add_rule(q, 000_w, 0_w);
     presentation::add_rule(q, 111_w, ""_w);
@@ -2980,7 +2980,7 @@ namespace libsemigroups {
     p.throw_if_bad_alphabet_or_rules();
 
     MinimalRepOrc orc;
-    auto          d = orc.presentation(v4::to<Presentation<word_type>>(p))
+    auto d = orc.presentation(v4::to<Presentation<word_type>>(p))
                  .target_size(96)
                  .number_of_threads(std::thread::hardware_concurrency())
                  .word_graph();
@@ -3357,7 +3357,7 @@ namespace libsemigroups {
     // This doesn't fail it's just very extreme
     auto          p = presentation::examples::brauer_monoid(5);
     MinimalRepOrc orc;
-    auto          d = orc.presentation(presentation::examples::brauer_monoid(5))
+    auto d = orc.presentation(presentation::examples::brauer_monoid(5))
                  .target_size(945)
                  .number_of_threads(std::thread::hardware_concurrency())
                  // The following are pairs of words in the GAP BrauerMonoid
@@ -3387,7 +3387,7 @@ namespace libsemigroups {
       std::cout << std::string(80, '#') << std::endl;
       auto          p = presentation::examples::partial_brauer_monoid(n);
       MinimalRepOrc orc;
-      auto          d = orc.presentation(p)
+      auto d = orc.presentation(p)
                    .target_size(sizes[n])
                    .number_of_threads(std::thread::hardware_concurrency())
                    .word_graph();
@@ -4891,7 +4891,7 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
 
-    p.alphabet({0, 1});
+    p.alphabet(01_w);
     p.contains_empty_word(true);
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 111_w, ""_w);
@@ -4940,7 +4940,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     Sims1                   S;
 
-    p.alphabet({0, 1, 2});
+    p.alphabet(012_w);
     p.contains_empty_word(true);
     S.presentation(p);
 
@@ -4953,8 +4953,8 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_active_nodes() == 2);
     wg = S.number_of_threads(1).find_if(3, [](auto const&) { return false; });
     REQUIRE(wg.number_of_active_nodes() == 0);
-    sims::add_excluded_pair(S, {0, 0}, {0, 1});
-    sims::add_included_pair(S, {0, 0}, {0, 1});
+    sims::add_excluded_pair(S, 00_w, 01_w);
+    sims::add_included_pair(S, 00_w, 01_w);
     REQUIRE(S.number_of_congruences(3) == 0);
   }
 
@@ -4965,14 +4965,14 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
 
-    p.alphabet({0, 1});
+    p.alphabet(01_w);
     p.contains_empty_word(true);
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 111_w, ""_w);
     presentation::add_rule(p, 011_w, 10_w);
 
     MinimalRepOrc orc;
-    auto          d = orc.presentation(p)
+    auto d = orc.presentation(p)
                  .target_size(9)
                  .number_of_threads(std::thread::hardware_concurrency())
                  .word_graph();
