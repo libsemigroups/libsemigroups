@@ -45,15 +45,6 @@
 
 namespace libsemigroups {
 
-  namespace {
-
-    template <typename W1, typename W2>
-    void check_to_inverse_presentation() {}
-
-    template <typename Word>
-    void check_to_inverse_presentation_from_presentation() {}
-  }  // namespace
-
   using detail::StaticVector1;
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<Presentation>",
@@ -433,7 +424,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -467,7 +458,7 @@ namespace libsemigroups {
                           "from KnuthBendix<std::string>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("hijkl");
@@ -503,7 +494,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -539,8 +530,8 @@ namespace libsemigroups {
                           "025",
                           "from Kambites<Word>",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
-    using literals::        operator""_w;
+    auto rg = ReportGuard(false);
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);
@@ -571,8 +562,8 @@ namespace libsemigroups {
                           "026",
                           "from ToddCoxeter<Word>",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
-    using literals::        operator""_w;
+    auto rg = ReportGuard(false);
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);
@@ -603,8 +594,8 @@ namespace libsemigroups {
                           "027",
                           "from Stephen<Presentation<Word>>",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
-    using literals::        operator""_w;
+    auto rg = ReportGuard(false);
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);
@@ -625,7 +616,7 @@ namespace libsemigroups {
                           "from Congruence<word_type> (twosided)",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     // Test 1: Congruence<word_type> -> Presentation<word_type> (same type)
     Presentation<word_type> p;
@@ -671,7 +662,7 @@ namespace libsemigroups {
 
     // Test 2: Congruence<std::string> -> Presentation<word_type> (convert)
     using literals::operator""_w;
-    auto            q = to<Presentation<word_type>>(c_str);
+    auto q = to<Presentation<word_type>>(c_str);
     REQUIRE(q == v4::to<Presentation<word_type>>(p_str));
     REQUIRE(q.alphabet() == 012_w);
     REQUIRE(q.rules
@@ -683,7 +674,7 @@ namespace libsemigroups {
                           "from Congruence<word_type> (onesided)",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);
@@ -708,7 +699,7 @@ namespace libsemigroups {
                           "from Congruence with generating pairs",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);
