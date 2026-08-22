@@ -56,13 +56,14 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  Presentation<Word>& Presentation<Word>::alphabet(word_type const& lphbt) {
+  Presentation<Word>&
+  Presentation<Word>::alphabet(native_word_type const& lphbt) {
     _alphabet.init(lphbt);
     return *this;
   }
 
   template <typename Word>
-  Presentation<Word>& Presentation<Word>::alphabet(word_type&& lphbt) {
+  Presentation<Word>& Presentation<Word>::alphabet(native_word_type&& lphbt) {
     _alphabet.init(std::move(lphbt));
     return *this;
   }

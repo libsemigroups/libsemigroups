@@ -81,7 +81,7 @@ namespace libsemigroups {
   //! * `to<Presentation>` functions \ref to_presentation_group "here".
 
   struct [[deprecated("Use is_specialization_of_v<Thing, Presentation> "
-                      "instead")]] PresentationBase{};
+                      "instead")]] PresentationBase {};
 
   //! \ingroup presentations_group
   //!
@@ -113,25 +113,26 @@ namespace libsemigroups {
 #pragma GCC diagnostic pop
 
    public:
+    using word_type [[deprecated("use native_word_type instead")]] = Word;
+
     //! \brief Type of the words in the rules of a Presentation object.
-    // TODO(v4) rename "native_word_type" for consistency and to disambiguate
-    // from libsemigroups::word_type
-    using word_type = Word;
+    using native_word_type = Word;
 
     //! \brief Type of the letters in the words that constitute the rules of
     //! a Presentation object.
     // TODO(v4) rename "native_letter_type" for consistency and to disambiguate
     // from libsemigroups::letter_type
-    using letter_type = typename word_type::value_type;
+    using letter_type = typename native_word_type::value_type;
 
     //! \brief Type of a const iterator to either side of a rule.
-    using const_iterator = typename std::vector<word_type>::const_iterator;
+    using const_iterator =
+        typename std::vector<native_word_type>::const_iterator;
 
     //! \brief Type of an iterator to either side of a rule.
-    using iterator = typename std::vector<word_type>::iterator;
+    using iterator = typename std::vector<native_word_type>::iterator;
 
     //! \brief Size type for rules.
-    using size_type = typename std::vector<word_type>::size_type;
+    using size_type = typename std::vector<native_word_type>::size_type;
 
    private:
     Alphabet<Word> _alphabet;
@@ -143,7 +144,7 @@ namespace libsemigroups {
     //! The rules can be altered using the member functions of `std::vector`,
     //! and the presentation can be checked for validity using
     //! \ref throw_if_bad_alphabet_or_rules.
-    std::vector<word_type> rules;
+    std::vector<native_word_type> rules;
 
     //! \brief Default constructor.
     //!
@@ -188,7 +189,7 @@ namespace libsemigroups {
     //!
     //! Returns the alphabet of the presentation.
     //!
-    //! \returns A const reference to \c Presentation::word_type.
+    //! \returns A const reference to \c Presentation::native_word_type.
     //!
     //! \exceptions
     //! \noexcept
@@ -196,12 +197,13 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // TODO(v4) replace with the function below
-    [[nodiscard]] word_type const& alphabet() const noexcept {
+    [[nodiscard]] native_word_type const& alphabet() const noexcept {
       return _alphabet.letters();
     }
 
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-    [[nodiscard]] Alphabet<word_type> const& alphabet_v4() const noexcept {
+    [[nodiscard]] Alphabet<native_word_type> const&
+    alphabet_v4() const noexcept {
       return _alphabet;
     }
 #endif
@@ -247,7 +249,7 @@ namespace libsemigroups {
     //! \sa
     //! * \ref throw_if_bad_rules
     //! * \ref throw_if_bad_alphabet_or_rules
-    Presentation& alphabet(word_type const& lphbt);
+    Presentation& alphabet(native_word_type const& lphbt);
 
     //! \brief Set the alphabet from rvalue reference.
     //!
@@ -267,7 +269,7 @@ namespace libsemigroups {
     //! \sa
     //! * \ref throw_if_bad_rules
     //! * \ref throw_if_bad_alphabet_or_rules
-    Presentation& alphabet(word_type&& lphbt);
+    Presentation& alphabet(native_word_type&& lphbt);
 
     //! \brief Set the alphabet from string_view.
     //!
@@ -277,7 +279,8 @@ namespace libsemigroups {
     //! \warning This function is only enabled if \ref word_type is std::string.
     template <typename Return = Presentation&>
     auto alphabet(std::string_view lphbt)
-        -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return&> {
+        -> std::enable_if_t<std::is_same_v<std::string, native_word_type>,
+                            Return&> {
       return alphabet(std::string(lphbt));
     }
 
@@ -289,7 +292,8 @@ namespace libsemigroups {
     //! \warning This function is only enabled if \ref word_type is std::string.
     template <typename Return = Presentation&>
     auto alphabet(char const* lphbt)
-        -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return> {
+        -> std::enable_if_t<std::is_same_v<std::string, native_word_type>,
+                            Return> {
       return alphabet(std::string(lphbt));
     }
 
@@ -299,9 +303,10 @@ namespace libsemigroups {
     //! std::initializer_list to be used for the parameter \p lphbt.
     // There's some weirdness with {0} being interpreted as a string_view, which
     // means that the next overload is required
-    Presentation& alphabet(
-        std::initializer_list<typename word_type::value_type> const& lphbt) {
-      return alphabet(word_type(lphbt));
+    Presentation&
+    alphabet(std::initializer_list<typename native_word_type::value_type> const&
+                 lphbt) {
+      return alphabet(native_word_type(lphbt));
     }
 
     //! \brief Set the alphabet to be the letters in the rules.
