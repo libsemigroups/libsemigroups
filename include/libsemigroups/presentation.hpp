@@ -280,7 +280,7 @@ namespace libsemigroups {
     //!
     //! \warning This function is only enabled if \ref word_type is std::string.
     //!
-    //! \deprecated_warning
+    //! \deprecated_warning{function}
     template <typename Return = Presentation&>
     [[deprecated]] auto alphabet(std::string_view lphbt)
         -> std::enable_if_t<std::is_same_v<std::string, native_word_type>,
@@ -294,6 +294,8 @@ namespace libsemigroups {
     //! string literals to be used for the parameter \p lphbt.
     //!
     //! \warning This function is only enabled if \ref word_type is std::string.
+    //!
+    //! \deprecated_warning{function}
     template <typename Return = Presentation&>
     [[deprecated]] auto alphabet(char const* lphbt)
         -> std::enable_if_t<std::is_same_v<std::string, native_word_type>,
@@ -305,6 +307,8 @@ namespace libsemigroups {
     //!
     //! This is an overload for \ref alphabet(word_type&&) to allow
     //! std::initializer_list to be used for the parameter \p lphbt.
+    //!
+    //! \deprecated_warning{function}
     // There's some weirdness with {0} being interpreted as a string_view, which
     // means that the next overload is required
     [[deprecated]] Presentation&
