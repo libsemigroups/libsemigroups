@@ -61,6 +61,8 @@
 #include "libsemigroups/detail/timer.hpp"     // for string_time
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   template <typename Word>
   class Congruence;
   template <typename Word>
@@ -281,7 +283,7 @@ namespace libsemigroups {
                                    Kambites<>) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefg");
+    p.alphabet("abcdefg"s);
 
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
@@ -322,7 +324,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("Bab");
+    p.alphabet("Bab"s);
     presentation::add_rule_no_checks(p, "aa", "");
     presentation::add_rule_no_checks(p, "bB", "");
     presentation::add_rule_no_checks(p, "bbb", "");
@@ -345,7 +347,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("Bab");
+    p.alphabet("Bab"s);
     presentation::add_rule_no_checks(p, "aa", "");
     presentation::add_rule_no_checks(p, "bB", "");
     presentation::add_rule_no_checks(p, "bbb", "");
@@ -357,7 +359,7 @@ namespace libsemigroups {
     REQUIRE(to<FroidurePin>(cong)->size() == 12);
 
     p.init();
-    p.alphabet("abcdefg");
+    p.alphabet("abcdefg"s);
     p.contains_empty_word(false);
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
@@ -382,7 +384,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("Bab");
+    p.alphabet("Bab"s);
     presentation::add_rule_no_checks(p, "aa", "");
     presentation::add_rule_no_checks(p, "bB", "");
     presentation::add_rule_no_checks(p, "bbb", "");
@@ -418,7 +420,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("Bab");
+    p.alphabet("Bab"s);
 
     presentation::add_rule_no_checks(p, "aa", "");
     presentation::add_rule_no_checks(p, "bB", "");

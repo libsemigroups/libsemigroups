@@ -53,6 +53,7 @@
 #include "libsemigroups/detail/stl.hpp"     // for hash
 
 namespace libsemigroups {
+  using std::literals::operator""s;
 
   using namespace literals;
   using namespace rx;
@@ -370,7 +371,7 @@ namespace libsemigroups {
 
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaa", "aa");
     presentation::add_rule(p, "bb", "b");
     presentation::add_rule(p, "ab", "b");

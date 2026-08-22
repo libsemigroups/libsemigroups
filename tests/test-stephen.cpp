@@ -56,8 +56,8 @@
 
 namespace libsemigroups {
   using namespace literals;
-  using rx::operator|;
-  using namespace std::string_literals;
+  using rx::           operator|;
+  using std::literals::operator""s;
 
   namespace {
     template <typename Word>
@@ -356,7 +356,7 @@ namespace libsemigroups {
                           "[quick][stephen]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "bbb", "b");
     presentation::add_rule(p, "abab", "aa");
@@ -459,7 +459,7 @@ namespace libsemigroups {
                           "[quick][stephen]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefg");
+    p.alphabet("abcdefg"s);
     presentation::add_rule(p, "aaaeaa", "abcd");
     presentation::add_rule(p, "ef", "dg");
 
@@ -555,7 +555,7 @@ namespace libsemigroups {
                           "[quick][stephen]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule(p, "ab", "ba");
     presentation::add_rule(p, "ac", "cc");
     presentation::add_rule(p, "ac", "a");
@@ -617,7 +617,7 @@ namespace libsemigroups {
                           "[quick][stephen]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "bb", "c");
     presentation::add_rule(p, "caca", "abab");
     presentation::add_rule(p, "bc", "d");
@@ -784,7 +784,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("cab");
+    p.alphabet("cab"s);
     presentation::add_rule(p, "aabc", "acba");
 
     Stephen S(p);
@@ -964,7 +964,7 @@ namespace libsemigroups {
       "[stephen][quick]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefgh");
+    p.alphabet("abcdefgh"s);
 
     presentation::add_rule(p, "abcd", "ce");
     presentation::add_rule(p, "df", "hd");
@@ -1004,7 +1004,7 @@ namespace libsemigroups {
       "[stephen][quick]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefghij");
+    p.alphabet("abcdefghij"s);
 
     presentation::add_rule(p, "afh", "bgh");
     presentation::add_rule(p, "hc", "de");
@@ -1040,7 +1040,7 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     v4::ToWord                to_word("abcd");
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "aabc", "acba");
     std::string original = "cbacbaabcaabcacbacba";
     std::string expected = "cbaabcabcaabcaabcabc";
@@ -1081,7 +1081,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "abcd", "accca");
 
     check_words_accepted(p, "bbcabcdaccaccabcddd"s, "bbcabcdaccaccabcddd"s);
@@ -1108,7 +1108,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule(p, "ccab", "cbac");
 
     check_words_accepted(p, "bacbaccabccabcbacbac"s, "bacbacbaccbaccbacbac"s);
@@ -1139,7 +1139,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "abcd", "dcba");
 
     check_words_accepted(p, "dcbdcba"s, "abcdbcd"s);
@@ -1166,7 +1166,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "abcd", "dcba");
     presentation::add_rule(p, "adda", "dbbd");
 
@@ -1195,7 +1195,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(
         p, "ababbabbbabbbb"s, "abbbbbabbbbbbabbbbbbbabbbbbbbb"s);
     presentation::add_rule(
@@ -1234,7 +1234,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "acba", "aabc");
     presentation::add_rule(p, "acba", "adbd");
     check_equal_to(p, "acbacba"s, "aabcabc"s);
@@ -1264,7 +1264,7 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     v4::ToWord                to_word("abcd");
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "acba"s, "aabc"s);
     presentation::add_rule(p, "acba"s, "dbbd"s);
     check_words_accepted(p, "bbacbcaaabcbbd"s, "bbacbcaaabcbbd"s);
@@ -1345,7 +1345,7 @@ namespace libsemigroups {
     v4::ToWord  to_word("abcABC");
 
     InversePresentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.inverses_no_checks("ABCabc");
 
     auto S = Stephen(std::move(p));
@@ -1400,7 +1400,7 @@ namespace libsemigroups {
     ReportGuard                      rg(false);
     v4::ToWord                       to_word("abcABC");
     InversePresentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.inverses_no_checks("ABCabc");
 
     auto S = Stephen(p);
@@ -1441,7 +1441,7 @@ namespace libsemigroups {
     ReportGuard                      rg(false);
     v4::ToWord                       to_word("xyXY");
     InversePresentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.inverses_no_checks("XYxy");
     presentation::add_rule(p, "xyXxyX", "xyX");
 
@@ -1501,7 +1501,7 @@ namespace libsemigroups {
     ReportGuard                      rg(false);
     v4::ToWord                       to_word("abcABC");
     InversePresentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.inverses_no_checks("ABCabc");
     presentation::add_rule(p, "ac", "ca");
     presentation::add_rule(p, "ab", "ba");
@@ -2058,7 +2058,7 @@ namespace libsemigroups {
     using words::pow;
 
     InversePresentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.inverses_no_checks("ABCabc");
 
     auto S  = Stephen(p);
@@ -2092,11 +2092,11 @@ namespace libsemigroups {
     ReportGuard rg(false);
 
     InversePresentation<std::string> p;
-    p.alphabet("aA");
+    p.alphabet("aA"s);
     p.inverses("Aa");
     Stephen S(p);
 
-    p.alphabet("bB");
+    p.alphabet("bB"s);
     p.inverses("Bb");
     Stephen T(p);
 

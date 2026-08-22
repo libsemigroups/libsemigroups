@@ -83,7 +83,7 @@ namespace libsemigroups {
 
   using TCE     = detail::TCE;
   using options = detail::ToddCoxeterImpl::options;
-  using std::string_literals::operator""s;
+  using std::literals::operator""s;
 
   using namespace literals;
   using namespace rx;
@@ -1361,7 +1361,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "a", "bb");
     presentation::reverse(p);
@@ -1389,7 +1389,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abB");
+    p.alphabet("abB"s);
     presentation::add_rule_no_checks(p, "bb", "B");
     presentation::add_rule_no_checks(p, "BaB", "aba");
 
@@ -1496,7 +1496,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abe");
+    p.alphabet("abe"s);
     presentation::add_identity_rules(p, 'e');
     presentation::add_rule(p, "abb", "bb");
     presentation::add_rule(p, "bbb", "bb");
@@ -2223,7 +2223,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     {
       Presentation<std::string> p;
-      p.alphabet("ab");
+      p.alphabet("ab"s);
       presentation::add_rule(p, "aaa", "a");
       presentation::add_rule(p, "a", "bb");
 
@@ -2293,7 +2293,7 @@ namespace libsemigroups {
       }
       {
         Presentation<std::string> q;
-        q.alphabet("ab");
+        q.alphabet("ab"s);
         presentation::add_rule(q, "aaa", "a");
         presentation::add_rule(q, "a", "bb");
 
@@ -2320,7 +2320,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "bb", "c");
     presentation::add_rule(p, "caca", "abab");
     presentation::add_rule(p, "bc", "d");
@@ -2360,7 +2360,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("abcdef");
+    p.alphabet("abcdef"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "defabc");
     presentation::add_rule(p, "bbdeaecbffdbaeeccefbccefb", "");
@@ -2452,7 +2452,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("ABabe");
+    p.alphabet("ABabe"s);
     presentation::add_identity_rules(p, 'e');
     presentation::add_rule(p, "aa", "e");
     presentation::add_rule(p, "bbbbb", "e");
@@ -2500,7 +2500,7 @@ namespace libsemigroups {
                           "[no-valgrind][todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "a^3"_p, "a");
     presentation::add_rule(p, "b^4"_p, "b");
     presentation::add_rule(p, "(ab)^5"_p, "aa");
@@ -2523,7 +2523,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "b^4"_p, "b");
     presentation::add_rule(p, "(ab)^4"_p, "aa");
@@ -2550,7 +2550,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcABCDEFGHIXYZ");
+    p.alphabet("abcABCDEFGHIXYZ"s);
     presentation::add_rule(p, "A", "a^14"_p);
     presentation::add_rule(p, "B", "b^14"_p);
     presentation::add_rule(p, "C", "c^14"_p);
@@ -2633,7 +2633,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-coverage][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "a^32"_p, "a");
     presentation::add_rule(p, "bbb", "b");
     presentation::add_rule(p, "ababa", "b");
@@ -2695,7 +2695,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "a^16"_p, "a");
     presentation::add_rule(p, "b^16"_p, "b");
     presentation::add_rule(p, "abb", "baa");
@@ -2724,7 +2724,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "b^6"_p, "b");
     presentation::add_rule(p, "((ab)^2b^3)^7ab^2a"_p, "bb");
@@ -2775,7 +2775,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "b^6"_p, "b");
     presentation::add_rule(p, "((ab)^2b^3)^7(ab^2)^2b^3a^2"_p, "bb");
@@ -2821,7 +2821,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto                      rg = ReportGuard();
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "b^9"_p, "b");
     presentation::add_rule(p, "((ab)^2b^3)^7(ab^2)^2b^6"_p, "bb");
@@ -2869,7 +2869,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "b^9"_p, "b");
     presentation::add_rule(p, "((ab)^2b^6)^2(ab^2)^2b^6"_p, "bb");
@@ -2919,7 +2919,7 @@ namespace libsemigroups {
       "[todd-coxeter][standard][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcde");
+    p.alphabet("abcde"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "bbb", "b");
     presentation::add_rule(p, "ccc", "c");
@@ -2964,7 +2964,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "b^23"_p, "b");
     presentation::add_rule(p, "ab^11ab^2"_p, "bba");
@@ -3005,7 +3005,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-coverage][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("aAbBcCdDyYfFgGe");
+    p.alphabet("aAbBcCdDyYfFgGe"s);
     p.contains_empty_word(false);
     presentation::add_identity_rules(p, 'e');
     presentation::add_inverse_rules(p, "AaBbCcDdYyFfGge", 'e');
@@ -3055,7 +3055,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("aAbBcC");
+    p.alphabet("aAbBcC"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "AaBbCc");
 
@@ -3083,7 +3083,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto                      rg = ReportGuard();
     Presentation<std::string> p;
-    p.alphabet("aAbBcC");
+    p.alphabet("aAbBcC"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "AaBbCc");
 
@@ -3139,7 +3139,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aa", "bb");
     presentation::add_rule(p, "ba", "aaaaaab");
 
@@ -3217,7 +3217,7 @@ namespace libsemigroups {
 
     for (size_t N = 2; N < 1000; N += 199) {
       Presentation<std::string> p;
-      p.alphabet("eab");
+      p.alphabet("eab"s);
       presentation::add_identity_rules(p, 'e');
 
       std::string lhs = "a" + std::string(N, 'b');
@@ -3242,7 +3242,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard][ace]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABCabc");
     presentation::add_rule(p, "aBCbac", "");
@@ -3282,7 +3282,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard][ace]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABCabc");
     presentation::add_rule(p, "aBCbac", "");
@@ -3314,7 +3314,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "ABCabc");
@@ -3344,7 +3344,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard][ace]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdxyzABCDXYZ");
+    p.alphabet("abcdxyzABCDXYZ"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "ABCDXYZabcdxyz");
@@ -3374,7 +3374,7 @@ namespace libsemigroups {
       "[todd-coxeter][standard][ace][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abAB");
+    p.alphabet("abAB"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABab");
     presentation::add_rule(p, "aBABAB", "");
@@ -3422,7 +3422,7 @@ namespace libsemigroups {
                           "[no-valgrind][todd-coxeter][quick][ace]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abstuvdABSTUVD");
+    p.alphabet("abstuvdABSTUVD"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABSTUVDabstuvd");
     presentation::add_rule(p, "aaD", "");
@@ -3475,7 +3475,7 @@ namespace libsemigroups {
       "[todd-coxeter][standard][ace][no-coverage][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABCabc");
     presentation::add_rule(p, "a^11"_p, "");
@@ -3509,7 +3509,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][ace]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abAB");
+    p.alphabet("abAB"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "ABab");
@@ -3534,7 +3534,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][ace]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abAB");
+    p.alphabet("abAB"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "ABab");
@@ -3562,7 +3562,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][ace]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abAB");
+    p.alphabet("abAB"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "ABab");
@@ -3722,7 +3722,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule(p, "a^4"_p, "a");
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
@@ -3734,7 +3734,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "XYxy");
@@ -3766,7 +3766,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-coverage][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "XYxy");
@@ -3809,7 +3809,7 @@ namespace libsemigroups {
       "[todd-coxeter][standard][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "XYxy");
@@ -3836,7 +3836,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     ReportGuard               rg(true);
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "XYxy");
@@ -3862,7 +3862,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "XYxy");
@@ -3938,7 +3938,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "XYxy");
     presentation::add_rule(p, "xx", "");
@@ -3986,7 +3986,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "XYxy");
@@ -4031,7 +4031,7 @@ namespace libsemigroups {
       "[todd-coxeter][standard][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "XYxy");
     presentation::add_rule(p, "xx", "");
@@ -4053,7 +4053,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-coverage][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "XYxy");
     presentation::add_rule(p, "xx", "");
@@ -4083,7 +4083,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "XYxy");
     presentation::add_rule(p, "xx", "");
@@ -4110,7 +4110,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "aa", "a");
     presentation::add_rule(p, "ad", "d");
     presentation::add_rule(p, "bb", "b");
@@ -4137,7 +4137,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule(p, "a", "abb");
     presentation::add_rule(p, "b", "baa");
     presentation::add_rule(p, "c", "abbabababaaababababab");
@@ -4772,7 +4772,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
-    p.contains_empty_word(true).alphabet("xyXY");
+    p.contains_empty_word(true).alphabet("xyXY"s);
     presentation::add_inverse_rules(p, "XYxy");
 
     presentation::add_rule(p, "x^2"_p, ""_p);
@@ -4800,7 +4800,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.contains_empty_word(true).alphabet("xyz");
+    p.contains_empty_word(true).alphabet("xyz"s);
 
     presentation::add_rule(p, "x^2"_p, "y"_p);
     presentation::add_rule(p, "y^2"_p, "z"_p);
@@ -4817,7 +4817,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
-    p.alphabet("abctABCT").contains_empty_word(true);
+    p.alphabet("abctABCT"s).contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABCTabct");
     presentation::add_rule(p, "a^7"_p, "");
     presentation::add_rule(p, "b^3"_p, "");
@@ -4854,7 +4854,7 @@ namespace libsemigroups {
                           "[todd-coxeter][standard]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcABC").contains_empty_word(true);
+    p.alphabet("abcABC"s).contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABCabc");
     presentation::add_rule(p, "a^7"_p, "");
     presentation::add_rule(p, "b^3"_p, "");
@@ -4957,7 +4957,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "aa", "a");
     presentation::add_rule(p, "ba", "b");
     presentation::add_rule(p, "ab", "b");
@@ -5085,7 +5085,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     ReportGuard               rg(true);
     Presentation<std::string> p;
-    p.alphabet("ba");
+    p.alphabet("ba"s);
     ToddCoxeter tc(twosided, p);
     tc.strategy(options::strategy::felsch);
     tc.run_until([&tc]() {
@@ -5102,7 +5102,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.contains_empty_word(true);
 
     ToddCoxeter tc(twosided, p);
@@ -5294,7 +5294,7 @@ namespace libsemigroups {
                           "[quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "bbbb", "b");
     presentation::add_rule(p, "bbbb", "b");
     presentation::add_rule(p, "aaa", "a");
@@ -5377,7 +5377,7 @@ namespace libsemigroups {
                           "[quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     ToddCoxeter tc(congruence_kind::twosided, p);
 
     // It might be expected that ToddCoxeter::contains would call
@@ -5401,7 +5401,7 @@ namespace libsemigroups {
                           "[quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     ToddCoxeter tc(congruence_kind::twosided, p);
 
     std::string word1 = "ababababba";
@@ -5462,7 +5462,7 @@ namespace libsemigroups {
     using std::string_literals::operator""s;
 
     Presentation<std::string> p;
-    p.alphabet("abAB");
+    p.alphabet("abAB"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABab");
 
@@ -5484,7 +5484,7 @@ namespace libsemigroups {
     presentation::balance(p, "abAB"s, "ABab"s);
     presentation::replace_subword(p, "A"s, "a"s);
     presentation::replace_subword(p, "B"s, "bbbb"s);
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     KnuthBendix kb(congruence_kind::twosided, p);
     kb.run_for(std::chrono::microseconds(1));

@@ -42,6 +42,8 @@
 #include "libsemigroups/ranges.hpp"  // for operator|, to_vector
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   congruence_kind constexpr twosided = congruence_kind::twosided;
 
   using namespace rx;
@@ -63,7 +65,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ABCabc");
+    p.alphabet("ABCabc"s);
     p.contains_empty_word(true);
 
     presentation::add_rule(p, "aA", "");
@@ -112,7 +114,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "bbbbbbb", "b");
@@ -139,7 +141,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "bbbb", "b");
     presentation::add_rule(p, "bababababab", "b");
@@ -178,7 +180,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
 
     presentation::add_rule(p, "ab", "ba");
     presentation::add_rule(p, "ac", "ca");
@@ -234,7 +236,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefg");
+    p.alphabet("abcdefg"s);
 
     presentation::add_rule(p, "abcd", "ce");
     presentation::add_rule(p, "df", "dg");
@@ -268,7 +270,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefgh");
+    p.alphabet("abcdefgh"s);
 
     presentation::add_rule(p, "abcd", "ce");
     presentation::add_rule(p, "df", "hd");
@@ -301,7 +303,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefgh");
+    p.alphabet("abcdefgh"s);
 
     presentation::add_rule(p, "afh", "bgh");
     presentation::add_rule(p, "hc", "d");
@@ -334,7 +336,7 @@ namespace libsemigroups {
     // involves using the case (2) code to change the prefix being
     //  looked for:
     Presentation<std::string> p;
-    p.alphabet("abcdefghij");
+    p.alphabet("abcdefghij"s);
 
     presentation::add_rule(p, "afh", "bgh");
     presentation::add_rule(p, "hc", "de");
@@ -367,7 +369,7 @@ namespace libsemigroups {
       REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefghijkl");
+    p.alphabet("abcdefghijkl"s);
 
     presentation::add_rule(p, "afh", "bgh");
     presentation::add_rule(p, "hc", "de");
@@ -402,7 +404,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("cab");  // runs forever with a different order
+    p.alphabet("cab"s);  // runs forever with a different order
     presentation::add_rule(p, "aabc", "acba");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
@@ -431,7 +433,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("ABabc");
+    p.alphabet("ABabc"s);
     presentation::add_inverse_rules(p, "abABc");
     presentation::add_rule(p, "aaaa", "AAA");
     presentation::add_rule(p, "bb", "B");
@@ -464,7 +466,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abcAB");
+    p.alphabet("abcAB"s);
 
     presentation::add_rule(p, "aaaa", "AAA");
     presentation::add_rule(p, "bb", "B");
@@ -494,7 +496,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
 
     presentation::add_rule(p, "bbbbbbb", "b");
     presentation::add_rule(p, "ccccc", "c");
@@ -549,7 +551,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "ab", "ba");
@@ -571,7 +573,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("aAbB");
+    p.alphabet("aAbB"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "AaBb");
     presentation::add_rule(p, "Bab", "a");
@@ -611,7 +613,7 @@ namespace libsemigroups {
     // p.alphabet("aAbBcCdDyYfF");
 
     Presentation<std::string> p;
-    p.alphabet("ABCDYFabcdyf");
+    p.alphabet("ABCDYFabcdyf"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "abcdyfABCDYF");
@@ -705,7 +707,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abB");
+    p.alphabet("abB"s);
     p.contains_empty_word(true);
 
     presentation::add_inverse_rules(p, "aBb");
@@ -774,7 +776,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "bbbbb", "b");
@@ -830,7 +832,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "bbbbbbbbb", "b");
@@ -883,7 +885,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "bbbb", "b");
@@ -908,7 +910,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcde");
+    p.alphabet("abcde"s);
 
     presentation::add_rule(p, "ab", "c");
     presentation::add_rule(p, "bc", "d");
@@ -937,7 +939,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdef");
+    p.alphabet("abcdef"s);
     p.contains_empty_word(true);
 
     presentation::add_rule(p, "ab", "");
@@ -968,7 +970,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
 
     presentation::add_rule(p, "aaaa", "a");
     presentation::add_rule(p, "bbbb", "b");
@@ -998,7 +1000,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("ABab");
+    p.alphabet("ABab"s);
     p.contains_empty_word(true);
 
     presentation::add_rule(p, "aa", "");
@@ -1037,7 +1039,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abAB");
+    p.alphabet("abAB"s);
     p.contains_empty_word(true);
 
     presentation::add_rule(p, "aaaaaaa", "");
@@ -1074,7 +1076,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.contains_empty_word(true);
 
     presentation::add_rule(p, "ab", "");
@@ -1102,7 +1104,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     p.contains_empty_word(true);
 
     presentation::add_rule(p, "aba", "baa");
@@ -1133,7 +1135,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "aa", "a");
     presentation::add_rule(p, "bb", "b");
@@ -1158,7 +1160,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "bbbb", "b");
@@ -1197,7 +1199,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
 
     presentation::add_rule(p, "aaa", "a");
     presentation::add_rule(p, "bbbb", "b");
@@ -1238,7 +1240,7 @@ namespace libsemigroups {
     fmt::print("\n");
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     presentation::add_rule(p, "a", "cc");
     presentation::add_rule(p, "c", "bab");
 
@@ -1270,7 +1272,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     fmt::print("\n");
     Presentation<std::string> p;
-    p.alphabet("bABa");
+    p.alphabet("bABa"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "BabA");
     presentation::add_rule(p, "Abba", "BB");
@@ -1337,7 +1339,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     fmt::print("\n");
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.contains_empty_word(true);
     presentation::add_rule(p, "abbab", "baabb");
 
@@ -1424,7 +1426,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
 
     presentation::add_rule(p, "ab", "");
