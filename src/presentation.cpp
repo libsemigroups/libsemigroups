@@ -165,7 +165,7 @@ namespace libsemigroups {
       add_inverse_rules(p, std::string(vals), e);
     }
 
-    typename Presentation<std::string>::letter_type
+    typename Presentation<std::string>::native_letter_type
     replace_word_with_new_generator(Presentation<std::string>& p,
                                     char const*                w) {
       return replace_word_with_new_generator(p, w, w + std::strlen(w));

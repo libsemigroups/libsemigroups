@@ -117,13 +117,15 @@ namespace libsemigroups {
       static bool first_call = true;
       // It might be preferable to use an array here but char is sometimes
       // signed and so chars[i] can be negative in the loop below.
-      static std::unordered_map<Presentation<std::string>::letter_type,
-                                Presentation<word_type>::letter_type>
+      static std::unordered_map<Presentation<std::string>::native_letter_type,
+                                Presentation<word_type>::native_letter_type>
           map;
       if (first_call) {
         first_call        = false;
         auto const& chars = detail::chars_in_human_readable_order();
-        for (letter_type i = 0; i < chars.size(); ++i) {
+        for (Presentation<word_type>::native_letter_type i = 0;
+             i < chars.size();
+             ++i) {
           map.emplace(chars[i], i);
         }
       }

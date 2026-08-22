@@ -112,20 +112,22 @@ namespace libsemigroups {
 
     template <typename Word>
     bool is_normalized(Presentation<Word> const& p) {
-      using letter_type = typename Presentation<Word>::letter_type;
+      using native_letter_type =
+          typename Presentation<Word>::native_letter_type;
       auto first = std::begin(p.alphabet()), last = std::end(p.alphabet());
       if (!std::is_sorted(first, last)) {
         return false;
       }
       auto it = std::max_element(first, last);
       return it != last
-             && *it == static_cast<letter_type>(p.alphabet().size() - 1);
+             && *it == static_cast<native_letter_type>(p.alphabet().size() - 1);
     }
 
     template <typename Word>
     void throw_if_not_normalized(Presentation<Word> const& p,
                                  std::string_view          arg) {
-      using letter_type = typename Presentation<Word>::letter_type;
+      using native_letter_type =
+          typename Presentation<Word>::native_letter_type;
       auto first = std::begin(p.alphabet()), last = std::end(p.alphabet());
       if (!std::is_sorted(first, last)) {
         LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) must have "
@@ -137,7 +139,7 @@ namespace libsemigroups {
       auto it = std::max_element(first, last);
 
       if (it != last
-          && *it != static_cast<letter_type>(p.alphabet().size() - 1)) {
+          && *it != static_cast<native_letter_type>(p.alphabet().size() - 1)) {
         LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) has invalid "
                                 "alphabet, expected [0, ..., {}] found {}",
                                 arg,
@@ -252,8 +254,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_identity_rules(Presentation<Word>&                      p,
-                            typename Presentation<Word>::letter_type id) {
+    void
+    add_identity_rules(Presentation<Word>&                             p,
+                       typename Presentation<Word>::native_letter_type id) {
       p.throw_if_letter_not_in_alphabet(id);
       for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
         Word       lhs = {*it, id};
@@ -267,8 +270,8 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_zero_rules(Presentation<Word>&                      p,
-                        typename Presentation<Word>::letter_type z) {
+    void add_zero_rules(Presentation<Word>&                             p,
+                        typename Presentation<Word>::native_letter_type z) {
       p.throw_if_letter_not_in_alphabet(z);
       for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
         Word       lhs = {*it, z};
@@ -282,9 +285,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_inverse_rules(Presentation<Word>&                      p,
-                           Word const&                              vals,
-                           typename Presentation<Word>::letter_type id) {
+    void add_inverse_rules(Presentation<Word>&                             p,
+                           Word const&                                     vals,
+                           typename Presentation<Word>::native_letter_type id) {
       throw_if_bad_inverses(p, vals);
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
         if (p.letter_no_checks(i) == id && vals[i] != id) {
@@ -480,7 +483,7 @@ namespace libsemigroups {
     }
 
     template <typename Word, typename Iterator>
-    typename Presentation<Word>::letter_type
+    typename Presentation<Word>::native_letter_type
     replace_word_with_new_generator(Presentation<Word>& p,
                                     Iterator            first,
                                     Iterator            last) {
@@ -554,12 +557,13 @@ namespace libsemigroups {
 
     template <typename Word>
     void normalize_alphabet(Presentation<Word>& p) {
-      using letter_type = typename Presentation<Word>::letter_type;
+      using native_letter_type =
+          typename Presentation<Word>::native_letter_type;
 
       p.throw_if_bad_alphabet_or_rules();
 
       for (auto& rule : p.rules) {
-        std::for_each(rule.begin(), rule.end(), [&p](letter_type& x) {
+        std::for_each(rule.begin(), rule.end(), [&p](native_letter_type& x) {
           x = words::human_readable_letter<Word>(p.index(x));
         });
       }
@@ -593,7 +597,8 @@ namespace libsemigroups {
 
     template <typename Word>
     void change_alphabet(Presentation<Word>& p, Word const& new_alphabet) {
-      using letter_type = typename Presentation<Word>::letter_type;
+      using native_letter_type =
+          typename Presentation<Word>::native_letter_type;
 
       p.throw_if_bad_alphabet_or_rules();
 
@@ -605,16 +610,17 @@ namespace libsemigroups {
         return;
       }
 
-      std::map<letter_type, letter_type> old_to_new;
+      std::map<native_letter_type, native_letter_type> old_to_new;
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
         old_to_new.emplace(p.letter_no_checks(i), new_alphabet[i]);
       }
       // Do this first so that it throws if new_alphabet contains repeats
       p.alphabet(new_alphabet);
       for (auto& rule : p.rules) {
-        std::for_each(rule.begin(), rule.end(), [&old_to_new](letter_type& x) {
-          x = old_to_new.find(x)->second;
-        });
+        std::for_each(
+            rule.begin(), rule.end(), [&old_to_new](native_letter_type& x) {
+              x = old_to_new.find(x)->second;
+            });
       }
 #ifdef LIBSEMIGROUPS_DEBUG
       p.throw_if_bad_alphabet_or_rules();
@@ -677,7 +683,7 @@ namespace libsemigroups {
 
     template <typename Word>
     void remove_redundant_generators(Presentation<Word>& p) {
-      using letter_type_ = typename Presentation<Word>::letter_type;
+      using letter_type_ = typename Presentation<Word>::native_letter_type;
       throw_if_odd_number_of_rules(p);
 
       remove_trivial_rules(p);
@@ -708,13 +714,13 @@ namespace libsemigroups {
 
     // TODO(v4) rm
     template <typename Word>
-    typename Presentation<Word>::letter_type
+    typename Presentation<Word>::native_letter_type
     first_unused_letter(Presentation<Word> const& p) {
       return alphabet::first_unused_letter(p.alphabet_v4());
     }
 
     template <typename Word>
-    typename Presentation<Word>::letter_type
+    typename Presentation<Word>::native_letter_type
     make_semigroup(Presentation<Word>& p) {
       if (!p.contains_empty_word()) {
         return UNDEFINED;
@@ -823,8 +829,8 @@ namespace libsemigroups {
         return false;
       }
 
-      std::vector<typename Presentation<Word>::letter_type> non_trivial_scc
-          = {u.front(), v.front()};
+      std::vector<typename Presentation<Word>::native_letter_type>
+          non_trivial_scc = {u.front(), v.front()};
 
       auto const other = non_trivial_scc[(index + 1) % 2];
 
@@ -965,12 +971,13 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              x,
-                             Word const&                              y,
-                             Word const&                              alphabet,
-                             Word const&                              inverses,
-                             typename Presentation<Word>::letter_type id) {
+    void
+    add_commutator_rule(Presentation<Word>& p,
+                        Word const&         x,
+                        Word const&         y,
+                        Word const&         alphabet,
+                        Word const&         inverses,
+                        typename Presentation<Word>::native_letter_type id) {
       p.throw_if_letter_not_in_alphabet(std::begin(alphabet),
                                         std::end(alphabet));
       p.throw_if_letter_not_in_alphabet(std::begin(inverses),
@@ -987,11 +994,12 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              x,
-                             Word const&                              y,
-                             Word const&                              inverses,
-                             typename Presentation<Word>::letter_type id) {
+    void
+    add_commutator_rule(Presentation<Word>& p,
+                        Word const&         x,
+                        Word const&         y,
+                        Word const&         inverses,
+                        typename Presentation<Word>::native_letter_type id) {
       p.throw_if_letter_not_in_alphabet(std::begin(inverses),
                                         std::end(inverses));
       throw_if_bad_inverses(p, inverses);
@@ -1005,10 +1013,11 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              x,
-                             Word const&                              y,
-                             typename Presentation<Word>::letter_type id) {
+    void
+    add_commutator_rule(Presentation<Word>&                             p,
+                        Word const&                                     x,
+                        Word const&                                     y,
+                        typename Presentation<Word>::native_letter_type id) {
       p.throw_if_letter_not_in_alphabet(std::begin(x), std::end(x));
       p.throw_if_letter_not_in_alphabet(std::begin(y), std::end(y));
       if (id != UNDEFINED) {
