@@ -81,10 +81,10 @@ namespace libsemigroups {
     Presentation<TestType> p;
     if constexpr (std::is_same_v<TestType, std::string>) {
       p.alphabet("abB"s);
-      presentation::add_rule_no_checks(p, "bb", "B");
-      presentation::add_rule_no_checks(p, "BaB", "aba");
-      presentation::add_rule_no_checks(p, "a", "b");
-      presentation::add_rule_no_checks(p, "b", "B");
+      presentation::add_rule_no_checks(p, "bb"s, "B"s);
+      presentation::add_rule_no_checks(p, "BaB"s, "aba"s);
+      presentation::add_rule_no_checks(p, "a"s, "b"s);
+      presentation::add_rule_no_checks(p, "b"s, "B"s);
     } else if constexpr (std::is_same_v<TestType, word_type>) {
       p.alphabet(012_w);
       presentation::add_rule_no_checks(p, 11_w, 2_w);
@@ -127,10 +127,10 @@ namespace libsemigroups {
     Presentation<Word> p;
     if constexpr (std::is_same_v<Word, std::string>) {
       p.alphabet("abB"s);
-      presentation::add_rule_no_checks(p, "bb", "B");
-      presentation::add_rule_no_checks(p, "BaB", "aba");
-      presentation::add_rule_no_checks(p, "a", "b");
-      presentation::add_rule_no_checks(p, "b", "B");
+      presentation::add_rule_no_checks(p, "bb"s, "B"s);
+      presentation::add_rule_no_checks(p, "BaB"s, "aba"s);
+      presentation::add_rule_no_checks(p, "a"s, "b"s);
+      presentation::add_rule_no_checks(p, "b"s, "B"s);
     } else if constexpr (std::is_same_v<Word, word_type>) {
       p.alphabet(012_w);
       presentation::add_rule_no_checks(p, 11_w, 2_w);

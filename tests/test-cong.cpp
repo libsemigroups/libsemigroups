@@ -306,10 +306,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abBe"s);
     presentation::add_identity_rules(p, 'e');
-    presentation::add_rule(p, "aa", "e");
-    presentation::add_rule(p, "BB", "b");
-    presentation::add_rule(p, "BaBaBaB", "abababa");
-    presentation::add_rule(p, "aBabaBabaBabaBab", "BabaBabaBabaBaba");
+    presentation::add_rule(p, "aa"s, "e");
+    presentation::add_rule(p, "BB"s, "b");
+    presentation::add_rule(p, "BaBaBaB"s, "abababa");
+    presentation::add_rule(p, "aBabaBabaBabaBab"s, "BabaBabaBabaBaba");
 
     Congruence cong(twosided, p);
     congruence::add_generating_pair(cong, "a", "b");
@@ -389,8 +389,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "a", "b");
+    presentation::add_rule(p, "ab"s, "ba");
+    presentation::add_rule(p, "a"s, "b");
     presentation::reverse(p);
 
     Congruence cong(onesided, p);
@@ -838,14 +838,14 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abe"s);
     presentation::add_identity_rules(p, 'e');
-    presentation::add_rule(p, "abb", "bb");
-    presentation::add_rule(p, "bbb", "bb");
-    presentation::add_rule(p, "aaaa", "a");
-    presentation::add_rule(p, "baab", "bb");
-    presentation::add_rule(p, "baaab", "b");
-    presentation::add_rule(p, "babab", "b");
-    presentation::add_rule(p, "bbaaa", "bb");
-    presentation::add_rule(p, "bbaba", "bbaa");
+    presentation::add_rule(p, "abb"s, "bb");
+    presentation::add_rule(p, "bbb"s, "bb");
+    presentation::add_rule(p, "aaaa"s, "a");
+    presentation::add_rule(p, "baab"s, "bb");
+    presentation::add_rule(p, "baaab"s, "b");
+    presentation::add_rule(p, "babab"s, "b");
+    presentation::add_rule(p, "bbaaa"s, "bb");
+    presentation::add_rule(p, "bbaba"s, "bbaa");
 
     presentation::reverse(p);
 
@@ -937,7 +937,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "abcd", "aaaeaa");
+    presentation::add_rule(p, "abcd"s, "aaaeaa");
     Congruence cong(twosided, p);
     congruence::add_generating_pair(cong, "ef", "dg");
     REQUIRE(is_obviously_infinite(cong));
@@ -980,8 +980,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "abab", "aaaaaaa");
-    presentation::add_rule(p, "ba", "ababbb");
+    presentation::add_rule(p, "abab"s, "aaaaaaa");
+    presentation::add_rule(p, "ba"s, "ababbb");
     Congruence c(twosided, p);
     REQUIRE(c.number_of_runners() == 0);
     REQUIRE(!c.has<KnuthBendix<std::string>>());
@@ -1004,7 +1004,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "abcd", "aaaeaa");
+    presentation::add_rule(p, "abcd"s, "aaaeaa");
     Congruence cong(twosided, p);
     congruence::add_generating_pair(cong, "ef", "dg");
 
@@ -1022,7 +1022,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "bab", "ba");
+    presentation::add_rule(p, "bab"s, "ba");
     Congruence c(twosided, p);
     REQUIRE(c.report_prefix() == "Congruence");
     REQUIRE(c.number_of_classes() == POSITIVE_INFINITY);

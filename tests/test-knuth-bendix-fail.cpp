@@ -75,13 +75,13 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abcde"s);
-    presentation::add_rule(p, "ac", "ca");
-    presentation::add_rule(p, "ad", "da");
-    presentation::add_rule(p, "bc", "cb");
-    presentation::add_rule(p, "bd", "db");
-    presentation::add_rule(p, "eca", "ce");
-    presentation::add_rule(p, "edb", "de");
-    presentation::add_rule(p, "cca", "ccae");
+    presentation::add_rule(p, "ac"s, "ca"s);
+    presentation::add_rule(p, "ad"s, "da"s);
+    presentation::add_rule(p, "bc"s, "cb"s);
+    presentation::add_rule(p, "bd"s, "db"s);
+    presentation::add_rule(p, "eca"s, "ce"s);
+    presentation::add_rule(p, "edb"s, "de"s);
+    presentation::add_rule(p, "cca"s, "ccae"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     kb.run();  // I guess this shouldn't work, and indeed it doesn't!
@@ -103,15 +103,15 @@ namespace libsemigroups {
 
     presentation::add_inverse_rules(p, invrs);
 
-    presentation::add_rule(p, "BAba", "c");
-    presentation::add_rule(p, "CAca", "d");
-    presentation::add_rule(p, "DAda", "y");
-    presentation::add_rule(p, "YByb", "f");
-    presentation::add_rule(p, "FAfa", "g");
-    presentation::add_rule(p, "ga", "ag");
-    presentation::add_rule(p, "GBgb", "h");
-    presentation::add_rule(p, "cb", "bc");
-    presentation::add_rule(p, "ya", "ay");
+    presentation::add_rule(p, "BAba"s, "c"s);
+    presentation::add_rule(p, "CAca"s, "d"s);
+    presentation::add_rule(p, "DAda"s, "y"s);
+    presentation::add_rule(p, "YByb"s, "f"s);
+    presentation::add_rule(p, "FAfa"s, "g"s);
+    presentation::add_rule(p, "ga"s, "ag"s);
+    presentation::add_rule(p, "GBgb"s, "h"s);
+    presentation::add_rule(p, "cb"s, "bc"s);
+    presentation::add_rule(p, "ya"s, "ay"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 

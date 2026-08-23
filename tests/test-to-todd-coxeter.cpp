@@ -199,10 +199,10 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("abB"s);
-    presentation::add_rule_no_checks(p, "bb", "B");
-    presentation::add_rule_no_checks(p, "BaB", "aba");
-    presentation::add_rule_no_checks(p, "a", "b");
-    presentation::add_rule_no_checks(p, "b", "B");
+    presentation::add_rule_no_checks(p, "bb"s, "B"s);
+    presentation::add_rule_no_checks(p, "BaB"s, "aba"s);
+    presentation::add_rule_no_checks(p, "a"s, "b"s);
+    presentation::add_rule_no_checks(p, "b"s, "B"s);
 
     REQUIRE(!p.contains_empty_word());
 

@@ -372,9 +372,9 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaaaa", "aa");
-    presentation::add_rule(p, "bb", "b");
-    presentation::add_rule(p, "ab", "b");
+    presentation::add_rule(p, "aaaaa"s, "aa"s);
+    presentation::add_rule(p, "bb"s, "b"s);
+    presentation::add_rule(p, "ab"s, "b"s);
 
     KnuthBendix kb(congruence_kind::twosided, p);
     REQUIRE(kb.number_of_classes() == 9);

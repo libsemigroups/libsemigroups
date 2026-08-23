@@ -149,8 +149,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "abcd"s, "aaaeaa"s);
+    presentation::add_rule(p, "ef"s, "dg"s);
     check_from_ke(p);
     check_from_ke<std::string, detail::MultiView<std::string>>(p);
     check_from_ke<word_type>(v4::to<Presentation<word_type>>(p));
@@ -163,7 +163,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "bababa", "aba");
+    presentation::add_rule(p, "bababa"s, "aba"s);
     REQUIRE_THROWS_AS(check_from_ke(p), LibsemigroupsException);
     REQUIRE_THROWS_AS(
         (check_from_ke<std::string, detail::MultiView<std::string>>(p)),
@@ -236,10 +236,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abBe"s);
     presentation::add_identity_rules(p, 'e');
-    presentation::add_rule(p, "aa", "e");
-    presentation::add_rule(p, "BB", "b");
-    presentation::add_rule(p, "BaBaBaB", "abababa");
-    presentation::add_rule(p, "aBabaBabaBabaBab", "BabaBabaBabaBaba");
+    presentation::add_rule(p, "aa"s, "e"s);
+    presentation::add_rule(p, "BB"s, "b"s);
+    presentation::add_rule(p, "BaBaBaB"s, "abababa"s);
+    presentation::add_rule(p, "aBabaBabaBabaBab"s, "BabaBabaBabaBaba"s);
 
     Congruence cong(twosided, p);
     congruence::add_generating_pair(cong, "a", "b");
@@ -325,9 +325,9 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaaaaa", "aaa");
-    presentation::add_rule(p, "bbbbbbbb", "bb");
-    presentation::add_rule(p, "ab", "ba");
+    presentation::add_rule(p, "aaaaaa"s, "aaa"s);
+    presentation::add_rule(p, "bbbbbbbb"s, "bb"s);
+    presentation::add_rule(p, "ab"s, "ba"s);
     KnuthBendix kb(congruence_kind::twosided, p);
     auto        S = to<FroidurePin>(kb);
 
