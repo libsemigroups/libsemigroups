@@ -53,17 +53,17 @@ namespace libsemigroups {
     template <typename Iterator, typename Func>
     void throw_if_value_out_of_range(Iterator         first,
                                      Iterator         last,
+                                     size_t           upper_bound,
                                      Func&&           func,
                                      std::string_view where) {
       static_assert(std::is_unsigned_v<
                     std::decay_t<decltype(*std::declval<Iterator>())>>);
-      auto const M  = std::distance(first, last);
       auto const it = std::find_if(first, last, std::forward<Func>(func));
       if (it != last) {
         LIBSEMIGROUPS_EXCEPTION("{} value out of bounds, expected value in "
                                 "[0, {}), found {} in position {}",
                                 where,
-                                M,
+                                upper_bound,
                                 *it,
                                 std::distance(first, it));
       }
@@ -77,6 +77,7 @@ namespace libsemigroups {
       throw_if_value_out_of_range(
           first,
           last,
+          deg,
           [&deg](auto val) { return val >= deg && val != UNDEFINED; },
           std::string_view("image"));
     }
@@ -111,13 +112,15 @@ namespace libsemigroups {
       throw_if_value_out_of_range(
           dom_first,
           dom_last,
+          deg,
           [&deg](auto val) { return val >= deg && val != UNDEFINED; },
           "domain");
       throw_if_value_out_of_range(
           img_first,
           img_last,
+          deg,
           [&deg](auto val) { return val >= deg && val != UNDEFINED; },
-          "domain");
+          "image");
 
       throw_if_duplicates(dom_first, dom_last, "domain value");
 
@@ -147,6 +150,7 @@ namespace libsemigroups {
       throw_if_value_out_of_range(
           first,
           last,
+          deg,
           [&deg](auto val) { return val >= deg; },
           std::string_view("image"));
     }

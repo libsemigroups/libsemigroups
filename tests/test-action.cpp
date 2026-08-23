@@ -558,6 +558,12 @@ namespace libsemigroups {
     REQUIRE(o[1] == 1);
     REQUIRE(o.at(0) == 0);
     REQUIRE(o.at(1) == 1);
+    REQUIRE_EXCEPTION_MSG(
+        static_cast<void>(o.multiplier_to_scc_root(o.current_size())),
+        "index out of range, expected value in [0, 8) but found 8");
+    REQUIRE_EXCEPTION_MSG(
+        static_cast<void>(o.multiplier_from_scc_root(o.current_size())),
+        "index out of range, expected value in [0, 8) but found 8");
     REQUIRE_THROWS_AS(o.multiplier_to_scc_root(10), LibsemigroupsException);
     REQUIRE_THROWS_AS(o.multiplier_from_scc_root(10), LibsemigroupsException);
     REQUIRE((o.range() | sort() | rx::to_vector())
