@@ -156,8 +156,8 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "abcd"s, "aaaeaa");
+    presentation::add_rule(p, "ef"s, "dg");
 
     Kambites<TestType> k(twosided, p);
 
@@ -200,15 +200,15 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("aAbBcCe"s);
-    presentation::add_rule(p, "aaa", "e");
-    presentation::add_rule(p, "bbb", "e");
-    presentation::add_rule(p, "ccc", "e");
-    presentation::add_rule(p, "ABa", "BaB");
-    presentation::add_rule(p, "bcB", "cBc");
-    presentation::add_rule(p, "caC", "aCa");
-    presentation::add_rule(p, "abcABCabcABCabcABC", "e");
-    presentation::add_rule(p, "BcabCABcabCABcabCA", "e");
-    presentation::add_rule(p, "cbACBacbACBacbACBa", "e");
+    presentation::add_rule(p, "aaa"s, "e");
+    presentation::add_rule(p, "bbb"s, "e");
+    presentation::add_rule(p, "ccc"s, "e");
+    presentation::add_rule(p, "ABa"s, "BaB");
+    presentation::add_rule(p, "bcB"s, "cBc");
+    presentation::add_rule(p, "caC"s, "aCa");
+    presentation::add_rule(p, "abcABCabcABCabcABC"s, "e");
+    presentation::add_rule(p, "BcabCABcabCABcabCA"s, "e");
+    presentation::add_rule(p, "cbACBacbACBacbACBa"s, "e");
 
     REQUIRE(p.rules.size() == 18);
 
@@ -289,15 +289,15 @@ namespace libsemigroups {
       p.alphabet("abcdefghi"s);
       presentation::add_rule(
           p,
-          "eiehiegiggfaigcdfdfdgiidcebacgfaf",
+          "eiehiegiggfaigcdfdfdgiidcebacgfaf"s,
           "cgfaeiehiegiggfaigcdfdfdgigcccbddchbbhgaaedfiiahhehihcba");
       presentation::add_rule(
-          p, "hihcbaeiehiegiggfaigcdfdfdgiefhbidhbdgb", "chhfgafiiddg");
+          p, "hihcbaeiehiegiggfaigcdfdfdgiefhbidhbdgb"s, "chhfgafiiddg");
       presentation::add_rule(
           p,
-          "gcccbddchbbhgaaedfiiahheidcebacbdefegcehgffedacddiaiih",
+          "gcccbddchbbhgaaedfiiahheidcebacbdefegcehgffedacddiaiih"s,
           "eddfcfhbedecacheahcdeeeda");
-      presentation::add_rule(p, "dfbiccfeagaiffcfifg", "dceibahghaedhefh");
+      presentation::add_rule(p, "dfbiccfeagaiffcfifg"s, "dceibahghaedhefh");
 
       Kambites<TestType> k(twosided, p);
 
@@ -314,18 +314,18 @@ namespace libsemigroups {
       presentation::add_rule(
           p,
           "feffgccdgcfbeagiifheabecdfbgebfcibeifibccahaafabeihfgfieade"
-          "bciheddeigbaf",
+          "bciheddeigbaf"s,
           "ifibccahaafabeihfgfiefeffgccdgcfbeagiifheabecfeibghddfgbaia"
           "acghhdhggagaide");
       presentation::add_rule(
           p,
-          "ghhdhggagaidefeffgccdgcfbeagiifheabeccbeiddgdcbcf",
+          "ghhdhggagaidefeffgccdgcfbeagiifheabeccbeiddgdcbcf"s,
           "ahccccffdeb");
       presentation::add_rule(
-          p, "feibghddfgbaiaacdfbgebfcibeieaacdbdb", "gahdfgbghhhbcci");
+          p, "feibghddfgbaiaacdfbgebfcibeieaacdbdb"s, "gahdfgbghhhbcci");
       presentation::add_rule(
           p,
-          "dgibafaahiabfgeiiibadebciheddeigbaficfbfdbfbbiddgdcifbe",
+          "dgibafaahiabfgeiiibadebciheddeigbaficfbfdbfbbiddgdcifbe"s,
           "iahcfgdbggaciih");
 
       Kambites<TestType> k(twosided, p);
@@ -343,17 +343,17 @@ namespace libsemigroups {
       presentation::add_rule(
           p,
           "adichhbhibfchbfbbibaidfibifgagcgdedfeeibhggdbchfdaefbefcbaa"
-          "hcbhbidgaahbahhahhb",
+          "hcbhbidgaahbahhahhb"s,
           "edfeeibhggdbchfdaefbeadichhbhibfchbfbbibaiihebabeabahcgdbic"
           "bgiciffhfggbfadf");
       presentation::add_rule(
           p,
-          "bgiciffhfggbfadfadichhbhibfchbfbbibaaggfdcfcebehhbdegiaeaf",
+          "bgiciffhfggbfadfadichhbhibfchbfbbibaaggfdcfcebehhbdegiaeaf"s,
           "hebceeicbhidcgahhcfbb");
       presentation::add_rule(p,
-                             "iihebabeabahcgdbicidfibifgagcgdedehed",
+                             "iihebabeabahcgdbicidfibifgagcgdedehed"s,
                              "ecbcgaieieicdcdfdbgagdbf");
-      presentation::add_rule(p, "iagaadbfcbaahcbhbidgaahbahhahhbd", "ddddh");
+      presentation::add_rule(p, "iagaadbfcbaahcbhbidgaahbahhahhbd"s, "ddddh");
 
       Kambites<TestType> k(twosided, p);
       REQUIRE(k.small_overlap_class() == 3);
@@ -368,17 +368,17 @@ namespace libsemigroups {
       p.alphabet("abcdefghi"s);
       presentation::add_rule(
           p,
-          "ibddgdgddiabcahbidbedffeddciiabahbbiacbfehdfccacbhgafbgcdg",
+          "ibddgdgddiabcahbidbedffeddciiabahbbiacbfehdfccacbhgafbgcdg"s,
           "iabahibddgdgddbdfacbafhcgfhdheieihd");
       presentation::add_rule(
-          p, "hdheieihdibddgdgddebhaeaicciidebegg", "giaeehdeeec");
+          p, "hdheieihdibddgdgddebhaeaicciidebegg"s, "giaeehdeeec");
       presentation::add_rule(
           p,
-          "bdfacbafhcgfiabcahbidbedffeddcifdfcdcdadhhcbcbebhei",
+          "bdfacbafhcgfiabcahbidbedffeddcifdfcdcdadhhcbcbebhei"s,
           "icaebehdff");
       presentation::add_rule(
           p,
-          "aggiiacdbbiacbfehdfccacbhgafbgcdghiahfccdchaiagaha",
+          "aggiiacdbbiacbfehdfccacbhgafbgcdghiahfccdchaiagaha"s,
           "hhafbagbhghhihg");
 
       Kambites<TestType> k(twosided, p);
@@ -394,18 +394,18 @@ namespace libsemigroups {
       p.alphabet("abcdefghi"s);
       presentation::add_rule(
           p,
-          "fibehffegdeggaddgfdaeaiacbhbgbbccceaibfcabbiedhecggbbdgihddd",
+          "fibehffegdeggaddgfdaeaiacbhbgbbccceaibfcabbiedhecggbbdgihddd"s,
           "ceafibehffegdeggafidbaefcebegahcbhciheceaehaaehih");
       presentation::add_rule(
-          p, "haaehihfibehffegdeggaecbedccaeabifeafi", "bfcccibgefiidgaih");
+          p, "haaehihfibehffegdeggaecbedccaeabifeafi"s, "bfcccibgefiidgaih");
       presentation::add_rule(
           p,
           "fidbaefcebegahcbhciheceaeddgfdaeaiacbhbgbbcccgiahbibehgbgab"
-          "efdieiggc",
+          "efdieiggc"s,
           "abigdadaecdfdeeciggbdfdf");
       presentation::add_rule(
           p,
-          "eeaaiicigieiabibfcabbiedhecggbbdgihdddifadgbgidbfeg",
+          "eeaaiicigieiabibfcabbiedhecggbbdgihdddifadgbgidbfeg"s,
           "daheebdgdiaeceeiicddg");
 
       Kambites<TestType> k(twosided, p);
@@ -430,8 +430,8 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "abcd", "ce");
-    presentation::add_rule(p, "df", "dg");
+    presentation::add_rule(p, "abcd"s, "ce");
+    presentation::add_rule(p, "df"s, "dg");
 
     Kambites<TestType> k(twosided, p);
 
@@ -484,7 +484,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("cab"s);
-    presentation::add_rule(p, "aabc", "acba");
+    presentation::add_rule(p, "aabc"s, "acba");
 
     Kambites<TestType> k(twosided, p);
 
@@ -534,8 +534,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefgh"s);
-    presentation::add_rule(p, "abcd", "ce");
-    presentation::add_rule(p, "df", "hd");
+    presentation::add_rule(p, "abcd"s, "ce");
+    presentation::add_rule(p, "df"s, "hd");
 
     Kambites<TestType> k(twosided, p);
 
@@ -600,8 +600,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefgh"s);
 
-    presentation::add_rule(p, "afh", "bgh");
-    presentation::add_rule(p, "hc", "d");
+    presentation::add_rule(p, "afh"s, "bgh");
+    presentation::add_rule(p, "hc"s, "d");
 
     Kambites<TestType> k(twosided, p);
 
@@ -629,9 +629,9 @@ namespace libsemigroups {
     // for:
     Presentation<std::string> p;
     p.alphabet("abcdefghij"s);
-    presentation::add_rule(p, "afh", "bgh");
-    presentation::add_rule(p, "hc", "de");
-    presentation::add_rule(p, "ei", "j");
+    presentation::add_rule(p, "afh"s, "bgh");
+    presentation::add_rule(p, "hc"s, "de");
+    presentation::add_rule(p, "ei"s, "j");
 
     Kambites<TestType> k(twosided, p);
 
@@ -659,10 +659,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefghijkl"s);
 
-    presentation::add_rule(p, "afh", "bgh");
-    presentation::add_rule(p, "hc", "de");
-    presentation::add_rule(p, "ei", "j");
-    presentation::add_rule(p, "fhk", "ghl");
+    presentation::add_rule(p, "afh"s, "bgh");
+    presentation::add_rule(p, "hc"s, "de");
+    presentation::add_rule(p, "ei"s, "j");
+    presentation::add_rule(p, "fhk"s, "ghl");
 
     Kambites<TestType> k(twosided, p);
     REQUIRE(is_obviously_infinite(k));
@@ -711,7 +711,7 @@ namespace libsemigroups {
     // longer agree (since fh and gh are now pieces).
     Presentation<std::string> p;
     p.alphabet("abcde"s);
-    presentation::add_rule(p, "cadeca", "baedba");
+    presentation::add_rule(p, "cadeca"s, "baedba");
 
     Kambites<TestType> k(twosided, p);
     REQUIRE(!contains(k, "cadece", "baedce"));
@@ -726,7 +726,7 @@ namespace libsemigroups {
     // Example 3.13 + 3.14
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abbba", "cdc");
+    presentation::add_rule(p, "abbba"s, "cdc");
 
     Kambites<TestType> k(twosided, p);
 
@@ -748,7 +748,7 @@ namespace libsemigroups {
     // Example 3.15
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "aabc", "acba");
+    presentation::add_rule(p, "aabc"s, "acba");
 
     Kambites<TestType> k(twosided, p);
 
@@ -775,7 +775,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abcd", "acca");
+    presentation::add_rule(p, "abcd"s, "acca");
 
     Kambites<TestType> k(twosided, p);
     std::string        original = "bbcabcdaccaccabcddd";
@@ -796,7 +796,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abcd", "acca");
+    presentation::add_rule(p, "abcd"s, "acca");
 
     Kambites<TestType> k(twosided, p);
 
@@ -835,8 +835,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "a", "bb");
+    presentation::add_rule(p, "aaa"s, "a");
+    presentation::add_rule(p, "a"s, "bb");
 
     Kambites<TestType> k(twosided, p);
 
@@ -860,9 +860,9 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
-    presentation::add_rule(p, "a", "b");
+    presentation::add_rule(p, "abcd"s, "aaaeaa");
+    presentation::add_rule(p, "ef"s, "dg");
+    presentation::add_rule(p, "a"s, "b");
 
     Kambites<TestType> k(twosided, p);
 
@@ -884,7 +884,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abcd", "accca");
+    presentation::add_rule(p, "abcd"s, "accca");
     Kambites<TestType> k(twosided, p);
 
     REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[0])
@@ -926,7 +926,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
-    presentation::add_rule(p, "ac", "cbbbbc");
+    presentation::add_rule(p, "ac"s, "cbbbbc");
     Kambites<TestType> k(twosided, p);
 
     REQUIRE(k.small_overlap_class() == 4);
@@ -943,7 +943,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
-    presentation::add_rule(p, "ccab", "cbac");
+    presentation::add_rule(p, "ccab"s, "cbac");
     Kambites<TestType> k(twosided, p);
     REQUIRE(k.small_overlap_class() == 4);
 
@@ -962,9 +962,9 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghij"s);
-    presentation::add_rule(p, "afh", "bgh");
-    presentation::add_rule(p, "hc", "de");
-    presentation::add_rule(p, "ei", "j");
+    presentation::add_rule(p, "afh"s, "bgh");
+    presentation::add_rule(p, "hc"s, "de");
+    presentation::add_rule(p, "ei"s, "j");
     Kambites<TestType> k(twosided, p);
     REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
 
@@ -980,7 +980,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abcd", "dcba");
+    presentation::add_rule(p, "abcd"s, "dcba");
     Kambites<TestType> k(twosided, p);
     REQUIRE(k.small_overlap_class() == 4);
 
@@ -996,7 +996,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abca", "dcbd");
+    presentation::add_rule(p, "abca"s, "dcbd");
     Kambites<TestType> k(twosided, p);
     REQUIRE(k.small_overlap_class() == 4);
 
@@ -1012,8 +1012,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abcd", "dcba");
-    presentation::add_rule(p, "adda", "dbbd");
+    presentation::add_rule(p, "abcd"s, "dcba");
+    presentation::add_rule(p, "adda"s, "dbbd");
 
     Kambites<TestType> k(twosided, p);
     REQUIRE(k.small_overlap_class() == 4);
@@ -1030,8 +1030,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "abcd", "acca");
-    presentation::add_rule(p, "gf", "ge");
+    presentation::add_rule(p, "abcd"s, "acca");
+    presentation::add_rule(p, "gf"s, "ge");
     Kambites<TestType> k(twosided, p);
     REQUIRE(k.small_overlap_class() == 4);
 
@@ -1048,9 +1048,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcd"s);
     presentation::add_rule(
-        p, "ababbabbbabbbb", "abbbbbabbbbbbabbbbbbbabbbbbbbb");
+        p, "ababbabbbabbbb"s, "abbbbbabbbbbbabbbbbbbabbbbbbbb");
     presentation::add_rule(
-        p, "cdcddcdddcdddd", "cdddddcddddddcdddddddcdddddddd");
+        p, "cdcddcdddcdddd"s, "cdddddcddddddcdddddddcdddddddd");
 
     Kambites<TestType> k(twosided, p);
     REQUIRE(k.small_overlap_class() == 4);
@@ -1069,8 +1069,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "dbbbd");
+    presentation::add_rule(p, "acba"s, "aabc");
+    presentation::add_rule(p, "acba"s, "dbbbd");
     Kambites<TestType> k(twosided, p);
 
     REQUIRE(k.small_overlap_class() == 4);
@@ -1099,8 +1099,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "adbd");
+    presentation::add_rule(p, "acba"s, "aabc");
+    presentation::add_rule(p, "acba"s, "adbd");
 
     Kambites<TestType> k(twosided, p);
     REQUIRE(contains(k, "acbacba", "aabcabc"));
@@ -1125,8 +1125,8 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("abcde"s);
-    presentation::add_rule(p, "bceac", "aeebbc");
-    presentation::add_rule(p, "aeebbc", "dabcd");
+    presentation::add_rule(p, "bceac"s, "aeebbc");
+    presentation::add_rule(p, "aeebbc"s, "dabcd");
     Kambites<TestType> k(twosided, p);
     REQUIRE(kambites::reduce(k, "bceacdabcd") == "aeebbcaeebbc");
     REQUIRE(contains(k, kambites::reduce(k, "bceacdabcd"), "aeebbcaeebbc"));
@@ -1149,8 +1149,8 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "dbbd");
+    presentation::add_rule(p, "acba"s, "aabc");
+    presentation::add_rule(p, "acba"s, "dbbd");
 
     Kambites<TestType> k(twosided, p);
     REQUIRE(kambites::reduce(k, "bbacbcaaabcbbd") == "bbacbcaaabcbbd");
@@ -1171,7 +1171,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcde"s);
-    presentation::add_rule(p, "abcd", "aaeaaa");
+    presentation::add_rule(p, "abcd"s, "aaeaaa");
 
     Kambites<TestType> k(twosided, p);
     REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 25);
@@ -1185,8 +1185,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "adbd");
+    presentation::add_rule(p, "acba"s, "aabc");
+    presentation::add_rule(p, "acba"s, "adbd");
     Kambites<TestType> k(twosided, p);
     REQUIRE(kambites::reduce(k, "acbacba") == "aabcabc");
     REQUIRE(contains(k, kambites::reduce(k, "acbacba"), "aabcabc"));
@@ -1200,8 +1200,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abAB"s);
-    presentation::add_rule(p, "Abba", "BB");
-    presentation::add_rule(p, "Baab", "AA");
+    presentation::add_rule(p, "Abba"s, "BB");
+    presentation::add_rule(p, "Baab"s, "AA");
 
     Kambites<TestType> k(twosided, p);
     REQUIRE(k.small_overlap_class() == 2);
@@ -1215,8 +1215,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcde"s);
-    presentation::add_rule(p, "bceac", "aeebbc");
-    presentation::add_rule(p, "aeebbc", "dabcd");
+    presentation::add_rule(p, "bceac"s, "aeebbc");
+    presentation::add_rule(p, "aeebbc"s, "dabcd");
 
     Kambites<TestType> k(twosided, p);
     REQUIRE(k.small_overlap_class() == 4);
@@ -1344,7 +1344,7 @@ namespace libsemigroups {
     // MultiView::append is resolved.
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaabbab", "bbbaaba");
+    presentation::add_rule(p, "aaabbab"s, "bbbaaba");
 
     Kambites<> k(twosided, p);
 
@@ -2220,8 +2220,8 @@ namespace libsemigroups {
     p.alphabet("abcdefg"s);
     v4::ToWord to_word(p.alphabet());
 
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "abcd"s, "aaaeaa");
+    presentation::add_rule(p, "ef"s, "dg");
 
     Kambites kk(twosided, std::move(p));
     REQUIRE(kk.presentation().alphabet() == "abcdefg");
@@ -2230,8 +2230,8 @@ namespace libsemigroups {
     REQUIRE(kk.small_overlap_class() == 4);
 
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "abcd"s, "aaaeaa");
+    presentation::add_rule(p, "ef"s, "dg");
 
     kk.init(twosided, std::move(p));
     REQUIRE(!kk.started());
@@ -2270,8 +2270,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "abcd", "ce");
-    presentation::add_rule(p, "df", "dg");
+    presentation::add_rule(p, "abcd"s, "ce");
+    presentation::add_rule(p, "df"s, "dg");
 
     Kambites k(twosided, p);
 
@@ -2305,7 +2305,7 @@ namespace libsemigroups {
     {
       Presentation<std::string> p;
       p.contains_empty_word(true).alphabet("ab"s);
-      presentation::add_rule(p, "ab", "");
+      presentation::add_rule(p, "ab"s, "");
 
       REQUIRE(is_obviously_infinite(p));
 

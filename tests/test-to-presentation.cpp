@@ -141,8 +141,8 @@ namespace libsemigroups {
     p.alphabet(3);
     p.contains_empty_word(true);
     if constexpr (std::is_same_v<W1, std::string>) {
-      presentation::add_rule_no_checks(p, "abc", "ab");
-      presentation::add_rule_no_checks(p, "abc", "");
+      presentation::add_rule_no_checks(p, "abc"s, "ab"s);
+      presentation::add_rule_no_checks(p, "abc"s, "");
     } else {
       presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
       presentation::add_rule_no_checks(p, {0, 1, 2}, {});
@@ -196,8 +196,8 @@ namespace libsemigroups {
     p.alphabet(3);
     p.contains_empty_word(true);
     if constexpr (std::is_same_v<W1, std::string>) {
-      presentation::add_rule_no_checks(p, "abc", "ab");
-      presentation::add_rule_no_checks(p, "abc", "");
+      presentation::add_rule_no_checks(p, "abc"s, "ab"s);
+      presentation::add_rule_no_checks(p, "abc"s, "");
     } else {
       presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
       presentation::add_rule_no_checks(p, {0, 1, 2}, {});
@@ -294,8 +294,8 @@ namespace libsemigroups {
     ip.alphabet(3);
     ip.contains_empty_word(true);
     if constexpr (std::is_same_v<W1, std::string>) {
-      presentation::add_rule_no_checks(ip, "abc", "ab");
-      presentation::add_rule_no_checks(ip, "abc", "");
+      presentation::add_rule_no_checks(ip, "abc"s, "ab"s);
+      presentation::add_rule_no_checks(ip, "abc"s, "");
       ip.inverses_no_checks("cba");
     } else {
       presentation::add_rule_no_checks(ip, {0, 1, 2}, {0, 1});
@@ -356,8 +356,8 @@ namespace libsemigroups {
     Presentation<TestType> p;
     p.alphabet(3);
     if constexpr (std::is_same_v<TestType, std::string>) {
-      presentation::add_rule_no_checks(p, "abc", "ab");
-      presentation::add_rule_no_checks(p, "acb", "c");
+      presentation::add_rule_no_checks(p, "abc"s, "ab"s);
+      presentation::add_rule_no_checks(p, "acb"s, "c"s);
     } else {
       presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
       presentation::add_rule_no_checks(p, {0, 2, 1}, {2});
@@ -394,11 +394,11 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("hijkl"s);
-    presentation::add_rule(p, "hi", "j");
-    presentation::add_rule(p, "ij", "k");
-    presentation::add_rule(p, "jk", "l");
-    presentation::add_rule(p, "kl", "h");
-    presentation::add_rule(p, "lh", "i");
+    presentation::add_rule(p, "hi"s, "j"s);
+    presentation::add_rule(p, "ij"s, "k"s);
+    presentation::add_rule(p, "jk"s, "l"s);
+    presentation::add_rule(p, "kl"s, "h"s);
+    presentation::add_rule(p, "lh"s, "i"s);
 
     KnuthBendix<std::string> kb(congruence_kind::twosided, p);
     kb.run();
@@ -463,11 +463,11 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("hijkl"s);
-    presentation::add_rule(p, "hi", "j");
-    presentation::add_rule(p, "ij", "k");
-    presentation::add_rule(p, "jk", "l");
-    presentation::add_rule(p, "kl", "h");
-    presentation::add_rule(p, "lh", "i");
+    presentation::add_rule(p, "hi"s, "j"s);
+    presentation::add_rule(p, "ij"s, "k"s);
+    presentation::add_rule(p, "jk"s, "l"s);
+    presentation::add_rule(p, "kl"s, "h"s);
+    presentation::add_rule(p, "lh"s, "i"s);
 
     KnuthBendix<std::string> kb(congruence_kind::twosided, p);
     kb.run();
@@ -549,9 +549,9 @@ namespace libsemigroups {
 
     Presentation<std::string> p_str;
     p_str.alphabet("abc"s);
-    presentation::add_rule(p_str, "aa", "b");
-    presentation::add_rule(p_str, "bb", "c");
-    presentation::add_rule(p_str, "cc", "a");
+    presentation::add_rule(p_str, "aa"s, "b"s);
+    presentation::add_rule(p_str, "bb"s, "c"s);
+    presentation::add_rule(p_str, "cc"s, "a"s);
 
     Kambites k_str(congruence_kind::twosided, p_str);
     REQUIRE(to<Presentation<std::string>>(k_str) == p_str);
@@ -581,9 +581,9 @@ namespace libsemigroups {
 
     Presentation<std::string> p_str;
     p_str.alphabet("abc"s);
-    presentation::add_rule(p_str, "aa", "b");
-    presentation::add_rule(p_str, "bb", "c");
-    presentation::add_rule(p_str, "cc", "a");
+    presentation::add_rule(p_str, "aa"s, "b"s);
+    presentation::add_rule(p_str, "bb"s, "c"s);
+    presentation::add_rule(p_str, "cc"s, "a"s);
 
     ToddCoxeter tc_str(congruence_kind::twosided, p_str);
     REQUIRE(to<Presentation<std::string>>(tc_str) == p_str);
@@ -651,9 +651,9 @@ namespace libsemigroups {
     // Test 1: Congruence<std::string> -> Presentation<std::string> (same type)
     Presentation<std::string> p_str;
     p_str.alphabet("abc"s);
-    presentation::add_rule(p_str, "aa", "b");
-    presentation::add_rule(p_str, "bb", "c");
-    presentation::add_rule(p_str, "cc", "a");
+    presentation::add_rule(p_str, "aa"s, "b"s);
+    presentation::add_rule(p_str, "bb"s, "c"s);
+    presentation::add_rule(p_str, "cc"s, "a"s);
 
     Congruence c_str(congruence_kind::twosided, p_str);
 

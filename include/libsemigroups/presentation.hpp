@@ -1052,9 +1052,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
-    void add_rule(Presentation<std::string>& p,
-                  char const*                lhop,
-                  char const*                rhop);
+    [[deprecated]] void add_rule(Presentation<std::string>& p,
+                                 char const*                lhop,
+                                 char const*                rhop);
 
     //! \brief Add a rule to the presentation by `string const &` and
     //! `char const*`.

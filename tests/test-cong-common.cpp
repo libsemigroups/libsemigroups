@@ -285,8 +285,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
 
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "abcd"s, "aaaeaa");
+    presentation::add_rule(p, "ef"s, "dg");
 
     TestType cong(twosided, p);
 
@@ -361,8 +361,8 @@ namespace libsemigroups {
     p.init();
     p.alphabet("abcdefg"s);
     p.contains_empty_word(false);
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "abcd"s, "aaaeaa");
+    presentation::add_rule(p, "ef"s, "dg");
 
     cong.init(twosided, p);
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);

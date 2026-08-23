@@ -158,7 +158,7 @@ namespace libsemigroups {
     REQUIRE(p.letter_no_checks(1) == 1);
     REQUIRE(p.letter_no_checks(2) == 2);
     p.alphabet(4);
-    if constexpr (std::is_same<W, std::string>::value) {
+    if constexpr (std::is_same_v<W, std::string>) {
       REQUIRE(p.alphabet() == "abcd");
     } else {
       REQUIRE(p.alphabet() == W({0, 1, 2, 3}));
@@ -348,8 +348,8 @@ namespace libsemigroups {
                       LibsemigroupsException);
     p.alphabet_from_rules();
     p.throw_if_bad_alphabet_or_rules();
-    presentation::add_rule(p, std::string("bbb"), "baa");
-    presentation::add_rule(p, "b", std::string("bb"));
+    presentation::add_rule(p, "bbb"s, "baa"s);
+    presentation::add_rule(p, "b"s, "bb"s);
     REQUIRE(p.rules
             == std::vector<std::string>({"abcb",
                                          "aa",
@@ -665,9 +665,9 @@ namespace libsemigroups {
     presentation::add_identity_rules(p, 'e');
 
     presentation::add_inverse_rules(p, "AaBbCce", 'e');
-    presentation::add_rule(p, "aaCac", "e");
-    presentation::add_rule(p, "acbbACb", "e");
-    presentation::add_rule(p, "ABabccc", "e");
+    presentation::add_rule(p, "aaCac"s, "e"s);
+    presentation::add_rule(p, "acbbACb"s, "e"s);
+    presentation::add_rule(p, "ABabccc"s, "e"s);
 
     REQUIRE(
         p.rules
@@ -1580,13 +1580,13 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghi"s);
-    presentation::add_rule(p, "d", "ffg");
-    presentation::add_rule(p, "bcbc", "cc");
-    presentation::add_rule(p, "bbb", "d");
-    presentation::add_rule(p, "biib", "e");
-    presentation::add_rule(p, "iii", "h");
-    presentation::add_rule(p, "h", "gg");
-    presentation::add_rule(p, "d", "iii");
+    presentation::add_rule(p, "d"s, "ffg"s);
+    presentation::add_rule(p, "bcbc"s, "cc"s);
+    presentation::add_rule(p, "bbb"s, "d"s);
+    presentation::add_rule(p, "biib"s, "e"s);
+    presentation::add_rule(p, "iii"s, "h"s);
+    presentation::add_rule(p, "h"s, "gg"s);
+    presentation::add_rule(p, "d"s, "iii"s);
 
     presentation::remove_redundant_generators(p);
 
@@ -1688,7 +1688,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "ba", "abaaabaa");
+    presentation::add_rule(p, "ba"s, "abaaabaa"s);
     presentation::replace_word_with_new_generator(p, "ba");
     presentation::change_alphabet(p, "abc");
     REQUIRE(p.rules == std::vector<std::string>({"c", "acaaca", "c", "ba"}));
@@ -1759,7 +1759,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "baabaa", "ababa");
+    presentation::add_rule(p, "baabaa"s, "ababa"s);
     REQUIRE(presentation::first_unused_letter(p) == 'c');
     p.alphabet("abcdefghijklmnopq"s);
     REQUIRE(presentation::first_unused_letter(p) == 'r');
@@ -1797,7 +1797,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("a"s);
-    presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaa", "a");
+    presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaa"s, "a"s);
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaaaa");
     presentation::replace_word_with_new_generator(p, "aaaaaa");
     REQUIRE(presentation::longest_subword_reducing_length(p) == "");
@@ -1807,14 +1807,14 @@ namespace libsemigroups {
     REQUIRE(presentation::length(p) == 13);
 
     p.alphabet("ab"s);
-    presentation::add_rule(p, "baaaaaaaaaaaaaaaaaaa", "a");
+    presentation::add_rule(p, "baaaaaaaaaaaaaaaaaaa"s, "a"s);
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaaaa");
 
     p.alphabet("ab"s);
     p.rules.clear();
-    presentation::add_rule(p, "aaaaaaaaaaaaaaaa", "a");
-    presentation::add_rule(p, "bbbbbbbbbbbbbbbb", "b");
-    presentation::add_rule(p, "abb", "baa");
+    presentation::add_rule(p, "aaaaaaaaaaaaaaaa"s, "a"s);
+    presentation::add_rule(p, "bbbbbbbbbbbbbbbb"s, "b"s);
+    presentation::add_rule(p, "abb"s, "baa"s);
     REQUIRE(presentation::length(p) == 40);
     auto w = presentation::longest_subword_reducing_length(p);
     REQUIRE(w == "bbbb");
@@ -1904,9 +1904,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
     p.rules.clear();
-    presentation::add_rule(p, "aaaaaaaaaaaaaaaa", "a");
-    presentation::add_rule(p, "bbbbbbbbbbbbbbbb", "b");
-    presentation::add_rule(p, "abb", "baa");
+    presentation::add_rule(p, "aaaaaaaaaaaaaaaa"s, "a"s);
+    presentation::add_rule(p, "bbbbbbbbbbbbbbbb"s, "b"s);
+    presentation::add_rule(p, "abb"s, "baa"s);
     REQUIRE(presentation::length(p) == 40);
     presentation::greedy_reduce_length(p);
     REQUIRE(presentation::length(p) == 26);
@@ -1932,9 +1932,9 @@ namespace libsemigroups {
     Presentation<std::string> p1;
     p1.alphabet("ab"s);
     p1.rules.clear();
-    presentation::add_rule(p1, "aaaaaa", "a");
-    presentation::add_rule(p1, "bbbbbb", "b");
-    presentation::add_rule(p1, "abb", "baa");
+    presentation::add_rule(p1, "aaaaaa"s, "a"s);
+    presentation::add_rule(p1, "bbbbbb"s, "b"s);
+    presentation::add_rule(p1, "abb"s, "baa"s);
     Presentation<std::string> q1(p1);
 
     REQUIRE(presentation::length(p1) == 20);
@@ -1953,9 +1953,9 @@ namespace libsemigroups {
 
     Presentation<std::string> p2;
     p2.alphabet("ab"s);
-    presentation::add_rule(p2, "aaaaaaaaaaaaaaaa", "a");
-    presentation::add_rule(p2, "bbbbbbbbbbbbbbbb", "b");
-    presentation::add_rule(p2, "abb", "baa");
+    presentation::add_rule(p2, "aaaaaaaaaaaaaaaa"s, "a"s);
+    presentation::add_rule(p2, "bbbbbbbbbbbbbbbb"s, "b"s);
+    presentation::add_rule(p2, "abb"s, "baa"s);
     Presentation<std::string> q2(p2);
     presentation::greedy_reduce_length(p2);
     presentation::greedy_reduce_length_and_number_of_gens(q2);
@@ -1970,7 +1970,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaaaaaaab", "aaaaaaaaab");
+    presentation::add_rule(p, "aaaaaaaab"s, "aaaaaaaaab"s);
     REQUIRE(presentation::strongly_compress(p));
     REQUIRE(p.rules == decltype(p.rules)({"a", "aa"}));
 
@@ -1985,8 +1985,8 @@ namespace libsemigroups {
 
     // Only works for 1-relation monoids at present
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaaaaaaab", "aaaaaaaaab");
-    presentation::add_rule(p, "aaaaaaaab", "aaaaaaaaab");
+    presentation::add_rule(p, "aaaaaaaab"s, "aaaaaaaaab"s);
+    presentation::add_rule(p, "aaaaaaaab"s, "aaaaaaaaab"s);
     REQUIRE(!presentation::strongly_compress(p));
   }
 
@@ -1998,7 +1998,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "abaaaabab", "abbabaaaab");
+    presentation::add_rule(p, "abaaaabab"s, "abbabaaaab"s);
     REQUIRE(presentation::strongly_compress(p));
     REQUIRE(p.rules == decltype(p.rules)({"abccdae", "fgeabccd"}));
 
@@ -2018,7 +2018,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aabb", "aaabaaab");
+    presentation::add_rule(p, "aabb"s, "aaabaaab"s);
     REQUIRE(presentation::strongly_compress(p));
     presentation::reverse(p);
     REQUIRE(p.rules == decltype(p.rules)({"cba", "baadbaa"}));
@@ -2035,7 +2035,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(presentation::reduce_to_2_generators(q, 2),
                       LibsemigroupsException);
     q = p;
-    presentation::add_rule(q, "aabb", "aaabaaab");
+    presentation::add_rule(q, "aabb"s, "aaabaaab"s);
     // not 1-relation
     REQUIRE(!presentation::reduce_to_2_generators(q, 1));
 
@@ -2981,9 +2981,9 @@ namespace libsemigroups {
 
     p.init();
     p.alphabet("byr"s);
-    presentation::add_rule(p, "byyb", "ybr");
-    presentation::add_rule(p, "yb", "by");
-    presentation::add_rule(p, "rby", "yb");
+    presentation::add_rule(p, "byyb"s, "ybr"s);
+    presentation::add_rule(p, "yb"s, "by"s);
+    presentation::add_rule(p, "rby"s, "yb"s);
 
     REQUIRE(presentation::to_gap_string(p, var_name)
             == "F := FreeSemigroup(\"b\", \"y\", \"r\");\n"
@@ -2996,7 +2996,7 @@ namespace libsemigroups {
                "my_var := F / R;\n");
 
     p.contains_empty_word(true);
-    presentation::add_rule(p, "ryb", "");
+    presentation::add_rule(p, "ryb"s, "");
     REQUIRE(presentation::to_gap_string(p, var_name)
             == "F := FreeMonoid(\"b\", \"y\", \"r\");\n"
                "AssignGeneratorVariables(F);;\n"
@@ -3218,8 +3218,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaaaa", "bbb");
-    presentation::add_rule(p, "ababa", "aaabaabaaabaa");
+    presentation::add_rule(p, "aaaaa"s, "bbb"s);
+    presentation::add_rule(p, "ababa"s, "aaabaabaaabaa"s);
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aba");
   }
 
@@ -3230,9 +3230,9 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
-    presentation::add_rule(p, "aaaaa", "bbb");
-    presentation::add_rule(p, "cba", "aaccaca");
-    presentation::add_rule(p, "aba", "");
+    presentation::add_rule(p, "aaaaa"s, "bbb"s);
+    presentation::add_rule(p, "cba"s, "aaccaca"s);
+    presentation::add_rule(p, "aba"s, "");
     REQUIRE(presentation::longest_subword_reducing_length(p) == "");
   }
 
@@ -3299,14 +3299,14 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
-    presentation::add_rule(p, "aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb");
-    presentation::add_rule(p, "cccccccccccccc", "aaaaba");
-    presentation::add_rule(p, "bbb", "bbbbab");
-    presentation::add_rule(p, "aaa", "aaaaca");
-    presentation::add_rule(p, "ccc", "ccccac");
-    presentation::add_rule(p, "aaa", "bbbbcb");
-    presentation::add_rule(p, "ccc", "ccccbc");
-    presentation::add_rule(p, "bbb", "");
+    presentation::add_rule(p, "aaaaaaaaaaaaaa"s, "bbbbbbbbbbbbbb"s);
+    presentation::add_rule(p, "cccccccccccccc"s, "aaaaba"s);
+    presentation::add_rule(p, "bbb"s, "bbbbab"s);
+    presentation::add_rule(p, "aaa"s, "aaaaca"s);
+    presentation::add_rule(p, "ccc"s, "ccccac"s);
+    presentation::add_rule(p, "aaa"s, "bbbbcb"s);
+    presentation::add_rule(p, "ccc"s, "ccccbc"s);
+    presentation::add_rule(p, "bbb"s, "");
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "ccc");
   }
@@ -3318,13 +3318,13 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb");
-    presentation::add_rule(p, "ddddcc", "aaaaba");
-    presentation::add_rule(p, "bbb", "bbbbab");
-    presentation::add_rule(p, "aaa", "aaaaca");
-    presentation::add_rule(p, "dcac", "aaa");
-    presentation::add_rule(p, "bbbbcb", "dcbc");
-    presentation::add_rule(p, "bbb", "ccc");
+    presentation::add_rule(p, "aaaaaaaaaaaaaa"s, "bbbbbbbbbbbbbb"s);
+    presentation::add_rule(p, "ddddcc"s, "aaaaba"s);
+    presentation::add_rule(p, "bbb"s, "bbbbab"s);
+    presentation::add_rule(p, "aaa"s, "aaaaca"s);
+    presentation::add_rule(p, "dcac"s, "aaa"s);
+    presentation::add_rule(p, "bbbbcb"s, "dcbc"s);
+    presentation::add_rule(p, "bbb"s, "ccc"s);
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "bbb");
   }
@@ -3336,11 +3336,9 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "bbb");
-    presentation::add_rule(p,
-                           "ababa",
-                           "aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaa"
-                           "abaaaa");
+    presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"s, "bbb"s);
+    presentation::add_rule(
+        p, "ababa"s, "aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa"s);
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaa");
   }
@@ -3352,8 +3350,8 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcABC"s).contains_empty_word(true);
-    presentation::add_rule(p, "aBCbac", "bACbaacA");
-    presentation::add_rule(p, "accAABab", "");
+    presentation::add_rule(p, "aBCbac"s, "bACbaacA"s);
+    presentation::add_rule(p, "accAABab"s, "");
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "");
   }

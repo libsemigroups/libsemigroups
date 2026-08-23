@@ -357,9 +357,9 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "bbb", "b");
-    presentation::add_rule(p, "abab", "aa");
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "bbb"s, "b"s);
+    presentation::add_rule(p, "abab"s, "aa"s);
 
     Stephen S(p);
     stephen::set_word(S, "bbab");
@@ -460,8 +460,8 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
-    presentation::add_rule(p, "aaaeaa", "abcd");
-    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "aaaeaa"s, "abcd"s);
+    presentation::add_rule(p, "ef"s, "dg"s);
 
     Stephen S(p);
 
@@ -556,15 +556,15 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "ac", "cc");
-    presentation::add_rule(p, "ac", "a");
-    presentation::add_rule(p, "cc", "a");
-    presentation::add_rule(p, "bc", "cc");
-    presentation::add_rule(p, "bcc", "b");
-    presentation::add_rule(p, "bc", "b");
-    presentation::add_rule(p, "cc", "b");
-    presentation::add_rule(p, "a", "b");
+    presentation::add_rule(p, "ab"s, "ba"s);
+    presentation::add_rule(p, "ac"s, "cc"s);
+    presentation::add_rule(p, "ac"s, "a"s);
+    presentation::add_rule(p, "cc"s, "a"s);
+    presentation::add_rule(p, "bc"s, "cc"s);
+    presentation::add_rule(p, "bcc"s, "b"s);
+    presentation::add_rule(p, "bc"s, "b"s);
+    presentation::add_rule(p, "cc"s, "b"s);
+    presentation::add_rule(p, "a"s, "b"s);
 
     Stephen S(p);
     stephen::set_word(S, "abcc").run();
@@ -618,17 +618,17 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "bb", "c");
-    presentation::add_rule(p, "caca", "abab");
-    presentation::add_rule(p, "bc", "d");
-    presentation::add_rule(p, "cb", "d");
-    presentation::add_rule(p, "aa", "d");
-    presentation::add_rule(p, "ad", "a");
-    presentation::add_rule(p, "da", "a");
-    presentation::add_rule(p, "bd", "b");
-    presentation::add_rule(p, "db", "b");
-    presentation::add_rule(p, "cd", "c");
-    presentation::add_rule(p, "dc", "c");
+    presentation::add_rule(p, "bb"s, "c"s);
+    presentation::add_rule(p, "caca"s, "abab"s);
+    presentation::add_rule(p, "bc"s, "d"s);
+    presentation::add_rule(p, "cb"s, "d"s);
+    presentation::add_rule(p, "aa"s, "d"s);
+    presentation::add_rule(p, "ad"s, "a"s);
+    presentation::add_rule(p, "da"s, "a"s);
+    presentation::add_rule(p, "bd"s, "b"s);
+    presentation::add_rule(p, "db"s, "b"s);
+    presentation::add_rule(p, "cd"s, "c"s);
+    presentation::add_rule(p, "dc"s, "c"s);
 
     Stephen S(p);
     stephen::set_word(S, "dabdaaadabab").run();
@@ -785,7 +785,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("cab"s);
-    presentation::add_rule(p, "aabc", "acba");
+    presentation::add_rule(p, "aabc"s, "acba"s);
 
     Stephen S(p);
     stephen::set_word(S, "a").run();
@@ -966,8 +966,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefgh"s);
 
-    presentation::add_rule(p, "abcd", "ce");
-    presentation::add_rule(p, "df", "hd");
+    presentation::add_rule(p, "abcd"s, "ce"s);
+    presentation::add_rule(p, "df"s, "hd"s);
     check_equal_to(p, "abchd"s, "abcdf"s);
     check_equal_to(p, "abchd"s, "abchd"s);
     check_equal_to(p, "abchdf"s, "abchhd"s);
@@ -1006,9 +1006,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefghij"s);
 
-    presentation::add_rule(p, "afh", "bgh");
-    presentation::add_rule(p, "hc", "de");
-    presentation::add_rule(p, "ei", "j");
+    presentation::add_rule(p, "afh"s, "bgh"s);
+    presentation::add_rule(p, "hc"s, "de"s);
+    presentation::add_rule(p, "ei"s, "j"s);
 
     check_equal_to(p, "afdj"s, "bgdj"s);
     check_not_equal_to(p, "jjjjjjjjjjjjjjjjjjjjjjj"s, "b"s);
@@ -1041,7 +1041,7 @@ namespace libsemigroups {
     v4::ToWord                to_word("abcd");
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "aabc", "acba");
+    presentation::add_rule(p, "aabc"s, "acba"s);
     std::string original = "cbacbaabcaabcacbacba";
     std::string expected = "cbaabcabcaabcaabcabc";
 
@@ -1082,7 +1082,7 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abcd", "accca");
+    presentation::add_rule(p, "abcd"s, "accca"s);
 
     check_words_accepted(p, "bbcabcdaccaccabcddd"s, "bbcabcdaccaccabcddd"s);
     check_equal_to(p, "bbcabcdaccaccabcddd"s, "bbcabcdaccaccabcddd"s);
@@ -1109,7 +1109,7 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
-    presentation::add_rule(p, "ccab", "cbac");
+    presentation::add_rule(p, "ccab"s, "cbac"s);
 
     check_words_accepted(p, "bacbaccabccabcbacbac"s, "bacbacbaccbaccbacbac"s);
     check_equal_to(p, "bacbaccabccabcbacbac"s, "bacbacbaccbaccbacbac"s);
@@ -1140,7 +1140,7 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abcd", "dcba");
+    presentation::add_rule(p, "abcd"s, "dcba"s);
 
     check_words_accepted(p, "dcbdcba"s, "abcdbcd"s);
     check_equal_to(p, "dcbdcba"s, "abcdbcd"s);
@@ -1167,8 +1167,8 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "abcd", "dcba");
-    presentation::add_rule(p, "adda", "dbbd");
+    presentation::add_rule(p, "abcd"s, "dcba"s);
+    presentation::add_rule(p, "adda"s, "dbbd"s);
 
     check_words_accepted(p, "dbbabcd"s, "addacba"s);
     check_equal_to(p, "dbbabcd"s, "addacba"s);
@@ -1235,8 +1235,8 @@ namespace libsemigroups {
     ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "adbd");
+    presentation::add_rule(p, "acba"s, "aabc"s);
+    presentation::add_rule(p, "acba"s, "adbd"s);
     check_equal_to(p, "acbacba"s, "aabcabc"s);
     check_words_accepted(p, "acbacba"s, "aabcabc"s);
     check_equal_to(p, "aabcabc"s, "acbacba"s);
@@ -1443,7 +1443,7 @@ namespace libsemigroups {
     InversePresentation<std::string> p;
     p.alphabet("xyXY"s);
     p.inverses_no_checks("XYxy");
-    presentation::add_rule(p, "xyXxyX", "xyX");
+    presentation::add_rule(p, "xyXxyX"s, "xyX"s);
 
     auto S = Stephen(p);
     stephen::set_word(S, "xyXyy");
@@ -1503,9 +1503,9 @@ namespace libsemigroups {
     InversePresentation<std::string> p;
     p.alphabet("abcABC"s);
     p.inverses_no_checks("ABCabc");
-    presentation::add_rule(p, "ac", "ca");
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "bc", "cb");
+    presentation::add_rule(p, "ac"s, "ca"s);
+    presentation::add_rule(p, "ab"s, "ba"s);
+    presentation::add_rule(p, "bc"s, "cb"s);
 
     auto S = Stephen(p);
     stephen::set_word(S, "BaAbaBcAbC");

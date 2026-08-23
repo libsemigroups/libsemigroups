@@ -28,6 +28,8 @@
 using namespace libsemigroups::literals;
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   // action.hpp: Line 59
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "000",
@@ -224,11 +226,11 @@ namespace libsemigroups {
                           "[docs][quick]") {
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("abcd");
-    presentation::add_rule_no_checks(p, "ab", "");
-    presentation::add_rule_no_checks(p, "ba", "");
-    presentation::add_rule_no_checks(p, "cd", "");
-    presentation::add_rule_no_checks(p, "dc", "");
+    p.alphabet("abcd"s);
+    presentation::add_rule_no_checks(p, "ab"s, "");
+    presentation::add_rule_no_checks(p, "ba"s, "");
+    presentation::add_rule_no_checks(p, "cd"s, "");
+    presentation::add_rule_no_checks(p, "dc"s, "");
 
     KnuthBendix kb(congruence_kind::twosided, p);
 

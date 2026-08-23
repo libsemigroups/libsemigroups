@@ -55,6 +55,7 @@
 #include "libsemigroups/detail/value-guard.hpp"        // for ValueGuard::Va...
 
 namespace libsemigroups {
+  using std::literals::operator""s;
 
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using RPOTrie    = detail::RewritingSystemTrie<RPOCmp>;
@@ -68,16 +69,16 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("aAbB").contains_empty_word(true);
+    p.alphabet("aAbB"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "Bb", "");
-    presentation::add_rule(p, "aaaaaaaa", "");
-    presentation::add_rule(p, "bbbbbbb", "");
-    presentation::add_rule(p, "abab", "");
-    presentation::add_rule(p, "AbAbAb", "");
+    presentation::add_rule(p, "aA"s, "");
+    presentation::add_rule(p, "Aa"s, "");
+    presentation::add_rule(p, "bB"s, "");
+    presentation::add_rule(p, "Bb"s, "");
+    presentation::add_rule(p, "aaaaaaaa"s, "");
+    presentation::add_rule(p, "bbbbbbb"s, "");
+    presentation::add_rule(p, "abab"s, "");
+    presentation::add_rule(p, "AbAbAb"s, "");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb(congruence_kind::onesided, p);
@@ -107,37 +108,37 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("aAhHfFdDbBiIgGeEcC").contains_empty_word(true);
+    p.alphabet("aAhHfFdDbBiIgGeEcC"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "hH", "");
-    presentation::add_rule(p, "Hh", "");
-    presentation::add_rule(p, "fF", "");
-    presentation::add_rule(p, "Ff", "");
-    presentation::add_rule(p, "dD", "");
-    presentation::add_rule(p, "Dd", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "Bb", "");
-    presentation::add_rule(p, "iI", "");
-    presentation::add_rule(p, "Ii", "");
-    presentation::add_rule(p, "gG", "");
-    presentation::add_rule(p, "Gg", "");
-    presentation::add_rule(p, "eE", "");
-    presentation::add_rule(p, "Ee", "");
-    presentation::add_rule(p, "cC", "");
-    presentation::add_rule(p, "Cc", "");
-    presentation::add_rule(p, "ad", "G");
-    presentation::add_rule(p, "ab", "d");
-    presentation::add_rule(p, "bc", "e");
-    presentation::add_rule(p, "cd", "f");
-    presentation::add_rule(p, "de", "g");
-    presentation::add_rule(p, "ef", "h");
-    presentation::add_rule(p, "fg", "i");
-    presentation::add_rule(p, "gh", "a");
-    presentation::add_rule(p, "hi", "b");
-    presentation::add_rule(p, "ia", "c");
-    presentation::add_rule(p, "aDGE", "DBg");  // codespell:ignore
+    presentation::add_rule(p, "aA"s, "");
+    presentation::add_rule(p, "Aa"s, "");
+    presentation::add_rule(p, "hH"s, "");
+    presentation::add_rule(p, "Hh"s, "");
+    presentation::add_rule(p, "fF"s, "");
+    presentation::add_rule(p, "Ff"s, "");
+    presentation::add_rule(p, "dD"s, "");
+    presentation::add_rule(p, "Dd"s, "");
+    presentation::add_rule(p, "bB"s, "");
+    presentation::add_rule(p, "Bb"s, "");
+    presentation::add_rule(p, "iI"s, "");
+    presentation::add_rule(p, "Ii"s, "");
+    presentation::add_rule(p, "gG"s, "");
+    presentation::add_rule(p, "Gg"s, "");
+    presentation::add_rule(p, "eE"s, "");
+    presentation::add_rule(p, "Ee"s, "");
+    presentation::add_rule(p, "cC"s, "");
+    presentation::add_rule(p, "Cc"s, "");
+    presentation::add_rule(p, "ad"s, "G");
+    presentation::add_rule(p, "ab"s, "d");
+    presentation::add_rule(p, "bc"s, "e");
+    presentation::add_rule(p, "cd"s, "f");
+    presentation::add_rule(p, "de"s, "g");
+    presentation::add_rule(p, "ef"s, "h");
+    presentation::add_rule(p, "fg"s, "i");
+    presentation::add_rule(p, "gh"s, "a");
+    presentation::add_rule(p, "hi"s, "b");
+    presentation::add_rule(p, "ia"s, "c");
+    presentation::add_rule(p, "aDGE"s, "DBg");  // codespell:ignore
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb(congruence_kind::twosided, p);
@@ -153,15 +154,15 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("uUvV").contains_empty_word(true);
+    p.alphabet("uUvV"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "uU", "");
-    presentation::add_rule(p, "Uu", "");
-    presentation::add_rule(p, "vV", "");
-    presentation::add_rule(p, "Vv", "");
-    presentation::add_rule(p, "vUvvUv", "");
-    presentation::add_rule(p, "UvUvUv", "");
-    presentation::add_rule(p, "uuuuvvuuvvvvuuvuvv", "");
+    presentation::add_rule(p, "uU"s, "");
+    presentation::add_rule(p, "Uu"s, "");
+    presentation::add_rule(p, "vV"s, "");
+    presentation::add_rule(p, "Vv"s, "");
+    presentation::add_rule(p, "vUvvUv"s, "");
+    presentation::add_rule(p, "UvUvUv"s, "");
+    presentation::add_rule(p, "uuuuvvuuvvvvuuvuvv"s, "");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
@@ -269,14 +270,14 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("abB").contains_empty_word(true);
+    p.alphabet("abB"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aa", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "Bb", "");
-    presentation::add_rule(p, "bb", "B");
-    presentation::add_rule(p, "ababababababab", "");
-    presentation::add_rule(p, "abaBabaBabaBabaBabaBabaBabaBabaB", "");
+    presentation::add_rule(p, "aa"s, "");
+    presentation::add_rule(p, "bB"s, "");
+    presentation::add_rule(p, "Bb"s, "");
+    presentation::add_rule(p, "bb"s, "B");
+    presentation::add_rule(p, "ababababababab"s, "");
+    presentation::add_rule(p, "abaBabaBabaBabaBabaBabaBabaBabaB"s, "");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
@@ -294,14 +295,14 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("aAb").contains_empty_word(true);
+    p.alphabet("aAb"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "bb", "");
-    presentation::add_rule(p, "aa", "A");
-    presentation::add_rule(p, "ababababababab", "");
-    presentation::add_rule(p, "abAbabAbabAbabAbabAbabAbabAbabAb", "");
+    presentation::add_rule(p, "aA"s, "");
+    presentation::add_rule(p, "Aa"s, "");
+    presentation::add_rule(p, "bb"s, "");
+    presentation::add_rule(p, "aa"s, "A");
+    presentation::add_rule(p, "ababababababab"s, "");
+    presentation::add_rule(p, "abAbabAbabAbabAbabAbabAbabAbabAb"s, "");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
@@ -319,14 +320,14 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("aAb").contains_empty_word(true);
+    p.alphabet("aAb"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "bb", "");
-    presentation::add_rule(p, "ababab", "");
-    presentation::add_rule(p, "aaaaaaa", "");
-    presentation::add_rule(p, "abAbabAbabAbabAbabAbabAbabAbabAb", "");
+    presentation::add_rule(p, "aA"s, "");
+    presentation::add_rule(p, "Aa"s, "");
+    presentation::add_rule(p, "bb"s, "");
+    presentation::add_rule(p, "ababab"s, "");
+    presentation::add_rule(p, "aaaaaaa"s, "");
+    presentation::add_rule(p, "abAbabAbabAbabAbabAbabAbabAbabAb"s, "");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
@@ -344,17 +345,17 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("aAbcC").contains_empty_word(true);
+    p.alphabet("aAbcC"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "bb", "");
-    presentation::add_rule(p, "cC", "");
-    presentation::add_rule(p, "Cc", "");
-    presentation::add_rule(p, "abc", "");
-    presentation::add_rule(p, "ccc", "");
-    presentation::add_rule(p, "aaaaaaa", "");
-    presentation::add_rule(p, "abAbabAbabAbabAbabAbabAbabAbabAb", "");
+    presentation::add_rule(p, "aA"s, "");
+    presentation::add_rule(p, "Aa"s, "");
+    presentation::add_rule(p, "bb"s, "");
+    presentation::add_rule(p, "cC"s, "");
+    presentation::add_rule(p, "Cc"s, "");
+    presentation::add_rule(p, "abc"s, "");
+    presentation::add_rule(p, "ccc"s, "");
+    presentation::add_rule(p, "aaaaaaa"s, "");
+    presentation::add_rule(p, "abAbabAbabAbabAbabAbabAbabAbabAb"s, "");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
@@ -373,29 +374,29 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
-    p.alphabet("aAbBcCdDeEfFgG").contains_empty_word(true);
+    p.alphabet("aAbBcCdDeEfFgG"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "Bb", "");
-    presentation::add_rule(p, "cC", "");
-    presentation::add_rule(p, "Cc", "");
-    presentation::add_rule(p, "dD", "");
-    presentation::add_rule(p, "Dd", "");
-    presentation::add_rule(p, "eE", "");
-    presentation::add_rule(p, "Ee", "");
-    presentation::add_rule(p, "fF", "");
-    presentation::add_rule(p, "Ff", "");
-    presentation::add_rule(p, "gG", "");
-    presentation::add_rule(p, "Gg", "");
-    presentation::add_rule(p, "ab", "c");
-    presentation::add_rule(p, "bc", "d");
-    presentation::add_rule(p, "cd", "e");
-    presentation::add_rule(p, "de", "f");
-    presentation::add_rule(p, "ef", "g");
-    presentation::add_rule(p, "fg", "a");
-    presentation::add_rule(p, "ga", "b");
+    presentation::add_rule(p, "aA"s, "");
+    presentation::add_rule(p, "Aa"s, "");
+    presentation::add_rule(p, "bB"s, "");
+    presentation::add_rule(p, "Bb"s, "");
+    presentation::add_rule(p, "cC"s, "");
+    presentation::add_rule(p, "Cc"s, "");
+    presentation::add_rule(p, "dD"s, "");
+    presentation::add_rule(p, "Dd"s, "");
+    presentation::add_rule(p, "eE"s, "");
+    presentation::add_rule(p, "Ee"s, "");
+    presentation::add_rule(p, "fF"s, "");
+    presentation::add_rule(p, "Ff"s, "");
+    presentation::add_rule(p, "gG"s, "");
+    presentation::add_rule(p, "Gg"s, "");
+    presentation::add_rule(p, "ab"s, "c");
+    presentation::add_rule(p, "bc"s, "d");
+    presentation::add_rule(p, "cd"s, "e");
+    presentation::add_rule(p, "de"s, "f");
+    presentation::add_rule(p, "ef"s, "g");
+    presentation::add_rule(p, "fg"s, "a");
+    presentation::add_rule(p, "ga"s, "b");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
@@ -414,14 +415,14 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("abB").contains_empty_word(true);
+    p.alphabet("abB"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aa", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "Bb", "");
-    presentation::add_rule(p, "bb", "B");
-    presentation::add_rule(p, "ababababababab", "");
-    presentation::add_rule(p, "abaBabaBabaBabaBabaBabaBabaBabaB", "");
+    presentation::add_rule(p, "aa"s, "");
+    presentation::add_rule(p, "bB"s, "");
+    presentation::add_rule(p, "Bb"s, "");
+    presentation::add_rule(p, "bb"s, "B");
+    presentation::add_rule(p, "ababababababab"s, "");
+    presentation::add_rule(p, "abaBabaBabaBabaBabaBabaBabaBabaB"s, "");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
@@ -453,27 +454,27 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("aAbBcC").contains_empty_word(true);
+    p.alphabet("aAbBcC"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "Bb", "");
-    presentation::add_rule(p, "cC", "");
-    presentation::add_rule(p, "Cc", "");
-    presentation::add_rule(p, "A", "aaaaaaaaaaaaaaaaaaaaaaaaaa");
-    presentation::add_rule(p, "B", "bbbbbbbbaaaaaaaaa");
-    presentation::add_rule(p, "C", "ccccccccbbbbbbbbaabaaaaaaaaaaaaaaaa");
-    presentation::add_rule(p, "ac", "cbbbbbbbbabaaaaaaaaaaaaaaaaaaaaaaaa");
-    presentation::add_rule(p, "bc", "cbbbabaaaaaaaa");
-    presentation::add_rule(p, "abb", "baabaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    presentation::add_rule(p, "aaab", "baaa");
-    presentation::add_rule(p, "abab", "bbaa");
-    presentation::add_rule(p, "abaab", "babaa");
-    presentation::add_rule(p, "bbbbbbbbb", "aaaaaaaaaaaaaaaaaa");
+    presentation::add_rule(p, "aA"s, "");
+    presentation::add_rule(p, "Aa"s, "");
+    presentation::add_rule(p, "bB"s, "");
+    presentation::add_rule(p, "Bb"s, "");
+    presentation::add_rule(p, "cC"s, "");
+    presentation::add_rule(p, "Cc"s, "");
+    presentation::add_rule(p, "A"s, "aaaaaaaaaaaaaaaaaaaaaaaaaa");
+    presentation::add_rule(p, "B"s, "bbbbbbbbaaaaaaaaa");
+    presentation::add_rule(p, "C"s, "ccccccccbbbbbbbbaabaaaaaaaaaaaaaaaa");
+    presentation::add_rule(p, "ac"s, "cbbbbbbbbabaaaaaaaaaaaaaaaaaaaaaaaa");
+    presentation::add_rule(p, "bc"s, "cbbbabaaaaaaaa");
+    presentation::add_rule(p, "abb"s, "baabaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    presentation::add_rule(p, "aaab"s, "baaa");
+    presentation::add_rule(p, "abab"s, "bbaa");
+    presentation::add_rule(p, "abaab"s, "babaa");
+    presentation::add_rule(p, "bbbbbbbbb"s, "aaaaaaaaaaaaaaaaaa");
     presentation::add_rule(
-        p, "ccccccccc", "bbbbbbbbabaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaaaaaaaaaa", "");
+        p, "ccccccccc"s, "bbbbbbbbabaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaaaaaaaaaa"s, "");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
@@ -490,17 +491,17 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("aAbBcC").contains_empty_word(true);
+    p.alphabet("aAbBcC"s).contains_empty_word(true);
 
-    presentation::add_rule(p, "aA", "");
-    presentation::add_rule(p, "Aa", "");
-    presentation::add_rule(p, "bB", "");
-    presentation::add_rule(p, "Bb", "");
-    presentation::add_rule(p, "cC", "");
-    presentation::add_rule(p, "Cc", "");
-    presentation::add_rule(p, "baB", "aa");
-    presentation::add_rule(p, "cbC", "BB");
-    presentation::add_rule(p, "acA", "CC");
+    presentation::add_rule(p, "aA"s, "");
+    presentation::add_rule(p, "Aa"s, "");
+    presentation::add_rule(p, "bB"s, "");
+    presentation::add_rule(p, "Bb"s, "");
+    presentation::add_rule(p, "cC"s, "");
+    presentation::add_rule(p, "Cc"s, "");
+    presentation::add_rule(p, "baB"s, "aa");
+    presentation::add_rule(p, "cbC"s, "BB");
+    presentation::add_rule(p, "acA"s, "CC");
 
     using RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>;
     KnuthBendix<std::string, RewritingSystem> kb;
