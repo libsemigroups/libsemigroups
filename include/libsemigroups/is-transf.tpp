@@ -23,41 +23,6 @@
 namespace libsemigroups {
 
   namespace detail {
-    template <typename Iterator>
-    std::pair<Iterator, size_t> find_duplicates(
-        Iterator                                                    first,
-        Iterator                                                    last,
-        std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen) {
-      seen.clear();
-      for (auto it = first; it != last; ++it) {
-        if (*it != UNDEFINED) {
-          auto [prev_it, inserted] = seen.emplace(*it, seen.size());
-          if (!inserted) {
-            return std::pair(it, prev_it->second);
-          }
-        }
-      }
-      return std::pair(last, seen.size());
-    }
-
-    template <typename Iterator>
-    void throw_if_duplicates(
-        Iterator                                                    first,
-        Iterator                                                    last,
-        std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen,
-        std::string_view                                            where) {
-      auto [it, pos] = find_duplicates(first, last, seen);
-      if (it != last) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "duplicate {} value, found {} in position {}, first "
-            "occurrence in position {}",
-            where,
-            to_printable(*it),
-            std::distance(first, it),
-            pos);
-      }
-    }
-
     template <typename Point>
     size_t max_degree() {
       // There are std::numeric_limits<Point>::max() + 1 unique values of type

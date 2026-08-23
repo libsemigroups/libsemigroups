@@ -151,13 +151,11 @@ namespace libsemigroups {
     template <typename Word>
     void throw_if_contains_duplicates(Word const&      word,
                                       std::string_view where) {
-      std::unordered_set<typename Word::value_type> letter_set;
-      for (auto const& letter : word) {
-        if (!letter_set.insert(letter).second) {
-          LIBSEMIGROUPS_EXCEPTION("invalid {}, the letter {} is duplicated!",
-                                  where,
-                                  detail::to_printable(letter));
-        }
+      auto it = detail::find_duplicates(word.cbegin(), word.cend()).first;
+      if (it != word.cend()) {
+        LIBSEMIGROUPS_EXCEPTION("invalid {}, the letter {} is duplicated!",
+                                where,
+                                detail::to_printable(*it));
       }
     }
 
