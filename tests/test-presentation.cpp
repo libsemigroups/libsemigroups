@@ -220,8 +220,15 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     using W = TestType;
     Presentation<W> p;
+    W               empty;
+    REQUIRE_EXCEPTION_MSG(
+        p.throw_if_empty_word_not_allowed(empty.cbegin(), empty.cend()),
+        "the presentation does not contain the empty word, did you mean to "
+        "call contains_empty_word(true) first?");
     REQUIRE(!p.contains_empty_word());
     p.contains_empty_word(true);
+    REQUIRE_NOTHROW(
+        p.throw_if_empty_word_not_allowed(empty.cbegin(), empty.cend()));
     REQUIRE(p.contains_empty_word());
     p.contains_empty_word(false);
     REQUIRE(!p.contains_empty_word());
@@ -2627,31 +2634,7 @@ namespace libsemigroups {
 
     {
       Presentation<std::string> p;
-      p.alphabet("ab"s);
-      REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet('c'),
-                            "invalid letter \'c\', valid letters are \"ab\"");
-      if constexpr (std::is_unsigned_v<char>) {
-        REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(-109),
-                              "invalid letter (char with value) 147, valid "
-                              "letters are \"ab\" == [97, 98]");
-      } else {
-        REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(-109),
-                              "invalid letter (char with value) -109, valid "
-                              "letters are \"ab\" == [97, 98]");
-      }
       p.alphabet(std::string({0, 1}));
-      REQUIRE_EXCEPTION_MSG(
-          p.throw_if_letter_not_in_alphabet('c'),
-          "invalid letter 'c', valid letters are (char values) [0, 1]");
-      if constexpr (std::is_unsigned_v<char>) {
-        REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(-109),
-                              "invalid letter (char with value) 147, valid "
-                              "letters are (char values) [0, 1]");
-      } else {
-        REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(-109),
-                              "invalid letter (char with value) -109, valid "
-                              "letters are (char values) [0, 1]");
-      }
       REQUIRE_EXCEPTION_MSG(
           p.alphabet(257), "expected a value in the range [0, 257), found 257");
       REQUIRE_EXCEPTION_MSG(
@@ -2688,18 +2671,21 @@ namespace libsemigroups {
     // {
     //   Presentation<std::basic_string<uint8_t>>
     //   p; p.alphabet({97, 98});
-    //   REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(99),
+    //   REQUIRE_EXCEPTION_MSG(
+    //       p.alphabet_v4().throw_if_letter_not_in_alphabet(99),
     //                         "invalid letter
     //                         99, valid
     //                         letters are [97,
     //                         98]");
-    //   REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(147),
+    //   REQUIRE_EXCEPTION_MSG(
+    //       p.alphabet_v4().throw_if_letter_not_in_alphabet(147),
     //                         "invalid letter
     //                         147, valid
     //                         letters are [97,
     //                         98]");
     //   p.alphabet({0, 1});
-    //   REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet('c'),
+    //   REQUIRE_EXCEPTION_MSG(
+    //       p.alphabet_v4().throw_if_letter_not_in_alphabet('c'),
     //                         "invalid letter
     //                         99, valid
     //                         letters are [0,
@@ -2757,10 +2743,6 @@ namespace libsemigroups {
       Presentation<std::vector<uint8_t>> p;
       p.alphabet(2);
       p.contains_empty_word(true);
-      REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(99),
-                            "invalid letter 99, valid letters are [0, 1]");
-      REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(109),
-                            "invalid letter 109, valid letters are [0, 1]");
       REQUIRE_EXCEPTION_MSG(
           p.alphabet(257), "expected a value in the range [0, 257), found 257");
       REQUIRE(p.alphabet().size() == 2);
@@ -3702,10 +3684,12 @@ namespace libsemigroups {
     SECTION("alphabet specified, inverses specified ") {
       REQUIRE_EXCEPTION_MSG(
           presentation::commutator(W{0}, W{}, W{}, W{}),
-          "invalid letter (char with value) 0, valid letters are \"\" == []");
+          "invalid letter (char with value) 0, there are no letters in the "
+          "alphabet");
       REQUIRE_EXCEPTION_MSG(
           presentation::commutator(W{}, W{0}, W{}, W{}),
-          "invalid letter (char with value) 0, valid letters are \"\" == []");
+          "invalid letter (char with value) 0, there are no letters in the "
+          "alphabet");
       REQUIRE_EXCEPTION_MSG(
           presentation::commutator(W{}, W{}, W{0}, W{}),
           "invalid number of inverses, expected 1 but found 0");
@@ -3728,8 +3712,10 @@ namespace libsemigroups {
     SECTION("alphabet inferred, inverses specified") {
       Presentation<W> p;
       p.contains_empty_word(true);
-      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{0}, W{}, W{}),
-                            "there are no letters in the alphabet");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(p, W{0}, W{}, W{}),
+          "invalid letter (char with value) 0, there are no letters in the "
+          "alphabet");
 
       p.alphabet(W({0}));
       REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{1}, W{}, W{0}),
@@ -3763,8 +3749,10 @@ namespace libsemigroups {
     SECTION("alphabet inferred, inverses inferred") {
       Presentation<W> p;
       p.contains_empty_word(true);
-      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{0}, W{}),
-                            "there are no letters in the alphabet");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(p, W{0}, W{}),
+          "invalid letter (char with value) 0, there are no letters in the "
+          "alphabet");
 
       p.alphabet(W({0}));
       REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{1}, W{}),
@@ -3865,10 +3853,12 @@ namespace libsemigroups {
       // The words are not over the provided alphabet
       REQUIRE_EXCEPTION_MSG(
           presentation::add_commutator_rule(p, W{0}, W{}, W{}, W{}),
-          "invalid letter (char with value) 0, valid letters are \"\" == []");
+          "invalid letter (char with value) 0, there are no letters in the "
+          "alphabet");
       REQUIRE_EXCEPTION_MSG(
           presentation::add_commutator_rule(p, W{}, W{0}, W{}, W{}),
-          "invalid letter (char with value) 0, valid letters are \"\" == []");
+          "invalid letter (char with value) 0, there are no letters in the "
+          "alphabet");
 
       // The words are not over the presentation's alphabet
       REQUIRE_EXCEPTION_MSG(
@@ -3921,7 +3911,8 @@ namespace libsemigroups {
       p.contains_empty_word(true);
       REQUIRE_EXCEPTION_MSG(
           presentation::add_commutator_rule(p, W{0}, W{}, W{}),
-          "there are no letters in the alphabet");
+          "invalid letter (char with value) 0, there are no letters in the "
+          "alphabet");
       p.alphabet(W({0}));
       // The words are not over the presentation's alphabet
       REQUIRE_EXCEPTION_MSG(
@@ -3961,8 +3952,10 @@ namespace libsemigroups {
     }
     SECTION("alphabet inferred, inverses inferred") {
       p.contains_empty_word(true);
-      REQUIRE_EXCEPTION_MSG(presentation::add_commutator_rule(p, W{0}, W{}),
-                            "there are no letters in the alphabet");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{0}, W{}),
+          "invalid letter (char with value) 0, there are no letters in the "
+          "alphabet");
 
       p.alphabet(W({0}));
       // The words are not over the presentation's alphabet

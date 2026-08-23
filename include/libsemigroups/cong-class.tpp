@@ -164,11 +164,13 @@ namespace libsemigroups {
     }
   }
 
+  // DEPRECATED
   template <typename Word>
   template <typename Iterator1, typename Iterator2>
   void Congruence<Word>::throw_if_letter_not_in_alphabet(Iterator1 first,
                                                          Iterator2 last) const {
-    _presentation.throw_if_letter_not_in_alphabet(first, last);
+    _presentation.throw_if_empty_word_not_allowed(first, last);
+    _presentation.alphabet_v4().throw_if_letter_not_in_alphabet(first, last);
   }
 
   template <typename Word>

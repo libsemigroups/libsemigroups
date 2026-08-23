@@ -498,8 +498,10 @@ namespace libsemigroups {
                            Iterator1 lhs_end,
                            Iterator2 rhs_begin,
                            Iterator2 rhs_end) {
-      throw_if_letter_not_in_alphabet(lhs_begin, lhs_end);
-      throw_if_letter_not_in_alphabet(rhs_begin, rhs_end);
+      throw_if_empty_word_not_allowed(lhs_begin, lhs_end);
+      _alphabet.throw_if_letter_not_in_alphabet(lhs_begin, lhs_end);
+      throw_if_empty_word_not_allowed(rhs_begin, rhs_end);
+      _alphabet.throw_if_letter_not_in_alphabet(rhs_begin, rhs_end);
       return add_rule_no_checks(lhs_begin, lhs_end, rhs_begin, rhs_end);
     }
 
@@ -649,9 +651,10 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in the length of the alphabet.
-    // TODO(v4) remove in favour of a direct call to Alphabet mem fn given
-    // below
-    void throw_if_alphabet_has_duplicates() const {
+    //!
+    //! \deprecated_warning{function} Use
+    //! `alphabet_v4().throw_if_duplicate_letters()` instead.
+    [[deprecated]] void throw_if_alphabet_has_duplicates() const {
       _alphabet.throw_if_duplicate_letters();
     }
 
@@ -666,17 +669,37 @@ namespace libsemigroups {
     //! \complexity
     //! Constant on average, worst case linear in the size of the alphabet.
     //!
-    // TODO(v4) remove in favour of direct call to Alphabet mem fn of the same
-    // name
-    void throw_if_letter_not_in_alphabet(native_letter_type c) const {
+    //! \deprecated_warning{function} Use
+    //! `alphabet_v4().throw_if_letter_not_in_alphabet(c)` instead.
+    [[deprecated]] void
+    throw_if_letter_not_in_alphabet(native_letter_type c) const {
       _alphabet.throw_if_letter_not_in_alphabet(c);
     }
+
+    //! \brief Check if a range is an allowed empty word.
+    //!
+    //! Check if the range [\p first, \p last) is empty when
+    //! \ref contains_empty_word returns \c false.
+    //!
+    //! \tparam Iterator1 the type of the first argument (an iterator).
+    //! \tparam Iterator2 the type of the second argument (an iterator).
+    //! \param first iterator pointing at the first letter to check.
+    //! \param last iterator pointing one beyond the last letter to check.
+    //!
+    //! \throws LibsemigroupsException if \p first equals \p last and
+    //! \ref contains_empty_word returns \c false.
+    //!
+    //! \complexity
+    //! Constant.
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_empty_word_not_allowed(Iterator1 first, Iterator2 last) const;
 
     //! \brief Check if every letter in a range belongs to the alphabet.
     //!
     //! Check if every letter in a range belongs to the alphabet.
     //!
-    //! \tparam Iterator the type of the arguments (iterators).
+    //! \tparam Iterator1 the type of the first argument (an iterator).
+    //! \tparam Iterator2 the type of the second argument (an iterator).
     //! \param first iterator pointing at the first letter to check.
     //! \param last iterator pointing one beyond the last letter to check.
     //!
@@ -686,10 +709,13 @@ namespace libsemigroups {
     //! \complexity
     //! Worst case \f$O(mn)\f$ where \f$m\f$ is the length of the longest
     //! word, and \f$n\f$ is the size of the alphabet.
-    // TODO(v4) remove in favour of direct call to Alphabet mem fn of the same
-    // name
+    //!
+    //! \deprecated_warning{function} Use
+    //! \ref throw_if_empty_word_not_allowed and
+    //! `alphabet_v4().throw_if_letter_not_in_alphabet(first, last)` instead.
     template <typename Iterator1, typename Iterator2>
-    void throw_if_letter_not_in_alphabet(Iterator1 first, Iterator2 last) const;
+    [[deprecated]] void throw_if_letter_not_in_alphabet(Iterator1 first,
+                                                        Iterator2 last) const;
 
     //! \brief Check if every word in every rule consists only of letters
     //! belonging to the alphabet.
@@ -713,15 +739,16 @@ namespace libsemigroups {
     //!
     //! Check if the alphabet and rules are valid.
     //!
-    //! \throws LibsemigroupsException if \ref throw_if_alphabet_has_duplicates
-    //! or \ref throw_if_bad_rules does.
+    //! \throws LibsemigroupsException if
+    //! `alphabet_v4().throw_if_duplicate_letters()` or \ref throw_if_bad_rules
+    //! throws.
     //!
     //! \complexity
     //! Worst case \f$O(mnp)\f$ where \f$m\f$ is the length of length of the
     //! word, \f$n\f$ is the size of the alphabet and \f$p\f$ is the number of
     //! rules.
     void throw_if_bad_alphabet_or_rules() const {
-      throw_if_alphabet_has_duplicates();
+      _alphabet.throw_if_duplicate_letters();
       throw_if_bad_rules();
     }
   };  // class Presentation
@@ -837,7 +864,9 @@ namespace libsemigroups {
                             Iterator                  last) {
       // TODO(0) check if there are an odd number of rules
       for (auto it = first; it != last; ++it) {
-        p.throw_if_letter_not_in_alphabet(it->cbegin(), it->cend());
+        p.throw_if_empty_word_not_allowed(it->cbegin(), it->cend());
+        p.alphabet_v4().throw_if_letter_not_in_alphabet(it->cbegin(),
+                                                        it->cend());
       }
     }
 
@@ -872,14 +901,15 @@ namespace libsemigroups {
     //! \p alphabet.
     //!
     //! \complexity
-    //! Worst case \f$O(mn)\f$ where \f$m\f$ is the length of \p word and
-    //! \f$n\f$ is the length of \p alphabet.
-    // TODO(1): This is very similar to the checks done in
-    // throw_if_letter_not_in_alphabet, except there is no alphabet_map here. It
-    // would be good if there was not duplication
+    //! On average \f$O(m + n)\f$, worst case \f$O(n^2 + mn)\f$, where \f$m\f$
+    //! is the length of \p word and \f$n\f$ is the length of \p alphabet.
+    //!
+    //! \deprecated_warning{function} Construct an \ref Alphabet from
+    //! \p alphabet and use `Alphabet::throw_if_letter_not_in_alphabet`
+    //! instead.
     template <typename Word>
-    void throw_if_word_not_over_alphabet(Word const& alphabet,
-                                         Word const& word);
+    [[deprecated]] void throw_if_word_not_over_alphabet(Word const& alphabet,
+                                                        Word const& word);
 
     //! \brief Throws an exception if \p inverses fails the inverse consistency
     //! checks for \p alphabet.
@@ -937,7 +967,8 @@ namespace libsemigroups {
     template <typename Word>
     void throw_if_bad_inverses(Presentation<Word> const& p,
                                Word const&               inverses) {
-      p.throw_if_letter_not_in_alphabet(inverses.begin(), inverses.end());
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(inverses.begin(),
+                                                      inverses.end());
       throw_if_bad_inverses(p.alphabet(), inverses);
     }
 
@@ -2394,8 +2425,10 @@ namespace libsemigroups {
     //! `p.alphabet()`.
     template <typename Word>
     void add_idempotent_rules(Presentation<Word>& p, Word const& letters) {
-      p.throw_if_letter_not_in_alphabet(std::cbegin(letters),
+      p.throw_if_empty_word_not_allowed(std::cbegin(letters),
                                         std::cend(letters));
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(std::cbegin(letters),
+                                                      std::cend(letters));
       add_idempotent_rules_no_checks(p, letters);
     }
 
@@ -2508,8 +2541,10 @@ namespace libsemigroups {
     //! `p.alphabet()`.
     template <typename Word>
     void add_commutes_rules(Presentation<Word>& p, Word const& letters) {
-      p.throw_if_letter_not_in_alphabet(std::cbegin(letters),
+      p.throw_if_empty_word_not_allowed(std::cbegin(letters),
                                         std::cend(letters));
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(std::cbegin(letters),
+                                                      std::cend(letters));
       add_commutes_rules_no_checks(p, letters);
     }
 
@@ -3276,8 +3311,8 @@ namespace libsemigroups {
     //!
     //! \param p the presentation.
     //!
-    //! \throws LibsemigroupsException if `p.throw_if_alphabet_has_duplicates()`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `p.alphabet_v4().throw_if_duplicate_letters()` throws.
     //! \throws LibsemigroupsException if any of the letters in the alphabet of
     //! \p p are not lowercase.
     //!
@@ -3709,10 +3744,10 @@ namespace libsemigroups {
     //! duplicate letters.
     //!
     //! \sa
-    //! * \ref Presentation<Word>::throw_if_alphabet_has_duplicates
+    //! * \ref Alphabet::throw_if_duplicate_letters
     //! * \ref presentation::throw_if_bad_inverses
     InversePresentation& inverses(word_type const& w) {
-      Presentation<Word>::throw_if_alphabet_has_duplicates();
+      this->alphabet_v4().throw_if_duplicate_letters();
       presentation::throw_if_bad_inverses(*this, w);
       return inverses_no_checks(w);
     }

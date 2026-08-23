@@ -138,7 +138,9 @@ namespace libsemigroups {
 
       template <typename Iterator1, typename Iterator2>
       StephenImpl& set_internal_word(Iterator1 first, Iterator2 last) {
-        internal_presentation().throw_if_letter_not_in_alphabet(first, last);
+        internal_presentation().throw_if_empty_word_not_allowed(first, last);
+        internal_presentation().alphabet_v4().throw_if_letter_not_in_alphabet(
+            first, last);
         return set_internal_word_no_checks(first, last);
       }
 

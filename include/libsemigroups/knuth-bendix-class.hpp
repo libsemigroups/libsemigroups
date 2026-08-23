@@ -548,6 +548,8 @@ namespace libsemigroups {
                             Iterator4 last2) const {
       // Call CongruenceCommon version so that we perform bound checks
       // in KnuthBendix and not KnuthBendixImpl_
+      throw_if_extra_letter(first1, last1);
+      throw_if_extra_letter(first2, last2);
       return detail::CongruenceCommon::currently_contains<KnuthBendix>(
           first1, last1, first2, last2);
     }
@@ -556,12 +558,10 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the
-    //! ranges
+    //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
-    //! congruence represented by a \ref_knuth_bendix
-    //! instance. This function triggers a full enumeration,
-    //! which may never terminate.
+    //! congruence represented by a \ref_knuth_bendix instance. This function
+    //! triggers a full enumeration, which may never terminate.
     //!
     //! \cong_common_params_contains
     //!
@@ -677,6 +677,7 @@ namespace libsemigroups {
                                  InputIterator2 last) const {
       // Call CongruenceCommon version so that we perform bound checks
       // in KnuthBendix and not KnuthBendixImpl_
+      throw_if_extra_letter(first, last);
       return detail::CongruenceCommon::reduce_no_run<KnuthBendix>(
           d_first, first, last);
     }
@@ -711,6 +712,7 @@ namespace libsemigroups {
                           InputIterator2 last) {
       // Call CongruenceCommon version so that we perform bound checks
       // in KnuthBendix and not KnuthBendixImpl_
+      throw_if_extra_letter(first, last);
       return detail::CongruenceCommon::reduce<KnuthBendix>(
           d_first, first, last);
     }
@@ -746,6 +748,9 @@ namespace libsemigroups {
 
    private:
     void run_impl();
+
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_extra_letter(Iterator1 first, Iterator2 last) const;
 
     [[nodiscard]] bool requires_extra_letter() const {
       return (!generating_pairs().empty()

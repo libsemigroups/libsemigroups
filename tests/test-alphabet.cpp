@@ -16,9 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <cstdint>        // for uint8_t
 #include <string>         // for basic_string, operator==
+#include <type_traits>    // for is_unsigned_v
 #include <unordered_set>  // for unordered_set
 #include <utility>        // for move
+#include <vector>         // for vector
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -168,6 +171,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Alphabet", "005", "letter validation", "[quick]") {
     auto                  rg = ReportGuard(false);
+    Alphabet<std::string> empty;
+    REQUIRE_EXCEPTION_MSG(
+        empty.throw_if_letter_not_in_alphabet(0),
+        "invalid letter (char with value) 0, there are no letters in the "
+        "alphabet");
+
     Alphabet<std::string> a("ab");
     REQUIRE_NOTHROW(a.throw_if_letter_not_in_alphabet('a'));
     REQUIRE_NOTHROW(a.throw_if_letter_not_in_alphabet('b'));
@@ -177,6 +186,29 @@ namespace libsemigroups {
     REQUIRE_EXCEPTION_MSG(a.throw_if_letter_not_in_alphabet(0),
                           "invalid letter (char with value) 0, valid letters "
                           "are \"ab\" == [97, 98]");
+    if constexpr (std::is_unsigned_v<char>) {
+      REQUIRE_EXCEPTION_MSG(a.throw_if_letter_not_in_alphabet(-109),
+                            "invalid letter (char with value) 147, valid "
+                            "letters are \"ab\" == [97, 98]");
+    } else {
+      REQUIRE_EXCEPTION_MSG(a.throw_if_letter_not_in_alphabet(-109),
+                            "invalid letter (char with value) -109, valid "
+                            "letters are \"ab\" == [97, 98]");
+    }
+
+    a.init(std::string({0, 1}));
+    REQUIRE_EXCEPTION_MSG(
+        a.throw_if_letter_not_in_alphabet('c'),
+        "invalid letter 'c', valid letters are (char values) [0, 1]");
+    if constexpr (std::is_unsigned_v<char>) {
+      REQUIRE_EXCEPTION_MSG(a.throw_if_letter_not_in_alphabet(-109),
+                            "invalid letter (char with value) 147, valid "
+                            "letters are (char values) [0, 1]");
+    } else {
+      REQUIRE_EXCEPTION_MSG(a.throw_if_letter_not_in_alphabet(-109),
+                            "invalid letter (char with value) -109, valid "
+                            "letters are (char values) [0, 1]");
+    }
 
     Alphabet b(word_type({0, 1}));
     REQUIRE_NOTHROW(b.throw_if_letter_not_in_alphabet(0));
@@ -186,6 +218,12 @@ namespace libsemigroups {
 
     word_type w = {0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1};
     REQUIRE_NOTHROW(b.throw_if_letter_not_in_alphabet(w.begin(), w.end()));
+
+    Alphabet<std::vector<uint8_t>> c(2);
+    REQUIRE_EXCEPTION_MSG(c.throw_if_letter_not_in_alphabet(99),
+                          "invalid letter 99, valid letters are [0, 1]");
+    REQUIRE_EXCEPTION_MSG(c.throw_if_letter_not_in_alphabet(109),
+                          "invalid letter 109, valid letters are [0, 1]");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Alphabet",

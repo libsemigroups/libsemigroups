@@ -403,7 +403,8 @@ namespace libsemigroups {
     //! \sa stephen::set_word
     template <typename Iterator1, typename Iterator2>
     Stephen& set_word(Iterator1 first, Iterator2 last) {
-      presentation().throw_if_letter_not_in_alphabet(first, last);
+      presentation().throw_if_empty_word_not_allowed(first, last);
+      presentation().alphabet_v4().throw_if_letter_not_in_alphabet(first, last);
       return set_word_no_checks(first, last);
     }
 

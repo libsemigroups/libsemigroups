@@ -243,7 +243,7 @@ namespace libsemigroups {
     }
 
     std::string to_ace_string(Presentation<std::string> const& p) {
-      p.throw_if_alphabet_has_duplicates();
+      p.alphabet_v4().throw_if_duplicate_letters();
       if (std::any_of(
               p.alphabet().cbegin(),
               p.alphabet().cend(),

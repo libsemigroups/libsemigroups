@@ -129,7 +129,9 @@ namespace libsemigroups {
   void
   Alphabet<Word>::throw_if_letter_not_in_alphabet(native_letter_type c) const {
     if (empty()) {
-      LIBSEMIGROUPS_EXCEPTION("there are no letters in the alphabet");
+      LIBSEMIGROUPS_EXCEPTION(
+          "invalid letter {}, there are no letters in the alphabet",
+          detail::to_printable(c));
     } else if (_letters_map.find(c) == _letters_map.cend()) {
       auto msg = fmt::format("invalid letter {}, valid letters are {}",
                              detail::to_printable(c),
