@@ -1035,9 +1035,11 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of the
     //! presentation are performed.
-    void add_rule_no_checks(Presentation<std::string>& p,
-                            char const*                lhop,
-                            char const*                rhop);
+    //!
+    //! \deprecated_warning{function}.
+    [[deprecated]] void add_rule_no_checks(Presentation<std::string>& p,
+                                           char const*                lhop,
+                                           char const*                rhop);
 
     //! \brief Add a rule to the presentation by `char const*`.
     //!

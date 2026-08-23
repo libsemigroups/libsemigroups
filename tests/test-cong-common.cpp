@@ -325,10 +325,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("Bab"s);
-    presentation::add_rule_no_checks(p, "aa", "");
-    presentation::add_rule_no_checks(p, "bB", "");
-    presentation::add_rule_no_checks(p, "bbb", "");
-    presentation::add_rule_no_checks(p, "ababab", "");
+    presentation::add_rule_no_checks(p, "aa"s, ""s);
+    presentation::add_rule_no_checks(p, "bB"s, ""s);
+    presentation::add_rule_no_checks(p, "bbb"s, ""s);
+    presentation::add_rule_no_checks(p, "ababab"s, ""s);
 
     TestType cong(twosided, p);
 
@@ -348,10 +348,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("Bab"s);
-    presentation::add_rule_no_checks(p, "aa", "");
-    presentation::add_rule_no_checks(p, "bB", "");
-    presentation::add_rule_no_checks(p, "bbb", "");
-    presentation::add_rule_no_checks(p, "ababab", "");
+    presentation::add_rule_no_checks(p, "aa"s, ""s);
+    presentation::add_rule_no_checks(p, "bB"s, ""s);
+    presentation::add_rule_no_checks(p, "bbb"s, ""s);
+    presentation::add_rule_no_checks(p, "ababab"s, ""s);
 
     TestType cong(twosided, p);
 
@@ -385,10 +385,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("Bab"s);
-    presentation::add_rule_no_checks(p, "aa", "");
-    presentation::add_rule_no_checks(p, "bB", "");
-    presentation::add_rule_no_checks(p, "bbb", "");
-    presentation::add_rule_no_checks(p, "ababab", "");
+    presentation::add_rule_no_checks(p, "aa"s, ""s);
+    presentation::add_rule_no_checks(p, "bB"s, ""s);
+    presentation::add_rule_no_checks(p, "bbb"s, ""s);
+    presentation::add_rule_no_checks(p, "ababab"s, ""s);
 
     TestType cong(twosided, p);
 
@@ -422,10 +422,10 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("Bab"s);
 
-    presentation::add_rule_no_checks(p, "aa", "");
-    presentation::add_rule_no_checks(p, "bB", "");
-    presentation::add_rule_no_checks(p, "bbb", "");
-    presentation::add_rule_no_checks(p, "ababab", "");
+    presentation::add_rule_no_checks(p, "aa"s, ""s);
+    presentation::add_rule_no_checks(p, "bB"s, ""s);
+    presentation::add_rule_no_checks(p, "bbb"s, ""s);
+    presentation::add_rule_no_checks(p, "ababab"s, ""s);
 
     TestType cong(twosided, p);
 
