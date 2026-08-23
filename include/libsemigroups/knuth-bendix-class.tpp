@@ -21,7 +21,11 @@ namespace libsemigroups {
             typename RewritingSystem,
             template <typename, bool>
             typename ReductionOrder>
-  KnuthBendix<Word, RewritingSystem, ReductionOrder>::KnuthBendix() = default;
+  KnuthBendix<Word, RewritingSystem, ReductionOrder>::KnuthBendix()
+      : KnuthBendixImpl_(),
+        _extra_letter_added(false),
+        _generating_pairs(),
+        _presentation() {}
 
   template <typename Word,
             typename RewritingSystem,
@@ -37,11 +41,11 @@ namespace libsemigroups {
             typename ReductionOrder>
   KnuthBendix<Word, RewritingSystem, ReductionOrder>::KnuthBendix(KnuthBendix&&)
       = default;
+
   template <typename Word,
             typename RewritingSystem,
             template <typename, bool>
             typename ReductionOrder>
-
   KnuthBendix<Word, RewritingSystem, ReductionOrder>&
   KnuthBendix<Word, RewritingSystem, ReductionOrder>::operator=(
       KnuthBendix const&)
@@ -129,7 +133,9 @@ namespace libsemigroups {
       // because o/w the output of (for example) active_rules inexplicably
       // includes an extra letter.
       auto const& alpha = presentation().alphabet();
-      auto        it    = std::find_if(first, last, [&alpha](auto val) {
+      LIBSEMIGROUPS_ASSERT(!alpha.empty());  // If alpha.empty(), then
+                                             // alpha.back() etc below BOOM!
+      auto it = std::find_if(first, last, [&alpha](auto val) {
         return static_cast<typename native_word_type::value_type>(val)
                == alpha.back();
       });
