@@ -107,11 +107,8 @@ namespace libsemigroups {
     template <typename PresentationType>
     bool accepts(Stephen<PresentationType>&                         s,
                  typename PresentationType::native_word_type const& w) {
-      if (!w.empty()) {
-        // Here we always allow w to be empty, but the following line throws if
-        // s.presentation() does not contain the empty word and w is empty.
-        s.presentation().throw_if_letter_not_in_alphabet(w.begin(), w.end());
-      }
+      s.presentation().alphabet_v4().throw_if_letter_not_in_alphabet(w.begin(),
+                                                                     w.end());
       return accepts_no_checks(s, w);
     }
 
@@ -127,11 +124,8 @@ namespace libsemigroups {
     template <typename PresentationType>
     bool is_left_factor(Stephen<PresentationType>&                         s,
                         typename PresentationType::native_word_type const& w) {
-      if (!w.empty()) {
-        // Here we always allow w to be empty, but the following line throws if
-        // s.presentation() does not contain the empty word and w is empty.
-        s.presentation().throw_if_letter_not_in_alphabet(w.begin(), w.end());
-      }
+      s.presentation().alphabet_v4().throw_if_letter_not_in_alphabet(w.begin(),
+                                                                     w.end());
       return is_left_factor_no_checks(s, w);
     }
 

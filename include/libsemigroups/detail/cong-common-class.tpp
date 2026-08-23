@@ -23,8 +23,50 @@ namespace libsemigroups {
   namespace detail {
 
     ////////////////////////////////////////////////////////////////////////
-    // Out of line member functions for CongruenceCommon
+    // CongruenceCommon - add generating pairs
     ////////////////////////////////////////////////////////////////////////
+
+    template <typename Subclass,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    Subclass&
+    CongruenceCommon::add_internal_generating_pair_no_checks(Iterator1 first1,
+                                                             Iterator2 last1,
+                                                             Iterator3 first2,
+                                                             Iterator4 last2) {
+      LIBSEMIGROUPS_ASSERT(!started());
+      _internal_generating_pairs.emplace_back(first1, last1);
+      _internal_generating_pairs.emplace_back(first2, last2);
+      return static_cast<Subclass&>(*this);
+    }
+
+    template <typename Subclass,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    Subclass& CongruenceCommon::add_generating_pair(Iterator1 first1,
+                                                    Iterator2 last1,
+                                                    Iterator3 first2,
+                                                    Iterator4 last2) {
+      throw_if_started();
+      auto const& p = static_cast<Subclass const&>(*this).presentation();
+      p.throw_if_empty_word_not_allowed(first1, last1);
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(first1, last1);
+      p.throw_if_empty_word_not_allowed(first2, last2);
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(first2, last2);
+      return static_cast<Subclass&>(*this).add_generating_pair_no_checks(
+          first1, last1, first2, last2);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // CongruenceCommon - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // NOTE: currently_contains_no_checks must be implemented in the derived
+    // class.
 
     template <typename Subclass,
               typename Iterator1,
@@ -35,8 +77,11 @@ namespace libsemigroups {
                                               Iterator2 last1,
                                               Iterator3 first2,
                                               Iterator4 last2) const {
-      throw_if_letter_not_in_alphabet<Subclass>(first1, last1);
-      throw_if_letter_not_in_alphabet<Subclass>(first2, last2);
+      auto const& p = static_cast<Subclass const&>(*this).presentation();
+      p.throw_if_empty_word_not_allowed(first1, last1);
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(first1, last1);
+      p.throw_if_empty_word_not_allowed(first2, last2);
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(first2, last2);
       return static_cast<Subclass const&>(*this).currently_contains_no_checks(
           first1, last1, first2, last2);
     }
@@ -50,6 +95,11 @@ namespace libsemigroups {
                                               Iterator2 last1,
                                               Iterator3 first2,
                                               Iterator4 last2) {
+      // NOTE: the implementation of currently_contains_no_checks must check
+      // std::equal(first1, last1, first2, last2) or equivalent, and not return
+      // tril::unknown for identical words.
+      // TODO(1): the note above not withstanding, removing the next 3 lines
+      // causes a seg fault, so that should be investigated and fixed.
       if (std::equal(first1, last1, first2, last2)) {
         return true;
       }
@@ -84,32 +134,23 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    Subclass&
-    CongruenceCommon::add_internal_generating_pair_no_checks(Iterator1 first1,
-                                                             Iterator2 last1,
-                                                             Iterator3 first2,
-                                                             Iterator4 last2) {
-      LIBSEMIGROUPS_ASSERT(!started());
-      _internal_generating_pairs.emplace_back(first1, last1);
-      _internal_generating_pairs.emplace_back(first2, last2);
-      return static_cast<Subclass&>(*this);
+    bool CongruenceCommon::contains(Iterator1 first1,
+                                    Iterator2 last1,
+                                    Iterator3 first2,
+                                    Iterator4 last2) {
+      auto const& p = static_cast<Subclass const&>(*this).presentation();
+      p.throw_if_empty_word_not_allowed(first1, last1);
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(first1, last1);
+      p.throw_if_empty_word_not_allowed(first2, last2);
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(first2, last2);
+      return contains_no_checks<Subclass>(first1, last1, first2, last2);
     }
 
-    template <typename Subclass,
-              typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    Subclass& CongruenceCommon::add_generating_pair(Iterator1 first1,
-                                                    Iterator2 last1,
-                                                    Iterator3 first2,
-                                                    Iterator4 last2) {
-      throw_if_started();
-      throw_if_letter_not_in_alphabet<Subclass>(first1, last1);
-      throw_if_letter_not_in_alphabet<Subclass>(first2, last2);
-      return static_cast<Subclass&>(*this).add_generating_pair_no_checks(
-          first1, last1, first2, last2);
-    }
+    ////////////////////////////////////////////////////////////////////////
+    // CongruenceCommon - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    // NOTE: reduce_no_run_no_checks must be implemented in the derived class
 
     template <typename Subclass,
               typename OutputIterator,
@@ -118,7 +159,9 @@ namespace libsemigroups {
     OutputIterator CongruenceCommon::reduce_no_run(OutputIterator d_first,
                                                    Iterator1      first,
                                                    Iterator2      last) const {
-      throw_if_letter_not_in_alphabet<Subclass>(first, last);
+      auto const& p = static_cast<Subclass const&>(*this).presentation();
+      p.throw_if_empty_word_not_allowed(first, last);
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(first, last);
       if (finished() && !success()) {  // for Kambites
         LIBSEMIGROUPS_EXCEPTION(
             "cannot reduce words, the algorithm failed to finish successfully!")
@@ -134,7 +177,9 @@ namespace libsemigroups {
     OutputIterator CongruenceCommon::reduce(OutputIterator d_first,
                                             InputIterator1 first,
                                             InputIterator2 last) {
-      throw_if_letter_not_in_alphabet<Subclass>(first, last);
+      auto const& p = static_cast<Subclass const&>(*this).presentation();
+      p.throw_if_empty_word_not_allowed(first, last);
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(first, last);
       run();
       if (!success()) {  // for Kambites
         LIBSEMIGROUPS_EXCEPTION(

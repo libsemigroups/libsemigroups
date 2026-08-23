@@ -110,7 +110,20 @@ namespace libsemigroups {
   template <typename Iterator1, typename Iterator2>
   void KnuthBendix<Word, RewritingSystem, ReductionOrder>::
       throw_if_letter_not_in_alphabet(Iterator1 first, Iterator2 last) const {
-    presentation().throw_if_letter_not_in_alphabet(first, last);
+    presentation().throw_if_empty_word_not_allowed(first, last);
+    presentation().alphabet_v4().throw_if_letter_not_in_alphabet(first, last);
+    throw_if_extra_letter(first, last);
+  }
+
+  template <typename Word,
+            typename RewritingSystem,
+            template <typename, bool>
+            typename ReductionOrder>
+  template <typename Iterator1, typename Iterator2>
+  void
+  KnuthBendix<Word, RewritingSystem, ReductionOrder>::throw_if_extra_letter(
+      Iterator1 first,
+      Iterator2 last) const {
     if (_extra_letter_added) {
       // It is necessary to represent the "extra" letter in the alphabet here
       // because o/w the output of (for example) active_rules inexplicably
@@ -193,6 +206,8 @@ namespace libsemigroups {
     }
     // Call detail::CongruenceCommon version so that we perform bound checks
     // in KnuthBendix and not KnuthBendixImpl
+    throw_if_extra_letter(first1, last1);
+    throw_if_extra_letter(first2, last2);
     return detail::CongruenceCommon::add_generating_pair<KnuthBendix>(
         first1, last1, first2, last2);
   }
@@ -216,6 +231,8 @@ namespace libsemigroups {
     }
     // Call CongruenceCommon version so that we perform bound checks in
     // KnuthBendix and not KnuthBendixImpl_
+    throw_if_extra_letter(first1, last1);
+    throw_if_extra_letter(first2, last2);
     return detail::CongruenceCommon::contains<KnuthBendix>(
         first1, last1, first2, last2);
   }
