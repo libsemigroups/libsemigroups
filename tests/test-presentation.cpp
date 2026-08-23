@@ -95,13 +95,13 @@ namespace libsemigroups {
     REQUIRE(p.alphabet() == "abc");
     REQUIRE_THROWS_AS(p.alphabet("aa"s), LibsemigroupsException);
     REQUIRE(p.alphabet() == "abc");
-    presentation::add_rule_no_checks(p, "aaa", "a");
+    presentation::add_rule_no_checks(p, "aaa"s, "a"s);
     REQUIRE(std::distance(p.rules.cbegin(), p.rules.cend()) == 2);
-    REQUIRE(std::vector<std::string>(p.rules.cbegin(), p.rules.cend())
-            == std::vector<std::string>({"aaa", "a"}));
-    REQUIRE_THROWS_AS(presentation::add_rule(p, "abz", "a"),
+    REQUIRE(std::vector(p.rules.cbegin(), p.rules.cend())
+            == std::vector({"aaa"s, "a"s}));
+    REQUIRE_THROWS_AS(presentation::add_rule(p, "abz"s, "a"s),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(presentation::add_rule(p, "", "a"),
+    REQUIRE_THROWS_AS(presentation::add_rule(p, ""s, "a"s),
                       LibsemigroupsException);
   }
 
@@ -203,9 +203,9 @@ namespace libsemigroups {
     p.throw_if_bad_alphabet_or_rules();
     REQUIRE_THROWS_AS(p.alphabet("abb"s), LibsemigroupsException);
 
-    presentation::add_rule_no_checks(p, "abca", "aa");
-    presentation::add_rule_no_checks(p, "eb", "af");
-    presentation::add_rule_no_checks(p, "eb", "abbbbbb");
+    presentation::add_rule_no_checks(p, "abca"s, "aa"s);
+    presentation::add_rule_no_checks(p, "eb"s, "af"s);
+    presentation::add_rule_no_checks(p, "eb"s, "abbbbbb"s);
     p.alphabet_from_rules();
     REQUIRE(p.alphabet() == "abcef");
     REQUIRE(p.index('a') == 0);
@@ -322,13 +322,13 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    presentation::add_rule_no_checks(p, "abcb", "aa");
+    presentation::add_rule_no_checks(p, "abcb"s, "aa"s);
     Presentation<std::string> q;
-    presentation::add_rule_no_checks(q, "eb", "af");
-    presentation::add_rule_no_checks(q, "eb", "abbbbbbbbb");
+    presentation::add_rule_no_checks(q, "eb"s, "af"s);
+    presentation::add_rule_no_checks(q, "eb"s, "abbbbbbbbb"s);
     presentation::add_rules_no_checks(p, q);
-    presentation::add_rule_no_checks(p, std::string("ab"), "ba");
-    presentation::add_rule_no_checks(p, "ac", std::string("ab"));
+    presentation::add_rule_no_checks(p, "ab"s, "ba"s);
+    presentation::add_rule_no_checks(p, "ac"s, "ab"s);
     REQUIRE(p.rules
             == std::vector<std::string>({"abcb",
                                          "aa",
@@ -431,7 +431,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    presentation::add_rule_no_checks(p, "abcb", "aa");
+    presentation::add_rule_no_checks(p, "abcb"s, "aa"s);
     REQUIRE_THROWS_AS(presentation::add_identity_rules(p, 'a'),
                       LibsemigroupsException);
     p.alphabet_from_rules();
@@ -457,7 +457,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    presentation::add_rule_no_checks(p, "abcb", "aa");
+    presentation::add_rule_no_checks(p, "abcb"s, "aa"s);
     REQUIRE_THROWS_AS(presentation::add_zero_rules(p, '0'),
                       LibsemigroupsException);
     p.alphabet("abc0"s);
@@ -754,11 +754,11 @@ namespace libsemigroups {
     using words::human_readable_letter;
 
     Presentation<std::string> p;
-    presentation::add_rule_no_checks(p, "abcb", "bcb");
-    presentation::add_rule_no_checks(p, "bcb", "bbcb");
-    presentation::add_rule_no_checks(p, "bbcb", "bb");
-    presentation::add_rule_no_checks(p, "bb", "bcb");
-    presentation::add_rule_no_checks(p, "bcb", "a");
+    presentation::add_rule_no_checks(p, "abcb"s, "bcb"s);
+    presentation::add_rule_no_checks(p, "bcb"s, "bbcb"s);
+    presentation::add_rule_no_checks(p, "bbcb"s, "bb"s);
+    presentation::add_rule_no_checks(p, "bb"s, "bcb"s);
+    presentation::add_rule_no_checks(p, "bcb"s, "a"s);
     p.alphabet_from_rules();
     presentation::reduce_complements(p);
     presentation::sort_each_rule(p);
@@ -773,13 +773,13 @@ namespace libsemigroups {
     REQUIRE(p.letter_no_checks(2) == human_readable_letter(2));
     p.throw_if_bad_alphabet_or_rules();
 
-    presentation::add_rule_no_checks(p, "abcb", "ecb");
+    presentation::add_rule_no_checks(p, "abcb"s, "ecb"s);
     REQUIRE(!p.in_alphabet('e'));
     // Not valid
     REQUIRE_THROWS_AS(presentation::normalize_alphabet(p),
                       LibsemigroupsException);
     p.alphabet_from_rules();
-    presentation::add_rule_no_checks(p, "abcd", "bcb");
+    presentation::add_rule_no_checks(p, "abcd"s, "bcb"s);
     REQUIRE_THROWS_AS(presentation::normalize_alphabet(p),
                       LibsemigroupsException);
   }
@@ -1095,18 +1095,18 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    presentation::add_rule_no_checks(p, "aaaaaaaa", "");
+    presentation::add_rule_no_checks(p, "aaaaaaaa"s, ""s);
     presentation::balance_no_checks(p, "a"s, "a"s);
-    presentation::add_rule_no_checks(p, "aaa", "aaaaaa");
+    presentation::add_rule_no_checks(p, "aaa"s, "aaaaaa"s);
     presentation::balance_no_checks(p, "a"s, "a"s);
-    presentation::add_rule_no_checks(p, "aa", "");
+    presentation::add_rule_no_checks(p, "aa"s, ""s);
     presentation::balance_no_checks(p, "a"s, "a"s);
-    presentation::add_rule_no_checks(p, "abba", "baaaaaaaab");
+    presentation::add_rule_no_checks(p, "abba"s, "baaaaaaaab"s);
     presentation::balance_no_checks(p, "b"s, "a"s);
     presentation::balance_no_checks(p, "a"s, "c"s);
-    presentation::add_rule_no_checks(p, "baaaaaabbb", "");
+    presentation::add_rule_no_checks(p, "baaaaaabbb"s, ""s);
     presentation::balance_no_checks(p, "ab"s, "cd"s);
-    presentation::add_rule_no_checks(p, "abcabd", "");
+    presentation::add_rule_no_checks(p, "abcabd"s, ""s);
     presentation::balance_no_checks(p, "abc"s, "efg"s);
     REQUIRE(p.rules
             == std::vector<std::string>(  // codespell:begin-ignore
@@ -1394,7 +1394,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    presentation::add_rule_no_checks(p, "abababab", "bbaabb");
+    presentation::add_rule_no_checks(p, "abababab"s, "bbaabb"s);
     presentation::replace_subword(p, "ab", "c");
     REQUIRE(p.rules == std::vector<std::string>({"cccc", "bbacb"}));
   }
@@ -2884,24 +2884,22 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     {
       Presentation<std::string> p;
-      presentation::add_rule_no_checks(p, "abcb", "aa");
+      presentation::add_rule_no_checks(p, "abcb"s, "aa"s);
       p.alphabet_from_rules();
       presentation::add_identity_rules(p, 'a');
-      REQUIRE(to_human_readable_repr(p)
-              == "<semigroup presentation "
-                 "with 3 letters, 6 rules, "
-                 "and length 21>");
+      REQUIRE(
+          to_human_readable_repr(p)
+          == "<semigroup presentation with 3 letters, 6 rules, and length 21>");
     }
     {
       Presentation<std::string> p;
       p.contains_empty_word(true);
-      presentation::add_rule_no_checks(p, "abcb", "aa");
+      presentation::add_rule_no_checks(p, "abcb"s, "aa"s);
       p.alphabet_from_rules();
       presentation::add_identity_rules(p, 'a');
-      REQUIRE(to_human_readable_repr(p)
-              == "<monoid presentation with 3 "
-                 "letters, 6 rules, and "
-                 "length 21>");
+      REQUIRE(
+          to_human_readable_repr(p)
+          == "<monoid presentation with 3 letters, 6 rules, and length 21>");
     }
     {
       Presentation<std::string> p;
@@ -2913,17 +2911,17 @@ namespace libsemigroups {
     {
       Presentation<std::string> p;
       p.alphabet("a"s);
-      REQUIRE(to_human_readable_repr(p)
-              == "<semigroup presentation with 1 "
-                 "letter, 0 rules, and length 0>");
+      REQUIRE(
+          to_human_readable_repr(p)
+          == "<semigroup presentation with 1 letter, 0 rules, and length 0>");
     }
     {
       Presentation<std::string> p;
       p.alphabet("a"s);
-      presentation::add_rule_no_checks(p, "aa", "a");
-      REQUIRE(to_human_readable_repr(p)
-              == "<semigroup presentation with 1 "
-                 "letter, 1 rule, and length 3>");
+      presentation::add_rule_no_checks(p, "aa"s, "a"s);
+      REQUIRE(
+          to_human_readable_repr(p)
+          == "<semigroup presentation with 1 letter, 1 rule, and length 3>");
     }
     {
       InversePresentation<word_type> ip;
@@ -2931,12 +2929,12 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(ip, 000_w, 13_w);
       ip.inverses(0123_w);
       REQUIRE(to_human_readable_repr(ip)
-              == "<inverse semigroup presentation "
-                 "with 4 letters, 1 rule, and "
+              == "<inverse semigroup presentation with 4 letters, 1 rule, and "
                  "length 5>");
     }
   }
 
+  // TODO move to word-range.hpp
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "059",
                           "to_word",
@@ -2953,6 +2951,7 @@ namespace libsemigroups {
     REQUIRE(output == word_type({0, 1, 0, 1, 0, 1}));
   }
 
+  // TODO move to word-range.hpp
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "060",
                           "to_string",
@@ -4020,9 +4019,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abc"s);
     p.contains_empty_word(true);
-    presentation::add_rule_no_checks(p, "aBCbac", "");
-    presentation::add_rule_no_checks(p, "bACbaacA", "");
-    presentation::add_rule_no_checks(p, "accAABab", "");
+    presentation::add_rule_no_checks(p, "aBCbac"s, ""s);
+    presentation::add_rule_no_checks(p, "bACbaacA"s, ""s);
+    presentation::add_rule_no_checks(p, "accAABab"s, ""s);
     REQUIRE(presentation::to_ace_string(p) == R"xxx(Group: a, b, c;
 wo: 4g; # workspace size, adjust as necessary
 Rel: aBCbac, bACbaacA, accAABab;
@@ -4040,20 +4039,20 @@ End;)xxx");
     p.contains_empty_word(true);
     using literals::operator""_p;
 
-    presentation::add_rule_no_checks(p, "a^2"_p, "");
-    presentation::add_rule_no_checks(p, "b^5"_p, "");
-    presentation::add_rule_no_checks(p, "(ab)^11"_p, "");
-    presentation::add_rule_no_checks(p, "(ab^2)^10"_p, "");
-    presentation::add_rule_no_checks(p, "(a,b)^5"_p, "");
-    presentation::add_rule_no_checks(p, "(a,b^2)^6"_p, "");
-    presentation::add_rule_no_checks(p, "(a,bab)^3"_p, "");
+    presentation::add_rule_no_checks(p, "a^2"_p, ""s);
+    presentation::add_rule_no_checks(p, "b^5"_p, ""s);
+    presentation::add_rule_no_checks(p, "(ab)^11"_p, ""s);
+    presentation::add_rule_no_checks(p, "(ab^2)^10"_p, ""s);
+    presentation::add_rule_no_checks(p, "(a,b)^5"_p, ""s);
+    presentation::add_rule_no_checks(p, "(a,b^2)^6"_p, ""s);
+    presentation::add_rule_no_checks(p, "(a,bab)^3"_p, ""s);
     presentation::add_rule_no_checks(
         p, "ababab^2aBaB^2aBab^2abab(aB^2)^4"_p, "");
     presentation::add_rule_no_checks(
         p, "ab(ab^2(aB^2)^2)^2ab^2abab^2(aBab^2)^2"_p, "");
     presentation::add_rule_no_checks(
         p, "abab(ab^2)^2ab(aB)^2ab(ab^2)^2ababaB^2aBaB^2"_p, "");
-    presentation::add_rule_no_checks(p, "(ababab^2aBaB^2ababaB)^2"_p, "");
+    presentation::add_rule_no_checks(p, "(ababab^2aBaB^2ababaB)^2"_p, ""s);
     presentation::add_rule_no_checks(
         p, "(ababab^2)^2ababaBabab(ab^2)^3ababaB"_p, "");
     presentation::add_rule_no_checks(
@@ -4076,11 +4075,11 @@ End;)xxx");
     p.contains_empty_word(true);
     using literals::operator""_p;
 
-    presentation::add_rule_no_checks(p, "a^2"_p, "");
-    presentation::add_rule_no_checks(p, "b^4"_p, "");
-    presentation::add_rule_no_checks(p, "(ab)^11"_p, "");
-    presentation::add_rule_no_checks(p, "(ab^2)^6"_p, "");
-    presentation::add_rule_no_checks(p, "ababaBabab^2aBabaBaB"_p, "");
+    presentation::add_rule_no_checks(p, "a^2"_p, ""s);
+    presentation::add_rule_no_checks(p, "b^4"_p, ""s);
+    presentation::add_rule_no_checks(p, "(ab)^11"_p, ""s);
+    presentation::add_rule_no_checks(p, "(ab^2)^6"_p, ""s);
+    presentation::add_rule_no_checks(p, "ababaBabab^2aBabaBaB"_p, ""s);
 
     REQUIRE(presentation::to_ace_string(p) == R"xxx(Group: a, b;
 wo: 4g; # workspace size, adjust as necessary
