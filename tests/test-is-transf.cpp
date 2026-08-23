@@ -38,6 +38,10 @@ namespace libsemigroups {
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
     REQUIRE(vec.size() == 16);
     REQUIRE_NOTHROW(detail::throw_if_not_ptransf(vec.begin(), vec.end(), 42));
+    REQUIRE_EXCEPTION_MSG(
+        detail::throw_if_not_ptransf(vec.begin(), vec.end(), 40),
+        "image value out of bounds, expected value in "
+        "[0, 40), found 41 in position 11");
     REQUIRE_EXCEPTION_MSG(detail::throw_if_not_ptransf(vec.begin(), vec.end()),
                           "image value out of bounds, expected value in "
                           "[0, 16), found 41 in position 11");
@@ -60,6 +64,13 @@ namespace libsemigroups {
             vec.begin(), vec.begin() + 3, vec.begin() + 3, vec.begin() + 4, 16),
         "domain and image size mismatch, domain has "
         "size 3 but image has size 1");
+    REQUIRE_EXCEPTION_MSG(detail::throw_if_not_ptransf(vec.begin(),
+                                                       vec.begin() + 2,
+                                                       vec.begin() + 10,
+                                                       vec.begin() + 12,
+                                                       16),
+                          "image value out of bounds, expected value in "
+                          "[0, 16), found 41 in position 1");
     REQUIRE_EXCEPTION_MSG(
         detail::throw_if_not_ptransf(vec.begin() + 7,
                                      vec.begin() + 9,
@@ -91,6 +102,10 @@ namespace libsemigroups {
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
     REQUIRE(vec.size() == 16);
     REQUIRE_NOTHROW(detail::throw_if_not_transf(vec.begin(), vec.end(), 42));
+    REQUIRE_EXCEPTION_MSG(
+        detail::throw_if_not_transf(vec.begin(), vec.end(), 40),
+        "image value out of bounds, expected value in "
+        "[0, 40), found 41 in position 11");
     REQUIRE_EXCEPTION_MSG(detail::throw_if_not_transf(vec.begin(), vec.end()),
                           "image value out of bounds, expected value in "
                           "[0, 16), found 41 in position 11");

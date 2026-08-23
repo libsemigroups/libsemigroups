@@ -62,6 +62,7 @@ namespace libsemigroups {
     template <typename Iterator, typename Func>
     void throw_if_value_out_of_range(Iterator         first,
                                      Iterator         last,
+                                     size_t           upper_bound,
                                      Func&&           func,
                                      std::string_view where);
 
