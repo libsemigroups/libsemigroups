@@ -217,14 +217,15 @@ namespace libsemigroups {
   void Alphabet<Word>::throw_if_duplicate_letters(
       decltype(_letters_map)& letters_map) const {
     LIBSEMIGROUPS_ASSERT(letters_map.empty());
-    size_type index = 0;
-    for (auto const& letter : _letters) {
-      auto it = letters_map.emplace(letter, index++);
-      if (!it.second) {
-        LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
-                                detail::to_printable(_letters),
-                                detail::to_printable(letter));
-      }
+    auto [it, pos] = detail::find_duplicates(
+        _letters.cbegin(), _letters.cend(), letters_map);
+    if (it != _letters.cend()) {
+      LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter found {} "
+                              "in position {}, first occurrence in position {}",
+                              detail::to_printable(_letters),
+                              detail::to_printable(*it),
+                              std::distance(_letters.cbegin(), it),
+                              pos);
     }
   }
 

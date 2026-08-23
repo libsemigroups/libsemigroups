@@ -23,61 +23,28 @@
 #ifndef LIBSEMIGROUPS_IS_TRANSF_HPP_
 #define LIBSEMIGROUPS_IS_TRANSF_HPP_
 
-#include <algorithm>      // for none_of, find_if
-#include <cstddef>        // for size_t
-#include <iterator>       // for distance
-#include <limits>         // for numeric_limits
-#include <string_view>    // for string_view
-#include <type_traits>    // for decay_t, is_unsigned_v
-#include <unordered_map>  // for unordered_map
-#include <utility>        // for declval, pair
+#include <algorithm>    // for none_of, find_if
+#include <cstddef>      // for size_t
+#include <iterator>     // for distance
+#include <limits>       // for numeric_limits
+#include <string_view>  // for string_view
+#include <type_traits>  // for decay_t, is_unsigned_v
+#include <utility>      // for declval
 
 #include "constants.hpp"  // for UNDEFINED
+#include "exception.hpp"  // for has_duplicates, throw_if_duplicates
 
-#include "detail/print.hpp"  // for to_printable
-#include "detail/stl.hpp"    // for is_array_v
+#include "detail/stl.hpp"  // for is_array_v
 
 namespace libsemigroups {
 
   namespace detail {
-
-    // Returns "{it, pos}" where "it" is an iterator point to the first
-    // repeated element and "pos" is the position of the first occurrence of
-    // that element. Returns {last, std::distance(first, last)} if not
-    // duplicates.
-    // TODO(later) move to exception.hpp
-    template <typename Iterator>
-    std::pair<Iterator, size_t> find_duplicates(
-        Iterator                                                    first,
-        Iterator                                                    last,
-        std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen);
-
-    template <typename Iterator>
-    [[nodiscard]] std::pair<Iterator, size_t> find_duplicates(Iterator first,
-                                                              Iterator last) {
-      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
-      return find_duplicates(first, last, seen);
-    }
-
-    template <typename Iterator>
-    [[nodiscard]] bool has_duplicates(Iterator first, Iterator last) {
-      return find_duplicates(first, last).first != last;
-    }
-
-    template <typename Iterator>
-    void throw_if_duplicates(
-        Iterator                                                    first,
-        Iterator                                                    last,
-        std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen,
-        std::string_view                                            where);
-
-    template <typename Iterator>
-    void throw_if_duplicates(Iterator         first,
-                             Iterator         last,
-                             std::string_view where) {
-      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
-      throw_if_duplicates(first, last, seen, where);
-    }
+    struct IsUndefined {
+      template <typename T>
+      bool operator()(T const& val) const noexcept {
+        return val == UNDEFINED;
+      }
+    };
 
     // The maximum degree a PTransf could have. This is the largest value such
     // that each point in the image can be unique.
@@ -135,13 +102,13 @@ namespace libsemigroups {
     template <typename Iterator>
     void throw_if_not_pperm(Iterator first, Iterator last, size_t deg) {
       throw_if_not_ptransf(first, last, deg);
-      throw_if_duplicates(first, last, "image");
+      throw_if_duplicates(first, last, "image", IsUndefined{});
     }
 
     template <typename Iterator>
     void throw_if_not_pperm(Iterator first, Iterator last) {
       throw_if_not_ptransf(first, last);
-      throw_if_duplicates(first, last, "image");
+      throw_if_duplicates(first, last, "image", IsUndefined{});
     }
 
     template <typename Iterator>
@@ -151,7 +118,7 @@ namespace libsemigroups {
                             Iterator img_last,
                             size_t   deg) {
       throw_if_not_ptransf(dom_first, dom_last, img_first, img_last, deg);
-      throw_if_duplicates(img_first, img_last, "image");
+      throw_if_duplicates(img_first, img_last, "image", IsUndefined{});
     }
   }  // namespace detail
 
@@ -312,7 +279,8 @@ namespace libsemigroups {
   //! integers, or this won't compile.
   template <typename Iterator>
   [[nodiscard]] bool is_pperm(Iterator first, Iterator last, size_t deg) {
-    return is_ptransf(first, last, deg) && !detail::has_duplicates(first, last);
+    return is_ptransf(first, last, deg)
+           && !detail::has_duplicates(first, last, detail::IsUndefined{});
   }
 
   //! \ingroup transf_group

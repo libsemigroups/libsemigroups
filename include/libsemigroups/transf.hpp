@@ -1350,7 +1350,8 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   [[deprecated]] void throw_if_not_pperm(PPerm<N, Scalar> const& f) {
     throw_if_image_value_out_of_range(f);
-    detail::throw_if_duplicates(f.begin(), f.end(), "image");
+    detail::throw_if_duplicates(
+        f.begin(), f.end(), "image", detail::IsUndefined{});
   }
 
   ////////////////////////////////////////////////////////////////////////
