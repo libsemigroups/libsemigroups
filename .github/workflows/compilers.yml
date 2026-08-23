@@ -20,12 +20,17 @@ jobs:
           - { compiler: g++, version: 12 }
           - { compiler: g++, version: 13 }
           - { compiler: g++, version: 14 }
+          - { compiler: g++, version: 15, source: toolchain-test }
+          - { compiler: g++, version: 16, source: toolchain-test }
           - { compiler: clang++, version: 14 }
           - { compiler: clang++, version: 15 }
           - { compiler: clang++, version: 16 }
           - { compiler: clang++, version: 17 }
           - { compiler: clang++, version: 18 }
           - { compiler: clang++, version: 19 }
+          - { compiler: clang++, version: 20, source: llvm }
+          - { compiler: clang++, version: 21, source: llvm }
+          - { compiler: clang++, version: 22, source: llvm }
     steps:
       - uses: actions/checkout@v7
       - name: Setup ccache . . .
@@ -35,9 +40,18 @@ jobs:
           install_ccache: true
       - name: Setup compiler . . .
         run: |
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa -y
-          sudo apt-get --yes update
-          sudo apt-get install ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
+          if [[ "${{ matrix.sys.source }}" == "llvm" ]]; then
+            wget --quiet --output-document=/tmp/llvm.sh https://apt.llvm.org/llvm.sh
+            sudo bash /tmp/llvm.sh ${{ matrix.sys.version }}
+          else
+            toolchain_archive=ppa
+            if [[ "${{ matrix.sys.source }}" == "toolchain-test" ]]; then
+              toolchain_archive=test
+            fi
+            sudo add-apt-repository "ppa:ubuntu-toolchain-r/$toolchain_archive" -y
+            sudo apt-get --yes update
+            sudo apt-get --yes install ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
+          fi
           CXX="ccache ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}"
           echo "CXX=$CXX" >> $GITHUB_ENV
       - name: Compiler information
