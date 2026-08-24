@@ -873,12 +873,15 @@ namespace libsemigroups {
     void throw_if_word_not_over_alphabet(Word const& alphabet,
                                          Word const& word);
 
-    //! \brief Throws an exception if the argument \p inverses does not define
-    //! valid inverses for \p alphabet.
+    //! \brief Throws an exception if \p inverses fails the inverse consistency
+    //! checks for \p alphabet.
     //!
     //! Checks that \p alphabet and \p inverses have the same length, that
-    //! \p inverses contains no duplicate letters, and that the inverse map is
-    //! an involution; that is \f$(x^{-1})^{-1} = x\f$.
+    //! \p inverses contains no duplicate letters, and that whenever the
+    //! \f$i\f$th letter of \p inverses is the \f$j\f$th letter of \p alphabet,
+    //! the \f$j\f$th letter of \p inverses is the \f$i\f$th letter of
+    //! \p alphabet. In other words, the inverse map is checked to be an
+    //! involution wherever it maps into \p alphabet.
     //!
     //! \tparam Word the type of \p alphabet and \p inverses.
     //!
@@ -887,14 +890,21 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p alphabet and \p inverses have
     //! different lengths, if \p inverses contains a duplicate letter, or if
-    //! the inverse map is not an involution.
+    //! the inverse map fails the consistency check described above.
     //!
     //! \complexity
     //! Worst case \f$O(n^2)\f$ where \f$n\f$ is the length of \p alphabet.
+    //!
+    //! \note
+    //! This function does not check that \p alphabet is duplicate-free or that
+    //! every letter in \p inverses belongs to \p alphabet. Callers requiring
+    //! these checks should perform them separately or use an overload taking a
+    //! \ref Presentation.
     template <typename Word>
     void throw_if_bad_inverses(Word const& alphabet, Word const& inverses);
 
-    //! \brief Throws an exception if \p vals do not define valid inverses.
+    //! \brief Throws an exception if \p inverses does not define valid
+    //! inverses.
     //!
     //! This function checks if the values in \p inverses are valid semigroup
     //! inverses for `p.alphabet()`. Specifically, it checks that the \f$i\f$th
@@ -909,18 +919,42 @@ namespace libsemigroups {
     //! * if \f$x_i = y_j\f$, then \f$x_j = y_i\f$ and therefore that
     //! \f$(x_i^{-1})^{-1} = x_i\f$.
     //!
-    //! \tparam Word1 the type of the words in the presentation.
-    //! \tparam Word2 the type of the arguments \p letters and \p inverses.
+    //! \tparam Word the type of the words in the presentation and of
+    //! \p inverses.
     //! \param p the presentation.
-    //! \param inverses the proposed inverses for \p letters.
+    //! \param inverses the proposed inverses for `p.alphabet()`.
     //!
-    //! \throws Libsemigroups_Exception if any of the conditions listed above
+    //! \throws LibsemigroupsException if any of the conditions listed above
     //! do not hold.
-    template <typename Word1, typename Word2>
-    void throw_if_bad_inverses(Presentation<Word1> const& p,
-                               Word2 const&               inverses) {
+    template <typename Word>
+    void throw_if_bad_inverses(Presentation<Word> const& p,
+                               Word const&               inverses) {
       p.throw_if_letter_not_in_alphabet(inverses.begin(), inverses.end());
       throw_if_bad_inverses(p.alphabet(), inverses);
+    }
+
+    //! \brief Throws an exception if \p inverses does not define valid
+    //! inverses.
+    //!
+    //! This overload permits the type of \p inverses to differ from the word
+    //! type of \p p.
+    //!
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of \p inverses.
+    //! \param p the presentation.
+    //! \param inverses the proposed inverses for `p.alphabet()`.
+    //!
+    //! \throws LibsemigroupsException if \p inverses does not define valid
+    //! inverses for `p.alphabet()`.
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \deprecated_alias_warning{throw_if_bad_inverses(Presentation<Word> const&, Word const&)}
+    // clang-format on
+    template <typename Word1, typename Word2>
+    [[deprecated]] void throw_if_bad_inverses(Presentation<Word1> const& p,
+                                              Word2 const& inverses) {
+      p.throw_if_letter_not_in_alphabet(inverses.begin(), inverses.end());
+      throw_if_bad_inverses(p.alphabet(), Word1(inverses));
     }
 
     //! \brief Throws an exception if the argument \p inverses does not define
@@ -934,23 +968,47 @@ namespace libsemigroups {
     //! Let \f$x_i\f$ be the \f$i\f$th letter in \p letters, and
     //! let \f$y_i\f$ be the \f$i\f$th letter in \p inverses. Then this function
     //! checks that:
+    //! * every letter in \p letters belongs to `p.alphabet()`;
     //! * \p letters and \p inverses contain the same letters;
     //! * \p letters and \p inverses are duplicate-free;
     //! * if \f$x_i = y_j\f$, then \f$x_j = y_i\f$ and therefore that
     //! \f$(x_i^{-1})^{-1} = x_i\f$.
     //!
-    //! \tparam Word1 the type of the words in the presentation.
-    //! \tparam Word2 the type of the arguments \p letters and \p inverses.
+    //! \tparam Word the type of the words in the presentation and of
+    //! \p letters and \p inverses.
     //! \param p the presentation.
     //! \param letters the letters in the alphabet.
     //! \param inverses the proposed inverses for \p letters.
     //!
-    //! \throws Libsemigroups_Exception if any of the conditions listed above
+    //! \throws LibsemigroupsException if any of the conditions listed above
     //! do not hold.
+    template <typename Word>
+    void throw_if_bad_inverses(Presentation<Word> const& p,
+                               Word const&               letters,
+                               Word const&               inverses);
+
+    //! \brief Throws an exception if \p inverses does not define valid
+    //! inverses for \p letters.
+    //!
+    //! This overload permits the types of \p letters and \p inverses to differ
+    //! from the word type of \p p.
+    //!
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of \p letters and \p inverses.
+    //! \param p the presentation.
+    //! \param letters the letters in the alphabet.
+    //! \param inverses the proposed inverses for \p letters.
+    //!
+    //! \throws LibsemigroupsException if \p inverses does not define valid
+    //! inverses for \p letters.
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \deprecated_alias_warning{throw_if_bad_inverses(Presentation<Word> const&, Word const&, Word const&)}
+    // clang-format on
     template <typename Word1, typename Word2>
-    void throw_if_bad_inverses(Presentation<Word1> const& p,
-                               Word2 const&               letters,
-                               Word2 const&               inverses);
+    [[deprecated]] void throw_if_bad_inverses(Presentation<Word1> const& p,
+                                              Word2 const& letters,
+                                              Word2 const& inverses);
 
     //! \brief Return a representation of a presentation to appear in the
     //! reporting output.
