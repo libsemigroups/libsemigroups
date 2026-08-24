@@ -1398,7 +1398,7 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     presentation::add_rule_no_checks(p, "abababab"s, "bbaabb"s);
-    presentation::replace_subword(p, "ab", "c");
+    presentation::replace_subword(p, "ab"s, "c"s);
     REQUIRE(p.rules == std::vector<std::string>({"cccc", "bbacb"}));
   }
 
