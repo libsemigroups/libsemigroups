@@ -664,7 +664,7 @@ namespace libsemigroups {
     p.alphabet("aAbBcCe"s);
     presentation::add_identity_rules(p, 'e');
 
-    presentation::add_inverse_rules(p, "AaBbCce", 'e');
+    presentation::add_inverse_rules(p, "AaBbCce"s, 'e');
     presentation::add_rule(p, "aaCac"s, "e"s);
     presentation::add_rule(p, "acbbACb"s, "e"s);
     presentation::add_rule(p, "ABabccc"s, "e"s);
@@ -2668,10 +2668,10 @@ namespace libsemigroups {
           presentation::add_inverse_rules(p, {'b', 'a', 'c'}, 'a'),
           "invalid inverses, the identity is 'a', but 'a' ^ -1 = 'b'");
       p.alphabet("abc"s);
-      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, "aab"),
+      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, "aab"s),
                             "invalid inverses, the letter 'a' is duplicated!");
       REQUIRE_EXCEPTION_MSG(
-          presentation::add_inverse_rules(p, "bca"),
+          presentation::add_inverse_rules(p, "bca"s),
           "invalid inverses, 'a' ^ -1 = 'b' but 'b' ^ -1 = 'c'");
     }
 

@@ -107,7 +107,7 @@ namespace libsemigroups {
     p.alphabet("aAbBcCdDyYfFgG"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "AaBbCcDdYyFfGg");
+    presentation::add_inverse_rules(p, "AaBbCcDdYyFfGg"s);
     presentation::add_rule(p, "ab"s, "c"s);
     presentation::add_rule(p, "bc"s, "d"s);
     presentation::add_rule(p, "cd"s, "y"s);
@@ -153,7 +153,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("abB"s);
 
-    presentation::add_inverse_rules(p, "aBb");
+    presentation::add_inverse_rules(p, "aBb"s);
     presentation::add_rule(p, "BB"s, "bb"s);
     presentation::add_rule(p, "BaBaBaBaBaB"s, "abababababa"s);
     presentation::add_rule(p, "bbabbabba"s, "abbabbabb"s);
@@ -206,7 +206,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("aAbBcC"s);
-    presentation::add_inverse_rules(p, "AaBbCc");
+    presentation::add_inverse_rules(p, "AaBbCc"s);
     presentation::add_rule(p, "bbABaBcbCCAbaBBccBCbccBCb"s, ""s);
     presentation::add_rule(p, "ccBCbCacAABcbCCaaCAcaaCAc"s, ""s);
     presentation::add_rule(p, "aaCAcAbaBBCacAAbbABabbABa"s, ""s);
@@ -237,7 +237,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("aAbB"s);
-    presentation::add_inverse_rules(p, "AaBb");
+    presentation::add_inverse_rules(p, "AaBb"s);
     presentation::add_rule(p, "bababbababbabbababbab"s, "a"s);
     presentation::add_rule(p, "abbabbababbaba"s, "b"s);
 
@@ -385,7 +385,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("abB"s);
 
-    presentation::add_inverse_rules(p, "aBb");
+    presentation::add_inverse_rules(p, "aBb"s);
 
     presentation::add_rule(p, "aa"s, ""s);
     presentation::add_rule(p, "BB"s, "b"s);
@@ -506,7 +506,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("fFyYdDcCbBaA"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "FfYyDdCcBbAa");
+    presentation::add_inverse_rules(p, "FfYyDdCcBbAa"s);
     presentation::add_rule(p, "BAba"s, "c"s);
     presentation::add_rule(p, "CAca"s, "d"s);
     presentation::add_rule(p, "CBcb"s, "y"s);
@@ -813,7 +813,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abB"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "aBb");
+    presentation::add_inverse_rules(p, "aBb"s);
     presentation::add_rule(p, "aaa"s, ""s);
     presentation::add_rule(p, "ba"s, "ababbb"s);
     REQUIRE(presentation::index_rule(p, "aa"s, ""s) == 0);
