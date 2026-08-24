@@ -538,7 +538,8 @@ namespace libsemigroups {
                                {2, 0},
                                {0, 2}}));
 
-    presentation::add_commutes_rules(p, W({1, 2}), {W({0, 0, 1}), W({1, 0})});
+    presentation::add_commutes_rules(
+        p, W({1, 2}), std::vector<W>({W({0, 0, 1}), W({1, 0})}));
     REQUIRE(p.rules
             == std::vector<W>({
                 {0, 1, 2, 1},

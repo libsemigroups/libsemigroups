@@ -1928,8 +1928,8 @@ namespace libsemigroups {
 
       // relations V4
       presentation::add_commutes_rules_no_checks(p, e);
-      presentation::add_commutes_rules_no_checks(p, e, {01_w});
-      presentation::add_commutes_rules_no_checks(p, e, {10_w});
+      presentation::add_commutes_rules_no_checks(p, e, std::vector({01_w}));
+      presentation::add_commutes_rules_no_checks(p, e, std::vector({10_w}));
 
       // relations V6
       for (size_t i = 0; i <= n - 4; ++i) {
