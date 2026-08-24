@@ -183,41 +183,49 @@ namespace libsemigroups {
 
       for (size_t i = 0; i < l; ++i) {
         for (size_t j = i + 2; j < l; ++j) {
-          presentation::add_rule_no_checks(p, {s[i], s[j]}, {s[j], s[i]});
+          presentation::add_rule_no_checks(
+              p, word_type({s[i], s[j]}), word_type({s[j], s[i]}));
         }
       }
 
       for (size_t i = 1; i < l - 1; ++i) {
-        presentation::add_rule_no_checks(
-            p, {s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]});
+        presentation::add_rule_no_checks(p,
+                                         word_type({s[i], s[i + 1], s[i]}),
+                                         word_type({s[i + 1], s[i], s[i + 1]}));
       }
 
-      presentation::add_rule_no_checks(
-          p, {s[1], s[0], s[1], s[0]}, {s[0], s[1], s[0], s[1]});
+      presentation::add_rule_no_checks(p,
+                                       word_type({s[1], s[0], s[1], s[0]}),
+                                       word_type({s[0], s[1], s[0], s[1]}));
 
       for (size_t i = 1; i < l; ++i) {
         for (size_t j = 0; j < i; ++j) {
-          presentation::add_rule_no_checks(p, {s[i], e[j]}, {e[j], s[i]});
+          presentation::add_rule_no_checks(
+              p, word_type({s[i], e[j]}), word_type({e[j], s[i]}));
         }
       }
 
       for (size_t i = 0; i < l; ++i) {
         for (size_t j = i + 1; j < l + 1; ++j) {
-          presentation::add_rule_no_checks(p, {s[i], e[j]}, {e[j], s[i]});
-          presentation::add_rule_no_checks(p, {s[i], e[j]}, {e[j]});
+          presentation::add_rule_no_checks(
+              p, word_type({s[i], e[j]}), word_type({e[j], s[i]}));
+          presentation::add_rule_no_checks(
+              p, word_type({s[i], e[j]}), word_type({e[j]}));
         }
       }
 
       for (size_t i = 0; i < l + 1; ++i) {
         for (size_t j = 0; j < l + 1; ++j) {
-          presentation::add_rule_no_checks(p, {e[i], e[j]}, {e[j], e[i]});
           presentation::add_rule_no_checks(
-              p, {e[i], e[j]}, {e[std::max(i, j)]});
+              p, word_type({e[i], e[j]}), word_type({e[j], e[i]}));
+          presentation::add_rule_no_checks(
+              p, word_type({e[i], e[j]}), word_type({e[std::max(i, j)]}));
         }
       }
 
       for (size_t i = 0; i < l; ++i) {
-        presentation::add_rule_no_checks(p, {e[i], s[i], e[i]}, {e[i + 1]});
+        presentation::add_rule_no_checks(
+            p, word_type({e[i], s[i], e[i]}), word_type({e[i + 1]}));
       }
     }
 
@@ -236,75 +244,102 @@ namespace libsemigroups {
 
       for (size_t i = 1; i < l; ++i) {  // tout sauf \pi_1^f
         for (size_t j = i + 2; j < l; ++j) {
-          presentation::add_rule_no_checks(p, {s[i], s[j]}, {s[j], s[i]});
+          presentation::add_rule_no_checks(
+              p, word_type({s[i], s[j]}), word_type({s[j], s[i]}));
         }
       }
       for (size_t i = 3; i < l; ++i) {  // \pi_1^f avec les \pi_i pour i>2
-        presentation::add_rule_no_checks(p, {s[0], s[i]}, {s[i], s[0]});
+        presentation::add_rule_no_checks(
+            p, word_type({s[0], s[i]}), word_type({s[i], s[0]}));
       }
       presentation::add_rule_no_checks(
-          p, {s[0], s[1]}, {s[1], s[0]});  // \pi_1^f avec \pi_1^e
+          p,
+          word_type({s[0], s[1]}),
+          word_type({s[1], s[0]}));  // \pi_1^f avec \pi_1^e
 
       for (size_t i = 1; i < l - 1; ++i) {  // tresses
-        presentation::add_rule_no_checks(
-            p, {s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]});
+        presentation::add_rule_no_checks(p,
+                                         word_type({s[i], s[i + 1], s[i]}),
+                                         word_type({s[i + 1], s[i], s[i + 1]}));
       }
       if (l > 2) {
         presentation::add_rule_no_checks(
-            p, {s[0], s[2], s[0]}, {s[2], s[0], s[2]});  // tresse de \pi_1^f
+            p,
+            word_type({s[0], s[2], s[0]}),
+            word_type({s[2], s[0], s[2]}));  // tresse de \pi_1^f
       }
 
       for (size_t i = 2; i < l; ++i) {  // commutation, attention début à 2
         for (size_t j = 0; j < i; ++j) {
-          presentation::add_rule_no_checks(p, {s[i], e[j]}, {e[j], s[i]});
+          presentation::add_rule_no_checks(
+              p, word_type({s[i], e[j]}), word_type({e[j], s[i]}));
         }
-        presentation::add_rule_no_checks(p, {s[i], f}, {f, s[i]});
+        presentation::add_rule_no_checks(
+            p, word_type({s[i], f}), word_type({f, s[i]}));
       }
       presentation::add_rule_no_checks(
-          p, {s[0], f}, {f, s[0]});  // commutation \pi_1^f et f
+          p,
+          word_type({s[0], f}),
+          word_type({f, s[0]}));  // commutation \pi_1^f et f
       presentation::add_rule_no_checks(
-          p, {s[1], e[0]}, {e[0], s[1]});  // commutation \pi_1^e et e
+          p,
+          word_type({s[1], e[0]}),
+          word_type({e[0], s[1]}));  // commutation \pi_1^e et e
 
       for (size_t i = 1; i < l; ++i) {  // absorption
         for (size_t j = i + 1; j < l + 1; ++j) {
-          presentation::add_rule_no_checks(p, {s[i], e[j]}, {e[j], s[i]});
-          presentation::add_rule_no_checks(p, {s[i], e[j]}, {e[j]});
+          presentation::add_rule_no_checks(
+              p, word_type({s[i], e[j]}), word_type({e[j], s[i]}));
+          presentation::add_rule_no_checks(
+              p, word_type({s[i], e[j]}), word_type({e[j]}));
           if (i == 1) {  // cas particulier \pi_1^f
-            presentation::add_rule_no_checks(p, {s[0], e[j]}, {e[j], s[0]});
-            presentation::add_rule_no_checks(p, {s[0], e[j]}, {e[j]});
+            presentation::add_rule_no_checks(
+                p, word_type({s[0], e[j]}), word_type({e[j], s[0]}));
+            presentation::add_rule_no_checks(
+                p, word_type({s[0], e[j]}), word_type({e[j]}));
           }
         }
       }
 
       for (size_t i = 0; i < l + 1; ++i) {  // produit e_i
         for (size_t j = 0; j < l + 1; ++j) {
-          presentation::add_rule_no_checks(p, {e[i], e[j]}, {e[j], e[i]});
           presentation::add_rule_no_checks(
-              p, {e[i], e[j]}, {e[std::max(i, j)]});
+              p, word_type({e[i], e[j]}), word_type({e[j], e[i]}));
+          presentation::add_rule_no_checks(
+              p, word_type({e[i], e[j]}), word_type({e[std::max(i, j)]}));
         }
         if (i > 1) {
-          presentation::add_rule_no_checks(p, {f, e[i]}, {e[i], f});
-          presentation::add_rule_no_checks(p, {f, e[i]}, {e[i]});
+          presentation::add_rule_no_checks(
+              p, word_type({f, e[i]}), word_type({e[i], f}));
+          presentation::add_rule_no_checks(
+              p, word_type({f, e[i]}), word_type({e[i]}));
         }
       }
-      presentation::add_rule_no_checks(p, {f, f}, {f});
-      presentation::add_rule_no_checks(p, {f, e[0]}, {e[1]});
-      presentation::add_rule_no_checks(p, {e[0], f}, {e[1]});
+      presentation::add_rule_no_checks(p, word_type({f, f}), word_type({f}));
+      presentation::add_rule_no_checks(
+          p, word_type({f, e[0]}), word_type({e[1]}));
+      presentation::add_rule_no_checks(
+          p, word_type({e[0], f}), word_type({e[1]}));
 
       for (size_t i = 2; i < l; ++i) {
-        presentation::add_rule_no_checks(p, {e[i], s[i], e[i]}, {e[i + 1]});
+        presentation::add_rule_no_checks(
+            p, word_type({e[i], s[i], e[i]}), word_type({e[i + 1]}));
       }
-      presentation::add_rule_no_checks(p, {e[0], s[0], e[0]}, {e[2]});
-      presentation::add_rule_no_checks(p, {f, s[1], f}, {e[2]});
+      presentation::add_rule_no_checks(
+          p, word_type({e[0], s[0], e[0]}), word_type({e[2]}));
+      presentation::add_rule_no_checks(
+          p, word_type({f, s[1], f}), word_type({e[2]}));
     }
 
     void add_coxeter_common(Presentation<word_type>& p, size_t n) {
       for (letter_type i = 0; i < n - 2; ++i) {
-        presentation::add_rule_no_checks(p, {i, i + 1, i}, {i + 1, i, i + 1});
+        presentation::add_rule_no_checks(
+            p, word_type({i, i + 1, i}), word_type({i + 1, i, i + 1}));
       }
       for (letter_type i = 0; i < n - 1; ++i) {
         for (letter_type j = i + 2; j < n - 1; ++j) {
-          presentation::add_rule_no_checks(p, {i, j}, {j, i});
+          presentation::add_rule_no_checks(
+              p, word_type({i, j}), word_type({j, i}));
         }
       }
     }
@@ -315,7 +350,7 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(
           p, pow({0, n - 1}, 2), pow({n - 1, 0}, 2));
       presentation::add_rule_no_checks(
-          p, pow({0, n - 1}, 2), {n - 1, 0, n - 1});
+          p, pow({0, n - 1}, 2), word_type({n - 1, 0, n - 1}));
     }
 
     word_type max_elt_B(size_t i) {
@@ -402,15 +437,19 @@ namespace libsemigroups {
       for (size_t c = 0; c < n; ++c) {
         for (size_t b = 0; b < c; ++b) {
           for (size_t a = 0; a < b; ++a) {
-            presentation::add_rule_no_checks(p, {b, a, c}, {b, c, a});
-            presentation::add_rule_no_checks(p, {a, c, b}, {c, a, b});
+            presentation::add_rule_no_checks(
+                p, word_type({b, a, c}), word_type({b, c, a}));
+            presentation::add_rule_no_checks(
+                p, word_type({a, c, b}), word_type({c, a, b}));
           }
         }
       }
       for (size_t b = 0; b < n; ++b) {
         for (size_t a = 0; a < b; ++a) {
-          presentation::add_rule_no_checks(p, {b, a, a}, {a, b, a});
-          presentation::add_rule_no_checks(p, {b, b, a}, {b, a, b});
+          presentation::add_rule_no_checks(
+              p, word_type({b, a, a}), word_type({a, b, a}));
+          presentation::add_rule_no_checks(
+              p, word_type({b, b, a}), word_type({b, a, b}));
         }
       }
       p.contains_empty_word(true);
@@ -433,12 +472,15 @@ namespace libsemigroups {
       presentation::add_idempotent_rules_no_checks(p, range(0, n - 1));
 
       for (letter_type i = 0; i < n - 2; ++i) {
-        presentation::add_rule_no_checks(p, {i, i + 1, i}, {i, i + 1});
-        presentation::add_rule_no_checks(p, {i + 1, i, i + 1}, {i, i + 1});
+        presentation::add_rule_no_checks(
+            p, word_type({i, i + 1, i}), word_type({i, i + 1}));
+        presentation::add_rule_no_checks(
+            p, word_type({i + 1, i, i + 1}), word_type({i, i + 1}));
       }
       for (letter_type i = 0; i < n - 3; ++i) {
         for (letter_type j = i + 2; j < n - 1; ++j) {
-          presentation::add_rule_no_checks(p, {i, j}, {j, i});
+          presentation::add_rule_no_checks(
+              p, word_type({i, j}), word_type({j, i}));
         }
       }
       return p;
@@ -462,7 +504,9 @@ namespace libsemigroups {
 
       for (letter_type i = 0; i + 3 < n; ++i) {
         presentation::add_rule_no_checks(
-            p, {i, i + 1, i + 2, i + 1, i}, {i, i + 1, i + 2, i, i + 1, i});
+            p,
+            word_type({i, i + 1, i + 2, i + 1, i}),
+            word_type({i, i + 1, i + 2, i, i + 1, i}));
       }
       return p;
     }
@@ -492,7 +536,8 @@ namespace libsemigroups {
         for (size_t c = 0; c < d; ++c) {
           for (size_t b = 0; b <= c; ++b) {
             for (size_t a = 0; a <= b; ++a) {
-              presentation::add_rule_no_checks(p, {a, b, d, c}, {a, d, b, c});
+              presentation::add_rule_no_checks(
+                  p, word_type({a, b, d, c}), word_type({a, d, b, c}));
             }
           }
         }
@@ -502,8 +547,10 @@ namespace libsemigroups {
         for (size_t c = 0; c <= d; ++c) {
           for (size_t b = 0; b < c; ++b) {
             for (size_t a = 0; a <= b; ++a) {
-              presentation::add_rule_no_checks(p, {a, c, d, b}, {a, c, b, d});
-              presentation::add_rule_no_checks(p, {c, a, d, b}, {c, d, a, b});
+              presentation::add_rule_no_checks(
+                  p, word_type({a, c, d, b}), word_type({a, c, b, d}));
+              presentation::add_rule_no_checks(
+                  p, word_type({c, a, d, b}), word_type({c, d, a, b}));
             }
           }
         }
@@ -514,7 +561,8 @@ namespace libsemigroups {
         for (size_t c = 0; c < d; ++c) {
           for (size_t b = 0; b < c; ++b) {
             for (size_t a = 0; a <= b; ++a) {
-              presentation::add_rule_no_checks(p, {d, a, c, b}, {a, d, c, b});
+              presentation::add_rule_no_checks(
+                  p, word_type({d, a, c, b}), word_type({a, d, c, b}));
             }
           }
         }
@@ -525,8 +573,10 @@ namespace libsemigroups {
         for (size_t c = 0; c < d; ++c) {
           for (size_t b = 0; b <= c; ++b) {
             for (size_t a = 0; a < b; ++a) {
-              presentation::add_rule_no_checks(p, {b, a, d, c}, {b, d, a, c});
-              presentation::add_rule_no_checks(p, {d, b, c, a}, {b, d, c, a});
+              presentation::add_rule_no_checks(
+                  p, word_type({b, a, d, c}), word_type({b, d, a, c}));
+              presentation::add_rule_no_checks(
+                  p, word_type({d, b, c, a}), word_type({b, d, c, a}));
             }
           }
         }
@@ -537,7 +587,8 @@ namespace libsemigroups {
         for (size_t c = 0; c <= d; ++c) {
           for (size_t b = 0; b < c; ++b) {
             for (size_t a = 0; a < b; ++a) {
-              presentation::add_rule_no_checks(p, {c, b, d, a}, {c, d, b, a});
+              presentation::add_rule_no_checks(
+                  p, word_type({c, b, d, a}), word_type({c, d, b, a}));
             }
           }
         }
@@ -550,7 +601,8 @@ namespace libsemigroups {
         for (size_t c = 0; c <= d; ++c) {
           for (size_t b = 0; b <= c; ++b) {
             for (size_t a = 0; a < b; ++a) {
-              presentation::add_rule_no_checks(p, {b, c, d, a}, {b, c, a, d});
+              presentation::add_rule_no_checks(
+                  p, word_type({b, c, d, a}), word_type({b, c, a, d}));
             }
           }
         }
@@ -676,7 +728,7 @@ namespace libsemigroups {
 
       for (size_t k = 2; k <= n - 3; ++k) {
         for (size_t j = 0; j <= k - 2; ++j) {
-          presentation::add_rule_no_checks(p, {j, k, j, k}, {});
+          presentation::add_rule_no_checks(p, word_type({j, k, j, k}), ""_w);
         }
       }
       p.alphabet_from_rules();
@@ -780,7 +832,7 @@ namespace libsemigroups {
       // S in Theorem 3 (same as dual_symmetric_inverse_monoid)
       // TODO factor out the common part
       for (size_t i = 0; i <= n - 2; ++i) {
-        presentation::add_rule_no_checks(p, {i, i}, {});
+        presentation::add_rule_no_checks(p, word_type({i, i}), ""_w);
         if (i != n - 2) {
           presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), {});
         }
@@ -1101,9 +1153,19 @@ namespace libsemigroups {
         for (int64_t j = 0; j < m - 1; ++j) {
           auto d = std::abs(i - j);
           if (d > 1) {
-            presentation::add_rule_no_checks(p, {i, j}, {j, i});
+            presentation::add_rule_no_checks(
+                p,
+                word_type(
+                    {static_cast<letter_type>(i), static_cast<letter_type>(j)}),
+                word_type({static_cast<letter_type>(j),
+                           static_cast<letter_type>(i)}));
           } else if (d == 1) {
-            presentation::add_rule_no_checks(p, {i, j, i}, {i});
+            presentation::add_rule_no_checks(
+                p,
+                word_type({static_cast<letter_type>(i),
+                           static_cast<letter_type>(j),
+                           static_cast<letter_type>(i)}),
+                word_type({static_cast<letter_type>(i)}));
           }
         }
       }
@@ -2056,7 +2118,7 @@ namespace libsemigroups {
       auto e = range(l, 2 * l + 1);
       if (l >= 2) {
         presentation::add_rule_no_checks(
-            p, {e[0], s[0], s[1], s[0], e[0]}, {e[2]});
+            p, word_type({e[0], s[0], s[1], s[0], e[0]}), word_type({e[2]}));
       }
       p.alphabet_from_rules().contains_empty_word(true);
       return p;
@@ -2096,9 +2158,9 @@ namespace libsemigroups {
 
       if (l >= 3) {
         presentation::add_rule_no_checks(
-            p, {e[0], s[0], s[2], s[1], f}, {e[3]});
+            p, word_type({e[0], s[0], s[2], s[1], f}), word_type({e[3]}));
         presentation::add_rule_no_checks(
-            p, {f, s[1], s[2], s[0], e[0]}, {e[3]});
+            p, word_type({f, s[1], s[2], s[0], e[0]}), word_type({e[3]}));
       }
       p.alphabet_from_rules().contains_empty_word(true);
       return p;
@@ -2156,13 +2218,16 @@ namespace libsemigroups {
       }
       presentation::add_commutes_rules_no_checks(p, o, o);
       for (size_t i = 0; i < n - 1; ++i) {
-        presentation::add_rule(p, {t[i], o[i]}, {t[i], o[i + 1]});
-        presentation::add_rule(p, {o[i], t[i]}, {o[i + 1], t[i]});
+        presentation::add_rule(
+            p, word_type({t[i], o[i]}), word_type({t[i], o[i + 1]}));
+        presentation::add_rule(
+            p, word_type({o[i], t[i]}), word_type({o[i + 1], t[i]}));
       }
       for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < n - 1; ++j) {
           if (i != j && i != j + 1) {
-            presentation::add_rule(p, {o[i], t[j]}, {t[j], o[i]});
+            presentation::add_rule(
+                p, word_type({o[i], t[j]}), word_type({t[j], o[i]}));
           }
         }
       }
@@ -2171,7 +2236,7 @@ namespace libsemigroups {
           presentation::add_rule(p,
                                  word_type({t[i]}) + pow({o[i]}, k)
                                      + word_type({t[i]}),
-                                 {t[i]});
+                                 word_type({t[i]}));
         }
       }
       return p;
@@ -2190,28 +2255,34 @@ namespace libsemigroups {
       auto s = p.alphabet();
       // add inverse rules
       for (size_t i = 0; i < n - 1; ++i) {
-        presentation::add_rule(p, {s[i], s[i + n - 1]}, {s[i + n - 1], s[i]});
+        presentation::add_rule(p,
+                               word_type({s[i], s[i + n - 1]}),
+                               word_type({s[i + n - 1], s[i]}));
       }
       for (size_t i = 0; i < n - 1; ++i) {
-        presentation::add_rule(p, {s[i], s[i + n - 1]}, {});
+        presentation::add_rule(p, word_type({s[i], s[i + n - 1]}), ""_w);
       }
 
       for (size_t i = 0; i < n - 2; ++i) {
-        presentation::add_rule(
-            p, {s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]});
+        presentation::add_rule(p,
+                               word_type({s[i], s[i + 1], s[i]}),
+                               word_type({s[i + 1], s[i], s[i + 1]}));
       }
       for (size_t i = n - 1; i < 2 * n - 3; ++i) {
-        presentation::add_rule(
-            p, {s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]});
+        presentation::add_rule(p,
+                               word_type({s[i], s[i + 1], s[i]}),
+                               word_type({s[i + 1], s[i], s[i + 1]}));
       }
       for (size_t i = 0; i < n - 1; ++i) {
         for (size_t j = i + 2; j < n - 1; ++j) {
-          presentation::add_rule(p, {s[i], s[j]}, {s[j], s[i]});
+          presentation::add_rule(
+              p, word_type({s[i], s[j]}), word_type({s[j], s[i]}));
         }
       }
       for (size_t i = n - 1; i < 2 * n - 2; ++i) {
         for (size_t j = i + 2; j < 2 * n - 2; ++j) {
-          presentation::add_rule(p, {s[i], s[j]}, {s[j], s[i]});
+          presentation::add_rule(
+              p, word_type({s[i], s[j]}), word_type({s[j], s[i]}));
         }
       }
       return p;

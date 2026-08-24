@@ -743,17 +743,17 @@ namespace libsemigroups {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet(std::string({0, 1, 2}));
-    presentation::add_rule(p, {0, 1}, {1, 0});
-    presentation::add_rule(p, {0, 2}, {2, 0});
-    presentation::add_rule(p, {0, 0}, {0});
-    presentation::add_rule(p, {0, 2}, {0});
-    presentation::add_rule(p, {2, 0}, {0});
-    presentation::add_rule(p, {1, 1}, {1, 1});
-    presentation::add_rule(p, {1, 2}, {2, 1});
-    presentation::add_rule(p, {1, 1, 1}, {1});
-    presentation::add_rule(p, {1, 2}, {1});
-    presentation::add_rule(p, {2, 1}, {1});
-    presentation::add_rule(p, {0}, {1});
+    presentation::add_rule(p, std::string({0, 1}), std::string({1, 0}));
+    presentation::add_rule(p, std::string({0, 2}), std::string({2, 0}));
+    presentation::add_rule(p, std::string({0, 0}), std::string({0}));
+    presentation::add_rule(p, std::string({0, 2}), std::string({0}));
+    presentation::add_rule(p, std::string({2, 0}), std::string({0}));
+    presentation::add_rule(p, std::string({1, 1}), std::string({1, 1}));
+    presentation::add_rule(p, std::string({1, 2}), std::string({2, 1}));
+    presentation::add_rule(p, std::string({1, 1, 1}), std::string({1}));
+    presentation::add_rule(p, std::string({1, 2}), std::string({1}));
+    presentation::add_rule(p, std::string({2, 1}), std::string({1}));
+    presentation::add_rule(p, std::string({0}), std::string({1}));
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.process_pending_rules();

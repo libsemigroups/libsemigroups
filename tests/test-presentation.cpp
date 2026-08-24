@@ -299,7 +299,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
     p.alphabet_from_rules();
     q.alphabet_from_rules();
-    presentation::add_rule_no_checks(q, {0}, {1});
+    presentation::add_rule_no_checks(q, W({0}), W({1}));
     presentation::add_rules(p, q);
     REQUIRE(p.rules
             == std::vector<W>({{0, 1, 2, 1},
@@ -943,7 +943,8 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet(std::string({0, 1})).contains_empty_word(true);
-    presentation::add_rule(p, {0, 0, 0, 0, 0, 0, 0, 0}, {});
+    presentation::add_rule(
+        p, std::string({0, 0, 0, 0, 0, 0, 0, 0}), std::string({}));
     presentation::balance(p, std::string(1, 0), std::string(1, 0));
     REQUIRE(p.rules == std::vector<std::string>({{0, 0, 0, 0}, {0, 0, 0, 0}}));
     REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 0}, {0}),
@@ -1139,10 +1140,10 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(presentation::sort_each_rule(p), LibsemigroupsException);
     p.rules.push_back(W({1, 2, 1}));
 
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 1}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({1, 1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
     p.alphabet_from_rules();
     presentation::sort_each_rule(p);
     REQUIRE(p.rules
@@ -1171,10 +1172,10 @@ namespace libsemigroups {
     p.rules.push_back(W({0, 1, 2, 1}));
     REQUIRE_THROWS_AS(presentation::sort_rules(p), LibsemigroupsException);
     p.rules.push_back(W({1, 2, 1}));
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 1}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({1, 1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
     p.alphabet_from_rules();
     presentation::sort_rules(p);
     REQUIRE(p.rules
@@ -1206,14 +1207,14 @@ namespace libsemigroups {
       p.rules.push_back(W({0, 1, 2, 1}));
       REQUIRE_NOTHROW(presentation::longest_subword_reducing_length(p));
       p.rules.push_back(W({1, 2, 1}));
-      presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 1, 2, 1});
-      presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-      presentation::add_rule_no_checks(p, {1, 1}, {1, 2, 1});
-      presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+      presentation::add_rule_no_checks(p, W({1, 2, 1}), W({1, 1, 2, 1}));
+      presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+      presentation::add_rule_no_checks(p, W({1, 1}), W({1, 2, 1}));
+      presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
       p.alphabet_from_rules();
       REQUIRE(presentation::longest_subword_reducing_length(p) == W({1, 2, 1}));
       presentation::replace_subword(p, W({1, 2, 1}), W({3}));
-      presentation::add_rule_no_checks(p, {3}, {1, 2, 1});
+      presentation::add_rule_no_checks(p, W({3}), W({1, 2, 1}));
       REQUIRE(p.rules
               == std::vector<W>({{0, 3},
                                  {3},
@@ -1231,11 +1232,11 @@ namespace libsemigroups {
     {
       // Non-normalized alphabet
       Presentation<W> p;
-      presentation::add_rule_no_checks(p, {1, 2, 4, 2}, {2, 4, 2});
-      presentation::add_rule_no_checks(p, {2, 4, 2}, {2, 2, 4, 2});
-      presentation::add_rule_no_checks(p, {2, 2, 4, 2}, {2, 2});
-      presentation::add_rule_no_checks(p, {2, 2}, {2, 4, 2});
-      presentation::add_rule_no_checks(p, {2, 4, 2}, {1});
+      presentation::add_rule_no_checks(p, W({1, 2, 4, 2}), W({2, 4, 2}));
+      presentation::add_rule_no_checks(p, W({2, 4, 2}), W({2, 2, 4, 2}));
+      presentation::add_rule_no_checks(p, W({2, 2, 4, 2}), W({2, 2}));
+      presentation::add_rule_no_checks(p, W({2, 2}), W({2, 4, 2}));
+      presentation::add_rule_no_checks(p, W({2, 4, 2}), W({1}));
       p.alphabet_from_rules();
       REQUIRE(presentation::longest_subword_reducing_length(p) == W({2, 4, 2}));
       presentation::replace_subword(p, W({2, 4, 2}), W({0}));
@@ -1315,13 +1316,13 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(presentation::remove_trivial_rules(p),
                       LibsemigroupsException);
     p.rules.push_back(W({1, 2, 1}));
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
-    presentation::add_rule_no_checks(p, {0}, {0});
-    presentation::add_rule_no_checks(p, {1}, {1});
-    presentation::add_rule_no_checks(p, {2}, {2});
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
+    presentation::add_rule_no_checks(p, W({0}), W({0}));
+    presentation::add_rule_no_checks(p, W({1}), W({1}));
+    presentation::add_rule_no_checks(p, W({2}), W({2}));
 
     presentation::remove_trivial_rules(p);
     REQUIRE(
@@ -1349,8 +1350,8 @@ namespace libsemigroups {
     // existing, replacement
     REQUIRE_NOTHROW(presentation::replace_subword(p, W({0}), W({1})));
     p.rules.push_back(W({1, 2, 1}));
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
 
     presentation::replace_subword(p, W({0}), W({1}));
     REQUIRE(
@@ -1371,16 +1372,18 @@ namespace libsemigroups {
     REQUIRE(p.rules == std::vector<W>({{1, 0}, {0}, {1, 0}, {1, 1}, {0}, {1}}));
 
     p.rules.clear();
-    presentation::add_rule_no_checks(
-        p, {1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1}, {1, 2, 1, 1, 2, 1, 2, 1});
+    presentation::add_rule_no_checks(p,
+                                     W({1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1}),
+                                     W({1, 2, 1, 1, 2, 1, 2, 1}));
     presentation::replace_subword(p, W({1, 2, 1}), W({1}));
     REQUIRE(p.rules == std::vector<W>({{1, 2, 1, 1, 2, 1, 1}, {1, 1, 2, 1}}));
     presentation::replace_subword(p, W({1, 2, 1}), W({1}));
     REQUIRE(p.rules == std::vector<W>({{1, 1, 1}, {1, 1}}));
     // Test for when existing is a suffix of replacement
     p.rules.clear();
-    presentation::add_rule_no_checks(
-        p, {1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1}, {1, 2, 1, 1, 2, 1, 2, 1});
+    presentation::add_rule_no_checks(p,
+                                     W({1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1}),
+                                     W({1, 2, 1, 1, 2, 1, 2, 1}));
     presentation::replace_subword(p, W({1, 2}), W({1, 1, 2}));
     REQUIRE(p.rules
             == std::vector<W>(
@@ -1409,16 +1412,16 @@ namespace libsemigroups {
     using W            = TestType;
     auto            rg = ReportGuard(false);
     Presentation<W> p;
-    presentation::add_rule_no_checks(p, {0, 1, 0}, {});
+    presentation::add_rule_no_checks(p, W({0, 1, 0}), W({}));
     p.alphabet_from_rules();
     presentation::replace_word(p, W({}), W({2}));
     REQUIRE(p.rules == std::vector<W>{{0, 1, 0}, {2}});
 
     p.rules.clear();
-    presentation::add_rule_no_checks(p, {0, 1, 0}, {2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 2}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {2, 1, 2, 1}, {2, 2});
-    presentation::add_rule_no_checks(p, {2, 1}, {0, 1, 1});
+    presentation::add_rule_no_checks(p, W({0, 1, 0}), W({2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1, 2}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({2, 1, 2, 1}), W({2, 2}));
+    presentation::add_rule_no_checks(p, W({2, 1}), W({0, 1, 1}));
     p.alphabet_from_rules();
     presentation::replace_word(p, W({2, 1}), W({1, 2}));
     REQUIRE(p.rules
@@ -1432,8 +1435,8 @@ namespace libsemigroups {
                               {0, 1, 1}});
 
     p.rules.clear();
-    presentation::add_rule_no_checks(p, {0, 1, 0}, {1, 0, 1});
-    presentation::add_rule_no_checks(p, {0, 1, 1}, {1, 0, 1, 0});
+    presentation::add_rule_no_checks(p, W({0, 1, 0}), W({1, 0, 1}));
+    presentation::add_rule_no_checks(p, W({0, 1, 1}), W({1, 0, 1, 0}));
     p.alphabet_from_rules();
     presentation::replace_word(p, W({1, 0, 1}), W({}));
     REQUIRE(p.rules == std::vector<W>{{0, 1, 0}, {}, {0, 1, 1}, {1, 0, 1, 0}});
@@ -1454,8 +1457,8 @@ namespace libsemigroups {
     p.rules.push_back(W({0, 1, 2, 1}));
     REQUIRE_THROWS_AS(presentation::longest_rule(p), LibsemigroupsException);
     p.rules.push_back(W({1, 2, 1}));
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
     REQUIRE(*presentation::longest_rule(p) == W({0, 1, 2, 1}));
     REQUIRE_THROWS_AS(*presentation::longest_rule(
                           presentation::longest_rule(p) + 1, p.rules.cend()),
@@ -1488,8 +1491,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(presentation::longest_rule_length(p),
                       LibsemigroupsException);
     p.rules.push_back(W({1, 2, 1}));
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
     REQUIRE(presentation::longest_rule_length(p) == 7);
     REQUIRE_THROWS_AS(presentation::longest_rule_length(
                           presentation::longest_rule(p) + 1, p.rules.cend()),
@@ -1523,8 +1526,8 @@ namespace libsemigroups {
                       LibsemigroupsException);
     p.rules.push_back(W({1, 2, 1}));
 
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
 
     presentation::remove_redundant_generators(p);
     REQUIRE(p.alphabet() == W({1, 2}));
@@ -1539,10 +1542,10 @@ namespace libsemigroups {
 
     p.rules.clear();
     p.alphabet(W({0, 1, 2}));
-    presentation::add_rule_no_checks(p, {0, 1, 2, 1}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1}, {0});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1}), W({0}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
     presentation::remove_redundant_generators(p);
     REQUIRE(p.alphabet() == W({0, 2}));
     REQUIRE(
@@ -1551,10 +1554,10 @@ namespace libsemigroups {
             {{0, 0, 2, 0}, {0, 2, 0}, {0, 0, 2, 0}, {0, 0}, {0, 2, 0}, {0}}));
 
     p.rules.clear();
-    presentation::add_rule_no_checks(p, {0, 1, 2, 1}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {0}, {1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({0}), W({1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
     presentation::remove_redundant_generators(p);
     REQUIRE(
         p.rules
@@ -1562,10 +1565,10 @@ namespace libsemigroups {
             {{0, 0, 2, 0}, {0, 2, 0}, {0, 0, 2, 0}, {0, 0}, {0, 2, 0}, {0}}));
 
     p.rules.clear();
-    presentation::add_rule_no_checks(p, {0, 1, 2, 1}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1}, {0});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1}), W({0}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
     presentation::remove_redundant_generators(p);
     REQUIRE(
         p.rules
@@ -1606,9 +1609,9 @@ namespace libsemigroups {
     using W            = TestType;
     auto            rg = ReportGuard(false);
     Presentation<W> p;
-    presentation::add_rule_no_checks(p, {0, 1, 2, 1}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
 
     presentation::reverse(p);
     REQUIRE(
@@ -1634,9 +1637,9 @@ namespace libsemigroups {
 
     auto            rg = ReportGuard(false);
     Presentation<W> p;
-    presentation::add_rule_no_checks(p, {0, 1, 2, 1}, {1, 2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 2, 1}, {1, 1});
-    presentation::add_rule_no_checks(p, {1, 2, 1}, {0});
+    presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({1, 2, 1}));
+    presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1}), W({0}));
     // Alphabet not set, so everything false
     REQUIRE(!p.in_alphabet(0));
     REQUIRE(!p.in_alphabet(1));
@@ -1660,7 +1663,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet(2);
     p.contains_empty_word(true);
-    presentation::add_rule_no_checks(p, {'a', 'a', 'a'}, {});
+    presentation::add_rule_no_checks(p, std::string({'a', 'a', 'a'}), ""s);
     p.throw_if_bad_alphabet_or_rules();
     REQUIRE_THROWS_AS(presentation::replace_subword(p, {}, {'c'}),
                       LibsemigroupsException);
@@ -1674,7 +1677,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet(2);
     p.contains_empty_word(true);
-    presentation::add_rule_no_checks(p, {'a', 'a', 'a'}, {});
+    presentation::add_rule_no_checks(p, std::string({'a', 'a', 'a'}), ""s);
     p.throw_if_bad_alphabet_or_rules();
     p.init();
     REQUIRE(p.alphabet().empty());
@@ -1853,12 +1856,12 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     using W = TestType;
     Presentation<W> p;
-    presentation::add_rule_no_checks(p, {0, 0}, {});
-    presentation::add_rule_no_checks(p, {1, 1}, {});
-    presentation::add_rule_no_checks(p, {2, 2}, {});
-    presentation::add_rule_no_checks(p, {0, 1, 0, 1, 0, 1}, {});
-    presentation::add_rule_no_checks(p, {1, 2, 1, 0, 1, 2, 1, 0}, {});
-    presentation::add_rule_no_checks(p, {2, 0, 2, 1, 2, 0, 2, 1}, {0, 3});
+    presentation::add_rule_no_checks(p, W({0, 0}), W({}));
+    presentation::add_rule_no_checks(p, W({1, 1}), W({}));
+    presentation::add_rule_no_checks(p, W({2, 2}), W({}));
+    presentation::add_rule_no_checks(p, W({0, 1, 0, 1, 0, 1}), W({}));
+    presentation::add_rule_no_checks(p, W({1, 2, 1, 0, 1, 2, 1, 0}), W({}));
+    presentation::add_rule_no_checks(p, W({2, 0, 2, 1, 2, 0, 2, 1}), W({0, 3}));
 
     p.alphabet_from_rules();
     auto e = presentation::make_semigroup(p);
@@ -3101,8 +3104,8 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     Presentation<W> p;
     p.alphabet(W({0, 1, 2}));
-    presentation::add_rule_no_checks(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {0, 0, 0}, {0});
+    presentation::add_rule_no_checks(p, W({0, 0, 0}), W({0}));
+    presentation::add_rule(p, W({0, 0, 0}), W({0}));
     InversePresentation<W> ip(p);
     REQUIRE_THROWS_AS(ip.throw_if_bad_alphabet_rules_or_inverses(),
                       LibsemigroupsException);
@@ -3134,8 +3137,8 @@ namespace libsemigroups {
     auto                   rg = ReportGuard(false);
     InversePresentation<W> ip;
     ip.alphabet(W({0, 1, 2}));
-    presentation::add_rule_no_checks(ip, {0, 0, 0}, {0});
-    presentation::add_rule(ip, {0, 0, 0}, {0});
+    presentation::add_rule_no_checks(ip, W({0, 0, 0}), W({0}));
+    presentation::add_rule(ip, W({0, 0, 0}), W({0}));
     ip.inverses_no_checks({0, 0, 0});
     REQUIRE_THROWS_AS(ip.throw_if_bad_alphabet_rules_or_inverses(),
                       LibsemigroupsException);
@@ -3948,8 +3951,8 @@ namespace libsemigroups {
                             "are (char values) [0]");
 
       p.alphabet(W({0, 1}));
-      presentation::add_rule(p, {0, 0}, {});
-      presentation::add_rule(p, {0, 1}, {});
+      presentation::add_rule(p, W({0, 0}), W({}));
+      presentation::add_rule(p, W({0, 1}), W({}));
       // TODO(1): Replace the following with a REQUIRE_EXCEPTION_MESSAGE. For
       // some reason, the string comparison fails. The output should be:
       // "the rules (char values) [0, 1] = "" (rule 1) and (char values) [0, 0]
@@ -3966,8 +3969,8 @@ namespace libsemigroups {
       p.contains_empty_word(true);
       p.alphabet(W({0, 1, 2}));
       // 0 and 1 have inverses, but 2 does not
-      presentation::add_rule(p, {0, 1}, {});
-      presentation::add_rule(p, {1, 0}, {});
+      presentation::add_rule(p, W({0, 1}), W({}));
+      presentation::add_rule(p, W({1, 0}), W({}));
       // The words are not over the subset of the presentation's alphabet that
       // has inverses
       REQUIRE_EXCEPTION_MSG(

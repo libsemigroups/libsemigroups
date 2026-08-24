@@ -16,7 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/todd-coxeter-helpers.hpp"
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -31,6 +30,7 @@
 #include "libsemigroups/presentation-examples.hpp"  // for rook_monoid etc
 #include "libsemigroups/to-cong.hpp"                // for to<Congruence>
 #include "libsemigroups/to-froidure-pin.hpp"        // for to<FroidurePin>
+#include "libsemigroups/todd-coxeter-helpers.hpp"   // for TODO
 #include "libsemigroups/transf.hpp"                 // for Transf<>
 #include "libsemigroups/types.hpp"                  // for word_type
 #include "libsemigroups/word-range.hpp"             // for literals
@@ -39,6 +39,7 @@
 
 namespace libsemigroups {
   using std::literals::operator""s;
+  using literals::     operator""_w;
 
   using congruence::contains;
   using congruence::non_trivial_classes;
@@ -64,8 +65,6 @@ namespace libsemigroups {
 
   // Forward declarations
   struct LibsemigroupsException;
-
-  using literals::operator""_w;
 
   constexpr congruence_kind twosided = congruence_kind::twosided;
   constexpr congruence_kind onesided = congruence_kind::onesided;
@@ -371,7 +370,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 000_w, 00_w);
 
     Congruence cong(twosided, p);
-    congruence::add_generating_pair(cong, {0}, {1});
+    congruence::add_generating_pair(cong, 0_w, 1_w);
 
     word_type x = "0"_w + pow(1_w, 20);
     word_type y = "00"_w + pow(1_w, 20);
@@ -491,83 +490,83 @@ namespace libsemigroups {
     {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, 01_w, 0_w);
       Congruence cong(twosided, p);
-      congruence::add_generating_pair(cong, {2, 2}, {2});
+      congruence::add_generating_pair(cong, 22_w, 2_w);
       REQUIRE(is_obviously_infinite(cong));
       REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
     }
     {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
-      presentation::add_rule(p, {0, 0}, {0});
+      presentation::add_rule(p, 01_w, 0_w);
+      presentation::add_rule(p, 00_w, 0_w);
       Congruence cong(twosided, p);
-      congruence::add_generating_pair(cong, {1, 1}, {1});
+      congruence::add_generating_pair(cong, 11_w, 1_w);
       REQUIRE(is_obviously_infinite(cong));
     }
     {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
-      presentation::add_rule(p, {0, 0}, {0});
+      presentation::add_rule(p, 01_w, 0_w);
+      presentation::add_rule(p, 00_w, 0_w);
       Congruence cong(twosided, p);
-      congruence::add_generating_pair(cong, {1, 2}, {1});
+      congruence::add_generating_pair(cong, 12_w, 1_w);
       REQUIRE(is_obviously_infinite(cong));
     }
     {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, 01_w, 0_w);
       Congruence cong(onesided, p);
-      congruence::add_generating_pair(cong, {2, 2}, {2});
+      congruence::add_generating_pair(cong, 22_w, 2_w);
       REQUIRE(is_obviously_infinite(cong));
     }
     {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
-      presentation::add_rule(p, {0, 0}, {0});
+      presentation::add_rule(p, 01_w, 0_w);
+      presentation::add_rule(p, 00_w, 0_w);
       Congruence cong(onesided, p);
-      congruence::add_generating_pair(cong, {1, 1}, {1});
+      congruence::add_generating_pair(cong, 11_w, 1_w);
       REQUIRE(is_obviously_infinite(cong));
     }
     {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
-      presentation::add_rule(p, {0, 0}, {0});
+      presentation::add_rule(p, 01_w, 0_w);
+      presentation::add_rule(p, 00_w, 0_w);
       Congruence cong(onesided, p);
-      congruence::add_generating_pair(cong, {1, 2}, {1});
+      congruence::add_generating_pair(cong, 12_w, 1_w);
       REQUIRE(is_obviously_infinite(cong));
     }
     {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, 01_w, 0_w);
       presentation::reverse(p);
       Congruence cong(onesided, p);
-      congruence::add_generating_pair(cong, {2, 2}, {2});
+      congruence::add_generating_pair(cong, 22_w, 2_w);
       REQUIRE(is_obviously_infinite(cong));
     }
     {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
-      presentation::add_rule(p, {0, 0}, {0});
+      presentation::add_rule(p, 01_w, 0_w);
+      presentation::add_rule(p, 00_w, 0_w);
       presentation::reverse(p);
       Congruence cong(onesided, p);
-      congruence::add_generating_pair(cong, {1, 1}, {1});
+      congruence::add_generating_pair(cong, 11_w, 1_w);
       REQUIRE(is_obviously_infinite(cong));
     }
     {
       Presentation<word_type> p;
       p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
-      presentation::add_rule(p, {0, 0}, {0});
+      presentation::add_rule(p, 01_w, 0_w);
+      presentation::add_rule(p, 00_w, 0_w);
       presentation::reverse(p);
       Congruence cong(onesided, p);
-      congruence::add_generating_pair(cong, {1, 2}, {1});
+      congruence::add_generating_pair(cong, 12_w, 1_w);
       REQUIRE(is_obviously_infinite(cong));
     }
 
@@ -578,7 +577,7 @@ namespace libsemigroups {
       auto cong
           = to<Congruence<word_type>>(twosided, fp, fp.right_cayley_graph());
       REQUIRE(cong.kind() == twosided);
-      congruence::add_generating_pair(cong, {1}, {0});
+      congruence::add_generating_pair(cong, 1_w, 0_w);
       REQUIRE(!is_obviously_infinite(cong));
 
       REQUIRE(cong.number_of_classes() == 1);
