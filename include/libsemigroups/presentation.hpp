@@ -2482,12 +2482,15 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of \p p
     //! are performed.
+    //!
+    //! \deprecated_warning{function}
     // TODO (1): remove this in v4; this convenience function is only really
     // useful in the tests
     template <typename Word>
-    void add_commutes_rules_no_checks(Presentation<Word>&         p,
-                                      Word const&                 letters,
-                                      std::initializer_list<Word> words) {
+    [[deprecated]] void
+    add_commutes_rules_no_checks(Presentation<Word>&         p,
+                                 Word const&                 letters,
+                                 std::initializer_list<Word> words) {
       add_commutes_rules_no_checks(p, letters, std::vector(words));
     }
 
@@ -2520,12 +2523,14 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any letter in \p letters, or any
     //! letter in any word in \p words, is not in `p.alphabet()`.
+    //!
+    //! \deprecated_warning{function}
     // TODO (1): remove this in v4; this convenience function is only really
     // useful in the tests
     template <typename Word>
-    void add_commutes_rules(Presentation<Word>&         p,
-                            Word const&                 letters,
-                            std::initializer_list<Word> words) {
+    [[deprecated]] void add_commutes_rules(Presentation<Word>&         p,
+                                           Word const&                 letters,
+                                           std::initializer_list<Word> words) {
       add_commutes_rules(p, letters, std::vector(words));
     }
 
