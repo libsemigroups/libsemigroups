@@ -1160,18 +1160,18 @@ namespace libsemigroups {
       add_involution_rules_no_checks(p, letters);
     }
 
-    template <typename Word1, typename Word2>
-    void add_cyclic_conjugates_no_checks(Presentation<Word1>& p,
-                                         Word2 const&         relator) {
+    template <typename Word>
+    void add_cyclic_conjugates_no_checks(Presentation<Word>& p,
+                                         Word const&         relator) {
       for (size_t i = 0; i <= relator.size(); ++i) {
-        Word1 copy(relator);
+        Word copy(relator);
         std::rotate(copy.begin(), copy.begin() + i, copy.end());
-        presentation::add_rule_no_checks(p, copy, Word1());
+        presentation::add_rule_no_checks(p, copy, Word());
       }
     }
 
-    template <typename Word1, typename Word2>
-    void add_cyclic_conjugates(Presentation<Word1>& p, Word2 const& relator) {
+    template <typename Word>
+    void add_cyclic_conjugates(Presentation<Word>& p, Word const& relator) {
       p.throw_if_letter_not_in_alphabet(relator.begin(), relator.end());
       if (!p.contains_empty_word()) {
         LIBSEMIGROUPS_EXCEPTION("this function requires the presentation to "
