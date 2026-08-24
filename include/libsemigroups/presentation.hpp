@@ -2917,24 +2917,27 @@ namespace libsemigroups {
     //! there is no guarantee the the semigroup \f$S\f$ defined by \p p before
     //! this function is called will be isomorphic to the semigroup \f$S'\f$
     //! defined by \p p after this function is called.
-    template <typename Word1, typename Word2>
-    void balance_no_checks(Presentation<Word1>& p,
-                           Word2 const&         letters,
-                           Word2 const&         inverses);
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow, for example, std::initializer_list to be used for the
-    //! parameters \p letters and \p inverses.
-    // Note that this doesn't work when Word = std::string and so we also
-    // require an overload specifically taking initializer_list's too.
     template <typename Word>
     void balance_no_checks(Presentation<Word>& p,
                            Word const&         letters,
-                           Word const&         inverses) {
-      balance_no_checks<Word, Word>(p, letters, inverses);
+                           Word const&         inverses);
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This is an overload for \ref balance_no_checks(Presentation<Word>&,
+    //! Word const&, Word const&) to allow, different types for the parameters
+    //! \p letters and \p inverses and for \p p.
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \deprecated_alias_warning{balance_no_checks(Presentation<Word>&, Word const&, Word const&)}
+    // clang-format on
+    // Note that this doesn't work when Word = std::string and so we also
+    // require an overload specifically taking initializer_list's too.
+    template <typename Word1, typename Word2>
+    [[deprecated]] void balance_no_checks(Presentation<Word1>& p,
+                                          Word2 const&         letters,
+                                          Word2 const&         inverses) {
+      balance_no_checks(p, letters, Word1(inverses));
     }
 
     //! \brief Balance the length of the left-hand and right-hand sides.
@@ -2972,12 +2975,13 @@ namespace libsemigroups {
     // clang-format off
     // NOLINTNEXTLINE(whitespace/line_length)
     //! \deprecated_alias_warning{balance_no_checks(Presentation<Word>&, Word const&, Word const&)}
+// TODO check if deprecated_alias_warning is correctly used here
     // clang-format on
-    static inline void balance_no_checks
-        [[deprecated]] (Presentation<std::string>& p,
-                        std::string_view           letters,
-                        std::string_view           inverses) {
-      balance_no_checks<std::string, std::string_view>(p, letters, inverses);
+    [[deprecated]] static inline void
+    balance_no_checks(Presentation<std::string>& p,
+                      std::string_view           letters,
+                      std::string_view           inverses) {
+      balance_no_checks(p, std::string(letters), std::string(inverses));
     }
 
     //! \brief Balance the length of the left-hand and right-hand sides.
@@ -3018,11 +3022,13 @@ namespace libsemigroups {
     //! \p letters, and balances the relations as described in
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! assuming that this is the case.
-    template <typename Word1, typename Word2>
-    void balance(Presentation<Word1>& p,
-                 Word2 const&         letters,
-                 Word2 const&         inverses) {
-      p.throw_if_bad_alphabet_or_rules();
+    // Note that this doesn't work when Word = std::string and so we also
+    // require an overload specifically taking initializer_list's too.
+    template <typename Word>
+    void balance(Presentation<Word>& p,
+                 Word const&         letters,
+                 Word const&         inverses) {
+      // p.throw_if_bad_alphabet_or_rules(); is checked by throw_if_bad_inverses
       throw_if_bad_inverses(p, letters, inverses);
 
       balance_no_checks(p, letters, inverses);
@@ -3048,23 +3054,9 @@ namespace libsemigroups {
     //! assuming that this is the case.
     template <typename Word>
     void balance(Presentation<Word>& p, Word const& inverses) {
+      // p.throw_if_bad_alphabet_or_rules(); is checked by throw_if_bad_inverses
       throw_if_bad_inverses(p, p.alphabet(), inverses);
       balance_no_checks(p, p.alphabet(), inverses);
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow, for example, std::initializer_list to be used for the
-    //! parameters \p letters and \p inverses.
-    // Note that this doesn't work when Word = std::string and so we also
-    // require an overload specifically taking initializer_list's too.
-    template <typename Word>
-    void balance(Presentation<Word>& p,
-                 Word const&         letters,
-                 Word const&         inverses) {
-      balance<Word, Word>(p, letters, inverses);
     }
 
     //! \brief Detect inverses and balance the length of the left-hand and
