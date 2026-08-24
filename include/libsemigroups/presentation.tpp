@@ -212,17 +212,17 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Word1, typename Word2>
-    void throw_if_bad_inverses(Presentation<Word1> const& p,
-                               Word2 const&               letters,
-                               Word2 const&               inverses) {
+    template <typename Word>
+    void throw_if_bad_inverses(Presentation<Word> const& p,
+                               Word const&               letters,
+                               Word const&               inverses) {
       if (letters == p.alphabet()) {
         throw_if_bad_inverses(p, inverses);
       } else {
         // Must check that letters is valid because it obviously is when we
         // create q.
         p.throw_if_letter_not_in_alphabet(letters.begin(), letters.end());
-        Presentation<Word1> q;
+        Presentation<Word> q;
         q.alphabet(letters);
         throw_if_bad_inverses(q, inverses);
       }
