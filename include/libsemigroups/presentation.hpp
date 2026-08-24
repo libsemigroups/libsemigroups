@@ -83,7 +83,7 @@ namespace libsemigroups {
   //! * `to<Presentation>` functions \ref to_presentation_group "here".
 
   struct [[deprecated("Use is_specialization_of_v<Thing, Presentation> "
-                      "instead")]] PresentationBase{};
+                      "instead")]] PresentationBase {};
 
   //! \ingroup presentations_group
   //!
@@ -2011,6 +2011,38 @@ namespace libsemigroups {
     void normalize_alphabet(Presentation<Word>& p);
     // TODO(later) any function that touches the alphabet requires a version of
     // InversePresentation, which also touches the inverses
+
+    //! \brief Change or re-order the alphabet without checking.
+    //!
+    //! This function replaces `p.alphabet()` with \p new_alphabet and
+    //! re-writes the rules in \p p using the new alphabet.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param new_alphabet the replacement alphabet.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does not validate its arguments. The presentation must be
+    //! valid, the old and new alphabets must have the same size, and the new
+    //! alphabet must not contain duplicate letters. If \p new_alphabet is
+    //! passed as an rvalue, it must not refer to an element of `p.rules`.
+    template <typename Word>
+    void change_alphabet_no_checks(Presentation<Word>& p, Word&& new_alphabet);
+
+    //! \copydoc change_alphabet_no_checks(Presentation<Word>&, Word&&)
+    template <typename Word>
+    void change_alphabet_no_checks(Presentation<Word>& p,
+                                   Word const&         new_alphabet) {
+      // Call the rvalue ref version
+      change_alphabet_no_checks(p, Word(new_alphabet));
+    }
+
+    //! \copydoc change_alphabet(Presentation<Word>&, Word const&)
+    template <typename Word>
+    void change_alphabet(Presentation<Word>& p, Word&& new_alphabet);
 
     //! \brief Change or re-order the alphabet without checking.
     //!
