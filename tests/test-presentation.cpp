@@ -3454,15 +3454,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "080",
-                          "add_cyclic_conjugates(char const*)",
+                          "add_cyclic_conjugates(std::string)",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
-    // Intentionally use no_checks in next line to test this specific function
-    presentation::add_cyclic_conjugates_no_checks(p, "bca");
     p.contains_empty_word(true);
-    presentation::add_cyclic_conjugates(p, "abc");
+    presentation::add_cyclic_conjugates(p, "bca"s);
+    presentation::add_cyclic_conjugates(p, "abc"s);
     REQUIRE(p.rules
             == std::vector<std::string>({"bca",
                                          "",
@@ -3480,10 +3479,10 @@ namespace libsemigroups {
                                          "",
                                          "abc",
                                          ""}));
-    REQUIRE_THROWS_AS(presentation::add_cyclic_conjugates(p, "de"),
+    REQUIRE_THROWS_AS(presentation::add_cyclic_conjugates(p, "de"s),
                       LibsemigroupsException);
     p.contains_empty_word(false);
-    REQUIRE_THROWS_AS(presentation::add_cyclic_conjugates(p, "caca"),
+    REQUIRE_THROWS_AS(presentation::add_cyclic_conjugates(p, "caca"s),
                       LibsemigroupsException);
   }
 
