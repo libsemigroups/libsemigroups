@@ -1346,6 +1346,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is `p.alphabet().size()`.
+    // TODO(v4): split into two overloads one with "e" and one without
     template <typename Word>
     void add_inverse_rules(Presentation<Word>&                             p,
                            Word const&                                     vals,
@@ -1375,9 +1376,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is `p.alphabet().size()`.
-    void add_inverse_rules(Presentation<std::string>& p,
-                           char const*                vals,
-                           char                       e = UNDEFINED);
+    [[deprecated]] void add_inverse_rules(Presentation<std::string>& p,
+                                          char const*                vals,
+                                          char e = UNDEFINED);
 
     //! \brief Remove duplicate rules.
     //!

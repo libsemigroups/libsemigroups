@@ -149,7 +149,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "AaBbCc");
+    presentation::add_inverse_rules(p, "AaBbCc"s);
 
     presentation::add_rule(p, "Aba"s, "bb"s);
     presentation::add_rule(p, "Bcb"s, "cc"s);
@@ -190,7 +190,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("aAcCbBdD"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "AaCcBbDd");
+    presentation::add_inverse_rules(p, "AaCcBbDd"s);
     presentation::add_rule(p, "ABab"s, "DCdc"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
@@ -273,7 +273,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("abAB"s);
 
-    presentation::add_inverse_rules(p, "ABab");
+    presentation::add_inverse_rules(p, "ABab"s);
 
     presentation::add_rule(p, "aaa"s, ""s);
     presentation::add_rule(p, "bbb"s, ""s);
@@ -335,7 +335,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("aAbB"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "AaBb");
+    presentation::add_inverse_rules(p, "AaBb"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.process_pending_rules();
@@ -379,7 +379,7 @@ namespace libsemigroups {
     p.alphabet("abcdefghijklmno"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "abcdefghijklmno");
+    presentation::add_inverse_rules(p, "abcdefghijklmno"s);
 
     // codespell:begin-ignore
     presentation::add_rule(p, "bab"s, "aba"s);
@@ -734,7 +734,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("aA"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "Aa");
+    presentation::add_inverse_rules(p, "Aa"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.process_pending_rules();
@@ -859,7 +859,7 @@ namespace libsemigroups {
     p.alphabet("aAbBc"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "AaBbc");
+    presentation::add_inverse_rules(p, "AaBbc"s);
 
     presentation::add_rule(p, "aaaa"s, "AAA"s);
     presentation::add_rule(p, "bb"s, "B"s);
@@ -1053,7 +1053,7 @@ namespace libsemigroups {
     p.alphabet("cCbBaA"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "CcBbAa");
+    presentation::add_inverse_rules(p, "CcBbAa"s);
 
     presentation::add_rule(p, "ba"s, "abc"s);
     presentation::add_rule(p, "ca"s, "ac"s);
@@ -1122,7 +1122,7 @@ namespace libsemigroups {
     p.alphabet("aAbBc"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "AaBbc");
+    presentation::add_inverse_rules(p, "AaBbc"s);
 
     presentation::add_rule(p, "BA"s, "c"s);
     presentation::add_rule(p, "Bb"s, "bB"s);
@@ -1325,7 +1325,7 @@ namespace libsemigroups {
     p.alphabet("ABCDYFabcdyf"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "abcdyfABCDYF");
+    presentation::add_inverse_rules(p, "abcdyfABCDYF"s);
 
     presentation::add_rule(p, "aCAd"s, ""s);
     presentation::add_rule(p, "bfBY"s, ""s);
@@ -1373,7 +1373,7 @@ namespace libsemigroups {
     p.alphabet("aAbBcCdDyYfF"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "AaBbCcDdYyFf");
+    presentation::add_inverse_rules(p, "AaBbCcDdYyFf"s);
 
     presentation::add_rule(p, "aCAd"s, ""s);
     presentation::add_rule(p, "bfBY"s, ""s);
@@ -1471,7 +1471,7 @@ namespace libsemigroups {
     p.alphabet("abcdefgh"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "abcdefgh");
+    presentation::add_inverse_rules(p, "abcdefgh"s);
 
     // codespell:begin-ignore
     presentation::add_rule(p, "bab"s, "aba"s);

@@ -434,7 +434,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("ABabc"s);
-    presentation::add_inverse_rules(p, "abABc");
+    presentation::add_inverse_rules(p, "abABc"s);
     presentation::add_rule(p, "aaaa"s, "AAA"s);
     presentation::add_rule(p, "bb"s, "B"s);
     presentation::add_rule(p, "BA"s, "c"s);
@@ -575,7 +575,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("aAbB"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "AaBb");
+    presentation::add_inverse_rules(p, "AaBb"s);
     presentation::add_rule(p, "Bab"s, "a"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
@@ -616,7 +616,7 @@ namespace libsemigroups {
     p.alphabet("ABCDYFabcdyf"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "abcdyfABCDYF");
+    presentation::add_inverse_rules(p, "abcdyfABCDYF"s);
 
     presentation::add_rule(p, "aCAd"s, ""s);
     presentation::add_rule(p, "bfBY"s, ""s);
@@ -710,7 +710,7 @@ namespace libsemigroups {
     p.alphabet("abB"s);
     p.contains_empty_word(true);
 
-    presentation::add_inverse_rules(p, "aBb");
+    presentation::add_inverse_rules(p, "aBb"s);
 
     presentation::add_rule(p, "bb"s, "B"s);
     presentation::add_rule(p, "BaBa"s, "abab"s);
@@ -1274,7 +1274,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("bABa"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "BabA");
+    presentation::add_inverse_rules(p, "BabA"s);
     presentation::add_rule(p, "Abba"s, "BB"s);
     presentation::add_rule(p, "Baab"s, "AA"s);
 

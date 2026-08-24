@@ -157,7 +157,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("aAbBcC"s);
 
-    presentation::add_inverse_rules(p, "AaBbCc");
+    presentation::add_inverse_rules(p, "AaBbCc"s);
 
     presentation::add_rule(p, "aaa"s, ""s);
     presentation::add_rule(p, "bbb"s, ""s);
@@ -197,7 +197,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("abcdefgh"s);
 
-    presentation::add_inverse_rules(p, "abcdefgh");
+    presentation::add_inverse_rules(p, "abcdefgh"s);
     presentation::add_rule(p, "bab"s, "aba"s);
     presentation::add_rule(p, "ca"s, "ac"s);
     presentation::add_rule(p, "da"s, "ad"s);

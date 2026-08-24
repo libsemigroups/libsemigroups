@@ -455,7 +455,7 @@ namespace libsemigroups {
     p.alphabet("aAbBcCe"s);
     presentation::add_identity_rules(p, 'e');
 
-    presentation::add_inverse_rules(p, "AaBbCce", 'e');
+    presentation::add_inverse_rules(p, "AaBbCce"s, 'e');
     presentation::add_rule(p, "aaCac"s, "e"s);
     presentation::add_rule(p, "acbbACb"s, "e"s);
     presentation::add_rule(p, "ABabccc"s, "e"s);
@@ -831,7 +831,7 @@ namespace libsemigroups {
     p.alphabet("aAbBcCe"s);
     presentation::add_identity_rules(p, 'e');
 
-    presentation::add_inverse_rules(p, "AaBbCce", 'e');
+    presentation::add_inverse_rules(p, "AaBbCce"s, 'e');
     presentation::add_rule(p, "aaCac"s, "e"s);
     presentation::add_rule(p, "acbbACb"s, "e"s);
     presentation::add_rule(p, "ABabccc"s, "e"s);
@@ -1264,7 +1264,7 @@ namespace libsemigroups {
     p.contains_empty_word(false);
     p.alphabet("aAbBe"s);
     presentation::add_identity_rules(p, 'e');
-    presentation::add_inverse_rules(p, "AaBbe", 'e');
+    presentation::add_inverse_rules(p, "AaBbe"s, 'e');
     presentation::add_rule(p, "aaa"s, "e"s);
     presentation::add_rule(p, "baBBBABA"s, "e"s);
     Sims1 C;
@@ -1281,7 +1281,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("aAbB"s);
-    presentation::add_inverse_rules(p, "AaBb");
+    presentation::add_inverse_rules(p, "AaBb"s);
     presentation::add_rule(p, "aaa"s, ""s);
     presentation::add_rule(p, "baBBBABA"s, ""s);
     Sims1 C;
@@ -2009,7 +2009,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("aAbB"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "AaBb");
+    presentation::add_inverse_rules(p, "AaBb"s);
     presentation::add_rule(p, "ab"s, ""s);
     presentation::add_rule(p, "abb"s, ""s);
 
@@ -2231,7 +2231,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xXyY"s);
-    presentation::add_inverse_rules(p, "XxYy");
+    presentation::add_inverse_rules(p, "XxYy"s);
     // NOTE: This presentation for the Heineken group is wrong
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxy"s, "x"s);
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx"s, "y"s);
@@ -3123,7 +3123,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefghiABCDEFGHI"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "ABCDEFGHIabcdefghi");
+    presentation::add_inverse_rules(p, "ABCDEFGHIabcdefghi"s);
     REQUIRE(p.rules.size() == 36);
     presentation::add_rule(p, "ab"s, "c"s);
     presentation::add_rule(p, "bc"s, "d"s);
@@ -3148,7 +3148,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abAB"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "ABab");
+    presentation::add_inverse_rules(p, "ABab"s);
     presentation::add_rule(p, "Abababbab"s, "aBaaBaB"s);
     presentation::add_rule(p, "babbabbAb"s, "ABaaBaa"s);
     presentation::add_rule(p, "abbabbAbA"s, "BABaaBa"s);
@@ -3185,7 +3185,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("rstRST"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "RSTrst");
+    presentation::add_inverse_rules(p, "RSTrst"s);
     presentation::add_rule(p, "rt"s, "trr"s);
     presentation::add_rule(p, "sr"s, "rss"s);
     presentation::add_rule(p, "ts"s, "stt"s);
@@ -3209,7 +3209,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcABC"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_inverse_rules(p, "ABCabc"s);
     presentation::add_rule(p, pow("a"s, 6), pow("A"s, 5));
     presentation::add_rule(p, pow("b"s, 5), ""s);
     presentation::add_rule(p, pow("c"s, 4), ""s);
@@ -3238,7 +3238,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcABC"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_inverse_rules(p, "ABCabc"s);
     presentation::add_rule(p, pow("b"s, 5), ""s);
     presentation::add_rule(p, pow("c"s, 4), ""s);
     presentation::add_rule(p, "acacac"s, ""s);
@@ -3603,7 +3603,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xXyY"s);
-    presentation::add_inverse_rules(p, "XxYy");
+    presentation::add_inverse_rules(p, "XxYy"s);
     // NOTE: This presentation for the Heineken group is wrong
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxy"s, "x"s);
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx"s, "y"s);
@@ -3672,7 +3672,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abAB"s);
     p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "ABab");
+    presentation::add_inverse_rules(p, "ABab"s);
     presentation::add_rule(p, "Abababbab"s, "aBaaBaB"s);
     presentation::add_rule(p, "babbabbAb"s, "ABaaBaa"s);
     presentation::add_rule(p, "abbabbAbA"s, "BABaaBa"s);
