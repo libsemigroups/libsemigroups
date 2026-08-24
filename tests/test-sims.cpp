@@ -877,7 +877,7 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.alphabet(012_w);
-    presentation::add_rule(p, {0, 1, 0}, {0, 0});
+    presentation::add_rule(p, 010_w, 00_w);
 
     Presentation<word_type> e;
     e.alphabet(01_w);

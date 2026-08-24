@@ -38,12 +38,14 @@
 #include "libsemigroups/to-presentation.hpp"  // for v4::to<Presentation>
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for word_type, congruence_kind
+#include "libsemigroups/word-range.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
 #include "libsemigroups/detail/string.hpp"      // for operator<<
 
 namespace libsemigroups {
+  using literals::     operator""_w;
   using std::literals::operator""s;
 
   using detail::StaticVector1;
@@ -144,8 +146,8 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, "abc"s, "ab"s);
       presentation::add_rule_no_checks(p, "abc"s, ""s);
     } else {
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {});
+      presentation::add_rule_no_checks(p, W1({0, 1, 2}), W1({0, 1}));
+      presentation::add_rule_no_checks(p, W1({0, 1, 2}), W1({}));
     }
     p.throw_if_bad_alphabet_or_rules();
 
@@ -199,8 +201,8 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, "abc"s, "ab"s);
       presentation::add_rule_no_checks(p, "abc"s, ""s);
     } else {
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {});
+      presentation::add_rule_no_checks(p, W1({0, 1, 2}), W1({0, 1}));
+      presentation::add_rule_no_checks(p, W1({0, 1, 2}), W1({}));
     }
 
     auto f1 = [&p](auto val) {
@@ -234,8 +236,8 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(false);
-    presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
-    presentation::add_rule_no_checks(p, {0, 1, 2}, {});
+    presentation::add_rule_no_checks(p, 012_w, 01_w);
+    presentation::add_rule_no_checks(p, 012_w, ""_w);
     // intentionally bad
     REQUIRE_THROWS_AS(p.throw_if_bad_alphabet_or_rules(),
                       LibsemigroupsException);
@@ -263,7 +265,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
-    presentation::add_rule(p, {0, 1}, {});
+    presentation::add_rule(p, 01_w, ""_w);
 
     auto q = v4::to<Presentation<std::string>>(p);
     REQUIRE(q.alphabet() == "ab");
@@ -298,8 +300,8 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(ip, "abc"s, ""s);
       ip.inverses_no_checks("cba");
     } else {
-      presentation::add_rule_no_checks(ip, {0, 1, 2}, {0, 1});
-      presentation::add_rule_no_checks(ip, {0, 1, 2}, {});
+      presentation::add_rule_no_checks(ip, W1({0, 1, 2}), W1({0, 1}));
+      presentation::add_rule_no_checks(ip, W1({0, 1, 2}), W1({}));
       ip.inverses_no_checks({2, 1, 0});
     }
     ip.throw_if_bad_alphabet_or_rules();
@@ -359,8 +361,9 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, "abc"s, "ab"s);
       presentation::add_rule_no_checks(p, "acb"s, "c"s);
     } else {
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
-      presentation::add_rule_no_checks(p, {0, 2, 1}, {2});
+      presentation::add_rule_no_checks(
+          p, TestType({0, 1, 2}), TestType({0, 1}));
+      presentation::add_rule_no_checks(p, TestType({0, 2, 1}), TestType({2}));
     }
     p.throw_if_bad_alphabet_or_rules();
 

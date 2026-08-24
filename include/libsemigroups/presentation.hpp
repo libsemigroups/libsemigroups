@@ -1146,9 +1146,9 @@ namespace libsemigroups {
     //! No checks that the arguments describe words over the alphabet of the
     //! presentation are performed.
     template <typename Word, typename Letter>
-    void add_rule_no_checks(Presentation<Word>&           p,
-                            std::initializer_list<Letter> lhop,
-                            std::initializer_list<Letter> rhop) {
+    [[deprecated]] void add_rule_no_checks(Presentation<Word>&           p,
+                                           std::initializer_list<Letter> lhop,
+                                           std::initializer_list<Letter> rhop) {
       p.add_rule_no_checks(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
@@ -1166,9 +1166,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
     template <typename Word, typename Letter>
-    void add_rule(Presentation<Word>&           p,
-                  std::initializer_list<Letter> lhop,
-                  std::initializer_list<Letter> rhop) {
+    [[deprecated]] void add_rule(Presentation<Word>&           p,
+                                 std::initializer_list<Letter> lhop,
+                                 std::initializer_list<Letter> rhop) {
       p.add_rule(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
@@ -2308,7 +2308,7 @@ namespace libsemigroups {
     void add_idempotent_rules_no_checks(Presentation<Word>& p,
                                         Word const&         letters) {
       for (auto x : letters) {
-        add_rule_no_checks(p, {x, x}, {x});
+        add_rule_no_checks(p, Word({x, x}), Word({x}));
       }
     }
 
@@ -2349,7 +2349,7 @@ namespace libsemigroups {
     void add_involution_rules_no_checks(Presentation<Word>& p,
                                         Word const&         letters) {
       for (auto x : letters) {
-        add_rule_no_checks(p, {x, x}, {});
+        add_rule_no_checks(p, Word({x, x}), Word({}));
       }
     }
 
