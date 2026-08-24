@@ -2796,7 +2796,7 @@ namespace libsemigroups {
                                          "addab",
                                          "d",
                                          "bb"}));
-    presentation::replace_word_with_new_generator(p, "ccc");
+    presentation::replace_word_with_new_generator(p, "ccc"s);
     REQUIRE(presentation::length(p) == 34);
 
     ToddCoxeter tc(twosided, p);
@@ -2851,7 +2851,7 @@ namespace libsemigroups {
                                            "adab",
                                            "d",
                                            "bbbb"}));
-      presentation::replace_word_with_new_generator(p, "ccc");
+      presentation::replace_word_with_new_generator(p, "ccc"s);
       REQUIRE(presentation::length(p) == 33);
       tc.init(twosided, p);
     }
@@ -2894,7 +2894,7 @@ namespace libsemigroups {
                                          "e",
                                          "baca"}));
 
-    presentation::replace_word_with_new_generator(p, "bbb");
+    presentation::replace_word_with_new_generator(p, "bbb"s);
     REQUIRE(presentation::length(p) == 32);
 
     ToddCoxeter tc(twosided, p);
@@ -3882,7 +3882,7 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     REQUIRE(presentation::longest_subword_reducing_length(p) == "xy");
-    presentation::replace_word_with_new_generator(p, "xy");
+    presentation::replace_word_with_new_generator(p, "xy"s);
 
     ToddCoxeter tc(twosided, p);
 
@@ -3967,9 +3967,9 @@ namespace libsemigroups {
 
     SECTION("preprocess + Felsch") {
       REQUIRE(presentation::longest_subword_reducing_length(p) == "xy");
-      presentation::replace_word_with_new_generator(p, "xy");
+      presentation::replace_word_with_new_generator(p, "xy"s);
       REQUIRE(presentation::longest_subword_reducing_length(p) == "axY");
-      presentation::replace_word_with_new_generator(p, "axY");
+      presentation::replace_word_with_new_generator(p, "axY"s);
       REQUIRE(presentation::length(p) == 140);
       ToddCoxeter tc(onesided, p);
       todd_coxeter::add_generating_pair(tc, "xy", ""s);

@@ -1616,7 +1616,7 @@ namespace libsemigroups {
     //! \returns The new generator added.
     //!
     //! \throws LibsemigroupsException if \p w is empty.
-    typename Presentation<std::string>::native_letter_type
+    [[deprecated]] typename Presentation<std::string>::native_letter_type
     replace_word_with_new_generator(Presentation<std::string>& p,
                                     char const*                w);
 
