@@ -93,15 +93,15 @@ namespace libsemigroups {
 
     auto p = to<Presentation<std::string>>(S);
     // Alphabet too small
-    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abc"),
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abc"s),
                       LibsemigroupsException);
     // Alphabet contains repeats
-    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abca"),
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abca"s),
                       LibsemigroupsException);
     // Alphabet too long
-    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abcde"),
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abcde"s),
                       LibsemigroupsException);
-    presentation::change_alphabet(p, "abcd");
+    presentation::change_alphabet(p, "abcd"s);
 
     REQUIRE(p.alphabet().size() == 4);
     REQUIRE(p.rules[8] == "ba");
@@ -249,7 +249,7 @@ namespace libsemigroups {
     p.throw_if_bad_alphabet_or_rules();
     REQUIRE(p.contains_empty_word());
     auto q = v4::to<Presentation<std::string>>(p);
-    presentation::change_alphabet(q, "abc");
+    presentation::change_alphabet(q, "abc"s);
     REQUIRE(q.alphabet() == "abc");
     REQUIRE(q.contains_empty_word());
     REQUIRE(q.rules == std::vector<std::string>({"abc", "ab", "abc", ""}));
@@ -271,7 +271,7 @@ namespace libsemigroups {
     REQUIRE(q.alphabet() == "ab");
     REQUIRE(q.rules == std::vector<std::string>({"ab", ""}));
     q = v4::to<Presentation<std::string>>(p);
-    presentation::change_alphabet(q, "xy");
+    presentation::change_alphabet(q, "xy"s);
     REQUIRE(q.alphabet() == "xy");
     REQUIRE(q.rules == std::vector<std::string>({"xy", ""}));
   }

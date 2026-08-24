@@ -4750,7 +4750,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 11);
     auto p = to<Presentation<std::string>>(S);
     REQUIRE(p.alphabet() == "abcd");
-    presentation::change_alphabet(p, "xyXY");
+    presentation::change_alphabet(p, "xyXY"s);
     REQUIRE(p.alphabet() == "xyXY");
     auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
     while (it != p.rules.end()) {

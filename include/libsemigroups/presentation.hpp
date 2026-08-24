@@ -1829,8 +1829,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the size of `p.alphabet()` and
     //! \p new_alphabet do not agree.
-    inline void change_alphabet(Presentation<std::string>& p,
-                                char const*                new_alphabet) {
+    [[deprecated]] inline void change_alphabet(Presentation<std::string>& p,
+                                               char const* new_alphabet) {
       change_alphabet(p, std::string(new_alphabet));
     }
 
