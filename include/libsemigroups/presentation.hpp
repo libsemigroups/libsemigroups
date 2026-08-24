@@ -2986,10 +2986,10 @@ namespace libsemigroups {
     // NOLINTNEXTLINE(whitespace/line_length)
     //! \deprecated_alias_warning{balance_no_checks(Presentation<Word>&, Word const&, Word const&)}
     // clang-format on
-    static inline void balance_no_checks
-        [[deprecated]] (Presentation<std::string>& p,
-                        char const*                letters,
-                        char const*                inverses) {
+    [[deprecated]] static inline void
+    balance_no_checks(Presentation<std::string>& p,
+                      char const*                letters,
+                      char const*                inverses) {
       balance_no_checks(p, std::string(letters), std::string(inverses));
     }
 
