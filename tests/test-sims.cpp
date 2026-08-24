@@ -1282,8 +1282,8 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("aAbB"s);
     presentation::add_inverse_rules(p, "AaBb");
-    presentation::add_rule(p, "aaa"s, "");
-    presentation::add_rule(p, "baBBBABA"s, "");
+    presentation::add_rule(p, "aaa"s, ""s);
+    presentation::add_rule(p, "baBBBABA"s, ""s);
     Sims1 C;
     C.presentation(v4::to<Presentation<word_type>>(p));
     REQUIRE(C.number_of_congruences(10) == 3);
@@ -2010,8 +2010,8 @@ namespace libsemigroups {
     p.alphabet("aAbB"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "AaBb");
-    presentation::add_rule(p, "ab"s, "");
-    presentation::add_rule(p, "abb"s, "");
+    presentation::add_rule(p, "ab"s, ""s);
+    presentation::add_rule(p, "abb"s, ""s);
 
     Sims1 S;
     S.presentation(v4::to<Presentation<word_type>>(p));
@@ -2215,8 +2215,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xy"s);
-    presentation::add_rule(p, "xx"s, "");
-    presentation::add_rule(p, "yyy"s, "");
+    presentation::add_rule(p, "xx"s, ""s);
+    presentation::add_rule(p, "yyy"s, ""s);
     presentation::add_rule(p, "xyxyxyxy"s, "yyxyyxyyx"s);
     Sims1 S;
     S.presentation(v4::to<Presentation<word_type>>(p)).number_of_threads(1);
@@ -3211,8 +3211,8 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABCabc");
     presentation::add_rule(p, pow("a"s, 6), pow("A"s, 5));
-    presentation::add_rule(p, pow("b"s, 5), "");
-    presentation::add_rule(p, pow("c"s, 4), "");
+    presentation::add_rule(p, pow("b"s, 5), ""s);
+    presentation::add_rule(p, pow("c"s, 4), ""s);
     presentation::add_rule(p, "aca"s, "CAC"s);
     presentation::add_rule(p, "bc"s, "cbb"s);
     presentation::add_rule(p, "Aba"s, "aab"s);
@@ -3239,9 +3239,9 @@ namespace libsemigroups {
     p.alphabet("abcABC"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABCabc");
-    presentation::add_rule(p, pow("b"s, 5), "");
-    presentation::add_rule(p, pow("c"s, 4), "");
-    presentation::add_rule(p, "acacac"s, "");
+    presentation::add_rule(p, pow("b"s, 5), ""s);
+    presentation::add_rule(p, pow("c"s, 4), ""s);
+    presentation::add_rule(p, "acacac"s, ""s);
     presentation::add_rule(p, "bc"s, "cbb"s);
     presentation::add_rule(p, "ba"s, "aaab"s);
     presentation::add_rule(p, "aabba"s, "bb"s);
@@ -3452,25 +3452,25 @@ namespace libsemigroups {
     p.alphabet("abcdef"s);
     presentation::add_rule(p, "a^2"_p, "a"s);
     presentation::add_rule(p, "b^2"_p, "b"s);
-    presentation::add_rule(p, "ba"_p, "ab");
+    presentation::add_rule(p, "ba"_p, "ab"s);
     presentation::add_rule(p, "c^2"_p, "c"s);
-    presentation::add_rule(p, "ca"_p, "ac");
-    presentation::add_rule(p, "cb"_p, "bc");
+    presentation::add_rule(p, "ca"_p, "ac"s);
+    presentation::add_rule(p, "cb"_p, "bc"s);
     presentation::add_rule(p, "d^2"_p, "d"s);
-    presentation::add_rule(p, "da"_p, "ad");
-    presentation::add_rule(p, "db"_p, "bd");
-    presentation::add_rule(p, "dc"_p, "cd");
+    presentation::add_rule(p, "da"_p, "ad"s);
+    presentation::add_rule(p, "db"_p, "bd"s);
+    presentation::add_rule(p, "dc"_p, "cd"s);
     presentation::add_rule(p, "e^2"_p, "e"s);
-    presentation::add_rule(p, "ea"_p, "ae");
-    presentation::add_rule(p, "eb"_p, "be");
-    presentation::add_rule(p, "ec"_p, "ce");
-    presentation::add_rule(p, "ed"_p, "de");
+    presentation::add_rule(p, "ea"_p, "ae"s);
+    presentation::add_rule(p, "eb"_p, "be"s);
+    presentation::add_rule(p, "ec"_p, "ce"s);
+    presentation::add_rule(p, "ed"_p, "de"s);
     presentation::add_rule(p, "f^2"_p, "f"s);
-    presentation::add_rule(p, "fa"_p, "af");
-    presentation::add_rule(p, "fb"_p, "bf");
-    presentation::add_rule(p, "fc"_p, "cf");
-    presentation::add_rule(p, "fd"_p, "df");
-    presentation::add_rule(p, "fe"_p, "ef");
+    presentation::add_rule(p, "fa"_p, "af"s);
+    presentation::add_rule(p, "fb"_p, "bf"s);
+    presentation::add_rule(p, "fc"_p, "cf"s);
+    presentation::add_rule(p, "fd"_p, "df"s);
+    presentation::add_rule(p, "fe"_p, "ef"s);
     Sims1 s(v4::to<Presentation<word_type>>(p));
 
     // NOTE: Never ran to completion, there should be a non-zero number of
@@ -3585,9 +3585,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xy"s);
-    presentation::add_rule(p, "xx"s, "");
-    presentation::add_rule(p, "yyy"s, "");
-    presentation::add_rule(p, "xyxyxyxyxyxyxy"s, "");
+    presentation::add_rule(p, "xx"s, ""s);
+    presentation::add_rule(p, "yyy"s, ""s);
+    presentation::add_rule(p, "xyxyxyxyxyxyxy"s, ""s);
     Sims2 S(v4::to<Presentation<word_type>>(p));
     // Smallest non-trivial homomorphic image has size 168, see
     // https://mathoverflow.net/questions/180231/
@@ -3646,8 +3646,8 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("xyXY"s);
     // NOTE: This presentation for the Heineken monoid is wrong
-    presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxyX"s, "");
-    presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyxY"s, "");
+    presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxyX"s, ""s);
+    presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyxY"s, ""s);
     // REQUIRE(presentation::to_gap_string(p, "S") == "");
     Sims2 S(v4::to<Presentation<word_type>>(p));
     sims::add_included_pair(S, 0_w, 2_w);
@@ -4031,12 +4031,12 @@ namespace libsemigroups {
     p.alphabet("abcdz"s);
     p.contains_empty_word(true);
     presentation::add_zero_rules(p, 'z');
-    presentation::add_rule(p, "ac"s, "");
-    presentation::add_rule(p, "db"s, "");
-    presentation::add_rule(p, "dc"s, "");
+    presentation::add_rule(p, "ac"s, ""s);
+    presentation::add_rule(p, "db"s, ""s);
+    presentation::add_rule(p, "dc"s, ""s);
     // n = 3
-    presentation::add_rule(p, "dab"s, "");
-    presentation::add_rule(p, "da^2b"_p, "");
+    presentation::add_rule(p, "dab"s, ""s);
+    presentation::add_rule(p, "da^2b"_p, ""s);
     presentation::add_rule(p, "a^3b"_p, "z"s);
 
     Sims2 s(v4::to<Presentation<word_type>>(p));
@@ -4064,17 +4064,17 @@ namespace libsemigroups {
     p.alphabet("abcdz"s);
     p.contains_empty_word(true);
     presentation::add_zero_rules(p, 'z');
-    presentation::add_rule(p, "ac"s, "");
-    presentation::add_rule(p, "db"s, "");
-    presentation::add_rule(p, "dc"s, "");
+    presentation::add_rule(p, "ac"s, ""s);
+    presentation::add_rule(p, "db"s, ""s);
+    presentation::add_rule(p, "dc"s, ""s);
     // n = 8
-    presentation::add_rule(p, "dab"s, "");
-    presentation::add_rule(p, "da^2b"_p, "");
-    presentation::add_rule(p, "da^3b"_p, "");
-    presentation::add_rule(p, "da^4b"_p, "");
-    presentation::add_rule(p, "da^5b"_p, "");
-    presentation::add_rule(p, "da^6b"_p, "");
-    presentation::add_rule(p, "da^7b"_p, "");
+    presentation::add_rule(p, "dab"s, ""s);
+    presentation::add_rule(p, "da^2b"_p, ""s);
+    presentation::add_rule(p, "da^3b"_p, ""s);
+    presentation::add_rule(p, "da^4b"_p, ""s);
+    presentation::add_rule(p, "da^5b"_p, ""s);
+    presentation::add_rule(p, "da^6b"_p, ""s);
+    presentation::add_rule(p, "da^7b"_p, ""s);
     presentation::add_rule(p, "a^8b"_p, "z"s);
 
     Sims2 s(v4::to<Presentation<word_type>>(p));

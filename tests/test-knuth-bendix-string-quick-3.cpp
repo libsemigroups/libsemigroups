@@ -68,15 +68,15 @@ namespace libsemigroups {
     p.alphabet("ABCabc"s);
     p.contains_empty_word(true);
 
-    presentation::add_rule(p, "aA"s, "");
-    presentation::add_rule(p, "Aa"s, "");
-    presentation::add_rule(p, "bB"s, "");
-    presentation::add_rule(p, "Bb"s, "");
-    presentation::add_rule(p, "cC"s, "");
-    presentation::add_rule(p, "Cc"s, "");
-    presentation::add_rule(p, "aa"s, "");
-    presentation::add_rule(p, "bbb"s, "");
-    presentation::add_rule(p, "abaBaBabaBab"s, "");
+    presentation::add_rule(p, "aA"s, ""s);
+    presentation::add_rule(p, "Aa"s, ""s);
+    presentation::add_rule(p, "bB"s, ""s);
+    presentation::add_rule(p, "Bb"s, ""s);
+    presentation::add_rule(p, "cC"s, ""s);
+    presentation::add_rule(p, "Cc"s, ""s);
+    presentation::add_rule(p, "aa"s, ""s);
+    presentation::add_rule(p, "bbb"s, ""s);
+    presentation::add_rule(p, "abaBaBabaBab"s, ""s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -116,9 +116,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "aaa"s, "a");
-    presentation::add_rule(p, "bbbbbbb"s, "b");
-    presentation::add_rule(p, "abaabba"s, "bb");
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "bbbbbbb"s, "b"s);
+    presentation::add_rule(p, "abaabba"s, "bb"s);
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
     REQUIRE(!kb.rewriting_system().confluent());
@@ -142,10 +142,10 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("ab"s);
-    presentation::add_rule(p, "aaa"s, "a");
-    presentation::add_rule(p, "bbbb"s, "b");
-    presentation::add_rule(p, "bababababab"s, "b");
-    presentation::add_rule(p, "baab"s, "babbbab");
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "bbbb"s, "b"s);
+    presentation::add_rule(p, "bababababab"s, "b"s);
+    presentation::add_rule(p, "baab"s, "babbbab"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -182,17 +182,17 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abc"s);
 
-    presentation::add_rule(p, "ab"s, "ba");
-    presentation::add_rule(p, "ac"s, "ca");
-    presentation::add_rule(p, "aa"s, "a");
-    presentation::add_rule(p, "ac"s, "a");
-    presentation::add_rule(p, "ca"s, "a");
-    presentation::add_rule(p, "bb"s, "bb");
-    presentation::add_rule(p, "bc"s, "cb");
-    presentation::add_rule(p, "bbb"s, "b");
-    presentation::add_rule(p, "bc"s, "b");
-    presentation::add_rule(p, "cb"s, "b");
-    presentation::add_rule(p, "a"s, "b");
+    presentation::add_rule(p, "ab"s, "ba"s);
+    presentation::add_rule(p, "ac"s, "ca"s);
+    presentation::add_rule(p, "aa"s, "a"s);
+    presentation::add_rule(p, "ac"s, "a"s);
+    presentation::add_rule(p, "ca"s, "a"s);
+    presentation::add_rule(p, "bb"s, "bb"s);
+    presentation::add_rule(p, "bc"s, "cb"s);
+    presentation::add_rule(p, "bbb"s, "b"s);
+    presentation::add_rule(p, "bc"s, "b"s);
+    presentation::add_rule(p, "cb"s, "b"s);
+    presentation::add_rule(p, "a"s, "b"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(knuth_bendix::contains(kb, "aa", "a"));
@@ -238,8 +238,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
 
-    presentation::add_rule(p, "abcd"s, "ce");
-    presentation::add_rule(p, "df"s, "dg");
+    presentation::add_rule(p, "abcd"s, "ce"s);
+    presentation::add_rule(p, "df"s, "dg"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(is_obviously_infinite(kb));
@@ -272,8 +272,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefgh"s);
 
-    presentation::add_rule(p, "abcd"s, "ce");
-    presentation::add_rule(p, "df"s, "hd");
+    presentation::add_rule(p, "abcd"s, "ce"s);
+    presentation::add_rule(p, "df"s, "hd"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.process_pending_rules();
@@ -305,8 +305,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefgh"s);
 
-    presentation::add_rule(p, "afh"s, "bgh");
-    presentation::add_rule(p, "hc"s, "d");
+    presentation::add_rule(p, "afh"s, "bgh"s);
+    presentation::add_rule(p, "hc"s, "d"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(is_obviously_infinite(kb));
@@ -338,9 +338,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefghij"s);
 
-    presentation::add_rule(p, "afh"s, "bgh");
-    presentation::add_rule(p, "hc"s, "de");
-    presentation::add_rule(p, "ei"s, "j");
+    presentation::add_rule(p, "afh"s, "bgh"s);
+    presentation::add_rule(p, "hc"s, "de"s);
+    presentation::add_rule(p, "ei"s, "j"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(is_obviously_infinite(kb));
@@ -371,10 +371,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcdefghijkl"s);
 
-    presentation::add_rule(p, "afh"s, "bgh");
-    presentation::add_rule(p, "hc"s, "de");
-    presentation::add_rule(p, "ei"s, "j");
-    presentation::add_rule(p, "fhk"s, "ghl");
+    presentation::add_rule(p, "afh"s, "bgh"s);
+    presentation::add_rule(p, "hc"s, "de"s);
+    presentation::add_rule(p, "ei"s, "j"s);
+    presentation::add_rule(p, "fhk"s, "ghl"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
@@ -405,7 +405,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("cab"s);  // runs forever with a different order
-    presentation::add_rule(p, "aabc"s, "acba");
+    presentation::add_rule(p, "aabc"s, "acba"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.process_pending_rules();
@@ -435,9 +435,9 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("ABabc"s);
     presentation::add_inverse_rules(p, "abABc");
-    presentation::add_rule(p, "aaaa"s, "AAA");
-    presentation::add_rule(p, "bb"s, "B");
-    presentation::add_rule(p, "BA"s, "c");
+    presentation::add_rule(p, "aaaa"s, "AAA"s);
+    presentation::add_rule(p, "bb"s, "B"s);
+    presentation::add_rule(p, "BA"s, "c"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
@@ -468,10 +468,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcAB"s);
 
-    presentation::add_rule(p, "aaaa"s, "AAA");
-    presentation::add_rule(p, "bb"s, "B");
-    presentation::add_rule(p, "abababa"s, "BABABAB");
-    presentation::add_rule(p, "BA"s, "c");
+    presentation::add_rule(p, "aaaa"s, "AAA"s);
+    presentation::add_rule(p, "bb"s, "B"s);
+    presentation::add_rule(p, "abababa"s, "BABABAB"s);
+    presentation::add_rule(p, "BA"s, "c"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -498,12 +498,12 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abc"s);
 
-    presentation::add_rule(p, "bbbbbbb"s, "b");
-    presentation::add_rule(p, "ccccc"s, "c");
-    presentation::add_rule(p, "bccba"s, "bccb");
-    presentation::add_rule(p, "bccbc"s, "bccb");
-    presentation::add_rule(p, "bbcbca"s, "bbcbc");
-    presentation::add_rule(p, "bbcbcb"s, "bbcbc");
+    presentation::add_rule(p, "bbbbbbb"s, "b"s);
+    presentation::add_rule(p, "ccccc"s, "c"s);
+    presentation::add_rule(p, "bccba"s, "bccb"s);
+    presentation::add_rule(p, "bccbc"s, "bccb"s);
+    presentation::add_rule(p, "bbcbca"s, "bbcbc"s);
+    presentation::add_rule(p, "bbcbcb"s, "bbcbc"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.process_pending_rules();
@@ -553,9 +553,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "aaa"s, "a");
-    presentation::add_rule(p, "ab"s, "ba");
-    presentation::add_rule(p, "aa"s, "a");
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "ab"s, "ba"s);
+    presentation::add_rule(p, "aa"s, "a"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     kb.run();
@@ -576,7 +576,7 @@ namespace libsemigroups {
     p.alphabet("aAbB"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "AaBb");
-    presentation::add_rule(p, "Bab"s, "a");
+    presentation::add_rule(p, "Bab"s, "a"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
@@ -618,12 +618,12 @@ namespace libsemigroups {
 
     presentation::add_inverse_rules(p, "abcdyfABCDYF");
 
-    presentation::add_rule(p, "aCAd"s, "");
-    presentation::add_rule(p, "bfBY"s, "");
-    presentation::add_rule(p, "cyCD"s, "");
-    presentation::add_rule(p, "dFDa"s, "");
-    presentation::add_rule(p, "ybYA"s, "");
-    presentation::add_rule(p, "fCFB"s, "");
+    presentation::add_rule(p, "aCAd"s, ""s);
+    presentation::add_rule(p, "bfBY"s, ""s);
+    presentation::add_rule(p, "cyCD"s, ""s);
+    presentation::add_rule(p, "dFDa"s, ""s);
+    presentation::add_rule(p, "ybYA"s, ""s);
+    presentation::add_rule(p, "fCFB"s, ""s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -712,8 +712,8 @@ namespace libsemigroups {
 
     presentation::add_inverse_rules(p, "aBb");
 
-    presentation::add_rule(p, "bb"s, "B");
-    presentation::add_rule(p, "BaBa"s, "abab");
+    presentation::add_rule(p, "bb"s, "B"s);
+    presentation::add_rule(p, "BaBa"s, "abab"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -778,9 +778,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "aaa"s, "a");
-    presentation::add_rule(p, "bbbbb"s, "b");
-    presentation::add_rule(p, "abbbabb"s, "bba");
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "bbbbb"s, "b"s);
+    presentation::add_rule(p, "abbbabb"s, "bba"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -834,9 +834,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "aaa"s, "a");
-    presentation::add_rule(p, "bbbbbbbbb"s, "b");
-    presentation::add_rule(p, "abbbbbabb"s, "bba");
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "bbbbbbbbb"s, "b"s);
+    presentation::add_rule(p, "abbbbbabb"s, "bba"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.clear_stack_interval(0);
@@ -887,11 +887,11 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "aaa"s, "a");
-    presentation::add_rule(p, "bbbb"s, "b");
-    presentation::add_rule(p, "abbba"s, "aa");
-    presentation::add_rule(p, "baab"s, "bb");
-    presentation::add_rule(p, "aabababababa"s, "aa");
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "bbbb"s, "b"s);
+    presentation::add_rule(p, "abbba"s, "aa"s);
+    presentation::add_rule(p, "baab"s, "bb"s);
+    presentation::add_rule(p, "aabababababa"s, "aa"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -912,11 +912,11 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcde"s);
 
-    presentation::add_rule(p, "ab"s, "c");
-    presentation::add_rule(p, "bc"s, "d");
-    presentation::add_rule(p, "cd"s, "e");
-    presentation::add_rule(p, "de"s, "a");
-    presentation::add_rule(p, "ea"s, "b");
+    presentation::add_rule(p, "ab"s, "c"s);
+    presentation::add_rule(p, "bc"s, "d"s);
+    presentation::add_rule(p, "cd"s, "e"s);
+    presentation::add_rule(p, "de"s, "a"s);
+    presentation::add_rule(p, "ea"s, "b"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -942,12 +942,12 @@ namespace libsemigroups {
     p.alphabet("abcdef"s);
     p.contains_empty_word(true);
 
-    presentation::add_rule(p, "ab"s, "");
-    presentation::add_rule(p, "bc"s, "d");
-    presentation::add_rule(p, "cd"s, "e");
-    presentation::add_rule(p, "de"s, "f");
-    presentation::add_rule(p, "ef"s, "a");
-    presentation::add_rule(p, "fa"s, "b");
+    presentation::add_rule(p, "ab"s, ""s);
+    presentation::add_rule(p, "bc"s, "d"s);
+    presentation::add_rule(p, "cd"s, "e"s);
+    presentation::add_rule(p, "de"s, "f"s);
+    presentation::add_rule(p, "ef"s, "a"s);
+    presentation::add_rule(p, "fa"s, "b"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -972,11 +972,11 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abc"s);
 
-    presentation::add_rule(p, "aaaa"s, "a");
-    presentation::add_rule(p, "bbbb"s, "b");
-    presentation::add_rule(p, "cccc"s, "c");
-    presentation::add_rule(p, "abab"s, "aaa");
-    presentation::add_rule(p, "bcbc"s, "bbb");
+    presentation::add_rule(p, "aaaa"s, "a"s);
+    presentation::add_rule(p, "bbbb"s, "b"s);
+    presentation::add_rule(p, "cccc"s, "c"s);
+    presentation::add_rule(p, "abab"s, "aaa"s);
+    presentation::add_rule(p, "bcbc"s, "bbb"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -1003,16 +1003,16 @@ namespace libsemigroups {
     p.alphabet("ABab"s);
     p.contains_empty_word(true);
 
-    presentation::add_rule(p, "aa"s, "");
-    presentation::add_rule(p, "bbbbb"s, "");
-    presentation::add_rule(p, "babababa"s, "");
-    presentation::add_rule(p, "bB"s, "");
-    presentation::add_rule(p, "Bb"s, "");
-    presentation::add_rule(p, "BabBab"s, "");
-    presentation::add_rule(p, "aBBabbaBBabb"s, "");
-    presentation::add_rule(p, "aBBBabbbaBBBabbb"s, "");
-    presentation::add_rule(p, "aA"s, "");
-    presentation::add_rule(p, "Aa"s, "");
+    presentation::add_rule(p, "aa"s, ""s);
+    presentation::add_rule(p, "bbbbb"s, ""s);
+    presentation::add_rule(p, "babababa"s, ""s);
+    presentation::add_rule(p, "bB"s, ""s);
+    presentation::add_rule(p, "Bb"s, ""s);
+    presentation::add_rule(p, "BabBab"s, ""s);
+    presentation::add_rule(p, "aBBabbaBBabb"s, ""s);
+    presentation::add_rule(p, "aBBBabbbaBBBabbb"s, ""s);
+    presentation::add_rule(p, "aA"s, ""s);
+    presentation::add_rule(p, "Aa"s, ""s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -1042,13 +1042,13 @@ namespace libsemigroups {
     p.alphabet("abAB"s);
     p.contains_empty_word(true);
 
-    presentation::add_rule(p, "aaaaaaa"s, "");
-    presentation::add_rule(p, "bb"s, "ababab");
-    presentation::add_rule(p, "bb"s, "aaaabaaaabaaaabaaaab");
-    presentation::add_rule(p, "aA"s, "");
-    presentation::add_rule(p, "Aa"s, "");
-    presentation::add_rule(p, "bB"s, "");
-    presentation::add_rule(p, "Bb"s, "");
+    presentation::add_rule(p, "aaaaaaa"s, ""s);
+    presentation::add_rule(p, "bb"s, "ababab"s);
+    presentation::add_rule(p, "bb"s, "aaaabaaaabaaaabaaaab"s);
+    presentation::add_rule(p, "aA"s, ""s);
+    presentation::add_rule(p, "Aa"s, ""s);
+    presentation::add_rule(p, "bB"s, ""s);
+    presentation::add_rule(p, "Bb"s, ""s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -1079,7 +1079,7 @@ namespace libsemigroups {
     p.alphabet("ab"s);
     p.contains_empty_word(true);
 
-    presentation::add_rule(p, "ab"s, "");
+    presentation::add_rule(p, "ab"s, ""s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.process_pending_rules();
@@ -1107,12 +1107,12 @@ namespace libsemigroups {
     p.alphabet("abc"s);
     p.contains_empty_word(true);
 
-    presentation::add_rule(p, "aba"s, "baa");
-    presentation::add_rule(p, "bba"s, "bab");
-    presentation::add_rule(p, "ac"s, "");
-    presentation::add_rule(p, "ca"s, "");
-    presentation::add_rule(p, "bc"s, "");
-    presentation::add_rule(p, "cb"s, "");
+    presentation::add_rule(p, "aba"s, "baa"s);
+    presentation::add_rule(p, "bba"s, "bab"s);
+    presentation::add_rule(p, "ac"s, ""s);
+    presentation::add_rule(p, "ca"s, ""s);
+    presentation::add_rule(p, "bc"s, ""s);
+    presentation::add_rule(p, "cb"s, ""s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -1137,8 +1137,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "aa"s, "a");
-    presentation::add_rule(p, "bb"s, "b");
+    presentation::add_rule(p, "aa"s, "a"s);
+    presentation::add_rule(p, "bb"s, "b"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.process_pending_rules();
@@ -1162,9 +1162,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "aaa"s, "a");
-    presentation::add_rule(p, "bbbb"s, "b");
-    presentation::add_rule(p, "ababababab"s, "aa");
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "bbbb"s, "b"s);
+    presentation::add_rule(p, "ababababab"s, "aa"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -1201,9 +1201,9 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
 
-    presentation::add_rule(p, "aaa"s, "a");
-    presentation::add_rule(p, "bbbb"s, "b");
-    presentation::add_rule(p, "abababab"s, "aa");
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "bbbb"s, "b"s);
+    presentation::add_rule(p, "abababab"s, "aa"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -1241,8 +1241,8 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abc"s);
-    presentation::add_rule(p, "a"s, "cc");
-    presentation::add_rule(p, "c"s, "bab");
+    presentation::add_rule(p, "a"s, "cc"s);
+    presentation::add_rule(p, "c"s, "bab"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
@@ -1275,8 +1275,8 @@ namespace libsemigroups {
     p.alphabet("bABa"s);
     p.contains_empty_word(true);
     presentation::add_inverse_rules(p, "BabA");
-    presentation::add_rule(p, "Abba"s, "BB");
-    presentation::add_rule(p, "Baab"s, "AA");
+    presentation::add_rule(p, "Abba"s, "BB"s);
+    presentation::add_rule(p, "Baab"s, "AA"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     knuth_bendix::TietzeExplorer       dora(kb);
@@ -1341,7 +1341,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
     p.contains_empty_word(true);
-    presentation::add_rule(p, "abbab"s, "baabb");
+    presentation::add_rule(p, "abbab"s, "baabb"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     knuth_bendix::TietzeExplorer       dora(kb);
@@ -1429,11 +1429,11 @@ namespace libsemigroups {
     p.alphabet("abcd"s);
     p.contains_empty_word(true);
 
-    presentation::add_rule(p, "ab"s, "");
-    presentation::add_rule(p, "ba"s, "");
-    presentation::add_rule(p, "cd"s, "");
-    presentation::add_rule(p, "dc"s, "");
-    presentation::add_rule(p, "ca"s, "ac");
+    presentation::add_rule(p, "ab"s, ""s);
+    presentation::add_rule(p, "ba"s, ""s);
+    presentation::add_rule(p, "cd"s, ""s);
+    presentation::add_rule(p, "dc"s, ""s);
+    presentation::add_rule(p, "ca"s, "ac"s);
 
     KnuthBendix<std::string, detail::RewritingSystemTrie<WtLenLexCmp>> kb(
         twosided, p, std::vector<size_t>({2, 2, 2, 2}));

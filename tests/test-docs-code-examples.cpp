@@ -227,10 +227,10 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abcd"s);
-    presentation::add_rule_no_checks(p, "ab"s, "");
-    presentation::add_rule_no_checks(p, "ba"s, "");
-    presentation::add_rule_no_checks(p, "cd"s, "");
-    presentation::add_rule_no_checks(p, "dc"s, "");
+    presentation::add_rule_no_checks(p, "ab"s, ""s);
+    presentation::add_rule_no_checks(p, "ba"s, ""s);
+    presentation::add_rule_no_checks(p, "cd"s, ""s);
+    presentation::add_rule_no_checks(p, "dc"s, ""s);
 
     KnuthBendix kb(congruence_kind::twosided, p);
 
