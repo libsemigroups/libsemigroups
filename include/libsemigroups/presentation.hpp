@@ -205,6 +205,36 @@ namespace libsemigroups {
       return _alphabet.letters();
     }
 
+    //! \brief Set the alphabet without checking the rules.
+    //!
+    //! Replaces the alphabet by \p new_alphabet without checking whether the
+    //! rules are words over the new alphabet. The rules are not re-written.
+    //!
+    //! \param new_alphabet the replacement alphabet.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p new_alphabet contains duplicate
+    //! letters.
+    //!
+    //! \warning
+    //! If \p new_alphabet is passed as an rvalue, it must not refer to an
+    //! element of `rules`; such a rule would be left in a moved-from state.
+    //!
+    //! \sa
+    //! * \ref presentation::change_alphabet
+    //! * \ref throw_if_bad_alphabet_or_rules
+    Presentation& alphabet_no_checks(native_word_type const& new_alphabet) {
+      _alphabet.init(new_alphabet);
+      return *this;
+    }
+
+    //! \copydoc alphabet_no_checks(native_word_type const&)
+    Presentation& alphabet_no_checks(native_word_type&& new_alphabet) {
+      _alphabet.init(std::move(new_alphabet));
+      return *this;
+    }
+
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     [[nodiscard]] Alphabet<native_word_type> const&
     alphabet_v4() const noexcept {
@@ -1901,6 +1931,38 @@ namespace libsemigroups {
     // TODO(later) any function that touches the alphabet requires a version of
     // InversePresentation, which also touches the inverses
 
+    //! \brief Change or re-order the alphabet without checking.
+    //!
+    //! This function replaces `p.alphabet()` with \p new_alphabet and
+    //! re-writes the rules in \p p using the new alphabet.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param new_alphabet the replacement alphabet.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does not validate its arguments. The presentation must be
+    //! valid, the old and new alphabets must have the same size, and the new
+    //! alphabet must not contain duplicate letters. If \p new_alphabet is
+    //! passed as an rvalue, it must not refer to an element of `p.rules`.
+    template <typename Word>
+    void change_alphabet_no_checks(Presentation<Word>& p, Word&& new_alphabet);
+
+    //! \copydoc change_alphabet_no_checks(Presentation<Word>&, Word&&)
+    template <typename Word>
+    void change_alphabet_no_checks(Presentation<Word>& p,
+                                   Word const&         new_alphabet) {
+      // Call the rvalue ref version
+      change_alphabet_no_checks(p, Word(new_alphabet));
+    }
+
+    //! \copydoc change_alphabet(Presentation<Word>&, Word const&)
+    template <typename Word>
+    void change_alphabet(Presentation<Word>& p, Word&& new_alphabet);
+
     //! \brief Change or re-order the alphabet.
     //!
     //! This function replaces `p.alphabet()` with \p new_alphabet, where
@@ -1912,10 +1974,18 @@ namespace libsemigroups {
     //! \param p the presentation.
     //! \param new_alphabet the replacement alphabet.
     //!
-    //! \throws LibsemigroupsException if the size of `p.alphabet()` and
-    //! \p new_alphabet do not agree.
+    //! \throws LibsemigroupsException if:
+    //! * \ref Presentation::throw_if_bad_alphabet_or_rules throws on the
+    //!   initial presentation;
+    //! * the size of `p.alphabet()` and \p new_alphabet do not agree;
+    //! * \p new_alphabet contains duplicate letters; or
+    //! * \p new_alphabet is passed as an rvalue and refers to an element of
+    //!   `p.rules`.
     template <typename Word>
-    void change_alphabet(Presentation<Word>& p, Word const& new_alphabet);
+    void change_alphabet(Presentation<Word>& p, Word const& new_alphabet) {
+      // Call the rvalue ref version
+      change_alphabet(p, Word(new_alphabet));
+    }
 
     //! \brief Change or re-order the alphabet.
     //!
@@ -3710,7 +3780,7 @@ namespace libsemigroups {
 
     //! \brief Set the inverse of each letter in the alphabet.
     //!
-    //! Set the inverse of each letter in the alphabet.
+    //! This function sets the inverse of each letter in the alphabet.
     //!
     //! \param w a word containing the inverses.
     //!
@@ -3724,6 +3794,9 @@ namespace libsemigroups {
     //! check that the letters in \p w belong to the alphabet, nor does it add
     //! new letters to the alphabet.
     InversePresentation& inverses_no_checks(word_type const& w);
+
+    //! \copydoc inverses_no_checks(word_type const&)
+    InversePresentation& inverses_no_checks(word_type&& w);
 
     //! \brief Set the inverse of each letter in the alphabet.
     //!
@@ -3853,6 +3926,61 @@ namespace libsemigroups {
     //! on the initial presentation.
     template <typename Word>
     void normalize_alphabet(InversePresentation<Word>& p);
+
+    //! \brief Change or re-order the alphabet without checking.
+    //!
+    //! This function replaces `p.alphabet()` with \p new_alphabet and
+    //! re-writes the rules and inverses in \p p using the new alphabet.
+    //!
+    //! \tparam Word the type of the words in the inverse presentation.
+    //! \param p the inverse presentation.
+    //! \param new_alphabet the replacement alphabet.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does not validate its arguments. The inverse presentation
+    //! must be valid, the old and new alphabets must have the same size, and
+    //! the new alphabet must not contain duplicate letters. If \p new_alphabet
+    //! is passed as an rvalue, it must not refer to an element of `p.rules`.
+    template <typename Word>
+    void change_alphabet_no_checks(InversePresentation<Word>& p,
+                                   Word&&                     new_alphabet);
+
+    //! \copydoc change_alphabet_no_checks(InversePresentation<Word>&, Word&&)
+    template <typename Word>
+    void change_alphabet_no_checks(InversePresentation<Word>& p,
+                                   Word const&                new_alphabet) {
+      change_alphabet_no_checks(p, Word(new_alphabet));
+    }
+
+    //! \copydoc change_alphabet(InversePresentation<Word>&, Word const&)
+    template <typename Word>
+    void change_alphabet(InversePresentation<Word>& p, Word&& new_alphabet);
+
+    //! \brief Change or re-order the alphabet.
+    //!
+    //! This function replaces `p.alphabet()` with \p new_alphabet, where
+    //! possible, and re-writes the rules and inverses in the presentation using
+    //! the new alphabet.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the inverse presentation.
+    //! \param new_alphabet the replacement alphabet.
+    //!
+    //! \throws LibsemigroupsException if:
+    //! * \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses
+    //!   throws on the initial presentation;
+    //! * the size of `p.alphabet()` and \p new_alphabet do not agree;
+    //! * \p new_alphabet contains duplicate letters; or
+    //! * \p new_alphabet is passed as an rvalue and refers to an element of
+    //!   `p.rules`.
+    template <typename Word>
+    void change_alphabet(InversePresentation<Word>& p,
+                         Word const&                new_alphabet) {
+      change_alphabet(p, Word(new_alphabet));
+    }
   }  // namespace presentation
 
   //! \ingroup presentations_group
@@ -3998,7 +4126,8 @@ namespace libsemigroups {
 
     template <typename Result, typename Word, typename Func>
     auto to(InversePresentation<Word> const& ip, Func&& f) -> std::enable_if_t<
-        std::is_same_v<InversePresentation<typename Result::word_type>, Result>,
+        std::is_same_v<InversePresentation<typename Result::native_word_type>,
+                       Result>,
         Result>;
 
     ////////////////////////////////////////////////////////////////////////

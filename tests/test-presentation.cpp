@@ -1724,6 +1724,61 @@ namespace libsemigroups {
     presentation::change_alphabet(p, "xyt"s);
     REQUIRE(p.rules == std::vector<std::string>({"t", "xtxxtx", "t", "yx"}));
     REQUIRE(p.alphabet() == "xyt");
+
+    p.alphabet("ab"s);
+    p.rules = {"ba"s, "a"s};
+    REQUIRE_EXCEPTION_MSG(
+        presentation::change_alphabet(p, std::move(p.rules[0])),
+        "the new alphabet \"ba\" cannot be one of the rules of the "
+        "presentation, but it is item 0 in the rules");
+    REQUIRE(p.alphabet() == "ab");
+    REQUIRE(p.rules == std::vector<std::string>({"ba", "a"}));
+
+    p.rules = {"a"s, "ba"s};
+    REQUIRE_EXCEPTION_MSG(
+        presentation::change_alphabet(p, std::move(p.rules[1])),
+        "the new alphabet \"ba\" cannot be one of the rules of the "
+        "presentation, but it is item 1 in the rules");
+    REQUIRE(p.alphabet() == "ab");
+    REQUIRE(p.rules == std::vector<std::string>({"a", "ba"}));
+
+    Presentation<std::string> q;
+    std::string               alphabet = "ab";
+    REQUIRE(&q.alphabet_no_checks(alphabet) == &q);
+    REQUIRE(alphabet == "ab");
+    q.rules = {"ab"s, "ba"s};
+
+    std::string new_alphabet = "xy";
+    presentation::change_alphabet_no_checks(q, new_alphabet);
+    REQUIRE(new_alphabet == "xy");
+    REQUIRE(q.alphabet() == "xy");
+    REQUIRE(q.rules == std::vector<std::string>({"xy", "yx"}));
+
+    presentation::change_alphabet_no_checks(q, "ab"s);
+    REQUIRE(q.alphabet() == "ab");
+    REQUIRE(q.rules == std::vector<std::string>({"ab", "ba"}));
+
+    new_alphabet = "yx";
+    presentation::change_alphabet(q, new_alphabet);
+    REQUIRE(new_alphabet == "yx");
+    REQUIRE(q.alphabet() == "yx");
+    REQUIRE(q.rules == std::vector<std::string>({"yx", "xy"}));
+
+    presentation::change_alphabet(q, "yx"s);
+    REQUIRE(q.alphabet() == "yx");
+    REQUIRE(q.rules == std::vector<std::string>({"yx", "xy"}));
+
+    REQUIRE(&q.alphabet_no_checks("ab"s) == &q);
+    REQUIRE(q.alphabet() == "ab");
+    REQUIRE_THROWS_AS(q.alphabet_no_checks("aa"s), LibsemigroupsException);
+    REQUIRE(q.alphabet() == "ab");
+
+    Presentation<std::string> r;
+    r.alphabet("ab"s);
+    r.rules = {"ba"s, "a"s};
+    presentation::change_alphabet(r, r.rules[0]);
+    REQUIRE(r.alphabet() == "ba");
+    REQUIRE(r.rules == std::vector<std::string>({"ab", "b"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
@@ -3192,6 +3247,78 @@ namespace libsemigroups {
     REQUIRE(q.alphabet() == word_type({0, 1}));
     REQUIRE(q.inverses() == word_type({1, 0}));
     REQUIRE(q.rules == std::vector<word_type>({lhs, rhs, lhs, rhs}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "068",
+                          "change_alphabet",
+                          "[quick][presentation]") {
+    auto                             rg = ReportGuard(false);
+    InversePresentation<std::string> p;
+    p.alphabet("102345");
+    p.inverses("013254");
+    presentation::add_rule(p, "102"s, "345"s);
+
+    std::string new_alphabet = "012345";
+    presentation::change_alphabet(p, new_alphabet);
+
+    REQUIRE(new_alphabet == "012345");
+    REQUIRE(p.alphabet() == "012345");
+    REQUIRE(p.rules == std::vector<std::string>({"012", "345"}));
+    REQUIRE(p.inverses() == "103254");
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
+
+    presentation::change_alphabet(p, "abcdef"s);
+
+    REQUIRE(p.alphabet() == "abcdef");
+    REQUIRE(p.rules == std::vector<std::string>({"abc", "def"}));
+    REQUIRE(p.inverses() == "badcfe");
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
+
+    presentation::change_alphabet(p, "abcdef"s);
+    REQUIRE(p.alphabet() == "abcdef");
+    REQUIRE(p.rules == std::vector<std::string>({"abc", "def"}));
+    REQUIRE(p.inverses() == "badcfe");
+
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abc"s),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abcdea"s),
+                      LibsemigroupsException);
+    REQUIRE(p.alphabet() == "abcdef");
+    REQUIRE(p.rules == std::vector<std::string>({"abc", "def"}));
+    REQUIRE(p.inverses() == "badcfe");
+
+    InversePresentation<std::string> q;
+    q.alphabet("ab");
+    q.inverses("ba");
+    q.rules = {"ba"s, "a"s};
+    REQUIRE_EXCEPTION_MSG(
+        presentation::change_alphabet(q, std::move(q.rules[0])),
+        "the new alphabet \"ba\" cannot be one of the rules of the "
+        "presentation, but it is item 0 in the rules");
+    REQUIRE(q.alphabet() == "ab");
+    REQUIRE(q.rules == std::vector<std::string>({"ba", "a"}));
+    REQUIRE(q.inverses() == "ba");
+
+    q.rules      = {"ab"s, "ba"s};
+    new_alphabet = "xy";
+    presentation::change_alphabet_no_checks(q, new_alphabet);
+    REQUIRE(new_alphabet == "xy");
+    REQUIRE(q.alphabet() == "xy");
+    REQUIRE(q.rules == std::vector<std::string>({"xy", "yx"}));
+    REQUIRE(q.inverses() == "yx");
+
+    presentation::change_alphabet_no_checks(q, "ab"s);
+    REQUIRE(q.alphabet() == "ab");
+    REQUIRE(q.rules == std::vector<std::string>({"ab", "ba"}));
+    REQUIRE(q.inverses() == "ba");
+
+    q.inverses_no_checks("aa"s);
+    REQUIRE_THROWS_AS(presentation::change_alphabet(q, "xy"s),
+                      LibsemigroupsException);
+    REQUIRE(q.alphabet() == "ab");
+    REQUIRE(q.rules == std::vector<std::string>({"ab", "ba"}));
+    REQUIRE(q.inverses() == "aa");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
