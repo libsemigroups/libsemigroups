@@ -4367,6 +4367,23 @@ namespace libsemigroups {
                          Word const&                new_alphabet) {
       change_alphabet(p, Word(new_alphabet));
     }
+
+    //! \brief Remove redundant generators.
+    //!
+    //! Removes generators that occur alone on one side of a rule and not on
+    //! the other side. If a removed generator is not self-inverse, then its
+    //! inverse is also removed and replaced by the inverse of the other side of
+    //! the rule.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the inverse presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses throws
+    //! on the initial presentation, or if the number of words in `p.rules` is
+    //! odd.
+    template <typename Word>
+    void remove_redundant_generators(InversePresentation<Word>& p);
   }  // namespace presentation
 
   //! \ingroup presentations_group
