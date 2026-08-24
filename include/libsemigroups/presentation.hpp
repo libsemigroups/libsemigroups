@@ -1680,9 +1680,9 @@ namespace libsemigroups {
     //! \param replacement the replacement word.
     //!
     //! \throws LibsemigroupsException if `existing` is empty.
-    inline void replace_subword(Presentation<std::string>& p,
-                                char const*                existing,
-                                char const*                replacement) {
+    [[deprecated]] inline void replace_subword(Presentation<std::string>& p,
+                                               char const* existing,
+                                               char const* replacement) {
       replace_subword(p,
                       existing,
                       existing + std::strlen(existing),
