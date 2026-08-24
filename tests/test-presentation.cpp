@@ -1693,26 +1693,26 @@ namespace libsemigroups {
     p.alphabet("ab"s);
     presentation::add_rule(p, "ba"s, "abaaabaa"s);
     presentation::replace_word_with_new_generator(p, "ba"s);
-    presentation::change_alphabet(p, "abc");
+    presentation::change_alphabet(p, "abc"s);
     REQUIRE(p.rules == std::vector<std::string>({"c", "acaaca", "c", "ba"}));
     REQUIRE(p.alphabet() == "abc");
     REQUIRE_NOTHROW(p.throw_if_bad_alphabet_or_rules());
     // Alphabet wrong size
-    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "ab"),
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "ab"s),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "aab"),
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "aab"s),
                       LibsemigroupsException);
     REQUIRE(p.alphabet() == "abc");
     REQUIRE(p.rules == std::vector<std::string>({"c", "acaaca", "c", "ba"}));
-    presentation::change_alphabet(p, "bac");
+    presentation::change_alphabet(p, "bac"s);
     REQUIRE(p.rules == std::vector<std::string>({"c", "bcbbcb", "c", "ab"}));
     REQUIRE(p.alphabet() == "bac");
 
-    presentation::change_alphabet(p, "xyz");
+    presentation::change_alphabet(p, "xyz"s);
     REQUIRE(p.rules == std::vector<std::string>({"z", "xzxxzx", "z", "yx"}));
     REQUIRE(p.alphabet() == "xyz");
 
-    presentation::change_alphabet(p, "xyt");
+    presentation::change_alphabet(p, "xyt"s);
     REQUIRE(p.rules == std::vector<std::string>({"t", "xtxxtx", "t", "yx"}));
     REQUIRE(p.alphabet() == "xyt");
   }

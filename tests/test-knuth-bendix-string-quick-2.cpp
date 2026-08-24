@@ -1622,7 +1622,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bcd"s, "cd"s);
     presentation::add_rule(p, "cbc"s, "c"s);
     presentation::add_rule(p, "cdb"s, "cd"s);
-    presentation::change_alphabet(p, "cbade");
+    presentation::change_alphabet(p, "cbade"s);
 
     presentation::add_rule(p, "ea"s, "ae"s);
     presentation::add_rule(p, "be"s, "eb"s);
