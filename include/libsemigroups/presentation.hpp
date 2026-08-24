@@ -1068,9 +1068,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
-    void add_rule(Presentation<std::string>& p,
-                  std::string const&         lhop,
-                  char const*                rhop);
+    [[deprecated]] void add_rule(Presentation<std::string>& p,
+                                 std::string const&         lhop,
+                                 char const*                rhop);
 
     //! \brief Add a rule to the presentation by `char const*` and
     //! `string const &`.
@@ -1084,9 +1084,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
-    void add_rule(Presentation<std::string>& p,
-                  char const*                lhop,
-                  std::string const&         rhop);
+    [[deprecated]] void add_rule(Presentation<std::string>& p,
+                                 char const*                lhop,
+                                 std::string const&         rhop);
 
     //! \brief Add a rule to the presentation by `string const&` and
     //! `char const*`.
@@ -1104,9 +1104,9 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of the
     //! presentation are performed.
-    void add_rule_no_checks(Presentation<std::string>& p,
-                            std::string const&         lhop,
-                            char const*                rhop);
+    [[deprecated]] void add_rule_no_checks(Presentation<std::string>& p,
+                                           std::string const&         lhop,
+                                           char const*                rhop);
 
     //! \brief Add a rule to the presentation by `char const*` and
     //! `string const&`.
@@ -1124,9 +1124,9 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of the
     //! presentation are performed.
-    void add_rule_no_checks(Presentation<std::string>& p,
-                            char const*                lhop,
-                            std::string const&         rhop);
+    [[deprecated]] void add_rule_no_checks(Presentation<std::string>& p,
+                                           char const*                lhop,
+                                           std::string const&         rhop);
 
     //! \brief Add a rule to the presentation by `initializer_list`.
     //!

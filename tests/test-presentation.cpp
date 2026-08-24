@@ -2996,7 +2996,7 @@ namespace libsemigroups {
                "my_var := F / R;\n");
 
     p.contains_empty_word(true);
-    presentation::add_rule(p, "ryb"s, "");
+    presentation::add_rule(p, "ryb"s, ""s);
     REQUIRE(presentation::to_gap_string(p, var_name)
             == "F := FreeMonoid(\"b\", \"y\", \"r\");\n"
                "AssignGeneratorVariables(F);;\n"
@@ -3232,7 +3232,7 @@ namespace libsemigroups {
     p.alphabet("abc"s).contains_empty_word(true);
     presentation::add_rule(p, "aaaaa"s, "bbb"s);
     presentation::add_rule(p, "cba"s, "aaccaca"s);
-    presentation::add_rule(p, "aba"s, "");
+    presentation::add_rule(p, "aba"s, ""s);
     REQUIRE(presentation::longest_subword_reducing_length(p) == "");
   }
 
@@ -3306,7 +3306,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ccc"s, "ccccac"s);
     presentation::add_rule(p, "aaa"s, "bbbbcb"s);
     presentation::add_rule(p, "ccc"s, "ccccbc"s);
-    presentation::add_rule(p, "bbb"s, "");
+    presentation::add_rule(p, "bbb"s, ""s);
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "ccc");
   }
@@ -3351,7 +3351,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("abcABC"s).contains_empty_word(true);
     presentation::add_rule(p, "aBCbac"s, "bACbaacA"s);
-    presentation::add_rule(p, "accAABab"s, "");
+    presentation::add_rule(p, "accAABab"s, ""s);
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "");
   }
@@ -4045,16 +4045,16 @@ End;)xxx");
     presentation::add_rule_no_checks(p, "(a,b^2)^6"_p, ""s);
     presentation::add_rule_no_checks(p, "(a,bab)^3"_p, ""s);
     presentation::add_rule_no_checks(
-        p, "ababab^2aBaB^2aBab^2abab(aB^2)^4"_p, "");
+        p, "ababab^2aBaB^2aBab^2abab(aB^2)^4"_p, ""s);
     presentation::add_rule_no_checks(
-        p, "ab(ab^2(aB^2)^2)^2ab^2abab^2(aBab^2)^2"_p, "");
+        p, "ab(ab^2(aB^2)^2)^2ab^2abab^2(aBab^2)^2"_p, ""s);
     presentation::add_rule_no_checks(
-        p, "abab(ab^2)^2ab(aB)^2ab(ab^2)^2ababaB^2aBaB^2"_p, "");
+        p, "abab(ab^2)^2ab(aB)^2ab(ab^2)^2ababaB^2aBaB^2"_p, ""s);
     presentation::add_rule_no_checks(p, "(ababab^2aBaB^2ababaB)^2"_p, ""s);
     presentation::add_rule_no_checks(
-        p, "(ababab^2)^2ababaBabab(ab^2)^3ababaB"_p, "");
+        p, "(ababab^2)^2ababaBabab(ab^2)^3ababaB"_p, ""s);
     presentation::add_rule_no_checks(
-        p, "ab(abab^2)^3ababab^2aBabaB^2abaBab^2"_p, "");
+        p, "ab(abab^2)^3ababab^2aBabaB^2abaBab^2"_p, ""s);
 
     REQUIRE(presentation::to_ace_string(p) == R"xxx(Group: a, b;
 wo: 4g; # workspace size, adjust as necessary

@@ -142,7 +142,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     if constexpr (std::is_same_v<W1, std::string>) {
       presentation::add_rule_no_checks(p, "abc"s, "ab"s);
-      presentation::add_rule_no_checks(p, "abc"s, "");
+      presentation::add_rule_no_checks(p, "abc"s, ""s);
     } else {
       presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
       presentation::add_rule_no_checks(p, {0, 1, 2}, {});
@@ -197,7 +197,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     if constexpr (std::is_same_v<W1, std::string>) {
       presentation::add_rule_no_checks(p, "abc"s, "ab"s);
-      presentation::add_rule_no_checks(p, "abc"s, "");
+      presentation::add_rule_no_checks(p, "abc"s, ""s);
     } else {
       presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
       presentation::add_rule_no_checks(p, {0, 1, 2}, {});
@@ -295,7 +295,7 @@ namespace libsemigroups {
     ip.contains_empty_word(true);
     if constexpr (std::is_same_v<W1, std::string>) {
       presentation::add_rule_no_checks(ip, "abc"s, "ab"s);
-      presentation::add_rule_no_checks(ip, "abc"s, "");
+      presentation::add_rule_no_checks(ip, "abc"s, ""s);
       ip.inverses_no_checks("cba");
     } else {
       presentation::add_rule_no_checks(ip, {0, 1, 2}, {0, 1});
