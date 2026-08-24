@@ -21,6 +21,22 @@
 
 namespace libsemigroups {
 
+  namespace detail {
+    template <typename Word>
+    void throw_if_alphabet_is_rule(Presentation<Word> const& p,
+                                   Word const&               alphabet) {
+      for (auto it = p.rules.begin(); it != p.rules.end(); ++it) {
+        if (&*it == &alphabet) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the new alphabet {} cannot be one of the rules of the "
+              "presentation, but it is item {} in the rules",
+              detail::to_printable(alphabet),
+              std::distance(p.rules.begin(), it));
+        }
+      }
+    }
+  }  // namespace detail
+
   template <typename Word>
   Presentation<Word>::Presentation()
       : _alphabet(), _contains_empty_word(false), rules() {}
@@ -584,35 +600,36 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void change_alphabet(Presentation<Word>& p, Word const& new_alphabet) {
-      using native_letter_type =
-          typename Presentation<Word>::native_letter_type;
+    void change_alphabet_no_checks(Presentation<Word>& p, Word&& new_alphabet) {
+      if (p.alphabet() == new_alphabet) {
+        return;
+      }
 
+      LIBSEMIGROUPS_ASSERT(new_alphabet.size() == p.alphabet_v4().size());
+
+      // Do this first so that it throws if new_alphabet contains repeats
+      for (auto& rule : p.rules) {
+        std::for_each(
+            rule.begin(), rule.end(), [&p, &new_alphabet](auto& letter) {
+              letter = new_alphabet[p.index_no_checks(letter)];
+            });
+      }
+      p.alphabet_no_checks(std::move(new_alphabet));
+    }
+
+    template <typename Word>
+    void change_alphabet(Presentation<Word>& p, Word&& new_alphabet) {
       p.throw_if_bad_alphabet_or_rules();
 
       if (new_alphabet.size() != p.alphabet().size()) {
         LIBSEMIGROUPS_EXCEPTION("expected an alphabet of size {}, found {}",
                                 p.alphabet().size(),
                                 new_alphabet.size());
-      } else if (p.alphabet() == new_alphabet) {
-        return;
       }
+      throw_if_contains_duplicates(new_alphabet, "alphabet");
+      detail::throw_if_alphabet_is_rule(p, new_alphabet);
 
-      std::map<native_letter_type, native_letter_type> old_to_new;
-      for (size_t i = 0; i < p.alphabet().size(); ++i) {
-        old_to_new.emplace(p.letter_no_checks(i), new_alphabet[i]);
-      }
-      // Do this first so that it throws if new_alphabet contains repeats
-      p.alphabet(new_alphabet);
-      for (auto& rule : p.rules) {
-        std::for_each(
-            rule.begin(), rule.end(), [&old_to_new](native_letter_type& x) {
-              x = old_to_new.find(x)->second;
-            });
-      }
-#ifdef LIBSEMIGROUPS_DEBUG
-      p.throw_if_bad_alphabet_or_rules();
-#endif
+      change_alphabet_no_checks(p, std::move(new_alphabet));
     }
 
     template <typename Iterator>
@@ -1260,10 +1277,14 @@ namespace libsemigroups {
   template <typename Word>
   InversePresentation<Word>&
   InversePresentation<Word>::inverses_no_checks(word_type const& w) {
-    // TODO(later) maybe don't throw_if_bad_alphabet_or_rules here but only in
-    // the throw_if_bad_alphabet_or_rules function to be written. Set the
-    // alphabet to include the inverses
     _inverses = w;
+    return *this;
+  }
+
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::inverses_no_checks(word_type&& w) {
+    _inverses = std::move(w);
     return *this;
   }
 
@@ -1320,6 +1341,40 @@ namespace libsemigroups {
       p.throw_if_bad_alphabet_rules_or_inverses();
 #endif
     }
+
+    void change_alphabet_no_checks(InversePresentation<Word>& p,
+                                   Word&&                     new_alphabet) {
+      LIBSEMIGROUPS_ASSERT(new_alphabet.size() == p.alphabet_v4().size());
+      if (p.alphabet() == new_alphabet) {
+        return;
+      }
+
+      Word new_inverses(p.inverses());
+      std::for_each(new_inverses.begin(),
+                    new_inverses.end(),
+                    [&p, &new_alphabet](auto& letter) {
+                      letter = new_alphabet[p.index_no_checks(letter)];
+                    });
+
+      change_alphabet_no_checks(static_cast<Presentation<Word>&>(p),
+                                std::move(new_alphabet));
+      p.inverses_no_checks(std::move(new_inverses));
+    }
+
+    template <typename Word>
+    void change_alphabet(InversePresentation<Word>& p, Word&& new_alphabet) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+
+      if (new_alphabet.size() != p.alphabet().size()) {
+        LIBSEMIGROUPS_EXCEPTION("expected an alphabet of size {}, found {}",
+                                p.alphabet().size(),
+                                new_alphabet.size());
+      }
+      throw_if_contains_duplicates(new_alphabet, "alphabet");
+      detail::throw_if_alphabet_is_rule(p, new_alphabet);
+
+      change_alphabet_no_checks(p, std::move(new_alphabet));
+    }
   }  // namespace presentation
 
   namespace v4 {
@@ -1340,7 +1395,8 @@ namespace libsemigroups {
       // Must call p.throw_if_bad_alphabet_or_rules otherwise f(val) may
       // segfault if val is not in the alphabet
       p.throw_if_bad_alphabet_or_rules();
-      // TODO(v4) use Alphabet object here instead of duplicating the code from
+      // TODO(v4) use Alphabet object here instead of duplicating the code
+      // from
       // ...
       Result result;
       result.contains_empty_word(p.contains_empty_word());
@@ -1368,12 +1424,13 @@ namespace libsemigroups {
 
     template <typename Result, typename Word, typename Func>
     auto to(InversePresentation<Word> const& ip, Func&& f) -> std::enable_if_t<
-        std::is_same_v<InversePresentation<typename Result::word_type>, Result>,
+        std::is_same_v<InversePresentation<typename Result::native_word_type>,
+                       Result>,
         Result> {
       static_assert(
           std::is_invocable_v<std::decay_t<Func>,
                               typename InversePresentation<Word>::letter_type>);
-      using WordOutput = typename Result::word_type;
+      using WordOutput = typename Result::native_word_type;
 
       if (!ip.inverses().empty()) {
         // If ip.contains_empty_word() is false, and the inverses are not set
