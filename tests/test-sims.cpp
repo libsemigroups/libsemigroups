@@ -3221,7 +3221,7 @@ namespace libsemigroups {
     presentation::balance_no_checks(p, "abcABC"s, "ABCabc"s);
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aa");
-    presentation::replace_word_with_new_generator(p, "aa");
+    presentation::replace_word_with_new_generator(p, "aa"s);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 7'920);
@@ -3249,7 +3249,7 @@ namespace libsemigroups {
     presentation::sort_rules(p);
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "bb");
-    presentation::replace_word_with_new_generator(p, "bb");
+    presentation::replace_word_with_new_generator(p, "bb"s);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 7'920);

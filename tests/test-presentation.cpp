@@ -1692,7 +1692,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "ba"s, "abaaabaa"s);
-    presentation::replace_word_with_new_generator(p, "ba");
+    presentation::replace_word_with_new_generator(p, "ba"s);
     presentation::change_alphabet(p, "abc");
     REQUIRE(p.rules == std::vector<std::string>({"c", "acaaca", "c", "ba"}));
     REQUIRE(p.alphabet() == "abc");
@@ -1802,7 +1802,7 @@ namespace libsemigroups {
     p.alphabet("a"s);
     presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaa"s, "a"s);
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaaaa");
-    presentation::replace_word_with_new_generator(p, "aaaaaa");
+    presentation::replace_word_with_new_generator(p, "aaaaaa"s);
     REQUIRE(presentation::longest_subword_reducing_length(p) == "");
     REQUIRE(p.rules == std::vector<std::string>({"bbba", "a", "b", "aaaaaa"}));
     REQUIRE(presentation::length(p) == 12);
