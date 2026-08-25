@@ -3812,6 +3812,10 @@ namespace libsemigroups {
       return Presentation<Word>::alphabet();
     }
 
+    [[nodiscard]] Alphabet<Word> const& alphabet_v4() const noexcept {
+      return Presentation<Word>::alphabet_v4();
+    }
+
     //! \copydoc Presentation<Word>::alphabet(size_type)
     InversePresentation& alphabet(size_type n) {
       Presentation<Word>::alphabet(n);
