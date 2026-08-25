@@ -117,7 +117,7 @@ namespace libsemigroups {
     using node_type = word_graph_type::node_type;
 
     //! The word type of \ref presentation_type.
-    using native_word_type = typename PresentationType::word_type;
+    using native_word_type = typename PresentationType::native_word_type;
 
    private:
     class StephenGraph;  // forward decl
@@ -512,8 +512,8 @@ namespace libsemigroups {
     //! alphabet of `s.presentation()`, then bad things will happen.
     template <typename PresentationType>
     [[nodiscard]] bool
-    accepts_no_checks(Stephen<PresentationType>&                  s,
-                      typename PresentationType::word_type const& w);
+    accepts_no_checks(Stephen<PresentationType>&                         s,
+                      typename PresentationType::native_word_type const& w);
 
     //! \brief Check if a word is accepted by a Stephen instance.
     //!
@@ -552,8 +552,9 @@ namespace libsemigroups {
     //!
     //! \cong_common_warn_undecidable{Stephen}.
     template <typename PresentationType>
-    [[nodiscard]] bool accepts(Stephen<PresentationType>&                  s,
-                               typename PresentationType::word_type const& w);
+    [[nodiscard]] bool
+    accepts(Stephen<PresentationType>&                         s,
+            typename PresentationType::native_word_type const& w);
 
     //! \brief Check if a word is a left factor of Stephen::word.
     //!
@@ -585,9 +586,9 @@ namespace libsemigroups {
     //! `s.presentation()`. If the letters of \p w do not belong to the
     //! alphabet of `s.presentation()`, then bad things will happen.
     template <typename PresentationType>
-    [[nodiscard]] bool
-    is_left_factor_no_checks(Stephen<PresentationType>&                  s,
-                             typename PresentationType::word_type const& w);
+    [[nodiscard]] bool is_left_factor_no_checks(
+        Stephen<PresentationType>&                         s,
+        typename PresentationType::native_word_type const& w);
 
     //! \brief Check if a word is a left factor of Stephen::word.
     //!
@@ -618,8 +619,8 @@ namespace libsemigroups {
     //! \cong_common_warn_undecidable{Stephen}.
     template <typename PresentationType>
     [[nodiscard]] bool
-    is_left_factor(Stephen<PresentationType>&                  s,
-                   typename PresentationType::word_type const& w);
+    is_left_factor(Stephen<PresentationType>&                         s,
+                   typename PresentationType::native_word_type const& w);
 
     //! \brief Returns a range object containing all words accepted by a
     //! Stephen instance in lenlex order.
@@ -651,7 +652,7 @@ namespace libsemigroups {
     template <typename PresentationType>
     [[nodiscard]] auto words_accepted(Stephen<PresentationType>& s) {
       using rx::operator|;
-      using native_word_type = typename PresentationType::word_type;
+      using native_word_type = typename PresentationType::native_word_type;
       auto result            = detail::stephen::words_accepted(s);
       if constexpr (std::is_same_v<native_word_type, word_type>) {
         // NOTE: piping "result" into rx::transform below isn't necessary if
@@ -715,7 +716,7 @@ namespace libsemigroups {
     template <typename PresentationType>
     [[nodiscard]] auto left_factors(Stephen<PresentationType>& s) {
       using rx::operator|;
-      using native_word_type = typename PresentationType::word_type;
+      using native_word_type = typename PresentationType::native_word_type;
       auto result            = detail::stephen::left_factors(s);
       if constexpr (std::is_same_v<native_word_type, word_type>) {
         // See the comments above in words_accepted about why we don't use
@@ -972,8 +973,8 @@ namespace libsemigroups {
     // TODO(v4) should have return type void for consistency
     template <typename PresentationType>
     Stephen<PresentationType>&
-    set_word(Stephen<PresentationType>&                  s,
-             typename PresentationType::word_type const& w) {
+    set_word(Stephen<PresentationType>&                         s,
+             typename PresentationType::native_word_type const& w) {
       return s.set_word(w.cbegin(), w.cend());
     }
 

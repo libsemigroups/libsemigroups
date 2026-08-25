@@ -506,7 +506,7 @@ namespace libsemigroups {
       auto copy_p = p;
       presentation::change_alphabet(
           copy_p,
-          rx::seq<typename Presentation<Word>::letter_type>(0)
+          rx::seq<typename Presentation<Word>::native_letter_type>(0)
               | rx::take(p.alphabet().size()) | rx::to_vector());
       IsObviouslyInfinite ioi(copy_p.alphabet().size());
       ioi.add_rules_no_checks(
