@@ -1591,7 +1591,7 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       template <typename Node>
       [[nodiscard]] bool is_connected(WordGraph<Node> const& wg) {
@@ -2126,7 +2126,7 @@ namespace libsemigroups {
       //! \returns A std::unordered_set consisting of all the nodes in the word
       //! graph \p wg that are reachable from \p source.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       //!
       //! \warning The arguments are not checked, and in particular it is
@@ -2156,7 +2156,7 @@ namespace libsemigroups {
       //! \returns A std::unordered_set consisting of all the nodes in the word
       //! graph \p wg that are reachable from \p source.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       //!
       //! \warning The arguments are not checked, and in particular it is
@@ -2232,7 +2232,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p source is out of bounds (greater
       //! than or equal to WordGraph::number_of_nodes).
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       // TODO(1) tests
       // TODO(1) version where std::unordered_set is passed by reference, or
@@ -2271,7 +2271,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p source is out of bounds (greater
       //! than or equal to WordGraphView::number_of_nodes).
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
       [[nodiscard]] size_t
@@ -2302,7 +2302,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p source is out of bounds (greater
       //! than or equal to WordGraph::number_of_nodes).
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
       [[nodiscard]] size_t
@@ -2331,7 +2331,7 @@ namespace libsemigroups {
       //! \returns The number of nodes in the word graph \p wg that are
       //! reachable from \p source.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       //!
       //! \warning The arguments are not checked, and in particular it is
@@ -2363,7 +2363,7 @@ namespace libsemigroups {
       //! \returns The number of nodes in the word graph \p wg that are
       //! reachable from \p source.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       //!
       //! \warning The arguments are not checked, and in particular it is
@@ -2523,7 +2523,7 @@ namespace libsemigroups {
       //! \param max_depth the maximum depth of the tree (defaults to
       //! \ref POSITIVE_INFINITY).
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       //!
       //! \warning The arguments are not checked, and in particular it is
@@ -2551,7 +2551,7 @@ namespace libsemigroups {
       //! \param max_depth the maximum depth of the tree (defaults to
       //! \ref POSITIVE_INFINITY).
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       //!
       //! \warning The arguments are not checked, and in particular it is
@@ -2585,7 +2585,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
       //! greater than or equal to WordGraphView::number_of_nodes.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
       void spanning_tree(WordGraphView<Node1> const& wg,
@@ -2612,7 +2612,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
       //! greater than or equal to WordGraph::number_of_nodes.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
       void spanning_tree(WordGraph<Node1> const& wg,
@@ -2639,7 +2639,7 @@ namespace libsemigroups {
       //!
       //! \returns A Forest object containing a spanning tree.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       //!
       //! \warning The arguments are not checked, and in particular it is
@@ -2668,7 +2668,7 @@ namespace libsemigroups {
       //!
       //! \returns A Forest object containing a spanning tree.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       //!
       //! \warning The arguments are not checked, and in particular it is
@@ -2703,7 +2703,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
       //! greater than or equal to WordGraphView::number_of_nodes.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
       [[nodiscard]] Forest spanning_tree(WordGraphView<Node1> const& wg,
@@ -2730,7 +2730,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
       //! greater than or equal to WordGraph::number_of_nodes.
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       template <typename Node1, typename Node2>
       [[nodiscard]] Forest spanning_tree(WordGraph<Node1> const& wg,
@@ -2760,7 +2760,7 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       // Not nodiscard because sometimes we just don't want the output
       //!
@@ -2826,7 +2826,7 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
+      //! \note If any target of any edge in the word graph \p wg is out of
       //! bounds, then this is ignored by this function.
       // Not nodiscard because sometimes we just don't want the output
       //!
