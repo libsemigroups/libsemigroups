@@ -192,8 +192,15 @@ namespace libsemigroups::detail {
       LIBSEMIGROUPS_ASSERT(rule1->state() == Rule::State::pending);
       LIBSEMIGROUPS_ASSERT(rule1->lhs() != rule1->rhs());
 
-      rewrite_no_reduce(rule1->lhs());
-      rewrite_no_reduce(rule1->rhs());
+      try {
+        rewrite_no_reduce(rule1->lhs());
+        rewrite_no_reduce(rule1->rhs());
+      } catch (LibsemigroupsException const&) {
+        // We do this so that the memory allocated for rule1 actually gets freed
+        // at some point.
+        Rules::pending_rules().push_back(rule1);
+        throw;
+      }
 
       // Check rule is non-trivial
       if (rule1->lhs() != rule1->rhs()) {
@@ -294,7 +301,6 @@ namespace libsemigroups::detail {
     size_t number_of_rewrites = 0;
 
     RuleLookup lookup;
-
     while (pos < v.size()) {
       LIBSEMIGROUPS_ASSERT(pos >= n - 1);
       ++pos;
@@ -618,8 +624,15 @@ namespace libsemigroups::detail {
         Rule* rule = Rules::pop_pending_rule();
         LIBSEMIGROUPS_ASSERT(rule->state() == Rule::State::pending);
         LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
-        rewrite_no_reduce(rule->lhs());
-        rewrite_no_reduce(rule->rhs());
+        try {
+          rewrite_no_reduce(rule->lhs());
+          rewrite_no_reduce(rule->rhs());
+        } catch (LibsemigroupsException const&) {
+          // We do this so that the memory allocated for rule1 actually gets
+          // freed at some point.
+          Rules::pending_rules().push_back(rule);
+          throw;
+        }
 
         if (rule->lhs() != rule->rhs()) {
           RewritingSystemBaseWithOrder_::reorder(rule);
