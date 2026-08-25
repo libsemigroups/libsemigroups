@@ -3941,7 +3941,49 @@ namespace libsemigroups {
     //! calling \ref throw_if_bad_inverses.
     InversePresentation& add_inverse(letter_type x);
 
-    // TODO remove_inverse??
+    //! \brief Remove \p x from the inverses without checking.
+    //!
+    //! Removes the first occurrence of \p x from the value returned by
+    //! \ref inverses. This function does not change the alphabet or the rules.
+    //! To keep the inverse presentation valid, this function should usually be
+    //! adjacent to a call to \ref remove_generator for the letter whose inverse
+    //! is \p x.
+    //!
+    //! \param x the inverse to remove.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the number of inverses.
+    //!
+    //! \warning
+    //! This function does not check its argument. The letter \p x must belong
+    //! to the inverses; otherwise the behaviour is undefined.
+    InversePresentation& remove_inverse_no_checks(letter_type x) {
+      _inverses.erase(std::find(_inverses.begin(), _inverses.end(), x));
+      return *this;
+    }
+
+    //! \brief Remove \p x from the inverses.
+    //!
+    //! Removes the first occurrence of \p x from the value returned by
+    //! \ref inverses. This function does not change the alphabet or the rules.
+    //! To keep the inverse presentation valid, this function should usually be
+    //! adjacent to a call to \ref remove_generator for the letter whose inverse
+    //! is \p x.
+    //!
+    //! \param x the inverse to remove.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to the inverses.
+    //!
+    //! \complexity
+    //! Linear in the number of inverses.
+    InversePresentation& remove_inverse(letter_type x);
 
     // TODO p.add_generator_and_inverse('c', 'C')
     // TODO p.remove_generator_and_inverse('c')

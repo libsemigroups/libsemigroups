@@ -4469,4 +4469,24 @@ End;)xxx");
     REQUIRE_EXCEPTION_MSG(p.add_inverse('c'),
                           "invalid letter 'c', valid letters are \"abAB\"");
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "104",
+                          "remove_inverse",
+                          "[quick][presentation]") {
+    InversePresentation<std::string> p;
+    p.alphabet("abAB"s)
+        .add_inverse('A')
+        .add_inverse('B')
+        .add_inverse('a')
+        .add_inverse('b');
+    REQUIRE(p.inverses() == "ABab"s);
+
+    p.remove_inverse('a');
+    REQUIRE(p.inverses() == "ABb"s);
+
+    REQUIRE_EXCEPTION_MSG(p.remove_inverse('a'),
+                          "the argument 'a' does not belong to the inverses "
+                          "\"ABb\" and cannot be removed");
+  }
 }  // namespace libsemigroups

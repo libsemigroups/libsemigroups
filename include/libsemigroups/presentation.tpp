@@ -1315,6 +1315,20 @@ namespace libsemigroups {
     return add_inverse_no_checks(x);
   }
 
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::remove_inverse(letter_type x) {
+    auto it = std::find(_inverses.begin(), _inverses.end(), x);
+    if (it == _inverses.end()) {
+      LIBSEMIGROUPS_EXCEPTION("the argument {} does not belong to the inverses "
+                              "{} and cannot be removed",
+                              detail::to_printable(x),
+                              detail::to_printable(_inverses));
+    }
+    _inverses.erase(it);
+    return *this;
+  }
+
   namespace presentation {
     template <typename Word>
     Word inverse_alphabet_no_checks(InversePresentation<Word> const& p) {
