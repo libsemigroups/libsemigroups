@@ -59,8 +59,23 @@ namespace libsemigroups {
 
      private:
       struct Settings {
-        size_t reduction_threshold = 128;
-        size_t max_rewriting_depth = POSITIVE_INFINITY;
+        size_t reduction_threshold;
+        size_t max_rewriting_depth;
+
+        Settings() : reduction_threshold(), max_rewriting_depth() {
+          init();
+        }
+
+        Settings(Settings const&)            = default;
+        Settings& operator=(Settings const&) = default;
+        Settings(Settings&&)                 = default;
+        Settings& operator=(Settings&&)      = default;
+
+        Settings& init() noexcept {
+          reduction_threshold = 128;
+          max_rewriting_depth = POSITIVE_INFINITY;
+          return *this;
+        }
       };
 
       mutable std::atomic<bool>                     _cached_confluent;
