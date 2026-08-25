@@ -4040,6 +4040,107 @@ namespace libsemigroups {
     template <typename Word>
     void normalize_alphabet(InversePresentation<Word>& p);
 
+    //! \brief Invert a word in-place without checking.
+    //!
+    //! Replaces \p word with its inverse according to the inverses specified
+    //! by \p p. More precisely, if `word` is \f$x_1 \cdots x_n\f$, then it is
+    //! replaced by \f$x_n^{-1} \cdots x_1^{-1}\f$.
+    //!
+    //! \tparam Word the type of the words in the inverse presentation.
+    //! \param p the inverse presentation specifying the inverse of every
+    //! letter.
+    //! \param word the word to invert.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::inverse throws.
+    //!
+    //! \warning
+    //! This function does not validate its arguments. The inverse presentation
+    //! must be valid and every letter in \p word must belong to its alphabet.
+    template <typename Word>
+    void invert_inplace_no_checks(InversePresentation<Word> const& p,
+                                  Word&                            word) {
+      std::reverse(word.begin(), word.end());
+      std::for_each(word.begin(), word.end(), [&p](auto& letter) {
+        // There's no inverse_no_checks, because we need to know the index of
+        // "letter" to know its inverse.
+        letter = p.inverse(letter);
+      });
+    }
+
+    //! \brief Invert a word in-place.
+    //!
+    //! Replaces \p word with its inverse according to the inverses specified
+    //! by \p p. More precisely, if `word` is \f$x_1 \cdots x_n\f$, then it is
+    //! replaced by \f$x_n^{-1} \cdots x_1^{-1}\f$.
+    //!
+    //! \tparam Word the type of the words in the inverse presentation.
+    //! \param p the inverse presentation specifying the inverse of every
+    //! letter.
+    //! \param word the word to invert.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses
+    //! throws, or if \p word contains a letter that does not belong to the
+    //! alphabet of \p p.
+    template <typename Word>
+    void invert_inplace(InversePresentation<Word> const& p, Word& word) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+      p.throw_if_letter_not_in_alphabet(word.cbegin(), word.cend());
+      invert_inplace_no_checks(p, word);
+    }
+
+    //! \brief Invert a word without checking.
+    //!
+    //! Returns the inverse of \p word according to the inverses specified by
+    //! \p p. More precisely, if `word` is \f$x_1 \cdots x_n\f$, then the
+    //! return value is \f$x_n^{-1} \cdots x_1^{-1}\f$.
+    //!
+    //! \tparam Word the type of the words in the inverse presentation.
+    //! \param p the inverse presentation specifying the inverse of every
+    //! letter.
+    //! \param word the word to invert.
+    //!
+    //! \returns The inverse of \p word.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::inverse throws.
+    //!
+    //! \warning
+    //! This function does not validate its arguments. The inverse presentation
+    //! must be valid and every letter in \p word must belong to its alphabet.
+    template <typename Word>
+    Word invert_no_checks(InversePresentation<Word> const& p,
+                          Word const&                      word) {
+      Word result(word);
+      invert_inplace_no_checks(p, result);
+      return result;
+    }
+
+    //! \brief Invert a word.
+    //!
+    //! Returns the inverse of \p word according to the inverses specified by
+    //! \p p. More precisely, if `word` is \f$x_1 \cdots x_n\f$, then the
+    //! return value is \f$x_n^{-1} \cdots x_1^{-1}\f$.
+    //!
+    //! \tparam Word the type of the words in the inverse presentation.
+    //! \param p the inverse presentation specifying the inverse of every
+    //! letter.
+    //! \param word the word to invert.
+    //!
+    //! \returns The inverse of \p word.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses
+    //! throws, or if \p word contains a letter that does not belong to the
+    //! alphabet of \p p.
+    template <typename Word>
+    Word invert(InversePresentation<Word> const& p, Word const& word) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+      p.throw_if_letter_not_in_alphabet(word.cbegin(), word.cend());
+      return invert_no_checks(p, word);
+    }
+
     //! \brief Change or re-order the alphabet without checking.
     //!
     //! This function replaces `p.alphabet()` with \p new_alphabet and

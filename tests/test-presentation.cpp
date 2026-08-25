@@ -2685,7 +2685,7 @@ namespace libsemigroups {
                           "meaningful exception messages",
                           "[quick][presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     {
       Presentation<std::string> p;
@@ -2821,7 +2821,7 @@ namespace libsemigroups {
                           "055",
                           "add_generator (std::string)",
                           "[quick][presentation]") {
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
     using literals::operator""_w;
 
     {
@@ -3325,8 +3325,8 @@ namespace libsemigroups {
                           "067",
                           "longest_subword_reducing_length #01",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
-    using literals::        operator""_w;
+    auto rg = ReportGuard(false);
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(p, 1212_w, 0_w);
@@ -3364,8 +3364,8 @@ namespace libsemigroups {
                           "070",
                           "longest_subword_reducing_length #04",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
-    using literals::        operator""_w;
+    auto rg = ReportGuard(false);
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(p, 00_w, 10_w);
@@ -3382,8 +3382,8 @@ namespace libsemigroups {
                           "071",
                           "longest_subword_reducing_length #05",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
-    using literals::        operator""_w;
+    auto rg = ReportGuard(false);
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(5).contains_empty_word(true);
     presentation::add_rule(p, 00_w, 10_w);
@@ -3401,8 +3401,8 @@ namespace libsemigroups {
                           "072",
                           "longest_subword_reducing_length #06",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
-    using literals::        operator""_w;
+    auto rg = ReportGuard(false);
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(6).contains_empty_word(true);
     presentation::add_rule(p, 00_w, 10_w);
@@ -4394,5 +4394,61 @@ End;)xxx");
                       LibsemigroupsException);
     REQUIRE(p.alphabet() == "xyz");
 #endif
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "108",
+                          "invert",
+                          "[quick][presentation]") {
+    auto                             rg = ReportGuard(false);
+    InversePresentation<std::string> p;
+    p.alphabet("abAB"s).inverses("ABab"s).contains_empty_word(true);
+
+    std::string const input    = "BBaaBaAABA";
+    std::string const expected = "abaaAbAAbb";
+    std::string       word     = input;
+
+    presentation::invert_inplace_no_checks(p, word);
+    REQUIRE(word == expected);
+
+    word = input;
+    presentation::invert_inplace(p, word);
+    REQUIRE(word == expected);
+
+    REQUIRE(presentation::invert_no_checks(p, input) == expected);
+    REQUIRE(input == "BBaaBaAABA");
+    REQUIRE(presentation::invert(p, input) == expected);
+    REQUIRE(presentation::invert(p, expected) == input);
+    REQUIRE(presentation::invert(p, ""s).empty());
+
+    InversePresentation<word_type> q;
+    q.alphabet(0123_w).inverses(2301_w);
+    word_type const input_w    = {3, 3, 0, 0, 3, 0, 2, 2, 3, 2};
+    word_type const expected_w = {0, 1, 0, 0, 2, 1, 2, 2, 1, 1};
+    word_type       word_w     = input_w;
+
+    presentation::invert_inplace_no_checks(q, word_w);
+    REQUIRE(word_w == expected_w);
+    REQUIRE(presentation::invert_no_checks(q, input_w) == expected_w);
+
+    word_w = input_w;
+    presentation::invert_inplace(q, word_w);
+    REQUIRE(word_w == expected_w);
+    REQUIRE(presentation::invert(q, input_w) == expected_w);
+
+    word = "aBx";
+    REQUIRE_THROWS_AS(presentation::invert_inplace(p, word),
+                      LibsemigroupsException);
+    REQUIRE(word == "aBx");
+    REQUIRE_THROWS_AS(presentation::invert(p, word), LibsemigroupsException);
+
+    InversePresentation<std::string> invalid;
+    invalid.alphabet("abAB"s).inverses_no_checks("ABaa"s);
+    word = input;
+    REQUIRE_THROWS_AS(presentation::invert_inplace(invalid, word),
+                      LibsemigroupsException);
+    REQUIRE(word == input);
+    REQUIRE_THROWS_AS(presentation::invert(invalid, word),
+                      LibsemigroupsException);
   }
 }  // namespace libsemigroups
