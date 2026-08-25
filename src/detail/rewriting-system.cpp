@@ -61,15 +61,14 @@ namespace libsemigroups {
 
     RewritingSystemBase& RewritingSystemBase::init() {
       Rules::init();
-      _cached_confluent             = false;
-      _cached_terminating           = false;
-      _confluence_known             = false;
-      _settings.reduction_threshold = 128;
-      _settings.max_rewriting_depth = POSITIVE_INFINITY;
-      _pending_rules_comparator     = lhs_lex_cmp;
-      _terminating_known            = false;
-      _state                        = State::none;
-      _ticker_running               = false;
+      _cached_confluent   = false;
+      _cached_terminating = false;
+      _confluence_known   = false;
+      _settings.init();
+      _pending_rules_comparator = lhs_lex_cmp;
+      _terminating_known        = false;
+      _state                    = State::none;
+      _ticker_running           = false;
       return *this;
     }
 
