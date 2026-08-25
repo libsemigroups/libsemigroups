@@ -3985,7 +3985,52 @@ namespace libsemigroups {
     //! Linear in the number of inverses.
     InversePresentation& remove_inverse(letter_type x);
 
-    // TODO p.add_generator_and_inverse('c', 'C')
+    //! \brief Add a generator and its inverse without checking.
+    //!
+    //! Adds \p x to the alphabet and \p y to the inverses. If \p x and \p y
+    //! are distinct, then \p y is also added to the alphabet and \p x is added
+    //! to the inverses. In other words, distinct letters \p x and \p y are
+    //! added as mutual inverses, while `x == y` adds one self-inverse
+    //! generator.
+    //!
+    //! This function does not change the rules.
+    //!
+    //! \param x the generator to add.
+    //! \param y the inverse of \p x.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does not validate its arguments. The inverse presentation
+    //! must be valid, and neither \p x nor \p y may already belong to its
+    //! alphabet.
+    InversePresentation& add_generator_and_inverse_no_checks(letter_type x,
+                                                             letter_type y);
+
+    //! \brief Add a generator and its inverse.
+    //!
+    //! Adds \p x to the alphabet and \p y to the inverses. If \p x and \p y
+    //! are distinct, then \p y is also added to the alphabet and \p x is added
+    //! to the inverses. In other words, distinct letters \p x and \p y are
+    //! added as mutual inverses, while `x == y` adds one self-inverse
+    //! generator.
+    //!
+    //! This function does not change the rules.
+    //!
+    //! \param x the generator to add.
+    //! \param y the inverse of \p x.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref throw_if_bad_alphabet_rules_or_inverses throws, or if either \p x
+    //! or \p y already belongs to the alphabet.
+    InversePresentation& add_generator_and_inverse(letter_type x,
+                                                   letter_type y);
+
     // TODO p.remove_generator_and_inverse('c')
 
     //! \brief Set the inverse of each letter in the alphabet.

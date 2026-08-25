@@ -1329,6 +1329,30 @@ namespace libsemigroups {
     return *this;
   }
 
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::add_generator_and_inverse_no_checks(
+      letter_type x,
+      letter_type y) {
+    add_generator_no_checks(x);
+    add_inverse_no_checks(y);
+    if (x != y) {
+      add_generator_no_checks(y);
+      add_inverse_no_checks(x);
+    }
+    return *this;
+  }
+
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::add_generator_and_inverse(letter_type x,
+                                                       letter_type y) {
+    throw_if_bad_alphabet_rules_or_inverses();
+    alphabet_v4().throw_if_letter_in_alphabet(x);
+    alphabet_v4().throw_if_letter_in_alphabet(y);
+    return add_generator_and_inverse_no_checks(x, y);
+  }
+
   namespace presentation {
     template <typename Word>
     Word inverse_alphabet_no_checks(InversePresentation<Word> const& p) {

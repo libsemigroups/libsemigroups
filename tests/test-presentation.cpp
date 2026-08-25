@@ -4489,4 +4489,31 @@ End;)xxx");
                           "the argument 'a' does not belong to the inverses "
                           "\"ABb\" and cannot be removed");
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "105",
+                          "add_generator_and_inverse",
+                          "[quick][presentation]") {
+    InversePresentation<std::string> p;
+    p.add_generator_and_inverse_no_checks('a', 'a')
+        .add_generator_and_inverse_no_checks('b', 'B');
+    REQUIRE(p.alphabet() == "abB"s);
+    REQUIRE(p.inverses() == "aBb"s);
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
+    REQUIRE_EXCEPTION_MSG(p.add_generator_and_inverse('b', 'B'),
+                          "the argument 'b' already belongs to the alphabet "
+                          "\"abB\", expected an unused letter");
+    REQUIRE(p.alphabet() == "abB"s);
+    REQUIRE(p.inverses() == "aBb"s);
+    REQUIRE_EXCEPTION_MSG(p.add_generator_and_inverse('x', 'B'),
+                          "the argument 'B' already belongs to the alphabet "
+                          "\"abB\", expected an unused letter");
+    REQUIRE(p.alphabet() == "abB"s);
+    REQUIRE(p.inverses() == "aBb"s);
+    REQUIRE_EXCEPTION_MSG(p.add_generator_and_inverse('B', 'x'),
+                          "the argument 'B' already belongs to the alphabet "
+                          "\"abB\", expected an unused letter");
+    REQUIRE(p.alphabet() == "abB"s);
+    REQUIRE(p.inverses() == "aBb"s);
+  }
 }  // namespace libsemigroups
