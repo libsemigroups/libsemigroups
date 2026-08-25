@@ -39,7 +39,7 @@ namespace libsemigroups {
     if (p.alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION("the presentation must not have 0 generators");
     }
-    if constexpr (!std::is_same_v<typename PresentationType::word_type,
+    if constexpr (!std::is_same_v<typename PresentationType::native_word_type,
                                   word_type>) {
       // to<Presentation> throws in the next line if p isn't valid
       StephenImpl_::init(v4::to<internal_presentation_type>(p));
@@ -96,16 +96,17 @@ namespace libsemigroups {
 
   namespace stephen {
     template <typename PresentationType>
-    bool accepts_no_checks(Stephen<PresentationType>&                  s,
-                           typename PresentationType::word_type const& w) {
+    bool
+    accepts_no_checks(Stephen<PresentationType>&                         s,
+                      typename PresentationType::native_word_type const& w) {
       // TODO rename the function detail::stephen::accepts_no_checks
       return detail::stephen::accepts(
           s, detail::citow(&s, w.begin()), detail::citow(&s, w.end()));
     }
 
     template <typename PresentationType>
-    bool accepts(Stephen<PresentationType>&                  s,
-                 typename PresentationType::word_type const& w) {
+    bool accepts(Stephen<PresentationType>&                         s,
+                 typename PresentationType::native_word_type const& w) {
       if (!w.empty()) {
         // Here we always allow w to be empty, but the following line throws if
         // s.presentation() does not contain the empty word and w is empty.
@@ -115,17 +116,17 @@ namespace libsemigroups {
     }
 
     template <typename PresentationType>
-    bool
-    is_left_factor_no_checks(Stephen<PresentationType>&                  s,
-                             typename PresentationType::word_type const& w) {
+    bool is_left_factor_no_checks(
+        Stephen<PresentationType>&                         s,
+        typename PresentationType::native_word_type const& w) {
       // TODO rename the function detail::stephen::is_left_factor_no_checks
       return detail::stephen::is_left_factor(
           s, detail::citow(&s, w.begin()), detail::citow(&s, w.end()));
     }
 
     template <typename PresentationType>
-    bool is_left_factor(Stephen<PresentationType>&                  s,
-                        typename PresentationType::word_type const& w) {
+    bool is_left_factor(Stephen<PresentationType>&                         s,
+                        typename PresentationType::native_word_type const& w) {
       if (!w.empty()) {
         // Here we always allow w to be empty, but the following line throws if
         // s.presentation() does not contain the empty word and w is empty.

@@ -3510,11 +3510,11 @@ namespace libsemigroups {
    public:
     //! \brief Type of the words in the rules of an InversePresentation
     //! object.
-    using word_type = typename Presentation<Word>::word_type;
+    using word_type = typename Presentation<Word>::native_word_type;
 
     //! \brief Type of the letters in the words that constitute the rules of
     //! an InversePresentation object.
-    using letter_type = typename Presentation<Word>::letter_type;
+    using letter_type = typename Presentation<Word>::native_letter_type;
 
     //! \brief Type of a const iterator to either side of a rule.
     using const_iterator = typename Presentation<Word>::const_iterator;
@@ -3953,7 +3953,7 @@ namespace libsemigroups {
 
     template <typename Result, typename Word, typename Func>
     auto to(Presentation<Word> const& p, Func&& f) -> std::enable_if_t<
-        std::is_same_v<Presentation<typename Result::word_type>, Result>,
+        std::is_same_v<Presentation<typename Result::native_word_type>, Result>,
         Result>;
 
     ////////////////////////////////////////////////////////////////////////
@@ -3971,8 +3971,8 @@ namespace libsemigroups {
 
     template <typename Result, typename Word>
     auto to(Presentation<Word> const& p) -> std::enable_if_t<
-        std::is_same_v<Presentation<typename Result::word_type>, Result>
-            && !std::is_same_v<typename Result::word_type, Word>,
+        std::is_same_v<Presentation<typename Result::native_word_type>, Result>
+            && !std::is_same_v<typename Result::native_word_type, Word>,
         Result>;
 
     // This function is documented above because Doxygen conflates these two

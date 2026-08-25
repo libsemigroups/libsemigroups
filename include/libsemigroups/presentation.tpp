@@ -1301,13 +1301,13 @@ namespace libsemigroups {
 
     template <typename Result, typename Word, typename Func>
     auto to(Presentation<Word> const& p, Func&& f) -> std::enable_if_t<
-        std::is_same_v<Presentation<typename Result::word_type>, Result>,
+        std::is_same_v<Presentation<typename Result::native_word_type>, Result>,
         Result> {
-      using WordOutput = typename Result::word_type;
+      using WordOutput = typename Result::native_word_type;
 
       static_assert(
           std::is_invocable_v<std::decay_t<Func>,
-                              typename Presentation<Word>::letter_type>);
+                              typename Presentation<Word>::native_letter_type>);
 
       // Must call p.throw_if_bad_alphabet_or_rules otherwise f(val) may
       // segfault if val is not in the alphabet
@@ -1344,7 +1344,7 @@ namespace libsemigroups {
         Result> {
       static_assert(
           std::is_invocable_v<std::decay_t<Func>,
-                              typename Presentation<Word>::letter_type>);
+                              typename InversePresentation<Word>::letter_type>);
       using WordOutput = typename Result::word_type;
 
       if (!ip.inverses().empty()) {
@@ -1377,10 +1377,10 @@ namespace libsemigroups {
 
     template <typename Result, typename Word>
     auto to(Presentation<Word> const& p) -> std::enable_if_t<
-        std::is_same_v<Presentation<typename Result::word_type>, Result>
-            && !std::is_same_v<typename Result::word_type, Word>,
+        std::is_same_v<Presentation<typename Result::native_word_type>, Result>
+            && !std::is_same_v<typename Result::native_word_type, Word>,
         Result> {
-      using WordOutput = typename Result::word_type;
+      using WordOutput = typename Result::native_word_type;
       return v4::to<Result>(p, [&p](auto val) {
         return words::human_readable_letter<WordOutput>(p.index(val));
       });

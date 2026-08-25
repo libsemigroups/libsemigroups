@@ -24,9 +24,9 @@ namespace libsemigroups {
 
   template <typename Result>
   auto to(FroidurePinBase& fp) -> std::enable_if_t<
-      std::is_same_v<Presentation<typename Result::word_type>, Result>,
+      std::is_same_v<Presentation<typename Result::native_word_type>, Result>,
       Result> {
-    using WordOutput = typename Result::word_type;
+    using WordOutput = typename Result::native_word_type;
 
     Result p;
     p.alphabet(fp.number_of_generators());
@@ -60,9 +60,10 @@ namespace libsemigroups {
             typename ReductionOrder>
   auto to(KnuthBendix<WordIn, RewritingSystem, ReductionOrder>& kb)
       -> std::enable_if_t<
-          std::is_same_v<Presentation<typename Result::word_type>, Result>,
+          std::is_same_v<Presentation<typename Result::native_word_type>,
+                         Result>,
           Result> {
-    using WordOut                      = typename Result::word_type;
+    using WordOut                      = typename Result::native_word_type;
     Presentation<WordIn> const& p_orig = kb.presentation();
     Presentation<WordIn>        p;
     p.alphabet(p_orig.alphabet())
