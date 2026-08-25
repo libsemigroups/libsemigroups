@@ -418,8 +418,8 @@ namespace libsemigroups {
   //! This function calls `to<Presentation<typename Result::native_word_type>`
   //! on `s.presentation()` to return a presentation equivalent to the object
   //! used to construct or initialise the Stephen object (if any) but of a
-  //! different type (for example, can be used to convert from \ref
-  //! native_word_type to `std::string`).
+  //! different type (for example, can be used to convert from
+  //! \ref native_word_type to `std::string`).
   //!
   //! \tparam Result the return type, also used for SFINAE, should be
   //! \c Presentation<T> for some type \c T.
