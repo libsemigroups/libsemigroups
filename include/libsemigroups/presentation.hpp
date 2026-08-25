@@ -83,7 +83,7 @@ namespace libsemigroups {
   //! * `to<Presentation>` functions \ref to_presentation_group "here".
 
   struct [[deprecated("Use is_specialization_of_v<Thing, Presentation> "
-                      "instead")]] PresentationBase {};
+                      "instead")]] PresentationBase{};
 
   //! \ingroup presentations_group
   //!
@@ -3895,6 +3895,57 @@ namespace libsemigroups {
     // InversePresentation specific mem fns
     ////////////////////////////////////////////////////////////////////////
 
+    //! \brief Add an inverse \p x.
+    //!
+    //! This function adds the letter \p x as an inverse. Specifically, it
+    //! appends \p x to the value returned by \ref inverses. It does not change
+    //! the alphabet however, so calls to this function should usually be
+    //! immediately adjacent to a call to \ref add_generator.
+    //!
+    //! \param x the letter to add as an inverse.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    InversePresentation& add_inverse_no_checks(letter_type x) {
+      _inverses.push_back(x);
+      return *this;
+    }
+
+    //! \brief Add \p x as an inverse.
+    //!
+    //! Appends \p x to the value returned by \ref inverses after checking that
+    //! \p x belongs to the alphabet and has not already been added as an
+    //! inverse. The new entry specifies the inverse of the letter in the same
+    //! position in the alphabet.
+    //!
+    //! This function does not change the alphabet. Calls to this function
+    //! should therefore usually be adjacent to calls to \ref add_generator.
+    //!
+    //! \param x the letter to add as an inverse.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to the alphabet,
+    //! or if \p x already belongs to the inverses.
+    //!
+    //! \complexity
+    //! Average case: linear in the number of letters already added as
+    //! inverses. Worst case: linear in the sum of the alphabet size and the
+    //! number of letters already added as inverses.
+    //!
+    //! \warning
+    //! This function does not check that the resulting entries define valid
+    //! semigroup inverses. After adding all inverses, this can be checked by
+    //! calling \ref throw_if_bad_inverses.
+    InversePresentation& add_inverse(letter_type x);
+
+    // TODO remove_inverse??
+
+    // TODO p.add_generator_and_inverse('c', 'C')
+    // TODO p.remove_generator_and_inverse('c')
+
     //! \brief Set the inverse of each letter in the alphabet.
     //!
     //! This function sets the inverse of each letter in the alphabet.
@@ -3941,6 +3992,7 @@ namespace libsemigroups {
       presentation::throw_if_bad_inverses(*this, w);
       return inverses_no_checks(w);
     }
+    // TODO rvalue ref version of inverses
 
     //! \brief Return the inverse of each letter in the alphabet.
     //!

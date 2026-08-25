@@ -1301,6 +1301,20 @@ namespace libsemigroups {
     return _inverses[Presentation<Word>::index(x)];
   }
 
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::add_inverse(letter_type x) {
+    alphabet_v4().throw_if_letter_not_in_alphabet(x);
+    auto it = std::find(inverses().begin(), inverses().end(), x);
+    if (it != inverses().end()) {
+      LIBSEMIGROUPS_EXCEPTION("the argument {} already belongs to the inverses "
+                              "{}, expected an unused letter",
+                              detail::to_printable(x),
+                              detail::to_printable(inverses()));
+    }
+    return add_inverse_no_checks(x);
+  }
+
   namespace presentation {
     template <typename Word>
     Word inverse_alphabet_no_checks(InversePresentation<Word> const& p) {

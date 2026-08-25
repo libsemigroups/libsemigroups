@@ -4451,4 +4451,22 @@ End;)xxx");
     REQUIRE_THROWS_AS(presentation::invert(invalid, word),
                       LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "103",
+                          "add_inverse",
+                          "[quick][presentation]") {
+    InversePresentation<std::string> p;
+    p.alphabet("abAB"s)
+        .add_inverse('A')
+        .add_inverse('B')
+        .add_inverse('a')
+        .add_inverse('b');
+    REQUIRE(p.inverses() == "ABab"s);
+    REQUIRE_EXCEPTION_MSG(p.add_inverse('a'),
+                          "the argument 'a' already belongs to the inverses "
+                          "\"ABab\", expected an unused letter");
+    REQUIRE_EXCEPTION_MSG(p.add_inverse('c'),
+                          "invalid letter 'c', valid letters are \"abAB\"");
+  }
 }  // namespace libsemigroups
