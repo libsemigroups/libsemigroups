@@ -4161,9 +4161,9 @@ End;)xxx");
                           "[quick][presentation]") {
     auto                           rg = ReportGuard(false);
     InversePresentation<word_type> p;
-    p.alphabet({5, 7, 3, 9});
-    p.inverses({7, 5, 9, 3});
-    presentation::add_rule(p, {5, 3, 7}, {9, 5});
+    p.alphabet(word_type({5, 7, 3, 9}));
+    p.inverses(word_type({7, 5, 9, 3}));
+    presentation::add_rule(p, word_type({5, 3, 7}), word_type({9, 5}));
 
     presentation::normalize_alphabet(p);
 
@@ -4180,9 +4180,9 @@ End;)xxx");
       "[quick][presentation]") {
     auto                             rg = ReportGuard(false);
     InversePresentation<std::string> p;
-    p.alphabet("xXyY");
-    p.inverses("XxYy");
-    presentation::add_rule(p, "xyX", "Yx");
+    p.alphabet("xXyY"s);
+    p.inverses("XxYy"s);
+    presentation::add_rule(p, "xyX"s, "Yx"s);
 
     presentation::normalize_alphabet(p);
 
