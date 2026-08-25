@@ -449,6 +449,16 @@ namespace libsemigroups {
     void throw_if_duplicate_letters(decltype(_letters_map)& letters_map) const;
   };  // class Alphabet
 
+  //! \relates Alphabet
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `alphabet-class.hpp`.
+  //!
+  //! Deduction guide to construct a `Alphabet<Word>` from Word const reference.
+  template <typename Word>
+  Alphabet(Word&) -> Alphabet<Word>;
+
   ////////////////////////////////////////////////////////////////////////
   // Validation
   ////////////////////////////////////////////////////////////////////////
