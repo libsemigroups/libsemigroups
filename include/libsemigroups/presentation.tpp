@@ -1353,6 +1353,24 @@ namespace libsemigroups {
     return add_generator_and_inverse_no_checks(x, y);
   }
 
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::remove_generator_and_inverse(letter_type x) {
+    // "inverse" throws if x is not a letter in the alphabet, check this first
+    // because the checks below sometimes give less helpful exception messages
+    auto inv = inverse(x);
+
+    Presentation<Word>::throw_if_alphabet_has_duplicates();
+    presentation::throw_if_bad_inverses(*this, inverses());
+    remove_generator_no_checks(x);
+    remove_inverse_no_checks(x);
+    if (x != inv) {
+      remove_generator_no_checks(inv);
+      remove_inverse_no_checks(inv);
+    }
+    return *this;
+  }
+
   namespace presentation {
     template <typename Word>
     Word inverse_alphabet_no_checks(InversePresentation<Word> const& p) {

@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "catch_amalgamated.hpp"
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <algorithm>         // for all_of, equal, fill, sort
@@ -4515,5 +4516,56 @@ End;)xxx");
                           "\"abB\", expected an unused letter");
     REQUIRE(p.alphabet() == "abB"s);
     REQUIRE(p.inverses() == "aBb"s);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "106",
+                          "remove_generator_and_inverse",
+                          "[quick][presentation]") {
+    InversePresentation<std::string> p;
+    p.add_generator_and_inverse_no_checks('a', 'a');
+    REQUIRE(p.alphabet() == "a"s);
+    REQUIRE(p.inverses() == "a"s);
+    p.remove_generator_and_inverse('a');
+    REQUIRE(p.alphabet() == ""s);
+    REQUIRE(p.inverses() == ""s);
+
+    p.add_generator_and_inverse_no_checks('b', 'B');
+    REQUIRE(p.alphabet() == "bB"s);
+    REQUIRE(p.inverses() == "Bb"s);
+    p.remove_generator_and_inverse('b');
+    REQUIRE(p.alphabet() == ""s);
+    REQUIRE(p.inverses() == ""s);
+
+    p.add_generator_and_inverse_no_checks('b', 'B');
+    REQUIRE(p.alphabet() == "bB"s);
+    REQUIRE(p.inverses() == "Bb"s);
+    p.remove_generator_and_inverse('B');
+    REQUIRE(p.alphabet() == ""s);
+    REQUIRE(p.inverses() == ""s);
+
+    p.add_generator_and_inverse_no_checks('b', 'B');
+    REQUIRE(p.alphabet() == "bB"s);
+    REQUIRE(p.inverses() == "Bb"s);
+
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('c'),
+                          "invalid letter 'c', valid letters are \"bB\"");
+
+    p.alphabet("a");
+    REQUIRE(p.alphabet() == "a"s);
+    REQUIRE(p.inverses() == "Bb"s);
+    // TODO(later) the exception messages below could be better if it said where
+    // "B" came from
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('a'),
+                          "invalid letter 'B', valid letters are \"a\"");
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('b'),
+                          "invalid letter 'b', valid letters are \"a\"");
+    p.inverses_no_checks("b");
+    REQUIRE_THROWS_AS(p.throw_if_bad_alphabet_rules_or_inverses(),
+                      LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('a'),
+                          "invalid letter 'b', valid letters are \"a\"");
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('b'),
+                          "invalid letter 'b', valid letters are \"a\"");
   }
 }  // namespace libsemigroups

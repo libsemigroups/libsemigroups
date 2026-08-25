@@ -1049,6 +1049,9 @@ namespace libsemigroups {
     //! every letter in \p inverses belongs to \p alphabet. Callers requiring
     //! these checks should perform them separately or use an overload taking a
     //! \ref Presentation.
+    // TODO this doesn't check that alphabet and inverses consist of the same
+    // letters, in particular this doesn't throw whenever alphabet and inverses
+    // are disjoint !!!
     template <typename Word>
     void throw_if_bad_inverses(Word const& alphabet, Word const& inverses);
 
@@ -4031,7 +4034,33 @@ namespace libsemigroups {
     InversePresentation& add_generator_and_inverse(letter_type x,
                                                    letter_type y);
 
-    // TODO p.remove_generator_and_inverse('c')
+    //! \brief Remove a generator and its inverse.
+    //!
+    //! Removes \p x and its inverse from the alphabet and from the value
+    //! returned by \ref inverses. If \p x is self-inverse, then it is removed
+    //! once; otherwise, \p x and its distinct inverse are both removed.
+    //!
+    //! This function does not change the rules.
+    //!
+    //! \param x the generator to remove.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \ref inverse throws for \p x, if the
+    //! alphabet contains duplicate letters, or if the inverses do not define a
+    //! valid involution on the alphabet.
+    //!
+    //! \complexity
+    //! At worst quadratic in the size of the alphabet.
+    //!
+    //! \note
+    //! There is no unchecked overload of this function because determining the
+    //! inverse of \p x requires finding its index in the alphabet.
+    //!
+    //! \warning
+    //! If the rules contain \p x or its inverse, then removing these letters
+    //! leaves the presentation in an invalid state.
+    InversePresentation& remove_generator_and_inverse(letter_type x);
 
     //! \brief Set the inverse of each letter in the alphabet.
     //!
