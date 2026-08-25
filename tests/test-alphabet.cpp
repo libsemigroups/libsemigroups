@@ -176,6 +176,7 @@ namespace libsemigroups {
         empty.throw_if_letter_not_in_alphabet(0),
         "invalid letter (char with value) 0, there are no letters in the "
         "alphabet");
+    REQUIRE_NOTHROW(empty.throw_if_letter_in_alphabet('a'));
 
     Alphabet<std::string> a("ab");
     REQUIRE_NOTHROW(a.throw_if_letter_not_in_alphabet('a'));
@@ -209,12 +210,20 @@ namespace libsemigroups {
                             "invalid letter (char with value) -109, valid "
                             "letters are (char values) [0, 1]");
     }
+    REQUIRE_EXCEPTION_MSG(a.throw_if_letter_in_alphabet('a'),
+                          "the argument 'a' already belongs to the alphabet "
+                          "\"ab\", expected an unused letter");
+    REQUIRE_NOTHROW(a.throw_if_letter_in_alphabet('c'));
 
     Alphabet b(word_type({0, 1}));
     REQUIRE_NOTHROW(b.throw_if_letter_not_in_alphabet(0));
     REQUIRE_NOTHROW(b.throw_if_letter_not_in_alphabet(1));
     REQUIRE_EXCEPTION_MSG(b.throw_if_letter_not_in_alphabet(2),
                           "invalid letter 2, valid letters are [0, 1]");
+    REQUIRE_EXCEPTION_MSG(b.throw_if_letter_in_alphabet(1),
+                          "the argument 1 already belongs to the alphabet "
+                          "[0, 1], expected an unused letter");
+    REQUIRE_NOTHROW(b.throw_if_letter_in_alphabet(2));
 
     word_type w = {0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1};
     REQUIRE_NOTHROW(b.throw_if_letter_not_in_alphabet(w.begin(), w.end()));
@@ -246,6 +255,13 @@ namespace libsemigroups {
     REQUIRE_EXCEPTION_MSG(a.remove_letter('b'),
                           "the argument 'b' does not belong to the alphabet "
                           "\"ac\", expected an existing letter");
+
+    Alphabet<std::string> non_printable(std::string({0, 'a'}));
+    REQUIRE_EXCEPTION_MSG(
+        non_printable.add_letter(0),
+        "the argument (char with value) 0 already belongs to the alphabet "
+        "(char values) [0, 97], expected an unused letter");
+    REQUIRE(non_printable.letters() == std::string({0, 'a'}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Alphabet", "007", "first_unused_letter", "[quick]") {
@@ -287,7 +303,7 @@ namespace libsemigroups {
                           "008",
                           "add_letter (std::string)",
                           "[quick]") {
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
     using literals::operator""_w;
 
     {

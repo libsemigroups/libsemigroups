@@ -155,6 +155,23 @@ namespace libsemigroups {
     }
   }
 
+  template <typename Word>
+  void Alphabet<Word>::throw_if_letter_in_alphabet(native_letter_type c) const {
+    if (contains(c)) {
+      auto msg = fmt::format("the argument {} already belongs to the alphabet "
+                             "{}, expected an unused letter",
+                             detail::to_printable(c),
+                             detail::to_printable(letters()));
+      if constexpr (std::is_same_v<native_letter_type, char>) {
+        if (!std::isprint(c) && detail::isprint(_letters)) {
+          msg += fmt::format(
+              " == {}", std::vector<int>(_letters.begin(), _letters.end()));
+        }
+      }
+      LIBSEMIGROUPS_EXCEPTION(msg);
+    }
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Alphabet attributes
   ////////////////////////////////////////////////////////////////////////
@@ -185,18 +202,6 @@ namespace libsemigroups {
 #endif
     _letters.push_back(x);
     return *this;
-  }
-
-  template <typename Word>
-  Alphabet<Word>&
-  Alphabet<Word>::add_letter(typename Alphabet<Word>::native_letter_type x) {
-    if (contains(x)) {
-      LIBSEMIGROUPS_EXCEPTION("the argument {} already belongs to the alphabet "
-                              "{}, expected an unused letter",
-                              detail::to_printable(x),
-                              detail::to_printable(letters()));
-    }
-    return add_letter_no_checks(x);
   }
 
   ////////////////////////////////////////////////////////////////////////
