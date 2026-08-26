@@ -586,18 +586,6 @@ namespace libsemigroups {
             ToddCoxeterImpl>(first1, last1, first2, last2);
       }
 
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      ToddCoxeterImpl& add_generating_pair(Iterator1 first1,
-                                           Iterator2 last1,
-                                           Iterator3 first2,
-                                           Iterator4 last2) {
-        return CongruenceCommon::add_generating_pair<ToddCoxeterImpl>(
-            first1, last1, first2, last2);
-      }
-
       ////////////////////////////////////////////////////////////////////////
       // Interface requirements - number_of_classes
       ////////////////////////////////////////////////////////////////////////
@@ -621,6 +609,9 @@ namespace libsemigroups {
       // Interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
+      // NOTE: there are no "checks" versions of the functions below because
+      // this isn't a user-facing class and they are redundant.
+
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -634,31 +625,10 @@ namespace libsemigroups {
                 typename Iterator2,
                 typename Iterator3,
                 typename Iterator4>
-      tril currently_contains(Iterator1 first1,
-                              Iterator2 last1,
-                              Iterator3 first2,
-                              Iterator4 last2) const {
-        return CongruenceCommon::currently_contains<ToddCoxeterImpl>(
-            first1, last1, first2, last2);
-      }
-
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
       bool contains_no_checks(Iterator1 first1,
                               Iterator2 last1,
                               Iterator3 first2,
                               Iterator4 last2);
-
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      bool contains(Iterator1 first1,
-                    Iterator2 last1,
-                    Iterator3 first2,
-                    Iterator4 last2);
 
       ////////////////////////////////////////////////////////////////////////
       // Interface requirements - reduce
@@ -674,30 +644,11 @@ namespace libsemigroups {
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
-      OutputIterator reduce_no_run(OutputIterator d_first,
-                                   InputIterator1 first,
-                                   InputIterator2 last) const {
-        return CongruenceCommon::reduce_no_run<ToddCoxeterImpl>(
-            d_first, first, last);
-      }
-
-      template <typename OutputIterator,
-                typename InputIterator1,
-                typename InputIterator2>
       OutputIterator reduce_no_checks(OutputIterator d_first,
                                       InputIterator1 first,
                                       InputIterator2 last) {
         return CongruenceCommon::reduce_no_checks<ToddCoxeterImpl>(
             d_first, first, last);
-      }
-
-      template <typename OutputIterator,
-                typename InputIterator1,
-                typename InputIterator2>
-      OutputIterator reduce(OutputIterator d_first,
-                            InputIterator1 first,
-                            InputIterator2 last) {
-        return CongruenceCommon::reduce<ToddCoxeterImpl>(d_first, first, last);
       }
 
       ////////////////////////////////////////////////////////////////////////
