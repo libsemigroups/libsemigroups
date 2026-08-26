@@ -154,14 +154,14 @@ namespace libsemigroups {
     Alphabet<word_type> a(word_type({0, 1, 2}));
     REQUIRE_EXCEPTION_MSG(
         a.init(word_type({0, 1, 0})),
-        "invalid alphabet [0, 1, 0], duplicate letter found 0 in position 2, "
+        "invalid alphabet [0, 1, 0], duplicate letter 0 found in position 2, "
         "first occurrence in position 0");
     REQUIRE(a.letters() == word_type({0, 1, 2}));
 
     Alphabet<std::string> b("abc");
     REQUIRE_EXCEPTION_MSG(
         b.init("aba"),
-        "invalid alphabet \"aba\", duplicate letter found 'a' in position 2, "
+        "invalid alphabet \"aba\", duplicate letter 'a' found in position 2, "
         "first occurrence in position 0");
     REQUIRE(b.letters() == "abc");
   }

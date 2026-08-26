@@ -220,7 +220,7 @@ namespace libsemigroups {
     auto [it, pos] = detail::find_duplicates(
         _letters.cbegin(), _letters.cend(), letters_map);
     if (it != _letters.cend()) {
-      LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter found {} "
+      LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {} found "
                               "in position {}, first occurrence in position {}",
                               detail::to_printable(_letters),
                               detail::to_printable(*it),
