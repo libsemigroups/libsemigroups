@@ -7,6 +7,7 @@ import sys
 from collections import defaultdict
 from copy import deepcopy
 from dataclasses import dataclass
+import gzip
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -121,7 +122,7 @@ def parse_phase(phase_str: str) -> str:
 def extract_line_info(line: str, plot_data: PlotEntry):
     """Extract plot data from a line in the documentation."""
 
-    if plot_data.title != "":
+    if plot_data.title == "":
         m = re.search(TITLE_PATTERN, line)
         if m:
             plot_data.title = m.group(1)
@@ -151,7 +152,12 @@ def extract_line_info(line: str, plot_data: PlotEntry):
 
 def parse_file(file: pathlib.Path) -> list[PlotEntry]:
     plot_entries: list[PlotEntry] = []
-    with open(file) as f:
+
+    if file.suffix == ".gz":
+        opener = gzip.open
+    else:
+        opener = open
+    with opener(file, mode="rt") as f:
         current_plot_entry = PlotEntry()
         for line in f:
             extract_line_info(line, current_plot_entry)
