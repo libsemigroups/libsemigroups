@@ -5386,14 +5386,10 @@ namespace libsemigroups {
     // directly so that it is still possible to use ToddCoxeterImpl
     // directly if there are perf. issues with using ToddCoxeter.
     word_type word = 010100101_w;
-    REQUIRE(static_cast<detail::ToddCoxeterImpl&>(tc).contains(
+    REQUIRE(static_cast<detail::ToddCoxeterImpl&>(tc).contains_no_checks(
         word.begin(), word.end(), word.begin(), word.end()));
-    REQUIRE(!static_cast<detail::ToddCoxeterImpl&>(tc).contains(
+    REQUIRE(!static_cast<detail::ToddCoxeterImpl&>(tc).contains_no_checks(
         word.begin(), word.end(), word.begin(), word.begin() + 1));
-    word = 010100201_w;
-    REQUIRE_THROWS_AS(static_cast<detail::ToddCoxeterImpl&>(tc).contains(
-                          word.begin(), word.end(), word.begin(), word.end()),
-                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

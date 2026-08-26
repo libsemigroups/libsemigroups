@@ -264,6 +264,9 @@ namespace libsemigroups {
       // generating pairs contained in CongruenceCommon are word_types, and
       // so we don't require any conversion here (since chars can be converted
       // implicitly to letter_types)
+
+      // NOTE: there are no "checks" versions of the functions below because
+      // this isn't a user-facing class and they are redundant.
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -275,19 +278,6 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(!started());
         return CongruenceCommon::add_internal_generating_pair_no_checks<
             KnuthBendixImpl>(first1, last1, first2, last2);
-      }
-
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      KnuthBendixImpl& add_generating_pair(Iterator1 first1,
-                                           Iterator2 last1,
-                                           Iterator3 first2,
-                                           Iterator4 last2) {
-        LIBSEMIGROUPS_ASSERT(!started());
-        return CongruenceCommon::add_generating_pair<KnuthBendixImpl>(
-            first1, last1, first2, last2);
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -318,6 +308,9 @@ namespace libsemigroups {
       // KnuthBendixImpl - interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
+      // NOTE: there are no "checks" versions of the functions below because
+      // this isn't a user-facing class and they are redundant.
+
       //! \ingroup knuth_bendix_class_intf_group
       //! \brief Check containment of a pair of words via iterators.
       //!
@@ -344,21 +337,6 @@ namespace libsemigroups {
                                                       Iterator2 last1,
                                                       Iterator3 first2,
                                                       Iterator4 last2) const;
-
-      // Documented in KnuthBendix (because it appears there because we call
-      // CongruenceCommon::currently_contains directly so that bounds checks are
-      // done in KnuthBendix)
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      [[nodiscard]] tril currently_contains(Iterator1 first1,
-                                            Iterator2 last1,
-                                            Iterator3 first2,
-                                            Iterator4 last2) const {
-        return CongruenceCommon::currently_contains<KnuthBendixImpl>(
-            first1, last1, first2, last2);
-      }
 
       //! \ingroup knuth_bendix_class_intf_group
       //!
@@ -388,24 +366,12 @@ namespace libsemigroups {
             first1, last1, first2, last2);
       }
 
-      // Documented in KnuthBendix (because it appears there because we call
-      // CongruenceCommon::contains directly so that bounds checks are
-      // done in KnuthBendix)
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      [[nodiscard]] bool contains(Iterator1 first1,
-                                  Iterator2 last1,
-                                  Iterator3 first2,
-                                  Iterator4 last2) {
-        return CongruenceCommon::contains<KnuthBendixImpl>(
-            first1, last1, first2, last2);
-      }
-
       ////////////////////////////////////////////////////////////////////////
       // KnuthBendixImpl - interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
+
+      // NOTE: there are no "checks" versions of the functions below because
+      // this isn't a user-facing class and they are redundant.
 
       template <typename OutputIterator,
                 typename InputIterator1,
@@ -413,19 +379,6 @@ namespace libsemigroups {
       OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                              InputIterator1 first,
                                              InputIterator2 last) const;
-
-      // Documented in KnuthBendix (because it appears there because we call
-      // CongruenceCommon::reduce_no_run directly so that bounds checks are
-      // done in KnuthBendix)
-      template <typename OutputIterator,
-                typename InputIterator1,
-                typename InputIterator2>
-      OutputIterator reduce_no_run(OutputIterator d_first,
-                                   InputIterator1 first,
-                                   InputIterator2 last) const {
-        return CongruenceCommon::reduce_no_run<KnuthBendixImpl>(
-            d_first, first, last);
-      }
 
       template <typename OutputIterator,
                 typename InputIterator1,
@@ -435,18 +388,6 @@ namespace libsemigroups {
                                       InputIterator2 last) {
         return CongruenceCommon::reduce_no_checks<KnuthBendixImpl>(
             d_first, first, last);
-      }
-
-      // Documented in KnuthBendix (because it appears there because we call
-      // CongruenceCommon::reduce directly so that bounds checks are
-      // done in KnuthBendix)
-      template <typename OutputIterator,
-                typename InputIterator1,
-                typename InputIterator2>
-      OutputIterator reduce(OutputIterator d_first,
-                            InputIterator1 first,
-                            InputIterator2 last) {
-        return CongruenceCommon::reduce<KnuthBendixImpl>(d_first, first, last);
       }
 
       // TODO(1) implement reduce_inplace x4 if possible.
