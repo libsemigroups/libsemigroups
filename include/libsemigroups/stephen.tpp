@@ -139,11 +139,11 @@ namespace libsemigroups {
 
   namespace detail {
     template <typename PresentationType>
-    Dot stephen_dot(Stephen<PresentationType>&                  s,
-                    typename PresentationType::word_type const& alphabet,
-                    size_t                                      radius,
+    Dot stephen_dot(Stephen<PresentationType>&                         s,
+                    typename PresentationType::native_word_type const& alphabet,
+                    size_t                                             radius,
                     bool use_inverse_literals) {
-      using Word = typename PresentationType::word_type;
+      using Word = typename PresentationType::native_word_type;
 
       if constexpr (is_specialization_of_v<PresentationType, Presentation>) {
         LIBSEMIGROUPS_ASSERT(!use_inverse_literals);
