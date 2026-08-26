@@ -5514,6 +5514,7 @@ namespace libsemigroups {
                           "135",
                           "From FroidurePin",
                           "[todd-coxeter][quick]") {
+    auto rg               = ReportGuard(false);
     using Transf          = LeastTransf<5>;
     FroidurePin<Transf> S = make<FroidurePin>(
         {make<Transf>({1, 3, 4, 2, 3}), make<Transf>({3, 2, 1, 3, 3})});
@@ -5525,6 +5526,9 @@ namespace libsemigroups {
         froidure_pin::factorisation(S, make<Transf>({3, 1, 3, 3, 3})));
     WordRange words;
     words.alphabet_size(2).min(1).max(5);
+
+    auto w = 010001_w;
+    REQUIRE(tc.current_index_of(w.begin(), w.end()) == 49);
     tc.run();
     REQUIRE(v4::word_graph::number_of_nodes_reachable_from(
                 tc.current_word_graph(), 0)
