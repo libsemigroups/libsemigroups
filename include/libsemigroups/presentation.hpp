@@ -856,7 +856,8 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the length of \p word.
     template <typename Word>
-    void throw_if_contains_duplicates(Word const& word, std::string_view where);
+    [[deprecated]] void throw_if_contains_duplicates(Word const&      word,
+                                                     std::string_view where);
 
     //! \brief Throws an exception if a word is not over an alphabet.
     //!
@@ -2705,7 +2706,7 @@ namespace libsemigroups {
     //! contains a letter not belonging to \p alphabet.
     //!
     //! \sa
-    //! \ref throw_if_contains_duplicates, \ref throw_if_bad_inverses and
+    //! \ref throw_if_bad_inverses and
     //! \ref throw_if_word_not_over_alphabet.
     template <typename Word>
     Word commutator(Word const& x,
@@ -2886,7 +2887,7 @@ namespace libsemigroups {
     //! \p alphabet.
     //!
     //! \sa
-    //! \ref throw_if_contains_duplicates, \ref throw_if_bad_inverses
+    //! \ref throw_if_bad_inverses
     //! \ref throw_if_word_not_over_alphabet and
     //! \ref Presentation::throw_if_letter_not_in_alphabet.
     template <typename Word>

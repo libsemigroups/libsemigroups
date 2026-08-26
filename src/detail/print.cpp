@@ -44,8 +44,7 @@ namespace libsemigroups {
 
     std::string to_printable(std::string const& alphabet) {
       if (isprint(alphabet)) {
-        return fmt::format("\"{}\"",
-                           std::string(alphabet.begin(), alphabet.end()));
+        return fmt::format("\"{}\"", alphabet);
       }
       LIBSEMIGROUPS_ASSERT(!alphabet.empty());
 

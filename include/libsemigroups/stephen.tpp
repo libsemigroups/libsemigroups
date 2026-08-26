@@ -161,7 +161,8 @@ namespace libsemigroups {
       auto const& wg   = s.word_graph_no_run();
       auto const  root = s.initial_state();
 
-      throw_if_duplicates(alphabet.begin(), alphabet.end(), "alphabet");
+      throw_if_duplicates(
+          alphabet.begin(), alphabet.end(), "letter in alphabet");
       // Check that alphabet contains only letters in p.alphabet()
       auto invalid_it = std::find_if_not(
           alphabet.cbegin(), alphabet.cend(), [&p](auto letter) {

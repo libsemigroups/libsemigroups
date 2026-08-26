@@ -924,8 +924,10 @@ namespace libsemigroups {
         presentation::balance(p, 00_w, 0_w),
         "invalid alphabet [0, 0], duplicate letter 0 found in position 1, "
         "first occurrence in position 0");
-    REQUIRE_EXCEPTION_MSG(presentation::balance(p, 01_w, 00_w),
-                          "invalid inverses, the letter 0 is duplicated!");
+    REQUIRE_EXCEPTION_MSG(
+        presentation::balance(p, 01_w, 00_w),
+        "duplicate inverse, found 0 in position 1, first occurrence in "
+        "position 0");
     REQUIRE_EXCEPTION_MSG(presentation::balance(p, 01_w, 0_w),
                           "invalid number of inverses, expected 2 but found 1");
     REQUIRE_EXCEPTION_MSG(presentation::balance(p, 21_w, 12_w),
@@ -951,7 +953,8 @@ namespace libsemigroups {
         "value) 0 found in position 1, first occurrence in position 0");
     REQUIRE_EXCEPTION_MSG(
         presentation::balance(p, {0, 1}, {0, 0}),
-        "invalid inverses, the letter (char with value) 0 is duplicated!");
+        "duplicate inverse, found (char with value) 0 in position 1, first "
+        "occurrence in position 0");
     REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 1}, {0}),
                           "invalid number of inverses, expected 2 but found 1");
     REQUIRE_EXCEPTION_MSG(presentation::balance(p, {2, 1}, {1, 2}),
@@ -2661,7 +2664,8 @@ namespace libsemigroups {
           "with value) 0 found in position 2, first occurrence in position 0");
       REQUIRE_EXCEPTION_MSG(
           presentation::add_inverse_rules(p, {0, 0}),
-          "invalid inverses, the letter (char with value) 0 is duplicated!");
+          "duplicate inverse, found (char with value) 0 in position 1, first "
+          "occurrence in position 0");
       p.alphabet(3);
       REQUIRE_EXCEPTION_MSG(
           presentation::add_inverse_rules(p, {'b', 'c', 'a'}),
@@ -2670,8 +2674,10 @@ namespace libsemigroups {
           presentation::add_inverse_rules(p, {'b', 'a', 'c'}, 'a'),
           "invalid inverses, the identity is 'a', but 'a' ^ -1 = 'b'");
       p.alphabet("abc"s);
-      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, "aab"s),
-                            "invalid inverses, the letter 'a' is duplicated!");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_inverse_rules(p, "aab"s),
+          "duplicate inverse, found 'a' in position 1, first occurrence in "
+          "position 0");
       REQUIRE_EXCEPTION_MSG(
           presentation::add_inverse_rules(p, "bca"s),
           "invalid inverses, 'a' ^ -1 = 'b' but 'b' ^ -1 = 'c'");
@@ -2764,8 +2770,10 @@ namespace libsemigroups {
           p.alphabet(std::vector<uint8_t>({0, 1, 0})),
           "invalid alphabet [0, 1, 0], duplicate letter 0 found in position 2, "
           "first occurrence in position 0");
-      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {0, 0}),
-                            "invalid inverses, the letter 0 is duplicated!");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_inverse_rules(p, {0, 0}),
+          "duplicate inverse, found 0 in position 1, first occurrence in "
+          "position 0");
       p.alphabet(3);
       REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {1, 2, 0}),
                             "invalid inverses, 0 ^ -1 = 1 but 1 ^ -1 = 2");
@@ -3514,8 +3522,10 @@ namespace libsemigroups {
     REQUIRE_EXCEPTION_MSG(
         presentation::throw_if_bad_inverses(p, "bca"s),
         "invalid inverses, 'a' ^ -1 = 'b' but 'b' ^ -1 = 'c'");
-    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "aac"s),
-                          "invalid inverses, the letter 'a' is duplicated!");
+    REQUIRE_EXCEPTION_MSG(
+        presentation::throw_if_bad_inverses(p, "aac"s),
+        "duplicate inverse, found 'a' in position 1, first occurrence in "
+        "position 0");
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ac"s),
                           "invalid number of inverses, expected 3 but found 2");
   }
@@ -3535,8 +3545,10 @@ namespace libsemigroups {
         presentation::throw_if_bad_inverses(p, "aa"s, "bb"s),
         "invalid alphabet \"aa\", duplicate letter 'a' found in position 1, "
         "first occurrence in position 0");
-    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bb"s),
-                          "invalid inverses, the letter 'b' is duplicated!");
+    REQUIRE_EXCEPTION_MSG(
+        presentation::throw_if_bad_inverses(p, "ab"s, "bb"s),
+        "duplicate inverse, found 'b' in position 1, first occurrence in "
+        "position 0");
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bac"s),
                           "invalid letter 'c', valid letters are \"ab\"");
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "abc"s, "ba"s),
@@ -3702,10 +3714,12 @@ namespace libsemigroups {
           "invalid number of inverses, expected 0 but found 1");
       REQUIRE_EXCEPTION_MSG(
           presentation::commutator(W{}, W{}, W{0, 0}, W{0, 1}),
-          "invalid alphabet, the letter (char with value) 0 is duplicated!");
+          "duplicate letter in alphabet, found (char with value) 0 in position "
+          "1, first occurrence in position 0");
       REQUIRE_EXCEPTION_MSG(
           presentation::commutator(W{}, W{}, W{0, 1}, W{0, 0}),
-          "invalid inverses, the letter (char with value) 0 is duplicated!");
+          "duplicate inverse, found (char with value) 0 in position 1, first "
+          "occurrence in position 0");
       REQUIRE_EXCEPTION_MSG(
           presentation::commutator(W{}, W{}, W{0, 1, 2}, W{1, 2, 0}),
           "invalid inverses, (char with value) 0 ^ -1 = (char with value) 1 "
@@ -3734,7 +3748,8 @@ namespace libsemigroups {
       p.alphabet(W({0, 1}));
       REQUIRE_EXCEPTION_MSG(
           presentation::commutator(p, W{}, W{}, W{0, 0}),
-          "invalid inverses, the letter (char with value) 0 is duplicated!");
+          "duplicate inverse, found (char with value) 0 in position 1, first "
+          "occurrence in position 0");
       REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{}, W{}, W{0, 2}),
                             "invalid letter (char with value) 2, valid letters "
                             "are (char values) [0, 1]");
@@ -3880,10 +3895,12 @@ namespace libsemigroups {
       p.alphabet(W({0, 1}));
       REQUIRE_EXCEPTION_MSG(
           presentation::add_commutator_rule(p, W{}, W{}, W{0, 0}, W{0, 1}),
-          "invalid alphabet, the letter (char with value) 0 is duplicated!");
+          "duplicate letter in alphabet, found (char with value) 0 in position "
+          "1, first occurrence in position 0");
       REQUIRE_EXCEPTION_MSG(
           presentation::add_commutator_rule(p, W{}, W{}, W{0, 1}, W{0, 0}),
-          "invalid inverses, the letter (char with value) 0 is duplicated!");
+          "duplicate inverse, found (char with value) 0 in position 1, first "
+          "occurrence in position 0");
 
       // The inverses are not valid
       p.alphabet(W({0, 1, 2}));
@@ -3926,7 +3943,8 @@ namespace libsemigroups {
       p.alphabet(W({0, 1}));
       REQUIRE_EXCEPTION_MSG(
           presentation::add_commutator_rule(p, W{}, W{}, W{0, 0}),
-          "invalid inverses, the letter (char with value) 0 is duplicated!");
+          "duplicate inverse, found (char with value) 0 in position 1, first "
+          "occurrence in position 0");
 
       // The inverses are not valid
       p.alphabet(W({0, 1, 2}));

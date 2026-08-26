@@ -151,12 +151,7 @@ namespace libsemigroups {
     template <typename Word>
     void throw_if_contains_duplicates(Word const&      word,
                                       std::string_view where) {
-      auto it = detail::find_duplicates(word.cbegin(), word.cend()).first;
-      if (it != word.cend()) {
-        LIBSEMIGROUPS_EXCEPTION("invalid {}, the letter {} is duplicated!",
-                                where,
-                                detail::to_printable(*it));
-      }
+      detail::throw_if_duplicates(word.begin(), word.end(), where);
     }
 
     template <typename Word>
@@ -190,7 +185,7 @@ namespace libsemigroups {
             inverses.size());
       }
 
-      throw_if_contains_duplicates(inverses, "inverses");
+      detail::throw_if_duplicates(inverses.begin(), inverses.end(), "inverse");
 
       // Check that (x ^ - 1) ^ -1 = x
       for (size_t i = 0; i < alphabet.size(); ++i) {
@@ -937,7 +932,8 @@ namespace libsemigroups {
                     Word const& y,
                     Word const& alphabet,
                     Word const& inverses) {
-      throw_if_contains_duplicates(alphabet, "alphabet");
+      detail::throw_if_duplicates(
+          alphabet.begin(), alphabet.end(), "letter in alphabet");
       throw_if_bad_inverses(alphabet, inverses);
       throw_if_word_not_over_alphabet(alphabet, x);
       throw_if_word_not_over_alphabet(alphabet, y);
@@ -980,7 +976,8 @@ namespace libsemigroups {
                                         std::end(alphabet));
       p.throw_if_letter_not_in_alphabet(std::begin(inverses),
                                         std::end(inverses));
-      throw_if_contains_duplicates(alphabet, "alphabet");
+      detail::throw_if_duplicates(
+          alphabet.begin(), alphabet.end(), "letter in alphabet");
       throw_if_bad_inverses(alphabet, inverses);
       throw_if_word_not_over_alphabet(alphabet, x);
       throw_if_word_not_over_alphabet(alphabet, y);
