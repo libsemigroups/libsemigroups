@@ -54,19 +54,20 @@ namespace libsemigroups {
     template <typename Iterator, typename Ignore>
     void throw_if_duplicates(Iterator         first,
                              Iterator         last,
-                             std::string_view where,
+                             std::string_view what,
                              Ignore&&         ignore) {
       std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
       auto [it, pos]
           = find_duplicates(first, last, seen, std::forward<Ignore>(ignore));
       if (it != last) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "duplicate {} value, found {} in position {}, first "
-            "occurrence in position {}",
-            where,
-            to_printable(*it),
-            std::distance(first, it),
-            pos);
+        LIBSEMIGROUPS_EXCEPTION("duplicate {}, found {} in position {}, first "
+                                "occurrence in position {}",
+                                what,
+                                to_printable(*it),
+                                std::distance(first, it),
+                                pos);
+        // TODO include [first, last) in the exception message, "duplicate {}
+        // in {}", requires adding a to_printable for iterators
       }
     }
   }  // namespace detail

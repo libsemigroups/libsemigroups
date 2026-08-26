@@ -119,7 +119,7 @@ namespace libsemigroups {
           [&deg](auto val) { return val >= deg && val != UNDEFINED; },
           "domain");
 
-      throw_if_duplicates(dom_first, dom_last, "domain");
+      throw_if_duplicates(dom_first, dom_last, "domain value");
 
       auto it = std::find(dom_first, dom_last, UNDEFINED);
       if (it != dom_last) {

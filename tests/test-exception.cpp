@@ -68,7 +68,7 @@ namespace libsemigroups {
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
 
     REQUIRE_EXCEPTION_MSG(
-        detail::throw_if_duplicates(vec.begin(), vec.end(), "vector"),
+        detail::throw_if_duplicates(vec.begin(), vec.end(), "vector value"),
         "duplicate vector value, found 1 in position "
         "3, first occurrence in position 1");
     REQUIRE_NOTHROW(
@@ -83,7 +83,7 @@ namespace libsemigroups {
     std::string vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
 
     REQUIRE_EXCEPTION_MSG(
-        detail::throw_if_duplicates(vec.begin(), vec.end(), "vector"),
+        detail::throw_if_duplicates(vec.begin(), vec.end(), "vector value"),
         "duplicate vector value, found (char with value) 1 in position "
         "3, first occurrence in position 1");
     REQUIRE_NOTHROW(

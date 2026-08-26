@@ -91,7 +91,7 @@ namespace libsemigroups {
     template <typename Iterator>
     void throw_if_not_perm(Iterator first, Iterator last, size_t deg) {
       throw_if_not_transf(first, last, deg);
-      throw_if_duplicates(first, last, "image");
+      throw_if_duplicates(first, last, "image value");
     }
 
     template <typename Iterator>
@@ -102,13 +102,13 @@ namespace libsemigroups {
     template <typename Iterator>
     void throw_if_not_pperm(Iterator first, Iterator last, size_t deg) {
       throw_if_not_ptransf(first, last, deg);
-      throw_if_duplicates(first, last, "image", IsUndefined{});
+      throw_if_duplicates(first, last, "image value", IsUndefined{});
     }
 
     template <typename Iterator>
     void throw_if_not_pperm(Iterator first, Iterator last) {
       throw_if_not_ptransf(first, last);
-      throw_if_duplicates(first, last, "image", IsUndefined{});
+      throw_if_duplicates(first, last, "image value", IsUndefined{});
     }
 
     template <typename Iterator>
@@ -118,7 +118,7 @@ namespace libsemigroups {
                             Iterator img_last,
                             size_t   deg) {
       throw_if_not_ptransf(dom_first, dom_last, img_first, img_last, deg);
-      throw_if_duplicates(img_first, img_last, "image", IsUndefined{});
+      throw_if_duplicates(img_first, img_last, "image value", IsUndefined{});
     }
   }  // namespace detail
 

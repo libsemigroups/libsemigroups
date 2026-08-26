@@ -2354,9 +2354,10 @@ namespace libsemigroups {
     Stephen s(p);
     stephen::set_word(s, "a"s).run();
 
-    REQUIRE_EXCEPTION_MSG(std::ignore = stephen::dot(s, "aa"s),
-                          "duplicate alphabet value, found 'a' in position 1, "
-                          "first occurrence in position 0");
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s, "aa"s),
+        "duplicate letter in alphabet, found 'a' in position 1, first "
+        "occurrence in position 0");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -2371,9 +2372,10 @@ namespace libsemigroups {
     Stephen s(p);
     stephen::set_word(s, 0_w).run();
 
-    REQUIRE_EXCEPTION_MSG(std::ignore = stephen::dot(s, "00"_w),
-                          "duplicate alphabet value, found 0 in position 1, "
-                          "first occurrence in position 0");
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s, "00"_w),
+        "duplicate letter in alphabet, found 0 in position 1, first occurrence "
+        "in position 0");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
