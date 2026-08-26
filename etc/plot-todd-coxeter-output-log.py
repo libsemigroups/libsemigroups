@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # import numpy as np
 import argparse
+import gzip
 import pathlib
 import re
 import sys
-from collections import defaultdict
 from copy import deepcopy
 from dataclasses import dataclass
-import gzip
 
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
-from matplotlib import animation
+from PIL import Image
 
 TIME_PATTERN = re.compile(
     r"""(?:(\d+)y)?
@@ -65,7 +65,14 @@ def parse_args() -> argparse.Namespace:
         "--multiplier",
         type=float,
         default=1.0,
-        help="A multiplier to determine how fast the animation should run (default=1.0)",
+        help="A multiplier to determine how fast the animation should run (default: 1.0)",
+    )
+
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="output.gif",
+        help="The name of the output file to write to (default: output.gif)",
     )
 
     args = parser.parse_args()
@@ -229,7 +236,7 @@ class PhaseSpans:
                     rect.set_width(time - true_start)
                     rect.set(visible=True)
                 else:
-                    rect.set(visible=False)
+                    return
 
 
 def main():
@@ -295,33 +302,35 @@ def main():
         ax2.relim()
         ax2.autoscale_view()
 
-        fig.canvas.draw_idle()
+    def save_gif():
+        if len(times) > 1:
+            # Calculate diffs in ms and clamp to a minimum of 20ms (1000 / 50)
+            deltas = np.diff(times) * 1000
+            durations = np.maximum(deltas, 20).tolist()
+            # Append last frame duration (matches previous frame or defaults to 200ms)
+            durations.append(durations[-1])
+        else:
+            durations = [200]
 
-    frame = 0
+        frames = []
+        for frame in range(len(times)):
+            draw_frame(frame)
 
-    def tick():
-        nonlocal frame
-        draw_frame(frame)
+            fig.canvas.draw()
+            rgba_array = np.asarray(fig.canvas.buffer_rgba())
+            frames.append(Image.fromarray(rgba_array).convert("RGB"))
 
-        frame += 1
-        if frame >= len(times):
-            return
-
-        delta_seconds = times[frame] - times[frame - 1]
-        delay_ms = max(delta_seconds * 1000 / args.multiplier, 1)
-
-        timer = fig.canvas.new_timer(interval=delay_ms)
-        timer.single_shot = True
-        timer.add_callback(tick)
-        timer.start()
+        frames[0].save(
+            args.output,
+            save_all=True,
+            append_images=frames[1:],
+            duration=durations,
+            loop=0,
+        )
 
     draw_frame(0)
-    first_delay = ((times[1] - times[0]) * 1000) / args.multiplier
-    timer = fig.canvas.new_timer(interval=first_delay)
-    timer.single_shot = True
-    timer.add_callback(tick)
-    timer.start()
-    plt.show()
+    save_gif()
+    plt.close(fig)
 
 
 if __name__ == "__main__":
