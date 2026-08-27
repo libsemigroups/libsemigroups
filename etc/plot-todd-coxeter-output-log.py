@@ -389,8 +389,10 @@ def main():
 
     if len(times) > 1:
         deltas = (np.diff(times) * 1000) / args.multiplier
-        durations = np.maximum(deltas, MINIMUM_FRAME_DURATION).tolist()
-        durations.append(args.repeat_delay * 1000)
+        step = args.frame_increment
+        subsampled_deltas = np.add.reduceat(deltas, range(0, len(deltas), step))
+        durations = np.maximum(subsampled_deltas, MINIMUM_FRAME_DURATION).tolist()
+        durations[-1] = args.repeat_delay * 1000
     else:
         durations = [200]
 
