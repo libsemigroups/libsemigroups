@@ -282,12 +282,10 @@ def main():
     args = parse_args()
     print("Reading the input file ...", end=" ", flush=True)
     data = parse_file(args.file)
+    print("Done!")
     if not data:
         print("Error: No plot data found in file.")
         return
-
-    print("Done!")
-    print("Constructing the plot ...")
 
     # Collect the data to be plotted
     num_data_points = len(data)
@@ -299,7 +297,7 @@ def main():
 
     # Setup plots
     sns.set_theme()
-    fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(12, 12))
+    fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(12, 12), dpi=80)
     ax1.set(ylabel="Number of active nodes")
     ax2.set(ylabel="Edge completion (%)", xlabel="Time (s)")
     ax2.set_ylim(-5, 105)
@@ -407,22 +405,36 @@ def main():
         frame_numbers.append(num_data_points - 1)
 
     frames = []
-    for frame_number in tqdm(frame_numbers):
+    for frame_number in tqdm(frame_numbers, desc="Analysing data ", unit="frame"):
         draw_frame(frame_number)
         fig.canvas.draw()
         rgba_array = np.asarray(fig.canvas.buffer_rgba())
-        frames.append(Image.fromarray(rgba_array).convert("RGB"))
+        frame = Image.fromarray(rgba_array).convert("RGB")
+        frames.append(frame)
 
-    print("Done!")
+    shared_palette = frames[-1].quantize(colors=256)
+
+    frames = [
+        frame.quantize(
+            palette=shared_palette,
+            dither=Image.Dither.NONE,
+        )
+        for frame in tqdm(frames, desc="Sharing palette", unit="frame")
+    ]
     print(f"Writing to {args.output} ...", end=" ", flush=True)
     frames[0].save(
         args.output,
         save_all=True,
-        append_images=frames[1:],
+        append_images=tqdm(
+            frames[1:],
+            desc="Preparing GIF  ",
+            unit="frame",
+        ),
         duration=durations,
         loop=0,
+        palette=shared_palette.getpalette(),
     )
-    print("Done!")
+    print(f"See: {args.output}")
 
     plt.close(fig)
 
