@@ -7,10 +7,11 @@ import sys
 from dataclasses import dataclass, replace
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
 import numpy as np
 import seaborn as sns
+from matplotlib.patches import Rectangle
 from PIL import Image
+from tqdm import tqdm
 
 TIME_PATTERN = re.compile(
     r"""(?:(\d+)y)?
@@ -282,7 +283,7 @@ def main():
         return
 
     print("Done!")
-    print("Constructing the plot ...", end=" ", flush=True)
+    print("Constructing the plot ...")
 
     # Collect the data to be plotted
     num_data_points = len(data)
@@ -397,7 +398,7 @@ def main():
         durations = [200]
 
     frames = []
-    for frame in range(0, len(times), args.frame_increment):
+    for frame in tqdm(range(0, len(times), args.frame_increment)):
         draw_frame(frame)
         fig.canvas.draw()
         rgba_array = np.asarray(fig.canvas.buffer_rgba())
