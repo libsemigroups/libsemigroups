@@ -409,7 +409,7 @@ def main():
         frames.append(Image.fromarray(rgba_array).convert("RGB"))
 
     print("Done!")
-    print("Writing to file ...", end=" ", flush=True)
+    print(f"Writing to {args.output} ...", end=" ", flush=True)
     frames[0].save(
         args.output,
         save_all=True,
