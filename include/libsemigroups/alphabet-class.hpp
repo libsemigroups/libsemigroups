@@ -455,7 +455,7 @@ namespace libsemigroups {
   //!
   //! Defined in `alphabet-class.hpp`.
   //!
-  //! Deduction guide to construct a `Alphabet<Word>` from Word const reference.
+  //! Deduction guide to construct a `Alphabet<Word>` from a \c Word reference.
   template <typename Word>
   Alphabet(Word&) -> Alphabet<Word>;
 
