@@ -78,13 +78,6 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--multiplier",
-        type=float,
-        default=1.0,
-        help="Speed multiplier for animation playback (default: 1.0)",
-    )
-
-    parser.add_argument(
         "--output",
         type=str,
         default="output.gif",
@@ -92,23 +85,34 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--repeat-delay",
-        type=float,
-        default=1.0,
-        help="Delay at the end of the gif in seconds (default: 1.0)",
+        "--static-axes",
+        "-s",
+        action="store_true",
+        help="Fix the axes to be their final size",
     )
 
     parser.add_argument(
         "--frame-increment",
+        "-f",
         type=int,
         default=1,
         help="Number of data points to advance by each frame (default: 1)",
     )
 
     parser.add_argument(
-        "--static-axes",
-        action="store_true",
-        help="Fix the axes to be their final size",
+        "--multiplier",
+        "-m",
+        type=float,
+        default=1.0,
+        help="Speed multiplier for animation playback (default: 1.0)",
+    )
+
+    parser.add_argument(
+        "--repeat-delay",
+        "-r",
+        type=float,
+        default=1.0,
+        help="Delay at the end of the gif in seconds (default: 1.0)",
     )
 
     return parser.parse_args()
