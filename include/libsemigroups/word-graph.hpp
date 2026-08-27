@@ -2631,6 +2631,10 @@ namespace libsemigroups {
     //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \warning Passing Order::rpo as \p val will result in \p wg being
+    //! standardized with respect to reverse rpo. This inconsistency will be
+    //! fixed in v4.
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
     [[deprecated]] bool standardize(Graph& wg, Forest& f, Order val);
@@ -2661,6 +2665,10 @@ namespace libsemigroups {
     //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \warning Passing Order::rpo as \p val will result in \p wg being
+    //! standardized with respect to reverse rpo. This inconsistency will be
+    //! fixed in v4.
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
     [[deprecated]] std::pair<bool, Forest> standardize(Graph& wg,

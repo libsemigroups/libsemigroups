@@ -91,10 +91,27 @@ namespace libsemigroups {
   //! \defgroup orders_group Orders
   //! This page contains the documentation for several class and function
   //! templates for comparing words or strings with respect to certain reduction
-  //! orderings.
+  //! orderings. Those orders with prefix `Rev` or `rev_` read words from right
+  //! to left, whereas those without this prefix read from left to right.
   //!
-  //! \note Those orders with prefix `Rev` or `rev_` read words from right to
-  //! left, whereas those without this prefix read from left to right.
+  //! Some of the orders are generalisations of others. In particular,
+  //! when the weight of every generator is the same:
+  //! - \ref len_wt_lex_cmp is a generalisation of \ref lenlex_cmp;
+  //! - \ref rev_len_wt_lex_cmp is a generalisation of \ref rev_lenlex_cmp;
+  //! - \ref wt_lenlex_cmp is a generalisation of \ref lenlex_cmp; and
+  //! - \ref rev_wt_lenlex_cmp is a generalisation of \ref rev_lenlex_cmp;
+  //! - \ref wt_lex_cmp is a generalisation of \ref lex_cmp; and
+  //! - \ref rev_wt_lex_cmp is a generalisation of \ref rev_lex_cmp.
+  //!
+  //! Additionally:
+  //! - \ref wr_cmp is a generalisation of \ref lenlex_cmp when all
+  //!   of the generators have the same level;
+  //! - \ref rev_wr_cmp is a generalisation of \ref rev_lenlex_cmp when all
+  //!   of the generators have the same level;
+  //! - \ref wr_cmp is a generalisation of \ref rev_rpo_cmp when all
+  //!   of the generators have a different level; and
+  //! - \ref rev_wr_cmp is a generalisation of \ref rpo_cmp when all
+  //!   of the generators have a different level.
   //!
   //! \sa \ref Order
   //!

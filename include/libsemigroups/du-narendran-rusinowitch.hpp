@@ -88,7 +88,7 @@ namespace libsemigroups {
   //! \ingroup du_narendran_rusinowitch_group
   //!
   //! \brief Return an ordered alphabet such that the rules are oriented with
-  //! respect to recursive path order.
+  //! respect to recursive path order; see \ref rpo_cmp.
   //!
   //! This function returns the alphabet of \p p ordered so that the rules of
   //! \p p satisfy \f$x_i \to y_i \f$ and \f$x_i > y_i\f$ with respect to

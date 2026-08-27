@@ -329,8 +329,8 @@ recursive_path_compare(Word* const x, Word* const y) noexcept {
   return rev_rpo_cmp(*x, *y);
 }
 
-//! \copydoc libsemigroups::RevRpoCmp
-//! \deprecated_warning{struct} Use \ref libsemigroups::RPOCmp instead.
+//! \copydoc libsemigroups::RevRPOCmp
+//! \deprecated_warning{struct} Use \ref libsemigroups::RevRPOCmp instead.
 using RecursivePathCompare [[deprecated("Use RevRPOCmp instead!")]]
 = RevRPOCmp<>;
 
