@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-# import numpy as np
 import argparse
 import gzip
 import pathlib
 import re
 import sys
-from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 import numpy as np
 import seaborn as sns
 from PIL import Image
@@ -34,18 +33,34 @@ PHASE_START_PATTERN = re.compile(r"(?:ToddCoxeter: )(.*)(?: \d+\.\d+ START)")
 COLOUR_CODE_PATTERN = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 PHASE_PALETTE = sns.color_palette("muted")
 
+TIME_MULTIPLIERS = (
+    31556952,  # years
+    2629746,  # months
+    604800,  # weeks
+    86400,  # days
+    3600,  # hours
+    60,  # minutes
+    1.0,  # seconds
+    1e-3,  # ms
+    1e-6,  # µs
+    1e-9,  # ns
+)
+
+MINIMUM_FRAME_DURATION = 20
+
+
 ###########################################################################
 # Input processing
 ###########################################################################
 
 
-@dataclass
+@dataclass(slots=True)
 class PlotEntry:
     complete: bool = False
-    edge_percentage: float = 0
+    edge_percentage: float = 0.0
     num_nodes: int = 0
     phase: str = ""
-    time: float = 0
+    time: float = 0.0
     title: str = ""
 
 
@@ -58,26 +73,44 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "file",
         type=pathlib.Path,
-        help="The log file to plot",
+        help="Log file to plot",
     )
 
     parser.add_argument(
         "--multiplier",
         type=float,
         default=1.0,
-        help="A multiplier to determine how fast the animation should run (default: 1.0)",
+        help="Speed multiplier for animation playback (default: 1.0)",
     )
 
     parser.add_argument(
         "--output",
         type=str,
         default="output.gif",
-        help="The name of the output file to write to (default: output.gif)",
+        help="Output file path (default: output.gif)",
     )
 
-    args = parser.parse_args()
+    parser.add_argument(
+        "--repeat-delay",
+        type=float,
+        default=1.0,
+        help="Delay at the end of the gif in seconds (default: 1.0)",
+    )
 
-    return args
+    parser.add_argument(
+        "--frame-increment",
+        type=int,
+        default=1,
+        help="Number of data points to advance by each frame (default: 1)",
+    )
+
+    parser.add_argument(
+        "--static-axes",
+        action="store_true",
+        help="Fix the axes to be their final size",
+    )
+
+    return parser.parse_args()
 
 
 def parse_time(time_string: str) -> float:
@@ -86,29 +119,8 @@ def parse_time(time_string: str) -> float:
     if not m:
         raise ValueError(f"Invalid time string: {time_string!r}")
 
-    (
-        years,
-        months,
-        weeks,
-        days,
-        hours,
-        minutes,
-        seconds,
-        milliseconds,
-        microseconds,
-        nanoseconds,
-    ) = (float(x) if x is not None else 0 for x in m.groups())
-    return (
-        31556952 * years
-        + 2629746 * months
-        + 604800 * weeks
-        + 86400 * days
-        + 3600 * hours
-        + 60 * minutes
-        + seconds
-        + 10**-3 * milliseconds
-        + 10**-6 * microseconds
-        + 10**-9 * nanoseconds
+    return sum(
+        float(val) * mult for val, mult in zip(m.groups(), TIME_MULTIPLIERS) if val
     )
 
 
@@ -126,7 +138,7 @@ def parse_phase(phase_str: str) -> str:
     return COLOUR_CODE_PATTERN.sub("", phase_str)
 
 
-def extract_line_info(line: str, plot_data: PlotEntry):
+def extract_line_info(line: str, plot_data: PlotEntry) -> None:
     """Extract plot data from a line in the documentation."""
 
     if plot_data.title == "":
@@ -154,7 +166,6 @@ def extract_line_info(line: str, plot_data: PlotEntry):
     if m:
         plot_data.time = parse_time(m.group(1))
         plot_data.complete = True
-        return
 
 
 def parse_file(file: pathlib.Path) -> list[PlotEntry]:
@@ -170,8 +181,8 @@ def parse_file(file: pathlib.Path) -> list[PlotEntry]:
             extract_line_info(line, current_plot_entry)
             if current_plot_entry.complete:
                 plot_entries.append(current_plot_entry)
-                current_plot_entry = deepcopy(current_plot_entry)
-                current_plot_entry.complete = False
+                current_plot_entry = replace(current_plot_entry, complete=False)
+
     return plot_entries
 
 
@@ -180,15 +191,22 @@ def parse_file(file: pathlib.Path) -> list[PlotEntry]:
 ###########################################################################
 
 
+@dataclass(slots=True)
+class Span:
+    start: float
+    end: float
+    rect: Rectangle
+    fully_visible: bool
+
+
 class PhaseSpans:
     "A class for managing vertical axis spans for phases of ToddCoxeter"
 
     def __init__(self, axes):
-        self._spans = []
+        self._spans: list[list[Span]] = []
         self._colours = {}
         self._axes = axes
         self._current_phase = ""
-        self._last_start = 0.0
 
     def __bool__(self):
         return len(self._spans) != 0
@@ -210,126 +228,190 @@ class PhaseSpans:
         if self._spans:
             last_spans = self._spans[-1]
             for span in last_spans:
-                span[1] = time
+                span.end = time
         if phase != self._current_phase:
             # Add new phase
             self._current_phase = phase
-            self._last_start = time
             label = phase if phase not in self._colours else "_nolegend_"
             kwargs = {
                 "alpha": 0.15,
                 "color": self._get_colour(phase),
                 "label": label,
-                "visible": False,
             }
             self._spans.append(
-                [[time, time, ax.axvspan(time, time, **kwargs)] for ax in self._axes]
+                [
+                    Span(
+                        start=time,
+                        end=time,
+                        rect=ax.axvspan(time, time, **kwargs),
+                        fully_visible=True,
+                    )
+                    for ax in self._axes
+                ]
             )
 
     def set_xlim(self, time):
-        for span in self._spans:
-            for true_start, true_end, rect in span:
-                if true_end <= time:
-                    rect.set_width(true_end - true_start)
-                    rect.set(visible=True)
-                elif true_start < time <= true_end:
-                    rect.set_width(time - true_start)
-                    rect.set(visible=True)
+        for span_collection in self._spans:
+            for span in span_collection:
+                if span.fully_visible:
+                    continue
+
+                if span.end <= time:
+                    span.rect.set_width(span.end - span.start)
+                    span.rect.set_visible(True)
+                    span.fully_visible = True
+                elif span.start < time <= span.end:
+                    span.rect.set_width(time - span.start)
+                    span.rect.set_visible(True)
                 else:
                     return
+
+    def make_invisible(self):
+        for span_collection in self._spans:
+            for span in span_collection:
+                span.rect.set_visible(False)
+                span.fully_visible = False
 
 
 def main():
     args = parse_args()
+    print("Reading the input file ...", end=" ", flush=True)
     data = parse_file(args.file)
+    if not data:
+        print("Error: No plot data found in file.")
+        return
 
-    # Setup plot
+    print("Done!")
+    print("Constructing the plot ...", end=" ", flush=True)
+
+    # Collect the data to be plotted
+    num_data_points = len(data)
+    times = np.fromiter((d.time for d in data), count=num_data_points, dtype=float)
+    nodes = np.fromiter((d.num_nodes for d in data), count=num_data_points, dtype=int)
+    edge_percentages = np.fromiter(
+        (d.edge_percentage for d in data), count=num_data_points, dtype=float
+    )
+
+    # Setup plots
     sns.set_theme()
     fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(12, 12))
-
-    times = []
-    nodes = []
-    edge_percentages = []
-    phase_spans = PhaseSpans((ax1, ax2))
-    for entry in data:
-        times.append(entry.time)
-        nodes.append(entry.num_nodes)
-        edge_percentages.append(entry.edge_percentage)
-        phase_spans.add(entry.time, entry.phase)
-
-    current_line_col = "darkorange"
-
-    node_plot = ax1.plot([], [])[0]
-    current_node_line = ax1.axhline(
-        y=0, xmin=0, xmax=0, label="0", linestyle="--", color=current_line_col
-    )
     ax1.set(ylabel="Number of active nodes")
-    ax1.legend()
-
-    edge_plot = ax2.plot([], [])[0]
-    current_edge_line = ax2.axhline(
-        y=0, xmin=0, xmax=0, label="0", linestyle="--", color=current_line_col
-    )
     ax2.set(ylabel="Edge completion (%)", xlabel="Time (s)")
     ax2.set_ylim(-5, 105)
-    ax2.legend()
+    if args.static_axes:
+        max_time = max(times)
+        max_node = max(nodes)
+        ax1.set_xlim(-0.05 * max_time, 1.1 * max_time)
+        ax1.set_ylim(-0.05 * max_node, 1.1 * max_node)
+        ax2.set_xlim(-0.05 * max_time, 1.1 * max_time)
 
     if data[-1].title:
         fig.suptitle(data[-1].title, family="monospace")
-    else:
-        print("plot warning: no title found", flush=True)
 
-    def draw_frame(frame):
+    current_line_col = "darkorange"
+    max_line_col = "green"
+
+    current_node_line = ax1.axhline(
+        y=0, xmin=0, xmax=0, label="0", linestyle="--", color=current_line_col
+    )
+    current_edge_line = ax2.axhline(
+        y=0, xmin=0, xmax=0, label="0", linestyle="--", color=current_line_col
+    )
+
+    max_node = 0
+    max_edge_percentage = 0
+
+    max_node_line = ax1.axhline(
+        y=0, xmin=0, xmax=0, label="0", linestyle="--", color=max_line_col
+    )
+    max_edge_percentage_line = ax2.axhline(
+        y=0, xmin=0, xmax=0, label="0", linestyle="--", color=max_line_col
+    )
+
+    (node_plot,) = ax1.plot([], [])
+    (edge_percentage_plot,) = ax2.plot([], [])
+
+    phase_spans = PhaseSpans((ax1, ax2))
+    for entry in data:
+        phase_spans.add(entry.time, entry.phase)
+
+    # Construct legend after phases have been constructed
+    node_legend = ax1.legend(loc="upper left")
+    edge_percentage_legend = ax2.legend(loc="upper left")
+
+    # Make phases invisible after the legend has been created
+    phase_spans.make_invisible()
+
+    def draw_frame(frame: int):
+        nonlocal max_node, max_edge_percentage
+
+        previous_frame = max(0, frame - args.frame_increment)
         current_time = times[frame]
-
+        max_node = max(*nodes[previous_frame : frame + 1], max_node)
+        max_edge_percentage = max(
+            *edge_percentages[previous_frame : frame + 1], max_edge_percentage
+        )
         phase_spans.set_xlim(current_time)
 
-        node_plot.set_xdata(times[: frame + 1])
-        node_plot.set_ydata(nodes[: frame + 1])
+        # Update plot data
+        node_plot.set_data(times[: frame + 1], nodes[: frame + 1])
+        edge_percentage_plot.set_data(times[: frame + 1], edge_percentages[: frame + 1])
+
+        # Update current node values
         current_node_line.set_xdata([times[0], current_time])
         current_node_line.set_ydata([nodes[frame], nodes[frame]])
-        current_node_line.set(label=f"{nodes[frame]:.3g}")
-        ax1.legend()
-        ax1.relim()
-        ax1.autoscale_view()
+        node_legend.get_texts()[0].set_text(f"currently: {nodes[frame]:.3g}")
 
-        edge_plot.set_xdata(times[: frame + 1])
-        edge_plot.set_ydata(edge_percentages[: frame + 1])
+        # Update max node values
+        max_node_line.set_xdata([times[0], current_time])
+        max_node_line.set_ydata([max_node, max_node])
+        node_legend.get_texts()[1].set_text(f"max:        {max_node:.3g}")
+
+        # Update current edge percentage
         current_edge_line.set_xdata([times[0], current_time])
         current_edge_line.set_ydata([edge_percentages[frame], edge_percentages[frame]])
-        current_edge_line.set(label=f"{edge_percentages[frame]}%")
-        ax2.legend()
-        ax2.relim()
-        ax2.autoscale_view()
-
-    def save_gif():
-        if len(times) > 1:
-            # Calculate diffs in ms and clamp to a minimum of 20ms (1000 / 50)
-            deltas = np.diff(times) * 1000
-            durations = np.maximum(deltas, 20).tolist()
-            # Append last frame duration (matches previous frame or defaults to 200ms)
-            durations.append(durations[-1])
-        else:
-            durations = [200]
-
-        frames = []
-        for frame in range(len(times)):
-            draw_frame(frame)
-
-            fig.canvas.draw()
-            rgba_array = np.asarray(fig.canvas.buffer_rgba())
-            frames.append(Image.fromarray(rgba_array).convert("RGB"))
-
-        frames[0].save(
-            args.output,
-            save_all=True,
-            append_images=frames[1:],
-            duration=durations,
-            loop=0,
+        edge_percentage_legend.get_texts()[0].set_text(
+            f"currently: {edge_percentages[frame]}%"
         )
 
-    draw_frame(0)
-    save_gif()
+        # Update max edge percentage values
+        max_edge_percentage_line.set_xdata([times[0], current_time])
+        max_edge_percentage_line.set_ydata([max_edge_percentage, max_edge_percentage])
+        edge_percentage_legend.get_texts()[1].set_text(
+            f"max:        {max_edge_percentage}%"
+        )
+
+        # Update axes
+        if not args.static_axes:
+            ax1.set_xlim(-0.05 * current_time, 1.1 * current_time)
+            ax1.set_ylim(-0.05 * max_node, 1.1 * max_node)
+            ax2.set_xlim(-0.05 * current_time, 1.1 * current_time)
+
+    if len(times) > 1:
+        deltas = (np.diff(times) * 1000) / args.multiplier
+        durations = np.maximum(deltas, MINIMUM_FRAME_DURATION).tolist()
+        durations.append(args.repeat_delay * 1000)
+    else:
+        durations = [200]
+
+    frames = []
+    for frame in range(0, len(times), args.frame_increment):
+        draw_frame(frame)
+        fig.canvas.draw()
+        rgba_array = np.asarray(fig.canvas.buffer_rgba())
+        frames.append(Image.fromarray(rgba_array).convert("RGB"))
+
+    print("Done!")
+    print("Writing to file ...", end=" ", flush=True)
+    frames[0].save(
+        args.output,
+        save_all=True,
+        append_images=frames[1:],
+        duration=durations,
+        loop=0,
+    )
+    print("Done!")
+
     plt.close(fig)
 
 
