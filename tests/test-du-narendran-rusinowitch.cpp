@@ -36,7 +36,7 @@ namespace libsemigroups {
     std::string alphabet = du_narendran_rusinowitch(p);
 
     REQUIRE(du_narendran_rusinowitch(p) == alphabet);
-    Presentation<std::string> copy(p);
+    Presentation copy(p);
     presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
     REQUIRE(copy == p);
   }
@@ -52,7 +52,7 @@ namespace libsemigroups {
     std::string alphabet = du_narendran_rusinowitch(p);
 
     REQUIRE(du_narendran_rusinowitch(p) == alphabet);
-    Presentation<std::string> copy(p);
+    Presentation copy(p);
     presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
     REQUIRE(copy == p);
   }
@@ -71,7 +71,7 @@ namespace libsemigroups {
     std::string alphabet = du_narendran_rusinowitch(p);
 
     REQUIRE(du_narendran_rusinowitch(p) == alphabet);
-    Presentation<std::string> copy(p);
+    Presentation copy(p);
     presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
     REQUIRE(copy == p);
   }
@@ -185,7 +185,7 @@ namespace libsemigroups {
     std::string alphabet = du_narendran_rusinowitch(p);
 
     REQUIRE(du_narendran_rusinowitch(p) == alphabet);
-    Presentation<std::string> copy(p);
+    Presentation copy(p);
     presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
     REQUIRE(copy == p);
   }
@@ -203,7 +203,7 @@ namespace libsemigroups {
     std::string alphabet = du_narendran_rusinowitch(p);
 
     REQUIRE(du_narendran_rusinowitch(p) == alphabet);
-    Presentation<std::string> copy(p);
+    Presentation copy(p);
     presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
     REQUIRE(copy == p);
   }
@@ -224,7 +224,7 @@ namespace libsemigroups {
     std::string alphabet = du_narendran_rusinowitch(p);
 
     REQUIRE(du_narendran_rusinowitch(p) == alphabet);
-    Presentation<std::string> copy(p);
+    Presentation copy(p);
     presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
     REQUIRE(copy == p);
   }
@@ -288,7 +288,7 @@ namespace libsemigroups {
     std::string alphabet = du_narendran_rusinowitch(p);
 
     REQUIRE(du_narendran_rusinowitch(p) == alphabet);
-    Presentation<std::string> copy(p);
+    Presentation copy(p);
     presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
     REQUIRE(copy == p);
   }
@@ -386,7 +386,7 @@ namespace libsemigroups {
     std::string alphabet = du_narendran_rusinowitch(p);
 
     REQUIRE(du_narendran_rusinowitch(p) == alphabet);
-    Presentation<std::string> copy(p);
+    Presentation copy(p);
     presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
     REQUIRE(copy == p);
   }
@@ -506,7 +506,7 @@ namespace libsemigroups {
     std::string alphabet = du_narendran_rusinowitch(p);
 
     REQUIRE(du_narendran_rusinowitch(p) == alphabet);
-    Presentation<std::string> copy(p);
+    Presentation copy(p);
     presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
     REQUIRE(copy == p);
   }
