@@ -395,15 +395,20 @@ def main():
     if len(times) > 1:
         deltas = (np.diff(times) * 1000) / args.multiplier
         step = args.frame_increment
-        subsampled_deltas = np.add.reduceat(deltas, range(0, len(deltas), step))
+        subsampled_deltas = np.add.reduceat(deltas, range(0, num_data_points - 1, step))
         durations = np.maximum(subsampled_deltas, MINIMUM_FRAME_DURATION).tolist()
-        durations[-1] = args.repeat_delay * 1000
+        durations.append(args.repeat_delay * 1000)
     else:
         durations = [200]
 
+    frame_numbers = list(range(0, num_data_points, args.frame_increment))
+    # Always plot the last frame
+    if frame_numbers[-1] != num_data_points - 1:
+        frame_numbers.append(num_data_points - 1)
+
     frames = []
-    for frame in tqdm(range(0, len(times), args.frame_increment)):
-        draw_frame(frame)
+    for frame_number in tqdm(frame_numbers):
+        draw_frame(frame_number)
         fig.canvas.draw()
         rgba_array = np.asarray(fig.canvas.buffer_rgba())
         frames.append(Image.fromarray(rgba_array).convert("RGB"))
