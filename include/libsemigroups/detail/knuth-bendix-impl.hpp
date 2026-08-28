@@ -756,14 +756,24 @@ namespace libsemigroups {
       //! reduced and confluent, which might be never.
       //!
       //! \sa \ref number_of_classes, and \ref knuth_bendix::normal_forms.
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       WordGraph<uint32_t> const& gilman_graph();
+#else
+      // The fact that there are two different implementations based on whether
+      // a trie was used or not is an implementational detail that we hide from
+      // the doc.
+      template <typename SFINAE = WordGraph<uint32_t> const&>
+      auto gilman_graph()
+          -> std::enable_if_t<has_trie<RewritingSystem>, SFINAE>;
+
+      template <typename SFINAE = WordGraph<uint32_t> const&>
+      auto gilman_graph()
+          -> std::enable_if_t<!has_trie<RewritingSystem>, SFINAE>;
+#endif
 
       // Documented in KnuthBendix
       [[nodiscard]] std::vector<native_word_type> const&
-      gilman_graph_node_labels() {
-        gilman_graph();  // to ensure that gilman_graph is initialised
-        return _gilman_graph_node_labels;
-      }
+      gilman_graph_node_labels();
 
      protected:
       // run_impl is called by KnuthBendix
@@ -828,7 +838,7 @@ namespace libsemigroups {
              KnuthBendix<Word, RewritingSystem, ReductionOrder> const& kb);
 #else
   template <typename RewritingSystem>
-  std::ostream& operator<<(std::ostream&                                   os,
+  std::ostream& operator<<(std::ostream& os,
                            detail::KnuthBendixImpl<RewritingSystem> const& kb);
 #endif
 
