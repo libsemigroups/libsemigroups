@@ -4366,4 +4366,29 @@ End;)xxx");
     REQUIRE(presentation::is_normalized(p));
     REQUIRE_NOTHROW(presentation::throw_if_not_normalized(p));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "107",
+                          "set alphabet from Alphabet",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+
+    Alphabet<std::string> const copy_alphabet("ab");
+    REQUIRE(&p.alphabet(copy_alphabet) == &p);
+    REQUIRE(p.alphabet() == "ab");
+    REQUIRE(copy_alphabet.letters() == "ab");
+
+    Alphabet<std::string> move_alphabet("xyz");
+    REQUIRE(&p.alphabet(std::move(move_alphabet)) == &p);
+    REQUIRE(p.alphabet() == "xyz");
+
+    Alphabet<std::string> invalid_alphabet("ab");
+    invalid_alphabet.add_letter_no_checks('a');
+    REQUIRE_THROWS_AS(p.alphabet(invalid_alphabet), LibsemigroupsException);
+    REQUIRE(p.alphabet() == "xyz");
+    REQUIRE_THROWS_AS(p.alphabet(std::move(invalid_alphabet)),
+                      LibsemigroupsException);
+    REQUIRE(p.alphabet() == "xyz");
+  }
 }  // namespace libsemigroups
