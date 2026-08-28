@@ -180,12 +180,12 @@ namespace libsemigroups {
 
     TestType w = {1, 1, 0, 1};
 
-    REQUIRE(v4::word_graph::last_node_on_path_no_checks(
+    REQUIRE(word_graph::last_node_on_path_no_checks(
                 s.word_graph_no_run(), 0, w.begin(), w.end())
                 .first
             == 5);
     w = {1, 1, 0, 0, 1, 0};
-    REQUIRE(v4::word_graph::last_node_on_path_no_checks(
+    REQUIRE(word_graph::last_node_on_path_no_checks(
                 s.word_graph_no_run(), 0, w.begin(), w.end())
                 .first
             == 5);
@@ -424,11 +424,11 @@ namespace libsemigroups {
                  {7}}));
 
     auto rule = p.rules[0];
-    auto m    = v4::word_graph::last_node_on_path(
+    auto m    = word_graph::last_node_on_path(
                  S.word_graph_no_run(), 0, rule.cbegin(), rule.cend())
                  .first;
     rule   = p.rules[1];
-    auto n = v4::word_graph::last_node_on_path(
+    auto n = word_graph::last_node_on_path(
                  S.word_graph_no_run(), 0, rule.cbegin(), rule.cend())
                  .first;
     REQUIRE(m != UNDEFINED);
@@ -1409,9 +1409,8 @@ namespace libsemigroups {
     stephen::set_word(S, "aBbcABAabCc").run();
 
     REQUIRE(S.accept_state() == 4);
-    REQUIRE(
-        v4::word_graph::follow_path(S.word_graph_no_run(), 0, to_word(S.word()))
-        == 4);
+    REQUIRE(word_graph::follow_path(S.word_graph_no_run(), 0, to_word(S.word()))
+            == 4);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
   }
 
@@ -1754,9 +1753,8 @@ namespace libsemigroups {
     s.run();
 
     REQUIRE(
-        v4::word_graph::last_node_on_path(s.word_graph_no_run(), 0, 1217_w)
-            .first
-        == v4::word_graph::last_node_on_path(s.word_graph_no_run(), 0, 7121_w)
+        word_graph::last_node_on_path(s.word_graph_no_run(), 0, 1217_w).first
+        == word_graph::last_node_on_path(s.word_graph_no_run(), 0, 7121_w)
                .first);
     REQUIRE(stephen::accepts(s, 7121_w));
   }
@@ -1785,7 +1783,7 @@ namespace libsemigroups {
     REQUIRE(T.word_graph_no_run().number_of_nodes() == 7);
     S *= T;
     REQUIRE(S.word_graph_no_run().number_of_nodes() == 14);
-    // fmt::print("{}", v4::word_graph::dot(S.word_graph_no_run()));
+    // fmt::print("{}", word_graph::dot(S.word_graph_no_run()));
     REQUIRE(!S.finished());
     S.run();
     REQUIRE(S.finished());

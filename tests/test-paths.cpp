@@ -184,7 +184,7 @@ namespace libsemigroups {
     auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
-    v4::word_graph::add_cycle(wg, 100);
+    word_graph::add_cycle(wg, 100);
 
     Paths p(wg);
 
@@ -353,7 +353,7 @@ namespace libsemigroups {
 
     auto expected2
         = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
-             return v4::word_graph::follow_path(wg, 0, ww) == 4;
+             return word_graph::follow_path(wg, 0, ww) == 4;
            }));
     REQUIRE((expected2 | count()) == 131'062);
     REQUIRE((w | skip_n(w.size_hint() - 1)).get().size() == 17);
@@ -366,7 +366,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "005", "#4", "[quick]") {
-    using v4::word_graph::follow_path;
+    using word_graph::follow_path;
     using namespace rx;
 
     auto                      rg = ReportGuard(false);
@@ -394,7 +394,7 @@ namespace libsemigroups {
     wg.target(S.size(), 1, 1);
 
     REQUIRE(wg.number_of_edges() == 20);
-    REQUIRE(v4::word_graph::number_of_nodes_reachable_from(wg, S.size()) == 10);
+    REQUIRE(word_graph::number_of_nodes_reachable_from(wg, S.size()) == 10);
 
     Paths paths(wg);
     paths.order(Order::lex).source(S.size()).min(0).max(8);
@@ -509,7 +509,7 @@ namespace libsemigroups {
     WordRange w;
     expected
         = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
-             return v4::word_graph::follow_path(wg, 0, ww) == 4;
+             return word_graph::follow_path(wg, 0, ww) == 4;
            })
            | to_vector());
     REQUIRE(expected.size() == 131'062);
@@ -634,7 +634,7 @@ namespace libsemigroups {
 
     wg = WordGraph<size_t>();
     wg.add_to_out_degree(1);
-    v4::word_graph::add_cycle(wg, 5);
+    word_graph::add_cycle(wg, 5);
 
     p.init(wg).order(Order::lex).source(0).target(0).min(0).max(6);
     REQUIRE((p | count()) == 2);
@@ -662,7 +662,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
     size_t const n = 20;
     wg.add_to_out_degree(1);
-    v4::word_graph::add_cycle(wg, n);
+    word_graph::add_cycle(wg, n);
     REQUIRE(v4::paths::count(wg, 10) == POSITIVE_INFINITY);
     REQUIRE(v4::paths::count_algorithm(wg, 10, 10, 0, POSITIVE_INFINITY)
             == v4::paths::algorithm::trivial);
@@ -681,7 +681,7 @@ namespace libsemigroups {
     auto wg = v4::make<WordGraph<size_t>>(
         8, {{3, 2, 3}, {7}, {1}, {1, 5}, {6}, {}, {3, 7}});
 
-    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(word_graph::is_acyclic(wg));
 
     size_t expected[8][8][8] = {{{1, 4, 9, 12, 12, 12, 12, 12},
                                  {0, 3, 8, 11, 11, 11, 11, 11},
@@ -803,7 +803,7 @@ namespace libsemigroups {
     WordGraph    wg = binary_tree(n);
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
-    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(word_graph::is_acyclic(wg));
     REQUIRE(v4::paths::count(wg, 0) == std::pow(2, n) - 1);
 
     Paths p(wg);
@@ -845,7 +845,7 @@ namespace libsemigroups {
     WordGraph    wg = binary_tree(n);
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
-    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(word_graph::is_acyclic(wg));
     REQUIRE(v4::paths::count_algorithm(wg, 0) == v4::paths::algorithm::acyclic);
     REQUIRE(v4::paths::count(wg, 0) == std::pow(2, n) - 1);
 
@@ -867,11 +867,11 @@ namespace libsemigroups {
     auto              rg = ReportGuard(false);
     size_t const      n  = 400;
     WordGraph<size_t> wg(n, 1);
-    v4::word_graph::add_cycle_no_checks(wg, wg.cbegin_nodes(), wg.cend_nodes());
-    REQUIRE(!v4::word_graph::is_acyclic(wg));
-    REQUIRE(v4::word_graph::is_reachable(wg, 1, 0));
-    REQUIRE(v4::word_graph::is_reachable(wg, 0, 1));
-    REQUIRE(v4::word_graph::is_reachable(wg, 0, 0));
+    word_graph::add_cycle_no_checks(wg, wg.cbegin_nodes(), wg.cend_nodes());
+    REQUIRE(!word_graph::is_acyclic(wg));
+    REQUIRE(word_graph::is_reachable(wg, 1, 0));
+    REQUIRE(word_graph::is_reachable(wg, 0, 1));
+    REQUIRE(word_graph::is_reachable(wg, 0, 0));
     REQUIRE(v4::paths::count(wg, 0, 0, 401) != 0);
   }
 
@@ -883,7 +883,7 @@ namespace libsemigroups {
     // size_t const n  = 10;
     // auto wg = WordGraph<size_t>::random_acyclic(n, 20, n,
     // std::mt19937()); std::cout <<
-    // v4::word_graph::detail::to_string(wg);
+    // word_graph::detail::to_string(wg);
 
     WordGraph<size_t> wg;
     wg.add_nodes(10);
@@ -899,8 +899,8 @@ namespace libsemigroups {
     wg.target(8, 12, 9);
     wg.target(8, 13, 9);
 
-    REQUIRE(v4::word_graph::is_acyclic(wg));
-    REQUIRE(!v4::word_graph::is_complete(wg));
+    REQUIRE(word_graph::is_acyclic(wg));
+    REQUIRE(!word_graph::is_complete(wg));
 
     REQUIRE(v4::paths::count_algorithm(wg, 0, 0, 16)
             == v4::paths::algorithm::acyclic);
@@ -919,7 +919,7 @@ namespace libsemigroups {
     size_t const n  = 10;
     // auto         wg = WordGraph<size_t>::random(n, 20, 200,
     // std::mt19937());
-    // std::cout << v4::word_graph::detail::to_string(wg);
+    // std::cout << word_graph::detail::to_string(wg);
     auto wg = v4::make<WordGraph<size_t>>(
         10,
         {{9, 1, 6, 3, 7, 2, 2, 8, 1, 4, 3, 1, 7, 9, 4, 7, 8, 9, 6, 9},
@@ -932,8 +932,8 @@ namespace libsemigroups {
          {9, 4, 3, 8, 0, 5, 6, 8, 9, 1, 7, 0, 6, 2, 3, 8, 6, 3, 2, 7},
          {0, 6, 3, 5, 7, 9, 9, 8, 1, 5, 7, 9, 6, 0, 0, 3, 6, 0, 8, 9},
          {3, 7, 9, 1, 4, 9, 4, 0, 5, 8, 3, 2, 0, 2, 3, 4, 0, 5, 3, 5}});
-    REQUIRE(!v4::word_graph::is_acyclic(wg));
-    REQUIRE(v4::word_graph::is_complete(wg));
+    REQUIRE(!word_graph::is_acyclic(wg));
+    REQUIRE(word_graph::is_complete(wg));
 
     REQUIRE(v4::paths::count_algorithm(wg, 0) == v4::paths::algorithm::acyclic);
     REQUIRE(v4::paths::count(wg, 0) == POSITIVE_INFINITY);
@@ -948,17 +948,17 @@ namespace libsemigroups {
     REQUIRE(v4::paths::count_algorithm(wg, 0) == v4::paths::algorithm::acyclic);
     REQUIRE(v4::paths::count(wg, 0) == 1023);
 
-    v4::word_graph::add_cycle(wg, n);
+    word_graph::add_cycle(wg, n);
     wg.target(0, 0, n + 1);
-    REQUIRE(!v4::word_graph::is_acyclic(wg));
-    REQUIRE(!v4::word_graph::is_complete(wg));
+    REQUIRE(!word_graph::is_acyclic(wg));
+    REQUIRE(!word_graph::is_complete(wg));
     REQUIRE(v4::paths::count(wg, 1) == 511);
     REQUIRE(v4::paths::count_algorithm(wg, 1, 0, POSITIVE_INFINITY)
             == v4::paths::algorithm::acyclic);
     REQUIRE(v4::paths::count(wg, 1, 0, POSITIVE_INFINITY) == 511);
-    REQUIRE(v4::word_graph::topological_sort(wg).empty());
+    REQUIRE(word_graph::topological_sort(wg).empty());
     REQUIRE(*std::find_if(wg.cbegin_nodes(), wg.cend_nodes(), [&wg](size_t m) {
-      return v4::word_graph::topological_sort(wg, m).empty();
+      return word_graph::topological_sort(wg, m).empty();
     }) == 1023);
   }
 
@@ -969,7 +969,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     // REQUIRE(detail::magic_number(6) * 6 == 14.634);
     // auto wg = WordGraph<size_t>::random(6, 3, 15, std::mt19937());
-    // std::cout << v4::word_graph::detail::to_string(wg);
+    // std::cout << word_graph::detail::to_string(wg);
     auto wg = v4::make<WordGraph<size_t>>(6,
                                           {{0, 3, 4},
                                            {2, 1, 4},
@@ -995,7 +995,7 @@ namespace libsemigroups {
 
     auto checker1 = [&wg](word_type const& w) {
       return 10 <= w.size() && w.size() < 12
-             && v4::word_graph::follow_path(wg, 0, w) != UNDEFINED;
+             && word_graph::follow_path(wg, 0, w) != UNDEFINED;
     };
 
     p.min(10).max(11);
@@ -1025,7 +1025,7 @@ namespace libsemigroups {
             == static_cast<uint64_t>((p | count())));
 
     auto checker2 = [&wg](word_type const& w) {
-      return w.size() <= 10 && v4::word_graph::follow_path(wg, 1, w) == 1;
+      return w.size() <= 10 && word_graph::follow_path(wg, 1, w) == 1;
     };
     REQUIRE((p | all_of(std::move(checker2))));
   }

@@ -325,7 +325,7 @@ namespace libsemigroups::detail {
     if (!_forest_valid) {
       _standardization_order = Order::none;
       _forest.init();
-      v4::word_graph::spanning_tree_no_checks(*this, initial_node(), _forest);
+      word_graph::spanning_tree_no_checks(*this, initial_node(), _forest);
       _forest_valid = true;
     }
     LIBSEMIGROUPS_ASSERT(_forest.number_of_nodes() == max_active_node() + 1);
@@ -357,7 +357,7 @@ namespace libsemigroups::detail {
     _forest.add_nodes(number_of_nodes_active());
     // NOTE: the cursor() does not survive the next line
     // but lookahead_cursor() should
-    bool result            = v4::word_graph::standardize(*this, _forest, val);
+    bool result            = word_graph::standardize(*this, _forest, val);
     _forest_valid          = true;
     _standardization_order = val;
     report_default("ToddCoxeter: the word graph was {} standardized in {}\n",
@@ -949,7 +949,7 @@ namespace libsemigroups::detail {
       if (_word_graph.definitions().any_skipped()) {
         auto const& d = current_word_graph();
         if (d.number_of_nodes_active() != lower_bound()
-            || !v4::word_graph::is_complete(
+            || !word_graph::is_complete(
                 d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
           SettingsGuard guard(this);
           lookahead_extent(options::lookahead_extent::full);
@@ -1349,7 +1349,7 @@ namespace libsemigroups::detail {
           std::back_inserter(w1), current);
       _lookbehind_collapser(std::back_inserter(w2), w1.begin(), w1.end());
       if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
-        node_type other = v4::word_graph::follow_path_no_checks(
+        node_type other = word_graph::follow_path_no_checks(
             _word_graph, _word_graph.initial_node(), w2.begin(), w2.end());
         if (other != UNDEFINED && other != current) {
           _word_graph.merge_nodes_no_checks(current, other);

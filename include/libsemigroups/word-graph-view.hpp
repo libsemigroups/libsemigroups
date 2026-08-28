@@ -16,8 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains an implementation of word graph views, a thin layer over
-// word graphs exposing a chosen range of nodes
+// This file contains the declaration of the class WordGraphView which is a
+// thin wrapper around a word graph exposing a chosen range of nodes.
+//
+// The header include order is:
+// 1. word-graph-class.hpp
+// 2. word-graph-view.hpp
+// 3. word-graph-view-helpers.hpp
+// 4. word-graph-helpers.hpp
 
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_
@@ -25,12 +31,12 @@
 #include <type_traits>  // for is_integral
 #include <utility>      // for pair
 
-#include "config.hpp"      // for LIBSEMIGROUPS_DEBUG
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "word-graph.hpp"  // for word_graph pointer
+#include "config.hpp"            // for LIBSEMIGROUPS_DEBUG
+#include "debug.hpp"             // for LIBSEMIGROUPS_ASSERT
+#include "word-graph-class.hpp"  // for TODO
 
-#include "detail/containers.hpp"
-#include "detail/int-range.hpp"  // for IntRange
+#include "detail/containers.hpp"  // for TODO
+#include "detail/int-range.hpp"   // for IntRange
 
 namespace libsemigroups {
   //! \ingroup word_graph_group

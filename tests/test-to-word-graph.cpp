@@ -29,7 +29,7 @@ namespace libsemigroups {
     using node_type = Forest::node_type;
 
     WordGraph wg = binary_tree<node_type>(5);
-    Forest    f  = v4::word_graph::spanning_tree(wg, 0);
+    Forest    f  = word_graph::spanning_tree(wg, 0);
     REQUIRE(to<WordGraph>(f) == wg);
   }
 }  // namespace libsemigroups

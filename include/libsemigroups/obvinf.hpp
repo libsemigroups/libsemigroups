@@ -651,7 +651,7 @@ namespace libsemigroups {
   template <typename RewritingSystem>
   bool is_obviously_infinite(detail::KnuthBendixImpl<RewritingSystem>& kb) {
     if (kb.finished()) {
-      return !v4::word_graph::is_acyclic(kb.gilman_graph());
+      return !word_graph::is_acyclic(kb.gilman_graph());
     }
     auto const& p = kb.internal_presentation();
     if (p.alphabet().empty()) {

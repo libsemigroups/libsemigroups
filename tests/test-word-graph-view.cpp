@@ -332,10 +332,8 @@ namespace libsemigroups {
                           "[quick]") {
     auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
-    v4::word_graph::add_cycle_no_checks(
-        g, g.cbegin_nodes(), g.cbegin_nodes() + 5);
-    v4::word_graph::add_cycle_no_checks(
-        g, g.cbegin_nodes() + 5, g.cend_nodes());
+    word_graph::add_cycle_no_checks(g, g.cbegin_nodes(), g.cbegin_nodes() + 5);
+    word_graph::add_cycle_no_checks(g, g.cbegin_nodes() + 5, g.cend_nodes());
     REQUIRE(g.number_of_edges() == 10);
 
     WordGraphView<size_t> v(g);
@@ -480,7 +478,7 @@ namespace libsemigroups {
     WordGraph<size_t> graph(1, Dot::colors.size() + 1);
     v.init(graph);
     REQUIRE_EXCEPTION_MSG(
-        std::ignore = v4::word_graph::dot(
+        std::ignore = word_graph::dot(
             v, {"a"}, std::vector<std::string>(v.out_degree(), "a")),
         "the 1st argument (word graph) must have out degree at most 24, "
         "found 25");

@@ -199,7 +199,7 @@ namespace libsemigroups {
       }
 
       void standardize() {
-        v4::word_graph::standardize_no_checks(_word_graph);
+        word_graph::standardize_no_checks(_word_graph);
         _word_graph.induced_subgraph_no_checks(
             0, _word_graph.number_of_nodes_active());
       }

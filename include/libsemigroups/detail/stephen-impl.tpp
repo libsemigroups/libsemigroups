@@ -83,8 +83,8 @@ namespace libsemigroups {
         }
         LIBSEMIGROUPS_ASSERT(first < last);
         word_type::const_iterator it;
-        std::tie(c, it) = v4::word_graph::last_node_on_path_no_checks(
-            *this, c, first, last);
+        std::tie(c, it)
+            = word_graph::last_node_on_path_no_checks(*this, c, first, last);
         bool result = false;
         for (; it < last; ++it) {
           node_type d = target_no_checks(c, *it);
@@ -99,8 +99,8 @@ namespace libsemigroups {
       }
 
       void disjoint_union_inplace_no_checks(StephenGraph& that) {
-        v4::word_graph::standardize_no_checks(that);
-        LIBSEMIGROUPS_ASSERT(v4::word_graph::is_standardized(that));
+        word_graph::standardize_no_checks(that);
+        LIBSEMIGROUPS_ASSERT(word_graph::is_standardized(that));
         size_t const N = number_of_nodes_active();
         // TODO(2): the following 2 lines are a bit awkward
         WordGraphWithSources_::add_nodes(that.number_of_nodes_active());
@@ -188,7 +188,7 @@ namespace libsemigroups {
     StephenImpl<PresentationType>::accept_state() {
       throw_if_not_ready();
       if (_accept_state == UNDEFINED) {
-        using v4::word_graph::last_node_on_path_no_checks;
+        using word_graph::last_node_on_path_no_checks;
         run();
         _accept_state = last_node_on_path_no_checks(_word_graph,
                                                     0,
@@ -382,7 +382,7 @@ namespace libsemigroups {
             node_type                 u_end;
             word_type::const_iterator rit;
             bool                      did_def = false;
-            std::tie(u_end, rit) = v4::word_graph::last_node_on_path_no_checks(
+            std::tie(u_end, rit) = word_graph::last_node_on_path_no_checks(
                 _word_graph, current, it->cbegin(), it->cend());
             node_type c, v_end;
             if (rit == it->cend()) {
@@ -412,9 +412,8 @@ namespace libsemigroups {
               --it;
             } else {
               ++it;
-              std::tie(v_end, rit)
-                  = v4::word_graph::last_node_on_path_no_checks(
-                      _word_graph, current, it->cbegin(), it->cend());
+              std::tie(v_end, rit) = word_graph::last_node_on_path_no_checks(
+                  _word_graph, current, it->cbegin(), it->cend());
               if (rit == it->cend()) {
                 --it;
                 if (it->empty()) {
@@ -463,7 +462,7 @@ namespace libsemigroups {
       bool accepts(StephenImpl<PresentationType>& s,
                    Iterator                       first,
                    Iterator                       last) {
-        using v4::word_graph::follow_path;
+        using word_graph::follow_path;
         using node_type = typename StephenImpl<PresentationType>::node_type;
         s.run();
         LIBSEMIGROUPS_ASSERT(s.accept_state() != UNDEFINED);
@@ -475,7 +474,7 @@ namespace libsemigroups {
       bool is_left_factor(StephenImpl<PresentationType>& s,
                           Iterator                       first,
                           Iterator                       last) {
-        using v4::word_graph::last_node_on_path;
+        using word_graph::last_node_on_path;
         using node_type = typename StephenImpl<PresentationType>::node_type;
         s.run();
         return last_node_on_path(

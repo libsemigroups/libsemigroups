@@ -320,7 +320,7 @@ namespace libsemigroups {
           // WordGraph::random, and so this benchmark doesn't really make sense
           // any more
           auto wg = WordGraph<size_t>::random(M, N);
-          v4::word_graph::add_cycle_no_checks(
+          word_graph::add_cycle_no_checks(
               wg, wg.cbegin_nodes(), wg.cend_nodes());
           std::string m = std::to_string(wg.number_of_edges());
           size_t      w = source(mt);
@@ -357,7 +357,7 @@ namespace libsemigroups {
       REQUIRE(is_strictly_cyclic(wg) == cyclic);
     };
     BENCHMARK("is_strictly_cyclic using WordGraphView") {
-      REQUIRE(v4::word_graph::is_strictly_cyclic(wg) == cyclic);
+      REQUIRE(word_graph::is_strictly_cyclic(wg) == cyclic);
     };
   }
 }  // namespace libsemigroups

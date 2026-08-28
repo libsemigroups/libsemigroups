@@ -19,10 +19,6 @@
 // This file contains an implementation of word graph views, a thin layer over
 // word graphs exposing a chosen range of nodes
 
-#include "libsemigroups/word-graph-view.hpp"
-#include "libsemigroups/word-graph.hpp"
-#include <utility>
-
 namespace libsemigroups {
 
   template <typename Node>

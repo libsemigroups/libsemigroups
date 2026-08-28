@@ -415,7 +415,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 10'752);
 
     auto& wg = kb.gilman_graph();
-    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(word_graph::is_acyclic(wg));
   }
 
   // [117]: KnuthBendix: example with undecidable word problem - LenLexTrie
