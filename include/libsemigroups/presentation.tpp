@@ -626,7 +626,8 @@ namespace libsemigroups {
                                 p.alphabet().size(),
                                 new_alphabet.size());
       }
-      throw_if_contains_duplicates(new_alphabet, "alphabet");
+      detail::throw_if_duplicates(
+          new_alphabet.begin(), new_alphabet.end(), "letter in alphabet");
       detail::throw_if_alphabet_is_rule(p, new_alphabet);
 
       change_alphabet_no_checks(p, std::move(new_alphabet));
@@ -1342,6 +1343,7 @@ namespace libsemigroups {
 #endif
     }
 
+    template <typename Word>
     void change_alphabet_no_checks(InversePresentation<Word>& p,
                                    Word&&                     new_alphabet) {
       LIBSEMIGROUPS_ASSERT(new_alphabet.size() == p.alphabet_v4().size());
@@ -1370,7 +1372,8 @@ namespace libsemigroups {
                                 p.alphabet().size(),
                                 new_alphabet.size());
       }
-      throw_if_contains_duplicates(new_alphabet, "alphabet");
+      detail::throw_if_duplicates(
+          new_alphabet.begin(), new_alphabet.end(), "letter in alphabet");
       detail::throw_if_alphabet_is_rule(p, new_alphabet);
 
       change_alphabet_no_checks(p, std::move(new_alphabet));
