@@ -235,15 +235,96 @@ namespace libsemigroups {
       return *this;
     }
 
+    //! \brief Set the alphabet without checking its validity.
+    //!
+    //! Replaces the alphabet by moving \p new_alphabet into the presentation
+    //! without checking that the new alphabet is valid. The rules are not
+    //! modified.
+    //!
+    //! \param new_alphabet the replacement alphabet.
+    //!
+    //! \returns A const reference to \c *this.
+    //!
+    //! \sa
+    //! * \ref presentation::change_alphabet
+    //! * \ref throw_if_bad_alphabet_or_rules
+    Presentation const& alphabet_no_checks(Alphabet<Word>&& new_alphabet) {
+      _alphabet = std::move(new_alphabet);
+      return *this;
+    }
+
+    //! \brief Set the alphabet from an rvalue reference.
+    //!
+    //! Replaces the alphabet by moving \p new_alphabet into the presentation
+    //! after checking that the new alphabet is valid. The rules are not
+    //! modified.
+    //!
+    //! \param new_alphabet the replacement alphabet.
+    //!
+    //! \returns A const reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p new_alphabet contains duplicate
+    //! letters.
+    //!
+    //! \warning
+    //! This function does not verify that the rules in the presentation (if
+    //! any) consist of letters belonging to the alphabet.
+    //!
+    //! \sa
+    //! * \ref alphabet_no_checks(Alphabet<Word>&&)
+    //! * \ref throw_if_bad_alphabet_or_rules
+    Presentation const& alphabet(Alphabet<Word>&& new_alphabet) {
+      validate(new_alphabet);
+      return alphabet_no_checks(std::move(new_alphabet));
+    }
+
+    //! \brief Set the alphabet without checking its validity.
+    //!
+    //! Replaces the alphabet by copying \p new_alphabet into the presentation
+    //! without checking that the new alphabet is valid. The rules are not
+    //! modified.
+    //!
+    //! \param new_alphabet the replacement alphabet.
+    //!
+    //! \returns A const reference to \c *this.
+    //!
+    //! \sa
+    //! * \ref presentation::change_alphabet
+    //! * \ref throw_if_bad_alphabet_or_rules
+    Presentation const& alphabet_no_checks(Alphabet<Word> const& new_alphabet) {
+      _alphabet = new_alphabet;
+      return *this;
+    }
+
+    //! \brief Set the alphabet by const reference.
+    //!
+    //! Replaces the alphabet by copying \p new_alphabet into the presentation
+    //! after checking that the new alphabet is valid. The rules are not
+    //! modified.
+    //!
+    //! \param new_alphabet the replacement alphabet.
+    //!
+    //! \returns A const reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p new_alphabet contains duplicate
+    //! letters.
+    //!
+    //! \warning
+    //! This function does not verify that the rules in the presentation (if
+    //! any) consist of letters belonging to the alphabet.
+    //!
+    //! \sa
+    //! * \ref alphabet_no_checks(Alphabet<Word> const&)
+    //! * \ref throw_if_bad_alphabet_or_rules
+    Presentation const& alphabet(Alphabet<Word> const& new_alphabet) {
+      validate(new_alphabet);
+      return alphabet_no_checks(new_alphabet);
+    }
+
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     [[nodiscard]] Alphabet<native_word_type> const&
     alphabet_v4() const noexcept {
       return _alphabet;
-    }
-
-    Presentation const& alphabet_v4(Alphabet<Word> const& new_alphabet) {
-      // TODO(v4) we can do better than this!
-      return alphabet(new_alphabet.letters());
     }
 #endif
 

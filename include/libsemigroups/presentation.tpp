@@ -607,14 +607,16 @@ namespace libsemigroups {
 
       LIBSEMIGROUPS_ASSERT(new_alphabet.size() == p.alphabet_v4().size());
 
-      // Do this first so that it throws if new_alphabet contains repeats
+      Alphabet actual_new_alphabet(std::move(new_alphabet));
+
       for (auto& rule : p.rules) {
         std::for_each(
-            rule.begin(), rule.end(), [&p, &new_alphabet](auto& letter) {
-              letter = new_alphabet[p.index_no_checks(letter)];
+            rule.begin(), rule.end(), [&p, &actual_new_alphabet](auto& letter) {
+              letter = actual_new_alphabet.letter_no_checks(
+                  p.index_no_checks(letter));
             });
       }
-      p.alphabet_no_checks(std::move(new_alphabet));
+      p.alphabet_no_checks(std::move(actual_new_alphabet));
     }
 
     template <typename Word>
@@ -1335,7 +1337,7 @@ namespace libsemigroups {
                       letter = new_alphabet.letter(p.index_no_checks(letter));
                     });
 
-      p.alphabet_v4(new_alphabet);
+      p.alphabet_no_checks(std::move(new_alphabet));
       p.inverses_no_checks(new_inverses);
 
 #ifdef LIBSEMIGROUPS_DEBUG
