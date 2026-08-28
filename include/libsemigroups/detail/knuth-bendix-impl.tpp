@@ -854,8 +854,6 @@ namespace libsemigroups {
       if constexpr (has_trie<RewritingSystem>) {
         using label_type = typename decltype(_gilman_graph)::label_type;
         using node_type  = typename decltype(_gilman_graph)::node_type;
-        using native_word_type =
-            typename KnuthBendixImpl<RewritingSystem>::native_word_type;
 
         _gilman_graph_node_labels.resize(_gilman_graph.number_of_nodes(),
                                          native_word_type());
