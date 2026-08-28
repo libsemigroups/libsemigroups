@@ -4212,4 +4212,31 @@ End;)xxx");
     REQUIRE(p.inverses() == "badc");
     REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "106",
+                          "is_normalized",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    REQUIRE(presentation::is_normalized(p));
+    REQUIRE_NOTHROW(presentation::throw_if_not_normalized(p));
+
+    p.alphabet(std::string{2, 1, 0});
+    REQUIRE(!presentation::is_normalized(p));
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_not_normalized(p),
+                          "the 1st argument (presentation) must have sorted "
+                          "alphabet, found (char values) [2, 1, 0]");
+
+    p.alphabet(std::string{0, 1, 4});
+    REQUIRE(!presentation::is_normalized(p));
+    REQUIRE_EXCEPTION_MSG(
+        presentation::throw_if_not_normalized(p),
+        "the 1st argument (presentation) has invalid "
+        "alphabet, expected [0, ..., 2] found (char values) [0, 1, 4]");
+
+    p.alphabet(std::string{0, 1, 2});
+    REQUIRE(presentation::is_normalized(p));
+    REQUIRE_NOTHROW(presentation::throw_if_not_normalized(p));
+  }
 }  // namespace libsemigroups

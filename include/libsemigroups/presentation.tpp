@@ -127,8 +127,8 @@ namespace libsemigroups {
         return false;
       }
       auto it = std::max_element(first, last);
-      return it != last
-             && *it == static_cast<native_letter_type>(p.alphabet().size() - 1);
+      return it == last
+             || *it == static_cast<native_letter_type>(p.alphabet().size() - 1);
     }
 
     template <typename Word>
