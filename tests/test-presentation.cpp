@@ -4384,11 +4384,15 @@ End;)xxx");
     REQUIRE(p.alphabet() == "xyz");
 
     Alphabet<std::string> invalid_alphabet("ab");
+#ifndef LIBSEMIGROUPS_DEBUG
+    // If debug mode is enabled, then the next line triggers an assertion, which
+    // means we can't really run this in debug mode.
     invalid_alphabet.add_letter_no_checks('a');
     REQUIRE_THROWS_AS(p.alphabet(invalid_alphabet), LibsemigroupsException);
     REQUIRE(p.alphabet() == "xyz");
     REQUIRE_THROWS_AS(p.alphabet(std::move(invalid_alphabet)),
                       LibsemigroupsException);
     REQUIRE(p.alphabet() == "xyz");
+#endif
   }
 }  // namespace libsemigroups
