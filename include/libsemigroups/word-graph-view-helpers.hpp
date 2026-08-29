@@ -1254,6 +1254,28 @@ namespace libsemigroups {
     //! \brief Check if a word graph is standardized.
     //!
     //! This function checks if the word graph \p wg is standardized according
+    //! to the reduction order specified by \p cmp.
+    //!
+    //! \tparam Node the type of the node in \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph to check.
+    //! \param cmp the order to use for standardization check.
+    //!
+    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
+    //! there is a bespoke salgorithm for checking standardization, then
+    //! \ref is_standardized(WordGraph&, Order) should be used instead of this
+    //! function for improved performance.
+    //!
+    //! \sa
+    //! standardize.
+    // TODO(1): Add is_standardized_no_checks?
+    template <typename Node, typename Cmp>
+    bool is_standardized(WordGraphView<Node> const& wg, Cmp cmp);
+
+    //! \brief Check if a word graph is standardized.
+    //!
+    //! This function checks if the word graph \p wg is standardized according
     //! to the reduction order specified by \p val.
     //!
     //! \tparam Node the type of the node in \p wg.
