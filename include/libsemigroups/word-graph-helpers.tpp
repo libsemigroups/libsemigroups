@@ -134,33 +134,43 @@ namespace libsemigroups {
         // Follow the edge labelled <x> out of the node currently occupying
         // position <s>. If that edge leads to a node that is larger than
         // <_largest_used_node>, then <_largest_used_node> is incremented and
-        // p[_largest_used_node] is set to the newly discovered node.
+        // the newly discovered node is set to be the next smallest.
         //
         // Returns true if a previously-unseen node was discovered.
         bool try_set_next_smallest(node_type s, label_type x) {
-          node_type const target = _wg.target_no_checks(_p[s], x);
-          if (target == UNDEFINED || _p_inverse[target] != UNDEFINED) {
+          node_type const t = _wg.target_no_checks(_p[s], x);
+          if (t == UNDEFINED || seen(t)) {
             return false;
           }
-          ++_largest_used_node;
-          if (_largest_used_node >= _forest.number_of_nodes()) {
-            _forest.add_nodes(1);
-          }
-          _p[_largest_used_node] = target;
-          _p_inverse[target]     = _largest_used_node;
-          if (target != _largest_used_node) {
-            _is_non_trivial_permutation = true;
-          }
-          _forest.set_parent_and_label_no_checks(
-              _largest_used_node, (s == _largest_used_node ? target : s), x);
+          set_next_smallset(t);
+          LIBSEMIGROUPS_ASSERT(s != _largest_used_node);
+          _forest.set_parent_and_label_no_checks(_largest_used_node, s, x);
           return true;
         }
 
-        node_type largest_used_node() {
+        // Try to make <t> the next smallest node, with parent _p_inverse[s] and
+        // label <x>.
+        bool try_set_next_smallest_from_old(node_type  s,
+                                            label_type x,
+                                            node_type  t) {
+          if (seen(t)) {
+            return false;
+          }
+          set_next_smallset(t);
+          _forest.set_parent_and_label_no_checks(
+              _largest_used_node, _p_inverse[s], x);
+          return true;
+        }
+
+        node_type largest_used_node() const noexcept {
           return _largest_used_node;
         }
 
-        bool stop_early() {
+        bool seen(node_type s) const {
+          return _p_inverse[s] != UNDEFINED;
+        }
+
+        bool stop_early() const {
           return _largest_used_node >= max_node();
         }
 
@@ -180,6 +190,18 @@ namespace libsemigroups {
             return _wg.number_of_nodes_active() - 1;
           } else {
             return _wg.number_of_nodes() - 1;
+          }
+        }
+
+        void set_next_smallset(node_type t) {
+          ++_largest_used_node;
+          if (_largest_used_node >= _forest.number_of_nodes()) {
+            _forest.add_nodes(1);
+          }
+          _p[_largest_used_node] = t;
+          _p_inverse[t]          = _largest_used_node;
+          if (t != _largest_used_node) {
+            _is_non_trivial_permutation = true;
           }
         }
 
@@ -350,7 +372,76 @@ namespace libsemigroups {
         init_adjacency_matrix(WordGraphView<Node>(wg), mat);
       }
 #endif
+
+      template <typename Node>
+      struct FrontierCandidate {
+        word_type word;
+        Node      node;
+        Node      parent;
+
+        FrontierCandidate(word_type w, Node n, Node p)
+            : word{w}, node{n}, parent{p} {};
+      };
+
     }  // namespace detail
+
+    template <typename Graph, typename Cmp>
+    bool standardize_no_checks(Graph& wg, Forest& f, Cmp cmp) {
+      if (wg.number_of_nodes() == 0) {
+        return false;
+      }
+
+      if (f.number_of_nodes() == 0) {
+        f.add_nodes(1);
+      }
+
+      using node_type          = typename Graph::node_type;
+      using label_type         = typename Graph::label_type;
+      using FrontierCandidate_ = detail::FrontierCandidate<node_type>;
+
+      size_t const                    n = wg.out_degree();
+      detail::Standardizer<Graph>     standardizer(wg, f);
+      std::vector<FrontierCandidate_> frontier{{{}, 0, 0}};
+      auto const& candidate_comparator = [&cmp](FrontierCandidate_ const& lhs,
+                                                FrontierCandidate_ const& rhs) {
+        // We want a min-heap, so we need to return true if lhs > rhs
+        if (lhs.word != rhs.word) {
+          return cmp(rhs.word, lhs.word);
+        } else {
+          return lhs.node > rhs.node;
+        }
+      };
+      std::make_heap(frontier.begin(), frontier.end(), candidate_comparator);
+
+      // BFS through wg using a heap, so that the next node that is considered
+      // always has the shortest word.
+      while (!frontier.empty()) {
+        std::pop_heap(frontier.begin(), frontier.end(), candidate_comparator);
+        auto const [current_word, current_node, parent_node] = frontier.back();
+        frontier.pop_back();
+
+        if (!current_word.empty()) {
+          if (!standardizer.try_set_next_smallest_from_old(
+                  parent_node, current_word.back(), current_node)) {
+            continue;
+          }
+        }
+
+        for (label_type x = 0; x < n; ++x) {
+          node_type new_node = wg.target_no_checks(current_node, x);
+          if (new_node == UNDEFINED || standardizer.seen(new_node)) {
+            continue;
+          }
+          word_type new_word(current_word);
+          new_word.push_back(x);
+          frontier.emplace_back(new_word, new_node, current_node);
+          std::push_heap(
+              frontier.begin(), frontier.end(), candidate_comparator);
+        }
+      }
+
+      return standardizer.standardize();
+    }
 
     template <typename Graph>
     std::pair<bool, Forest> standardize_no_checks(Graph& wg, Order val) {
