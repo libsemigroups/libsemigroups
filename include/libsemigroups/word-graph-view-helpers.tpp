@@ -123,45 +123,36 @@ namespace libsemigroups {
 
       template <typename Node>
       bool is_rev_rpo_standardized(WordGraphView<Node> const& wg) {
-        using node_type = typename WordGraphView<Node>::node_type;
-
-        auto const N = wg.number_of_nodes_no_checks();
-        if (N == 0) {
+        if (wg.number_of_nodes_no_checks() == 0) {
           return true;
         }
 
-        auto const nr_reachable = number_of_nodes_reachable_from(wg, 0);
-        if (nr_reachable <= 1) {
-          return true;
-        }
+        using node_type  = typename WordGraphView<Node>::node_type;
+        using label_type = typename WordGraphView<Node>::label_type;
 
-        std::vector<bool>      seen(N, false);
-        std::vector<node_type> next_node(wg.out_degree_no_checks(), 0);
-        node_type              max_seen = 0;
+        size_t const           n                 = wg.out_degree();
+        node_type              largest_used_node = 0;
+        std::vector<node_type> next_node(n, 0);
 
-        seen[0] = true;
-
-      start_is_rev_rpo_standardized:
-        for (letter_type x = 0; x < wg.out_degree_no_checks(); ++x) {
-          while (next_node[x] <= max_seen) {
+      start_is_rev_rpo_standardize_search:
+        for (label_type x = 0; x < n; ++x) {
+          while (next_node[x] <= largest_used_node) {
             node_type const s = next_node[x];
             ++next_node[x];
-
             node_type const t = wg.target_no_checks(s, x);
-            if (t < N && !seen[t]) {
-              if (t != max_seen + 1) {
-                return false;
-              }
-              seen[t] = true;
-              ++max_seen;
-              if (static_cast<size_t>(max_seen + 1) == nr_reachable) {
-                return true;
-              }
-              goto start_is_rev_rpo_standardized;
+            if (t == UNDEFINED || t <= largest_used_node) {
+              continue;
+            }
+            if (t == largest_used_node + 1) {
+              ++largest_used_node;
+              goto start_is_rev_rpo_standardize_search;
+            } else {
+              return false;
             }
           }
         }
-        return static_cast<size_t>(max_seen + 1) == nr_reachable;
+
+        return true;
       }
 
       // Helper function for the two versions of is_acyclic below.
