@@ -1284,8 +1284,7 @@ namespace libsemigroups {
     //! \param val the order to use for standardization check (defaults to
     //! Order::lenlex).
     //!
-    //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-    //! Order::lenlex, Order::rev_rpo or Order::rev_rpo.
+    //! \no_libsemigroups_except
     //!
     //! \sa
     //! standardize.

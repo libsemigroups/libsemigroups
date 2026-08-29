@@ -1482,21 +1482,27 @@ namespace libsemigroups {
     WordGraph<size_t> wg1 = wg;
     WordGraph<size_t> wg2 = wg;
     WordGraph<size_t> wg3 = wg;
+    WordGraph<size_t> wg4 = wg;
 
     SECTION("LenLex") {
       REQUIRE(!word_graph::is_standardized(wg1, Order::lenlex));
       word_graph::standardize(wg1, Order::lenlex);
       REQUIRE(word_graph::is_standardized(wg1, Order::lenlex));
     }
+    SECTION("Lex") {
+      REQUIRE(!word_graph::is_standardized(wg2, Order::lex));
+      word_graph::standardize(wg2, Order::lex);
+      REQUIRE(word_graph::is_standardized(wg2, Order::lex));
+    }
     SECTION("RPO") {
-      REQUIRE(!word_graph::is_standardized(wg2, Order::rpo));
-      word_graph::standardize(wg2, Order::rpo);
-      REQUIRE(word_graph::is_standardized(wg2, Order::rpo));
+      REQUIRE(!word_graph::is_standardized(wg3, Order::rpo));
+      word_graph::standardize(wg3, Order::rpo);
+      REQUIRE(word_graph::is_standardized(wg3, Order::rpo));
     }
     SECTION("RevRPO") {
-      REQUIRE(!word_graph::is_standardized(wg3, Order::rev_rpo));
-      word_graph::standardize(wg3, Order::rev_rpo);
-      REQUIRE(word_graph::is_standardized(wg3, Order::rev_rpo));
+      REQUIRE(!word_graph::is_standardized(wg4, Order::rev_rpo));
+      word_graph::standardize(wg4, Order::rev_rpo);
+      REQUIRE(word_graph::is_standardized(wg4, Order::rev_rpo));
     }
   }
 
@@ -1512,21 +1518,27 @@ namespace libsemigroups {
     WordGraph<size_t> wg1 = wg;
     WordGraph<size_t> wg2 = wg;
     WordGraph<size_t> wg3 = wg;
+    WordGraph<size_t> wg4 = wg;
 
     SECTION("LenLex") {
       REQUIRE(!word_graph::is_standardized(wg1, Order::lenlex));
       word_graph::standardize(wg1, Order::lenlex);
       REQUIRE(word_graph::is_standardized(wg1, LenLexCmp()));
     }
+    SECTION("Lex") {
+      REQUIRE(!word_graph::is_standardized(wg2, Order::lex));
+      word_graph::standardize(wg2, Order::lex);
+      REQUIRE(word_graph::is_standardized(wg2, LexCmp()));
+    }
     SECTION("RPO") {
-      REQUIRE(!word_graph::is_standardized(wg2, Order::rpo));
-      word_graph::standardize(wg2, Order::rpo);
-      REQUIRE(word_graph::is_standardized(wg2, RPOCmp()));
+      REQUIRE(!word_graph::is_standardized(wg3, Order::rpo));
+      word_graph::standardize(wg3, Order::rpo);
+      REQUIRE(word_graph::is_standardized(wg3, RPOCmp()));
     }
     SECTION("RevRPO") {
-      REQUIRE(!word_graph::is_standardized(wg3, Order::rev_rpo));
-      word_graph::standardize(wg3, Order::rev_rpo);
-      REQUIRE(word_graph::is_standardized(wg3, RevRPOCmp()));
+      REQUIRE(!word_graph::is_standardized(wg4, Order::rev_rpo));
+      word_graph::standardize(wg4, Order::rev_rpo);
+      REQUIRE(word_graph::is_standardized(wg4, RevRPOCmp()));
     }
   }
 }  // namespace libsemigroups

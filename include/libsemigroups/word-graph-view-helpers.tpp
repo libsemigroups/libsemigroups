@@ -81,6 +81,46 @@ namespace libsemigroups {
       }
 
       template <typename Node>
+      bool is_lex_standardized(WordGraphView<Node> const& wg) {
+        using node_type  = typename WordGraphView<Node>::node_type;
+        using label_type = typename WordGraphView<Node>::label_type;
+
+        node_type    s                 = 0;
+        label_type   x                 = 0;
+        size_t const n                 = wg.out_degree();
+        node_type    largest_used_node = 0;
+
+        // TODO(1): replace this with a forest?
+        std::vector<node_type>  parents(wg.number_of_nodes());
+        std::vector<label_type> labels(wg.number_of_nodes());
+        parents[0] = UNDEFINED;
+        labels[0]  = 0;
+
+        // Perform a DFS through wg
+        while (s <= largest_used_node) {
+          node_type const t = wg.target_no_checks(s, x);
+          if (t != UNDEFINED && t > largest_used_node) {
+            if (t == largest_used_node + 1) {
+              ++largest_used_node;
+              parents[t] = s;
+              labels[t]  = x;
+              s          = largest_used_node;
+              x          = 0;
+              continue;
+            } else {
+              return false;
+            }
+          }
+          x++;
+          if (x == n) {  // backtrack
+            x = labels[s];
+            s = parents[s];
+          }
+        }
+        return true;
+      }
+
+      template <typename Node>
       bool is_rpo_standardized(WordGraphView<Node> const& wg) {
         if (wg.number_of_nodes_no_checks() == 0) {
           return true;
@@ -349,11 +389,12 @@ namespace libsemigroups {
           return true;
         case Order::lenlex:
           return detail::is_lenlex_standardized(wg);
+        case Order::lex:
+          return detail::is_lex_standardized(wg);
         case Order::rpo:
           return detail::is_rpo_standardized(wg);
         case Order::rev_rpo:
           return detail::is_rev_rpo_standardized(wg);
-        case Order::lex:
         default:
           LIBSEMIGROUPS_EXCEPTION("not yet implemented")
       }
