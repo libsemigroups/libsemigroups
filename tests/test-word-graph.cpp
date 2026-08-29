@@ -1499,4 +1499,34 @@ namespace libsemigroups {
       REQUIRE(word_graph::is_standardized(wg3, Order::rev_rpo));
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "058",
+                          "random generic is_standardized",
+                          "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
+    WordGraph wg = WordGraph<size_t>::random(5000, 8);
+    REQUIRE(wg.number_of_nodes() == 5000);
+    REQUIRE(wg.number_of_edges() == 40000);
+    WordGraph<size_t> wg1 = wg;
+    WordGraph<size_t> wg2 = wg;
+    WordGraph<size_t> wg3 = wg;
+
+    SECTION("LenLex") {
+      REQUIRE(!word_graph::is_standardized(wg1, Order::lenlex));
+      word_graph::standardize(wg1, Order::lenlex);
+      REQUIRE(word_graph::is_standardized(wg1, LenLexCmp()));
+    }
+    SECTION("RPO") {
+      REQUIRE(!word_graph::is_standardized(wg2, Order::rpo));
+      word_graph::standardize(wg2, Order::rpo);
+      REQUIRE(word_graph::is_standardized(wg2, RPOCmp()));
+    }
+    SECTION("RevRPO") {
+      REQUIRE(!word_graph::is_standardized(wg3, Order::rev_rpo));
+      word_graph::standardize(wg3, Order::rev_rpo);
+      REQUIRE(word_graph::is_standardized(wg3, RevRPOCmp()));
+    }
+  }
 }  // namespace libsemigroups

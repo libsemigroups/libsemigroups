@@ -373,16 +373,6 @@ namespace libsemigroups {
       }
 #endif
 
-      template <typename Node>
-      struct FrontierCandidate {
-        word_type word;
-        Node      node;
-        Node      parent;
-
-        FrontierCandidate(word_type w, Node n, Node p)
-            : word{w}, node{n}, parent{p} {};
-      };
-
     }  // namespace detail
 
     template <typename Graph, typename Cmp>

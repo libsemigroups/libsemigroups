@@ -272,7 +272,75 @@ namespace libsemigroups {
       }
 #endif
 
+      template <typename Node>
+      struct FrontierCandidate {
+        word_type word;
+        Node      node;
+        Node      parent;
+
+        FrontierCandidate(word_type w, Node n, Node p)
+            : word{w}, node{n}, parent{p} {};
+      };
+
     }  // namespace detail
+
+    // TODO(1) reduce duplication with standardized(Graph&, Cmp cmp)
+    template <typename Node, typename Cmp>
+    bool is_standardized(WordGraphView<Node> const& wg, Cmp cmp) {
+      using node_type          = typename WordGraphView<Node>::node_type;
+      using label_type         = typename WordGraphView<Node>::label_type;
+      using FrontierCandidate_ = detail::FrontierCandidate<node_type>;
+
+      size_t const                    n                 = wg.out_degree();
+      node_type                       largest_used_node = 0;
+      std::vector<FrontierCandidate_> frontier{{{}, 0, 0}};
+      auto const& candidate_comparator = [&cmp](FrontierCandidate_ const& lhs,
+                                                FrontierCandidate_ const& rhs) {
+        // We want a min-heap, so we need to return true if lhs > rhs
+        if (lhs.word != rhs.word) {
+          return cmp(rhs.word, lhs.word);
+        } else {
+          return lhs.node > rhs.node;
+        }
+      };
+      std::make_heap(frontier.begin(), frontier.end(), candidate_comparator);
+
+      // BFS through wg using a heap, so that the next node that is considered
+      // always has the shortest word.
+      while (!frontier.empty()) {
+        std::pop_heap(frontier.begin(), frontier.end(), candidate_comparator);
+        // We don't actually need parent_node at all in this function, but it
+        // appears so that FrontierCandidate can be used in both standardize and
+        // is_standardized.
+        auto const [current_word, current_node, parent_node] = frontier.back();
+        frontier.pop_back();
+
+        if (!current_word.empty()) {
+          if (current_node <= largest_used_node) {
+            continue;
+          }
+          if (current_node == largest_used_node + 1) {
+            ++largest_used_node;
+          } else {
+            return false;
+          }
+        }
+
+        for (label_type x = 0; x < n; ++x) {
+          node_type new_node = wg.target_no_checks(current_node, x);
+          if (new_node == UNDEFINED || new_node <= largest_used_node) {
+            continue;
+          }
+          word_type new_word(current_word);
+          new_word.push_back(x);
+          frontier.emplace_back(new_word, new_node, current_node);
+          std::push_heap(
+              frontier.begin(), frontier.end(), candidate_comparator);
+        }
+      }
+
+      return true;
+    }
 
     template <typename Node>
     bool is_standardized(WordGraphView<Node> const& wg, Order val) {
