@@ -2820,17 +2820,8 @@ namespace libsemigroups {
                                             std::string const&     prefix = "",
                                             std::string const& braces = "{}",
                                             std::string const& suffix = "");
-
-  namespace v4 {
-    using ::libsemigroups::Joiner;
-    using ::libsemigroups::make;
-    using ::libsemigroups::Meeter;
-    using ::libsemigroups::operator<<;
-    using ::libsemigroups::to_human_readable_repr;
-    using ::libsemigroups::to_input_string;
-  }  // namespace v4
-
 }  // namespace libsemigroups
 
 #include "libsemigroups/word-graph-helpers.tpp"
+
 #endif  // LIBSEMIGROUPS_WORD_GRAPH_HELPERS_HPP_
