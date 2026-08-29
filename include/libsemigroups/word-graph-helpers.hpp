@@ -25,14 +25,11 @@
 #include <initializer_list>  // for initializer_list
 #include <iosfwd>            // for ostream
 #include <iterator>          // for empty
-#include <numeric>           // for iota
-#include <queue>             // for queue
 #include <random>            // for mt19937, random_device
 #include <stack>             // for stack
 #include <stddef.h>          // for size_t
-#include <stdint.h>          // for uint64_t, uint8_t
+#include <stdint.h>          // for uint64_t
 #include <string>            // for basic_string, allocator
-#include <tuple>             // for tie
 #include <type_traits>       // for enable_if_t, decay_t
 #include <unordered_map>     // for unordered_map
 #include <unordered_set>     // for unordered_set
@@ -40,8 +37,8 @@
 #include <vector>            // for vector, swap
 
 #include "libsemigroups/adapters.hpp"   // for Hash
-#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_EIGEN_...
-#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "libsemigroups/constants.hpp"  // for POSITIVE_INFINITY, UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/dot.hpp"        // for Dot
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
@@ -50,11 +47,10 @@
 #include "libsemigroups/order.hpp"                 // for Order
 #include "libsemigroups/types.hpp"                 // for word_type, letter_type
 #include "libsemigroups/word-graph-class.hpp"      // for WordGraph
-#include "libsemigroups/word-graph-view-helpers.hpp"
-#include "libsemigroups/word-graph-view.hpp"  // for WordGraphView
+#include "libsemigroups/word-graph-view-class.hpp"    // for WordGraphView
+#include "libsemigroups/word-graph-view-helpers.hpp"  // for follow_path
 
 #include "libsemigroups/detail/fmt.hpp"     // for fmt::format
-#include "libsemigroups/detail/stl.hpp"     // for HasLessEqual
 #include "libsemigroups/detail/string.hpp"  // for group_digits
 #include "libsemigroups/detail/uf.hpp"      // for Duf
 

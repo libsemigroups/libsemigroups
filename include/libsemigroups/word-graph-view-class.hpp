@@ -44,7 +44,7 @@
 #include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/int-range.hpp"   // for IntRange
 
-#include "rx/ranges.hpp"  // for begin, end, iterator_range
+#include "ranges.hpp"  // for begin, end, iterator_range
 
 namespace libsemigroups {
   //! \ingroup word_graph_group

@@ -23,21 +23,24 @@
 #ifndef LIBSEMIGROUPS_OBVINF_HPP_
 #define LIBSEMIGROUPS_OBVINF_HPP_
 
-#include <cstddef>  // for size_t
-#include <numeric>  // for accumulate
-#include <string>   // for string
-#include <utility>  // for pair
-#include <vector>   // for vector
+#include <algorithm>  // for max_element
+#include <cstddef>    // for size_t
+#include <cstdint>    // for int64_t
+#include <iterator>   // for begin, end
+#include <numeric>    // for accumulate
+#include <string>     // for string
+#include <utility>    // for pair
+#include <vector>     // for vector
 
 #include "config.hpp"              // for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "ranges.hpp"              // for rx/ranges
 #include "types.hpp"               // for word_type etc
 #include "word-graph-helpers.hpp"  // for word_graph
-#include "word-graph.hpp"          // for is_acyclic
 #include "word-range.hpp"          // for ToWord
 
 #include "detail/eigen.hpp"  // for eigen
 #include "detail/uf.hpp"     // for Duf
+
+#include "ranges.hpp"  // for seq, take, to_vector
 
 namespace libsemigroups {
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN

@@ -36,8 +36,8 @@
 #include "constants.hpp"           // for POSITIVE_INFINITY
 #include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
+#include "word-graph-class.hpp"    // for WordGraph
 #include "word-graph-helpers.hpp"  // for is_acyclic etc
-#include "word-graph.hpp"          // for WordGraph
 #include "word-range.hpp"          // for number_of_words
 
 // TODO(v4) Remove the below line so this appears in the documentation

@@ -31,35 +31,25 @@
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_CLASS_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_CLASS_HPP_
 
-#include <algorithm>      // for uniform_int_distribution
-#include <cstddef>        // for size_t
-#include <cstdint>        // for uint32_t
-#include <ostream>        // for operator<<
-#include <queue>          // for queue
-#include <random>         // for mt19937
-#include <stack>          // for stack
-#include <string>         // for to_string
-#include <tuple>          // for tie
-#include <type_traits>    // for is_integral, is_unsigned
-#include <unordered_set>  // for unordered_set
-#include <utility>        // for pair
-#include <vector>         // for vector
+#include <algorithm>    // for fill
+#include <cstddef>      // for size_t
+#include <cstdint>      // for int64_t
+#include <functional>   // for hash
+#include <random>       // for mt19937, random_device, uniform_int_distribution
+#include <type_traits>  // for is_integral, is_unsigned
+#include <utility>      // for pair
+#include <vector>       // for vector
 
-#include "config.hpp"                // for LIBSEMIGROUPS_EIGEN_EN...
-#include "constants.hpp"             // for UNDEFINED
-#include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
-#include "dot.hpp"                   // for Dot
-#include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
-#include "forest.hpp"                // for Forest
-#include "is_specialization_of.hpp"  // for is_specialization_of_v
-#include "order.hpp"                 // for Order
-#include "ranges.hpp"                // for ??
-#include "types.hpp"                 // for word_type, enable_if_is_same
+#include "config.hpp"     // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 #include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/int-range.hpp"   // for IntRange
 #include "detail/stl.hpp"         // for IsIterator
-#include "detail/uf.hpp"          // for Duf
+
+#include "ranges.hpp"  // for iterator_range, seq, take, zip
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
 #include "detail/eigen.hpp"

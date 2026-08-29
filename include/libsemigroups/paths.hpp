@@ -45,8 +45,8 @@
 #include "paths-count.hpp"         // for algorithm
 #include "ranges.hpp"              // for is_input_range
 #include "types.hpp"               // for word_type
+#include "word-graph-class.hpp"    // for WordGraph
 #include "word-graph-helpers.hpp"  // for word_graph
-#include "word-graph.hpp"          // for WordGraph
 #include "word-range.hpp"          // for number_of_words
 
 #include "detail/containers.hpp"      // for DynamicArray2
