@@ -66,17 +66,15 @@
 
 namespace libsemigroups {
 
-  // TODO(v4) Turn this into a doxygen comment once it is moved out of the v4
-  // namespace
-  // \ingroup word_graph_group
-  //
-  // \brief Namespace containing helper functions for the \ref WordGraph
-  // class.
-  //
-  // Defined in `word-graph-helpers.hpp`.
-  //
-  // \brief This namespace contains helper functions for the \ref WordGraph
-  // class.
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Namespace containing helper functions for the \ref WordGraph
+  //! class.
+  //!
+  //! Defined in `word-graph-helpers.hpp`.
+  //!
+  //! \brief This namespace contains helper functions for the \ref WordGraph
+  //! class.
   namespace word_graph {
 
     //////////////////////////////////////////////////////////////////////////
