@@ -1827,7 +1827,7 @@ namespace libsemigroups {
     //! Order::lenlex).
     //!
     //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-    //! Order::lenlex or Order::rev_rpo.
+    //! Order::lenlex, Order::rpo or Order::rev_rpo.
     //!
     //! \sa
     //! standardize.

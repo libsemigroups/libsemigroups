@@ -81,6 +81,47 @@ namespace libsemigroups {
       }
 
       template <typename Node>
+      bool is_rpo_standardized(WordGraphView<Node> const& wg) {
+        if (wg.number_of_nodes_no_checks() == 0) {
+          return true;
+        }
+
+        using node_type  = typename WordGraphView<Node>::node_type;
+        using label_type = typename WordGraphView<Node>::label_type;
+
+        size_t const           n                 = wg.out_degree();
+        label_type             x                 = 0;
+        node_type              largest_used_node = 0;
+        std::vector<node_type> next_node(n, 0);
+
+        while (x < n) {
+          bool            changed           = false;
+          node_type const largest_this_pass = largest_used_node;
+          while (next_node[x] <= largest_this_pass) {
+            node_type const s = next_node[x];
+            ++next_node[x];
+            node_type const t = wg.target_no_checks(s, x);
+            if (t == UNDEFINED || t <= largest_used_node) {
+              continue;
+            }
+            if (t == largest_used_node + 1) {
+              changed = true;
+              ++largest_used_node;
+            } else {
+              return false;
+            }
+          }
+          if (changed) {
+            x = 0;
+          } else {
+            ++x;
+          }
+        }
+
+        return true;
+      }
+
+      template <typename Node>
       bool is_rev_rpo_standardized(WordGraphView<Node> const& wg) {
         using node_type = typename WordGraphView<Node>::node_type;
 
@@ -249,9 +290,10 @@ namespace libsemigroups {
           return true;
         case Order::lenlex:
           return detail::is_lenlex_standardized(wg);
+        case Order::rpo:
+          return detail::is_rpo_standardized(wg);
         case Order::rev_rpo:
           return detail::is_rev_rpo_standardized(wg);
-        case Order::rpo:
         case Order::lex:
         default:
           LIBSEMIGROUPS_EXCEPTION("not yet implemented")
