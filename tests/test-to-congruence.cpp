@@ -453,7 +453,7 @@ namespace libsemigroups {
     // node is reachable.
 
     // This is the right Cayley graph of the free band with 2 generators.
-    auto wg = v4::make<WordGraph<uint32_t>>(
+    auto wg = make<WordGraph<uint32_t>>(
         7, {{1, 2}, {1, 3}, {4, 2}, {5, 3}, {4, 6}, {5, 3}, {4, 6}});
     auto cong = to<Congruence<word_type>>(twosided, wg);
     REQUIRE(cong.kind() == twosided);

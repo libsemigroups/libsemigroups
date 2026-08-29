@@ -18,6 +18,7 @@
 
 #include <cstddef>  // for size_t
 #include <utility>  // for std::move, std::ignore
+#include <vector>   // for vector
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -332,10 +333,8 @@ namespace libsemigroups {
                           "[quick]") {
     auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
-    v4::word_graph::add_cycle_no_checks(
-        g, g.cbegin_nodes(), g.cbegin_nodes() + 5);
-    v4::word_graph::add_cycle_no_checks(
-        g, g.cbegin_nodes() + 5, g.cend_nodes());
+    word_graph::add_cycle_no_checks(g, g.cbegin_nodes(), g.cbegin_nodes() + 5);
+    word_graph::add_cycle_no_checks(g, g.cbegin_nodes() + 5, g.cend_nodes());
     REQUIRE(g.number_of_edges() == 10);
 
     WordGraphView<size_t> v(g);
@@ -480,10 +479,123 @@ namespace libsemigroups {
     WordGraph<size_t> graph(1, Dot::colors.size() + 1);
     v.init(graph);
     REQUIRE_EXCEPTION_MSG(
-        std::ignore = v4::word_graph::dot(
+        std::ignore = word_graph::dot(
             v, {"a"}, std::vector<std::string>(v.out_degree(), "a")),
         "the 1st argument (word graph) must have out degree at most 24, "
         "found 25");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "024",
+                          "standardization and helper branches",
+                          "[quick]") {
+    auto rg = ReportGuard(false);
+
+    WordGraph<size_t> empty(0, 2);
+    WordGraphView     empty_view(empty);
+    REQUIRE(word_graph::is_strictly_cyclic(empty_view));
+    REQUIRE(word_graph::is_standardized(empty_view, Order::none));
+    REQUIRE(word_graph::is_standardized(empty_view, Order::lenlex));
+    REQUIRE(word_graph::is_standardized(empty_view, Order::rev_rpo));
+
+    WordGraph<size_t> singleton(1, 2);
+    WordGraphView     singleton_view(singleton);
+    REQUIRE(word_graph::is_standardized(singleton_view, Order::rev_rpo));
+
+    auto          canonical = make<WordGraph<size_t>>(3, {{1, 2}, {}, {}});
+    WordGraphView canonical_view(canonical);
+    REQUIRE(word_graph::is_standardized(canonical_view, Order::lenlex));
+
+    auto          noncanonical = make<WordGraph<size_t>>(3, {{2, 1}, {}, {}});
+    WordGraphView noncanonical_view(noncanonical);
+    REQUIRE(!word_graph::is_standardized(noncanonical_view, Order::lenlex));
+    REQUIRE_THROWS_AS(
+        word_graph::is_standardized(noncanonical_view, Order::rpo),
+        LibsemigroupsException);
+
+    auto const matrix = word_graph::adjacency_matrix(canonical_view);
+    REQUIRE(matrix(0, 1) == 1);
+    REQUIRE(matrix(0, 2) == 1);
+
+    REQUIRE(!word_graph::dot(canonical_view).to_string().empty());
+    REQUIRE(word_graph::spanning_tree(canonical_view, 0, 1).number_of_nodes()
+            == 3);
+    REQUIRE(word_graph::spanning_tree_no_checks(canonical_view, 0, 1)
+                .number_of_nodes()
+            == 3);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "025",
+                          "checked compatibility and path overloads",
+                          "[quick]") {
+    auto rg = ReportGuard(false);
+
+    auto          graph = make<WordGraph<size_t>>(2, {{1, 0}, {1, 0}});
+    WordGraphView view(graph);
+    std::vector<size_t> const nodes = {0, 1};
+    word_type const           lhs   = {0};
+    word_type const           equal = {0};
+    word_type const           rhs   = {1};
+
+    REQUIRE(word_graph::is_compatible(
+        view, nodes.cbegin(), nodes.cend(), lhs, equal));
+    REQUIRE(!word_graph::is_compatible(
+        view, nodes.cbegin(), nodes.cend(), lhs, rhs));
+
+    std::vector<word_type> const compatible_rules = {lhs, equal};
+    REQUIRE(word_graph::is_compatible(view,
+                                      nodes.cbegin(),
+                                      nodes.cend(),
+                                      compatible_rules.cbegin(),
+                                      compatible_rules.cend()));
+
+    std::vector<word_type> const incompatible_rules = {lhs, equal, lhs, rhs};
+    REQUIRE(!word_graph::is_compatible(view,
+                                       nodes.cbegin(),
+                                       nodes.cend(),
+                                       incompatible_rules.cbegin(),
+                                       incompatible_rules.cend()));
+
+    word_type const invalid = {2};
+    REQUIRE_THROWS_AS(word_graph::is_compatible(
+                          view, nodes.cbegin(), nodes.cend(), lhs, invalid),
+                      LibsemigroupsException);
+
+    std::vector<size_t> const invalid_nodes = {2};
+    REQUIRE_THROWS_AS(
+        word_graph::is_compatible(
+            view, invalid_nodes.cbegin(), invalid_nodes.cend(), lhs, equal),
+        LibsemigroupsException);
+
+    WordGraph<size_t> incomplete(1, 2);
+    WordGraphView     incomplete_view(incomplete);
+    REQUIRE(word_graph::is_compatible(incomplete_view,
+                                      incomplete_view.cbegin_nodes(),
+                                      incomplete_view.cend_nodes(),
+                                      lhs,
+                                      rhs));
+
+    WordGraph<size_t> one_way(2, 2);
+    one_way.target(0, 0, 1);
+    WordGraphView             one_way_view(one_way);
+    std::vector<size_t> const root = {0};
+    REQUIRE(word_graph::is_compatible(
+        one_way_view, root.cbegin(), root.cend(), lhs, rhs));
+
+    REQUIRE_NOTHROW(view.throw_if_label_out_of_bounds(lhs));
+    REQUIRE_NOTHROW(
+        view.throw_if_label_out_of_bounds(lhs.cbegin(), lhs.cend()));
+    REQUIRE_NOTHROW(view.throw_if_label_out_of_bounds(compatible_rules));
+    REQUIRE_THROWS_AS(view.throw_if_label_out_of_bounds(invalid),
+                      LibsemigroupsException);
+
+    auto            path_graph = make<WordGraph<size_t>>(2, {{1}, {UNDEFINED}});
+    WordGraphView   path_view(path_graph);
+    word_type const path = {0, 1};
+    auto const      last = word_graph::last_node_on_path(path_view, 0, path);
+    REQUIRE(last.first == 1);
+    REQUIRE(last.second == path.cbegin() + 1);
   }
 
 }  // namespace libsemigroups

@@ -24,17 +24,22 @@
 #include <cstdint>           // for uint32_t
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for forward_iterator_tag
+#include <string>            // for string
+#include <type_traits>       // for is_copy_assignable_v
 #include <utility>           // for swap
 #include <vector>            // for vector, allocator
 
 #include "constants.hpp"           // for UNDEFINED
-#include "ranges.hpp"              // for iterator_range
+#include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
+#include "dot.hpp"                 // for Dot
 #include "runner.hpp"              // for Runner
 #include "types.hpp"               // for word_type, generator_index_type, tril
+#include "word-graph-class.hpp"    // for WordGraph
 #include "word-graph-helpers.hpp"  // for word_graph
-#include "word-graph.hpp"          // for WordGraph
 
 #include "detail/containers.hpp"  // for DynamicArray2
+
+#include "ranges.hpp"  // for iterator_range
 
 namespace libsemigroups {
 
@@ -1833,7 +1838,7 @@ namespace libsemigroups {
       }
     }
     element_index_type s = position_of_generator_no_checks(*first);
-    return v4::word_graph::follow_path_no_checks(
+    return word_graph::follow_path_no_checks(
         current_right_cayley_graph(), s, first + 1, last);
   }
 

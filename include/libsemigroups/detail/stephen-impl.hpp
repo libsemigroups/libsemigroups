@@ -38,8 +38,8 @@
 #include "libsemigroups/presentation.hpp"          // for Presentation
 #include "libsemigroups/runner.hpp"                // for Runner
 #include "libsemigroups/types.hpp"                 // for word_type
+#include "libsemigroups/word-graph-class.hpp"      // for WordGraph
 #include "libsemigroups/word-graph-helpers.hpp"    // for word_graph_no_run
-#include "libsemigroups/word-graph.hpp"            // for WordGraph
 
 #include "node-managed-graph.hpp"       // for NodeMana...
 #include "node-manager.hpp"             // for NodeManager
@@ -199,7 +199,7 @@ namespace libsemigroups {
       }
 
       void standardize() {
-        v4::word_graph::standardize_no_checks(_word_graph);
+        word_graph::standardize_no_checks(_word_graph);
         _word_graph.induced_subgraph_no_checks(
             0, _word_graph.number_of_nodes_active());
       }

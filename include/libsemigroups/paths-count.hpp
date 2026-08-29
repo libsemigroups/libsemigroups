@@ -36,8 +36,8 @@
 #include "constants.hpp"           // for POSITIVE_INFINITY
 #include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
+#include "word-graph-class.hpp"    // for WordGraph
 #include "word-graph-helpers.hpp"  // for is_acyclic etc
-#include "word-graph.hpp"          // for WordGraph
 #include "word-range.hpp"          // for number_of_words
 
 // TODO(v4) Remove the below line so this appears in the documentation
@@ -131,7 +131,7 @@ namespace libsemigroups::v4 {
     //! \complexity
     //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
     //! is the out-degree of the word graph.
-    // Not noexcept because v4::word_graph::topological_sort is not.
+    // Not noexcept because word_graph::topological_sort is not.
     template <typename Node1, typename Node2>
     [[nodiscard]] algorithm count_algorithm(WordGraph<Node1> const& wg,
                                             Node2                   source,
@@ -217,7 +217,7 @@ namespace libsemigroups::v4 {
     //! \complexity
     //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
     //! is the out-degree of the word graph.
-    // Not noexcept because v4::word_graph::topological_sort isn't
+    // Not noexcept because word_graph::topological_sort isn't
     template <typename Node1, typename Node2>
     [[nodiscard]] algorithm count_algorithm(WordGraph<Node1> const& wg,
                                             Node2                   source,

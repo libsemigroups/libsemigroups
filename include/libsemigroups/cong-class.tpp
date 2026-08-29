@@ -364,7 +364,7 @@ namespace libsemigroups {
         return true;
       }
       auto const& wg = tc.current_word_graph();
-      if (v4::word_graph::is_complete_no_checks(
+      if (word_graph::is_complete_no_checks(
               wg, rx::begin(wg.active_nodes()), rx::end(wg.active_nodes()))) {
         return false;
       }

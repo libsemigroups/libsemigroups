@@ -514,7 +514,7 @@ namespace libsemigroups {
     }
     REQUIRE(kb.rewriting_system().confluent());
 
-    REQUIRE(!v4::word_graph::is_acyclic(wg));
+    REQUIRE(!word_graph::is_acyclic(wg));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -543,7 +543,7 @@ namespace libsemigroups {
 
     kb.run();
     auto& wg = kb.gilman_graph();
-    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(word_graph::is_acyclic(wg));
     Paths paths(wg);
     paths.source(0).min(0).max(13);
 
@@ -598,13 +598,13 @@ namespace libsemigroups {
       REQUIRE(nf.count() == 12);
       REQUIRE(wg.number_of_nodes() == 8);
       REQUIRE(wg.number_of_edges() == 11);
-      REQUIRE(v4::word_graph::is_acyclic(wg));
+      REQUIRE(word_graph::is_acyclic(wg));
     } else {
       REQUIRE(kb.rewriting_system().number_of_rules() == 5);
       REQUIRE(nf.count() == 5);
       REQUIRE(wg.number_of_nodes() == 12);
       REQUIRE(wg.number_of_edges() == 11);
-      REQUIRE(v4::word_graph::is_acyclic(wg));
+      REQUIRE(word_graph::is_acyclic(wg));
     }
     REQUIRE(kb.rewriting_system().confluent());
     REQUIRE(kb.number_of_classes() == 11);
@@ -630,7 +630,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     REQUIRE(wg.number_of_nodes() == 7);
     REQUIRE(wg.number_of_edges() == 17);
-    REQUIRE(!v4::word_graph::is_acyclic(wg));
+    REQUIRE(!word_graph::is_acyclic(wg));
     Paths paths(wg);
     paths.source(0).min(0).max(9);
     REQUIRE(paths.count() == 13'044);

@@ -45,8 +45,8 @@
 #include "paths-count.hpp"         // for algorithm
 #include "ranges.hpp"              // for is_input_range
 #include "types.hpp"               // for word_type
+#include "word-graph-class.hpp"    // for WordGraph
 #include "word-graph-helpers.hpp"  // for word_graph
-#include "word-graph.hpp"          // for WordGraph
 #include "word-range.hpp"          // for number_of_words
 
 #include "detail/containers.hpp"      // for DynamicArray2
@@ -268,7 +268,7 @@ namespace libsemigroups {
                                    size_t                  min = 0,
                                    size_t max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
-    if (!v4::word_graph::is_reachable(wg, source, target)) {
+    if (!word_graph::is_reachable(wg, source, target)) {
       return cend_pstilo(wg);
     }
     return detail::const_pstilo_iterator<Node1>(&wg, source, target, min, max);
@@ -347,7 +347,7 @@ namespace libsemigroups {
                                     size_t                  min = 0,
                                     size_t max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
-    if (!v4::word_graph::is_reachable(wg, source, target)) {
+    if (!word_graph::is_reachable(wg, source, target)) {
       return cend_pstislo(wg);
     }
     return detail::const_pstislo_iterator<Node1>(&wg, source, target, min, max);
@@ -454,7 +454,7 @@ namespace libsemigroups {
   //!
   //! \deprecated This function is deprecated, it will be moved into the `paths`
   //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
-  // Not noexcept because v4::word_graph::topological_sort is not.
+  // Not noexcept because word_graph::topological_sort is not.
   template <typename Node1, typename Node2>
   [[deprecated]] [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& wg,
@@ -546,7 +546,7 @@ namespace libsemigroups {
   //!
   //! \deprecated This function is deprecated, it will be moved into the `paths`
   //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
-  // Not noexcept because v4::word_graph::topological_sort isn't
+  // Not noexcept because word_graph::topological_sort isn't
   template <typename Node1, typename Node2>
   [[deprecated]] [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& wg,

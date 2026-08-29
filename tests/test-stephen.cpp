@@ -119,9 +119,9 @@ namespace libsemigroups {
       s.init(p);
       stephen::set_word(s, TestType({0})).run();
       REQUIRE(s.word_graph_no_run().number_of_nodes() == 2);
-      REQUIRE(s.word_graph_no_run()
-              == v4::make<WordGraph<uint32_t>>(
-                  2, {{1, UNDEFINED}, {UNDEFINED, 1}}));
+      REQUIRE(
+          s.word_graph_no_run()
+          == make<WordGraph<uint32_t>>(2, {{1, UNDEFINED}, {UNDEFINED, 1}}));
       REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
       {
         REQUIRE((stephen::words_accepted(s) | rx::take(10) | rx::to_vector())
@@ -168,24 +168,24 @@ namespace libsemigroups {
     stephen::set_word(s, TestType({1, 1, 0, 1})).run();
     REQUIRE(s.word_graph_no_run().number_of_nodes() == 7);
     REQUIRE(s.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(7,
-                                             {{UNDEFINED, 1},
-                                              {UNDEFINED, 2},
-                                              {3, 1},
-                                              {4, 5},
-                                              {3, 6},
-                                              {6, 3},
-                                              {5, 4}}));
+            == make<WordGraph<uint32_t>>(7,
+                                         {{UNDEFINED, 1},
+                                          {UNDEFINED, 2},
+                                          {3, 1},
+                                          {4, 5},
+                                          {3, 6},
+                                          {6, 3},
+                                          {5, 4}}));
     REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
 
     TestType w = {1, 1, 0, 1};
 
-    REQUIRE(v4::word_graph::last_node_on_path_no_checks(
+    REQUIRE(word_graph::last_node_on_path_no_checks(
                 s.word_graph_no_run(), 0, w.begin(), w.end())
                 .first
             == 5);
     w = {1, 1, 0, 0, 1, 0};
-    REQUIRE(v4::word_graph::last_node_on_path_no_checks(
+    REQUIRE(word_graph::last_node_on_path_no_checks(
                 s.word_graph_no_run(), 0, w.begin(), w.end())
                 .first
             == 5);
@@ -230,7 +230,7 @@ namespace libsemigroups {
     stephen::set_word(s, TestType({0, 0})).run();
     REQUIRE(s.word_graph_no_run().number_of_nodes() == 5);
     REQUIRE(s.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 5, {{1, UNDEFINED}, {2, 3}, {1, 4}, {4, 1}, {3, 2}}));
 
     p.rules.clear();
@@ -239,7 +239,7 @@ namespace libsemigroups {
     stephen::set_word(s.init(p), TestType({0, 0})).run();
     REQUIRE(s.word_graph_no_run().number_of_nodes() == 3);
     REQUIRE(s.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 3, {{1, UNDEFINED}, {2, UNDEFINED}, {1, UNDEFINED}}));
   }
 
@@ -257,7 +257,7 @@ namespace libsemigroups {
     REQUIRE(s.word_graph_no_run().number_of_nodes() == 120);
     REQUIRE(
         s.word_graph_no_run()
-        == v4::make<WordGraph<uint32_t>>(
+        == make<WordGraph<uint32_t>>(
             120,
             {{1, 2, 3, 4, UNDEFINED},        {0, 5, 6, 7, UNDEFINED},
              {8, 0, 9, 10, UNDEFINED},       {11, 12, 0, 13, UNDEFINED},
@@ -398,7 +398,7 @@ namespace libsemigroups {
     stephen::set_word(S, to_word("abcef")).run();
     REQUIRE(to_word("abcef") == 01245_w);
     REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 11,
                 {{1,
                   UNDEFINED,
@@ -424,11 +424,11 @@ namespace libsemigroups {
                  {7}}));
 
     auto rule = p.rules[0];
-    auto m    = v4::word_graph::last_node_on_path(
+    auto m    = word_graph::last_node_on_path(
                  S.word_graph_no_run(), 0, rule.cbegin(), rule.cend())
                  .first;
     rule   = p.rules[1];
-    auto n = v4::word_graph::last_node_on_path(
+    auto n = word_graph::last_node_on_path(
                  S.word_graph_no_run(), 0, rule.cbegin(), rule.cend())
                  .first;
     REQUIRE(m != UNDEFINED);
@@ -469,7 +469,7 @@ namespace libsemigroups {
 
     stephen::set_word(S, "abcef").run();
     REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 11,
                 {{1,
                   UNDEFINED,
@@ -1409,9 +1409,8 @@ namespace libsemigroups {
     stephen::set_word(S, "aBbcABAabCc").run();
 
     REQUIRE(S.accept_state() == 4);
-    REQUIRE(
-        v4::word_graph::follow_path(S.word_graph_no_run(), 0, to_word(S.word()))
-        == 4);
+    REQUIRE(word_graph::follow_path(S.word_graph_no_run(), 0, to_word(S.word()))
+            == 4);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
   }
 
@@ -1465,13 +1464,13 @@ namespace libsemigroups {
     REQUIRE(S.word_graph_no_run().number_of_nodes() == 4);
     REQUIRE(S.word_graph_no_run().number_of_edges() == 8);
 
-    REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
-                4,
-                {{1, 2, UNDEFINED, UNDEFINED},
-                 {UNDEFINED, 1, 0, 1},
-                 {UNDEFINED, 3, UNDEFINED, 0},
-                 {UNDEFINED, UNDEFINED, UNDEFINED, 2}}));
+    REQUIRE(
+        S.word_graph_no_run()
+        == make<WordGraph<uint32_t>>(4,
+                                     {{1, 2, UNDEFINED, UNDEFINED},
+                                      {UNDEFINED, 1, 0, 1},
+                                      {UNDEFINED, 3, UNDEFINED, 0},
+                                      {UNDEFINED, UNDEFINED, UNDEFINED, 2}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -1514,7 +1513,7 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.word_graph_no_run().number_of_nodes() == 7);
     REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 7,
                 {{1, UNDEFINED, 2, UNDEFINED, 3, UNDEFINED},
                  {UNDEFINED, UNDEFINED, UNDEFINED, 0, 4, UNDEFINED},
@@ -1581,7 +1580,7 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.word_graph_no_run().number_of_nodes() == 7);
     REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 7,
                 {{1, UNDEFINED, 2, UNDEFINED, 3, UNDEFINED},
                  {UNDEFINED, UNDEFINED, UNDEFINED, 0, 4, UNDEFINED},
@@ -1754,9 +1753,8 @@ namespace libsemigroups {
     s.run();
 
     REQUIRE(
-        v4::word_graph::last_node_on_path(s.word_graph_no_run(), 0, 1217_w)
-            .first
-        == v4::word_graph::last_node_on_path(s.word_graph_no_run(), 0, 7121_w)
+        word_graph::last_node_on_path(s.word_graph_no_run(), 0, 1217_w).first
+        == word_graph::last_node_on_path(s.word_graph_no_run(), 0, 7121_w)
                .first);
     REQUIRE(stephen::accepts(s, 7121_w));
   }
@@ -1785,7 +1783,7 @@ namespace libsemigroups {
     REQUIRE(T.word_graph_no_run().number_of_nodes() == 7);
     S *= T;
     REQUIRE(S.word_graph_no_run().number_of_nodes() == 14);
-    // fmt::print("{}", v4::word_graph::dot(S.word_graph_no_run()));
+    // fmt::print("{}", word_graph::dot(S.word_graph_no_run()));
     REQUIRE(!S.finished());
     S.run();
     REQUIRE(S.finished());
@@ -1985,7 +1983,7 @@ namespace libsemigroups {
       stephens[i].run();
       REQUIRE(stephens[i].word_graph_no_run().number_of_nodes() == 2);
       REQUIRE(stephens[i].word_graph_no_run()
-              == v4::make<WordGraph<uint32_t>>(
+              == make<WordGraph<uint32_t>>(
                   2,
                   {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
                    {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));
@@ -2006,7 +2004,7 @@ namespace libsemigroups {
       bad_stephens[i].run();
       REQUIRE(bad_stephens[i].word_graph_no_run().number_of_nodes() == 2);
       REQUIRE(bad_stephens[i].word_graph_no_run()
-              == v4::make<WordGraph<uint32_t>>(
+              == make<WordGraph<uint32_t>>(
                   2,
                   {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
                    {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));

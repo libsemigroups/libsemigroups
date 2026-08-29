@@ -220,8 +220,8 @@ namespace libsemigroups {
       // Strictly speaking it isn't necessary to get both "nodes" and "f" below,
       // but we do because it's convenient and this is for drawing a picture and
       // so shouldn't be done when the number of nodes is large.
-      auto nodes = v4::word_graph::nodes_reachable_from(wg, root, radius);
-      auto f     = v4::word_graph::spanning_tree_no_checks(wg, root, radius);
+      auto nodes = word_graph::nodes_reachable_from(wg, root, radius);
+      auto f     = word_graph::spanning_tree_no_checks(wg, root, radius);
       for (auto n : nodes) {
         std::string label;
         f.path_from_root_no_checks(std::back_inserter(label), n);

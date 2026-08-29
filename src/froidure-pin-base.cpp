@@ -459,7 +459,7 @@ namespace libsemigroups {
         for (size_t i = 0; i < s.number_of_generators(); ++i) {
           edge_labels.push_back(to_string(word_type({i})));
         }
-        return v4::word_graph::dot(wg, node_labels, edge_labels);
+        return word_graph::dot(wg, node_labels, edge_labels);
       }
 
       Dot
