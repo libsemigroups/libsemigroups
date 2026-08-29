@@ -1515,6 +1515,165 @@ namespace libsemigroups {
     //! \brief Standardizes a word graph in-place.
     //!
     //! This function standardizes the word graph \p wg according to the
+    //! reduction order specified by \p cmp, and replaces the contents of the
+    //! Forest \p f with a spanning tree rooted at \c 0 for the node reachable
+    //! from \c 0. The spanning tree corresponds to the order \p cmp.
+    //!
+    //! \tparam Graph the type of the word graph \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph.
+    //! \param f the Forest object to store the spanning tree.
+    //! \param cmp the order to use for standardization.
+    //!
+    //! \returns
+    //! This function returns \c true if the word graph \p wg is modified by
+    //! this function (i.e. it was not standardized already), and \c false
+    //! otherwise.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note If any target of any edge in the word graph \p wg is out of
+    //! bounds, then this is ignored by this function.
+    //!
+    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
+    //! there is a bespoke standardization algorithm, then
+    //! \ref standardize_no_checks(Graph&, Forest&, Order) should be used
+    //! instead of this function for improved performance.
+    //!
+    //! \warning If there are nodes in the \p wg that are not reachable from
+    //! the node \c 0, then this function may not preserve \p wg up to
+    //! isomorphism. However, the isomorphism type of the sub-word-graph
+    //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // Not nodiscard because sometimes we just don't want the output
+    template <typename Graph, typename Cmp>
+    bool standardize_no_checks(Graph& wg, Forest& f, Cmp cmp);
+
+    //! \brief Standardizes a word graph in-place.
+    //!
+    //! This function standardizes the word graph \p wg according to the
+    //! reduction order specified by \p cmp, and replaces the contents of the
+    //! Forest \p f with a spanning tree rooted at \c 0 for the node reachable
+    //! from \c 0. The spanning tree corresponds to the order \p val.
+    //!
+    //! \tparam Graph the type of the word graph \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph.
+    //! \param f the Forest object to store the spanning tree.
+    //! \param cmp the order to use for standardization.
+    //!
+    //! \returns
+    //! This function returns \c true if the word graph \p wg is modified by
+    //! this function (i.e. it was not standardized already), and \c false
+    //! otherwise.
+    //!
+    //! \throws LibsemigroupsException if any target or any label of \p wg is
+    //! out of bounds.
+    //!
+    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
+    //! there is a bespoke standardization algorithm, then
+    //! \ref standardize(Graph&, Forest&, Order) should be used instead of this
+    //! function for improved performance.
+    //!
+    //! \warning If there are nodes in the \p wg that are not reachable from
+    //! the node \c 0, then this function may not preserve \p wg up to
+    //! isomorphism. However, the isomorphism type of the sub-word-graph
+    //! consisting of those nodes reachable from the node \c 0 is preserved.
+    //!
+    // Not nodiscard because sometimes we just don't want the output
+    template <typename Graph, typename Cmp>
+    bool standardize(Graph& wg, Forest& f, Cmp cmp) {
+      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
+      return standardize_no_checks(wg, f, cmp);
+    }
+
+    //! \brief Standardizes a word graph in-place.
+    //!
+    //! This function standardizes the word graph \p wg according to the
+    //! reduction order specified by \p cmp, and returns a Forest object
+    //! containing a spanning tree rooted at \c 0 for the node reachable from
+    //! \c 0. The spanning tree corresponds to the order \p val.
+    //!
+    //! \tparam Graph the type of the word graph \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph.
+    //! \param cmp the order to use for standardization.
+    //!
+    //! \returns
+    //! A std::pair the first entry of which is \c true if the word graph
+    //! \p wg is modified by this function (i.e. it was not standardized
+    //! already), and
+    //! \c false otherwise. The second entry is a Forest object containing a
+    //! spanning tree for \p wg.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note If any target of any edge in the word graph \p wg is out of
+    //! bounds, then this is ignored by this function.
+    //!
+    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
+    //! there is a bespoke standardization algorithm, then
+    //! \ref standardize_no_checks(Graph&, Order) should be used instead of this
+    //! function for improved performance.
+    //!
+    //! \warning If there are nodes in the \p wg that are not reachable from
+    //! the node \c 0, then this function may not preserve \p wg up to
+    //! isomorphism. However, the isomorphism type of the sub-word-graph
+    //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // Not nodiscard because sometimes we just don't want the output
+    template <typename Graph, typename Cmp>
+    std::pair<bool, Forest> standardize_no_checks(Graph& wg, Cmp cmp) {
+      Forest f;
+      bool   result = standardize_no_checks(wg, f, cmp);
+      return std::make_pair(result, f);
+    }
+
+    //! \brief Standardizes a word graph in-place.
+    //!
+    //! This function standardizes the word graph \p wg according to the
+    //! reduction order specified by \p cmp, and returns a Forest object
+    //! containing a spanning tree rooted at \c 0 for the node reachable from
+    //! \c 0. The spanning tree corresponds to the order \p val.
+    //!
+    //! \tparam Graph the type of the word graph \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph.
+    //! \param cmp the order to use for standardization.
+    //!
+    //! \returns
+    //! A std::pair the first entry of which is \c true if the word graph
+    //! \p wg is modified by this function (i.e. it was not standardized
+    //! already), and
+    //! \c false otherwise. The second entry is a Forest object containing a
+    //! spanning tree for \p wg.
+    //!
+    //! \throws LibsemigroupsException if any target or any label of \p wg is
+    //! out of bounds.
+    //!
+    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
+    //! there is a bespoke standardization algorithm, then
+    //! \ref standardize(Graph&, Order) should be used instead of this function
+    //! for improved performance.
+    //!
+    //! \warning If there are nodes in the \p wg that are not reachable from
+    //! the node \c 0, then this function may not preserve \p wg up to
+    //! isomorphism. However, the isomorphism type of the sub-word-graph
+    //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // Not nodiscard because sometimes we just don't want the output
+    template <typename Graph, typename Cmp>
+    std::pair<bool, Forest> standardize(Graph& wg, Cmp cmp) {
+      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
+      return standardize_no_checks(wg, cmp);
+    }
+
+    //! \brief Standardizes a word graph in-place.
+    //!
+    //! This function standardizes the word graph \p wg according to the
     //! reduction order specified by \p val, and replaces the contents of the
     //! Forest \p f with a spanning tree rooted at \c 0 for the node reachable
     //! from \c 0. The spanning tree corresponds to the order \p val.
