@@ -100,6 +100,7 @@
 #include "ukkonen.hpp"
 #include "word-graph-class.hpp"
 #include "word-graph-helpers.hpp"
+#include "word-graph-view-class.hpp"
 #include "word-graph-view-helpers.hpp"
 #include "word-graph-view.hpp"
 #include "word-graph.hpp"

@@ -50,7 +50,7 @@
 #include "libsemigroups/order.hpp"                 // for Order
 #include "libsemigroups/types.hpp"                 // for word_type, letter_type
 #include "libsemigroups/word-graph-class.hpp"      // for WordGraph
-#include "libsemigroups/word-graph-view.hpp"       // for WordGraphView
+#include "libsemigroups/word-graph-view-class.hpp"  // for WordGraphView
 
 #include "libsemigroups/detail/fmt.hpp"     // for fmt::format
 #include "libsemigroups/detail/stl.hpp"     // for HasLessEqual

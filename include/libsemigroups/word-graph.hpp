@@ -24,7 +24,10 @@
 
 #include "word-graph-class.hpp"
 #include "word-graph-helpers.hpp"
+
+// TODO(v4): remove the following from this file. It must be retained here for
+// backwards compatibility.
+#include "word-graph-view-class.hpp"
 #include "word-graph-view-helpers.hpp"
-#include "word-graph-view.hpp"
 
 #endif  // LIBSEMIGROUPS_WORD_GRAPH_HPP_
