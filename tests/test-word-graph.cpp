@@ -20,8 +20,10 @@
 #include <cmath>          // for pow
 #include <cstddef>        // for ptrdiff_t, size_t
 #include <numeric>        // for iota
+#include <random>         // for mt19937
 #include <stdexcept>      // for runtime_error
 #include <unordered_set>  // for unordered_set
+#include <utility>        // for move
 #include <vector>         // for vector
 
 #include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
@@ -1271,5 +1273,107 @@ namespace libsemigroups {
       REQUIRE(word_graph::nodes_reachable_from_no_checks(wg, 0, depth).size()
               == 1999);
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "055",
+                          "uncovered validation overloads",
+                          "[quick][word-graph]") {
+    auto                rg = ReportGuard(false);
+    WordGraph<uint32_t> wg(2, 2);
+
+    word_type const valid = {0, 1};
+    REQUIRE_NOTHROW(word_graph::throw_if_label_out_of_bounds(wg, valid));
+    REQUIRE_NOTHROW(word_graph::throw_if_label_out_of_bounds(
+        wg, valid.cbegin(), valid.cend()));
+
+    word_type const invalid = {0, 2};
+    REQUIRE_THROWS_AS(word_graph::throw_if_label_out_of_bounds(wg, invalid),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(word_graph::throw_if_label_out_of_bounds(
+                          wg, invalid.cbegin(), invalid.cend()),
+                      LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(to_input_string(wg, "", "{", ""), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "056",
+                          "disjoint_union_inplace",
+                          "[quick][word-graph]") {
+    auto rg  = ReportGuard(false);
+    auto lhs = make<WordGraph<uint32_t>>(2, {{1}, {1}});
+    auto rhs = make<WordGraph<uint32_t>>(2, {{1}, {0}});
+
+    REQUIRE(lhs.disjoint_union_inplace(rhs)
+            == make<WordGraph<uint32_t>>(4, {{1}, {1}, {3}, {2}}));
+
+    WordGraph<uint32_t> empty(0, 1);
+    REQUIRE(lhs.disjoint_union_inplace_no_checks(empty) == lhs);
+
+    WordGraph<uint32_t> wrong_out_degree(1, 2);
+    REQUIRE_THROWS_AS(lhs.disjoint_union_inplace(wrong_out_degree),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "057",
+                          "random_acyclic with a fixed seed",
+                          "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
+    auto const random = WordGraph<uint16_t>::random(12, 5, std::mt19937(0));
+    REQUIRE(random.number_of_nodes() == 12);
+    REQUIRE(random.number_of_edges() == 60);
+
+    REQUIRE_THROWS_AS(
+        word_graph::random_acyclic<uint16_t>(1, 5, std::mt19937(0)),
+        LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        word_graph::random_acyclic<uint16_t>(12, 1, std::mt19937(0)),
+        LibsemigroupsException);
+
+    for (uint32_t seed = 0; seed < 32; ++seed) {
+      auto const wg
+          = word_graph::random_acyclic<uint16_t>(12, 5, std::mt19937(seed));
+      REQUIRE(wg.number_of_nodes() == 12);
+      REQUIRE(wg.out_degree() == 5);
+      REQUIRE(word_graph::is_acyclic(wg));
+      REQUIRE(word_graph::is_connected(wg));
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "058",
+                          "standardization and Joiner/Meeter branches",
+                          "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
+    WordGraph<uint32_t> empty;
+    Forest              forest;
+    REQUIRE(!word_graph::standardize_no_checks(empty, forest, Order::lenlex));
+
+    WordGraph<uint32_t> graph(1, 1);
+    REQUIRE(!word_graph::standardize_no_checks(graph, forest, Order::none));
+    REQUIRE(!word_graph::standardize_no_checks(
+        graph, forest, static_cast<Order>(255)));
+
+    Joiner join1;
+    Joiner join2(join1);
+    Joiner join3(std::move(join2));
+    join2 = join1;
+    join3 = std::move(join2);
+
+    Meeter meet1;
+    Meeter meet2(meet1);
+    Meeter meet3(std::move(meet2));
+    meet2 = meet1;
+    meet3 = std::move(meet2);
+
+    REQUIRE(join3(graph, graph) == graph);
+    REQUIRE(meet3(graph, graph) == graph);
+
+    WordGraph<uint32_t> wrong_out_degree(1, 2);
+    REQUIRE_THROWS_AS(join1(graph, wrong_out_degree), LibsemigroupsException);
   }
 }  // namespace libsemigroups
