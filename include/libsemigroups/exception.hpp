@@ -30,6 +30,7 @@
 #include <utility>        // for forward, pair
 
 #include "adapters.hpp"  // for ReturnFalse
+
 #include "detail/fmt.hpp"
 #include "detail/formatters.hpp"
 #include "detail/print.hpp"  // for to_printable
@@ -118,6 +119,22 @@ namespace libsemigroups {
                              Iterator         last,
                              std::string_view where,
                              Ignore&&         ignore = Ignore{});
+
+    void throw_if_not_less(size_t           val,
+                           size_t           upper,
+                           std::string_view prefix = "");
+
+    void throw_if_not_in_range(size_t           val,
+                               size_t           lower,
+                               size_t           upper,
+                               std::string_view prefix = "");
+
+    template <typename Iterator>
+    void throw_if_any_not_in_range(Iterator         first,
+                                   Iterator         last,
+                                   size_t           lower,
+                                   size_t           upper,
+                                   std::string_view prefix = "");
   }  // namespace detail
 }  // namespace libsemigroups
 

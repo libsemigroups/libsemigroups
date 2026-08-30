@@ -70,5 +70,24 @@ namespace libsemigroups {
         // in {}", requires adding a to_printable for iterators
       }
     }
+
+    template <typename Iterator>
+    void throw_if_any_not_in_range(Iterator         first,
+                                   Iterator         last,
+                                   size_t           lower,
+                                   size_t           upper,
+                                   std::string_view prefix) {
+      for (auto it = first; it != last; ++it) {
+        if (*it >= upper || *it < lower) {
+          LIBSEMIGROUPS_EXCEPTION("{}value out of bounds, expected value in "
+                                  "the range [{}, {}), got {} in position {}",
+                                  prefix,
+                                  lower,
+                                  upper,
+                                  *it,
+                                  std::distance(first, it));
+        }
+      }
+    }
   }  // namespace detail
 }  // namespace libsemigroups
