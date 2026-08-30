@@ -174,9 +174,9 @@ namespace libsemigroups {
 
        private:
         inline node_type max_node() const noexcept {
-          if constexpr (std::is_base_of_v<
-                            libsemigroups::detail::NodeManagedGraph<node_type>,
-                            Graph>) {
+          if constexpr (std::is_base_of_v<::libsemigroups::detail::
+                                              NodeManagedGraph<node_type>,
+                                          Graph>) {
             return _wg.number_of_nodes_active() - 1;
           } else {
             return _wg.number_of_nodes() - 1;
@@ -189,7 +189,7 @@ namespace libsemigroups {
         std::vector<node_type> _p_inverse;
         bool                   _is_non_trivial_permutation;
         Graph&                 _wg;
-      };
+      };  // class Standardizer
 
       // For best performance ensure that <f> has the correct number of nodes
       // when calling this function.
@@ -401,11 +401,11 @@ namespace libsemigroups {
                   WordGraph<Node> const& y,
                   Node                   first,
                   Node                   last) {
-      // TODO(v4) Remove the libsemigroups prefix
-      libsemigroups::word_graph::throw_if_node_out_of_bounds(x, first);
-      libsemigroups::word_graph::throw_if_node_out_of_bounds(x, last - 1);
-      libsemigroups::word_graph::throw_if_node_out_of_bounds(y, first);
-      libsemigroups::word_graph::throw_if_node_out_of_bounds(y, last - 1);
+      // TODO move to word-graph-view-helpers
+      throw_if_node_out_of_bounds(x, first);
+      throw_if_node_out_of_bounds(x, last - 1);
+      throw_if_node_out_of_bounds(y, first);
+      throw_if_node_out_of_bounds(y, last - 1);
       return equal_to_no_checks(x, y, first, last);
     }
 
