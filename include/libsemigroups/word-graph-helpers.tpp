@@ -347,7 +347,7 @@ namespace libsemigroups {
                             stack_type<Node>&      stck,
                             lookup_type&           seen,
                             std::vector<Node>&     order) {
-        return topological_sort(WordGraphView<Node>(wg), stck, seen, order);
+        return topological_sort(WordGraphView(wg), stck, seen, order);
       }
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
@@ -355,7 +355,7 @@ namespace libsemigroups {
       void init_adjacency_matrix(
           WordGraph<Node> const&                                 wg,
           Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
-        init_adjacency_matrix(WordGraphView<Node>(wg), mat);
+        init_adjacency_matrix(WordGraphView(wg), mat);
       }
 
       static inline void
@@ -371,7 +371,7 @@ namespace libsemigroups {
       template <typename Node>
       void init_adjacency_matrix(WordGraph<Node> const& wg,
                                  IntMat<0, 0, int64_t>& mat) {
-        init_adjacency_matrix(WordGraphView<Node>(wg), mat);
+        init_adjacency_matrix(WordGraphView(wg), mat);
       }
 #endif
 
