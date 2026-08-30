@@ -20,7 +20,7 @@
 //
 // The header include order is:
 // 1. word-graph-class.hpp
-// 2. word-graph-view.hpp
+// 2. word-graph-view-class.hpp
 // 3. word-graph-view-helpers.hpp
 // 4. word-graph-helpers.hpp
 

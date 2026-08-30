@@ -16,7 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains helper functions for word graph views
+// This file contains helper functions for word graph views.
+//
+// The header include order is:
+// 1. word-graph-class.hpp
+// 2. word-graph-view-class.hpp
+// 3. word-graph-view-helpers.hpp
+// 4. word-graph-helpers.hpp
 
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_VIEW_HELPERS_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_VIEW_HELPERS_HPP_

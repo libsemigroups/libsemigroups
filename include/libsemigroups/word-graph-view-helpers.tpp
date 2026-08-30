@@ -307,7 +307,6 @@ namespace libsemigroups {
                        word_type const&           lhs,
                        word_type const&           rhs) {
       wg.throw_if_node_out_of_bounds(first_node, last_node);
-      // TODO(1) be better to use follow_path in is_compatible_no_checks
       wg.throw_if_label_out_of_bounds(lhs);
       wg.throw_if_label_out_of_bounds(rhs);
       return is_compatible_no_checks(wg, first_node, last_node, lhs, rhs);
@@ -323,8 +322,12 @@ namespace libsemigroups {
                        Iterator2                  last_node,
                        Iterator3                  first_rule,
                        Iterator3                  last_rule) {
+      wg.throw_if_node_out_of_bounds(first_node, last_node);
       for (auto rit = first_rule; rit < last_rule; rit += 2) {
-        if (!is_compatible(wg, first_node, last_node, *rit, *(rit + 1))) {
+        wg.throw_if_label_out_of_bounds(*rit);
+        wg.throw_if_label_out_of_bounds(*(rit + 1));
+        if (!is_compatible_no_checks(
+                wg, first_node, last_node, *rit, *(rit + 1))) {
           return false;
         }
       }
@@ -526,6 +529,7 @@ namespace libsemigroups {
       return order;
     }
 
+    // TODO should be _no_checks
     template <typename Node1, typename Node2>
     std::vector<Node1> topological_sort(WordGraphView<Node1> const& wg,
                                         Node2                       source) {
@@ -549,9 +553,11 @@ namespace libsemigroups {
       Mat mat;
       detail::init_adjacency_matrix(wg, mat);
 
+      size_t const N = wg.number_of_nodes_no_checks();
+
       for (auto s : wg.nodes_no_checks()) {
         for (auto t : wg.targets_no_checks(s)) {
-          if (t != UNDEFINED) {
+          if (t < N) {
             mat(s, t) += 1;
           }
         }
@@ -608,7 +614,7 @@ namespace libsemigroups {
       for (Node1 s = 0; s < N; ++s) {
         for (label_type a = 0; a < M; ++a) {
           auto t = wg.target_no_checks(s, a);
-          if (t != UNDEFINED) {
+          if (t < N) {
             in_neighbours[t].push_back(s);
           }
         }
@@ -639,33 +645,6 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2, typename Iterator>
-    Node1 follow_path(WordGraphView<Node1> const& wg,
-                      Node2                       from,
-                      Iterator                    first,
-                      Iterator                    last) {
-      static_assert(sizeof(Node1) <= sizeof(size_t));
-      static_assert(sizeof(Node2) <= sizeof(Node1));
-
-      wg.throw_if_node_out_of_bounds(from);
-
-      if constexpr (::libsemigroups::detail::HasLessEqual<Iterator,
-                                                          Iterator>::value) {
-        if (last <= first) {
-          return from;
-        }
-      }
-      size_t const N = wg.number_of_nodes_no_checks();
-
-      for (auto it = first; it != last && static_cast<size_t>(from) < N; ++it) {
-        from = wg.target_no_checks(from, *it);
-      }
-      if (static_cast<size_t>(from) >= N) {
-        return UNDEFINED;
-      }
-      return from;
-    }
-
-    template <typename Node1, typename Node2, typename Iterator>
     Node1 follow_path_no_checks(WordGraphView<Node1> const& wg,
                                 Node2                       from,
                                 Iterator                    first,
@@ -686,6 +665,19 @@ namespace libsemigroups {
         return UNDEFINED;
       }
       return from;
+    }
+
+    template <typename Node1, typename Node2, typename Iterator>
+    Node1 follow_path(WordGraphView<Node1> const& wg,
+                      Node2                       from,
+                      Iterator                    first,
+                      Iterator                    last) {
+      static_assert(sizeof(Node1) <= sizeof(size_t));
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+
+      wg.throw_if_node_out_of_bounds(from);
+      wg.throw_if_label_out_of_bounds(first, last);
+      return follow_path_no_checks(wg, from, first, last);
     }
 
     template <typename Node1, typename Node2, typename Iterator>
@@ -715,26 +707,8 @@ namespace libsemigroups {
                                                  Iterator first,
                                                  Iterator last) {
       wg.throw_if_node_out_of_bounds(from);
-
-      static_assert(sizeof(Node2) <= sizeof(Node1));
-      auto         it   = first;
-      Node1        prev = from;
-      Node1        to   = from;
-      size_t const n    = wg.out_degree_no_checks();
-      for (; it < last && to != UNDEFINED; ++it) {
-        prev = to;
-        if (*it >= n) {
-          to = UNDEFINED;
-        } else {
-          to = wg.target_no_checks(to, *it);
-        }
-      }
-      if (it != last || to == UNDEFINED) {
-        LIBSEMIGROUPS_ASSERT(prev != UNDEFINED);
-        return {prev, it - 1};
-      } else {
-        return {to, it};
-      }
+      wg.throw_if_label_out_of_bounds(first, last);
+      return last_node_on_path_no_checks(wg, from, first, last);
     }
 
     template <typename Node1, typename Node2>

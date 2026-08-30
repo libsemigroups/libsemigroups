@@ -16,7 +16,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains helper functions for word graphs
+// This file contains helper functions for word graphs, which mostly just
+// delegate to the WordGraphView overloads. The exception is when the WordGraph
+// is to be modified, then the functionality is implemented here and not
+// available for WordGraphView which provide read-only const access to the
+// underlying WordGraph.
+//
+// The header include order is:
+// 1. word-graph-class.hpp
+// 2. word-graph-view-class.hpp
+// 3. word-graph-view-helpers.hpp
+// 4. word-graph-helpers.hpp
+
+// TODO(v4): * remove all the extraneous overloads using Node1, Node2, and
+// Iterator1 and Iterator2, use one type Node and one for Iterator only.
 
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_HELPERS_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_HELPERS_HPP_
@@ -90,6 +103,7 @@ namespace libsemigroups {
     void throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
                                       typename WordGraph<Node>::label_type a);
 
+    // TODO deprecate
     template <typename Node>
     void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
                                       word_type const&       word);
@@ -129,6 +143,8 @@ namespace libsemigroups {
     //!
     //! \note
     //! The edges added by this function are all labelled \c 0.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
     // TODO(1) add add_cycle with checks version.
     template <typename Node, typename Iterator>
     void add_cycle_no_checks(WordGraph<Node>& wg,
@@ -150,6 +166,8 @@ namespace libsemigroups {
     //!
     //! \note
     //! The edges added by this function are all labelled \c 0.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
     template <typename Node>
     void add_cycle(WordGraph<Node>& wg, size_t N) {
       size_t M = wg.number_of_nodes();
@@ -360,6 +378,7 @@ namespace libsemigroups {
     //! Linear in the length of \p path.
     // TODO(2) example
     // not noexcept because WordGraph::target isn't
+    // TODO deprecate in favour of the iterator version
     template <typename Node1, typename Node2>
     [[nodiscard]] Node1 follow_path(WordGraph<Node1> const& wg,
                                     Node2                   from,
@@ -429,6 +448,7 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
+    // TODO deprecate in favour of the iterator overload
     template <typename Node1, typename Node2>
     [[nodiscard]] Node1 follow_path_no_checks(WordGraph<Node1> const& wg,
                                               Node2                   from,
@@ -707,6 +727,7 @@ namespace libsemigroups {
     //! \note This function ignores out of bound targets in \p wg (if any).
     //!
     //! \warning This function does not check that its arguments are valid.
+    // TODO deprecate
     template <typename Node, typename Iterator1, typename Iterator2>
     bool is_compatible_no_checks(WordGraph<Node> const& wg,
                                  Iterator1              first_node,
@@ -754,6 +775,7 @@ namespace libsemigroups {
     //! between
     //! \p first_rule and \p last_rule contains an invalid label (i.e. one
     //! greater than or equal to WordGraph::out_degree).
+    // TODO deprecate
     template <typename Node, typename Iterator1, typename Iterator2>
     bool is_compatible(WordGraph<Node> const& wg,
                        Iterator1              first_node,
@@ -763,91 +785,6 @@ namespace libsemigroups {
       return is_compatible(
           WordGraphView<Node>(wg), first_node, last_node, lhs, rhs);
     }
-
-    /*
-    //! \brief Check if a word graph or word graph view is compatible with
-    //! some relations at a range of nodes.
-    //!
-    //! This function returns \c true if the word graph \p wg is compatible
-    //! with the relations in the range \p first_rule to \p last_rule at every
-    //! node in the range from \p first_node to \p last_node. This means that
-    //! the paths with given sources that are labelled by one side of a
-    //! relation leads to the same node as the path labelled by the other side
-    //! of the relation.
-    //!
-    //! \tparam Node  the type of the nodes of the WordGraph.
-    //! \p wg.
-    //!
-    //! \tparam Iterator1 the type of \p first_node.
-    //!
-    //! \tparam Iterator2 the type of \p last_node.
-    //!
-    //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
-    //!
-    //! \param wg the word graph.
-    //!
-    //! \param first_node iterator pointing at the first node.
-    //!
-    //! \param last_node iterator pointing at one beyond the last node.
-    //!
-    //! \param first_rule iterator pointing to the first rule.
-    //!
-    //! \param last_rule iterator pointing one beyond the last rule.
-    //!
-    //! \return Whether or not the word graph is compatible with the given
-    //! rules at each one of the given nodes.
-    //!
-    //! \throws LibsemigroupsException if any of the nodes in the range
-    //! between
-    //! \p first_node and \p last_node does not belong to \p wg (i.e. is
-    //! greater than or equal to WordGraph::number_of_nodes).
-    //!
-    //! \throws LibsemigroupsException if any of the rules in the range
-    //! between
-    //! \p first_rule and \p last_rule contains an invalid label (i.e. one
-    //! greater than or equal to WordGraph::out_degree).
-    //!
-    //! \note This function ignores out of bound targets in \p wg (if any).
-    TODO(0): Remove or delete
-    template <typename WordGraphType,
-              typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename = std::enable_if_t<
-                  std::is_same_v<WordGraphType,
-                                 WordGraph<typename
-                                 WordGraphType::node_type>>
-                  || std::is_same_v<
-                      WordGraphType,
-                      WordGraphView<typename WordGraphType::node_type>>>>
-    bool is_compatible(WordGraphType const& wg,
-                       Iterator1            first_node,
-                       Iterator2            last_node,
-                       Iterator3            first_rule,
-                       Iterator3            last_rule) {
-      if constexpr (std::is_same_v<
-                        WordGraphType,
-                        WordGraph<typename WordGraphType::node_type>>) {
-        return is_compatible(
-            static_cast<WordGraph<typename WordGraphType::node_type>
-            const&>(
-                wg),
-            first_node,
-            last_node,
-            first_rule,
-            last_rule);
-      } else {
-        return is_compatible(
-            static_cast<
-                WordGraphView<typename WordGraphType::node_type>
-                const&>(wg),
-            first_node,
-            last_node,
-            first_rule,
-            last_rule);
-      }
-    }
-    */
 
     //! \brief Check if every node in a range has exactly
     //! WordGraph::out_degree out-edges.
@@ -1200,6 +1137,7 @@ namespace libsemigroups {
     //! assumed that \p source is a node in the word graph \p wg; and that the
     //! letters in the word described by \p first and \p last belong to the
     //! range \c 0 to WordGraph::out_degree.
+    // TODO deprecate
     template <typename Node1, typename Node2>
     std::pair<Node1, word_type::const_iterator>
     last_node_on_path_no_checks(WordGraph<Node1> const& wg,
@@ -1229,6 +1167,7 @@ namespace libsemigroups {
     //! WordGraph::number_of_nodes), the path labelled by the word exits the
     //! word graph, which is reflected in the result value of this function,
     //! but does not cause an exception to be thrown.
+    // TODO deprecate
     template <typename Node1, typename Node2>
     std::pair<Node1, word_type::const_iterator>
     last_node_on_path(WordGraph<Node1> const& wg,
@@ -1596,12 +1535,15 @@ namespace libsemigroups {
     //!
     //! \note If any target of any edge in the word graph \p wg is out of
     //! bounds, then this is ignored by this function.
-    // Not nodiscard because sometimes we just don't want the output
     //!
     //! \warning If there are nodes in the \p wg that are not reachable from
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
+    // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
     bool standardize_no_checks(Graph& wg, Forest& f, Order val);
 
@@ -1631,6 +1573,9 @@ namespace libsemigroups {
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
     //!
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
     bool standardize(Graph& wg, Forest& f, Order val) {
@@ -1662,12 +1607,15 @@ namespace libsemigroups {
     //!
     //! \note If any target of any edge in the word graph \p wg is out of
     //! bounds, then this is ignored by this function.
-    // Not nodiscard because sometimes we just don't want the output
     //!
     //! \warning If there are nodes in the \p wg that are not reachable from
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
+    // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
     std::pair<bool, Forest> standardize_no_checks(Graph& wg,
                                                   Order  val = Order::lenlex);
@@ -1698,6 +1646,9 @@ namespace libsemigroups {
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
     std::pair<bool, Forest> standardize(Graph& wg, Order val = Order::lenlex) {
@@ -1796,6 +1747,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any value in \p word is out of
     //! bounds.
+    // TODO deprecate
     template <typename Node>
     void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
                                       word_type const&       word);

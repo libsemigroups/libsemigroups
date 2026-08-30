@@ -592,7 +592,7 @@ namespace libsemigroups {
 
     auto            path_graph = make<WordGraph<size_t>>(2, {{1}, {UNDEFINED}});
     WordGraphView   path_view(path_graph);
-    word_type const path = {0, 1};
+    word_type const path = {0, 0};
     auto const      last = word_graph::last_node_on_path(path_view, 0, path);
     REQUIRE(last.first == 1);
     REQUIRE(last.second == path.cbegin() + 1);
