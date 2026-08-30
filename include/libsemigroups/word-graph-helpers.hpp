@@ -1546,6 +1546,9 @@ namespace libsemigroups {
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
     bool standardize_no_checks(Graph& wg, Forest& f, Cmp cmp);
@@ -1581,7 +1584,9 @@ namespace libsemigroups {
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
-    //!
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
     bool standardize(Graph& wg, Forest& f, Cmp cmp) {
@@ -1624,6 +1629,9 @@ namespace libsemigroups {
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
     std::pair<bool, Forest> standardize_no_checks(Graph& wg, Cmp cmp) {
@@ -1664,6 +1672,9 @@ namespace libsemigroups {
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
     std::pair<bool, Forest> standardize(Graph& wg, Cmp cmp) {
