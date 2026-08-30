@@ -84,6 +84,33 @@ namespace libsemigroups {
     static_cast<std::runtime_error&>(*this) = std::runtime_error(full_msg);
 #endif
   }
+
+  namespace detail {
+    void throw_if_not_less(size_t val, size_t upper, std::string_view prefix) {
+      if (val >= upper) {
+        LIBSEMIGROUPS_EXCEPTION("{}value out of bounds, expected value in "
+                                "the range [0, {}), got {}",
+                                prefix,
+                                upper,
+                                val);
+      }
+    }
+
+    void throw_if_not_in_range(size_t           val,
+                               size_t           lower,
+                               size_t           upper,
+                               std::string_view prefix) {
+      if (val >= upper || val < lower) {
+        LIBSEMIGROUPS_EXCEPTION("{}value out of bounds, expected value in "
+                                "the range [{}, {}), got {}",
+                                prefix,
+                                lower,
+                                upper,
+                                val);
+      }
+    }
+
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #ifdef LIBSEMIGROUPS_BACKWARD_ENABLED

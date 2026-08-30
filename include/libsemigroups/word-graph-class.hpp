@@ -348,8 +348,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // Not noexcept because throw_if_node_out_of_bounds/label aren't
-    // return *this by reference.
+    // Not noexcept because throw_if_not_less aren't
     WordGraph& target(node_type s, label_type a, node_type t);
 
     //! \brief Add an edge from one node to another with a given label.
@@ -657,7 +656,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // Not noexcept because throw_if_node_out_of_bounds/label aren't
+    // Not noexcept because throw_if_not_less aren't
     [[nodiscard]] node_type target(node_type source, label_type a) const;
 
     //! \brief Get the target of the edge with given source node and label.
@@ -896,7 +895,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // Not noexcept because throw_if_node_out_of_bounds isn't
+    // Not noexcept because throw_if_not_less isn't
     [[nodiscard]] const_iterator_targets cbegin_targets(node_type source) const;
 
     //! \brief Returns a random access iterator pointing at the target of
@@ -944,7 +943,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // Not noexcept because throw_if_node_out_of_bounds isn't
+    // Not noexcept because throw_if_not_less isn't
     [[nodiscard]] const_iterator_targets cend_targets(node_type source) const;
 
     //! \brief Returns a random access iterator pointing one beyond the target
