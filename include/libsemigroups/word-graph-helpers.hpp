@@ -1537,11 +1537,6 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg is out of
     //! bounds, then this is ignored by this function.
     //!
-    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
-    //! there is a bespoke standardization algorithm, then
-    //! \ref standardize_no_checks(Graph&, Forest&, Order) should be used
-    //! instead of this function for improved performance.
-    //!
     //! \warning If there are nodes in the \p wg that are not reachable from
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
@@ -1574,11 +1569,6 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any target or any label of \p wg is
     //! out of bounds.
-    //!
-    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
-    //! there is a bespoke standardization algorithm, then
-    //! \ref standardize(Graph&, Forest&, Order) should be used instead of this
-    //! function for improved performance.
     //!
     //! \warning If there are nodes in the \p wg that are not reachable from
     //! the node \c 0, then this function may not preserve \p wg up to
@@ -1620,11 +1610,6 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg is out of
     //! bounds, then this is ignored by this function.
     //!
-    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
-    //! there is a bespoke standardization algorithm, then
-    //! \ref standardize_no_checks(Graph&, Order) should be used instead of this
-    //! function for improved performance.
-    //!
     //! \warning If there are nodes in the \p wg that are not reachable from
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
@@ -1662,11 +1647,6 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any target or any label of \p wg is
     //! out of bounds.
-    //!
-    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
-    //! there is a bespoke standardization algorithm, then
-    //! \ref standardize(Graph&, Order) should be used instead of this function
-    //! for improved performance.
     //!
     //! \warning If there are nodes in the \p wg that are not reachable from
     //! the node \c 0, then this function may not preserve \p wg up to
@@ -1710,12 +1690,17 @@ namespace libsemigroups {
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
+    //!
+    //! \deprecated_warning{function} Use
+    //! \ref standardize_no_checks(Graph&, Forest&, Cmp&&) instead.
     // NOTE: there's no WordGraphView version of this function because it
     // modifies it's argument and WordGraphView is read-only.
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
-    bool standardize_no_checks(Graph& wg, Forest& f, Order val);
+    [[deprecated(
+        "Use standardize_no_checks(Graph&, Forest&, Cmp&&) instead.")]] bool
+    standardize_no_checks(Graph& wg, Forest& f, Order val);
 
     //! \brief Standardizes a word graph in-place.
     //!
@@ -1743,12 +1728,15 @@ namespace libsemigroups {
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
     //!
+    //! \deprecated_warning{function} Use
+    //! \ref standardize(Graph&, Forest&, Cmp&&) instead.
     // NOTE: there's no WordGraphView version of this function because it
     // modifies it's argument and WordGraphView is read-only.
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
-    bool standardize(Graph& wg, Forest& f, Order val) {
+    [[deprecated("Use standardize(Graph&, Forest&, Cmp&&) instead.")]] bool
+    standardize(Graph& wg, Forest& f, Order val) {
       libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
       return standardize_no_checks(wg, f, val);
     }
@@ -1782,13 +1770,18 @@ namespace libsemigroups {
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
+    //!
+    //! \deprecated_warning{function} Use
+    //! \ref standardize_no_checks(Graph&, Cmp&&) instead.
     // NOTE: there's no WordGraphView version of this function because it
     // modifies it's argument and WordGraphView is read-only.
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
-    std::pair<bool, Forest> standardize_no_checks(Graph& wg,
-                                                  Order  val = Order::lenlex);
+    [[deprecated(
+        "Use standardize_no_checks(Graph&, Cmp&&) instead.")]] std::pair<bool,
+                                                                         Forest>
+    standardize_no_checks(Graph& wg, Order val = Order::lenlex);
 
     //! \brief Standardizes a word graph in-place.
     //!
@@ -1816,12 +1809,17 @@ namespace libsemigroups {
     //! the node \c 0, then this function may not preserve \p wg up to
     //! isomorphism. However, the isomorphism type of the sub-word-graph
     //! consisting of those nodes reachable from the node \c 0 is preserved.
+    //!
+    //! \deprecated_warning{function} Use
+    //! \ref standardize_checks(Graph&, Cmp&&) instead.
     // NOTE: there's no WordGraphView version of this function because it
     // modifies it's argument and WordGraphView is read-only.
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
-    std::pair<bool, Forest> standardize(Graph& wg, Order val = Order::lenlex) {
+    [[deprecated(
+        "Use standardize(Graph&, Cmp&&) instead.")]] std::pair<bool, Forest>
+    standardize(Graph& wg, Order val = Order::lenlex) {
       libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
       return standardize_no_checks(wg, val);
     }
@@ -1864,8 +1862,13 @@ namespace libsemigroups {
     //!
     //! \sa
     //! standardize.
+    //!
+    //! \deprecated_warning{function} Use
+    //! \ref is_standardized(WordGraph<Node> const&, Cmp&&) instead.
     template <typename Node>
-    bool is_standardized(WordGraph<Node> const& wg, Order val = Order::lenlex) {
+    [[deprecated(
+        "Use is_standardized(WordGraph<Node> const&, Cmp&&) instead.")]] bool
+    is_standardized(WordGraph<Node> const& wg, Order val = Order::lenlex) {
       return is_standardized(WordGraphView<Node>(wg), val);
     }
 

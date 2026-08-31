@@ -385,6 +385,19 @@ namespace libsemigroups {
         f.add_nodes(1);
       }
 
+      // TODO(1): improve this so that we can use the bespoke standardization
+      // functions with non-standard alphabets
+      // TODO(1): Also catch the functions like lenlex_cmp?
+      if constexpr (std::is_same_v<std::decay_t<Cmp>, LenLexCmp<>>) {
+        return detail::lenlex_standardize(wg, f);
+      } else if (std::is_same_v<std::decay_t<Cmp>, LexCmp<>>) {
+        return detail::lex_standardize(wg, f);
+      } else if (std::is_same_v<std::decay_t<Cmp>, RPOCmp<>>) {
+        return detail::rpo_standardize(wg, f);
+      } else if (std::is_same_v<std::decay_t<Cmp>, RevRPOCmp<>>) {
+        return detail::rev_rpo_standardize(wg, f);
+      }
+
       using node_type          = typename Graph::node_type;
       using label_type         = typename Graph::label_type;
       using FrontierCandidate_ = detail::FrontierCandidate<node_type>;
