@@ -1262,11 +1262,6 @@ namespace libsemigroups {
     //! \param wg the word graph to check.
     //! \param cmp the order to use for standardization check.
     //!
-    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
-    //! there is a bespoke salgorithm for checking standardization, then
-    //! \ref is_standardized(WordGraph&, Order) should be used instead of this
-    //! function for improved performance.
-    //!
     //! \sa
     //! standardize.
     // TODO(1): Add is_standardized_no_checks?
@@ -1288,10 +1283,13 @@ namespace libsemigroups {
     //!
     //! \sa
     //! standardize.
-    // TODO(1): Add is_standardized_no_checks?
+    //!
+    //! \deprecated_warning{function} Use
+    //! \ref is_standardized(WordGraphView<Node> const&, Cmp&&) instead.
     template <typename Node>
-    bool is_standardized(WordGraphView<Node> const& wg,
-                         Order                      val = Order::lenlex);
+    [[deprecated("Use is_standardized(WordGraphView<Node> const&, Cmp&&) "
+                 "instead.")]] bool
+    is_standardized(WordGraphView<Node> const& wg, Order val = Order::lenlex);
 
     //! \brief Returns the nodes of the word graph in topological order (see
     //! below) if possible.
