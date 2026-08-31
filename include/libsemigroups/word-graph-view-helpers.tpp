@@ -82,6 +82,9 @@ namespace libsemigroups {
 
       template <typename Node>
       bool is_lex_standardized(WordGraphView<Node> const& wg) {
+        if (wg.number_of_nodes_no_checks() == 0) {
+          return true;
+        }
         using node_type  = typename WordGraphView<Node>::node_type;
         using label_type = typename WordGraphView<Node>::label_type;
 
@@ -327,6 +330,10 @@ namespace libsemigroups {
     // TODO(1) reduce duplication with standardized(Graph&, Cmp cmp)
     template <typename Node, typename Cmp>
     bool is_standardized(WordGraphView<Node> const& wg, Cmp cmp) {
+      if (wg.number_of_nodes_no_checks() == 0) {
+        return true;
+      }
+
       using node_type          = typename WordGraphView<Node>::node_type;
       using label_type         = typename WordGraphView<Node>::label_type;
       using FrontierCandidate_ = detail::FrontierCandidate<node_type>;
