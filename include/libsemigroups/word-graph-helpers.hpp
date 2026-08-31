@@ -1551,7 +1551,7 @@ namespace libsemigroups {
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
-    bool standardize_no_checks(Graph& wg, Forest& f, Cmp cmp);
+    bool standardize_no_checks(Graph& wg, Forest& f, Cmp&& cmp);
 
     //! \brief Standardizes a word graph in-place.
     //!
@@ -1589,9 +1589,9 @@ namespace libsemigroups {
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
-    bool standardize(Graph& wg, Forest& f, Cmp cmp) {
+    bool standardize(Graph& wg, Forest& f, Cmp&& cmp) {
       libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
-      return standardize_no_checks(wg, f, cmp);
+      return standardize_no_checks(wg, f, std::forward<Cmp>(cmp));
     }
 
     //! \brief Standardizes a word graph in-place.
@@ -1634,9 +1634,9 @@ namespace libsemigroups {
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
-    std::pair<bool, Forest> standardize_no_checks(Graph& wg, Cmp cmp) {
+    std::pair<bool, Forest> standardize_no_checks(Graph& wg, Cmp&& cmp) {
       Forest f;
-      bool   result = standardize_no_checks(wg, f, cmp);
+      bool   result = standardize_no_checks(wg, f, std::forward<Cmp>(cmp));
       return std::make_pair(result, f);
     }
 
@@ -1677,9 +1677,9 @@ namespace libsemigroups {
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
-    std::pair<bool, Forest> standardize(Graph& wg, Cmp cmp) {
+    std::pair<bool, Forest> standardize(Graph& wg, Cmp&& cmp) {
       libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
-      return standardize_no_checks(wg, cmp);
+      return standardize_no_checks(wg, std::forward<Cmp>(cmp));
     }
 
     //! \brief Standardizes a word graph in-place.
@@ -1845,8 +1845,8 @@ namespace libsemigroups {
     //! \sa
     //! standardize.
     template <typename Node, typename Cmp>
-    bool is_standardized(WordGraph<Node> const& wg, Cmp cmp) {
-      return is_standardized(WordGraphView<Node>(wg), cmp);
+    bool is_standardized(WordGraph<Node> const& wg, Cmp&& cmp) {
+      return is_standardized(WordGraphView<Node>(wg), std::forward<Cmp>(cmp));
     }
 
     //! \brief Check if a word graph is standardized.

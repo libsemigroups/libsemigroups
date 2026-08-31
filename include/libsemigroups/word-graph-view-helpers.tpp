@@ -329,7 +329,7 @@ namespace libsemigroups {
 
     // TODO(1) reduce duplication with standardized(Graph&, Cmp cmp)
     template <typename Node, typename Cmp>
-    bool is_standardized(WordGraphView<Node> const& wg, Cmp cmp) {
+    bool is_standardized(WordGraphView<Node> const& wg, Cmp&& cmp) {
       if (wg.number_of_nodes_no_checks() == 0) {
         return true;
       }

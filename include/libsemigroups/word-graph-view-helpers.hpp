@@ -1271,7 +1271,7 @@ namespace libsemigroups {
     //! standardize.
     // TODO(1): Add is_standardized_no_checks?
     template <typename Node, typename Cmp>
-    bool is_standardized(WordGraphView<Node> const& wg, Cmp cmp);
+    bool is_standardized(WordGraphView<Node> const& wg, Cmp&& cmp);
 
     //! \brief Check if a word graph is standardized.
     //!
