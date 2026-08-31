@@ -142,7 +142,7 @@ namespace libsemigroups {
           if (t == UNDEFINED || seen(t)) {
             return false;
           }
-          set_next_smallset(t);
+          set_next_smallest(t);
           LIBSEMIGROUPS_ASSERT(s != _largest_used_node);
           _forest.set_parent_and_label_no_checks(_largest_used_node, s, x);
           return true;
@@ -156,7 +156,7 @@ namespace libsemigroups {
           if (seen(t)) {
             return false;
           }
-          set_next_smallset(t);
+          set_next_smallest(t);
           _forest.set_parent_and_label_no_checks(
               _largest_used_node, _p_inverse[s], x);
           return true;
@@ -193,7 +193,7 @@ namespace libsemigroups {
           }
         }
 
-        void set_next_smallset(node_type t) {
+        void set_next_smallest(node_type t) {
           ++_largest_used_node;
           if (_largest_used_node >= _forest.number_of_nodes()) {
             _forest.add_nodes(1);
