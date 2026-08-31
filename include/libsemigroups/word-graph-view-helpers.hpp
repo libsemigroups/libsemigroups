@@ -750,9 +750,9 @@ namespace libsemigroups {
     //! WordGraph<size_t> g;
     //! g.add_nodes(4);
     //! g.add_to_out_degree(1);
-    //! g.target(0, 1, 0);
+    //! g.target(0, 0, 1);
     //! g.target(1, 0, 0);
-    //! g.target(2, 3, 0);
+    //! g.target(2, 0, 3);
     //! WordGraphView<size_t> wg(g);
     //! word_graph::is_reachable_no_checks(wg, 0, 1); // returns true
     //! word_graph::is_reachable_no_checks(wg, 1, 0); // returns true
