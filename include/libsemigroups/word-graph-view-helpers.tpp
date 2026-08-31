@@ -352,6 +352,7 @@ namespace libsemigroups {
         // We don't actually need parent_node at all in this function, but it
         // appears so that FrontierCandidate can be used in both standardize and
         // is_standardized.
+        // NOLINTNEXTLINE(whitespace/braces)
         auto const [current_word, current_node, parent_node] = frontier.back();
         frontier.pop_back();
 
