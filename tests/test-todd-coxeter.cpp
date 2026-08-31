@@ -4980,7 +4980,7 @@ namespace libsemigroups {
     tc.shrink_to_fit();
     // Have to standardize or otherwise what we are about to do below
     // makes no sense
-    REQUIRE(word_graph::is_standardized(wg));
+    REQUIRE(word_graph::is_standardized(wg, LenLexCmp()));
     auto const& tree = tc.current_word_graph().current_spanning_tree();
     for (uint32_t n = 0; n != tree.number_of_nodes(); ++n) {
       if (n != 0) {
