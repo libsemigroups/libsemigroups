@@ -175,6 +175,8 @@ namespace libsemigroups {
         }
 
         bool standardize() {
+          LIBSEMIGROUPS_ASSERT(number_of_nodes_reachable_from(_wg, 0)
+                               == _largest_used_node + 1);
           if (_is_non_trivial_permutation) {
             _p.resize(_largest_used_node + 1);
             _wg.standardize_no_checks(_p, _p_inverse);
