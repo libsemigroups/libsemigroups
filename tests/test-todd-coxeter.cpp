@@ -5080,12 +5080,18 @@ namespace libsemigroups {
     tc.shrink_to_fit();
     size_t const expected = tc.current_word_graph().number_of_nodes();
 
-    word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
+    auto const& wg1 = tc.current_word_graph();
+
+    word_graph::throw_if_any_target_out_of_bounds(
+        wg1, wg1.cbegin_nodes(), wg1.cend_nodes());
 
     tc.init(congruence_kind::twosided,
             tc.presentation(),
             WordGraph(tc.current_word_graph()));
-    word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
+
+    auto const& wg2 = tc.current_word_graph();
+    word_graph::throw_if_any_target_out_of_bounds(
+        wg2, wg2.cbegin_nodes(), wg2.cend_nodes());
 
     REQUIRE(expected == tc.current_word_graph().number_of_nodes());
 
@@ -5228,7 +5234,10 @@ namespace libsemigroups {
     size_t const num_nodes = tc.current_word_graph().number_of_nodes_active();
     size_t const num_edges = tc.current_word_graph().number_of_edges_active();
 
-    word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
+    auto const& wg = tc.current_word_graph();
+    word_graph::throw_if_any_target_out_of_bounds(
+        wg, wg.cbegin_nodes(), wg.cend_nodes());
+
     tc.init(congruence_kind::twosided,
             tc.presentation(),
             // TODO(later) rm copy here

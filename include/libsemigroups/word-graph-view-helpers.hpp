@@ -61,7 +61,8 @@
 #endif
 
 namespace libsemigroups {
-
+  // TODO(v4) rename -> word_graph_view for better separation, this was too
+  // much trouble in v3, so we leave it to v4.
   namespace word_graph {
 
     //////////////////////////////////////////////////////////////////////////
@@ -1253,6 +1254,11 @@ namespace libsemigroups {
     [[nodiscard]] Forest spanning_tree(WordGraphView<Node1> const& wgv,
                                        Node2                       root,
                                        size_t max_depth = POSITIVE_INFINITY);
+
+    template <typename Node, typename Iterator>
+    void throw_if_any_target_out_of_bounds(WordGraphView<Node> const& wgv,
+                                           Iterator                   first,
+                                           Iterator                   last);
 
     //! \brief Check if a word graph is standardized.
     //!

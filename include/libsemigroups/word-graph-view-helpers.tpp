@@ -22,7 +22,6 @@
 namespace libsemigroups {
 
   namespace word_graph {
-
     template <typename Node>
     // TODO rename to _no_checks and add a checks version?
     bool is_strictly_cyclic(WordGraphView<Node> const& wgv) {
@@ -58,272 +57,275 @@ namespace libsemigroups {
       }
       return false;
     }
+  }  // namespace word_graph
 
-    namespace detail {
-      template <typename Node>
-      bool is_lenlex_standardized(WordGraphView<Node> const& wgv) {
-        LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
-        Node current_max_node = 0;
+  namespace detail {
+    template <typename Node>
+    bool is_lenlex_standardized(WordGraphView<Node> const& wgv) {
+      LIBSEMIGROUPS_ASSERT(wgv.number_of_nodes_no_checks() != 0);
+      Node current_max_node = 0;
 
-        for (Node s = 0; s <= current_max_node; s++) {
-          for (auto t : wgv.targets_no_checks(s)) {
-            if (t != UNDEFINED) {
-              if (t > current_max_node) {
-                if (t == current_max_node + 1) {
-                  current_max_node++;
-                } else {
-                  return false;
-                }
+      for (Node s = 0; s <= current_max_node; s++) {
+        for (auto t : wgv.targets_no_checks(s)) {
+          if (t != UNDEFINED) {
+            if (t > current_max_node) {
+              if (t == current_max_node + 1) {
+                current_max_node++;
+              } else {
+                return false;
               }
             }
           }
         }
-        return true;
       }
+      return true;
+    }
 
-      template <typename Node>
-      bool is_lex_standardized(WordGraphView<Node> const& wg) {
-        LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
+    template <typename Node>
+    bool is_lex_standardized(WordGraphView<Node> const& wg) {
+      LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
 
-        using node_type  = typename WordGraphView<Node>::node_type;
-        using label_type = typename WordGraphView<Node>::label_type;
+      using node_type  = typename WordGraphView<Node>::node_type;
+      using label_type = typename WordGraphView<Node>::label_type;
 
-        node_type    s                 = 0;
-        label_type   x                 = 0;
-        size_t const n                 = wg.out_degree();
-        node_type    largest_used_node = 0;
+      node_type    s                 = 0;
+      label_type   x                 = 0;
+      size_t const n                 = wg.out_degree();
+      node_type    largest_used_node = 0;
 
-        // TODO(1): replace this with a forest?
-        std::vector<node_type>  parents(wg.number_of_nodes());
-        std::vector<label_type> labels(wg.number_of_nodes());
-        parents[0] = UNDEFINED;
-        labels[0]  = 0;
+      // TODO(1): replace this with a forest?
+      std::vector<node_type>  parents(wg.number_of_nodes());
+      std::vector<label_type> labels(wg.number_of_nodes());
+      parents[0] = UNDEFINED;
+      labels[0]  = 0;
 
-        // Perform a DFS through wg
-        while (s <= largest_used_node) {
+      // Perform a DFS through wg
+      while (s <= largest_used_node) {
+        node_type const t = wg.target_no_checks(s, x);
+        if (t != UNDEFINED && t > largest_used_node) {
+          if (t == largest_used_node + 1) {
+            ++largest_used_node;
+            parents[t] = s;
+            labels[t]  = x;
+            s          = largest_used_node;
+            x          = 0;
+            continue;
+          } else {
+            return false;
+          }
+        }
+        x++;
+        if (x == n) {  // backtrack
+          x = labels[s];
+          s = parents[s];
+        }
+      }
+      return true;
+    }
+
+    template <typename Node>
+    bool is_rpo_standardized(WordGraphView<Node> const& wg) {
+      LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
+
+      using node_type  = typename WordGraphView<Node>::node_type;
+      using label_type = typename WordGraphView<Node>::label_type;
+
+      size_t const           n                 = wg.out_degree();
+      label_type             x                 = 0;
+      node_type              largest_used_node = 0;
+      std::vector<node_type> next_node(n, 0);
+
+      while (x < n) {
+        bool            changed           = false;
+        node_type const largest_this_pass = largest_used_node;
+        while (next_node[x] <= largest_this_pass) {
+          node_type const s = next_node[x];
+          ++next_node[x];
           node_type const t = wg.target_no_checks(s, x);
-          if (t != UNDEFINED && t > largest_used_node) {
-            if (t == largest_used_node + 1) {
-              ++largest_used_node;
-              parents[t] = s;
-              labels[t]  = x;
-              s          = largest_used_node;
-              x          = 0;
-              continue;
-            } else {
-              return false;
-            }
+          if (t == UNDEFINED || t <= largest_used_node) {
+            continue;
           }
-          x++;
-          if (x == n) {  // backtrack
-            x = labels[s];
-            s = parents[s];
-          }
-        }
-        return true;
-      }
-
-      template <typename Node>
-      bool is_rpo_standardized(WordGraphView<Node> const& wg) {
-        LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
-
-        using node_type  = typename WordGraphView<Node>::node_type;
-        using label_type = typename WordGraphView<Node>::label_type;
-
-        size_t const           n                 = wg.out_degree();
-        label_type             x                 = 0;
-        node_type              largest_used_node = 0;
-        std::vector<node_type> next_node(n, 0);
-
-        while (x < n) {
-          bool            changed           = false;
-          node_type const largest_this_pass = largest_used_node;
-          while (next_node[x] <= largest_this_pass) {
-            node_type const s = next_node[x];
-            ++next_node[x];
-            node_type const t = wg.target_no_checks(s, x);
-            if (t == UNDEFINED || t <= largest_used_node) {
-              continue;
-            }
-            if (t == largest_used_node + 1) {
-              changed = true;
-              ++largest_used_node;
-            } else {
-              return false;
-            }
-          }
-          if (changed) {
-            x = 0;
+          if (t == largest_used_node + 1) {
+            changed = true;
+            ++largest_used_node;
           } else {
-            ++x;
+            return false;
           }
         }
-
-        return true;
-      }
-
-      template <typename Node>
-      bool is_rev_rpo_standardized(WordGraphView<Node> const& wg) {
-        LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
-
-        using node_type  = typename WordGraphView<Node>::node_type;
-        using label_type = typename WordGraphView<Node>::label_type;
-
-        size_t const           n                 = wg.out_degree();
-        node_type              largest_used_node = 0;
-        std::vector<node_type> next_node(n, 0);
-
-      start_is_rev_rpo_standardize_search:
-        for (label_type x = 0; x < n; ++x) {
-          while (next_node[x] <= largest_used_node) {
-            node_type const s = next_node[x];
-            ++next_node[x];
-            node_type const t = wg.target_no_checks(s, x);
-            if (t == UNDEFINED || t <= largest_used_node) {
-              continue;
-            }
-            if (t == largest_used_node + 1) {
-              ++largest_used_node;
-              goto start_is_rev_rpo_standardize_search;
-            } else {
-              return false;
-            }
-          }
+        if (changed) {
+          x = 0;
+        } else {
+          ++x;
         }
-
-        return true;
       }
 
-      // Helper function for the two versions of is_acyclic below.
-      // Not noexcept because std::stack::emplace isn't
-      // This function does not really need to exist any longer, since
-      // topological_sort can be used for the same computation, but we
-      // retain it because it was already written and uses less space than
-      // topological_sort.
-      template <typename Node>
-      bool is_acyclic(WordGraphView<Node> const& wgv,
-                      std::stack<Node>&          stck,
-                      std::vector<Node>&         preorder,
-                      Node&                      next_preorder_num,
-                      std::vector<Node>&         postorder,
-                      Node&                      next_postorder_num) {
-        size_t const M = wgv.out_degree_no_checks();
-        size_t const N = wgv.number_of_nodes_no_checks();
-        Node         v;
-        while (!stck.empty()) {
-          v = stck.top();
-          stck.pop();
-          if (v >= N) {
-            postorder[v - N] = next_postorder_num++;
+      return true;
+    }
+
+    template <typename Node>
+    bool is_rev_rpo_standardized(WordGraphView<Node> const& wg) {
+      LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
+
+      using node_type  = typename WordGraphView<Node>::node_type;
+      using label_type = typename WordGraphView<Node>::label_type;
+
+      size_t const           n                 = wg.out_degree();
+      node_type              largest_used_node = 0;
+      std::vector<node_type> next_node(n, 0);
+
+    start_is_rev_rpo_standardize_search:
+      for (label_type x = 0; x < n; ++x) {
+        while (next_node[x] <= largest_used_node) {
+          node_type const s = next_node[x];
+          ++next_node[x];
+          node_type const t = wg.target_no_checks(s, x);
+          if (t == UNDEFINED || t <= largest_used_node) {
+            continue;
+          }
+          if (t == largest_used_node + 1) {
+            ++largest_used_node;
+            goto start_is_rev_rpo_standardize_search;
           } else {
-            if (preorder[v] < next_preorder_num && postorder[v] == N) {
-              // v is an ancestor of some vertex later in the search
-              return false;
-            } else if (preorder[v] == N) {
-              // not seen v before
-              preorder[v] = next_preorder_num++;
-              // acts as a divider, so that we know when we've stopped
-              // processing the out-neighbours of v
-              stck.push(N + v);
-              for (size_t label = 0; label < M; ++label) {
-                auto w = wgv.target_no_checks(v, label);
-                if (w != UNDEFINED) {
-                  stck.push(w);
-                }
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    // Helper function for the two versions of is_acyclic below.
+    // Not noexcept because std::stack::emplace isn't
+    // This function does not really need to exist any longer, since
+    // topological_sort can be used for the same computation, but we
+    // retain it because it was already written and uses less space than
+    // topological_sort.
+    template <typename Node>
+    bool is_acyclic(WordGraphView<Node> const& wgv,
+                    std::stack<Node>&          stck,
+                    std::vector<Node>&         preorder,
+                    Node&                      next_preorder_num,
+                    std::vector<Node>&         postorder,
+                    Node&                      next_postorder_num) {
+      size_t const M = wgv.out_degree_no_checks();
+      size_t const N = wgv.number_of_nodes_no_checks();
+      Node         v;
+      while (!stck.empty()) {
+        v = stck.top();
+        stck.pop();
+        if (v >= N) {
+          postorder[v - N] = next_postorder_num++;
+        } else {
+          if (preorder[v] < next_preorder_num && postorder[v] == N) {
+            // v is an ancestor of some vertex later in the search
+            return false;
+          } else if (preorder[v] == N) {
+            // not seen v before
+            preorder[v] = next_preorder_num++;
+            // acts as a divider, so that we know when we've stopped
+            // processing the out-neighbours of v
+            stck.push(N + v);
+            for (size_t label = 0; label < M; ++label) {
+              auto w = wgv.target_no_checks(v, label);
+              if (w != UNDEFINED) {
+                stck.push(w);
               }
             }
           }
         }
-        return true;
       }
-      template <typename Node>
-      using stack_type
-          = std::stack<std::pair<Node, typename WordGraph<Node>::label_type>>;
-      using lookup_type = std::vector<uint8_t>;
+      return true;
+    }
 
-      // helper function for the public functions below
-      template <typename Node>
-      bool topological_sort(WordGraphView<Node> const& wgv,
-                            stack_type<Node>&          stck,
-                            lookup_type&               seen,
-                            std::vector<Node>&         order) {
-        using label_type = typename WordGraph<Node>::label_type;
-        Node       m;
-        Node       n;
-        label_type e;
-      dive:
-        LIBSEMIGROUPS_ASSERT(!stck.empty());
-        LIBSEMIGROUPS_ASSERT(seen[stck.top().first] == 0);
-        m       = stck.top().first;
-        seen[m] = 2;
-        e       = 0;
-        do {
-        rise:
-          std::tie(e, n) = wgv.next_label_and_target_no_checks(m, e);
-          if (n != UNDEFINED) {
-            if (seen[n] == 0) {
-              // never saw this node before, so dive
-              stck.emplace(n, 0);
-              goto dive;
-            } else if (seen[n] == 1) {
-              // => all descendants of n prev. explored and no cycles
-              // found
-              // => try the next neighbour of m.
-              ++e;
-            } else {
-              LIBSEMIGROUPS_ASSERT(seen[n] == 2);
-              // => n is an ancestor and a descendant of m
-              // => there's a cycle
-              order.clear();
-              return false;
-            }
+    template <typename Node>
+    using stack_type
+        = std::stack<std::pair<Node, typename WordGraph<Node>::label_type>>;
+    using lookup_type = std::vector<uint8_t>;
+
+    // helper function for the public functions below
+    template <typename Node>
+    bool topological_sort(WordGraphView<Node> const& wgv,
+                          stack_type<Node>&          stck,
+                          lookup_type&               seen,
+                          std::vector<Node>&         order) {
+      using label_type = typename WordGraph<Node>::label_type;
+      Node       m;
+      Node       n;
+      label_type e;
+    dive:
+      LIBSEMIGROUPS_ASSERT(!stck.empty());
+      LIBSEMIGROUPS_ASSERT(seen[stck.top().first] == 0);
+      m       = stck.top().first;
+      seen[m] = 2;
+      e       = 0;
+      do {
+      rise:
+        std::tie(e, n) = wgv.next_label_and_target_no_checks(m, e);
+        if (n != UNDEFINED) {
+          if (seen[n] == 0) {
+            // never saw this node before, so dive
+            stck.emplace(n, 0);
+            goto dive;
+          } else if (seen[n] == 1) {
+            // => all descendants of n prev. explored and no cycles
+            // found
+            // => try the next neighbour of m.
+            ++e;
+          } else {
+            LIBSEMIGROUPS_ASSERT(seen[n] == 2);
+            // => n is an ancestor and a descendant of m
+            // => there's a cycle
+            order.clear();
+            return false;
           }
-        } while (e < wgv.out_degree_no_checks());
-        // => all descendants of m were explored, and no cycles were found
-        // => backtrack
-        seen[m] = 1;
-        order.push_back(m);
-        stck.pop();
-        if (stck.size() == 0) {
-          return true;
-        } else {
-          m = stck.top().first;
-          e = stck.top().second;
-          goto rise;
         }
+      } while (e < wgv.out_degree_no_checks());
+      // => all descendants of m were explored, and no cycles were found
+      // => backtrack
+      seen[m] = 1;
+      order.push_back(m);
+      stck.pop();
+      if (stck.size() == 0) {
+        return true;
+      } else {
+        m = stck.top().first;
+        e = stck.top().second;
+        goto rise;
       }
+    }
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
 
-      template <typename Node>
-      void init_adjacency_matrix(
-          WordGraphView<Node> const&                             wgv,
-          Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
-        size_t const N = wgv.number_of_nodes_no_checks();
-        mat.resize(N, N);
-        mat.fill(0);
-      }
+    template <typename Node>
+    void init_adjacency_matrix(
+        WordGraphView<Node> const&                             wgv,
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
+      size_t const N = wgv.number_of_nodes_no_checks();
+      mat.resize(N, N);
+      mat.fill(0);
+    }
 #else
-      template <typename Node>
-      void init_adjacency_matrix(WordGraphView<Node> const& wgv,
-                                 IntMat<0, 0, int64_t>&     mat) {
-        size_t const N = wgv.number_of_nodes_no_checks();
-        mat            = IntMat<0, 0, int64_t>(N, N);
-        std::fill(mat.begin(), mat.end(), 0);
-      }
+    template <typename Node>
+    void init_adjacency_matrix(WordGraphView<Node> const& wgv,
+                               IntMat<0, 0, int64_t>&     mat) {
+      size_t const N = wgv.number_of_nodes_no_checks();
+      mat            = IntMat<0, 0, int64_t>(N, N);
+      std::fill(mat.begin(), mat.end(), 0);
+    }
 #endif
 
-      template <typename Node>
-      struct FrontierCandidate {
-        word_type word;
-        Node      node;
-        Node      parent;
+    template <typename Node>
+    struct FrontierCandidate {
+      word_type word;
+      Node      node;
+      Node      parent;
 
-        FrontierCandidate(word_type w, Node n, Node p)
-            : word{w}, node{n}, parent{p} {};
-      };
+      FrontierCandidate(word_type w, Node n, Node p)
+          : word{w}, node{n}, parent{p} {};
+    };
 
-    }  // namespace detail
+  }  // namespace detail
 
+  namespace word_graph {
     // TODO(1) reduce duplication with standardized(Graph&, Cmp cmp)
     template <typename Node, typename Cmp>
     bool is_standardized(WordGraphView<Node> const& wg, Cmp&& cmp) {
@@ -440,6 +442,127 @@ namespace libsemigroups {
       }
       return true;
     }
+
+    namespace detail {
+      // Helper function for the two versions of is_acyclic below.
+      // Not noexcept because std::stack::emplace isn't
+      // This function does not really need to exist any longer, since
+      // topological_sort can be used for the same computation, but we retain
+      // it because it was already written and uses less space than
+      // topological_sort.
+      template <typename Node>
+      bool is_acyclic(WordGraphView<Node> const& wgv,
+                      std::stack<Node>&          stck,
+                      std::vector<Node>&         preorder,
+                      Node&                      next_preorder_num,
+                      std::vector<Node>&         postorder,
+                      Node&                      next_postorder_num) {
+        size_t const M = wgv.out_degree_no_checks();
+        size_t const N = wgv.number_of_nodes_no_checks();
+        Node         v;
+        while (!stck.empty()) {
+          v = stck.top();
+          stck.pop();
+          if (v >= N) {
+            postorder[v - N] = next_postorder_num++;
+          } else {
+            if (preorder[v] < next_preorder_num && postorder[v] == N) {
+              // v is an ancestor of some vertex later in the search
+              return false;
+            } else if (preorder[v] == N) {
+              // not seen v before
+              preorder[v] = next_preorder_num++;
+              // acts as a divider, so that we know when we've stopped
+              // processing the out-neighbours of v
+              stck.push(N + v);
+              for (size_t label = 0; label < M; ++label) {
+                auto w = wgv.target_no_checks(v, label);
+                if (w != UNDEFINED) {
+                  stck.push(w);
+                }
+              }
+            }
+          }
+        }
+        return true;
+      }
+
+      template <typename Node>
+      using stack_type
+          = std::stack<std::pair<Node, typename WordGraph<Node>::label_type>>;
+      using lookup_type = std::vector<uint8_t>;
+
+      // helper function for the public functions below
+      template <typename Node>
+      bool topological_sort(WordGraphView<Node> const& wgv,
+                            stack_type<Node>&          stck,
+                            lookup_type&               seen,
+                            std::vector<Node>&         order) {
+        using label_type = typename WordGraph<Node>::label_type;
+        Node       m;
+        Node       n;
+        label_type e;
+      dive:
+        LIBSEMIGROUPS_ASSERT(!stck.empty());
+        LIBSEMIGROUPS_ASSERT(seen[stck.top().first] == 0);
+        m       = stck.top().first;
+        seen[m] = 2;
+        e       = 0;
+        do {
+        rise:
+          std::tie(e, n) = wgv.next_label_and_target_no_checks(m, e);
+          if (n != UNDEFINED) {
+            if (seen[n] == 0) {
+              // never saw this node before, so dive
+              stck.emplace(n, 0);
+              goto dive;
+            } else if (seen[n] == 1) {
+              // => all descendants of n prev. explored and no cycles found
+              // => try the next neighbour of m.
+              ++e;
+            } else {
+              LIBSEMIGROUPS_ASSERT(seen[n] == 2);
+              // => n is an ancestor and a descendant of m
+              // => there's a cycle
+              order.clear();
+              return false;
+            }
+          }
+        } while (e < wgv.out_degree_no_checks());
+        // => all descendants of m were explored, and no cycles were found
+        // => backtrack
+        seen[m] = 1;
+        order.push_back(m);
+        stck.pop();
+        if (stck.size() == 0) {
+          return true;
+        } else {
+          m = stck.top().first;
+          e = stck.top().second;
+          goto rise;
+        }
+      }
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+
+      template <typename Node>
+      void init_adjacency_matrix(
+          WordGraphView<Node> const&                             wgv,
+          Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
+        size_t const N = wgv.number_of_nodes_no_checks();
+        mat.resize(N, N);
+        mat.fill(0);
+      }
+#else
+      template <typename Node>
+      void init_adjacency_matrix(WordGraphView<Node> const& wgv,
+                                 IntMat<0, 0, int64_t>&     mat) {
+        size_t const N = wgv.number_of_nodes_no_checks();
+        mat            = IntMat<0, 0, int64_t>(N, N);
+        std::fill(mat.begin(), mat.end(), 0);
+      }
+#endif
+
+    }  // namespace detail
 
     template <typename Node, typename Iterator1, typename Iterator2>
     bool is_compatible_no_checks(WordGraphView<Node> const& wgv,
@@ -705,8 +828,8 @@ namespace libsemigroups {
         if (seen[m] == 0) {
           stck.emplace(m, 0);
           if (!detail::topological_sort(wgv, stck, seen, order)) {
-            // graph is not acyclic and so there's no topological order
-            // for the nodes.
+            // graph is not acyclic and so there's no topological order for
+            // the nodes.
             LIBSEMIGROUPS_ASSERT(order.empty());
             return order;
           }
@@ -771,9 +894,9 @@ namespace libsemigroups {
           for (auto t : wgv.targets_no_checks(s)) {
             if (t < N) {
               // If we did see "t" before it "depth + 1" will never be
-              // accessed again, so it doesn't matter that it is wrong.
-              // O/w if "t" has not been seen before the "depth + 1" is
-              // its correct depth.
+              // accessed again, so it doesn't matter that it is wrong. O/w if
+              // "t" has not been seen before the "depth + 1" is its correct
+              // depth.
               stack.emplace(t, depth + 1);
             }
           }
@@ -792,12 +915,11 @@ namespace libsemigroups {
       size_t const M = wgv.out_degree_no_checks();
 
       // Reverse the WordGraph and then just find the nodes reachable from
-      // target in the reversed graph. Since the reverse of a WordGraph is
-      // no longer a WordGraph we use a vector of vectors here.
-      // Alternatively, we could use the technique used in
-      // WordGraphWithSources (the sources are essentially the reversed
-      // graph) to create the reversed graph (or just use it if we know it
-      // already, like in ToddCoxeter).
+      // target in the reversed graph. Since the reverse of a WordGraph is no
+      // longer a WordGraph we use a vector of vectors here. Alternatively, we
+      // could use the technique used in WordGraphWithSources (the sources are
+      // essentially the reversed graph) to create the reversed graph (or just
+      // use it if we know it already, like in ToddCoxeter).
       std::vector<std::vector<Node1>> in_neighbours(N, std::vector<Node1>({}));
       for (Node1 s = 0; s < N; ++s) {
         for (label_type a = 0; a < M; ++a) {
@@ -946,16 +1068,14 @@ namespace libsemigroups {
             std::vector<std::string> const& node_labels,
             std::vector<std::string> const& edge_labels) {
       if (node_labels.size() != wgv.number_of_nodes_no_checks()) {
-        LIBSEMIGROUPS_EXCEPTION("expected the 2nd argument (node labels) "
-                                "to have size {}, the "
-                                "number of nodes of the 1st argument "
-                                "(word graph), but found {}",
-                                wgv.number_of_nodes_no_checks(),
-                                node_labels.size());
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected the 2nd argument (node labels) to have size {}, the "
+            "number of nodes of the 1st argument (word graph), but found {}",
+            wgv.number_of_nodes_no_checks(),
+            node_labels.size());
       } else if (edge_labels.size() != wgv.out_degree()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected the 3rd argument (edge labels) to have size {}, "
-            "the "
+            "expected the 3rd argument (edge labels) to have size {}, the "
             "out-degree of the 1st argument (word graph), but found {}",
             wgv.out_degree(),
             edge_labels.size());
@@ -980,10 +1100,10 @@ namespace libsemigroups {
 
       std::string label = start_table;
       for (size_t index = 0; index < out_degree; ++index) {
-        label += fmt::format("<tr><td align=\"right\" "
-                             "port=\"port{}\">{}&nbsp;</td></tr>\n",
-                             index,
-                             edge_labels[index]);
+        label += fmt::format(
+            "<tr><td align=\"right\" port=\"port{}\">{}&nbsp;</td></tr>\n",
+            index,
+            edge_labels[index]);
       }
       label += end_table;
 
@@ -1046,6 +1166,16 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
+    Forest spanning_tree_no_checks(WordGraphView<Node1> const& wgv,
+                                   Node2                       root,
+                                   size_t                      max_depth) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      Forest f;
+      spanning_tree_no_checks(wgv, root, f, max_depth);
+      return f;
+    }
+
+    template <typename Node1, typename Node2>
     void spanning_tree(WordGraphView<Node1> const& wgv,
                        Node2                       root,
                        Forest&                     f,
@@ -1066,16 +1196,24 @@ namespace libsemigroups {
       return f;
     }
 
-    template <typename Node1, typename Node2>
-    Forest spanning_tree_no_checks(WordGraphView<Node1> const& wgv,
-                                   Node2                       root,
-                                   size_t                      max_depth) {
-      static_assert(sizeof(Node2) <= sizeof(Node1));
-      Forest f;
-      spanning_tree_no_checks(wgv, root, f, max_depth);
-      return f;
+    template <typename Node, typename Iterator>
+    void throw_if_any_target_out_of_bounds(WordGraphView<Node> const& wgv,
+                                           Iterator                   first,
+                                           Iterator                   last) {
+      for (auto it = first; it != last; ++it) {
+        auto s = *it;
+        for (auto [a, t] : wgv.labels_and_targets_no_checks(s)) {
+          if (t != UNDEFINED && t >= wgv.number_of_nodes_no_checks()) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "target out of bounds, the edge with source {} and label {} "
+                "has target {}, but expected value in the range [0, {})",
+                s,
+                a,
+                t,
+                wgv.number_of_nodes_no_checks());
+          }
+        }
+      }
     }
-
   }  // namespace word_graph
-
 }  // namespace libsemigroups
