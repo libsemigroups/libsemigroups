@@ -376,7 +376,7 @@ namespace libsemigroups {
     }  // namespace detail
 
     template <typename Graph, typename Cmp>
-    bool standardize_no_checks(Graph& wg, Forest& f, Cmp cmp) {
+    bool standardize_no_checks(Graph& wg, Forest& f, Cmp&& cmp) {
       if (wg.number_of_nodes() == 0) {
         return false;
       }
