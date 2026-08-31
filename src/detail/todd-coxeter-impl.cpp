@@ -355,9 +355,37 @@ namespace libsemigroups::detail {
     }
     _forest.init();
     _forest.add_nodes(number_of_nodes_active());
-    // NOTE: the cursor() does not survive the next line
+
+    // NOTE: the cursor() does not survive the next block of code,
     // but lookahead_cursor() should
-    bool result            = word_graph::standardize(*this, _forest, val);
+
+    bool result = false;
+
+    // TODO(1): The following is basically the old implementation of
+    // stadardize(Graph& wg, Forest& f, Order val). We should make <val> a
+    // functor that can be used for comparison, and replace this switch
+    // statement with a single call to standardize.
+    switch (val) {
+      case Order::none:
+        result = false;
+        break;
+      case Order::lenlex:
+        result = word_graph::standardize(*this, _forest, LenLexCmp());
+        break;
+      case Order::lex:
+        result = word_graph::standardize(*this, _forest, LexCmp());
+        break;
+      case Order::rpo:
+        result = word_graph::standardize(*this, _forest, RPOCmp());
+        break;
+      case Order::rev_rpo:
+        result = word_graph::standardize(*this, _forest, RevRPOCmp());
+        break;
+      // Intentional fall-through
+      default:
+        result = false;
+    }
+
     _forest_valid          = true;
     _standardization_order = val;
     report_default("ToddCoxeter: the word graph was {} standardized in {}\n",

@@ -30,6 +30,7 @@
 #include "word-graph-test-common.hpp"  // for add_clique etc
 
 #include "libsemigroups/forest.hpp"              // for Forest
+#include "libsemigroups/order.hpp"               // for LenLexCmp, LexCmp, ...
 #include "libsemigroups/paths.hpp"               // for cbegin_pilo
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 #include "libsemigroups/word-graph.hpp"          // for WordGraph
@@ -902,7 +903,7 @@ namespace libsemigroups {
     meet(xy, x, y);
     REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
 
-    word_graph::standardize(xy);
+    word_graph::standardize(xy, LenLexCmp());
     REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
 
     x = xy;
@@ -920,7 +921,7 @@ namespace libsemigroups {
     Meeter meet;
     auto   xy = meet(x, y);
     REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
-    word_graph::standardize(xy);
+    word_graph::standardize(xy, LenLexCmp());
     REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
 
     Joiner join;
@@ -1060,11 +1061,11 @@ namespace libsemigroups {
     auto const expected_words
         = std::vector<word_type>({{}, {0}, {0, 0}, {1}, {1, 0}, {0, 0, 1}});
     REQUIRE(minimal_words(wg, rev_rpo_cmp_recursive) == expected_words);
-    REQUIRE(word_graph::is_standardized(wg, Order::rev_rpo));
+    REQUIRE(word_graph::is_standardized(wg, RevRPOCmp()));
 
     Forest f;
-    REQUIRE(!word_graph::standardize(wg, f, Order::rev_rpo));
-    REQUIRE(word_graph::is_standardized(wg, Order::rev_rpo));
+    REQUIRE(!word_graph::standardize(wg, f, RevRPOCmp()));
+    REQUIRE(word_graph::is_standardized(wg, RevRPOCmp()));
     REQUIRE(std::is_sorted(
         expected_words.begin(), expected_words.end(), RevRPOCmp()));
     REQUIRE(words_from_forest(f) == expected_words);
@@ -1090,17 +1091,17 @@ namespace libsemigroups {
     }
     permuted.standardize_no_checks(q, p);
 
-    REQUIRE(word_graph::is_standardized(canonical, Order::rev_rpo));
+    REQUIRE(word_graph::is_standardized(canonical, RevRPOCmp()));
     REQUIRE(permuted
             == make<WordGraph<size_t>>(
                 6, {{2, 4}, {0}, {3}, {0, 1}, {5}, {UNDEFINED, 3}}));
 
-    REQUIRE(!word_graph::is_standardized(permuted, Order::rev_rpo));
+    REQUIRE(!word_graph::is_standardized(permuted, RevRPOCmp()));
 
     Forest f;
     REQUIRE(word_graph::standardize(permuted, f, RevRPOCmp()));
     REQUIRE(permuted == canonical);
-    REQUIRE(word_graph::is_standardized(permuted, Order::rev_rpo));
+    REQUIRE(word_graph::is_standardized(permuted, RevRPOCmp()));
     REQUIRE(words_from_forest(f)
             == minimal_words(canonical, rev_rpo_cmp_recursive));
     auto const words = words_from_forest(f);
@@ -1119,12 +1120,12 @@ namespace libsemigroups {
 
     auto const expected = canonical_standardization(wg, rev_rpo_cmp_recursive);
 
-    REQUIRE(!word_graph::is_standardized(wg, Order::rev_rpo));
+    REQUIRE(!word_graph::is_standardized(wg, RevRPOCmp()));
 
     Forest f;
-    REQUIRE(word_graph::standardize(wg, f, Order::rev_rpo));
+    REQUIRE(word_graph::standardize(wg, f, RevRPOCmp()));
     REQUIRE(wg == expected.first);
-    REQUIRE(word_graph::is_standardized(wg, Order::rev_rpo));
+    REQUIRE(word_graph::is_standardized(wg, RevRPOCmp()));
     REQUIRE(words_from_forest(f) == expected.second);
     REQUIRE(
         expected.second
@@ -1148,25 +1149,25 @@ namespace libsemigroups {
     WordGraph<size_t> wg4 = wg;
 
     SECTION("LenLex") {
-      Forest const f = word_graph::standardize(wg1, Order::lenlex).second;
+      Forest const f = word_graph::standardize(wg1, LenLexCmp()).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(std::is_sorted(
           sorted_words.begin(), sorted_words.end(), LenLexCmp()));
     }
     SECTION("Lex") {
-      Forest const f = word_graph::standardize(wg2, Order::lex).second;
+      Forest const           f = word_graph::standardize(wg2, LexCmp()).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(
           std::is_sorted(sorted_words.begin(), sorted_words.end(), LexCmp()));
     }
     SECTION("RPO") {
-      Forest const f = word_graph::standardize(wg3, Order::rpo).second;
+      Forest const           f = word_graph::standardize(wg3, RPOCmp()).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(
           std::is_sorted(sorted_words.begin(), sorted_words.end(), RPOCmp()));
     }
     SECTION("RevRPO") {
-      Forest const f = word_graph::standardize(wg4, Order::rev_rpo).second;
+      Forest const f = word_graph::standardize(wg4, RevRPOCmp()).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(std::is_sorted(
           sorted_words.begin(), sorted_words.end(), RevRPOCmp()));
@@ -1202,25 +1203,25 @@ namespace libsemigroups {
     WordGraph<size_t> wg4 = wg;
 
     SECTION("LenLex") {
-      Forest const f = word_graph::standardize(wg1, Order::lenlex).second;
+      Forest const f = word_graph::standardize(wg1, LenLexCmp()).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(std::is_sorted(
           sorted_words.begin(), sorted_words.end(), LenLexCmp()));
     }
     SECTION("Lex") {
-      Forest const f = word_graph::standardize(wg2, Order::lex).second;
+      Forest const           f = word_graph::standardize(wg2, LexCmp()).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(
           std::is_sorted(sorted_words.begin(), sorted_words.end(), LexCmp()));
     }
     SECTION("RPO") {
-      Forest const f = word_graph::standardize(wg3, Order::rpo).second;
+      Forest const           f = word_graph::standardize(wg3, RPOCmp()).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(
           std::is_sorted(sorted_words.begin(), sorted_words.end(), RPOCmp()));
     }
     SECTION("RevRPO") {
-      Forest const f = word_graph::standardize(wg4, Order::rev_rpo).second;
+      Forest const f = word_graph::standardize(wg4, RevRPOCmp()).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(std::is_sorted(
           sorted_words.begin(), sorted_words.end(), RevRPOCmp()));
@@ -1351,12 +1352,9 @@ namespace libsemigroups {
 
     WordGraph<uint32_t> empty;
     Forest              forest;
-    REQUIRE(!word_graph::standardize_no_checks(empty, forest, Order::lenlex));
+    REQUIRE(!word_graph::standardize_no_checks(empty, forest, LenLexCmp()));
 
     WordGraph<uint32_t> graph(1, 1);
-    REQUIRE(!word_graph::standardize_no_checks(graph, forest, Order::none));
-    REQUIRE(!word_graph::standardize_no_checks(
-        graph, forest, static_cast<Order>(255)));
 
     Joiner join1;
     Joiner join2(join1);
@@ -1396,23 +1394,29 @@ namespace libsemigroups {
     WordGraph<size_t> wg8 = wg;
 
     SECTION("LenLex") {
-      word_graph::standardize(wg1, Order::lenlex);
-      word_graph::standardize(wg2, LenLexCmp());
+      word_graph::standardize(wg1, LenLexCmp());
+      word_graph::standardize(wg2, [](auto const& w1, auto const& w2) {
+        return lenlex_cmp(w1, w2);
+      });
       REQUIRE(wg1 == wg2);
     }
     SECTION("Lex") {
-      word_graph::standardize(wg3, Order::lex);
-      word_graph::standardize(wg4, LexCmp());
+      word_graph::standardize(wg3, LexCmp());
+      word_graph::standardize(
+          wg4, [](auto const& w1, auto const& w2) { return lex_cmp(w1, w2); });
       REQUIRE(wg3 == wg4);
     }
     SECTION("RPO") {
-      word_graph::standardize(wg5, Order::rpo);
-      word_graph::standardize(wg6, RPOCmp());
+      word_graph::standardize(wg5, RPOCmp());
+      word_graph::standardize(
+          wg6, [](auto const& w1, auto const& w2) { return rpo_cmp(w1, w2); });
       REQUIRE(wg5 == wg6);
     }
     SECTION("RevRPO") {
-      word_graph::standardize(wg7, Order::rev_rpo);
-      word_graph::standardize(wg8, RevRPOCmp());
+      word_graph::standardize(wg7, RevRPOCmp());
+      word_graph::standardize(wg8, [](auto const& w1, auto const& w2) {
+        return rev_rpo_cmp(w1, w2);
+      });
       REQUIRE(wg7 == wg8);
     }
   }
@@ -1445,25 +1449,37 @@ namespace libsemigroups {
     WordGraph<size_t> wg4 = wg;
 
     SECTION("LenLex") {
-      Forest const f = word_graph::standardize(wg1, LenLexCmp()).second;
+      Forest const f
+          = word_graph::standardize(wg1, [](auto const& w1, auto const& w2) {
+              return lenlex_cmp(w1, w2);
+            }).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(std::is_sorted(
           sorted_words.begin(), sorted_words.end(), LenLexCmp()));
     }
     SECTION("Lex") {
-      Forest const           f = word_graph::standardize(wg2, LexCmp()).second;
+      Forest const f
+          = word_graph::standardize(wg2, [](auto const& w1, auto const& w2) {
+              return lex_cmp(w1, w2);
+            }).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(
           std::is_sorted(sorted_words.begin(), sorted_words.end(), LexCmp()));
     }
     SECTION("RPO") {
-      Forest const           f = word_graph::standardize(wg3, RPOCmp()).second;
+      Forest const f
+          = word_graph::standardize(wg3, [](auto const& w1, auto const& w2) {
+              return rpo_cmp(w1, w2);
+            }).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(
           std::is_sorted(sorted_words.begin(), sorted_words.end(), RPOCmp()));
     }
     SECTION("RevRPO") {
-      Forest const f = word_graph::standardize(wg4, RevRPOCmp()).second;
+      Forest const f
+          = word_graph::standardize(wg4, [](auto const& w1, auto const& w2) {
+              return rev_rpo_cmp(w1, w2);
+            }).second;
       std::vector<word_type> sorted_words = words_from_forest(f);
       REQUIRE(std::is_sorted(
           sorted_words.begin(), sorted_words.end(), RevRPOCmp()));
@@ -1485,24 +1501,24 @@ namespace libsemigroups {
     WordGraph<size_t> wg4 = wg;
 
     SECTION("LenLex") {
-      REQUIRE(!word_graph::is_standardized(wg1, Order::lenlex));
-      word_graph::standardize(wg1, Order::lenlex);
-      REQUIRE(word_graph::is_standardized(wg1, Order::lenlex));
+      REQUIRE(!word_graph::is_standardized(wg1, LenLexCmp()));
+      word_graph::standardize(wg1, LenLexCmp());
+      REQUIRE(word_graph::is_standardized(wg1, LenLexCmp()));
     }
     SECTION("Lex") {
-      REQUIRE(!word_graph::is_standardized(wg2, Order::lex));
-      word_graph::standardize(wg2, Order::lex);
-      REQUIRE(word_graph::is_standardized(wg2, Order::lex));
+      REQUIRE(!word_graph::is_standardized(wg2, LexCmp()));
+      word_graph::standardize(wg2, LexCmp());
+      REQUIRE(word_graph::is_standardized(wg2, LexCmp()));
     }
     SECTION("RPO") {
-      REQUIRE(!word_graph::is_standardized(wg3, Order::rpo));
-      word_graph::standardize(wg3, Order::rpo);
-      REQUIRE(word_graph::is_standardized(wg3, Order::rpo));
+      REQUIRE(!word_graph::is_standardized(wg3, RPOCmp()));
+      word_graph::standardize(wg3, RPOCmp());
+      REQUIRE(word_graph::is_standardized(wg3, RPOCmp()));
     }
     SECTION("RevRPO") {
-      REQUIRE(!word_graph::is_standardized(wg4, Order::rev_rpo));
-      word_graph::standardize(wg4, Order::rev_rpo);
-      REQUIRE(word_graph::is_standardized(wg4, Order::rev_rpo));
+      REQUIRE(!word_graph::is_standardized(wg4, RevRPOCmp()));
+      word_graph::standardize(wg4, RevRPOCmp());
+      REQUIRE(word_graph::is_standardized(wg4, RevRPOCmp()));
     }
   }
 
@@ -1521,24 +1537,40 @@ namespace libsemigroups {
     WordGraph<size_t> wg4 = wg;
 
     SECTION("LenLex") {
-      REQUIRE(!word_graph::is_standardized(wg1, Order::lenlex));
-      word_graph::standardize(wg1, Order::lenlex);
-      REQUIRE(word_graph::is_standardized(wg1, LenLexCmp()));
+      REQUIRE(
+          !word_graph::is_standardized(wg1, [](auto const& w1, auto const& w2) {
+            return lenlex_cmp(w1, w2);
+          }));
+      word_graph::standardize(wg1, LenLexCmp());
+      REQUIRE(
+          word_graph::is_standardized(wg1, [](auto const& w1, auto const& w2) {
+            return lenlex_cmp(w1, w2);
+          }));
     }
     SECTION("Lex") {
-      REQUIRE(!word_graph::is_standardized(wg2, Order::lex));
-      word_graph::standardize(wg2, Order::lex);
-      REQUIRE(word_graph::is_standardized(wg2, LexCmp()));
+      REQUIRE(!word_graph::is_standardized(
+          wg2, [](auto const& w1, auto const& w2) { return lex_cmp(w1, w2); }));
+      word_graph::standardize(wg2, LexCmp());
+      REQUIRE(word_graph::is_standardized(
+          wg2, [](auto const& w1, auto const& w2) { return lex_cmp(w1, w2); }));
     }
     SECTION("RPO") {
-      REQUIRE(!word_graph::is_standardized(wg3, Order::rpo));
-      word_graph::standardize(wg3, Order::rpo);
-      REQUIRE(word_graph::is_standardized(wg3, RPOCmp()));
+      REQUIRE(!word_graph::is_standardized(
+          wg3, [](auto const& w1, auto const& w2) { return rpo_cmp(w1, w2); }));
+      word_graph::standardize(wg3, RPOCmp());
+      REQUIRE(word_graph::is_standardized(
+          wg3, [](auto const& w1, auto const& w2) { return rpo_cmp(w1, w2); }));
     }
     SECTION("RevRPO") {
-      REQUIRE(!word_graph::is_standardized(wg4, Order::rev_rpo));
-      word_graph::standardize(wg4, Order::rev_rpo);
-      REQUIRE(word_graph::is_standardized(wg4, RevRPOCmp()));
+      REQUIRE(
+          !word_graph::is_standardized(wg4, [](auto const& w1, auto const& w2) {
+            return rev_rpo_cmp(w1, w2);
+          }));
+      word_graph::standardize(wg4, RevRPOCmp());
+      REQUIRE(
+          word_graph::is_standardized(wg4, [](auto const& w1, auto const& w2) {
+            return rev_rpo_cmp(w1, w2);
+          }));
     }
   }
 }  // namespace libsemigroups

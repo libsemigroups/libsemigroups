@@ -99,7 +99,7 @@ namespace libsemigroups {
       }
 
       void disjoint_union_inplace_no_checks(StephenGraph& that) {
-        word_graph::standardize_no_checks(that);
+        word_graph::standardize_no_checks(that, LenLexCmp());
         LIBSEMIGROUPS_ASSERT(word_graph::is_standardized(that));
         size_t const N = number_of_nodes_active();
         // TODO(2): the following 2 lines are a bit awkward

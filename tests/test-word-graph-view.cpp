@@ -494,22 +494,21 @@ namespace libsemigroups {
     WordGraph<size_t> empty(0, 2);
     WordGraphView     empty_view(empty);
     REQUIRE(word_graph::is_strictly_cyclic(empty_view));
-    REQUIRE(word_graph::is_standardized(empty_view, Order::none));
-    REQUIRE(word_graph::is_standardized(empty_view, Order::lenlex));
-    REQUIRE(word_graph::is_standardized(empty_view, Order::rev_rpo));
+    REQUIRE(word_graph::is_standardized(empty_view, LenLexCmp()));
+    REQUIRE(word_graph::is_standardized(empty_view, RevRPOCmp()));
 
     WordGraph<size_t> singleton(1, 2);
     WordGraphView     singleton_view(singleton);
-    REQUIRE(word_graph::is_standardized(singleton_view, Order::rev_rpo));
+    REQUIRE(word_graph::is_standardized(singleton_view, RevRPOCmp()));
 
     auto          canonical = make<WordGraph<size_t>>(3, {{1, 2}, {}, {}});
     WordGraphView canonical_view(canonical);
-    REQUIRE(word_graph::is_standardized(canonical_view, Order::lenlex));
+    REQUIRE(word_graph::is_standardized(canonical_view, LenLexCmp()));
 
     auto          noncanonical = make<WordGraph<size_t>>(3, {{2, 1}, {}, {}});
     WordGraphView noncanonical_view(noncanonical);
-    REQUIRE(!word_graph::is_standardized(noncanonical_view, Order::lenlex));
-    REQUIRE(!word_graph::is_standardized(noncanonical_view, Order::rpo));
+    REQUIRE(!word_graph::is_standardized(noncanonical_view, LenLexCmp()));
+    REQUIRE(!word_graph::is_standardized(noncanonical_view, RPOCmp()));
 
     auto const matrix = word_graph::adjacency_matrix(canonical_view);
     REQUIRE(matrix(0, 1) == 1);
