@@ -509,9 +509,7 @@ namespace libsemigroups {
     auto          noncanonical = make<WordGraph<size_t>>(3, {{2, 1}, {}, {}});
     WordGraphView noncanonical_view(noncanonical);
     REQUIRE(!word_graph::is_standardized(noncanonical_view, Order::lenlex));
-    REQUIRE_THROWS_AS(
-        word_graph::is_standardized(noncanonical_view, Order::rpo),
-        LibsemigroupsException);
+    REQUIRE(!word_graph::is_standardized(noncanonical_view, Order::rpo));
 
     auto const matrix = word_graph::adjacency_matrix(canonical_view);
     REQUIRE(matrix(0, 1) == 1);
