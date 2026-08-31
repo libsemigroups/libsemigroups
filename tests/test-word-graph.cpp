@@ -1411,8 +1411,8 @@ namespace libsemigroups {
       REQUIRE(wg5 == wg6);
     }
     SECTION("RevRPO") {
-      word_graph::standardize(wg5, Order::rev_rpo);
-      word_graph::standardize(wg6, RevRPOCmp());
+      word_graph::standardize(wg7, Order::rev_rpo);
+      word_graph::standardize(wg8, RevRPOCmp());
       REQUIRE(wg7 == wg8);
     }
   }
