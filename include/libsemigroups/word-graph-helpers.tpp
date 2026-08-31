@@ -407,6 +407,7 @@ namespace libsemigroups {
       // always has the shortest word.
       while (!frontier.empty()) {
         std::pop_heap(frontier.begin(), frontier.end(), candidate_comparator);
+        // NOLINTNEXTLINE(whitespace/braces)
         auto const [current_word, current_node, parent_node] = frontier.back();
         frontier.pop_back();
 
