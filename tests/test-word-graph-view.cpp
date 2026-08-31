@@ -152,14 +152,7 @@ namespace libsemigroups {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     REQUIRE_THROWS_AS(v.target(0, 7), LibsemigroupsException);
-    REQUIRE_THROWS_AS(v.throw_if_label_out_of_bounds(15),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(v.throw_if_node_out_of_bounds(15),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        v.throw_if_node_out_of_bounds(g.cbegin_nodes(), g.cbegin_nodes() + 7),
-        LibsemigroupsException);
-    v.throw_if_node_out_of_bounds(g.cbegin_nodes(), g.cbegin_nodes() + 2);
+    REQUIRE_THROWS_AS(v.target(15, 0), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "008", "cbegin_targets", "[quick]") {
@@ -328,7 +321,8 @@ namespace libsemigroups {
     }
 
     v.reshape(4, 6);
-    REQUIRE_THROWS(v.throw_if_any_target_out_of_bounds());
+    REQUIRE_THROWS(
+        v.throw_if_any_target_out_of_bounds(v.cbegin_nodes(), v.cend_nodes()));
     // We might expect this to be 0, since there is no edge between 4 and 5.
     // However, since there is an edge from 4 to 0, and from 5 to 6, we get a
     // count of 2.
@@ -416,40 +410,42 @@ namespace libsemigroups {
 
     WordGraph<size_t> g(10, 5);
     v.init(g);
-    REQUIRE_EXCEPTION_MSG(
-        v.start_node(11),
-        "invalid start value, expected values in the range [0, 10], got 11");
+    REQUIRE_EXCEPTION_MSG(v.start_node(11),
+                          "start value out of bounds, expected value in the "
+                          "range [0, 11), got 11");
 
     REQUIRE_EXCEPTION_MSG(
         v.end_node(11),
-        "invalid end value, expected values in the range [0, 10], got 11");
+        "end value out of bounds, expected value in the range [0, 11), got 11");
 
     v.start_node(3);
     v.end_node(7);
 
     REQUIRE_EXCEPTION_MSG(
         v.start_node(8),
-        "invalid range, expected start <= end, got start = 8 and end = 7");
+        "start value out of bounds, expected value in the range [0, 8), got 8");
 
     REQUIRE_EXCEPTION_MSG(
         v.end_node(2),
-        "invalid range, expected start <= end, got start = 3 and end = 2");
+        "end value out of bounds, expected value in the range [3, 11), got 2");
 
     g.target(4, 0, 5);
 
-    REQUIRE_EXCEPTION_MSG(
-        std::ignore = v.target(4, 0),
-        "node value out of bounds, expected value in the range [0, 4), got 4");
+    REQUIRE_EXCEPTION_MSG(std::ignore = v.target(4, 0),
+                          "node value out of bounds, expected value in the "
+                          "range [0, 4), got 4");
 
-    REQUIRE_EXCEPTION_MSG(
-        std::ignore = v.target(0, 6),
-        "label value out of bounds, expected value in the range [0, 5), got 6");
+    REQUIRE_EXCEPTION_MSG(std::ignore = v.target(0, 6),
+                          "label value out of bounds, expected value in "
+                          "the range [0, 5), got 6");
 
-    REQUIRE_NOTHROW(v.throw_if_any_target_out_of_bounds());
+    REQUIRE_NOTHROW(
+        v.throw_if_any_target_out_of_bounds(v.cbegin_nodes(), v.cend_nodes()));
     v.end_node(5);
     REQUIRE_EXCEPTION_MSG(
-        v.throw_if_any_target_out_of_bounds(),
-        "target out of bounds, the edge with source 1 and label 0 has target "
+        v.throw_if_any_target_out_of_bounds(v.cbegin_nodes(), v.cend_nodes()),
+        "target out of bounds, the edge with source 1 "
+        "and label 0 has target "
         "2, but expected value in the range [0, 2)");
 
     WordGraph<size_t> graph(1, Dot::colors.size() + 1);
@@ -551,13 +547,6 @@ namespace libsemigroups {
     std::vector<size_t> const root = {0};
     REQUIRE(word_graph::is_compatible(
         one_way_view, root.cbegin(), root.cend(), lhs, rhs));
-
-    REQUIRE_NOTHROW(view.throw_if_label_out_of_bounds(lhs));
-    REQUIRE_NOTHROW(
-        view.throw_if_label_out_of_bounds(lhs.cbegin(), lhs.cend()));
-    REQUIRE_NOTHROW(view.throw_if_label_out_of_bounds(compatible_rules));
-    REQUIRE_THROWS_AS(view.throw_if_label_out_of_bounds(invalid),
-                      LibsemigroupsException);
 
     auto            path_graph = make<WordGraph<size_t>>(2, {{1}, {UNDEFINED}});
     WordGraphView   path_view(path_graph);
