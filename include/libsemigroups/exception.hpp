@@ -19,8 +19,8 @@
 #ifndef LIBSEMIGROUPS_EXCEPTION_HPP_
 #define LIBSEMIGROUPS_EXCEPTION_HPP_
 
-#include <cstddef>  // for size_t
-#include <exception>
+#include <cstddef>        // for size_t
+#include <exception>      // TODo
 #include <iterator>       // for distance
 #include <stdexcept>      // for std::runtime_error
 #include <string>         // for std::string
@@ -30,10 +30,11 @@
 #include <utility>        // for forward, pair
 
 #include "adapters.hpp"  // for ReturnFalse
+#include "ranges.hpp"    // for rx::input_range_iterator_end
 
-#include "detail/fmt.hpp"
-#include "detail/formatters.hpp"
-#include "detail/print.hpp"  // for to_printable
+#include "detail/fmt.hpp"         // TODO
+#include "detail/formatters.hpp"  // TODO
+#include "detail/print.hpp"       // for to_printable
 
 // This macro doesn't really need to exist, it does because o/w doxygen fails
 // to produce the doc for LibsemigroupsException
@@ -120,18 +121,31 @@ namespace libsemigroups {
                              std::string_view where,
                              Ignore&&         ignore = Ignore{});
 
+    // TODO make this call throw_if_not_in_range
     void throw_if_not_less(size_t           val,
                            size_t           upper,
                            std::string_view prefix = "");
 
+    // TODO make this call throw_if_any_not_in_range
+    // NOTE: Iterator and Sentinel must either be the same or Sentinel must be
+    // rx::input_range_iterator_end
+    template <typename Iterator, typename Sentinel>
+    void throw_if_any_not_less(Iterator         first,
+                               Sentinel         last,
+                               size_t           upper,
+                               std::string_view prefix = "");
+
+    // TODO add Ignore as above
     void throw_if_not_in_range(size_t           val,
                                size_t           lower,
                                size_t           upper,
                                std::string_view prefix = "");
 
-    template <typename Iterator>
+    // NOTE: Iterator and Sentinel must either be the same or Sentinel must be
+    // rx::input_range_iterator_end
+    template <typename Iterator, typename Sentinel>
     void throw_if_any_not_in_range(Iterator         first,
-                                   Iterator         last,
+                                   Sentinel         last,
                                    size_t           lower,
                                    size_t           upper,
                                    std::string_view prefix = "");

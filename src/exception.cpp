@@ -87,13 +87,7 @@ namespace libsemigroups {
 
   namespace detail {
     void throw_if_not_less(size_t val, size_t upper, std::string_view prefix) {
-      if (val >= upper) {
-        LIBSEMIGROUPS_EXCEPTION("{}value out of bounds, expected value in "
-                                "the range [0, {}), got {}",
-                                prefix,
-                                upper,
-                                val);
-      }
+      throw_if_not_in_range(val, 0, upper, prefix);
     }
 
     void throw_if_not_in_range(size_t           val,

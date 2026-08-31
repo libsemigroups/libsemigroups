@@ -71,13 +71,24 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Iterator>
+    template <typename Iterator, typename Sentinel>
+    void throw_if_any_not_less(Iterator         first,
+                               Sentinel         last,
+                               size_t           upper,
+                               std::string_view prefix) {
+      throw_if_any_not_in_range(first, last, 0, upper, prefix);
+    }
+
+    template <typename Iterator, typename Sentinel>
     void throw_if_any_not_in_range(Iterator         first,
-                                   Iterator         last,
+                                   Sentinel         last,
                                    size_t           lower,
                                    size_t           upper,
                                    std::string_view prefix) {
-      for (auto it = first; it != last; ++it) {
+      static_assert(std::is_same_v<Iterator, Sentinel>
+                    || std::is_same_v<Sentinel, rx::input_range_iterator_end>);
+      size_t pos = 0;
+      for (auto it = first; it != last; ++it, ++pos) {
         if (*it >= upper || *it < lower) {
           LIBSEMIGROUPS_EXCEPTION("{}value out of bounds, expected value in "
                                   "the range [{}, {}), got {} in position {}",
@@ -85,9 +96,12 @@ namespace libsemigroups {
                                   lower,
                                   upper,
                                   *it,
-                                  std::distance(first, it));
+                                  pos);
+          // NOTE: can't use std::distance here because it doesn't work when
+          // Sentinel != Iterator.
         }
       }
     }
+
   }  // namespace detail
 }  // namespace libsemigroups
