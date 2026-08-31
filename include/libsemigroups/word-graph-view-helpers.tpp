@@ -62,9 +62,11 @@ namespace libsemigroups {
       template <typename Node>
       // TODO rename to _no_checks and add a checks version?
       bool is_lenlex_standardized(WordGraphView<Node> const& wg) {
+        LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
+
         Node current_max_node = 0;
 
-        for (auto s : wg.nodes_no_checks()) {
+        for (Node s = 0; s <= current_max_node; s++) {
           for (auto t : wg.targets_no_checks(s)) {
             if (t != UNDEFINED) {
               if (t > current_max_node) {
@@ -82,9 +84,8 @@ namespace libsemigroups {
 
       template <typename Node>
       bool is_lex_standardized(WordGraphView<Node> const& wg) {
-        if (wg.number_of_nodes_no_checks() == 0) {
-          return true;
-        }
+        LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
+
         using node_type  = typename WordGraphView<Node>::node_type;
         using label_type = typename WordGraphView<Node>::label_type;
 
@@ -125,9 +126,7 @@ namespace libsemigroups {
 
       template <typename Node>
       bool is_rpo_standardized(WordGraphView<Node> const& wg) {
-        if (wg.number_of_nodes_no_checks() == 0) {
-          return true;
-        }
+        LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
 
         using node_type  = typename WordGraphView<Node>::node_type;
         using label_type = typename WordGraphView<Node>::label_type;
@@ -166,9 +165,7 @@ namespace libsemigroups {
 
       template <typename Node>
       bool is_rev_rpo_standardized(WordGraphView<Node> const& wg) {
-        if (wg.number_of_nodes_no_checks() == 0) {
-          return true;
-        }
+        LIBSEMIGROUPS_ASSERT(wg.number_of_nodes_no_checks() != 0);
 
         using node_type  = typename WordGraphView<Node>::node_type;
         using label_type = typename WordGraphView<Node>::label_type;
@@ -330,7 +327,7 @@ namespace libsemigroups {
     // TODO(1) reduce duplication with standardized(Graph&, Cmp cmp)
     template <typename Node, typename Cmp>
     bool is_standardized(WordGraphView<Node> const& wg, Cmp&& cmp) {
-      if (wg.number_of_nodes_no_checks() == 0) {
+      if (wg.number_of_nodes_no_checks() <= 1) {
         return true;
       }
 
@@ -405,6 +402,10 @@ namespace libsemigroups {
 
     template <typename Node>
     bool is_standardized(WordGraphView<Node> const& wg, Order val) {
+      if (wg.number_of_nodes_no_checks() <= 1) {
+        return true;
+      }
+
       switch (val) {
         case Order::none:
           return true;
