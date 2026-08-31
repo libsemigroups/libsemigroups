@@ -1471,7 +1471,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
-                          "057",
+                          "061",
                           "random is_standardized",
                           "[quick][word-graph]") {
     auto rg = ReportGuard(false);
@@ -1507,7 +1507,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
-                          "058",
+                          "062",
                           "random generic is_standardized",
                           "[quick][word-graph]") {
     auto rg = ReportGuard(false);
