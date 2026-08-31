@@ -725,8 +725,9 @@ namespace libsemigroups {
                           "throw_if_label_out_of_bounds | 20 node chain",
                           "[quick]") {
     WordGraph<size_t> wg = chain(20);
-    REQUIRE_THROWS_AS(word_graph::throw_if_label_out_of_bounds(wg, 10),
-                      LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(std::ignore = wg.target(9, 10),
+                          "label value out of bounds, expected value in the "
+                          "range [0, 1), got 10");
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -1224,18 +1225,6 @@ namespace libsemigroups {
                           "uncovered validation overloads",
                           "[quick][word-graph]") {
     WordGraph<uint32_t> wg(2, 2);
-
-    word_type const valid = {0, 1};
-    REQUIRE_NOTHROW(word_graph::throw_if_label_out_of_bounds(wg, valid));
-    REQUIRE_NOTHROW(word_graph::throw_if_label_out_of_bounds(
-        wg, valid.cbegin(), valid.cend()));
-
-    word_type const invalid = {0, 2};
-    REQUIRE_THROWS_AS(word_graph::throw_if_label_out_of_bounds(wg, invalid),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(word_graph::throw_if_label_out_of_bounds(
-                          wg, invalid.cbegin(), invalid.cend()),
-                      LibsemigroupsException);
 
     REQUIRE_THROWS_AS(to_input_string(wg, "", "{", ""), LibsemigroupsException);
   }

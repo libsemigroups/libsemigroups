@@ -1007,11 +1007,12 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any node in the range \p first to
     //! \p last is out of bounds.
-    // TODO should be a helper
     // NOTE: this is genuinely specific to WordGraph/View, and so is retained
     // (as a helper)!
     template <typename Iterator>
-    void throw_if_any_target_out_of_bounds(Iterator first, Iterator last) const;
+    [[deprecated("Use the helper function "
+                 "word_graph::throw_if_any_target_out_of_bounds instead")]] void
+    throw_if_any_target_out_of_bounds(Iterator first, Iterator last) const;
 
     //! \brief Throws if the target of any edge is out of bounds.
     //!

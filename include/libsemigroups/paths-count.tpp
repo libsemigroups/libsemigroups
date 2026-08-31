@@ -320,8 +320,8 @@ namespace libsemigroups::v4::paths {
     // acyclicity anyway.
     // TODO(2): could use algorithm::dfs in some cases.
     // TODO(v4) remove prefix ::libsemigroups::
-    ::libsemigroups::word_graph::throw_if_node_out_of_bounds(
-        wg, static_cast<Node1>(source));
+    ::libsemigroups::detail::throw_if_not_less(
+        static_cast<Node1>(source), wg.number_of_nodes(), "node ");
     auto topo = word_graph::topological_sort(wg, source);
     if (topo.empty()) {
       // Can't topologically sort, so the subdigraph induced by the nodes
@@ -383,8 +383,8 @@ namespace libsemigroups::v4::paths {
                  size_t                  min,
                  size_t                  max,
                  paths::algorithm        lgrthm) {
-    ::libsemigroups::word_graph::throw_if_node_out_of_bounds(
-        wg, static_cast<Node1>(source));
+    ::libsemigroups::detail::throw_if_not_less(
+        source, wg.number_of_nodes(), "node ");
 
     switch (lgrthm) {
       case paths::algorithm::dfs:
@@ -434,10 +434,10 @@ namespace libsemigroups::v4::paths {
                  size_t                  min,
                  size_t                  max,
                  paths::algorithm        lgrthm) {
-    ::libsemigroups::word_graph::throw_if_node_out_of_bounds(
-        wg, static_cast<Node1>(source));
-    ::libsemigroups::word_graph::throw_if_node_out_of_bounds(
-        wg, static_cast<Node1>(target));
+    ::libsemigroups::detail::throw_if_not_less(
+        source, wg.number_of_nodes(), "node ");
+    ::libsemigroups::detail::throw_if_not_less(
+        target, wg.number_of_nodes(), "node ");
 
     switch (lgrthm) {
       case paths::algorithm::dfs:

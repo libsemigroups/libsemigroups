@@ -37,8 +37,8 @@ namespace libsemigroups {
       -> std::enable_if_t<std::is_same_v<Result<Node>, WordGraph<Node>>,
                           WordGraph<Node>> {
     view.throw_if_invalid_view();
-    view.throw_if_any_target_out_of_bounds(view.cbegin_nodes(),
-                                           view.cend_nodes());
+    word_graph::throw_if_any_target_out_of_bounds(
+        view, view.cbegin_nodes(), view.cend_nodes());
     WordGraph<Node> result = WordGraph<Node>(view.number_of_nodes_no_checks(),
                                              view.out_degree_no_checks());
     for (auto source : rx::iterator_range(view.nodes_no_checks())) {

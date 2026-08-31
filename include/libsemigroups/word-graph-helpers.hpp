@@ -90,37 +90,6 @@ namespace libsemigroups {
     // WordGraph - helper functions - in alphabetical order!!!
     //////////////////////////////////////////////////////////////////////////
 
-    // Forward declarations required by the standardization helpers below.
-    template <typename Node>
-    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg);
-
-    template <typename Node, typename Iterator>
-    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg,
-                                           Iterator               first,
-                                           Iterator               last);
-
-    template <typename Node>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
-                                      typename WordGraph<Node>::label_type a);
-
-    // TODO deprecate
-    template <typename Node>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
-                                      word_type const&       word);
-
-    template <typename Node, typename Iterator>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
-                                      Iterator               first,
-                                      Iterator               last);
-
-    template <typename Node1, typename Node2>
-    void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 n);
-
-    template <typename Node, typename Iterator1, typename Iterator2>
-    void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
-                                     Iterator1              first,
-                                     Iterator2              last);
-
     //! \brief Adds a cycle involving the specified range of nodes to a word
     //! graph.
     //!
@@ -193,6 +162,59 @@ namespace libsemigroups {
     template <typename Node>
     [[nodiscard]] auto adjacency_matrix(WordGraph<Node> const& wg) {
       return adjacency_matrix(WordGraphView(wg));
+    }
+
+    //! \brief Returns the std::unordered_set of nodes that can reach a given
+    //! node in a word graph.
+    //!
+    //! This function returns a std::unordered_set consisting of all the nodes
+    //! in the word graph \p wg that can reach \p target. This function can be
+    //! thought of like an inverse of `nodes_reachable_from`, in the sense
+    //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
+    //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
+    //!
+    //! \tparam Node1 the node type of the word graph.
+    //! \tparam Node2 the type of the node \p target.
+    //!
+    //! \param wg the word graph.
+    //! \param target the target node.
+    //!
+    //! \returns A std::unordered_set consisting of all the nodes in the word
+    //! graph \p wg that can reach \p target.
+    //!
+    //! \throws LibsemigroupsException if \p target is out of bounds (greater
+    //! than or equal to WordGraph::number_of_nodes).
+    template <typename Node1, typename Node2>
+    [[nodiscard]] std::unordered_set<Node1>
+    ancestors_of(WordGraph<Node1> const& wg, Node2 target) {
+      return ancestors_of(WordGraphView(wg), target);
+    }
+
+    //! \brief Returns the std::unordered_set of nodes that can reach a given
+    //! node in a word graph.
+    //!
+    //! This function returns a std::unordered_set consisting of all the nodes
+    //! in the word graph \p wg that can reach \p target. This function can be
+    //! thought of like an inverse of `nodes_reachable_from`, in the sense
+    //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
+    //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
+    //!
+    //! \tparam Node1 the node type of the word graph.
+    //! \tparam Node2 the type of the node \p target.
+    //!
+    //! \param wg the word graph.
+    //! \param target the target node.
+    //!
+    //! \returns A std::unordered_set consisting of all the nodes in the word
+    //! graph \p wg that can reach \p target.
+    //!
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p target is a node of \p wg (i.e. less than
+    //! WordGraph::number_of_nodes).
+    template <typename Node1, typename Node2>
+    [[nodiscard]] std::unordered_set<Node1>
+    ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 target) {
+      return ancestors_of_no_checks(WordGraphView(wg), target);
     }
 
     //! \brief Returns a \ref Dot object representing a word graph.
@@ -1000,6 +1022,54 @@ namespace libsemigroups {
       return is_reachable(WordGraphView(wg), source, target);
     }
 
+    //! \brief Check if a word graph is standardized.
+    //!
+    //! This function checks if the word graph \p wg is standardized according
+    //! to the reduction order specified by \p val.
+    //!
+    //! \tparam Node the type of the node in \p wg.
+    //!
+    //! \param wg the word graph to check.
+    //! \param val the order to use for standardization check (defaults to
+    //! Order::lenlex).
+    //!
+    //! \no_libsemigroups_except
+    //!
+    //! \sa
+    //! standardize.
+    //!
+    //! \deprecated_warning{function} Use
+    //! \ref is_standardized(WordGraph<Node> const&, Cmp&&) instead.
+    template <typename Node>
+    [[deprecated(
+        "Use is_standardized(WordGraph<Node> const&, Cmp&&) instead.")]] bool
+    is_standardized(WordGraph<Node> const& wg, Order val = Order::lenlex) {
+      return is_standardized(WordGraphView(wg), val);
+    }
+
+    //! \brief Check if a word graph is standardized.
+    //!
+    //! This function checks if the word graph \p wg is standardized according
+    //! to the reduction order specified by \p cmp.
+    //!
+    //! \tparam Node the type of the node in \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph to check.
+    //! \param cmp the order to use for standardization check.
+    //!
+    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
+    //! there is a bespoke salgorithm for checking standardization, then
+    //! \ref is_standardized(WordGraph&, Order) should be used instead of this
+    //! function for improved performance.
+    //!
+    //! \sa
+    //! standardize.
+    template <typename Node, typename Cmp>
+    bool is_standardized(WordGraph<Node> const& wg, Cmp&& cmp) {
+      return is_standardized(WordGraphView<Node>(wg), std::forward<Cmp>(cmp));
+    }
+
     //! \brief Check if every node is reachable from some node.
     //!
     //! This function returns \c true if there exists a node in \p wg from
@@ -1305,59 +1375,6 @@ namespace libsemigroups {
           WordGraphView(wg), source, max_depth);
     }
 
-    //! \brief Returns the std::unordered_set of nodes that can reach a given
-    //! node in a word graph.
-    //!
-    //! This function returns a std::unordered_set consisting of all the nodes
-    //! in the word graph \p wg that can reach \p target. This function can be
-    //! thought of like an inverse of `nodes_reachable_from`, in the sense
-    //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
-    //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
-    //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p target.
-    //!
-    //! \param wg the word graph.
-    //! \param target the target node.
-    //!
-    //! \returns A std::unordered_set consisting of all the nodes in the word
-    //! graph \p wg that can reach \p target.
-    //!
-    //! \throws LibsemigroupsException if \p target is out of bounds (greater
-    //! than or equal to WordGraph::number_of_nodes).
-    template <typename Node1, typename Node2>
-    [[nodiscard]] std::unordered_set<Node1>
-    ancestors_of(WordGraph<Node1> const& wg, Node2 target) {
-      return ancestors_of(WordGraphView(wg), target);
-    }
-
-    //! \brief Returns the std::unordered_set of nodes that can reach a given
-    //! node in a word graph.
-    //!
-    //! This function returns a std::unordered_set consisting of all the nodes
-    //! in the word graph \p wg that can reach \p target. This function can be
-    //! thought of like an inverse of `nodes_reachable_from`, in the sense
-    //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
-    //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
-    //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p target.
-    //!
-    //! \param wg the word graph.
-    //! \param target the target node.
-    //!
-    //! \returns A std::unordered_set consisting of all the nodes in the word
-    //! graph \p wg that can reach \p target.
-    //!
-    //! \warning The arguments are not checked, and in particular it is
-    //! assumed that \p target is a node of \p wg (i.e. less than
-    //! WordGraph::number_of_nodes).
-    template <typename Node1, typename Node2>
-    [[nodiscard]] std::unordered_set<Node1>
-    ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 target) {
-      return ancestors_of_no_checks(WordGraphView(wg), target);
-    }
-
     //! \brief Construct a random connected acyclic word graph with given
     //! number of nodes, and out-degree.
     //!
@@ -1571,10 +1588,7 @@ namespace libsemigroups {
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
-    bool standardize(Graph& wg, Forest& f, Cmp&& cmp) {
-      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
-      return standardize_no_checks(wg, f, std::forward<Cmp>(cmp));
-    }
+    bool standardize(Graph& wg, Forest& f, Cmp&& cmp);
 
     //! \brief Standardizes a word graph in-place.
     //!
@@ -1649,10 +1663,7 @@ namespace libsemigroups {
     //
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph, typename Cmp>
-    std::pair<bool, Forest> standardize(Graph& wg, Cmp&& cmp) {
-      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
-      return standardize_no_checks(wg, std::forward<Cmp>(cmp));
-    }
+    std::pair<bool, Forest> standardize(Graph& wg, Cmp&& cmp);
 
     //! \brief Standardizes a word graph in-place.
     //!
@@ -1728,10 +1739,7 @@ namespace libsemigroups {
     // Not nodiscard because sometimes we just don't want the output
     template <typename Graph>
     [[deprecated("Use standardize(Graph&, Forest&, Cmp&&) instead.")]] bool
-    standardize(Graph& wg, Forest& f, Order val) {
-      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
-      return standardize_no_checks(wg, f, val);
-    }
+    standardize(Graph& wg, Forest& f, Order val);
 
     //! \brief Standardizes a word graph in-place.
     //!
@@ -1811,58 +1819,7 @@ namespace libsemigroups {
     template <typename Graph>
     [[deprecated(
         "Use standardize(Graph&, Cmp&&) instead.")]] std::pair<bool, Forest>
-    standardize(Graph& wg, Order val = Order::lenlex) {
-      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(wg);
-      return standardize_no_checks(wg, val);
-    }
-
-    //! \brief Check if a word graph is standardized.
-    //!
-    //! This function checks if the word graph \p wg is standardized according
-    //! to the reduction order specified by \p cmp.
-    //!
-    //! \tparam Node the type of the node in \p wg.
-    //! \tparam Cmp the type of the comparator \p cmp.
-    //!
-    //! \param wg the word graph to check.
-    //! \param cmp the order to use for standardization check.
-    //!
-    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
-    //! there is a bespoke salgorithm for checking standardization, then
-    //! \ref is_standardized(WordGraph&, Order) should be used instead of this
-    //! function for improved performance.
-    //!
-    //! \sa
-    //! standardize.
-    template <typename Node, typename Cmp>
-    bool is_standardized(WordGraph<Node> const& wg, Cmp&& cmp) {
-      return is_standardized(WordGraphView<Node>(wg), std::forward<Cmp>(cmp));
-    }
-
-    //! \brief Check if a word graph is standardized.
-    //!
-    //! This function checks if the word graph \p wg is standardized according
-    //! to the reduction order specified by \p val.
-    //!
-    //! \tparam Node the type of the node in \p wg.
-    //!
-    //! \param wg the word graph to check.
-    //! \param val the order to use for standardization check (defaults to
-    //! Order::lenlex).
-    //!
-    //! \no_libsemigroups_except
-    //!
-    //! \sa
-    //! standardize.
-    //!
-    //! \deprecated_warning{function} Use
-    //! \ref is_standardized(WordGraph<Node> const&, Cmp&&) instead.
-    template <typename Node>
-    [[deprecated(
-        "Use is_standardized(WordGraph<Node> const&, Cmp&&) instead.")]] bool
-    is_standardized(WordGraph<Node> const& wg, Order val = Order::lenlex) {
-      return is_standardized(WordGraphView(wg), val);
-    }
+    standardize(Graph& wg, Order val = Order::lenlex);
 
     //! \brief Throws if the target of any edge is out of bounds.
     //!
@@ -1901,10 +1858,36 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any node in the range \p first to
     //! \p last is out of bounds (i.e. not a node of \p wg).
+    // NOTE: this is genuinely required, do not remove.
     template <typename Node, typename Iterator>
     void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg,
                                            Iterator               first,
-                                           Iterator               last);
+                                           Iterator               last) {
+      // Strictly speaking it is probably bad to pass first and last here, but
+      // since they usually only represent integers we should be okay.
+      throw_if_any_target_out_of_bounds(WordGraphView(wg), first, last);
+    }
+
+    //! \brief Throws if the target of any edge is out of bounds.
+    //!
+    //! This function throws if any target of any edge in \p wg is out of
+    //! bounds (i.e. is greater than or equal to WordGraph::number_of_nodes,
+    //! and not equal to \ref UNDEFINED).
+    //!
+    //! \tparam Node the type of the nodes in \p wg.
+    //!
+    //! \param wg the word graph to check.
+    //!
+    //! \throws LibsemigroupsException if any target of any edge in \p wg is
+    //! greater than or equal to WordGraph::number_of_nodes and not equal to
+    //! \ref UNDEFINED.
+    template <typename Node>
+    [[deprecated]] void
+    throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg) {
+      WordGraphView wgv(wg);
+      throw_if_any_target_out_of_bounds(
+          wgv, wgv.cbegin_nodes_no_checks(), wgv.cend_nodes_no_checks());
+    }
 
     //! \brief Throws if a label is out of bounds.
     //!
@@ -1919,8 +1902,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the label \p a is out of bounds.
     // not noexcept because it throws an exception!
     template <typename Node>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
-                                      typename WordGraph<Node>::label_type a);
+    [[deprecated]] void
+    throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
+                                 typename WordGraph<Node>::label_type a);
 
     //! \brief Throws if a label is out of bounds.
     //!
@@ -1934,10 +1918,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any value in \p word is out of
     //! bounds.
-    // TODO deprecate
     template <typename Node>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
-                                      word_type const&       word);
+    [[deprecated]] void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
+                                                     word_type const& word);
 
     //! \brief Throws if a label is out of bounds.
     //!
@@ -1955,9 +1938,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any value in the word word defined by
     //! \p first and \p last is out of bounds.
     template <typename Node, typename Iterator>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
-                                      Iterator               first,
-                                      Iterator               last);
+    [[deprecated]] void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
+                                                     Iterator first,
+                                                     Iterator last);
 
     //! \brief Throws if a node is out of bounds.
     //!
@@ -1973,7 +1956,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is out of bounds.
     // not noexcept because it throws an exception!
     template <typename Node1, typename Node2>
-    void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 n);
+    [[deprecated]] void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg,
+                                                    Node2                   n);
 
     //! \brief Throws if any node in a range is out of bounds.
     //!
@@ -1992,9 +1976,9 @@ namespace libsemigroups {
     //! \p last is out of bounds.
     // not noexcept because it throws an exception!
     template <typename Node, typename Iterator1, typename Iterator2>
-    void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
-                                     Iterator1              first,
-                                     Iterator2              last);
+    [[deprecated]] void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
+                                                    Iterator1 first,
+                                                    Iterator2 last);
 
     //! \brief Returns the nodes of the word graph in topological order (see
     //! below) if possible.

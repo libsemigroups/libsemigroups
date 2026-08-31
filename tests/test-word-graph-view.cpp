@@ -321,8 +321,8 @@ namespace libsemigroups {
     }
 
     v.reshape(4, 6);
-    REQUIRE_THROWS(
-        v.throw_if_any_target_out_of_bounds(v.cbegin_nodes(), v.cend_nodes()));
+    REQUIRE_THROWS(word_graph::throw_if_any_target_out_of_bounds(
+        v, v.cbegin_nodes(), v.cend_nodes()));
     // We might expect this to be 0, since there is no edge between 4 and 5.
     // However, since there is an edge from 4 to 0, and from 5 to 6, we get a
     // count of 2.
@@ -439,14 +439,14 @@ namespace libsemigroups {
                           "label value out of bounds, expected value in "
                           "the range [0, 5), got 6");
 
-    REQUIRE_NOTHROW(
-        v.throw_if_any_target_out_of_bounds(v.cbegin_nodes(), v.cend_nodes()));
+    REQUIRE_NOTHROW(word_graph::throw_if_any_target_out_of_bounds(
+        v, v.cbegin_nodes(), v.cend_nodes()));
     v.end_node(5);
-    REQUIRE_EXCEPTION_MSG(
-        v.throw_if_any_target_out_of_bounds(v.cbegin_nodes(), v.cend_nodes()),
-        "target out of bounds, the edge with source 1 "
-        "and label 0 has target "
-        "2, but expected value in the range [0, 2)");
+    REQUIRE_EXCEPTION_MSG(word_graph::throw_if_any_target_out_of_bounds(
+                              v, v.cbegin_nodes(), v.cend_nodes()),
+                          "target out of bounds, the edge with source 1 "
+                          "and label 0 has target "
+                          "2, but expected value in the range [0, 2)");
 
     WordGraph<size_t> graph(1, Dot::colors.size() + 1);
     v.init(graph);

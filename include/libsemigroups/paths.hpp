@@ -114,7 +114,7 @@ namespace libsemigroups {
                                  Node2                   source,
                                  size_t                  min = 0,
                                  size_t max = POSITIVE_INFINITY) {
-    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+    detail::throw_if_not_less(source, wg.number_of_nodes(), "node ");
     return detail::const_pilo_iterator<Node1>(&wg, source, min, max);
   }
 
@@ -192,7 +192,7 @@ namespace libsemigroups {
                                   Node2                   source,
                                   size_t                  min = 0,
                                   size_t max = POSITIVE_INFINITY) {
-    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+    detail::throw_if_not_less(source, wg.number_of_nodes(), "node ");
     return detail::const_pislo_iterator<Node1>(&wg, source, min, max);
   }
 
@@ -907,7 +907,7 @@ namespace libsemigroups {
     //! \warning It is necessary to set the source node using \ref source
     //! before a Paths object is valid.
     Paths& source(node_type n) {
-      word_graph::throw_if_node_out_of_bounds(word_graph(), n);
+      detail::throw_if_not_less(n, word_graph().number_of_nodes(), "node ");
       return source_no_checks(n);
     }
 
@@ -967,7 +967,7 @@ namespace libsemigroups {
     //! point at the first word in the specified range.
     Paths& target(node_type n) {
       if (n != UNDEFINED) {
-        word_graph::throw_if_node_out_of_bounds(word_graph(), n);
+        detail::throw_if_not_less(n, word_graph().number_of_nodes(), "node ");
       }
       return target_no_checks(n);
     }
