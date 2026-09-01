@@ -315,11 +315,11 @@ namespace libsemigroups {
     //! Linear in the length of \p path.
     // TODO(2) example
     // not noexcept because WordGraph::target isn't
-    // TODO deprecate
     template <typename Node1, typename Node2>
-    [[nodiscard]] Node1 follow_path(WordGraphView<Node1> const& wgv,
-                                    Node2                       from,
-                                    word_type const&            path) {
+    [[deprecated]] [[nodiscard]] Node1
+    follow_path(WordGraphView<Node1> const& wgv,
+                Node2                       from,
+                word_type const&            path) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return follow_path(wgv, from, path.cbegin(), path.cend());
     }
@@ -532,13 +532,13 @@ namespace libsemigroups {
     //! \note This function ignores out of bound targets in \p wgv (if any).
     //!
     //! \warning This function does not check that its arguments are valid.
-    // TODO deprecate
+    // TODO(v4) deprecate, but first implement the iterator version
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_compatible_no_checks(WordGraphView<Node> const& wgv,
-                                 Iterator1                  first_node,
-                                 Iterator2                  last_node,
-                                 word_type const&           lhs,
-                                 word_type const&           rhs);
+    [[nodiscard]] bool is_compatible_no_checks(WordGraphView<Node> const& wgv,
+                                               Iterator1        first_node,
+                                               Iterator2        last_node,
+                                               word_type const& lhs,
+                                               word_type const& rhs);
 
     //! \brief Check if a word graph view is compatible with some relations at
     //! a range of nodes.
@@ -633,13 +633,13 @@ namespace libsemigroups {
     //! between
     //! \p first_rule and \p last_rule contains an invalid label (i.e. one
     //! greater than or equal to WordGraphView::out_degree).
-    // TODO deprecate
+    // TODO(v4) deprecate, after implementing an iterator version
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_compatible(WordGraphView<Node> const& wgv,
-                       Iterator1                  first_node,
-                       Iterator2                  last_node,
-                       word_type const&           lhs,
-                       word_type const&           rhs);
+    [[nodiscard]] bool is_compatible(WordGraphView<Node> const& wgv,
+                                     Iterator1                  first_node,
+                                     Iterator2                  last_node,
+                                     word_type const&           lhs,
+                                     word_type const&           rhs);
 
     //! \brief Check if every node in a range has exactly
     //! WordGraphView::out_degree out-edges.
@@ -649,15 +649,11 @@ namespace libsemigroups {
     //! node is the source of an edge with every possible label.
     //!
     //! \tparam Node the type of the nodes in the word graph view.
-    //!
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
     //!
     //! \param wgv the word graph view.
-    //!
     //! \param first_node iterator pointing to the first node in the range.
-    //!
     //! \param last_node iterator pointing one beyond the last node in the
     //! range.
     //!
@@ -876,7 +872,8 @@ namespace libsemigroups {
     // TODO(1): is this variant not the _no_checks version? What happens when
     // you give it a malformed wgv?
     template <typename Node, typename Cmp>
-    bool is_standardized(WordGraphView<Node> const& wgv, Cmp&& cmp);
+    [[nodiscard]] bool is_standardized(WordGraphView<Node> const& wgv,
+                                       Cmp&&                      cmp);
 
     //! \brief Check if a word graph is standardized.
     //!
@@ -897,8 +894,9 @@ namespace libsemigroups {
     //! \deprecated_warning{function} Use
     //! \ref is_standardized(WordGraphView<Node> const&, Cmp&&) instead.
     template <typename Node>
-    [[deprecated("Use is_standardized(WordGraphView<Node> const&, Cmp&&) "
-                 "instead.")]] bool
+    [[nodiscard]] [[deprecated(
+        "Use is_standardized(WordGraphView<Node> const&, Cmp&&) "
+        "instead.")]] bool
     is_standardized(WordGraphView<Node> const& wgv, Order val = Order::lenlex);
 
     //! \brief Check if every node is reachable from some node.
@@ -991,9 +989,8 @@ namespace libsemigroups {
     //! assumed that \p source is a node in the word graph view \p wgv; and
     //! that the letters in the word described by \p first and \p last belong
     //! to the range \c 0 to WordGraphView::out_degree.
-    // TODO deprecate
     template <typename Node1, typename Node2>
-    std::pair<Node1, word_type::const_iterator>
+    [[nodiscard]] [[deprecated]] std::pair<Node1, word_type::const_iterator>
     last_node_on_path_no_checks(WordGraphView<Node1> const& wgv,
                                 Node2                       source,
                                 word_type const&            w);
@@ -1051,9 +1048,8 @@ namespace libsemigroups {
     //! WordGraphView::number_of_nodes), the path labelled by the word exits
     //! the word graph view, which is reflected in the result value of this
     //! function, but does not cause an exception to be thrown.
-    // TODO deprecate
     template <typename Node1, typename Node2>
-    std::pair<Node1, word_type::const_iterator>
+    [[nodiscard]] [[deprecated]] std::pair<Node1, word_type::const_iterator>
     last_node_on_path(WordGraphView<Node1> const& wgv,
                       Node2                       source,
                       word_type const&            w);
@@ -1125,8 +1121,7 @@ namespace libsemigroups {
                          Node2                       source,
                          size_t                      max_depth) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
-      ::libsemigroups::detail::throw_if_not_less(
-          source, wgv.number_of_nodes(), "node ");
+      detail::throw_if_not_less(source, wgv.number_of_nodes(), "node ");
       return nodes_reachable_from_no_checks(wgv, source, max_depth);
     }
 
