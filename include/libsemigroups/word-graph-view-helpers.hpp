@@ -239,11 +239,11 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
-    // TODO deprecate
     template <typename Node1, typename Node2>
-    [[nodiscard]] Node1 follow_path_no_checks(WordGraphView<Node1> const& wgv,
-                                              Node2                       from,
-                                              word_type const& path) noexcept {
+    [[deprecated]] [[nodiscard]] Node1
+    follow_path_no_checks(WordGraphView<Node1> const& wgv,
+                          Node2                       from,
+                          word_type const&            path) noexcept {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return follow_path_no_checks(wgv, from, path.cbegin(), path.cend());
     }
