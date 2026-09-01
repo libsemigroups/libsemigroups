@@ -1173,15 +1173,16 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "053", "spanning_tree", "[quick]") {
+    auto          rg = ReportGuard(false);
     WordGraph     wg = binary_tree(16);
     WordGraphView wgv(wg);
     REQUIRE(wgv.number_of_nodes() == 65535);
 
     Forest f;
-    word_graph::spanning_tree_no_checks(wgv, 0, f, 0);
+    word_graph::spanning_tree_no_checks(wgv, size_t(0), f, 0);
 
     for (size_t depth = 0; depth != 16; ++depth) {
-      word_graph::spanning_tree_no_checks(wgv, 0, f, depth);
+      word_graph::spanning_tree_no_checks(wgv, size_t(0), f, depth);
       REQUIRE(f.number_of_nodes() == std::pow(2, depth + 1) - 1);
     }
   }
@@ -1190,16 +1191,19 @@ namespace libsemigroups {
                           "054",
                           "nodes_reachable_from (with max_depth)",
                           "[quick]") {
+    auto          rg = ReportGuard(false);
     WordGraph     wg = binary_tree(16);
     WordGraphView wgv(wg);
     REQUIRE(wgv.number_of_nodes() == 65535);
 
     Forest f;
-    REQUIRE(word_graph::nodes_reachable_from_no_checks(wgv, 0, 0).size() == 1);
+    REQUIRE(word_graph::nodes_reachable_from_no_checks(wgv, size_t(0), 0).size()
+            == 1);
     REQUIRE(word_graph::nodes_reachable_from_no_checks(wg, 0, 0).size() == 1);
 
     for (size_t depth = 0; depth != 16; ++depth) {
-      REQUIRE(word_graph::nodes_reachable_from_no_checks(wgv, 0, depth).size()
+      REQUIRE(word_graph::nodes_reachable_from_no_checks(wgv, size_t(0), depth)
+                  .size()
               == std::pow(2, depth + 1) - 1);
       REQUIRE(word_graph::nodes_reachable_from_no_checks(wg, 0, depth).size()
               == std::pow(2, depth + 1) - 1);
@@ -1209,11 +1213,13 @@ namespace libsemigroups {
     add_clique(wg, 1999);
     wgv.init(wg);
 
-    REQUIRE(word_graph::nodes_reachable_from_no_checks(wgv, 0, 0).size() == 1);
+    REQUIRE(word_graph::nodes_reachable_from_no_checks(wgv, size_t(0), 0).size()
+            == 1);
     REQUIRE(word_graph::nodes_reachable_from_no_checks(wg, 0, 0).size() == 1);
 
     for (size_t depth = 1; depth != 16; ++depth) {
-      REQUIRE(word_graph::nodes_reachable_from_no_checks(wgv, 0, depth).size()
+      REQUIRE(word_graph::nodes_reachable_from_no_checks(wgv, size_t(0), depth)
+                  .size()
               == 1999);
       REQUIRE(word_graph::nodes_reachable_from_no_checks(wg, 0, depth).size()
               == 1999);

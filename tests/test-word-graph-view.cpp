@@ -485,9 +485,10 @@ namespace libsemigroups {
     REQUIRE(matrix(0, 2) == 1);
 
     REQUIRE(!word_graph::dot(canonical_view).to_string().empty());
-    REQUIRE(word_graph::spanning_tree(canonical_view, 0, 1).number_of_nodes()
+    REQUIRE(word_graph::spanning_tree(canonical_view, size_t(0), 1)
+                .number_of_nodes()
             == 3);
-    REQUIRE(word_graph::spanning_tree_no_checks(canonical_view, 0, 1)
+    REQUIRE(word_graph::spanning_tree_no_checks(canonical_view, size_t(0), 1)
                 .number_of_nodes()
             == 3);
   }
@@ -551,8 +552,8 @@ namespace libsemigroups {
     auto            path_graph = make<WordGraph<size_t>>(2, {{1}, {UNDEFINED}});
     WordGraphView   path_view(path_graph);
     word_type const path = {0, 0};
-    auto const      last
-        = word_graph::last_node_on_path(path_view, 0, path.begin(), path.end());
+    auto const      last = word_graph::last_node_on_path(
+        path_view, size_t(0), path.begin(), path.end());
     REQUIRE(last.first == 1);
     REQUIRE(last.second == path.cbegin() + 1);
   }
