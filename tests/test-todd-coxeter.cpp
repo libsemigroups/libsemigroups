@@ -204,7 +204,8 @@ namespace libsemigroups {
 
         std::unordered_map<node_type, word_type> map;
         for (auto const& w : words) {
-          node_type t = follow_path_no_checks(tc.current_word_graph(), 0, w);
+          node_type t
+              = follow_path_no_checks(tc.current_word_graph(), node_type(0), w);
           REQUIRE(t != UNDEFINED);
           if (t != 0) {
             map.emplace(t - 1, w);
@@ -237,7 +238,7 @@ namespace libsemigroups {
 
         for (auto const& w : words) {
           node_type t = word_graph::follow_path_no_checks(
-              tc.current_word_graph(), 0, w);
+              tc.current_word_graph(), node_type(0), w);
           if (t != 0) {
             auto ww = w;
             map.emplace(t - 1, std::move(ww));
@@ -3178,10 +3179,14 @@ namespace libsemigroups {
 
     REQUIRE(H.number_of_classes() == 16'384);
 
-    REQUIRE(word_graph::is_reachable(H.word_graph(), 0, 0));
-    REQUIRE(word_graph::ancestors_of_no_checks(H.word_graph(), 0).size()
-            == 16'384);
-    REQUIRE(!word_graph::is_acyclic(H.word_graph(), 0, 0));
+    using node_type = typename decltype(H)::node_type;
+    REQUIRE(
+        word_graph::is_reachable(H.word_graph(), node_type(0), node_type(0)));
+    REQUIRE(
+        word_graph::ancestors_of_no_checks(H.word_graph(), node_type(0)).size()
+        == 16'384);
+    REQUIRE(
+        !word_graph::is_acyclic(H.word_graph(), node_type(0), node_type(0)));
 
     // The following no longer works
     // REQUIRE(class_of(H, ""s).size_hint() == POSITIVE_INFINITY);

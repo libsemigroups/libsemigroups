@@ -25,14 +25,12 @@ namespace libsemigroups {
     class NodeManagedGraph;
 
     template <typename Subclass>
-    template <typename Node1, typename Node2>
+    template <typename Node>
     void
-    JoinerMeeterCommon<Subclass>::throw_if_bad_args(WordGraph<Node1> const& x,
-                                                    Node2 xroot,
-                                                    WordGraph<Node1> const& y,
-                                                    Node2 yroot) {
-      static_assert(sizeof(Node2) <= sizeof(Node1));
-
+    JoinerMeeterCommon<Subclass>::throw_if_bad_args(WordGraph<Node> const& x,
+                                                    Node xroot,
+                                                    WordGraph<Node> const& y,
+                                                    Node yroot) {
       throw_if_not_less(xroot, x.number_of_nodes(), "node ");
       throw_if_not_less(yroot, y.number_of_nodes(), "node ");
 
@@ -73,13 +71,12 @@ namespace libsemigroups {
     }
 
     template <typename Subclass>
-    template <typename Node1, typename Node2>
+    template <typename Node>
     bool JoinerMeeterCommon<Subclass>::is_subrelation_no_checks(
-        WordGraph<Node1> const& x,
-        Node2                   xroot,
-        WordGraph<Node1> const& y,
-        Node2                   yroot) {
-      static_assert(sizeof(Node2) <= sizeof(Node1));
+        WordGraph<Node> const& x,
+        Node                   xroot,
+        WordGraph<Node> const& y,
+        Node                   yroot) {
       return static_cast<Subclass&>(*this).is_subrelation_no_checks(
           x,
           word_graph::number_of_nodes_reachable_from(x, xroot),
@@ -355,8 +352,8 @@ namespace libsemigroups {
 
     // not noexcept because it throws an exception!
     // TODO(v4): rm
-    template <typename Node1, typename Node2>
-    void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 v) {
+    template <typename Node>
+    void throw_if_node_out_of_bounds(WordGraph<Node> const& wg, Node v) {
       ::libsemigroups::detail::throw_if_not_less(
           v, wg.number_of_nodes(), "node ");
     }
@@ -761,25 +758,23 @@ namespace libsemigroups {
     }
   }
 
-  template <typename Node1, typename Node2>
-  bool Joiner::is_subrelation_no_checks(WordGraph<Node1> const& x,
+  template <typename Node>
+  bool Joiner::is_subrelation_no_checks(WordGraph<Node> const& x,
                                         size_t xnum_nodes_reachable_from_root,
-                                        Node2  xroot,
-                                        WordGraph<Node1> const& y,
+                                        Node   xroot,
+                                        WordGraph<Node> const& y,
                                         size_t ynum_nodes_reachable_from_root,
-                                        Node2  yroot) {
-    static_assert(sizeof(Node2) <= sizeof(Node1));
-
+                                        Node   yroot) {
     if (ynum_nodes_reachable_from_root > xnum_nodes_reachable_from_root) {
       return false;
     }
 
     run(x,
         xnum_nodes_reachable_from_root,
-        static_cast<Node1>(xroot),
+        xroot,
         y,
         ynum_nodes_reachable_from_root,
-        static_cast<Node1>(yroot));
+        yroot);
     // if x is contained in y, then the join of x and y must be y, and
     // hence we just check that the number of nodes in the quotient equals
     // that of y.
@@ -838,14 +833,13 @@ namespace libsemigroups {
     xy.induced_subgraph_no_checks(0, next);
   }
 
-  template <typename Node1, typename Node2>
-  bool Meeter::is_subrelation_no_checks(WordGraph<Node1> const& x,
+  template <typename Node>
+  bool Meeter::is_subrelation_no_checks(WordGraph<Node> const& x,
                                         size_t xnum_nodes_reachable_from_root,
-                                        Node2  xroot,
-                                        WordGraph<Node1> const& y,
+                                        Node   xroot,
+                                        WordGraph<Node> const& y,
                                         size_t ynum_nodes_reachable_from_root,
-                                        Node2  yroot) {
-    static_assert(sizeof(Node2) <= sizeof(Node1));
+                                        Node   yroot) {
     // If x is a subrelation of y, then the meet of x and y must be x.
     if (ynum_nodes_reachable_from_root > xnum_nodes_reachable_from_root) {
       return false;

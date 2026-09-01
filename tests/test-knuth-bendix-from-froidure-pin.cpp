@@ -453,7 +453,8 @@ namespace libsemigroups {
     auto copy = kb.gilman_graph();
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 45);
-    REQUIRE(word_graph::is_acyclic(copy, 0));
+    REQUIRE(
+        word_graph::is_acyclic(copy, typename decltype(copy)::node_type(0)));
 
     Paths paths1(copy);
     REQUIRE(paths1.min(1).source(0).count() == 69);

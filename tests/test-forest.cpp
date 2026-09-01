@@ -277,7 +277,7 @@ namespace libsemigroups {
 
     REQUIRE(!forest::is_forest(f));
 
-    f = word_graph::spanning_tree(binary_tree(16), 0);
+    f = word_graph::spanning_tree(binary_tree(16), size_t(0));
     Forest copy(f);
     REQUIRE(forest::is_forest(f));
 

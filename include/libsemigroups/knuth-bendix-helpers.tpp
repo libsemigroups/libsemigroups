@@ -195,23 +195,27 @@ namespace libsemigroups {
       // We only want those paths that pass through at least one of the edges
       // in g1 but not g2. Hence we require the `filter` in the next
       // expression.
-      auto words = (paths.source(0) | rx::filter([&g2](word_type const& path) {
-                      return word_graph::last_node_on_path(
-                                 g2, 0, path.cbegin(), path.cend())
-                                 .second
-                             != path.cend();
-                    })
-                    | rx::transform([&kb2](word_type const& path) {
-                        Word result(path.size(), 0);
-                        std::transform(
-                            path.cbegin(),
-                            path.cend(),
-                            result.begin(),
-                            [&kb2](auto index) {
-                              return kb2.presentation().letter_no_checks(index);
-                            });
-                        return result;
-                      }));
+      auto words
+          = (paths.source(0) | rx::filter([&g2](word_type const& path) {
+               return word_graph::last_node_on_path(
+                          g2,
+                          typename std::decay_t<decltype(g2)>::node_type(0),
+                          path.cbegin(),
+                          path.cend())
+                          .second
+                      != path.cend();
+             })
+             | rx::transform([&kb2](word_type const& path) {
+                 Word result(path.size(), 0);
+                 std::transform(path.cbegin(),
+                                path.cend(),
+                                result.begin(),
+                                [&kb2](auto index) {
+                                  return kb2.presentation().letter_no_checks(
+                                      index);
+                                });
+                 return result;
+               }));
       // TODO(1) if Word == word_type, then we could avoid allocating Word
       // result above, just change path in-place.
 
