@@ -319,41 +319,6 @@ namespace libsemigroups {
 
       return standardizer.standardize();
     }
-
-    // helper function for the public functions below
-    template <typename Node>
-    bool topological_sort(WordGraph<Node> const& wg,
-                          stack_type<Node>&      stck,
-                          lookup_type&           seen,
-                          std::vector<Node>&     order) {
-      return topological_sort(WordGraphView(wg), stck, seen, order);
-    }
-
-#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-    template <typename Node>
-    void init_adjacency_matrix(
-        WordGraph<Node> const&                                 wg,
-        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
-      init_adjacency_matrix(WordGraphView(wg), mat);
-    }
-
-    static inline void
-    identity(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& x) {
-      x.fill(0);
-      for (size_t i = 0; i < static_cast<size_t>(x.rows()); ++i) {
-        x(i, i) = 1;
-      }
-    }
-
-#else
-
-    template <typename Node>
-    void init_adjacency_matrix(WordGraph<Node> const& wg,
-                               IntMat<0, 0, int64_t>& mat) {
-      init_adjacency_matrix(WordGraphView(wg), mat);
-    }
-#endif
-
   }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////////
@@ -379,6 +344,9 @@ namespace libsemigroups {
                   Node                   last) {
       // TODO move to word-graph-view-helpers
       throw_if_node_out_of_bounds(x, first);
+      // TODO
+      // throw_if_node_out_of_bounds is deprecated, this is clearly not used
+      // anywhere in the tests
       throw_if_node_out_of_bounds(x, last - 1);
       throw_if_node_out_of_bounds(y, first);
       throw_if_node_out_of_bounds(y, last - 1);
