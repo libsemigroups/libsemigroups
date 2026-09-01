@@ -949,7 +949,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! throw_if_invalid_view.
-    // TODO should be a helper
+    // TODO(v4) should be a helper
     [[nodiscard]] bool operator==(WordGraphView const& that) const;
 
     //! \brief Compares two word graph views to see if they are not equal.
@@ -960,7 +960,7 @@ namespace libsemigroups {
     //! \param that the WordGraphView to compare with.
     //!
     //! \returns True if this and that are not equal by \c ==.
-    // TODO should be a helper
+    // TODO(v4) should be a helper
     [[nodiscard]] bool not_equal_to_no_checks(WordGraphView const& that) const {
       return !equal_to_no_checks(that);
     }
@@ -979,7 +979,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! throw_if_invalid_view.
-    // TODO should be a helper
+    // TODO(v4) should be a helper
     [[nodiscard]] bool operator!=(WordGraphView const& that) const {
       return !operator==(that);
     }
