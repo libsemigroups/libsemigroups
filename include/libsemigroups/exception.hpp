@@ -19,22 +19,20 @@
 #ifndef LIBSEMIGROUPS_EXCEPTION_HPP_
 #define LIBSEMIGROUPS_EXCEPTION_HPP_
 
-#include <cstddef>        // for size_t
-#include <exception>      // TODo
+#include <cstdint>        // for uint64_t
 #include <iterator>       // for distance
-#include <stdexcept>      // for std::runtime_error
-#include <string>         // for std::string
-#include <string_view>    // for string_view
-#include <type_traits>    // for decay_t
+#include <stdexcept>      // for runtime_error
+#include <string>         // for string
+#include <string_view>    // for basic_string_view, string_view
+#include <type_traits>    // for decay_t, is_same_v
 #include <unordered_map>  // for unordered_map
-#include <utility>        // for forward, pair
+#include <utility>        // for pair, forward
 
 #include "adapters.hpp"  // for ReturnFalse
 #include "ranges.hpp"    // for rx::input_range_iterator_end
 
-#include "detail/fmt.hpp"         // TODO
-#include "detail/formatters.hpp"  // TODO
-#include "detail/print.hpp"       // for to_printable
+#include "detail/fmt.hpp"    // format
+#include "detail/print.hpp"  // for to_printable
 
 // This macro doesn't really need to exist, it does because o/w doxygen fails
 // to produce the doc for LibsemigroupsException
@@ -100,15 +98,15 @@ namespace libsemigroups {
 
   namespace detail {
     template <typename Iterator, typename Map, typename Ignore = ReturnFalse>
-    [[nodiscard]] std::pair<Iterator, size_t> find_duplicates(Iterator first,
-                                                              Iterator last,
-                                                              Map&     seen,
-                                                              Ignore&& ignore
-                                                              = Ignore{});
+    [[nodiscard]] std::pair<Iterator, uint64_t> find_duplicates(Iterator first,
+                                                                Iterator last,
+                                                                Map&     seen,
+                                                                Ignore&& ignore
+                                                                = Ignore{});
 
     template <typename Iterator>
-    [[nodiscard]] std::pair<Iterator, size_t> find_duplicates(Iterator first,
-                                                              Iterator last);
+    [[nodiscard]] std::pair<Iterator, uint64_t> find_duplicates(Iterator first,
+                                                                Iterator last);
 
     template <typename Iterator, typename Ignore = ReturnFalse>
     [[nodiscard]] bool has_duplicates(Iterator first,
@@ -121,24 +119,10 @@ namespace libsemigroups {
                              std::string_view where,
                              Ignore&&         ignore = Ignore{});
 
-    // TODO make this call throw_if_not_in_range
-    void throw_if_not_less(size_t           val,
-                           size_t           upper,
-                           std::string_view prefix = "");
-
-    // TODO make this call throw_if_any_not_in_range
-    // NOTE: Iterator and Sentinel must either be the same or Sentinel must be
-    // rx::input_range_iterator_end
-    template <typename Iterator, typename Sentinel>
-    void throw_if_any_not_less(Iterator         first,
-                               Sentinel         last,
-                               size_t           upper,
-                               std::string_view prefix = "");
-
-    // TODO add Ignore as above
-    void throw_if_not_in_range(size_t           val,
-                               size_t           lower,
-                               size_t           upper,
+    // TODO(later) if needed add Ignore as above
+    void throw_if_not_in_range(uint64_t         val,
+                               uint64_t         lower,
+                               uint64_t         upper,
                                std::string_view prefix = "");
 
     // NOTE: Iterator and Sentinel must either be the same or Sentinel must be
@@ -146,9 +130,24 @@ namespace libsemigroups {
     template <typename Iterator, typename Sentinel>
     void throw_if_any_not_in_range(Iterator         first,
                                    Sentinel         last,
-                                   size_t           lower,
-                                   size_t           upper,
+                                   uint64_t         lower,
+                                   uint64_t         upper,
                                    std::string_view prefix = "");
+
+    void throw_if_not_less(uint64_t         val,
+                           uint64_t         upper,
+                           std::string_view prefix = "");
+
+    // NOTE: Iterator and Sentinel must either be the same or Sentinel must be
+    // rx::input_range_iterator_end
+    template <typename Iterator, typename Sentinel>
+    void throw_if_any_not_less(Iterator         first,
+                               Sentinel         last,
+                               uint64_t         upper,
+                               std::string_view prefix) {
+      throw_if_any_not_in_range(first, last, 0, upper, prefix);
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups
 

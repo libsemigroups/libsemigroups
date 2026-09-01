@@ -22,10 +22,10 @@
 namespace libsemigroups {
   namespace detail {
     template <typename Iterator, typename Map, typename Ignore>
-    std::pair<Iterator, size_t>
+    std::pair<Iterator, uint64_t>
     find_duplicates(Iterator first, Iterator last, Map& seen, Ignore&& ignore) {
       seen.clear();
-      size_t pos = 0;
+      uint64_t pos = 0;
       for (auto it = first; it != last; ++it, ++pos) {
         if (!ignore(*it)) {
           auto [prev_it, inserted] = seen.emplace(*it, pos);
@@ -38,14 +38,15 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    std::pair<Iterator, size_t> find_duplicates(Iterator first, Iterator last) {
-      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
+    std::pair<Iterator, uint64_t> find_duplicates(Iterator first,
+                                                  Iterator last) {
+      std::unordered_map<std::decay_t<decltype(*first)>, uint64_t> seen;
       return find_duplicates(first, last, seen);
     }
 
     template <typename Iterator, typename Ignore>
     bool has_duplicates(Iterator first, Iterator last, Ignore&& ignore) {
-      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
+      std::unordered_map<std::decay_t<decltype(*first)>, uint64_t> seen;
       return find_duplicates(first, last, seen, std::forward<Ignore>(ignore))
                  .first
              != last;
@@ -56,7 +57,7 @@ namespace libsemigroups {
                              Iterator         last,
                              std::string_view what,
                              Ignore&&         ignore) {
-      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
+      std::unordered_map<std::decay_t<decltype(*first)>, uint64_t> seen;
       auto [it, pos]
           = find_duplicates(first, last, seen, std::forward<Ignore>(ignore));
       if (it != last) {
@@ -72,22 +73,14 @@ namespace libsemigroups {
     }
 
     template <typename Iterator, typename Sentinel>
-    void throw_if_any_not_less(Iterator         first,
-                               Sentinel         last,
-                               size_t           upper,
-                               std::string_view prefix) {
-      throw_if_any_not_in_range(first, last, 0, upper, prefix);
-    }
-
-    template <typename Iterator, typename Sentinel>
     void throw_if_any_not_in_range(Iterator         first,
                                    Sentinel         last,
-                                   size_t           lower,
-                                   size_t           upper,
+                                   uint64_t         lower,
+                                   uint64_t         upper,
                                    std::string_view prefix) {
       static_assert(std::is_same_v<Iterator, Sentinel>
                     || std::is_same_v<Sentinel, rx::input_range_iterator_end>);
-      size_t pos = 0;
+      uint64_t pos = 0;
       for (auto it = first; it != last; ++it, ++pos) {
         if (*it >= upper || *it < lower) {
           LIBSEMIGROUPS_EXCEPTION("{}value out of bounds, expected value in "
@@ -102,6 +95,5 @@ namespace libsemigroups {
         }
       }
     }
-
   }  // namespace detail
 }  // namespace libsemigroups
