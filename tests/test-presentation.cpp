@@ -16,7 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch_amalgamated.hpp"
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <algorithm>         // for all_of, equal, fill, sort
