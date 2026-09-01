@@ -2024,7 +2024,6 @@ namespace libsemigroups {
     topological_sort(WordGraph<Node1> const& wg, Node2 source) {
       return topological_sort(WordGraphView(wg), source);
     }
-
   }  // namespace word_graph
 
   namespace detail {
