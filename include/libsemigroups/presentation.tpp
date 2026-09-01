@@ -1375,6 +1375,17 @@ namespace libsemigroups {
 
   namespace presentation {
     template <typename Word>
+    void invert_inplace_no_checks(InversePresentation<Word> const& p,
+                                  Word&                            word) {
+      std::reverse(word.begin(), word.end());
+      std::for_each(word.begin(), word.end(), [&p](auto& letter) {
+        // There's no inverse_no_checks, because we need to know the index of
+        // "letter" to know its inverse.
+        letter = p.inverse(letter);
+      });
+    }
+
+    template <typename Word>
     Word inverse_alphabet_no_checks(InversePresentation<Word> const& p) {
       std::unordered_set<typename InversePresentation<Word>::letter_type> _seen;
 
@@ -1386,6 +1397,24 @@ namespace libsemigroups {
         }
       }
       return result;
+    }
+
+    template <typename Word>
+    void invert_inplace(InversePresentation<Word> const& p, Word& word) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(word.cbegin(),
+                                                      word.cend());
+      p.throw_if_empty_word_not_allowed(word.cbegin(), word.cend());
+      invert_inplace_no_checks(p, word);
+    }
+
+    template <typename Word>
+    Word invert(InversePresentation<Word> const& p, Word const& word) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(word.cbegin(),
+                                                      word.cend());
+      p.throw_if_empty_word_not_allowed(word.cbegin(), word.cend());
+      return invert_no_checks(p, word);
     }
 
     template <typename Word>
