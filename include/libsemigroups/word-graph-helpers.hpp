@@ -2043,105 +2043,6 @@ namespace libsemigroups {
 
   }  // namespace word_graph
 
-  //////////////////////////////////////////////////////////////////////////
-  // WordGraph - non-member functions
-  //////////////////////////////////////////////////////////////////////////
-  // TODO(1) Add equivalents for WordGraphView
-
-  //! \ingroup word_graph_group
-  //! \brief Helper variable template.
-  //!
-  //! The value of this variable is \c true if the template parameter \p Thing
-  //! is \ref WordGraph for any template parameters.
-  //!
-  //! \tparam Thing a type.
-  //!
-  //! \deprecated_alias_warning{is_specialization_of_v<Thing, WordGraph>}
-  template <typename Thing>
-  static constexpr bool IsWordGraph [[deprecated]]
-  = is_specialization_of_v<Thing, WordGraph>;
-
-  //! \ingroup word_graph_group
-  //! Output the edges of a wordGraph to a stream.
-  //!
-  //! This function outputs the word graph \p wg to the stream \p os.
-  //! The word graph is represented by the out-neighbours of each node ordered
-  //! according to their labels. The symbol `-` is used to denote that an
-  //! edge is not defined. For example, the word graph with 1 node,
-  //! out-degree 2, and a single loop labelled 1 from node 0 to 0 is
-  //! represented as
-  //! `{{-, 0}}`.
-  //!
-  //! \param os the ostream.
-  //! \param wg the word graph.
-  //!
-  //! \returns
-  //! The first parameter \p os.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  template <typename Node>
-  std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg);
-
-  //! \defgroup make_word_graph_group make<WordGraph>
-  //! \ingroup word_graph_group
-  //!
-  //! \brief Safely construct a \ref WordGraph instance.
-  //!
-  //! This page contains documentation related to safely constructing a
-  //! \ref WordGraph instance.
-  //!
-  //! \sa \ref make_group for an overview of possible uses of the `make`
-  //! function.
-
-  //! \ingroup make_word_graph_group
-  //!
-  //! \brief Constructs a word graph from a number of nodes and targets.
-  //!
-  //! This function constructs a word graph from its arguments whose
-  //! out-degree is specified by the length of the first item
-  //! in the second parameter, or 0 if the second parameter is empty.
-  //!
-  //! \tparam Return the return type. Must satisfy
-  //! \ref is_specialization_of_v<Return, WordGraph>.
-  //!
-  //! \param num_nodes the number of nodes in the word graph.
-  //! \param targets the targets of the word graph.
-  //!
-  //! \returns A value of type WordGraph.
-  //!
-  //! \throws LibsemigroupsException
-  //! if WordGraph<Node>::target throws when adding edges from \p targets.
-  //!
-  //! \complexity
-  //! \f$O(mn)\f$ where \f$m\f$ is the length of \p targets and \f$n\f$ is the
-  //! parameter \p num_nodes.
-  //!
-  //! \par Example
-  //! \code
-  //! // Construct a word graph with 5 nodes and 10 edges (7 specified)
-  //! make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-  //! \endcode
-  // Passing the 2nd parameter "targets" by value disambiguates it from the
-  // other make<WordGraph>.
-  template <typename Return>
-  [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
-                                 Return>
-  make(size_t                                                         num_nodes,
-       std::initializer_list<std::vector<typename Return::node_type>> targets);
-
-  //! \ingroup make_word_graph_group
-  //!
-  // clang-format off
-    // NOLINTNEXTLINE(whitespace/line_length)
-    //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>)
-  // clang-format on
-  template <typename Return>
-  [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
-                                 Return>
-  make(size_t                                                      num_nodes,
-       std::vector<std::vector<typename Return::node_type>> const& targets);
-
   namespace detail {
     template <typename Subclass>
     class JoinerMeeterCommon {
@@ -2860,6 +2761,105 @@ namespace libsemigroups {
     using detail::JoinerMeeterCommon<Meeter>::is_subrelation;
 #endif
   };  // class Meeter
+
+  //////////////////////////////////////////////////////////////////////////
+  // WordGraph - non-member functions
+  //////////////////////////////////////////////////////////////////////////
+  // TODO(1) Add equivalents for WordGraphView
+
+  //! \ingroup word_graph_group
+  //! \brief Helper variable template.
+  //!
+  //! The value of this variable is \c true if the template parameter \p Thing
+  //! is \ref WordGraph for any template parameters.
+  //!
+  //! \tparam Thing a type.
+  //!
+  //! \deprecated_alias_warning{is_specialization_of_v<Thing, WordGraph>}
+  template <typename Thing>
+  static constexpr bool IsWordGraph [[deprecated]]
+  = is_specialization_of_v<Thing, WordGraph>;
+
+  //! \ingroup word_graph_group
+  //! Output the edges of a wordGraph to a stream.
+  //!
+  //! This function outputs the word graph \p wg to the stream \p os.
+  //! The word graph is represented by the out-neighbours of each node ordered
+  //! according to their labels. The symbol `-` is used to denote that an
+  //! edge is not defined. For example, the word graph with 1 node,
+  //! out-degree 2, and a single loop labelled 1 from node 0 to 0 is
+  //! represented as
+  //! `{{-, 0}}`.
+  //!
+  //! \param os the ostream.
+  //! \param wg the word graph.
+  //!
+  //! \returns
+  //! The first parameter \p os.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Node>
+  std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg);
+
+  //! \defgroup make_word_graph_group make<WordGraph>
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Safely construct a \ref WordGraph instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref WordGraph instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_word_graph_group
+  //!
+  //! \brief Constructs a word graph from a number of nodes and targets.
+  //!
+  //! This function constructs a word graph from its arguments whose
+  //! out-degree is specified by the length of the first item
+  //! in the second parameter, or 0 if the second parameter is empty.
+  //!
+  //! \tparam Return the return type. Must satisfy
+  //! \ref is_specialization_of_v<Return, WordGraph>.
+  //!
+  //! \param num_nodes the number of nodes in the word graph.
+  //! \param targets the targets of the word graph.
+  //!
+  //! \returns A value of type WordGraph.
+  //!
+  //! \throws LibsemigroupsException
+  //! if WordGraph<Node>::target throws when adding edges from \p targets.
+  //!
+  //! \complexity
+  //! \f$O(mn)\f$ where \f$m\f$ is the length of \p targets and \f$n\f$ is the
+  //! parameter \p num_nodes.
+  //!
+  //! \par Example
+  //! \code
+  //! // Construct a word graph with 5 nodes and 10 edges (7 specified)
+  //! make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+  //! \endcode
+  // Passing the 2nd parameter "targets" by value disambiguates it from the
+  // other make<WordGraph>.
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
+                                 Return>
+  make(size_t                                                         num_nodes,
+       std::initializer_list<std::vector<typename Return::node_type>> targets);
+
+  //! \ingroup make_word_graph_group
+  //!
+  // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>)
+  // clang-format on
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
+                                 Return>
+  make(size_t                                                      num_nodes,
+       std::vector<std::vector<typename Return::node_type>> const& targets);
 
   //! \ingroup word_graph_group
   //!
