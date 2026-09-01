@@ -4063,20 +4063,23 @@ namespace libsemigroups {
     //! * the inverses do not act as semigroup inverses
     //!
     //! \note
-    //! Whilst the alphabet is not specified as an argument to this function, it
-    //! is necessary to throw_if_bad_alphabet_or_rules the alphabet here; a
-    //! specification of inverses cannot make sense if the alphabet contains
-    //! duplicate letters.
+    //! Whilst the alphabet is not specified as an argument to this function,
+    //! it is necessary to \ref validate the alphabet here; a specification of
+    //! inverses cannot make sense if the alphabet contains duplicate letters.
     //!
     //! \sa
     //! * \ref Alphabet::throw_if_duplicate_letters
     //! * \ref presentation::throw_if_bad_inverses
-    InversePresentation& inverses(word_type const& w) {
-      this->alphabet_v4().throw_if_duplicate_letters();
+    InversePresentation& inverses(word_type&& w) {
+      validate(alphabet_v4());
       presentation::throw_if_bad_inverses(*this, w);
-      return inverses_no_checks(w);
+      return inverses_no_checks(std::move(w));
     }
-    // TODO rvalue ref version of inverses
+
+    //! \copydoc inverses(word_type&&)
+    InversePresentation& inverses(word_type const& w) {
+      return inverses(word_type(w));
+    }
 
     //! \brief Return the inverse of each letter in the alphabet.
     //!
