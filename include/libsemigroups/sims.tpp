@@ -114,7 +114,7 @@ namespace libsemigroups {
               wg, first, last, p.rules.cbegin(), p.rules.cend())) {
         return false;
       }
-      auto norf = word_graph::nodes_reachable_from(wg, 0);
+      auto norf = word_graph::nodes_reachable_from(wg, Node(0));
       return std::all_of(
           norf.begin(), norf.end(), [&N](auto n) { return n < N; });
     }

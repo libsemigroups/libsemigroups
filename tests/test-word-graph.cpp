@@ -96,7 +96,7 @@ namespace libsemigroups {
       // reachable node directly from the given order, independently of the
       // standardization routine under test.
       auto const nr_reachable
-          = word_graph::number_of_nodes_reachable_from(wg, 0);
+          = word_graph::number_of_nodes_reachable_from(wg, Node(0));
       std::vector<bool>      seen(wg.number_of_nodes(), false);
       std::vector<word_type> result(wg.number_of_nodes());
       std::vector<Candidate> frontier = {{{}, 0}};
@@ -876,8 +876,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "040", "Meeter x 2", "[quick]") {
     auto x = make<WordGraph<size_t>>(5, {{1, 0}, {1, 2}, {1, 2}});
     auto y = make<WordGraph<size_t>>(5, {{0, 1}, {0, 1}});
-    REQUIRE(word_graph::number_of_nodes_reachable_from(x, 0) == 3);
-    REQUIRE(word_graph::number_of_nodes_reachable_from(y, 0) == 2);
+    REQUIRE(word_graph::number_of_nodes_reachable_from(x, size_t(0)) == 3);
+    REQUIRE(word_graph::number_of_nodes_reachable_from(y, size_t(0)) == 2);
 
     Meeter meet;
     auto   xy = meet(x, y);

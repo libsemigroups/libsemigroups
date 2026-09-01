@@ -1114,13 +1114,23 @@ namespace libsemigroups {
     // TODO(2) version which is an iterator i.e. returns an iterator or range
     // object that allows use to step through the nodes reachable from a given
     // node
-    // TODO deprecate and only use one template param
-    template <typename Node1, typename Node2>
-    [[nodiscard]] std::unordered_set<Node1>
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] std::unordered_set<Node1>
     nodes_reachable_from(WordGraphView<Node1> const& wgv,
                          Node2                       source,
                          size_t                      max_depth) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
+      return nodes_reachable_from_no_checks(
+          wgv, static_cast<Node1>(source), max_depth);
+    }
+
+    template <typename Node>
+    [[nodiscard]] std::unordered_set<Node>
+    nodes_reachable_from(WordGraphView<Node> const& wgv,
+                         Node                       source,
+                         size_t                     max_depth) {
       detail::throw_if_not_less(source, wgv.number_of_nodes(), "node ");
       return nodes_reachable_from_no_checks(wgv, source, max_depth);
     }
