@@ -3,11 +3,13 @@
 
 The script should be run from the libsemigroups root directory. By default it
 checks libsemigroups test and benchmark .cpp files, excluding third_party.
-Pass file or directory paths to restrict the check.
+Pass file or directory paths to restrict the check, or use --changed to check
+only staged, unstaged, and untracked files.
 """
 
 import argparse
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -241,8 +243,32 @@ def files_from_args(paths):
             yield filename
 
 
+def changed_files():
+    """Yield changed and untracked paths reported by Git."""
+    commands = (
+        ("diff", "--name-only", "-z", "HEAD", "--"),
+        ("ls-files", "--others", "--exclude-standard", "-z", "--"),
+    )
+    for command in commands:
+        try:
+            output = subprocess.check_output(
+                ("git",) + command,
+                text=True,
+            )
+        except FileNotFoundError as exception:
+            raise RuntimeError("could not find Git") from exception
+        except subprocess.CalledProcessError as exception:
+            raise RuntimeError("could not determine changed files") from exception
+        yield from (path for path in output.split("\0") if path)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--changed",
+        action="store_true",
+        help="check only staged, unstaged, and untracked files",
+    )
     parser.add_argument(
         "paths",
         nargs="*",
@@ -250,7 +276,20 @@ def main():
     )
     args = parser.parse_args()
 
-    files = sorted(set(files_from_args(args.paths) if args.paths else default_files()))
+    if args.changed and args.paths:
+        parser.error("--changed cannot be combined with paths")
+
+    try:
+        if args.changed:
+            files = files_from_args(changed_files())
+        elif args.paths:
+            files = files_from_args(args.paths)
+        else:
+            files = default_files()
+        files = sorted(set(files))
+    except RuntimeError as exception:
+        parser.error(str(exception))
+
     failures = []
     quick_count = 0
 
