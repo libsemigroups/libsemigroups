@@ -1547,8 +1547,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(knuth_bendix::currently_contains_no_checks(kb, u, v)
                            != tril::unknown);
       if (knuth_bendix::currently_contains_no_checks(kb, u, v) == tril::FALSE) {
-        auto beta
-            = word_graph::follow_path_no_checks(wg, 0, u.cbegin(), u.cend());
+        auto beta = word_graph::follow_path_no_checks(
+            wg, node_type(0), u.cbegin(), u.cend());
         if (sink == UNDEFINED) {
           sink = beta;
         } else if (sink != beta) {

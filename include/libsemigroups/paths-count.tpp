@@ -33,6 +33,7 @@ namespace libsemigroups::v4::paths {
                            Node2                   source,
                            size_t                  min,
                            size_t                  max) {
+      static_assert(sizeof(Node1) >= sizeof(Node2));
       if (min > max) {
         return 0;
       } else if (word_graph::is_complete(wg)) {
@@ -47,7 +48,8 @@ namespace libsemigroups::v4::paths {
         }
       }
       // Some edges are not defined ...
-      if (!word_graph::is_acyclic(wg, source) && max == POSITIVE_INFINITY) {
+      if (!word_graph::is_acyclic(wg, static_cast<Node1>(source))
+          && max == POSITIVE_INFINITY) {
         // Not acyclic
         return POSITIVE_INFINITY;
       }
@@ -60,9 +62,13 @@ namespace libsemigroups::v4::paths {
                            Node2                   target,
                            size_t                  min,
                            size_t                  max) {
-      if (min > max || !word_graph::is_reachable(wg, source, target)) {
+      static_assert(sizeof(Node1) >= sizeof(Node2));
+      if (min > max
+          || !word_graph::is_reachable(
+              wg, static_cast<Node1>(source), static_cast<Node1>(target))) {
         return 0;
-      } else if (!word_graph::is_acyclic(wg, source, target)
+      } else if (!word_graph::is_acyclic(
+                     wg, static_cast<Node1>(source), static_cast<Node1>(target))
                  && max == POSITIVE_INFINITY) {
         return POSITIVE_INFINITY;
       }
@@ -74,6 +80,7 @@ namespace libsemigroups::v4::paths {
                           Node2                   source,
                           size_t                  min,
                           size_t                  max) {
+      static_assert(sizeof(Node1) >= sizeof(Node2));
       auto am = word_graph::adjacency_matrix(wg);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       using Mat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
@@ -122,6 +129,7 @@ namespace libsemigroups::v4::paths {
                        Node2                   target,
                        size_t,
                        size_t max) {
+      static_assert(sizeof(Node1) >= sizeof(Node2));
       if (max == POSITIVE_INFINITY) {
         if (source == target
             && std::any_of(wg.cbegin_targets(source),
@@ -133,8 +141,12 @@ namespace libsemigroups::v4::paths {
                            })) {
           return true;
         } else if (source != target
-                   && word_graph::is_reachable(wg, source, target)
-                   && word_graph::is_reachable(wg, target, source)) {
+                   && word_graph::is_reachable(wg,
+                                               static_cast<Node1>(source),
+                                               static_cast<Node1>(target))
+                   && word_graph::is_reachable(wg,
+                                               static_cast<Node1>(target),
+                                               static_cast<Node1>(source))) {
           return true;
         }
       }
@@ -147,7 +159,9 @@ namespace libsemigroups::v4::paths {
                           Node2                   target,
                           size_t                  min,
                           size_t                  max) {
-      if (!word_graph::is_reachable(wg, source, target)) {
+      static_assert(sizeof(Node1) >= sizeof(Node2));
+      if (!word_graph::is_reachable(
+              wg, static_cast<Node1>(source), static_cast<Node1>(target))) {
         // Complexity is O(number of nodes + number of edges).
         return 0;
       } else if (count_special(wg, source, target, min, max)) {
@@ -200,7 +214,8 @@ namespace libsemigroups::v4::paths {
                            Node2                   source,
                            size_t                  min,
                            size_t                  max) {
-      auto topo = word_graph::topological_sort(wg, source);
+      static_assert(sizeof(Node1) >= sizeof(Node2));
+      auto topo = word_graph::topological_sort(wg, static_cast<Node1>(source));
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
@@ -250,7 +265,8 @@ namespace libsemigroups::v4::paths {
                            Node2                   target,
                            size_t                  min,
                            size_t                  max) {
-      auto topo = word_graph::topological_sort(wg, source);
+      static_assert(sizeof(Node1) >= sizeof(Node2));
+      auto topo = word_graph::topological_sort(wg, static_cast<Node1>(source));
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
@@ -320,9 +336,10 @@ namespace libsemigroups::v4::paths {
     // acyclicity anyway.
     // TODO(2): could use algorithm::dfs in some cases.
     // TODO(v4) remove prefix ::libsemigroups::
+    static_assert(sizeof(Node1) >= sizeof(Node2));
     ::libsemigroups::detail::throw_if_not_less(
         static_cast<Node1>(source), wg.number_of_nodes(), "node ");
-    auto topo = word_graph::topological_sort(wg, source);
+    auto topo = word_graph::topological_sort(wg, static_cast<Node1>(source));
     if (topo.empty()) {
       // Can't topologically sort, so the subdigraph induced by the nodes
       // reachable from source, contains cycles, and so there are infinitely
@@ -354,11 +371,12 @@ namespace libsemigroups::v4::paths {
                                    Node2                   source,
                                    size_t                  min,
                                    size_t                  max) {
+    static_assert(sizeof(Node1) >= sizeof(Node2));
     if (min > max || word_graph::is_complete(wg)) {
       return paths::algorithm::trivial;
     }
 
-    auto topo = word_graph::topological_sort(wg, source);
+    auto topo = word_graph::topological_sort(wg, static_cast<Node1>(source));
     if (topo.empty()) {
       // Can't topologically sort, so the digraph contains cycles, and so
       // there are infinitely many words labelling paths.
@@ -383,6 +401,7 @@ namespace libsemigroups::v4::paths {
                  size_t                  min,
                  size_t                  max,
                  paths::algorithm        lgrthm) {
+    static_assert(sizeof(Node1) >= sizeof(Node2));
     ::libsemigroups::detail::throw_if_not_less(
         source, wg.number_of_nodes(), "node ");
 
@@ -413,11 +432,16 @@ namespace libsemigroups::v4::paths {
                                    Node2                   target,
                                    size_t                  min,
                                    size_t                  max) {
-    bool acyclic = word_graph::is_acyclic(wg, source, target);
-    if (min > max || !word_graph::is_reachable(wg, source, target)
+    static_assert(sizeof(Node1) >= sizeof(Node2));
+    bool acyclic = word_graph::is_acyclic(
+        wg, static_cast<Node1>(source), static_cast<Node1>(target));
+    if (min > max
+        || !word_graph::is_reachable(
+            wg, static_cast<Node1>(source), static_cast<Node1>(target))
         || (!acyclic && max == POSITIVE_INFINITY)) {
       return paths::algorithm::trivial;
-    } else if (acyclic && word_graph::is_acyclic(wg, source)) {
+    } else if (acyclic
+               && word_graph::is_acyclic(wg, static_cast<Node1>(source))) {
       return paths::algorithm::acyclic;
     } else if (wg.number_of_edges() < detail::magic_number(wg.number_of_nodes())
                                           * wg.number_of_nodes()) {
@@ -434,6 +458,7 @@ namespace libsemigroups::v4::paths {
                  size_t                  min,
                  size_t                  max,
                  paths::algorithm        lgrthm) {
+    static_assert(sizeof(Node1) >= sizeof(Node2));
     ::libsemigroups::detail::throw_if_not_less(
         source, wg.number_of_nodes(), "node ");
     ::libsemigroups::detail::throw_if_not_less(

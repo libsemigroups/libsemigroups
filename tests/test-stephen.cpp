@@ -178,15 +178,17 @@ namespace libsemigroups {
 
     TestType w = {1, 1, 0, 1};
 
-    REQUIRE(word_graph::last_node_on_path_no_checks(
-                s.word_graph_no_run(), 0, w.begin(), w.end())
-                .first
-            == 5);
+    REQUIRE(
+        word_graph::last_node_on_path_no_checks(
+            s.word_graph_no_run(), static_cast<uint32_t>(0), w.begin(), w.end())
+            .first
+        == 5);
     w = {1, 1, 0, 0, 1, 0};
-    REQUIRE(word_graph::last_node_on_path_no_checks(
-                s.word_graph_no_run(), 0, w.begin(), w.end())
-                .first
-            == 5);
+    REQUIRE(
+        word_graph::last_node_on_path_no_checks(
+            s.word_graph_no_run(), static_cast<uint32_t>(0), w.begin(), w.end())
+            .first
+        == 5);
 
     REQUIRE(stephen::accepts(s, TestType({1, 1, 0, 0, 1, 0})));
     // The exception message depends on the TestType so not checking that here
@@ -418,12 +420,16 @@ namespace libsemigroups {
                  {7}}));
 
     auto rule = p.rules[0];
-    auto m    = word_graph::last_node_on_path(
-                 S.word_graph_no_run(), 0, rule.cbegin(), rule.cend())
+    auto m    = word_graph::last_node_on_path(S.word_graph_no_run(),
+                                           static_cast<uint32_t>(0),
+                                           rule.cbegin(),
+                                           rule.cend())
                  .first;
     rule   = p.rules[1];
-    auto n = word_graph::last_node_on_path(
-                 S.word_graph_no_run(), 0, rule.cbegin(), rule.cend())
+    auto n = word_graph::last_node_on_path(S.word_graph_no_run(),
+                                           static_cast<uint32_t>(0),
+                                           rule.cbegin(),
+                                           rule.cend())
                  .first;
     REQUIRE(m != UNDEFINED);
     REQUIRE(n != UNDEFINED);
@@ -1367,7 +1373,9 @@ namespace libsemigroups {
     stephen::set_word(S, "aBbcABAabCc").run();
 
     REQUIRE(S.accept_state() == 4);
-    REQUIRE(word_graph::follow_path(S.word_graph_no_run(), 0, to_word(S.word()))
+    REQUIRE(word_graph::follow_path(S.word_graph_no_run(),
+                                    static_cast<uint32_t>(0),
+                                    to_word(S.word()))
             == 4);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
   }
@@ -1702,11 +1710,15 @@ namespace libsemigroups {
 
     auto w1 = 1217_w;
     auto w2 = 7121_w;
-    REQUIRE(word_graph::last_node_on_path(
-                s.word_graph_no_run(), 0, w1.begin(), w1.end())
+    REQUIRE(word_graph::last_node_on_path(s.word_graph_no_run(),
+                                          static_cast<uint32_t>(0),
+                                          w1.begin(),
+                                          w1.end())
                 .first
-            == word_graph::last_node_on_path(
-                   s.word_graph_no_run(), 0, w2.begin(), w2.end())
+            == word_graph::last_node_on_path(s.word_graph_no_run(),
+                                             static_cast<uint32_t>(0),
+                                             w2.begin(),
+                                             w2.end())
                    .first);
     REQUIRE(stephen::accepts(s, 7121_w));
   }

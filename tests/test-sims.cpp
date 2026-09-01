@@ -87,9 +87,10 @@ namespace libsemigroups {
     void check_include(P const& p, std::vector<word_type> const& e, size_t n) {
       auto foo = [&e](auto const& wg) {
         using word_graph::follow_path_no_checks;
+        using Node = typename std::decay_t<decltype(wg)>::node_type;
         for (auto it = e.cbegin(); it != e.cend(); it += 2) {
-          if (follow_path_no_checks(wg, 0, *it)
-              != follow_path_no_checks(wg, 0, *(it + 1))) {
+          if (follow_path_no_checks(wg, Node(0), *it)
+              != follow_path_no_checks(wg, Node(0), *(it + 1))) {
             return false;
           }
         }
@@ -303,8 +304,8 @@ namespace libsemigroups {
       Sims1 S;
       REQUIRE(S.presentation(p).number_of_congruences(5) == 9);
       for (auto it = S.cbegin(5); it != S.cend(5); ++it) {
-        REQUIRE(word_graph::follow_path_no_checks(*it, 0, 1010_w)
-                == word_graph::follow_path_no_checks(*it, 0, {0}));
+        REQUIRE(word_graph::follow_path_no_checks(*it, node_type(0), 1010_w)
+                == word_graph::follow_path_no_checks(*it, node_type(0), {0}));
       }
       S.for_each(5,
                  [&S](auto const& wg) { check_right_generating_pairs(S, wg); });

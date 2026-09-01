@@ -191,7 +191,7 @@ namespace libsemigroups {
         using word_graph::last_node_on_path_no_checks;
         run();
         _accept_state = last_node_on_path_no_checks(_word_graph,
-                                                    0,
+                                                    node_type(0),
                                                     _internal_word.cbegin(),
                                                     _internal_word.cend())
                             .first;

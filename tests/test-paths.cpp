@@ -348,7 +348,7 @@ namespace libsemigroups {
 
     auto expected2
         = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
-             return word_graph::follow_path(wg, 0, ww) == 4;
+             return word_graph::follow_path(wg, size_t(0), ww) == 4;
            }));
     REQUIRE((expected2 | count()) == 131'062);
     REQUIRE((w | skip_n(w.size_hint() - 1)).get().size() == 17);
@@ -502,7 +502,7 @@ namespace libsemigroups {
     WordRange w;
     expected
         = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
-             return word_graph::follow_path(wg, 0, ww) == 4;
+             return word_graph::follow_path(wg, size_t(0), ww) == 4;
            })
            | to_vector());
     REQUIRE(expected.size() == 131'062);
@@ -854,9 +854,9 @@ namespace libsemigroups {
     WordGraph<size_t> wg(n, 1);
     word_graph::add_cycle_no_checks(wg, wg.cbegin_nodes(), wg.cend_nodes());
     REQUIRE(!word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::is_reachable(wg, 1, 0));
-    REQUIRE(word_graph::is_reachable(wg, 0, 1));
-    REQUIRE(word_graph::is_reachable(wg, 0, 0));
+    REQUIRE(word_graph::is_reachable(wg, size_t(1), size_t(0)));
+    REQUIRE(word_graph::is_reachable(wg, size_t(0), size_t(1)));
+    REQUIRE(word_graph::is_reachable(wg, size_t(0), size_t(0)));
     REQUIRE(v4::paths::count(wg, 0, 0, 401) != 0);
   }
 
@@ -977,7 +977,7 @@ namespace libsemigroups {
 
     auto checker1 = [&wg](word_type const& w) {
       return 10 <= w.size() && w.size() < 12
-             && word_graph::follow_path(wg, 0, w) != UNDEFINED;
+             && word_graph::follow_path(wg, size_t(0), w) != UNDEFINED;
     };
 
     p.min(10).max(11);
@@ -1007,7 +1007,7 @@ namespace libsemigroups {
             == static_cast<uint64_t>((p | count())));
 
     auto checker2 = [&wg](word_type const& w) {
-      return w.size() <= 10 && word_graph::follow_path(wg, 1, w) == 1;
+      return w.size() <= 10 && word_graph::follow_path(wg, size_t(1), w) == 1;
     };
     REQUIRE((p | all_of(std::move(checker2))));
   }

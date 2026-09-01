@@ -267,8 +267,10 @@ namespace libsemigroups {
                                    Node2                   target,
                                    size_t                  min = 0,
                                    size_t max = POSITIVE_INFINITY) {
+    static_assert(sizeof(Node1) >= sizeof(Node2));
     // source & target are validated in is_reachable.
-    if (!word_graph::is_reachable(wg, source, target)) {
+    if (!word_graph::is_reachable(
+            wg, static_cast<Node1>(source), static_cast<Node1>(target))) {
       return cend_pstilo(wg);
     }
     return detail::const_pstilo_iterator<Node1>(&wg, source, target, min, max);
@@ -346,8 +348,10 @@ namespace libsemigroups {
                                     Node2                   target,
                                     size_t                  min = 0,
                                     size_t max = POSITIVE_INFINITY) {
+    static_assert(sizeof(Node1) >= sizeof(Node2));
     // source & target are validated in is_reachable.
-    if (!word_graph::is_reachable(wg, source, target)) {
+    if (!word_graph::is_reachable(
+            wg, static_cast<Node1>(source), static_cast<Node1>(target))) {
       return cend_pstislo(wg);
     }
     return detail::const_pstislo_iterator<Node1>(&wg, source, target, min, max);

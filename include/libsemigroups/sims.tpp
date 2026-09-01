@@ -186,7 +186,7 @@ namespace libsemigroups {
 
       ToddCoxeter<word_type> tc;
 
-      auto tree = word_graph::spanning_tree(wg, 0);
+      auto tree = word_graph::spanning_tree(wg, Node(0));
       for (auto const& [x, wx] : rx::enumerate(forest::PathsFromRoots(tree))) {
         // Can't put the next part into the for-loop because skip_n returns by
         // reference (if it returned by value I think this would be ok).
