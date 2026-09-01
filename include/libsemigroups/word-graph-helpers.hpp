@@ -1821,22 +1821,6 @@ namespace libsemigroups {
         "Use standardize(Graph&, Cmp&&) instead.")]] std::pair<bool, Forest>
     standardize(Graph& wg, Order val = Order::lenlex);
 
-    //! \brief Throws if the target of any edge is out of bounds.
-    //!
-    //! This function throws if any target of any edge in \p wg is out of
-    //! bounds (i.e. is greater than or equal to WordGraph::number_of_nodes,
-    //! and not equal to \ref UNDEFINED).
-    //!
-    //! \tparam Node the type of the nodes in \p wg.
-    //!
-    //! \param wg the word graph to check.
-    //!
-    //! \throws LibsemigroupsException if any target of any edge in \p wg is
-    //! greater than or equal to WordGraph::number_of_nodes and not equal to
-    //! \ref UNDEFINED.
-    template <typename Node>
-    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg);
-
     //! \brief Throws if the target of any edge with source in a given range is
     //! out of bounds.
     //!
