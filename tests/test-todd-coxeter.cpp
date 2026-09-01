@@ -915,6 +915,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 444_w, 0_w);
 
     ToddCoxeter tc(twosided, p);
+    using node_type = typename decltype(tc)::word_graph_type::node_type;
     section_felsch(tc);
 
     section_hlt(tc);
@@ -927,14 +928,15 @@ namespace libsemigroups {
     REQUIRE(index_of(tc, {1}) == index_of(tc, {2}));
     REQUIRE(tc.word_graph().number_of_nodes() == 7);
     REQUIRE(tc.word_graph().target(0, 0) == 1);
-    auto        pred = word_graph::ancestors_of_no_checks(tc.word_graph(), 1);
+    auto pred
+        = word_graph::ancestors_of_no_checks(tc.word_graph(), node_type(1));
     std::vector result(pred.begin(), pred.end());
     std::sort(result.begin(), result.end());
-    REQUIRE(result == std::vector<uint32_t>({0, 1, 2, 3, 4, 5, 6}));
-    auto desc = word_graph::nodes_reachable_from(tc.word_graph(), 1);
+    REQUIRE(result == std::vector<node_type>({0, 1, 2, 3, 4, 5, 6}));
+    auto desc = word_graph::nodes_reachable_from(tc.word_graph(), node_type(1));
     result.assign(desc.begin(), desc.end());
     std::sort(result.begin(), result.end());
-    REQUIRE(result == std::vector<uint32_t>({1, 2, 3, 4, 5, 6}));
+    REQUIRE(result == std::vector<node_type>({1, 2, 3, 4, 5, 6}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -4878,8 +4880,9 @@ namespace libsemigroups {
     }
     REQUIRE(!tc.finished());
 
-    auto set   = word_graph::nodes_reachable_from(wg, 0);
-    auto nodes = std::vector<uint32_t>(set.begin(), set.end());
+    using node_type = typename decltype(tc)::word_graph_type::node_type;
+    auto set        = word_graph::nodes_reachable_from(wg, node_type(0));
+    auto nodes      = std::vector<uint32_t>(set.begin(), set.end());
     std::sort(nodes.begin(), nodes.end());
     REQUIRE(!nodes.empty());
     for (auto s : nodes) {
@@ -5414,9 +5417,10 @@ namespace libsemigroups {
     auto w = 010001_w;
     REQUIRE(tc.current_index_of(w.begin(), w.end()) == 49);
     tc.run();
-    REQUIRE(
-        word_graph::number_of_nodes_reachable_from(tc.current_word_graph(), 0)
-        == tc.current_word_graph().number_of_nodes_active());
+    using node_type = typename decltype(tc)::word_graph_type::node_type;
+    REQUIRE(word_graph::number_of_nodes_reachable_from(tc.current_word_graph(),
+                                                       node_type(0))
+            == tc.current_word_graph().number_of_nodes_active());
     std::vector<std::vector<word_type>> const classes
         = congruence_common::non_trivial_classes(tc, words);
     REQUIRE(classes
