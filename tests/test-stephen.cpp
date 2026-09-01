@@ -1700,10 +1700,14 @@ namespace libsemigroups {
     stephen::set_word(s, 1217_w);
     s.run();
 
-    REQUIRE(
-        word_graph::last_node_on_path(s.word_graph_no_run(), 0, 1217_w).first
-        == word_graph::last_node_on_path(s.word_graph_no_run(), 0, 7121_w)
-               .first);
+    auto w1 = 1217_w;
+    auto w2 = 7121_w;
+    REQUIRE(word_graph::last_node_on_path(
+                s.word_graph_no_run(), 0, w1.begin(), w1.end())
+                .first
+            == word_graph::last_node_on_path(
+                   s.word_graph_no_run(), 0, w2.begin(), w2.end())
+                   .first);
     REQUIRE(stephen::accepts(s, 7121_w));
   }
 
