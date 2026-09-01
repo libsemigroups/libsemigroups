@@ -1362,7 +1362,7 @@ namespace libsemigroups {
     // because the checks below sometimes give less helpful exception messages
     auto inv = inverse(x);
 
-    Presentation<Word>::throw_if_alphabet_has_duplicates();
+    validate(alphabet_v4());
     presentation::throw_if_bad_inverses(*this, inverses());
     remove_generator_no_checks(x);
     remove_inverse_no_checks(x);

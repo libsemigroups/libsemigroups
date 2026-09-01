@@ -2047,38 +2047,6 @@ namespace libsemigroups {
     template <typename Word>
     void change_alphabet(Presentation<Word>& p, Word&& new_alphabet);
 
-    //! \brief Change or re-order the alphabet without checking.
-    //!
-    //! This function replaces `p.alphabet()` with \p new_alphabet and
-    //! re-writes the rules in \p p using the new alphabet.
-    //!
-    //! \tparam Word the type of the words in the presentation.
-    //! \param p the presentation.
-    //! \param new_alphabet the replacement alphabet.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \warning
-    //! This function does not validate its arguments. The presentation must be
-    //! valid, the old and new alphabets must have the same size, and the new
-    //! alphabet must not contain duplicate letters. If \p new_alphabet is
-    //! passed as an rvalue, it must not refer to an element of `p.rules`.
-    template <typename Word>
-    void change_alphabet_no_checks(Presentation<Word>& p, Word&& new_alphabet);
-
-    //! \copydoc change_alphabet_no_checks(Presentation<Word>&, Word&&)
-    template <typename Word>
-    void change_alphabet_no_checks(Presentation<Word>& p,
-                                   Word const&         new_alphabet) {
-      // Call the rvalue ref version
-      change_alphabet_no_checks(p, Word(new_alphabet));
-    }
-
-    //! \copydoc change_alphabet(Presentation<Word>&, Word const&)
-    template <typename Word>
-    void change_alphabet(Presentation<Word>& p, Word&& new_alphabet);
-
     //! \brief Change or re-order the alphabet.
     //!
     //! This function replaces `p.alphabet()` with \p new_alphabet, where
@@ -4255,10 +4223,13 @@ namespace libsemigroups {
     //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses
     //! throws, or if \p word contains a letter that does not belong to the
     //! alphabet of \p p.
+    // TODO to tpp
     template <typename Word>
     void invert_inplace(InversePresentation<Word> const& p, Word& word) {
       p.throw_if_bad_alphabet_rules_or_inverses();
-      p.throw_if_letter_not_in_alphabet(word.cbegin(), word.cend());
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(word.cbegin(),
+                                                      word.cend());
+      p.throw_if_empty_word_not_allowed(word.cbegin(), word.cend());
       invert_inplace_no_checks(p, word);
     }
 
@@ -4306,10 +4277,13 @@ namespace libsemigroups {
     //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses
     //! throws, or if \p word contains a letter that does not belong to the
     //! alphabet of \p p.
+    // TODO to tpp
     template <typename Word>
     Word invert(InversePresentation<Word> const& p, Word const& word) {
       p.throw_if_bad_alphabet_rules_or_inverses();
-      p.throw_if_letter_not_in_alphabet(word.cbegin(), word.cend());
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(word.cbegin(),
+                                                      word.cend());
+      p.throw_if_empty_word_not_allowed(word.cbegin(), word.cend());
       return invert_no_checks(p, word);
     }
 

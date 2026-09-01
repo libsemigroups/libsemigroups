@@ -210,6 +210,8 @@ namespace libsemigroups {
                             "invalid letter (char with value) -109, valid "
                             "letters are (char values) [0, 1]");
     }
+
+    a.init("ab");
     REQUIRE_EXCEPTION_MSG(a.throw_if_letter_in_alphabet('a'),
                           "the argument 'a' already belongs to the alphabet "
                           "\"ab\", expected an unused letter");
@@ -303,7 +305,7 @@ namespace libsemigroups {
                           "008",
                           "add_letter (std::string)",
                           "[quick]") {
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
     using literals::operator""_w;
 
     {

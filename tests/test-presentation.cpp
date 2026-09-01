@@ -3330,8 +3330,8 @@ namespace libsemigroups {
     InversePresentation<std::string> p;
     p.alphabet("abAB");
     p.inverses("ABab");
-    presentation::add_rule(p, "b", "aa");
-    presentation::add_rule(p, "Ba", "aB");
+    presentation::add_rule(p, "b"s, "aa"s);
+    presentation::add_rule(p, "Ba"s, "aB"s);
 
     presentation::remove_redundant_generators(p);
 
@@ -4473,7 +4473,7 @@ End;)xxx");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "103",
+                          "109",
                           "add_inverse",
                           "[quick][presentation]") {
     InversePresentation<std::string> p;
@@ -4491,7 +4491,7 @@ End;)xxx");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "104",
+                          "110",
                           "remove_inverse",
                           "[quick][presentation]") {
     InversePresentation<std::string> p;
@@ -4511,7 +4511,7 @@ End;)xxx");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "105",
+                          "111",
                           "add_generator_and_inverse",
                           "[quick][presentation]") {
     InversePresentation<std::string> p;
@@ -4538,7 +4538,7 @@ End;)xxx");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "106",
+                          "112",
                           "remove_generator_and_inverse",
                           "[quick][presentation]") {
     InversePresentation<std::string> p;
