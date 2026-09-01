@@ -99,8 +99,7 @@ namespace libsemigroups {
     //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
     //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p target.
+    //! \tparam Node the node type of the word graph and \p target.
     //!
     //! \param wgv the word graph.
     //! \param target the target node.
@@ -111,9 +110,18 @@ namespace libsemigroups {
     //! \warning The arguments are not checked, and in particular it is
     //! assumed that \p target is a node of \p wgv (i.e. less than
     //! WordGraphView::number_of_nodes).
-    template <typename Node1, typename Node2>
-    [[nodiscard]] std::unordered_set<Node1>
-    ancestors_of_no_checks(WordGraphView<Node1> const& wgv, Node2 target);
+    template <typename Node>
+    [[nodiscard]] std::unordered_set<Node>
+    ancestors_of_no_checks(WordGraphView<Node> const& wgv, Node target);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] std::unordered_set<Node1>
+    ancestors_of_no_checks(WordGraphView<Node1> const& wgv, Node2 target) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return ancestors_of_no_checks(wgv, static_cast<Node1>(target));
+    }
 
     //! \brief Returns the std::unordered_set of nodes that can reach a given
     //! node in a word graph.
@@ -124,8 +132,7 @@ namespace libsemigroups {
     //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
     //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p target.
+    //! \tparam Node the node type of the word graph and \p target.
     //!
     //! \param wgv the word graph.
     //! \param target the target node.
@@ -135,9 +142,18 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p target is out of bounds (greater
     //! than or equal to WordGraphView::number_of_nodes).
-    template <typename Node1, typename Node2>
-    [[nodiscard]] std::unordered_set<Node1>
-    ancestors_of(WordGraphView<Node1> const& wgv, Node2 target);
+    template <typename Node>
+    [[nodiscard]] std::unordered_set<Node>
+    ancestors_of(WordGraphView<Node> const& wgv, Node target);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] std::unordered_set<Node1>
+    ancestors_of(WordGraphView<Node1> const& wgv, Node2 target) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return ancestors_of(wgv, static_cast<Node1>(target));
+    }
 
     //! \brief Returns a \ref Dot object representing a word graph view.
     //!
@@ -187,17 +203,15 @@ namespace libsemigroups {
     //! \p wgv starting at the node \p from labelled by the word defined by
     //! \p first and \p last or \ref UNDEFINED.
     //!
-    //! \tparam Node1 the type of the nodes of the WordGraphView \p wgv.
-    //!
-    //! \tparam Node2 the type of the node \p from (must satisfy
-    //! `sizeof(Node2) <= sizeof(Node1)`).
+    //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
+    //! node \p from.
     //!
     //! \param wgv a word graph view.
     //! \param from the source node.
     //! \param first iterator into a word.
     //! \param last iterator into a word.
     //!
-    //! \returns A value of type \p Node1.
+    //! \returns A value of type \p Node.
     //!
     //! \exceptions
     //! \noexcept
@@ -207,11 +221,24 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
-    template <typename Node1, typename Node2, typename Iterator>
-    [[nodiscard]] Node1 follow_path_no_checks(WordGraphView<Node1> const& wgv,
-                                              Node2                       from,
-                                              Iterator                    first,
-                                              Iterator last) noexcept;
+    template <typename Node, typename Iterator>
+    [[nodiscard]] Node follow_path_no_checks(WordGraphView<Node> const& wgv,
+                                             Node                       from,
+                                             Iterator                   first,
+                                             Iterator last) noexcept;
+
+    template <typename Node1,
+              typename Node2,
+              typename Iterator,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] Node1
+    follow_path_no_checks(WordGraphView<Node1> const& wgv,
+                          Node2                       from,
+                          Iterator                    first,
+                          Iterator                    last) noexcept {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return follow_path_no_checks(wgv, static_cast<Node1>(from), first, last);
+    }
 
     //! \brief Follow the path from a specified node labelled by a word.
     //!
@@ -219,17 +246,14 @@ namespace libsemigroups {
     //! \p wgv starting at the node \p from labelled by \p path or
     //! \ref UNDEFINED.
     //!
-    //! \tparam Node1  the type of the nodes of the WordGraphView
-    //! \p wgv.
-    //!
-    //! \tparam Node2 the type of the node \p from (must satisfy
-    //! `sizeof(Node2) <= sizeof(Node1)`).
+    //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
+    //! node \p from.
     //!
     //! \param wgv a word graph view.
     //! \param from the source node.
     //! \param path the word.
     //!
-    //! \returns A value of type \p Node1.
+    //! \returns A value of type \p Node.
     //!
     //! \exceptions
     //! \noexcept
@@ -239,13 +263,24 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
-    template <typename Node1, typename Node2>
+    template <typename Node>
+    [[deprecated]] [[nodiscard]] Node
+    follow_path_no_checks(WordGraphView<Node> const& wgv,
+                          Node                       from,
+                          word_type const&           path) noexcept {
+      return follow_path_no_checks(wgv, from, path.cbegin(), path.cend());
+    }
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
     [[deprecated]] [[nodiscard]] Node1
     follow_path_no_checks(WordGraphView<Node1> const& wgv,
                           Node2                       from,
                           word_type const&            path) noexcept {
       static_assert(sizeof(Node2) <= sizeof(Node1));
-      return follow_path_no_checks(wgv, from, path.cbegin(), path.cend());
+      return follow_path_no_checks(
+          wgv, static_cast<Node1>(from), path.cbegin(), path.cend());
     }
 
     //! \brief Find the node that a path starting at a given node leads to (if
@@ -257,12 +292,8 @@ namespace libsemigroups {
     //! returned. If this path does not exist, then \ref UNDEFINED is
     //! returned.
     //!
-    //! \tparam Node1  the type of the nodes of the WordGraphView
-    //! \p wgv.
-    //!
-    //! \tparam Node2 the type of the node \p from (must satisfy
-    //! `sizeof(Node2) <= sizeof(Node1)`).
-    //!
+    //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
+    //! node \p source.
     //! \tparam Iterator the type of \p first and \p last.
     //!
     //! \param wgv a word graph view.
@@ -271,7 +302,7 @@ namespace libsemigroups {
     //! \param last an iterator point one beyond the last letter of the word.
     //!
     //! \returns
-    //! A value of type \p Node1. If one or more edges in \p path are not
+    //! A value of type \p Node. If one or more edges in \p path are not
     //! defined, then \ref UNDEFINED is returned.
     //!
     //! \throw LibsemigroupsException if \p from is not a node in the word
@@ -280,11 +311,24 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! Linear in the distance between \p first and \p last.
-    template <typename Node1, typename Node2, typename Iterator>
-    [[nodiscard]] Node1 follow_path(WordGraphView<Node1> const& wgv,
-                                    Node2                       source,
-                                    Iterator                    first,
-                                    Iterator                    last);
+    template <typename Node, typename Iterator>
+    [[nodiscard]] Node follow_path(WordGraphView<Node> const& wgv,
+                                   Node                       source,
+                                   Iterator                   first,
+                                   Iterator                   last);
+
+    template <typename Node1,
+              typename Node2,
+              typename Iterator,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] Node1
+    follow_path(WordGraphView<Node1> const& wgv,
+                Node2                       source,
+                Iterator                    first,
+                Iterator                    last) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return follow_path(wgv, static_cast<Node1>(source), first, last);
+    }
 
     //! \brief Find the node that a path starting at a given node leads to (if
     //! any).
@@ -294,18 +338,15 @@ namespace libsemigroups {
     //! path exists, then the last node on that path is returned. If this path
     //! does not exist, then \ref UNDEFINED is returned.
     //!
-    //! \tparam Node1  the type of the nodes of the WordGraphView
-    //! \p wgv.
-    //!
-    //! \tparam Node2 the type of the node \p from (must satisfy
-    //! `sizeof(Node2) <= sizeof(Node1)`).
+    //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
+    //! node \p from.
     //!
     //! \param wgv a word graph view.
     //! \param from the starting node.
     //! \param path the path to follow.
     //!
     //! \returns
-    //! A value of type \p Node1. If one or more edges in \p path are not
+    //! A value of type \p Node. If one or more edges in \p path are not
     //! defined, then \ref UNDEFINED is returned.
     //!
     //! \throw LibsemigroupsException if \p from is not a node in the word
@@ -315,13 +356,24 @@ namespace libsemigroups {
     //! Linear in the length of \p path.
     // TODO(2) example
     // not noexcept because WordGraph::target isn't
-    template <typename Node1, typename Node2>
+    template <typename Node>
+    [[deprecated]] [[nodiscard]] Node
+    follow_path(WordGraphView<Node> const& wgv,
+                Node                       from,
+                word_type const&           path) {
+      return follow_path(wgv, from, path.cbegin(), path.cend());
+    }
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
     [[deprecated]] [[nodiscard]] Node1
     follow_path(WordGraphView<Node1> const& wgv,
                 Node2                       from,
                 word_type const&            path) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
-      return follow_path(wgv, from, path.cbegin(), path.cend());
+      return follow_path(
+          wgv, static_cast<Node1>(from), path.cbegin(), path.cend());
     }
 
     //! \brief Check if a word graph view is acyclic.
@@ -369,11 +421,8 @@ namespace libsemigroups {
     //! and \c false if not. A word graph view is acyclic if every directed
     //! cycle in the word graph is trivial.
     //!
-    //! \tparam Node1  the type of the nodes of the WordGraphView
-    //! \p wgv.
-    //!
-    //! \tparam Node2 the type of the node \p source (must satisfy
-    //! `sizeof(Node2) <= sizeof(Node1)`).
+    //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
+    //! node \p source.
     //!
     //! \param wgv the WordGraphView object to check.
     //! \param source the source node.
@@ -401,15 +450,23 @@ namespace libsemigroups {
     //! g.target(2, 0, 3);
     //! WordGraphView<size_t> wgv(g);
     //! word_graph::is_acyclic(wgv); // returns false
-    //! word_graph::is_acyclic(wgv, 0); // returns false
-    //! word_graph::is_acyclic(wgv, 1); // returns false
-    //! word_graph::is_acyclic(wgv, 2); // returns true
-    //! word_graph::is_acyclic(wgv, 3); // returns true
+    //! word_graph::is_acyclic(wgv, size_t(0)); // returns false
+    //! word_graph::is_acyclic(wgv, size_t(1)); // returns false
+    //! word_graph::is_acyclic(wgv, size_t(2)); // returns true
+    //! word_graph::is_acyclic(wgv, size_t(3)); // returns true
     //! \endcode
     // Not noexcept because detail::is_acyclic isn't
-    template <typename Node1, typename Node2>
-    [[nodiscard]] bool is_acyclic(WordGraphView<Node1> const& wgv,
-                                  Node2                       source);
+    template <typename Node>
+    [[nodiscard]] bool is_acyclic(WordGraphView<Node> const& wgv, Node source);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] bool
+    is_acyclic(WordGraphView<Node1> const& wgv, Node2 source) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return is_acyclic(wgv, static_cast<Node1>(source));
+    }
 
     //! \brief Check if the word graph view induced by the nodes reachable
     //! from a source node and from which a target node can be reached is
@@ -420,11 +477,8 @@ namespace libsemigroups {
     //! in the word graph \p wgv, is acyclic; and \c false if not. A word graph
     //! view is acyclic if every directed cycle of the word graph is trivial.
     //!
-    //! \tparam Node1  the type of the nodes of the WordGraphView
-    //! \p wgv.
-    //!
-    //! \tparam Node2 the type of the nodes \p source and \p target (must
-    //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
+    //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
+    //! nodes \p source and \p target.
     //!
     //! \param wgv the WordGraphView object to check.
     //! \param source the source node.
@@ -442,10 +496,20 @@ namespace libsemigroups {
     //! WordGraphView objects the number of edges is always at most \f$mk\f$
     //! where \f$k\f$ is the \ref WordGraphView::out_degree.
     // Not noexcept because detail::is_acyclic isn't
-    template <typename Node1, typename Node2>
-    [[nodiscard]] bool is_acyclic(WordGraphView<Node1> const& wgv,
-                                  Node2                       source,
-                                  Node2                       target);
+    template <typename Node>
+    [[nodiscard]] bool is_acyclic(WordGraphView<Node> const& wgv,
+                                  Node                       source,
+                                  Node                       target);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] bool
+    is_acyclic(WordGraphView<Node1> const& wgv, Node2 source, Node2 target) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return is_acyclic(
+          wgv, static_cast<Node1>(source), static_cast<Node1>(target));
+    }
 
     //! \brief Check if a word graph view is compatible with some relations at
     //! a range of nodes.
@@ -490,6 +554,7 @@ namespace libsemigroups {
     // representing the proportion of the nodes in the range that are
     // compatible with the rules. Don't replace the current version because it
     // can return early knowing that it isn't compatible.
+    // TODO(v4) deprecate, and use Iterator, Sentinel rather than Iterator1/2/3
     template <typename Node,
               typename Iterator1,
               typename Iterator2,
@@ -511,19 +576,13 @@ namespace libsemigroups {
     //! labelled by \p rhs.
     //!
     //! \tparam Node the type of the nodes of the WordGraphView \p wgv.
-    //!
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
     //!
     //! \param wgv the word graph view.
-    //!
     //! \param first_node iterator pointing at the first node.
-    //!
     //! \param last_node iterator pointing at one beyond the last node.
-    //!
     //! \param lhs the first rule.
-    //!
     //! \param rhs the second rule.
     //!
     //! \return Whether or not the word graph view is compatible with the
@@ -768,10 +827,8 @@ namespace libsemigroups {
     //! This function returns \c true if there is a path from the node
     //! \p source to the node \p target in the word graph view \p wgv.
     //!
-    //! \tparam Node1 the type of the nodes in the WordGraphView.
-    //!
-    //! \tparam Node 2 the types of \p source and \p target (must
-    //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
+    //! \tparam Node the type of the nodes in the WordGraphView and the nodes
+    //! \p source and \p target.
     //!
     //! \param wgv the WordGraphView object to check.
     //! \param source the source node.
@@ -807,26 +864,36 @@ namespace libsemigroups {
     //! wg.target(1, 0, 0);
     //! wg.target(2, 0, 3);
     //! WordGraphView<size_t> wgv(wg);
-    //! word_graph::is_reachable_no_checks(wgv, 0, 1); // returns true
-    //! word_graph::is_reachable_no_checks(wgv, 1, 0); // returns true
-    //! word_graph::is_reachable_no_checks(wgv, 1, 2); // returns false
-    //! word_graph::is_reachable_no_checks(wgv, 2, 3); // returns true
-    //! word_graph::is_reachable_no_checks(wgv, 3, 2); // returns false
+    //! word_graph::is_reachable_no_checks(wgv, size_t(0), size_t(1));
+    //! word_graph::is_reachable_no_checks(wgv, size_t(1), size_t(0));
+    //! word_graph::is_reachable_no_checks(wgv, size_t(1), size_t(2));
+    //! word_graph::is_reachable_no_checks(wgv, size_t(2), size_t(3));
+    //! word_graph::is_reachable_no_checks(wgv, size_t(3), size_t(2));
     //! \endcode
-    template <typename Node1, typename Node2>
-    [[nodiscard]] bool is_reachable_no_checks(WordGraphView<Node1> const& wgv,
-                                              Node2 source,
-                                              Node2 target);
+    template <typename Node>
+    [[nodiscard]] bool is_reachable_no_checks(WordGraphView<Node> const& wgv,
+                                              Node                       source,
+                                              Node target);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] bool
+    is_reachable_no_checks(WordGraphView<Node1> const& wgv,
+                           Node2                       source,
+                           Node2                       target) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return is_reachable_no_checks(
+          wgv, static_cast<Node1>(source), static_cast<Node1>(target));
+    }
 
     //! \brief Check if there is a path from one node to another.
     //!
     //! This function returns \c true if there is a path from the node
     //! \p source to the node \p target in the word graph view \p wgv.
     //!
-    //! \tparam Node1 the type of the nodes in the WordGraphView.
-    //!
-    //! \tparam Node 2 the types of \p source and \p target (must
-    //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
+    //! \tparam Node the type of the nodes in the WordGraphView and the nodes
+    //! \p source and \p target.
     //!
     //! \param wgv the WordGraphView object to check.
     //! \param source the source node.
@@ -850,10 +917,20 @@ namespace libsemigroups {
     //! \note
     //! If \p source and \p target are equal, then, by convention, we consider
     //! \p target to be reachable from \p source, via the empty path.
-    template <typename Node1, typename Node2>
-    [[nodiscard]] bool is_reachable(WordGraphView<Node1> const& wgv,
-                                    Node2                       source,
-                                    Node2                       target);
+    template <typename Node>
+    [[nodiscard]] bool is_reachable(WordGraphView<Node> const& wgv,
+                                    Node                       source,
+                                    Node                       target);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] bool
+    is_reachable(WordGraphView<Node1> const& wgv, Node2 source, Node2 target) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return is_reachable(
+          wgv, static_cast<Node1>(source), static_cast<Node1>(target));
+    }
 
     //! \brief Check if a word graph is standardized.
     //!
@@ -938,8 +1015,7 @@ namespace libsemigroups {
     //! \brief Returns the last node on the path labelled by a word and an
     //! iterator to the position in the word reached.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p source.
+    //! \tparam Node the node type of the word graph and \p source.
     //! \tparam Iterator the type of the iterators into a word.
     //!
     //! \param wgv a word graph view.
@@ -961,18 +1037,31 @@ namespace libsemigroups {
     //! assumed that \p source is a node in the word graph view \p wgv; and
     //! that the letters in the word described by \p first and \p last belong
     //! to the range \c 0 to WordGraphView::out_degree.
-    template <typename Node1, typename Node2, typename Iterator>
-    [[nodiscard]] std::pair<Node1, Iterator>
+    template <typename Node, typename Iterator>
+    [[nodiscard]] std::pair<Node, Iterator>
+    last_node_on_path_no_checks(WordGraphView<Node> const& wgv,
+                                Node                       source,
+                                Iterator                   first,
+                                Iterator                   last) noexcept;
+
+    template <typename Node1,
+              typename Node2,
+              typename Iterator,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] std::pair<Node1, Iterator>
     last_node_on_path_no_checks(WordGraphView<Node1> const& wgv,
                                 Node2                       source,
                                 Iterator                    first,
-                                Iterator                    last) noexcept;
+                                Iterator                    last) noexcept {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return last_node_on_path_no_checks(
+          wgv, static_cast<Node1>(source), first, last);
+    }
 
     //! \brief Returns the last node on the path labelled by a word and an
     //! iterator to the position in the word reached.
     //!
-    //! \tparam Node1 the node type of the word graph view.
-    //! \tparam Node2 the type of the node \p source.
+    //! \tparam Node the node type of the word graph view and \p source.
     //!
     //! \param wgv a word graph view.
     //! \param source the source node.
@@ -989,17 +1078,28 @@ namespace libsemigroups {
     //! assumed that \p source is a node in the word graph view \p wgv; and
     //! that the letters in the word described by \p first and \p last belong
     //! to the range \c 0 to WordGraphView::out_degree.
-    template <typename Node1, typename Node2>
+    template <typename Node>
+    [[nodiscard]] [[deprecated]] std::pair<Node, word_type::const_iterator>
+    last_node_on_path_no_checks(WordGraphView<Node> const& wgv,
+                                Node                       source,
+                                word_type const&           w);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
     [[nodiscard]] [[deprecated]] std::pair<Node1, word_type::const_iterator>
     last_node_on_path_no_checks(WordGraphView<Node1> const& wgv,
                                 Node2                       source,
-                                word_type const&            w);
+                                word_type const&            w) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return last_node_on_path_no_checks(
+          wgv, static_cast<Node1>(source), w.cbegin(), w.cend());
+    }
 
     //! \brief Returns the last node on the path labelled by a word and an
     //! iterator to the position in the word reached.
     //!
-    //! \tparam Node1 the node type of the word graph view.
-    //! \tparam Node2 the type of the node \p source.
+    //! \tparam Node the node type of the word graph view and \p source.
     //! \tparam Iterator the type of the iterators into a word.
     //!
     //! \param wgv a word graph view.
@@ -1020,18 +1120,30 @@ namespace libsemigroups {
     //! WordGraphView::number_of_nodes), the path labelled by the word exits
     //! the word graph view, which is reflected in the result value of this
     //! function, but does not cause an exception to be thrown.
-    template <typename Node1, typename Node2, typename Iterator>
-    [[nodiscard]] std::pair<Node1, Iterator>
+    template <typename Node, typename Iterator>
+    [[nodiscard]] std::pair<Node, Iterator>
+    last_node_on_path(WordGraphView<Node> const& wgv,
+                      Node                       source,
+                      Iterator                   first,
+                      Iterator                   last);
+
+    template <typename Node1,
+              typename Node2,
+              typename Iterator,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] std::pair<Node1, Iterator>
     last_node_on_path(WordGraphView<Node1> const& wgv,
                       Node2                       source,
                       Iterator                    first,
-                      Iterator                    last);
+                      Iterator                    last) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return last_node_on_path(wgv, static_cast<Node1>(source), first, last);
+    }
 
     //! \brief Returns the last node on the path labelled by a word and an
     //! iterator to the position in the word reached.
     //!
-    //! \tparam Node1 the node type of the word graph view.
-    //! \tparam Node2 the type of the node \p source.
+    //! \tparam Node the node type of the word graph view and \p source.
     //!
     //! \param wgv a word graph view.
     //! \param source the source node.
@@ -1048,11 +1160,23 @@ namespace libsemigroups {
     //! WordGraphView::number_of_nodes), the path labelled by the word exits
     //! the word graph view, which is reflected in the result value of this
     //! function, but does not cause an exception to be thrown.
-    template <typename Node1, typename Node2>
+    template <typename Node>
+    [[nodiscard]] [[deprecated]] std::pair<Node, word_type::const_iterator>
+    last_node_on_path(WordGraphView<Node> const& wgv,
+                      Node                       source,
+                      word_type const&           w);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
     [[nodiscard]] [[deprecated]] std::pair<Node1, word_type::const_iterator>
     last_node_on_path(WordGraphView<Node1> const& wgv,
                       Node2                       source,
-                      word_type const&            w);
+                      word_type const&            w) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return last_node_on_path(
+          wgv, static_cast<Node1>(source), w.cbegin(), w.cend());
+    }
 
     //! \brief Returns the std::unordered_set of nodes reachable from a given
     //! node in a word graph.
@@ -1061,8 +1185,7 @@ namespace libsemigroups {
     //! in the word graph \p wgv that are reachable from \p source
     //! via a path of length at most \p max_depth.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p source.
+    //! \tparam Node the node type of the word graph and \p source.
     //!
     //! \param wgv the word graph.
     //! \param source the source node.
@@ -1078,11 +1201,23 @@ namespace libsemigroups {
     //! \warning The arguments are not checked, and in particular it is
     //! assumed that \p source is a node of \p wgv (i.e. less than
     //! WordGraph::number_of_nodes).
-    template <typename Node1, typename Node2>
-    [[nodiscard]] std::unordered_set<Node1>
+    template <typename Node>
+    [[nodiscard]] std::unordered_set<Node>
+    nodes_reachable_from_no_checks(WordGraphView<Node> const& wgv,
+                                   Node                       source,
+                                   size_t max_depth = POSITIVE_INFINITY);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] std::unordered_set<Node1>
     nodes_reachable_from_no_checks(WordGraphView<Node1> const& wgv,
                                    Node2                       source,
-                                   size_t max_depth = POSITIVE_INFINITY);
+                                   size_t max_depth = POSITIVE_INFINITY) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return nodes_reachable_from_no_checks(
+          wgv, static_cast<Node1>(source), max_depth);
+    }
 
     //! \brief Returns the std::unordered_set of nodes reachable from a given
     //! node in a word graph view.
@@ -1091,8 +1226,7 @@ namespace libsemigroups {
     //! in the word graph view \p wgv that are reachable from \p source
     //! via a path of length at most \p max_depth.
     //!
-    //! \tparam Node1 the node type of the word graph view.
-    //! \tparam Node2 the type of the node \p source.
+    //! \tparam Node the node type of the word graph view and \p source.
     //!
     //! \param wgv the word graph view.
     //! \param source the source node.
@@ -1122,8 +1256,7 @@ namespace libsemigroups {
                          Node2                       source,
                          size_t                      max_depth) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
-      return nodes_reachable_from_no_checks(
-          wgv, static_cast<Node1>(source), max_depth);
+      return nodes_reachable_from(wgv, static_cast<Node1>(source), max_depth);
     }
 
     template <typename Node>
@@ -1142,8 +1275,7 @@ namespace libsemigroups {
     //! are reachable from \p source via a path of length at most
     //! \p max_depth.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p source.
+    //! \tparam Node the node type of the word graph and \p source.
     //!
     //! \param wgv the word graph.
     //! \param source the source node.
@@ -1159,12 +1291,25 @@ namespace libsemigroups {
     //! \warning The arguments are not checked, and in particular it is
     //! assumed that \p source is a node of \p wgv (i.e. less than
     //! WordGraphView::number_of_nodes).
-    template <typename Node1, typename Node2>
+    template <typename Node>
     [[nodiscard]] size_t number_of_nodes_reachable_from_no_checks(
-        WordGraphView<Node1> const& wgv,
-        Node2                       source,
-        size_t                      max_depth = POSITIVE_INFINITY) {
+        WordGraphView<Node> const& wgv,
+        Node                       source,
+        size_t                     max_depth = POSITIVE_INFINITY) {
       return nodes_reachable_from_no_checks(wgv, source, max_depth).size();
+    }
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] size_t
+    number_of_nodes_reachable_from_no_checks(WordGraphView<Node1> const& wgv,
+                                             Node2                       source,
+                                             size_t max_depth
+                                             = POSITIVE_INFINITY) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return number_of_nodes_reachable_from_no_checks(
+          wgv, static_cast<Node1>(source), max_depth);
     }
 
     //! \brief Returns the number of nodes reachable from a given node in a
@@ -1174,8 +1319,7 @@ namespace libsemigroups {
     //! that are reachable from \p source via a path of length at most
     //! \p max_depth.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p source.
+    //! \tparam Node the node type of the word graph and \p source.
     //!
     //! \param wgv the word graph.
     //! \param source the source node.
@@ -1190,12 +1334,24 @@ namespace libsemigroups {
     //!
     //! \note If any target of any edge in the word graph \p wgv is out of
     //! bounds, then this is ignored by this function.
-    template <typename Node1, typename Node2>
+    template <typename Node>
     [[nodiscard]] size_t
+    number_of_nodes_reachable_from(WordGraphView<Node> const& wgv,
+                                   Node                       source,
+                                   size_t max_depth = POSITIVE_INFINITY) {
+      return nodes_reachable_from(wgv, source, max_depth).size();
+    }
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] size_t
     number_of_nodes_reachable_from(WordGraphView<Node1> const& wgv,
                                    Node2                       source,
                                    size_t max_depth = POSITIVE_INFINITY) {
-      return nodes_reachable_from(wgv, source, max_depth).size();
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return number_of_nodes_reachable_from(
+          wgv, static_cast<Node1>(source), max_depth);
     }
 
     //! \brief Replace the contents of a Forest by a spanning tree of the
@@ -1205,8 +1361,7 @@ namespace libsemigroups {
     //! tree of the nodes reachable from \p root in the word graph \p wgv
     //! by a path of length at most \p max_depth.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p root.
+    //! \tparam Node the node type of the word graph and \p root.
     //!
     //! \param wgv the word graph.
     //! \param root the source node.
@@ -1220,11 +1375,23 @@ namespace libsemigroups {
     //! \warning The arguments are not checked, and in particular it is
     //! assumed that \p root is a node of \p wgv (i.e. less than
     //! WordGraphView::number_of_nodes).
-    template <typename Node1, typename Node2>
-    void spanning_tree_no_checks(WordGraphView<Node1> const& wgv,
-                                 Node2                       root,
-                                 Forest&                     f,
+    template <typename Node>
+    void spanning_tree_no_checks(WordGraphView<Node> const& wgv,
+                                 Node                       root,
+                                 Forest&                    f,
                                  size_t max_depth = POSITIVE_INFINITY);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] void spanning_tree_no_checks(WordGraphView<Node1> const& wgv,
+                                                Node2   root,
+                                                Forest& f,
+                                                size_t  max_depth
+                                                = POSITIVE_INFINITY) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      spanning_tree_no_checks(wgv, static_cast<Node1>(root), f, max_depth);
+    }
 
     //! \brief Returns a Forest containing a spanning tree of the nodes
     //! reachable from a given node in a word graph.
@@ -1233,8 +1400,7 @@ namespace libsemigroups {
     //! tree of the nodes reachable from \p root in the word graph \p wgv
     //! by a path of length at most \p max_depth.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p root.
+    //! \tparam Node the node type of the word graph and \p root.
     //!
     //! \param wgv the word graph.
     //! \param root the source node.
@@ -1249,11 +1415,22 @@ namespace libsemigroups {
     //! \warning The arguments are not checked, and in particular it is
     //! assumed that \p root is a node of \p wgv (i.e. less than
     //! WordGraphView::number_of_nodes).
-    template <typename Node1, typename Node2>
-    [[nodiscard]] Forest
+    template <typename Node>
+    [[nodiscard]] Forest spanning_tree_no_checks(WordGraphView<Node> const& wgv,
+                                                 Node   root,
+                                                 size_t max_depth
+                                                 = POSITIVE_INFINITY);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] Forest
     spanning_tree_no_checks(WordGraphView<Node1> const& wgv,
                             Node2                       root,
-                            size_t max_depth = POSITIVE_INFINITY);
+                            size_t max_depth = POSITIVE_INFINITY) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return spanning_tree_no_checks(wgv, static_cast<Node1>(root), max_depth);
+    }
 
     //! \brief Replace the contents of a Forest by a spanning tree of the
     //! nodes reachable from a given node in a word graph.
@@ -1262,8 +1439,7 @@ namespace libsemigroups {
     //! tree of the nodes reachable from \p root in the word graph \p wgv
     //! by a path of length at most \p max_depth.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p root.
+    //! \tparam Node the node type of the word graph and \p root.
     //!
     //! \param wgv the word graph.
     //! \param root the source node.
@@ -1276,11 +1452,22 @@ namespace libsemigroups {
     //!
     //! \note If any target of any edge in the word graph \p wgv is out of
     //! bounds, then this is ignored by this function.
-    template <typename Node1, typename Node2>
-    void spanning_tree(WordGraphView<Node1> const& wgv,
-                       Node2                       root,
-                       Forest&                     f,
+    template <typename Node>
+    void spanning_tree(WordGraphView<Node> const& wgv,
+                       Node                       root,
+                       Forest&                    f,
                        size_t max_depth = POSITIVE_INFINITY);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] void spanning_tree(WordGraphView<Node1> const& wgv,
+                                      Node2                       root,
+                                      Forest&                     f,
+                                      size_t max_depth = POSITIVE_INFINITY) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      spanning_tree(wgv, static_cast<Node1>(root), f, max_depth);
+    }
 
     //! \brief Returns a Forest containing a spanning tree of the nodes
     //! reachable from a given node in a word graph.
@@ -1289,8 +1476,7 @@ namespace libsemigroups {
     //! tree of the nodes reachable from \p root in the word graph \p wgv
     //! by a path of length at most \p max_depth.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p root.
+    //! \tparam Node the node type of the word graph and \p root.
     //!
     //! \param wgv the word graph.
     //! \param root the source node.
@@ -1304,10 +1490,21 @@ namespace libsemigroups {
     //!
     //! \note If any target of any edge in the word graph \p wgv is out of
     //! bounds, then this is ignored by this function.
-    template <typename Node1, typename Node2>
-    [[nodiscard]] Forest spanning_tree(WordGraphView<Node1> const& wgv,
-                                       Node2                       root,
+    template <typename Node>
+    [[nodiscard]] Forest spanning_tree(WordGraphView<Node> const& wgv,
+                                       Node                       root,
                                        size_t max_depth = POSITIVE_INFINITY);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] Forest
+    spanning_tree(WordGraphView<Node1> const& wgv,
+                  Node2                       root,
+                  size_t                      max_depth = POSITIVE_INFINITY) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return spanning_tree(wgv, static_cast<Node1>(root), max_depth);
+    }
 
     template <typename Node, typename Iterator>
     void throw_if_any_target_out_of_bounds(WordGraphView<Node> const& wgv,
@@ -1349,8 +1546,7 @@ namespace libsemigroups {
     //! before \c n in the vector, and the last item in the vector is
     //! \p source.
     //!
-    //! \tparam Node1 the node type of the word graph.
-    //! \tparam Node2 the type of the node \p source.
+    //! \tparam Node the node type of the word graph and \p source.
     //!
     //! \param wgv the WordGraph object to check.
     //! \param source the source node.
@@ -1367,9 +1563,18 @@ namespace libsemigroups {
     //! At worst \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
     //! subword graph of those nodes reachable from \p source
     //! and \f$n\f$ is the number of edges.
-    template <typename Node1, typename Node2>
-    [[nodiscard]] std::vector<Node1>
-    topological_sort(WordGraphView<Node1> const& wgv, Node2 source);
+    template <typename Node>
+    [[nodiscard]] std::vector<Node>
+    topological_sort(WordGraphView<Node> const& wgv, Node source);
+
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated]] [[nodiscard]] std::vector<Node1>
+    topological_sort(WordGraphView<Node1> const& wgv, Node2 source) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return topological_sort(wgv, static_cast<Node1>(source));
+    }
   }  // namespace word_graph
 }  // namespace libsemigroups
 

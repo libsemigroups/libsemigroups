@@ -187,7 +187,7 @@ namespace libsemigroups {
     template <typename Node1, typename Node2>
     [[nodiscard]] std::unordered_set<Node1>
     ancestors_of(WordGraph<Node1> const& wg, Node2 target) {
-      return ancestors_of(WordGraphView(wg), target);
+      return ancestors_of(WordGraphView(wg), static_cast<Node1>(target));
     }
 
     //! \brief Returns the std::unordered_set of nodes that can reach a given
@@ -214,7 +214,8 @@ namespace libsemigroups {
     template <typename Node1, typename Node2>
     [[nodiscard]] std::unordered_set<Node1>
     ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 target) {
-      return ancestors_of_no_checks(WordGraphView(wg), target);
+      return ancestors_of_no_checks(WordGraphView(wg),
+                                    static_cast<Node1>(target));
     }
 
     //! \brief Returns a \ref Dot object representing a word graph.
@@ -367,7 +368,8 @@ namespace libsemigroups {
                                     Node2                   source,
                                     Iterator                first,
                                     Iterator                last) {
-      return follow_path(WordGraphView(wg), source, first, last);
+      return follow_path(
+          WordGraphView(wg), static_cast<Node1>(source), first, last);
     }
 
     //! \brief Find the node that a path starting at a given node leads to (if
@@ -405,7 +407,10 @@ namespace libsemigroups {
                                     Node2                   from,
                                     word_type const&        path) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
-      return follow_path(WordGraphView(wg), from, path.cbegin(), path.cend());
+      return follow_path(WordGraphView(wg),
+                         static_cast<Node1>(from),
+                         path.cbegin(),
+                         path.cend());
     }
 
     //! \brief Follow the path from a specified node labelled by a word.
@@ -439,7 +444,8 @@ namespace libsemigroups {
                                               Node2                   from,
                                               Iterator                first,
                                               Iterator last) noexcept {
-      return follow_path_no_checks(WordGraphView(wg), from, first, last);
+      return follow_path_no_checks(
+          WordGraphView(wg), static_cast<Node1>(from), first, last);
     }
 
     //! \brief Follow the path from a specified node labelled by a word.
@@ -474,8 +480,10 @@ namespace libsemigroups {
                                               Node2                   from,
                                               word_type const& path) noexcept {
       static_assert(sizeof(Node2) <= sizeof(Node1));
-      return follow_path_no_checks(
-          WordGraphView(wg), from, path.cbegin(), path.cend());
+      return follow_path_no_checks(WordGraphView(wg),
+                                   static_cast<Node1>(from),
+                                   path.cbegin(),
+                                   path.cend());
     }
 
     //! \brief Check if a word graph is acyclic.
@@ -563,7 +571,7 @@ namespace libsemigroups {
     // Not noexcept because detail::is_acyclic isn't
     template <typename Node1, typename Node2>
     [[nodiscard]] bool is_acyclic(WordGraph<Node1> const& wg, Node2 source) {
-      return is_acyclic(WordGraphView(wg), source);
+      return is_acyclic(WordGraphView(wg), static_cast<Node1>(source));
     }
 
     //! \brief Check if the word graph induced by the nodes reachable from a
@@ -600,7 +608,9 @@ namespace libsemigroups {
     [[nodiscard]] bool is_acyclic(WordGraph<Node1> const& wg,
                                   Node2                   source,
                                   Node2                   target) {
-      return is_acyclic(WordGraphView(wg), source, target);
+      return is_acyclic(WordGraphView(wg),
+                        static_cast<Node1>(source),
+                        static_cast<Node1>(target));
     }
 
     //! \brief Check if a word graph is compatible with some relations at a
@@ -980,7 +990,9 @@ namespace libsemigroups {
     [[nodiscard]] bool is_reachable_no_checks(WordGraph<Node1> const& wg,
                                               Node2                   source,
                                               Node2                   target) {
-      return is_reachable_no_checks(WordGraphView(wg), source, target);
+      return is_reachable_no_checks(WordGraphView(wg),
+                                    static_cast<Node1>(source),
+                                    static_cast<Node1>(target));
     }
 
     //! \brief Check if there is a path from one node to another.
@@ -1019,7 +1031,9 @@ namespace libsemigroups {
     [[nodiscard]] bool is_reachable(WordGraph<Node1> const& wg,
                                     Node2                   source,
                                     Node2                   target) {
-      return is_reachable(WordGraphView(wg), source, target);
+      return is_reachable(WordGraphView(wg),
+                          static_cast<Node1>(source),
+                          static_cast<Node1>(target));
     }
 
     //! \brief Check if a word graph is standardized.
@@ -1142,7 +1156,7 @@ namespace libsemigroups {
                                 Iterator                first,
                                 Iterator                last) noexcept {
       return last_node_on_path_no_checks(
-          WordGraphView(wg), source, first, last);
+          WordGraphView(wg), static_cast<Node1>(source), first, last);
     }
 
     //! \brief Returns the last node on the path labelled by a word and an
@@ -1176,7 +1190,8 @@ namespace libsemigroups {
                       Node2                   source,
                       Iterator                first,
                       Iterator                last) {
-      return last_node_on_path(WordGraphView(wg), source, first, last);
+      return last_node_on_path(
+          WordGraphView(wg), static_cast<Node1>(source), first, last);
     }
 
     //! \brief Returns the last node on the path labelled by a word and an
@@ -1206,7 +1221,8 @@ namespace libsemigroups {
     last_node_on_path_no_checks(WordGraph<Node1> const& wg,
                                 Node2                   source,
                                 word_type const&        w) {
-      return last_node_on_path_no_checks(WordGraphView(wg), source, w);
+      return last_node_on_path_no_checks(
+          WordGraphView(wg), static_cast<Node1>(source), w.cbegin(), w.cend());
     }
 
     //! \brief Returns the last node on the path labelled by a word and an
@@ -1236,7 +1252,8 @@ namespace libsemigroups {
     last_node_on_path(WordGraph<Node1> const& wg,
                       Node2                   source,
                       word_type const&        w) {
-      return last_node_on_path(WordGraphView(wg), source, w);
+      return last_node_on_path(
+          WordGraphView(wg), static_cast<Node1>(source), w.cbegin(), w.cend());
     }
 
     //! \brief Returns the std::unordered_set of nodes reachable from a given
@@ -1269,7 +1286,7 @@ namespace libsemigroups {
                                    Node2                   source,
                                    size_t max_depth = POSITIVE_INFINITY) {
       return nodes_reachable_from_no_checks(
-          WordGraphView(wg), source, max_depth);
+          WordGraphView(wg), static_cast<Node1>(source), max_depth);
     }
 
     //! \brief Returns the std::unordered_set of nodes reachable from a given
@@ -1307,7 +1324,8 @@ namespace libsemigroups {
     nodes_reachable_from(WordGraph<Node1> const& wg,
                          Node2                   source,
                          size_t max_depth = POSITIVE_INFINITY) {
-      return nodes_reachable_from(WordGraphView(wg), source, max_depth);
+      return nodes_reachable_from(
+          WordGraphView(wg), static_cast<Node1>(source), max_depth);
     }
 
     //! \brief Returns the number of nodes reachable from a given node in a
@@ -1339,7 +1357,7 @@ namespace libsemigroups {
                                    Node2                   source,
                                    size_t max_depth = POSITIVE_INFINITY) {
       return number_of_nodes_reachable_from(
-          WordGraphView(wg), source, max_depth);
+          WordGraphView(wg), static_cast<Node1>(source), max_depth);
     }
 
     //! \brief Returns the number of nodes reachable from a given node in a
@@ -1372,7 +1390,7 @@ namespace libsemigroups {
         Node2                   source,
         size_t                  max_depth = POSITIVE_INFINITY) {
       return number_of_nodes_reachable_from_no_checks(
-          WordGraphView(wg), source, max_depth);
+          WordGraphView(wg), static_cast<Node1>(source), max_depth);
     }
 
     //! \brief Construct a random connected acyclic word graph with given
@@ -1429,7 +1447,8 @@ namespace libsemigroups {
                                  Node2                   root,
                                  Forest&                 f,
                                  size_t max_depth = POSITIVE_INFINITY) {
-      return spanning_tree_no_checks(WordGraphView(wg), root, f, max_depth);
+      return spanning_tree_no_checks(
+          WordGraphView(wg), static_cast<Node1>(root), f, max_depth);
     }
 
     //! \brief Replace the contents of a Forest by a spanning tree of the
@@ -1458,7 +1477,7 @@ namespace libsemigroups {
                        Node2                   root,
                        Forest&                 f,
                        size_t                  max_depth = POSITIVE_INFINITY) {
-      spanning_tree(WordGraphView(wg), root, f, max_depth);
+      spanning_tree(WordGraphView(wg), static_cast<Node1>(root), f, max_depth);
     }
 
     //! \brief Returns a Forest containing a spanning tree of the nodes
@@ -1489,7 +1508,8 @@ namespace libsemigroups {
                                                  Node2                   root,
                                                  size_t max_depth
                                                  = POSITIVE_INFINITY) {
-      return spanning_tree_no_checks(WordGraphView(wg), root, max_depth);
+      return spanning_tree_no_checks(
+          WordGraphView(wg), static_cast<Node1>(root), max_depth);
     }
 
     //! \brief Returns a Forest containing a spanning tree of the nodes
@@ -1518,7 +1538,8 @@ namespace libsemigroups {
     [[nodiscard]] Forest spanning_tree(WordGraph<Node1> const& wg,
                                        Node2                   root,
                                        size_t max_depth = POSITIVE_INFINITY) {
-      return spanning_tree(WordGraphView(wg), root, max_depth);
+      return spanning_tree(
+          WordGraphView(wg), static_cast<Node1>(root), max_depth);
     }
 
     //! \brief Standardizes a word graph in-place.
@@ -2022,7 +2043,7 @@ namespace libsemigroups {
     template <typename Node1, typename Node2>
     [[nodiscard]] std::vector<Node1>
     topological_sort(WordGraph<Node1> const& wg, Node2 source) {
-      return topological_sort(WordGraphView(wg), source);
+      return topological_sort(WordGraphView(wg), static_cast<Node1>(source));
     }
   }  // namespace word_graph
 
