@@ -281,21 +281,26 @@ namespace libsemigroups {
     //! \brief Compares two word graphs on a range of nodes.
     //!
     //! This function returns \c true if the word graphs \p x and \p y are
-    //! equal on the range of nodes from \p first to \p last; and \c false
-    //! otherwise.  The word graphs \p x and \p y are equal at a node \c s if:
+    //! equal on the nodes specified by the iterator range from \p first to
+    //! \p last; and \c false otherwise. The word graphs \p x and \p y are
+    //! equal at a node \c s if:
     //! * the out-degrees of \p x and \p y coincide;
     //! * the edges with source \c s and label \c a have equal targets in \p x
     //! and \p y for every label \c a.
+    //! The word graphs must also have the same number of nodes. The comparison
+    //! is performed by the corresponding WordGraphView overload.
     //!
-    //! \tparam Node  the type of the nodes of the WordGraph.
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //! \tparam Iterator the type of the iterators specifying the nodes to
+    //! compare.
     //!
-    //! \param x  the first word graph for comparison.
+    //! \param x the first word graph for comparison.
     //! \param y the second word graph for comparison.
-    //! \param first the first node in the range.
-    //! \param last the last node in the range plus \c 1.
+    //! \param first an iterator pointing at the first node to compare.
+    //! \param last an iterator pointing one past the last node to compare.
     //!
-    //! \returns Whether or not the word graphs are equal at the specified
-    //! range of nodes.
+    //! \returns Whether or not the word graphs are equal on the specified
+    //! nodes.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -304,44 +309,101 @@ namespace libsemigroups {
     //! are valid.
     //!
     //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    template <typename Node>
+    template <typename Node, typename Iterator>
     [[nodiscard]] bool equal_to_no_checks(WordGraph<Node> const& x,
                                           WordGraph<Node> const& y,
-                                          Node                   first,
-                                          Node                   last) {
-      return WordGraphView(x, first, last)
-          .equal_to_no_checks(WordGraphView(y, first, last));
+                                          Iterator               first,
+                                          Iterator               last) {
+      return equal_to_no_checks(
+          WordGraphView(x), WordGraphView(y), first, last);
+    }
+
+    //! \brief Compares two word graphs.
+    //!
+    //! This function returns \c true if the word graphs \p x and \p y have the
+    //! same number of nodes and out-degree, and every edge has the same target
+    //! in both graphs; and \c false otherwise. The comparison is performed by
+    //! the corresponding WordGraphView overload.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param x the first word graph for comparison.
+    //! \param y the second word graph for comparison.
+    //!
+    //! \returns Whether or not the word graphs are equal.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning No checks are performed to ensure that the arguments are
+    //! valid.
+    //!
+    //! \sa WordGraph::operator== for a comparison using the equality operator.
+    template <typename Node>
+    [[nodiscard]] bool equal_to_no_checks(WordGraph<Node> const& x,
+                                          WordGraph<Node> const& y) {
+      return equal_to_no_checks(WordGraphView(x), WordGraphView(y));
     }
 
     //! \brief Compares two word graphs on a range of nodes.
     //!
     //! This function returns \c true if the word graphs \p x and \p y are
-    //! equal on the range of nodes from \p first to \p last; and \c false
-    //! otherwise.  The word graphs \p x and \p y are equal at a node \c s if:
+    //! equal on the nodes specified by the iterator range from \p first to
+    //! \p last; and \c false otherwise. The word graphs \p x and \p y are
+    //! equal at a node \c s if:
     //! * the out-degrees of \p x and \p y coincide;
     //! * the edges with source \c s and label \c a have equal targets in \p x
     //! and \p y for every label \c a.
+    //! The word graphs must also have the same number of nodes. The comparison
+    //! is performed by the corresponding WordGraphView overload.
     //!
-    //! \tparam Node  the type of the nodes of the WordGraph.
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //! \tparam Iterator the type of the iterators specifying the nodes to
+    //! compare.
     //!
-    //! \param x  the first word graph for comparison.
+    //! \param x the first word graph for comparison.
     //! \param y the second word graph for comparison.
-    //! \param first the first node in the range.
-    //! \param last the last node in the range plus \c 1.
+    //! \param first an iterator pointing at the first node to compare.
+    //! \param last an iterator pointing one past the last node to compare.
     //!
-    //! \returns Whether or not the word graphs are equal at the specified
-    //! range of nodes.
+    //! \returns Whether or not the word graphs are equal on the specified
+    //! nodes.
     //!
-    //! \throw LibsemigroupsException if \p first  is not a node
-    //! in \p x or not a node in \p y; or if `last - 1` is not a node in \p or
-    //! not a node in \p y.
+    //! \throws LibsemigroupsException if any node in the range from \p first
+    //! to \p last is not a node of \p x.
     //!
     //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    template <typename Node>
+    template <typename Node, typename Iterator>
     [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
                                 WordGraph<Node> const& y,
-                                Node                   first,
-                                Node                   last);
+                                Iterator               first,
+                                Iterator               last) {
+      return equal_to(WordGraphView(x), WordGraphView(y), first, last);
+    }
+
+    //! \brief Compares two word graphs.
+    //!
+    //! This function returns \c true if the word graphs \p x and \p y have the
+    //! same number of nodes and out-degree, and every edge has the same target
+    //! in both graphs; and \c false otherwise. The comparison is performed by
+    //! the corresponding WordGraphView overload.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param x the first word graph for comparison.
+    //! \param y the second word graph for comparison.
+    //!
+    //! \returns Whether or not the word graphs are equal.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \sa WordGraph::operator== for a comparison using the equality operator.
+    template <typename Node>
+    [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
+                                WordGraph<Node> const& y) {
+      return equal_to(WordGraphView(x), WordGraphView(y));
+    }
 
     //! \brief Find the node that a path starting at a given node leads to (if
     //! any).

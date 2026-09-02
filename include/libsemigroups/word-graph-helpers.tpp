@@ -333,22 +333,6 @@ namespace libsemigroups {
       wg.target(*(last - 1), 0, *first);
     }
 
-    template <typename Node>
-    bool equal_to(WordGraph<Node> const& x,
-                  WordGraph<Node> const& y,
-                  Node                   first,
-                  Node                   last) {
-      // TODO move to word-graph-view-helpers
-      throw_if_node_out_of_bounds(x, first);
-      // TODO
-      // throw_if_node_out_of_bounds is deprecated, this is clearly not used
-      // anywhere in the tests
-      throw_if_node_out_of_bounds(x, last - 1);
-      throw_if_node_out_of_bounds(y, first);
-      throw_if_node_out_of_bounds(y, last - 1);
-      return equal_to_no_checks(x, y, first, last);
-    }
-
     // not noexcept because it throws an exception!
     // TODO(v4): rm
     template <typename Node>
