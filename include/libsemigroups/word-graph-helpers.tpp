@@ -842,32 +842,4 @@ namespace libsemigroups {
                        detail::group_digits(wg.number_of_edges()),
                        wg.out_degree());
   }
-
-  template <typename Node>
-  std::string to_input_string(WordGraph<Node> const& wg,
-                              std::string const&     prefix,
-                              std::string const&     braces,
-                              std::string const&     suffix) {
-    if (braces.size() != 2) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 3rd argument (braces) must have length 2, but found {}",
-          braces.size());
-    }
-    std::string out, sep;
-
-    for (auto s : wg.nodes()) {
-      auto first = wg.cbegin_targets(s), last = wg.cend_targets(s);
-      out += fmt::format(
-          "{}{}{}{}", sep, braces[0], fmt::join(first, last, ", "), braces[1]);
-      sep = ", ";
-    }
-
-    return fmt::format("{}{}, {}{}{}{}",
-                       prefix,
-                       wg.number_of_nodes(),
-                       braces[0],
-                       out,
-                       braces[1],
-                       suffix);
-  }
 }  // namespace libsemigroups

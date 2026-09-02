@@ -613,4 +613,21 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "027",
+                          "to_input_string",
+                          "[quick]") {
+    auto rg = ReportGuard(false);
+
+    auto graph
+        = make<WordGraph<size_t>>(5, {{0, 0}, {2, 3}, {3, 1}, {1, 2}, {4, 4}});
+    WordGraphView view(graph, 1, 4);
+
+    REQUIRE(to_input_string(view) == "3, {{1, 2}, {2, 0}, {0, 1}}");
+    REQUIRE(to_input_string(view, "view(", "[]", ")")
+            == "view(3, [[1, 2], [2, 0], [0, 1]])");
+    REQUIRE_THROWS_AS(to_input_string(view, "", "{", ""),
+                      LibsemigroupsException);
+  }
+
 }  // namespace libsemigroups

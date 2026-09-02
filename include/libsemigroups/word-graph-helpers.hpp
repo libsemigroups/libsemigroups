@@ -3150,8 +3150,7 @@ namespace libsemigroups {
   //! according to their labels. The symbol `-` is used to denote that an
   //! edge is not defined. For example, the word graph with 1 node,
   //! out-degree 2, and a single loop labelled 1 from node 0 to 0 is
-  //! represented as
-  //! `{{-, 0}}`.
+  //! represented as `{{-, 0}}`.
   //!
   //! \param os the ostream.
   //! \param wg the word graph.
@@ -3294,13 +3293,14 @@ namespace libsemigroups {
   //! \returns A string containing the input required to recreate \p wg.
   //!
   //! \throws LibsemigroupsException if the argument \p braces is not of
-  //! length
-  //! \c 2.
+  //! length \c 2.
   template <typename Node>
   [[nodiscard]] std::string to_input_string(WordGraph<Node> const& wg,
                                             std::string const&     prefix = "",
                                             std::string const& braces = "{}",
-                                            std::string const& suffix = "");
+                                            std::string const& suffix = "") {
+    return to_input_string(WordGraphView(wg), prefix, braces, suffix);
+  }
 }  // namespace libsemigroups
 
 #include "libsemigroups/word-graph-helpers.tpp"

@@ -1125,4 +1125,38 @@ namespace libsemigroups {
       return order;
     }
   }  // namespace word_graph
+
+  template <typename Node>
+  std::string to_input_string(WordGraphView<Node> const& wgv,
+                              std::string const&         prefix,
+                              std::string const&         braces,
+                              std::string const&         suffix) {
+    if (braces.size() != 2) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 3rd argument (braces) must have length 2, but found {}",
+          braces.size());
+    }
+    std::string out, sep;
+
+    for (auto s : wgv.nodes()) {
+      // TODO(v4) if we start using C++20, maybe we can reuse:
+      // auto first = wgv.cbegin_targets(s);
+      // auto last  = wgv.cend_targets(s);
+      // and then fmt::join(first, last, ", ") instead of
+      // fmt::join(targets, ", ") below
+      auto targets = wgv.targets(s) | rx::to_vector();
+      // This is probably not terrible since hopefully targets is small.
+      out += fmt::format(
+          "{}{}{}{}", sep, braces[0], fmt::join(targets, ", "), braces[1]);
+      sep = ", ";
+    }
+
+    return fmt::format("{}{}, {}{}{}{}",
+                       prefix,
+                       wgv.number_of_nodes(),
+                       braces[0],
+                       out,
+                       braces[1],
+                       suffix);
+  }
 }  // namespace libsemigroups

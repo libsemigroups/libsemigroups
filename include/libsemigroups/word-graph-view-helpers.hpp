@@ -1687,6 +1687,55 @@ namespace libsemigroups {
       return topological_sort(wgv, static_cast<Node1>(source));
     }
   }  // namespace word_graph
+
+  //! \ingroup word_graph_group
+  //! Output the edges of a wordGraphView to a stream.
+  //!
+  //! This function outputs the word graph view \p wgv to the stream \p os.
+  //! The word graph view is represented by the out-neighbours of each node
+  //! ordered according to their labels. The symbol `-` is used to denote that
+  //! an edge is not defined. For example, the word graph with 1 node,
+  //! out-degree 2, and a single loop labelled 1 from node 0 to 0 is
+  //! represented as `{{-, 0}}`.
+  //!
+  //! \param os the ostream.
+  //! \param wgv the word graph view.
+  //!
+  //! \returns
+  //! The first parameter \p os.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  // template <typename Node>
+  // std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg);
+
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Return a string that can be used to recreate the word graph
+  //! represented by a view.
+  //!
+  //! This function returns a std::string containing the input required to
+  //! construct the word graph represented by a the word graph view \p wgv.
+  //!
+  //! \tparam Node the type of the nodes of \p wg.
+  //!
+  //! \param wgv the word graph view.
+  //! \param prefix a prefix for the returned string (defaults to an empty
+  //!   string).
+  //! \param braces the braces to use in the string (defaults to `"{}"`).
+  //! \param suffix a suffix for the returned string (defaults to an empty
+  //!   string).
+  //!
+  //! \returns A string containing the input required to recreate \p wgv.
+  //!
+  //! \throws LibsemigroupsException if the argument \p braces is not of
+  //! length \c 2.
+  template <typename Node>
+  [[nodiscard]] std::string to_input_string(WordGraphView<Node> const& wgv,
+                                            std::string const& prefix = "",
+                                            std::string const& braces = "{}",
+                                            std::string const& suffix = "");
+  // TODO to_human_readable_repr etc
 }  // namespace libsemigroups
 
 #include "libsemigroups/word-graph-view-helpers.tpp"
