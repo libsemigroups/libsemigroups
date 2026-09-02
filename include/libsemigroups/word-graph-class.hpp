@@ -1120,7 +1120,6 @@ namespace libsemigroups {
     //! iterators).
     //!
     //! \param first the first node.
-    //!
     //! \param last one more than the last node.
     //!
     //! \returns A reference to `*this`.
@@ -1146,7 +1145,6 @@ namespace libsemigroups {
     //! iterators).
     //!
     //! \param first iterator pointing at the first node.
-    //!
     //! \param last iterator pointing one beyond the last node.
     //!
     //! \returns A reference to `*this`.

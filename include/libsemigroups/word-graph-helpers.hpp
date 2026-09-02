@@ -93,7 +93,6 @@ namespace libsemigroups {
     //! This function adds a cycle involving the specified range of nodes.
     //!
     //! \tparam Node  the type of the nodes of the WordGraph.
-    //!
     //! \tparam Iterator the type of an iterator pointing to nodes of a word
     //! graph.
     //!
@@ -486,7 +485,6 @@ namespace libsemigroups {
     //!
     //! \tparam Node the type of the nodes of the WordGraph \p wg and the node
     //! \p source.
-    //!
     //! \tparam Iterator the type of \p first and \p last.
     //!
     //! \param wg a word graph.
@@ -805,23 +803,15 @@ namespace libsemigroups {
     //! relation leads to the same node as the path labelled by the other side
     //! of the relation.
     //!
-    //! \tparam Node  the type of the nodes of the WordGraph
-    //! \p wg.
-    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg.
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
-    //!
     //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
     //!
     //! \param wg the word graph.
-    //!
     //! \param first_node iterator pointing at the first node.
-    //!
     //! \param last_node iterator pointing at one beyond the last node.
-    //!
     //! \param first_rule iterator pointing to the first rule.
-    //!
     //! \param last_rule iterator pointing one beyond the last rule.
     //!
     //! \return Whether or not the word graph is compatible with the given
@@ -857,23 +847,15 @@ namespace libsemigroups {
     //! relation leads to the same node as the path labelled by the other side
     //! of the relation.
     //!
-    //! \tparam Node  the type of the nodes of the WordGraph.
-    //! \p wg.
-    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg.
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
-    //!
     //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
     //!
     //! \param wg the word graph.
-    //!
     //! \param first_node iterator pointing at the first node.
-    //!
     //! \param last_node iterator pointing at one beyond the last node.
-    //!
     //! \param first_rule iterator pointing to the first rule.
-    //!
     //! \param last_rule iterator pointing one beyond the last rule.
     //!
     //! \return Whether or not the word graph is compatible with the given
@@ -915,19 +897,13 @@ namespace libsemigroups {
     //! labelled by \p rhs.
     //!
     //! \tparam Node the type of the nodes of the WordGraph \p wg.
-    //!
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
     //!
     //! \param wg the word graph.
-    //!
     //! \param first_node iterator pointing at the first node.
-    //!
     //! \param last_node iterator pointing at one beyond the last node.
-    //!
     //! \param lhs the first rule.
-    //!
     //! \param rhs the second rule.
     //!
     //! \return Whether or not the word graph is compatible with the given
@@ -957,19 +933,13 @@ namespace libsemigroups {
     //! labelled by \p rhs.
     //!
     //! \tparam Node the type of the nodes of the WordGraph \p wg.
-    //!
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
     //!
     //! \param wg the word graph.
-    //!
     //! \param first_node iterator pointing at the first node.
-    //!
     //! \param last_node iterator pointing at one beyond the last node.
-    //!
     //! \param lhs the first rule.
-    //!
     //! \param rhs the second rule.
     //!
     //! \return Whether or not the word graph is compatible with the given
@@ -1002,15 +972,11 @@ namespace libsemigroups {
     //! node is the source of an edge with every possible label.
     //!
     //! \tparam Node the type of the nodes in the word graph.
-    //!
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
     //!
     //! \param wg the word graph.
-    //!
     //! \param first_node iterator pointing to the first node in the range.
-    //!
     //! \param last_node iterator pointing one beyond the last node in the
     //! range.
     //!
@@ -1068,15 +1034,11 @@ namespace libsemigroups {
     //! every such node is the source of an edge with every possible label.
     //!
     //! \tparam Node the type of the nodes in the word graph.
-    //!
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
     //!
     //! \param wg the word graph.
-    //!
     //! \param first_node iterator pointing to the first node in the range.
-    //!
     //! \param last_node iterator pointing one beyond the last node in the
     //! range.
     //!
@@ -2614,20 +2576,14 @@ namespace libsemigroups {
     //! parameters to this function.
     //!
     //! \param xy the word graph to store the result.
-    //!
     //! \param x the first word graph to join/meet.
-    //!
     //! \param xnum_nodes_reachable_from_root the number of nodes reachable in
-    //! \p x from the node \p xroot (for the circumstance where this number is
-    //! known apriori, and does not have to be recomputed).
-    //!
+    //!   \p x from the node \p xroot (for the circumstance where this number is
+    //!   known apriori, and does not have to be recomputed).
     //! \param xroot the node to use as a root in \p x.
-    //!
     //! \param y the second word graph to join/meet.
-    //!
     //! \param ynum_nodes_reachable_from_root the number of nodes reachable in
-    //! \p y from the node \p yroot.
-    //!
+    //!   \p y from the node \p yroot.
     //! \param yroot the node to use as a root in \p y.
     //!
     //! \warning
@@ -2652,19 +2608,14 @@ namespace libsemigroups {
     //!
     //! \param x the word graph whose language we are checking might be a
     //! subset.
-    //!
     //! \param xnum_nodes_reachable_from_root the number of nodes reachable in
-    //! \p x from the node \p xroot (for the circumstance where this number is
-    //! known apriori, and does not have to be recomputed).
-    //!
+    //!   \p x from the node \p xroot (for the circumstance where this number is
+    //!   known apriori, and does not have to be recomputed).
     //! \param xroot the node to use as the initial state in \p x.
-    //!
     //! \param y the word graph whose language we are checking might be a
-    //! superset.
-    //!
+    //!   superset.
     //! \param ynum_nodes_reachable_from_root the number of nodes reachable in
-    //! \p y from the node \p yroot.
-    //!
+    //!   \p y from the node \p yroot.
     //! \param yroot the node to use as an initial state in \p y.
     //!
     //! \returns Whether or not \p x is a subrelation of \p y.
@@ -2712,13 +2663,9 @@ namespace libsemigroups {
     //! parameters to this function.
     //!
     //! \param xy the word graph to store the result.
-    //!
     //! \param x the first word graph to join/meet.
-    //!
     //! \param xroot the node to use as a root in \p x.
-    //!
     //! \param y the second word graph to join/meet.
-    //!
     //! \param yroot the node to use as a root in \p y.
     //!
     //! \warning
@@ -2742,9 +2689,7 @@ namespace libsemigroups {
     //! parameters to this function.
     //!
     //! \param xy the word graph to store the result.
-    //!
     //! \param x the first word graph to join/meet.
-    //!
     //! \param y the second word graph to join/meet.
     //!
     //! \warning
@@ -2765,7 +2710,6 @@ namespace libsemigroups {
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
     //! parameters to this function.
-    //!
     //! \tparam Args parameter pack for the remaining arguments.
     //!
     //! \param x the first word graph to join/meet.
@@ -2788,13 +2732,9 @@ namespace libsemigroups {
     //! parameters to this function.
     //!
     //! \param xy the word graph to store the result.
-    //!
     //! \param x the first word graph to join/meet.
-    //!
     //! \param xroot the node to use as a root in \p x.
-    //!
     //! \param y the second word graph to join/meet.
-    //!
     //! \param yroot the node to use as a root in \p y.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
@@ -2820,9 +2760,7 @@ namespace libsemigroups {
     //! parameters to this function.
     //!
     //! \param xy the word graph to store the result.
-    //!
     //! \param x the first word graph to join/meet.
-    //!
     //! \param y the second word graph to join/meet.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
@@ -2843,7 +2781,6 @@ namespace libsemigroups {
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
     //! parameters to this function.
-    //!
     //! \tparam Args parameter pack for the remaining arguments.
     //!
     //! \param x the first word graph to join/meet.
@@ -2867,13 +2804,10 @@ namespace libsemigroups {
     //! \tparam Node the type of the nodes in the word graphs and the roots.
     //!
     //! \param x the word graph whose language we are checking might be a
-    //! subset.
-    //!
+    //!   subset.
     //! \param xroot the node to use as the initial state in \p x.
-    //!
     //! \param y the word graph whose language we are checking might be a
-    //! superset.
-    //!
+    //!   superset.
     //! \param yroot the node to use as an initial state in \p y.
     //!
     //! \returns Whether or not \p x is a subrelation of \p y.
@@ -2901,7 +2835,6 @@ namespace libsemigroups {
     //!
     //! \param x the word graph whose language we are checking might be a
     //! subset.
-    //!
     //! \param y the word graph whose language we are checking might be a
     //! superset.
     //!
@@ -2930,13 +2863,10 @@ namespace libsemigroups {
     //! parameters to this function.
     //!
     //! \param x the word graph whose language we are checking might be a
-    //! subset.
-    //!
+    //!   subset.
     //! \param xroot the node to use as the initial state in \p x.
-    //!
     //! \param y the word graph whose language we are checking might be a
-    //! superset.
-    //!
+    //!   superset.
     //! \param yroot the node to use as an initial state in \p y.
     //!
     //! \returns Whether or not \p x is a subrelation of \p y.
@@ -2961,13 +2891,12 @@ namespace libsemigroups {
     //! that this function throws if its arguments are invalid.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
-    //! parameters to this function.
+    //!   parameters to this function.
     //!
     //! \param x the word graph whose language we are checking might be a
-    //! subset.
-    //!
+    //!   subset.
     //! \param y the word graph whose language we are checking might be a
-    //! superset.
+    //!   superset.
     //!
     //! \returns Whether or not \p x is a subrelation of \p y.
     //!
@@ -3105,7 +3034,6 @@ namespace libsemigroups {
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
     //! parameters to this function.
-    //!
     //! \tparam Args parameter pack for the remaining arguments.
     //!
     //! \param x the first word graph to join/meet.
@@ -3141,7 +3069,6 @@ namespace libsemigroups {
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
     //! parameters to this function.
-    //!
     //! \tparam Args parameter pack for the remaining arguments.
     //!
     //! \param x the first word graph to join/meet.

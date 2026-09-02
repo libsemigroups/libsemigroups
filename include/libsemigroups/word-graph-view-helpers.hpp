@@ -645,23 +645,15 @@ namespace libsemigroups {
     //! labelled by one side of a relation leads to the same node as the path
     //! labelled by the other side of the relation.
     //!
-    //! \tparam Node  the type of the nodes of the WordGraphView
-    //! \p wgv.
-    //!
+    //! \tparam Node the type of the nodes of the WordGraphView \p wgv.
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
-    //!
     //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
     //!
     //! \param wgv the word graph view.
-    //!
     //! \param first_node iterator pointing at the first node.
-    //!
     //! \param last_node iterator pointing at one beyond the last node.
-    //!
     //! \param first_rule iterator pointing to the first rule.
-    //!
     //! \param last_rule iterator pointing one beyond the last rule.
     //!
     //! \return Whether or not the word graph view is compatible with the
@@ -735,21 +727,14 @@ namespace libsemigroups {
     //!
     //! \tparam Node the type of the nodes of the WordGraphView.
     //! \p wgv.
-    //!
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
-    //!
     //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
     //!
     //! \param wgv the word graph view.
-    //!
     //! \param first_node iterator pointing at the first node.
-    //!
     //! \param last_node iterator pointing at one beyond the last node.
-    //!
     //! \param first_rule iterator pointing to the first rule.
-    //!
     //! \param last_rule iterator pointing one beyond the last rule.
     //!
     //! \return Whether or not the word graph view is compatible with the
@@ -789,19 +774,13 @@ namespace libsemigroups {
     //! labelled by \p rhs.
     //!
     //! \tparam Node the type of the nodes of the WordGraphView \p wgv.
-    //!
     //! \tparam Iterator1 the type of \p first_node.
-    //!
     //! \tparam Iterator2 the type of \p last_node.
     //!
     //! \param wgv the word graph view.
-    //!
     //! \param first_node iterator pointing at the first node.
-    //!
     //! \param last_node iterator pointing at one beyond the last node.
-    //!
     //! \param lhs the first rule.
-    //!
     //! \param rhs the second rule.
     //!
     //! \return Whether or not the word graph view is compatible with the
@@ -940,14 +919,11 @@ namespace libsemigroups {
     //! \brief Check if a word graph view is connected.
     //!
     //! This function returns \c true if the word graph view \p wgv is
-    //! connected and
-    //! \c false if it is not. A word graph view is *connected* if for every
-    //! pair of nodes \c s and \c t in the graph there exists a sequence
-    //! \f$u_0 = s,
-    //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
-    //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$
-    //! or
-    //! \f$(u_{i + 1}, a, u_i)\f$ is an edge in the graph.
+    //! connected and \c false if it is not. A word graph view is *connected* if
+    //! for every pair of nodes \c s and \c t in the graph there exists a
+    //! sequence \f$u_0 = s, \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$
+    //! such that for every \f$i\f$ there exists a label \c a such that \f$(u_i,
+    //! a, u_{i + 1})\f$ or \f$(u_{i + 1}, a, u_i)\f$ is an edge in the graph.
     //!
     //! \tparam Node the type of the nodes in the word graph view.
     //!
