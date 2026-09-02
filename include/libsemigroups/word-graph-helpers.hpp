@@ -3304,6 +3304,24 @@ namespace libsemigroups {
                                             std::string const& suffix = "") {
     return to_input_string(WordGraphView(wg), prefix, braces, suffix);
   }
+
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Check if a WordGraph is valid.
+  //!
+  //! This function checks whether \p wg is valid.
+  //!
+  //! \tparam Node the type of the nodes in \p wg.
+  //!
+  //! \param wg the word graph to validate.
+  //!
+  //! \throws LibsemigroupsException if any target in the
+  //! WordGraph is greater than or equal to \ref WordGraph::number_of_nodes.
+  template <typename Node>
+  void validate(WordGraph<Node> const& wg) {
+    word_graph::throw_if_any_target_out_of_bounds(
+        wg, wg.cbegin_nodes(), wg.cend_nodes());
+  }
 }  // namespace libsemigroups
 
 #include "libsemigroups/word-graph-helpers.tpp"

@@ -1576,4 +1576,23 @@ namespace libsemigroups {
         LibsemigroupsException);
 #pragma GCC diagnostic pop
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "064",
+                          "validate",
+                          "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
+    WordGraph<size_t> graph(3, 2);
+    REQUIRE_NOTHROW(validate(graph));
+
+    graph.target_no_checks(1, 0, 3);
+    REQUIRE_EXCEPTION_MSG(
+        validate(graph),
+        "target out of bounds, the edge with source 1 and label 0 has target "
+        "3, but expected value in the range [0, 3)");
+
+    graph.target_no_checks(1, 0, 2);
+    REQUIRE_NOTHROW(validate(graph));
+  }
 }  // namespace libsemigroups
