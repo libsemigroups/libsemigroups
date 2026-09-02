@@ -2158,8 +2158,7 @@ namespace libsemigroups {
     [[deprecated]] void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg,
                                                     Node2                   n) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
-      ::libsemigroups::detail::throw_if_not_less(
-          n, wg.number_of_nodes(), "node ");
+      detail::throw_if_not_less(n, wg.number_of_nodes(), "node ");
     }
 
     //! \brief Throws if any node in a range is out of bounds.
@@ -2398,8 +2397,7 @@ namespace libsemigroups {
   // deduced from the argument.
   class Joiner : public detail::JoinerMeeterCommon<Joiner> {
    private:
-    // TODO(v4) Remove the libsemigroups prefix
-    libsemigroups::detail::Duf<>              _uf;
+    detail::Duf<>                             _uf;
     std::stack<std::pair<uint64_t, uint64_t>> _stck;
     std::vector<uint64_t>                     _lookup;
 
