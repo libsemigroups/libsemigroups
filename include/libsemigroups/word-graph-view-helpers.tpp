@@ -316,6 +316,13 @@ namespace libsemigroups {
     }
 
     template <typename Node>
+    typename WordGraph<Node>::adjacency_matrix_type
+    adjacency_matrix(WordGraphView<Node> const& wgv) {
+      validate(wgv);
+      return adjacency_matrix_no_checks(wgv);
+    }
+
+    template <typename Node>
     std::unordered_set<Node>
     ancestors_of_no_checks(WordGraphView<Node> const& wgv, Node target) {
       using label_type = typename WordGraph<Node>::label_type;
@@ -364,7 +371,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    Dot dot(WordGraphView<Node> const& wgv) {
+    Dot dot_no_checks(WordGraphView<Node> const& wgv) {
       Dot result;
       result.name("WordGraph").kind(Dot::Kind::digraph);
       for (auto n : wgv.nodes_no_checks()) {
