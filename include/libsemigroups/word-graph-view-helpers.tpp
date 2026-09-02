@@ -451,6 +451,42 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Iterator>
+    bool equal_to_no_checks(WordGraphView<Node> const& x,
+                            WordGraphView<Node> const& y,
+                            Iterator                   first,
+                            Iterator                   last) {
+      if (x.word_graph() == y.word_graph() && x.start_node() == y.start_node()
+          && x.end_node() == y.end_node()) {
+        return true;
+      } else if (x.number_of_nodes_no_checks() != y.number_of_nodes_no_checks()
+                 || x.out_degree_no_checks() != y.out_degree_no_checks()) {
+        return false;
+      }
+
+      for (auto it = first; it != last; ++it) {
+        auto s = *it;
+        for (auto const& a : x.labels_no_checks()) {
+          if (x.target_no_checks(s, a) != y.target_no_checks(s, a)) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    template <typename Node, typename Iterator>
+    bool equal_to(WordGraphView<Node> const& x,
+                  WordGraphView<Node> const& y,
+                  Iterator                   first,
+                  Iterator                   last) {
+      validate(x);
+      validate(y);
+      detail::throw_if_any_not_less(
+          first, last, x.number_of_nodes_no_checks(), "node ");
+      return equal_to_no_checks(x, y, first, last);
+    }
+
+    template <typename Node, typename Iterator>
     Node follow_path_no_checks(WordGraphView<Node> const& wgv,
                                Node                       source,
                                Iterator                   first,

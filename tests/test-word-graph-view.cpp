@@ -558,4 +558,59 @@ namespace libsemigroups {
     REQUIRE(last.second == path.cbegin() + 1);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "026",
+                          "equal_to and equal_to_no_checks",
+                          "[quick]") {
+    auto rg = ReportGuard(false);
+
+    auto          graph1 = make<WordGraph<size_t>>(3, {{1, 2}, {2, 0}, {0, 1}});
+    auto          graph2 = make<WordGraph<size_t>>(3, {{1, 2}, {1, 0}, {0, 1}});
+    auto          graph3 = make<WordGraph<size_t>>(3, {{1, 2}, {2, 0}, {0, 1}});
+    WordGraphView view1(graph1);
+    WordGraphView view2(graph2);
+    WordGraphView view3(graph3);
+
+    REQUIRE(word_graph::equal_to_no_checks(view1, view1));
+    REQUIRE(word_graph::equal_to(view1, view1));
+    REQUIRE(word_graph::equal_to_no_checks(view1, view3));
+    REQUIRE(word_graph::equal_to(view1, view3));
+    REQUIRE(!word_graph::equal_to_no_checks(view1, view2));
+    REQUIRE(!word_graph::equal_to(view1, view2));
+
+    std::vector<size_t> const equal_nodes = {0, 2};
+    REQUIRE(word_graph::equal_to_no_checks(
+        view1, view2, equal_nodes.cbegin(), equal_nodes.cend()));
+    REQUIRE(word_graph::equal_to(
+        view1, view2, equal_nodes.cbegin(), equal_nodes.cend()));
+
+    std::vector<size_t> const unequal_nodes = {0, 1, 2};
+    REQUIRE(!word_graph::equal_to_no_checks(
+        view1, view2, unequal_nodes.cbegin(), unequal_nodes.cend()));
+    REQUIRE(!word_graph::equal_to(
+        view1, view2, unequal_nodes.cbegin(), unequal_nodes.cend()));
+
+    auto          different_size = make<WordGraph<size_t>>(2, {{1, 0}, {0, 1}});
+    WordGraphView different_size_view(different_size);
+    REQUIRE(!word_graph::equal_to_no_checks(view1, different_size_view));
+    REQUIRE(!word_graph::equal_to(view1, different_size_view));
+
+    auto different_degree = make<WordGraph<size_t>>(3, {{1}, {2}, {0}});
+    WordGraphView different_degree_view(different_degree);
+    REQUIRE(!word_graph::equal_to_no_checks(view1, different_degree_view));
+    REQUIRE(!word_graph::equal_to(view1, different_degree_view));
+
+    std::vector<size_t> const invalid_nodes = {3};
+    REQUIRE_THROWS_AS(
+        word_graph::equal_to(
+            view1, view2, invalid_nodes.cbegin(), invalid_nodes.cend()),
+        LibsemigroupsException);
+
+    WordGraphView<size_t> invalid_view;
+    REQUIRE_THROWS_AS(word_graph::equal_to(invalid_view, view1),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(word_graph::equal_to(view1, invalid_view),
+                      LibsemigroupsException);
+  }
+
 }  // namespace libsemigroups
