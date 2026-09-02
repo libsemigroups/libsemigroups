@@ -912,7 +912,25 @@ namespace libsemigroups {
                                    Iterator1                  first_node,
                                    Iterator2                  last_node);
 
-    // TODO doc?
+    //! \brief Check if every node has exactly WordGraphView::out_degree
+    //! out-edges.
+    //!
+    //! This function returns \c true if the word graph view \p wgv is
+    //! complete, meaning that every node is the source of an edge with every
+    //! possible label; and \c false otherwise.
+    //!
+    //! \tparam Node the type of the nodes in the word graph view.
+    //!
+    //! \param wgv the word graph view.
+    //!
+    //! \returns Whether or not the word graph view is complete.
+    //!
+    //! \throws LibsemigroupsException if \p wgv is invalid.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
+    //!
+    //! \sa is_complete_no_checks(WordGraphView<Node> const&).
     template <typename Node>
     [[nodiscard]] bool is_complete(WordGraphView<Node> const& wgv) {
       wgv.throw_if_invalid_view();
