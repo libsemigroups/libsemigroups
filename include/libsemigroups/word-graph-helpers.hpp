@@ -318,6 +318,41 @@ namespace libsemigroups {
           WordGraphView(x), WordGraphView(y), first, last);
     }
 
+    //! \brief Compares two word graphs on a contiguous range of nodes.
+    //!
+    //! This function returns \c true if the word graph views over the node
+    //! range `[first, last)` in \p x and \p y are equal; and \c false
+    //! otherwise.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param x the first word graph for comparison.
+    //! \param y the second word graph for comparison.
+    //! \param first the first node in the range.
+    //! \param last the last node in the range plus \c 1.
+    //!
+    //! \returns Whether or not the word graph views over the specified ranges
+    //! are equal.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning No checks are performed to ensure that the arguments are
+    //! valid.
+    //!
+    //! \deprecated_warning{function} Use the overload taking an iterator range
+    //! instead.
+    template <typename Node>
+    [[deprecated("Use the overload taking an iterator range "
+                 "instead.")]] [[nodiscard]] bool
+    equal_to_no_checks(WordGraph<Node> const& x,
+                       WordGraph<Node> const& y,
+                       Node                   first,
+                       Node                   last) {
+      return equal_to_no_checks(WordGraphView(x, first, last),
+                                WordGraphView(y, first, last));
+    }
+
     //! \brief Compares two word graphs.
     //!
     //! This function returns \c true if the word graphs \p x and \p y have the
@@ -379,6 +414,41 @@ namespace libsemigroups {
                                 Iterator               first,
                                 Iterator               last) {
       return equal_to(WordGraphView(x), WordGraphView(y), first, last);
+    }
+
+    //! \brief Compares two word graphs on a contiguous range of nodes.
+    //!
+    //! This function returns \c true if the word graph views over the node
+    //! range `[first, last)` in \p x and \p y are equal; and \c false
+    //! otherwise.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param x the first word graph for comparison.
+    //! \param y the second word graph for comparison.
+    //! \param first the first node in the range.
+    //! \param last the last node in the range plus \c 1.
+    //!
+    //! \returns Whether or not the word graph views over the specified ranges
+    //! are equal.
+    //!
+    //! \throws LibsemigroupsException if \p first is greater than \p last or
+    //! if either value is out of bounds for \p x or \p y.
+    //!
+    //! \deprecated_warning{function} Use the overload taking an iterator range
+    //! instead.
+    template <typename Node>
+    [[deprecated("Use the overload taking an iterator range "
+                 "instead.")]] [[nodiscard]] bool
+    equal_to(WordGraph<Node> const& x,
+             WordGraph<Node> const& y,
+             Node                   first,
+             Node                   last) {
+      WordGraphView x_view(x);
+      WordGraphView y_view(y);
+      x_view.reshape(first, last);
+      y_view.reshape(first, last);
+      return equal_to(x_view, y_view);
     }
 
     //! \brief Compares two word graphs.

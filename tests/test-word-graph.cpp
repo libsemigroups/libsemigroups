@@ -1557,5 +1557,21 @@ namespace libsemigroups {
         word_graph::equal_to(
             graph1, graph2, invalid_nodes.cbegin(), invalid_nodes.cend()),
         LibsemigroupsException);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    REQUIRE(
+        word_graph::equal_to_no_checks(graph1, graph2, size_t(0), size_t(2)));
+    REQUIRE(
+        !word_graph::equal_to_no_checks(graph1, graph2, size_t(1), size_t(3)));
+    REQUIRE(word_graph::equal_to(graph1, graph2, size_t(0), size_t(2)));
+    REQUIRE(!word_graph::equal_to(graph1, graph2, size_t(1), size_t(3)));
+    REQUIRE(word_graph::equal_to_no_checks(
+        graph1, different_size, size_t(0), size_t(2)));
+    REQUIRE(word_graph::equal_to(graph1, different_size, size_t(0), size_t(2)));
+    REQUIRE_THROWS_AS(
+        word_graph::equal_to(graph1, graph2, size_t(0), size_t(4)),
+        LibsemigroupsException);
+#pragma GCC diagnostic pop
   }
 }  // namespace libsemigroups
