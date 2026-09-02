@@ -1167,4 +1167,15 @@ namespace libsemigroups {
                        braces[1],
                        suffix);
   }
+
+  template <typename Node>
+  std::string to_human_readable_repr(WordGraphView<Node> const& wgv) {
+    // TODO(2) could be more elaborate, include complete, etc
+    // TODO(2) number_of_edges can be a bit slow
+    return fmt::format(
+        "<WordGraphView with {} nodes, {} edges, & out-degree {}>",
+        detail::group_digits(wgv.number_of_nodes()),
+        detail::group_digits(wgv.number_of_edges()),
+        wgv.out_degree());
+  }
 }  // namespace libsemigroups

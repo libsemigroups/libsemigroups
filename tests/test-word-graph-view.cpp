@@ -643,4 +643,28 @@ namespace libsemigroups {
     REQUIRE(oss.str() == "{3, {{1, 2}, {2, 0}, {0, 1}}}");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "029",
+                          "to_human_readable_repr",
+                          "[quick]") {
+    auto rg = ReportGuard(false);
+
+    WordGraph<size_t> graph(1'005, 2);
+    graph.target(5, 0, 6);
+    graph.target(6, 1, 7);
+    graph.target(1'004, 0, 5);
+
+    WordGraphView full_view(graph);
+    REQUIRE(to_human_readable_repr(full_view)
+            == "<WordGraphView with 1,005 nodes, 3 edges, & out-degree 2>");
+
+    WordGraphView subview(graph, 5, 1'005);
+    REQUIRE(to_human_readable_repr(subview)
+            == "<WordGraphView with 1,000 nodes, 3 edges, & out-degree 2>");
+
+    WordGraphView empty_view(graph, 5, 5);
+    REQUIRE(to_human_readable_repr(empty_view)
+            == "<WordGraphView with 0 nodes, 0 edges, & out-degree 2>");
+  }
+
 }  // namespace libsemigroups
