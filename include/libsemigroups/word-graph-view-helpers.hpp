@@ -1736,8 +1736,26 @@ namespace libsemigroups {
                                             std::string const& braces = "{}",
                                             std::string const& suffix = "");
 
-  // TODO(later) does "make" make sense for WordGraphView?
-  // TODO to_human_readable_repr etc
+  // TODO implement "make" for WordGraphView, these are just checking versions
+  // of its constructors, and not analogue of make<WordGraph>!!
+
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Return a human readable representation of a WordGraphView object.
+  //!
+  //! Return a human readable representation of a WordGraphView object.
+  //!
+  //! \tparam Node the type of the nodes in the underlying WordGraph.
+  //!
+  //! \param wgv the WordGraph object.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Node>
+  [[nodiscard]] std::string
+  to_human_readable_repr(WordGraphView<Node> const& wgv);
 }  // namespace libsemigroups
 
 #include "libsemigroups/word-graph-view-helpers.tpp"
