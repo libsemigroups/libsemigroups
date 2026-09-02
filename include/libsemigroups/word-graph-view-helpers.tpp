@@ -931,6 +931,13 @@ namespace libsemigroups {
       return last_node_on_path(wgv, source, w.cbegin(), w.cend());
     }
 
+    // TODO(1) tests
+    // TODO(1) version where std::unordered_set is passed by reference, or
+    // make this a class that stores its stack and unordered_set, not clear
+    // why we'd single out the unordered_set to be passed by reference.
+    // TODO(2) version which is an iterator i.e. returns an iterator or range
+    // object that allows use to step through the nodes reachable from a given
+    // node
     template <typename Node>
     std::unordered_set<Node>
     nodes_reachable_from_no_checks(WordGraphView<Node> const& wgv,
