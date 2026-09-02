@@ -1241,38 +1241,31 @@ namespace libsemigroups {
     //!
     //! \note If any target of any edge in the word graph view \p wgv that is
     //! out of bounds, then this is ignored by this function.
-    // TODO(1) tests
-    // TODO(1) version where std::unordered_set is passed by reference, or
-    // make this a class that stores its stack and unordered_set, not clear
-    // why we'd single out the unordered_set to be passed by reference.
-    // TODO(2) version which is an iterator i.e. returns an iterator or range
-    // object that allows use to step through the nodes reachable from a given
-    // node
+    template <typename Node>
+    [[nodiscard]] std::unordered_set<Node>
+    nodes_reachable_from(WordGraphView<Node> const& wgv,
+                         Node                       source,
+                         size_t max_depth = POSITIVE_INFINITY) {
+      detail::throw_if_not_less(source, wgv.number_of_nodes(), "node ");
+      return nodes_reachable_from_no_checks(wgv, source, max_depth);
+    }
+
     template <typename Node1,
               typename Node2,
               typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
     [[deprecated]] [[nodiscard]] std::unordered_set<Node1>
     nodes_reachable_from(WordGraphView<Node1> const& wgv,
                          Node2                       source,
-                         size_t                      max_depth) {
+                         size_t max_depth = POSITIVE_INFINITY) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return nodes_reachable_from(wgv, static_cast<Node1>(source), max_depth);
-    }
-
-    template <typename Node>
-    [[nodiscard]] std::unordered_set<Node>
-    nodes_reachable_from(WordGraphView<Node> const& wgv,
-                         Node                       source,
-                         size_t                     max_depth) {
-      detail::throw_if_not_less(source, wgv.number_of_nodes(), "node ");
-      return nodes_reachable_from_no_checks(wgv, source, max_depth);
     }
 
     //! \brief Returns the number of nodes reachable from a given node in a
     //! word graph.
     //!
-    //! This function returns the number of nodes in the word graph \p wgv that
-    //! are reachable from \p source via a path of length at most
+    //! This function returns the number of nodes in the word graph \p wgv
+    //! that are reachable from \p source via a path of length at most
     //! \p max_depth.
     //!
     //! \tparam Node the node type of the word graph and \p source.
