@@ -197,6 +197,129 @@ namespace libsemigroups {
                           std::vector<std::string> const& node_labels,
                           std::vector<std::string> const& edge_labels);
 
+    //! \brief Compares two word graph views on a range of nodes.
+    //!
+    //! This function returns \c true if the word graph views \p x and \p y are
+    //! equal on the nodes specified by the range from \p first to \p last;
+    //! and \c false otherwise. The views \p x and \p y are equal at a node
+    //! \c s if:
+    //! * the numbers of nodes in \p x and \p y coincide;
+    //! * the out-degrees of \p x and \p y coincide;
+    //! * the edges with source \c s and label \c a have equal targets in \p x
+    //! and \p y for every label \c a.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraphView.
+    //! \tparam Iterator the type of the iterators specifying the nodes to
+    //! compare.
+    //!
+    //! \param x the first word graph view for comparison.
+    //! \param y the second word graph view for comparison.
+    //! \param first an iterator pointing at the first node to compare.
+    //! \param last an iterator pointing one past the last node to compare.
+    //!
+    //! \returns Whether or not the word graph views are equal on the specified
+    //! range of nodes.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning No checks are performed to ensure that the arguments
+    //! are valid.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
+    template <typename Node, typename Iterator>
+    [[nodiscard]] bool equal_to_no_checks(WordGraphView<Node> const& x,
+                                          WordGraphView<Node> const& y,
+                                          Iterator                   first,
+                                          Iterator                   last);
+
+    //! \brief Compares two word graph views.
+    //!
+    //! This function returns \c true if the word graph views \p x and \p y
+    //! have the same number of nodes and out-degree, and every edge has the
+    //! same target in both views; and \c false otherwise.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraphView.
+    //!
+    //! \param x the first word graph view for comparison.
+    //! \param y the second word graph view for comparison.
+    //!
+    //! \returns Whether or not the word graph views are equal.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning No checks are performed to ensure that the arguments are
+    //! valid.
+    //!
+    //! \sa WordGraphView::operator== for a comparison using the equality
+    //! operator.
+    template <typename Node>
+    [[nodiscard]] bool equal_to_no_checks(WordGraphView<Node> const& x,
+                                          WordGraphView<Node> const& y) {
+      return equal_to_no_checks(
+          x, y, x.cbegin_nodes_no_checks(), x.cend_nodes_no_checks());
+    }
+
+    //! \brief Compares two word graph views on a range of nodes.
+    //!
+    //! This function returns \c true if the word graph views \p x and \p y are
+    //! equal on the nodes specified by the range from \p first to \p last;
+    //! and \c false otherwise. The views \p x and \p y are equal at a node
+    //! \c s if:
+    //! * the numbers of nodes in \p x and \p y coincide;
+    //! * the out-degrees of \p x and \p y coincide;
+    //! * the edges with source \c s and label \c a have equal targets in \p x
+    //! and \p y for every label \c a.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraphView.
+    //! \tparam Iterator the type of the iterators specifying the nodes to
+    //! compare.
+    //!
+    //! \param x the first word graph view for comparison.
+    //! \param y the second word graph view for comparison.
+    //! \param first an iterator pointing at the first node to compare.
+    //! \param last an iterator pointing one past the last node to compare.
+    //!
+    //! \returns Whether or not the word graph views are equal on the specified
+    //! nodes.
+    //!
+    //! \throws LibsemigroupsException if either word graph view is invalid or
+    //! if any node in the range from \p first to \p last is not a node of
+    //! \p x.
+    //!
+    //! \sa WordGraphView::operator== for a comparison of two entire word graph
+    //! views.
+    template <typename Node, typename Iterator>
+    [[nodiscard]] bool equal_to(WordGraphView<Node> const& x,
+                                WordGraphView<Node> const& y,
+                                Iterator                   first,
+                                Iterator                   last);
+
+    //! \brief Compares two word graph views.
+    //!
+    //! This function returns \c true if the word graph views \p x and \p y
+    //! have the same number of nodes and out-degree, and every edge has the
+    //! same target in both views; and \c false otherwise.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraphView.
+    //!
+    //! \param x the first word graph view for comparison.
+    //! \param y the second word graph view for comparison.
+    //!
+    //! \returns Whether or not the word graph views are equal.
+    //!
+    //! \throws LibsemigroupsException if either word graph view is invalid.
+    //!
+    //! \sa WordGraphView::operator== for a comparison using the equality
+    //! operator.
+    template <typename Node>
+    [[nodiscard]] bool equal_to(WordGraphView<Node> const& x,
+                                WordGraphView<Node> const& y) {
+      return equal_to(
+          x, y, x.cbegin_nodes_no_checks(), x.cend_nodes_no_checks());
+    }
+
     //! \brief Follow the path from a specified node labelled by a word.
     //!
     //! This function returns the last node on the path in the word graph view
@@ -286,10 +409,10 @@ namespace libsemigroups {
     //! \brief Find the node that a path starting at a given node leads to (if
     //! any).
     //!
-    //! This function attempts to follow the path in the word graph view \p wgv
-    //! starting at the node \p from  labelled by the word defined by \p first
-    //! and \p last. If this path exists, then the last node on that path is
-    //! returned. If this path does not exist, then \ref UNDEFINED is
+    //! This function attempts to follow the path in the word graph view
+    //! \p wgv starting at the node \p from  labelled by the word defined by
+    //! \p first and \p last. If this path exists, then the last node on that
+    //! path is returned. If this path does not exist, then \ref UNDEFINED is
     //! returned.
     //!
     //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
@@ -333,10 +456,10 @@ namespace libsemigroups {
     //! \brief Find the node that a path starting at a given node leads to (if
     //! any).
     //!
-    //! This function attempts to follow the path in the word graph view \p wgv
-    //! starting at the node \p from  labelled by the word \p path. If this
-    //! path exists, then the last node on that path is returned. If this path
-    //! does not exist, then \ref UNDEFINED is returned.
+    //! This function attempts to follow the path in the word graph view
+    //! \p wgv starting at the node \p from  labelled by the word \p path. If
+    //! this path exists, then the last node on that path is returned. If this
+    //! path does not exist, then \ref UNDEFINED is returned.
     //!
     //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
     //! node \p from.
@@ -417,9 +540,9 @@ namespace libsemigroups {
     //! from a source node is acyclic.
     //!
     //! This function returns \c true if the word graph view consisting of the
-    //! nodes reachable from \p source in the word graph view \p wgv is acyclic
-    //! and \c false if not. A word graph view is acyclic if every directed
-    //! cycle in the word graph is trivial.
+    //! nodes reachable from \p source in the word graph view \p wgv is
+    //! acyclic and \c false if not. A word graph view is acyclic if every
+    //! directed cycle in the word graph is trivial.
     //!
     //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
     //! node \p source.
@@ -474,8 +597,9 @@ namespace libsemigroups {
     //!
     //! This function returns \c true if the word graph view consisting of the
     //! nodes reachable from \p source and from which \p target is reachable,
-    //! in the word graph \p wgv, is acyclic; and \c false if not. A word graph
-    //! view is acyclic if every directed cycle of the word graph is trivial.
+    //! in the word graph \p wgv, is acyclic; and \c false if not. A word
+    //! graph view is acyclic if every directed cycle of the word graph is
+    //! trivial.
     //!
     //! \tparam Node the type of the nodes of the WordGraphView \p wgv and the
     //! nodes \p source and \p target.
@@ -934,8 +1058,8 @@ namespace libsemigroups {
 
     //! \brief Check if a word graph is standardized.
     //!
-    //! This function checks if the word graph \p wgv is standardized according
-    //! to the reduction order specified by \p cmp.
+    //! This function checks if the word graph \p wgv is standardized
+    //! according to the reduction order specified by \p cmp.
     //!
     //! \tparam Node the type of the node in \p wgv.
     //! \tparam Cmp the type of the comparator \p cmp.
@@ -954,8 +1078,8 @@ namespace libsemigroups {
 
     //! \brief Check if a word graph is standardized.
     //!
-    //! This function checks if the word graph \p wgv is standardized according
-    //! to the reduction order specified by \p val.
+    //! This function checks if the word graph \p wgv is standardized
+    //! according to the reduction order specified by \p val.
     //!
     //! \tparam Node the type of the node in \p wgv.
     //!
@@ -1308,8 +1432,8 @@ namespace libsemigroups {
     //! \brief Returns the number of nodes reachable from a given node in a
     //! word graph view.
     //!
-    //! This function returns the number of nodes in the word graph view \p wgv
-    //! that are reachable from \p source via a path of length at most
+    //! This function returns the number of nodes in the word graph view
+    //! \p wgv that are reachable from \p source via a path of length at most
     //! \p max_depth.
     //!
     //! \tparam Node the node type of the word graph and \p source.
@@ -1546,8 +1670,8 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A std::vector of Node types that contains the nodes reachable from
-    //! \p source in \p wgv in topological order (if possible) and is otherwise
-    //! empty.
+    //! \p source in \p wgv in topological order (if possible) and is
+    //! otherwise empty.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
