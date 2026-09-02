@@ -667,4 +667,27 @@ namespace libsemigroups {
             == "<WordGraphView with 0 nodes, 0 edges, & out-degree 2>");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "030", "validate", "[quick]") {
+    auto rg = ReportGuard(false);
+
+    WordGraphView<size_t> undefined_view;
+    REQUIRE_EXCEPTION_MSG(validate(undefined_view),
+                          "the underlying WordGraph is not defined");
+
+    WordGraph<size_t> graph(4, 1);
+    graph.target(1, 0, 2);
+    graph.target(2, 0, 1);
+    WordGraphView view(graph, 1, 3);
+    REQUIRE_NOTHROW(validate(view));
+
+    graph.target(2, 0, 3);
+    REQUIRE_EXCEPTION_MSG(
+        validate(view),
+        "target out of bounds, the edge with source 1 and label 0 has target "
+        "2, but expected value in the range [0, 2)");
+
+    graph.target(2, 0, 1);
+    REQUIRE_NOTHROW(validate(view));
+  }
+
 }  // namespace libsemigroups

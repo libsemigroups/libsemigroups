@@ -1711,6 +1711,24 @@ namespace libsemigroups {
 
   //! \ingroup word_graph_group
   //!
+  //! \brief Return a human readable representation of a WordGraphView object.
+  //!
+  //! Return a human readable representation of a WordGraphView object.
+  //!
+  //! \tparam Node the type of the nodes in the underlying WordGraph.
+  //!
+  //! \param wgv the WordGraph object.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Node>
+  [[nodiscard]] std::string
+  to_human_readable_repr(WordGraphView<Node> const& wgv);
+
+  //! \ingroup word_graph_group
+  //!
   //! \brief Return a string that can be used to recreate the word graph
   //! represented by a view.
   //!
@@ -1736,26 +1754,33 @@ namespace libsemigroups {
                                             std::string const& braces = "{}",
                                             std::string const& suffix = "");
 
-  // TODO implement "make" for WordGraphView, these are just checking versions
-  // of its constructors, and not analogue of make<WordGraph>!!
+  // TODO(later) implement "make" for WordGraphView, these are just checking
+  // versions of its constructors, and not analogue of make<WordGraph>!!
 
   //! \ingroup word_graph_group
   //!
-  //! \brief Return a human readable representation of a WordGraphView object.
+  //! \brief Check if a WordGraphView is valid.
   //!
-  //! Return a human readable representation of a WordGraphView object.
+  //! This function checks whether \p wgv is valid.
   //!
-  //! \tparam Node the type of the nodes in the underlying WordGraph.
+  //! \tparam Node the type of the nodes in \p wgv.
   //!
-  //! \param wgv the WordGraph object.
+  //! \param wgv the word graph view to validate.
   //!
-  //! \returns A string containing the representation.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
+  //! \throws LibsemigroupsException if any of the following hold:
+  //! * the underlying WordGraph object of \p wgv has not been set;
+  //! * the values \ref WordGraphView::start_node() is strictly greater than
+  //! \ref WordGraphView::end_node();
+  //! * any target in the portion of the underlying WordGraph represented by
+  //! \ref wgv is greater than or equal to \ref WordGraphView::number_of_nodes.
   template <typename Node>
-  [[nodiscard]] std::string
-  to_human_readable_repr(WordGraphView<Node> const& wgv);
+  void validate(WordGraphView<Node> const& wgv) {
+    // NOTE: WordGraphView::throw_if_invalid_view is required because it calls
+    // at least one private mem fn of WordGraphView
+    wgv.throw_if_invalid_view();
+    word_graph::throw_if_any_target_out_of_bounds(
+        wgv, wgv.cbegin_nodes(), wgv.cend_nodes());
+  }
 }  // namespace libsemigroups
 
 #include "libsemigroups/word-graph-view-helpers.tpp"

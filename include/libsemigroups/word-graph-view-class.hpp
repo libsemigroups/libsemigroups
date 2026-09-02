@@ -1154,6 +1154,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! throw_if_invalid_range.
+    // NOTE This function does not check that the targets of the edges are not
+    // out of range, this is another reason to make this private maybe in v4.
     // TODO(v4) rename -> throw_if_invalid
     void throw_if_invalid_view() const {
       throw_if_graph_is_nullptr();
@@ -1173,17 +1175,6 @@ namespace libsemigroups {
       detail::throw_if_not_less(start, end + 1, "start ");
     }
   };  // class WordGraphView
-
-  // TODO to_human_readable_repr etc
-
-  // TODO doc
-  template <typename Node>
-  void validate(WordGraphView<Node> const& wgv) {
-    // NOTE: WordGraphView::throw_if_invalid_view is required because it calls
-    // at least one private mem fn of WordGraphView
-    wgv.throw_if_invalid_view();
-  }
-
 }  // namespace libsemigroups
 #include "word-graph-view-class.tpp"
 
