@@ -931,7 +931,10 @@ namespace libsemigroups {
     //!
     //! \returns True if this and that have the same number of nodes, out
     //! degree, and range over nodes with identical values and targets.
-    // TODO(v4) should be a helper
+    // TODO(v4) should be a helper, can't currently deprecate it because this
+    // file is included in (e.g.) sims.cpp, making the compiler give deprecation
+    // warnings which there's no way to get rid of legitimately (i.e. without
+    // pragma suppressing them).
     [[nodiscard]] bool equal_to_no_checks(WordGraphView const& that) const;
 
     //! \brief Compares two word graph views to see if they are equal.
