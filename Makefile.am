@@ -248,6 +248,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/value-guard.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.tpp
 
 if USE_BUNDLED_CATCH
 catch2includedir = $(includedir)/libsemigroups/Catch2-3.14.0/

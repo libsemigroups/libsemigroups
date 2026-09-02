@@ -22,12 +22,93 @@
 
 // #include <algorithm>  // for lexicographical_...
 
-#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/order.hpp"      // for lex_cmp
 #include "libsemigroups/types.hpp"      // for word_type
 
 namespace libsemigroups {
   namespace detail {
+
+    //////////////////////////////////////////////////////////////////
+    // wio
+    //////////////////////////////////////////////////////////////////
+
+    const_wio_iterator::const_wio_iterator() noexcept                 = default;
+    const_wio_iterator::const_wio_iterator(const_wio_iterator const&) = default;
+    const_wio_iterator::const_wio_iterator(const_wio_iterator&&) noexcept
+        = default;
+    const_wio_iterator& const_wio_iterator::operator=(const_wio_iterator const&)
+        = default;
+    const_wio_iterator&
+    const_wio_iterator::operator=(const_wio_iterator&&) noexcept
+        = default;
+    const_wio_iterator::~const_wio_iterator() = default;
+
+    const_wio_iterator const& const_wio_iterator::operator++() noexcept {
+      if (_index != UNDEFINED) {
+        ++_index;
+
+        // We need flipped_cmp so that we can maintain a min-heap, rather than a
+        // max-heap
+        auto const& flipped_cmp
+            = [&cmp = this->_cmp](word_type const& lhs, word_type const& rhs) {
+                return cmp(rhs, lhs);
+              };
+
+        // Get the next word
+        do {
+          if (_frontier.empty()) {
+            _index = UNDEFINED;
+            break;
+          }
+          LIBSEMIGROUPS_ASSERT(!_frontier.empty());
+          std::pop_heap(_frontier.begin(), _frontier.end(), flipped_cmp);
+          _current = _frontier.back();
+          _frontier.pop_back();
+
+          if (_current.size() < _upper_bound) {
+            // Update the frontier with words of length at most _upper_bound
+            for (letter_type a : _alphabet.letters()) {
+              word_type new_word = _current;
+              new_word.push_back(a);
+              if (!_cmp(_last, new_word)) {
+                _frontier.push_back(new_word);
+                std::push_heap(_frontier.begin(), _frontier.end(), flipped_cmp);
+              }
+            }
+          }
+        } while (_cmp(_current, _first));
+        LIBSEMIGROUPS_ASSERT(_current.size() <= _upper_bound);
+        LIBSEMIGROUPS_ASSERT(!_cmp(_last, _current));
+      }
+      return *this;
+    }
+
+    void const_wio_iterator::swap(const_wio_iterator& that) noexcept {
+      std::swap(_index, that._index);
+      std::swap(_upper_bound, that._upper_bound);
+      std::swap(_first, that._first);
+      std::swap(_last, that._last);
+      std::swap(_frontier, that._frontier);
+      std::swap(_alphabet, that._alphabet);
+      std::swap(_cmp, that._cmp);
+      _current.swap(that._current);
+    }
+
+    // Assert that the forward iterator requirements are met
+    static_assert(std::is_default_constructible<const_wio_iterator>::value,
+                  "forward iterator requires default-constructible");
+    static_assert(std::is_copy_constructible<const_wio_iterator>::value,
+                  "forward iterator requires copy-constructible");
+    static_assert(std::is_copy_assignable<const_wio_iterator>::value,
+                  "forward iterator requires copy-assignable");
+    static_assert(std::is_destructible<const_wio_iterator>::value,
+                  "forward iterator requires destructible");
+
+    //////////////////////////////////////////////////////////////////
+    // wilo
+    //////////////////////////////////////////////////////////////////
+
     const_wilo_iterator::const_wilo_iterator() noexcept = default;
     const_wilo_iterator::const_wilo_iterator(const_wilo_iterator const&)
         = default;
@@ -92,6 +173,10 @@ namespace libsemigroups {
                   "forward iterator requires copy-assignable");
     static_assert(std::is_destructible<const_wilo_iterator>::value,
                   "forward iterator requires destructible");
+
+    //////////////////////////////////////////////////////////////////
+    // wislo
+    //////////////////////////////////////////////////////////////////
 
     const_wislo_iterator::const_wislo_iterator() noexcept = default;
     const_wislo_iterator::const_wislo_iterator(const_wislo_iterator const&)
