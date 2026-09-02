@@ -17,6 +17,7 @@
 //
 
 #include <cstddef>  // for size_t
+#include <sstream>  // for ostringstream
 #include <utility>  // for std::move, std::ignore
 #include <vector>   // for vector
 
@@ -628,6 +629,18 @@ namespace libsemigroups {
             == "view(3, [[1, 2], [2, 0], [0, 1]])");
     REQUIRE_THROWS_AS(to_input_string(view, "", "{", ""),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "028", "operator<<", "[quick]") {
+    auto rg = ReportGuard(false);
+
+    auto graph
+        = make<WordGraph<size_t>>(5, {{0, 0}, {2, 3}, {3, 1}, {1, 2}, {4, 4}});
+    WordGraphView view(graph, 1, 4);
+
+    std::ostringstream oss;
+    oss << view;
+    REQUIRE(oss.str() == "{3, {{1, 2}, {2, 0}, {0, 1}}}");
   }
 
 }  // namespace libsemigroups

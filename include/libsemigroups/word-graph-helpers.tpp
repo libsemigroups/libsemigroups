@@ -593,12 +593,6 @@ namespace libsemigroups {
   // Non-member functions
   //////////////////////////////////////////////////////////////////////////////
 
-  template <typename Node>
-  std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg) {
-    os << to_input_string(wg, "{", "{}", "}");
-    return os;
-  }
-
   // TODO(1) refactor to use vectors api, not initializer_list
   template <typename Return>
   std::enable_if_t<is_specialization_of_v<Return, WordGraph>, Return>

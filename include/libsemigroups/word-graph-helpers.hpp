@@ -3161,7 +3161,9 @@ namespace libsemigroups {
   //! \exceptions
   //! \no_libsemigroups_except
   template <typename Node>
-  std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg);
+  std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg) {
+    return os << WordGraphView(wg);
+  }
 
   //! \defgroup make_word_graph_group make<WordGraph>
   //! \ingroup word_graph_group
@@ -3213,8 +3215,8 @@ namespace libsemigroups {
   //! \ingroup make_word_graph_group
   //!
   // clang-format off
-    // NOLINTNEXTLINE(whitespace/line_length)
-    //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>)
+  // NOLINTNEXTLINE(whitespace/line_length)
+  //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>)
   // clang-format on
   template <typename Return>
   [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
