@@ -882,28 +882,6 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    bool is_standardized(WordGraphView<Node> const& wg, Order val) {
-      if (wg.number_of_nodes_no_checks() <= 1) {
-        return true;
-      }
-
-      switch (val) {
-        case Order::none:
-          return true;
-        case Order::lenlex:
-          return detail::is_lenlex_standardized(wg);
-        case Order::lex:
-          return detail::is_lex_standardized(wg);
-        case Order::rpo:
-          return detail::is_rpo_standardized(wg);
-        case Order::rev_rpo:
-          return detail::is_rev_rpo_standardized(wg);
-        default:
-          LIBSEMIGROUPS_EXCEPTION("not yet implemented")
-      }
-    }
-
-    template <typename Node>
     // TODO rename to _no_checks and add a checks version?
     bool is_strictly_cyclic(WordGraphView<Node> const& wgv) {
       using node_type = typename WordGraphView<Node>::node_type;
@@ -939,15 +917,6 @@ namespace libsemigroups {
       return false;
     }
 
-    // TODO(v4) rm
-    template <typename Node>
-    std::pair<Node, word_type::const_iterator>
-    last_node_on_path_no_checks(WordGraphView<Node> const& wgv,
-                                Node                       source,
-                                word_type const&           w) {
-      return last_node_on_path_no_checks(wgv, source, w.cbegin(), w.cend());
-    }
-
     template <typename Node, typename Iterator>
     std::pair<Node, Iterator> last_node_on_path(WordGraphView<Node> const& wgv,
                                                 Node     source,
@@ -957,15 +926,6 @@ namespace libsemigroups {
           source, wgv.number_of_nodes_no_checks(), "node ");
       detail::throw_if_any_not_less(first, last, wgv.out_degree(), "label ");
       return last_node_on_path_no_checks(wgv, source, first, last);
-    }
-
-    // TODO(v4) rm
-    template <typename Node>
-    std::pair<Node, word_type::const_iterator>
-    last_node_on_path(WordGraphView<Node> const& wgv,
-                      Node                       source,
-                      word_type const&           w) {
-      return last_node_on_path(wgv, source, w.cbegin(), w.cend());
     }
 
     // TODO(1) tests
