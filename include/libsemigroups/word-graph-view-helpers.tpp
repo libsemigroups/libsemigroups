@@ -917,7 +917,8 @@ namespace libsemigroups {
                                                 Node     source,
                                                 Iterator first,
                                                 Iterator last) {
-      detail::throw_if_not_less(source, wgv.out_degree(), "node ");
+      detail::throw_if_not_less(
+          source, wgv.number_of_nodes_no_checks(), "node ");
       detail::throw_if_any_not_less(first, last, wgv.out_degree(), "label ");
       return last_node_on_path_no_checks(wgv, source, first, last);
     }
