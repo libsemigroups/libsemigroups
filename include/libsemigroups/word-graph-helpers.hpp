@@ -633,7 +633,7 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
-    // TODO deprecate in favour of the iterator overload
+    // TODO(v4) deprecate in favour of the iterator overload
     template <typename Node>
     [[deprecated("Use the overload taking an iterator range "
                  "instead")]] [[nodiscard]] Node
@@ -914,13 +914,13 @@ namespace libsemigroups {
     //! \note This function ignores out of bound targets in \p wg (if any).
     //!
     //! \warning This function does not check that its arguments are valid.
-    // TODO deprecate
+    // TODO(v4) deprecate, requires implementing a 7-arg iterator version first
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_compatible_no_checks(WordGraph<Node> const& wg,
-                                 Iterator1              first_node,
-                                 Iterator2              last_node,
-                                 word_type const&       lhs,
-                                 word_type const&       rhs) {
+    [[nodiscard]] bool is_compatible_no_checks(WordGraph<Node> const& wg,
+                                               Iterator1        first_node,
+                                               Iterator2        last_node,
+                                               word_type const& lhs,
+                                               word_type const& rhs) {
       return is_compatible_no_checks(
           WordGraphView(wg), first_node, last_node, lhs, rhs);
     }
@@ -956,13 +956,13 @@ namespace libsemigroups {
     //! between
     //! \p first_rule and \p last_rule contains an invalid label (i.e. one
     //! greater than or equal to WordGraph::out_degree).
-    // TODO deprecate
+    // TODO(v4) deprecate, requires implementing a 7-arg iterator version first
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_compatible(WordGraph<Node> const& wg,
-                       Iterator1              first_node,
-                       Iterator2              last_node,
-                       word_type const&       lhs,
-                       word_type const&       rhs) {
+    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
+                                     Iterator1              first_node,
+                                     Iterator2              last_node,
+                                     word_type const&       lhs,
+                                     word_type const&       rhs) {
       return is_compatible(WordGraphView(wg), first_node, last_node, lhs, rhs);
     }
 
@@ -1244,8 +1244,8 @@ namespace libsemigroups {
     //! \deprecated_warning{function} Use
     //! \ref is_standardized(WordGraph<Node> const&, Cmp&&) instead.
     template <typename Node>
-    [[deprecated(
-        "Use is_standardized(WordGraph<Node> const&, Cmp&&) instead.")]] bool
+    [[deprecated("Use is_standardized(WordGraph<Node> const&, Cmp&&) "
+                 "instead.")]] [[nodiscard]] bool
     is_standardized(WordGraph<Node> const& wg, Order val = Order::lenlex) {
       return is_standardized(WordGraphView(wg), val);
     }
@@ -1269,7 +1269,7 @@ namespace libsemigroups {
     //! \sa
     //! standardize.
     template <typename Node, typename Cmp>
-    bool is_standardized(WordGraph<Node> const& wg, Cmp&& cmp) {
+    [[nodiscard]] bool is_standardized(WordGraph<Node> const& wg, Cmp&& cmp) {
       return is_standardized(WordGraphView<Node>(wg), std::forward<Cmp>(cmp));
     }
 
