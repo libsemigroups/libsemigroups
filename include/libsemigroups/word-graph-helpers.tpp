@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2025-2026 Nadim Searight
+// Copyright (C) 2025-2026 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -84,6 +84,29 @@ namespace libsemigroups {
           y,
           word_graph::number_of_nodes_reachable_from(y, yroot),
           yroot);
+    }
+
+    template <typename Subclass>
+    template <typename Node1, typename Node2, typename>
+    bool JoinerMeeterCommon<Subclass>::is_subrelation_no_checks(
+        WordGraph<Node1> const& x,
+        Node2                   xroot,
+        WordGraph<Node1> const& y,
+        Node2                   yroot) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return is_subrelation_no_checks(
+          x, static_cast<Node1>(xroot), y, static_cast<Node1>(yroot));
+    }
+
+    template <typename Subclass>
+    template <typename Node1, typename Node2, typename>
+    bool JoinerMeeterCommon<Subclass>::is_subrelation(WordGraph<Node1> const& x,
+                                                      Node2 xroot,
+                                                      WordGraph<Node1> const& y,
+                                                      Node2 yroot) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return is_subrelation(
+          x, static_cast<Node1>(xroot), y, static_cast<Node1>(yroot));
     }
 
     template <typename Graph>
@@ -333,45 +356,6 @@ namespace libsemigroups {
       wg.target(*(last - 1), 0, *first);
     }
 
-    // not noexcept because it throws an exception!
-    // TODO(v4): rm
-    template <typename Node>
-    void throw_if_node_out_of_bounds(WordGraph<Node> const& wg, Node v) {
-      detail::throw_if_not_less(v, wg.number_of_nodes(), "node ");
-    }
-
-    // TODO(v4): rm
-    template <typename Node, typename Iterator1, typename Iterator2>
-    void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
-                                     Iterator1              first,
-                                     Iterator2              last) {
-      detail::throw_if_any_not_less(first, last, wg.number_of_nodes(), "node ");
-    }
-
-    // TODO(v4): rm
-    template <typename Node>
-    void
-    throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
-                                 typename WordGraph<Node>::label_type lbl) {
-      detail::throw_if_not_less(lbl, wg.out_degree(), "label ");
-    }
-
-    // TODO(v4): rm
-    template <typename Node>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
-                                      word_type const&       word) {
-      detail::throw_if_any_not_less(
-          word.begin(), word.end(), wg.out_degree(), "label ");
-    }
-
-    // TODO(v4): rm
-    template <typename Node, typename Iterator>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
-                                      Iterator               first,
-                                      Iterator               last) {
-      detail::throw_if_any_not_less(first, last, wg.out_degree(), "label ");
-    }
-
     template <typename Graph, typename Cmp>
     bool standardize_no_checks(Graph& wg, Forest& f, Cmp&& cmp) {
       if (wg.number_of_nodes() == 0) {
@@ -444,40 +428,6 @@ namespace libsemigroups {
       return standardizer.standardize();
     }
 
-    template <typename Graph>
-    std::pair<bool, Forest> standardize_no_checks(Graph& wg, Order val) {
-      Forest f;
-      bool   result = standardize_no_checks(wg, f, val);
-      return std::make_pair(result, f);
-    }
-
-    template <typename Graph>
-    bool standardize_no_checks(Graph& wg, Forest& f, Order val) {
-      if (wg.number_of_nodes() == 0) {
-        return false;
-      }
-
-      if (f.number_of_nodes() == 0) {
-        f.add_nodes(1);
-      }
-
-      switch (val) {
-        case Order::none:
-          return false;
-        case Order::lenlex:
-          return detail::lenlex_standardize(wg, f);
-        case Order::lex:
-          return detail::lex_standardize(wg, f);
-        case Order::rpo:
-          return detail::rpo_standardize(wg, f);
-        case Order::rev_rpo:
-          return detail::rev_rpo_standardize(wg, f);
-          // Intentional fall-through
-        default:
-          return false;
-      }
-    }
-
     // This must be implemented here because throw_if_any_target_out_of_bounds
     // is declared after standardize in the header.
     template <typename Graph, typename Cmp>
@@ -492,22 +442,6 @@ namespace libsemigroups {
     std::pair<bool, Forest> standardize(Graph& wg, Cmp&& cmp) {
       throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
       return standardize_no_checks(wg, std::forward<Cmp>(cmp));
-    }
-
-    // This must be implemented here because throw_if_any_target_out_of_bounds
-    // is declared after standardize in the header.
-    template <typename Graph>
-    bool standardize(Graph& wg, Forest& f, Order val) {
-      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
-      return standardize_no_checks(wg, f, val);
-    }
-
-    // This must be implemented here because throw_if_any_target_out_of_bounds
-    // is declared after standardize in the header.
-    template <typename Graph>
-    std::pair<bool, Forest> standardize(Graph& wg, Order val) {
-      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
-      return standardize_no_checks(wg, val);
     }
 
     template <typename Node>
@@ -757,6 +691,22 @@ namespace libsemigroups {
     return _uf.number_of_blocks() == ynum_nodes_reachable_from_root;
   }
 
+  template <typename Node1, typename Node2, typename>
+  bool Joiner::is_subrelation_no_checks(WordGraph<Node1> const& x,
+                                        size_t xnum_nodes_reachable_from_root,
+                                        Node2  xroot,
+                                        WordGraph<Node1> const& y,
+                                        size_t ynum_nodes_reachable_from_root,
+                                        Node2  yroot) {
+    static_assert(sizeof(Node2) <= sizeof(Node1));
+    return is_subrelation_no_checks(x,
+                                    xnum_nodes_reachable_from_root,
+                                    static_cast<Node1>(xroot),
+                                    y,
+                                    ynum_nodes_reachable_from_root,
+                                    static_cast<Node1>(yroot));
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   // Meeter
   ////////////////////////////////////////////////////////////////////////////////
@@ -790,7 +740,7 @@ namespace libsemigroups {
           auto xa = x.target_no_checks(source.first, a);
           auto ya = y.target_no_checks(source.second, a);
           if (xa != UNDEFINED && ya != UNDEFINED) {
-            target = std::pair(x.target_no_checks(source.first, a),
+            target              = std::pair(x.target_no_checks(source.first, a),
                                y.target_no_checks(source.second, a));
             auto [it, inserted] = _lookup.emplace(target, next);
 
@@ -825,6 +775,22 @@ namespace libsemigroups {
                              ynum_nodes_reachable_from_root,
                              yroot);
     return xy.number_of_nodes() == xnum_nodes_reachable_from_root;
+  }
+
+  template <typename Node1, typename Node2, typename>
+  bool Meeter::is_subrelation_no_checks(WordGraph<Node1> const& x,
+                                        size_t xnum_nodes_reachable_from_root,
+                                        Node2  xroot,
+                                        WordGraph<Node1> const& y,
+                                        size_t ynum_nodes_reachable_from_root,
+                                        Node2  yroot) {
+    static_assert(sizeof(Node2) <= sizeof(Node1));
+    return is_subrelation_no_checks(x,
+                                    xnum_nodes_reachable_from_root,
+                                    static_cast<Node1>(xroot),
+                                    y,
+                                    ynum_nodes_reachable_from_root,
+                                    static_cast<Node1>(yroot));
   }
 
   template <typename Node>
