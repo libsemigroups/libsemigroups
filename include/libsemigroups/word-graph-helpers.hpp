@@ -1032,6 +1032,34 @@ namespace libsemigroups {
       return is_complete_no_checks(WordGraphView(wg), first_node, last_node);
     }
 
+    //! \brief Check if every node has exactly WordGraph::out_degree
+    //! out-edges.
+    //!
+    //! This function returns \c true if the word graph \p wg is complete,
+    //! meaning that every node is the source of an edge with every possible
+    //! label; and \c false otherwise.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns Whether or not the word graph is complete.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
+    //!
+    //! \warning No checks are performed on the argument.
+    //!
+    //! \sa is_complete_no_checks(WordGraphView<Node> const&).
+    template <typename Node>
+    [[nodiscard]] bool
+    is_complete_no_checks(WordGraph<Node> const& wg) noexcept {
+      return is_complete_no_checks(WordGraphView(wg));
+    }
+
     //! \brief Check if every node in a range has exactly
     //! WordGraph::out_degree out-edges.
     //!
