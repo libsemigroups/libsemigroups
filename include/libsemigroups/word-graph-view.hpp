@@ -22,4 +22,6 @@
 #include "word-graph-view-class.hpp"
 #include "word-graph-view-helpers.hpp"
 
+#include "word-graph-view-helpers-deprecated.hpp"
+
 #endif  // LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_
