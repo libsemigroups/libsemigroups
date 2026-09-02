@@ -358,7 +358,7 @@ namespace libsemigroups {
     template <typename Node>
     std::unordered_set<Node> ancestors_of(WordGraphView<Node> const& wgv,
                                           Node                       target) {
-      ::libsemigroups::detail::throw_if_not_less(
+      detail::throw_if_not_less(
           target, wgv.number_of_nodes_no_checks(), "node ");
       return ancestors_of_no_checks(wgv, target);
     }
@@ -456,8 +456,7 @@ namespace libsemigroups {
                                Iterator                   first,
                                Iterator                   last) noexcept {
       static_assert(sizeof(Node) <= sizeof(size_t));
-      if constexpr (::libsemigroups::detail::HasLessEqual<Iterator,
-                                                          Iterator>::value) {
+      if constexpr (detail::HasLessEqual<Iterator, Iterator>::value) {
         if (last <= first) {
           return source;
         }
@@ -480,10 +479,9 @@ namespace libsemigroups {
                      Iterator                   last) {
       static_assert(sizeof(Node) <= sizeof(size_t));
 
-      ::libsemigroups::detail::throw_if_not_less(
+      detail::throw_if_not_less(
           source, wgv.number_of_nodes_no_checks(), "node ");
-      ::libsemigroups::detail::throw_if_any_not_less(
-          first, last, wgv.out_degree(), "label ");
+      detail::throw_if_any_not_less(first, last, wgv.out_degree(), "label ");
       return follow_path_no_checks(wgv, source, first, last);
     }
 
@@ -537,7 +535,7 @@ namespace libsemigroups {
 
     template <typename Node>
     bool is_acyclic(WordGraphView<Node> const& wgv, Node source) {
-      ::libsemigroups::detail::throw_if_not_less(
+      detail::throw_if_not_less(
           source, wgv.number_of_nodes_no_checks(), "node ");
       auto const       N = wgv.number_of_nodes_no_checks();
       std::stack<Node> stck;
@@ -556,9 +554,9 @@ namespace libsemigroups {
 
     template <typename Node>
     bool is_acyclic(WordGraphView<Node> const& wgv, Node source, Node target) {
-      ::libsemigroups::detail::throw_if_not_less(
+      detail::throw_if_not_less(
           source, wgv.number_of_nodes_no_checks(), "node ");
-      ::libsemigroups::detail::throw_if_not_less(
+      detail::throw_if_not_less(
           target, wgv.number_of_nodes_no_checks(), "node ");
       if (!is_reachable(wgv, source, target)) {
         return true;
@@ -635,9 +633,9 @@ namespace libsemigroups {
                        Iterator2                  last_node,
                        word_type const&           lhs,
                        word_type const&           rhs) {
-      using ::libsemigroups::detail::throw_if_any_not_less;
+      using detail::throw_if_any_not_less;
 
-      ::libsemigroups::detail::throw_if_any_not_less(
+      detail::throw_if_any_not_less(
           first_node, last_node, wgv.number_of_nodes_no_checks(), "node ");
       throw_if_any_not_less(lhs.begin(), lhs.end(), wgv.out_degree(), "label ");
       throw_if_any_not_less(rhs.begin(), rhs.end(), wgv.out_degree(), "label ");
@@ -654,9 +652,9 @@ namespace libsemigroups {
                        Iterator2                  last_node,
                        Iterator3                  first_rule,
                        Iterator3                  last_rule) {
-      using ::libsemigroups::detail::throw_if_any_not_less;
+      using detail::throw_if_any_not_less;
 
-      ::libsemigroups::detail::throw_if_any_not_less(
+      detail::throw_if_any_not_less(
           first_node, last_node, wgv.number_of_nodes_no_checks(), "node ");
       for (auto rit = first_rule; rit < last_rule; rit += 2) {
         throw_if_any_not_less(
@@ -691,7 +689,7 @@ namespace libsemigroups {
     bool is_complete(WordGraphView<Node> const& wgv,
                      Iterator1                  first_node,
                      Iterator2                  last_node) {
-      ::libsemigroups::detail::throw_if_any_not_less(
+      detail::throw_if_any_not_less(
           first_node, last_node, wgv.number_of_nodes_no_checks(), "node ");
       return is_complete_no_checks(wgv, first_node, last_node);
     }
@@ -703,7 +701,7 @@ namespace libsemigroups {
         return true;
       }
 
-      ::libsemigroups::detail::Duf<> uf(N);
+      detail::Duf<> uf(N);
       for (auto s : wgv.nodes_no_checks()) {
         for (auto t : wgv.targets_no_checks(s)) {
           if (t < N) {
@@ -763,9 +761,9 @@ namespace libsemigroups {
     bool is_reachable(WordGraphView<Node> const& wgv,
                       Node                       source,
                       Node                       target) {
-      ::libsemigroups::detail::throw_if_not_less(
+      detail::throw_if_not_less(
           source, wgv.number_of_nodes_no_checks(), "node ");
-      ::libsemigroups::detail::throw_if_not_less(
+      detail::throw_if_not_less(
           target, wgv.number_of_nodes_no_checks(), "node ");
       return is_reachable_no_checks(wgv, source, target);
     }
@@ -919,10 +917,8 @@ namespace libsemigroups {
                                                 Node     source,
                                                 Iterator first,
                                                 Iterator last) {
-      ::libsemigroups::detail::throw_if_not_less(
-          source, wgv.out_degree(), "node ");
-      ::libsemigroups::detail::throw_if_any_not_less(
-          first, last, wgv.out_degree(), "label ");
+      detail::throw_if_not_less(source, wgv.out_degree(), "node ");
+      detail::throw_if_any_not_less(first, last, wgv.out_degree(), "label ");
       return last_node_on_path_no_checks(wgv, source, first, last);
     }
 
@@ -1009,8 +1005,7 @@ namespace libsemigroups {
                        Node                       root,
                        Forest&                    f,
                        size_t                     max_depth) {
-      ::libsemigroups::detail::throw_if_not_less(
-          root, wgv.number_of_nodes_no_checks(), "node ");
+      detail::throw_if_not_less(root, wgv.number_of_nodes_no_checks(), "node ");
       return spanning_tree_no_checks(wgv, root, f, max_depth);
     }
 

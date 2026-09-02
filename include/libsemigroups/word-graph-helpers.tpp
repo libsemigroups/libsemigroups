@@ -162,9 +162,8 @@ namespace libsemigroups {
 
      private:
       inline node_type max_node() const noexcept {
-        if constexpr (std::is_base_of_v<
-                          ::libsemigroups::detail::NodeManagedGraph<node_type>,
-                          Graph>) {
+        if constexpr (std::is_base_of_v<detail::NodeManagedGraph<node_type>,
+                                        Graph>) {
           return _wg.number_of_nodes_active() - 1;
         } else {
           return _wg.number_of_nodes() - 1;
@@ -354,8 +353,7 @@ namespace libsemigroups {
     // TODO(v4): rm
     template <typename Node>
     void throw_if_node_out_of_bounds(WordGraph<Node> const& wg, Node v) {
-      ::libsemigroups::detail::throw_if_not_less(
-          v, wg.number_of_nodes(), "node ");
+      detail::throw_if_not_less(v, wg.number_of_nodes(), "node ");
     }
 
     // TODO(v4): rm
@@ -363,8 +361,7 @@ namespace libsemigroups {
     void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
                                      Iterator1              first,
                                      Iterator2              last) {
-      ::libsemigroups::detail::throw_if_any_not_less(
-          first, last, wg.number_of_nodes(), "node ");
+      detail::throw_if_any_not_less(first, last, wg.number_of_nodes(), "node ");
     }
 
     // TODO(v4): rm
@@ -372,15 +369,14 @@ namespace libsemigroups {
     void
     throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
                                  typename WordGraph<Node>::label_type lbl) {
-      ::libsemigroups::detail::throw_if_not_less(
-          lbl, wg.out_degree(), "label ");
+      detail::throw_if_not_less(lbl, wg.out_degree(), "label ");
     }
 
     // TODO(v4): rm
     template <typename Node>
     void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
                                       word_type const&       word) {
-      ::libsemigroups::detail::throw_if_any_not_less(
+      detail::throw_if_any_not_less(
           word.begin(), word.end(), wg.out_degree(), "label ");
     }
 
@@ -389,8 +385,7 @@ namespace libsemigroups {
     void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
                                       Iterator               first,
                                       Iterator               last) {
-      ::libsemigroups::detail::throw_if_any_not_less(
-          first, last, wg.out_degree(), "label ");
+      detail::throw_if_any_not_less(first, last, wg.out_degree(), "label ");
     }
 
     template <typename Graph, typename Cmp>
@@ -416,10 +411,9 @@ namespace libsemigroups {
         return detail::rev_rpo_standardize(wg, f);
       }
 
-      using node_type  = typename Graph::node_type;
-      using label_type = typename Graph::label_type;
-      using FrontierCandidate_
-          = ::libsemigroups::detail::FrontierCandidate<node_type>;
+      using node_type          = typename Graph::node_type;
+      using label_type         = typename Graph::label_type;
+      using FrontierCandidate_ = detail::FrontierCandidate<node_type>;
 
       size_t const                    n = wg.out_degree();
       detail::Standardizer<Graph>     standardizer(wg, f);
@@ -500,33 +494,35 @@ namespace libsemigroups {
       }
     }
 
+    // This must be implemented here because throw_if_any_target_out_of_bounds
+    // is declared after standardize in the header.
     template <typename Graph, typename Cmp>
     bool standardize(Graph& wg, Forest& f, Cmp&& cmp) {
-      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(
-          wg, wg.cbegin_nodes(), wg.cend_nodes());
+      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
       return standardize_no_checks(wg, f, std::forward<Cmp>(cmp));
     }
 
+    // This must be implemented here because throw_if_any_target_out_of_bounds
+    // is declared after standardize in the header.
     template <typename Graph, typename Cmp>
     std::pair<bool, Forest> standardize(Graph& wg, Cmp&& cmp) {
-      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(
-          wg, wg.cbegin_nodes(), wg.cend_nodes());
+      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
       return standardize_no_checks(wg, std::forward<Cmp>(cmp));
     }
 
-    // TODO move back to hpp? or add comment about why here
+    // This must be implemented here because throw_if_any_target_out_of_bounds
+    // is declared after standardize in the header.
     template <typename Graph>
     bool standardize(Graph& wg, Forest& f, Order val) {
-      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(
-          wg, wg.cbegin_nodes(), wg.cend_nodes());
+      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
       return standardize_no_checks(wg, f, val);
     }
 
-    // TODO move back to hpp? or add comment about why here
+    // This must be implemented here because throw_if_any_target_out_of_bounds
+    // is declared after standardize in the header.
     template <typename Graph>
     std::pair<bool, Forest> standardize(Graph& wg, Order val) {
-      libsemigroups::word_graph::throw_if_any_target_out_of_bounds(
-          wg, wg.cbegin_nodes(), wg.cend_nodes());
+      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
       return standardize_no_checks(wg, val);
     }
 
