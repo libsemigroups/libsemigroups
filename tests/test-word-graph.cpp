@@ -1515,4 +1515,47 @@ namespace libsemigroups {
           }));
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "063",
+                          "equal_to and equal_to_no_checks",
+                          "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
+    auto graph1 = make<WordGraph<size_t>>(3, {{1, 0}, {0, 1}, {0, 1}});
+    auto graph2 = make<WordGraph<size_t>>(3, {{1, 0}, {0, 1}, {1, 0}});
+    auto graph3 = make<WordGraph<size_t>>(3, {{1, 0}, {0, 1}, {0, 1}});
+
+    REQUIRE(word_graph::equal_to_no_checks(graph1, graph1));
+    REQUIRE(word_graph::equal_to(graph1, graph1));
+    REQUIRE(word_graph::equal_to_no_checks(graph1, graph3));
+    REQUIRE(word_graph::equal_to(graph1, graph3));
+    REQUIRE(!word_graph::equal_to_no_checks(graph1, graph2));
+    REQUIRE(!word_graph::equal_to(graph1, graph2));
+
+    std::vector<size_t> const equal_nodes = {0, 1};
+    REQUIRE(word_graph::equal_to_no_checks(
+        graph1, graph2, equal_nodes.cbegin(), equal_nodes.cend()));
+    REQUIRE(word_graph::equal_to(
+        graph1, graph2, equal_nodes.cbegin(), equal_nodes.cend()));
+    std::vector<size_t> const unequal_nodes = {1, 2};
+    REQUIRE(!word_graph::equal_to_no_checks(
+        graph1, graph2, unequal_nodes.cbegin(), unequal_nodes.cend()));
+    REQUIRE(!word_graph::equal_to(
+        graph1, graph2, unequal_nodes.cbegin(), unequal_nodes.cend()));
+
+    auto different_size = make<WordGraph<size_t>>(2, {{1, 0}, {0, 1}});
+    REQUIRE(!word_graph::equal_to_no_checks(graph1, different_size));
+    REQUIRE(!word_graph::equal_to(graph1, different_size));
+
+    auto different_degree = make<WordGraph<size_t>>(3, {{1}, {0}, {1}});
+    REQUIRE(!word_graph::equal_to_no_checks(graph1, different_degree));
+    REQUIRE(!word_graph::equal_to(graph1, different_degree));
+
+    std::vector<size_t> const invalid_nodes = {3};
+    REQUIRE_THROWS_AS(
+        word_graph::equal_to(
+            graph1, graph2, invalid_nodes.cbegin(), invalid_nodes.cend()),
+        LibsemigroupsException);
+  }
 }  // namespace libsemigroups
