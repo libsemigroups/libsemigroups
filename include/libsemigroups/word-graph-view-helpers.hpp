@@ -1706,8 +1706,8 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  // template <typename Node>
-  // std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg);
+  template <typename Node>
+  std::ostream& operator<<(std::ostream& os, WordGraphView<Node> const&);
 
   //! \ingroup word_graph_group
   //!
@@ -1717,7 +1717,7 @@ namespace libsemigroups {
   //! This function returns a std::string containing the input required to
   //! construct the word graph represented by a the word graph view \p wgv.
   //!
-  //! \tparam Node the type of the nodes of \p wg.
+  //! \tparam Node the type of the nodes of \p .
   //!
   //! \param wgv the word graph view.
   //! \param prefix a prefix for the returned string (defaults to an empty
@@ -1735,6 +1735,8 @@ namespace libsemigroups {
                                             std::string const& prefix = "",
                                             std::string const& braces = "{}",
                                             std::string const& suffix = "");
+
+  // TODO(later) does "make" make sense for WordGraphView?
   // TODO to_human_readable_repr etc
 }  // namespace libsemigroups
 

@@ -1126,6 +1126,14 @@ namespace libsemigroups {
     }
   }  // namespace word_graph
 
+  // This function is implemented here because it is declared by for
+  // to_input_string in the header.
+  template <typename Node>
+  std::ostream& operator<<(std::ostream& os, WordGraphView<Node> const& wgv) {
+    os << to_input_string(wgv, "{", "{}", "}");
+    return os;
+  }
+
   template <typename Node>
   std::string to_input_string(WordGraphView<Node> const& wgv,
                               std::string const&         prefix,
