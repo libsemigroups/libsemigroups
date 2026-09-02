@@ -3206,6 +3206,7 @@ namespace libsemigroups {
   //! \endcode
   // Passing the 2nd parameter "targets" by value disambiguates it from the
   // other make<WordGraph>.
+  // TODO(v4) deprecate
   template <typename Return>
   [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
                                  Return>
