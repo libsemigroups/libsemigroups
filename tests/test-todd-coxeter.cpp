@@ -204,8 +204,8 @@ namespace libsemigroups {
 
         std::unordered_map<node_type, word_type> map;
         for (auto const& w : words) {
-          node_type t
-              = follow_path_no_checks(tc.current_word_graph(), node_type(0), w);
+          node_type t = follow_path_no_checks(
+              tc.current_word_graph(), node_type(0), w.begin(), w.end());
           REQUIRE(t != UNDEFINED);
           if (t != 0) {
             map.emplace(t - 1, w);
@@ -238,7 +238,7 @@ namespace libsemigroups {
 
         for (auto const& w : words) {
           node_type t = word_graph::follow_path_no_checks(
-              tc.current_word_graph(), node_type(0), w);
+              tc.current_word_graph(), node_type(0), w.begin(), w.end());
           if (t != 0) {
             auto ww = w;
             map.emplace(t - 1, std::move(ww));

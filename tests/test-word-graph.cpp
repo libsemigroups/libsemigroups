@@ -717,8 +717,10 @@ namespace libsemigroups {
                           "[quick]") {
     WordGraph<size_t> wg = chain(20);
     for (auto it = cbegin_pilo(wg, 0); it != cend_pilo(wg); ++it) {
-      REQUIRE(word_graph::follow_path(wg, size_t(0), *it) == it.target());
-      REQUIRE(word_graph::follow_path_no_checks(wg, size_t(0), *it)
+      REQUIRE(word_graph::follow_path(wg, size_t(0), it->begin(), it->end())
+              == it.target());
+      REQUIRE(word_graph::follow_path_no_checks(
+                  wg, size_t(0), it->begin(), it->end())
               == it.target());
     }
   }
