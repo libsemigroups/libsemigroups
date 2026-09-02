@@ -348,7 +348,8 @@ namespace libsemigroups {
 
     auto expected2
         = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
-             return word_graph::follow_path(wg, size_t(0), ww) == 4;
+             return word_graph::follow_path(wg, size_t(0), ww.begin(), ww.end())
+                    == 4;
            }));
     REQUIRE((expected2 | count()) == 131'062);
     REQUIRE((w | skip_n(w.size_hint() - 1)).get().size() == 17);
@@ -431,7 +432,8 @@ namespace libsemigroups {
     REQUIRE(std::is_sorted(lprime.cbegin(), lprime.cend(), LexCmp()));
 
     auto rhs = (seq() | first_n(lprime.size()) | transform([&](auto i) {
-                  return tprime[follow_path(wg, S.size(), lprime[i])];
+                  return tprime[follow_path(
+                      wg, S.size(), lprime[i].begin(), lprime[i].end())];
                 })
                 | to_vector());
 
@@ -502,7 +504,8 @@ namespace libsemigroups {
     WordRange w;
     expected
         = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
-             return word_graph::follow_path(wg, size_t(0), ww) == 4;
+             return word_graph::follow_path(wg, size_t(0), ww.begin(), ww.end())
+                    == 4;
            })
            | to_vector());
     REQUIRE(expected.size() == 131'062);
@@ -977,7 +980,8 @@ namespace libsemigroups {
 
     auto checker1 = [&wg](word_type const& w) {
       return 10 <= w.size() && w.size() < 12
-             && word_graph::follow_path(wg, size_t(0), w) != UNDEFINED;
+             && word_graph::follow_path(wg, size_t(0), w.begin(), w.end())
+                    != UNDEFINED;
     };
 
     p.min(10).max(11);
@@ -1007,7 +1011,8 @@ namespace libsemigroups {
             == static_cast<uint64_t>((p | count())));
 
     auto checker2 = [&wg](word_type const& w) {
-      return w.size() <= 10 && word_graph::follow_path(wg, size_t(1), w) == 1;
+      return w.size() <= 10
+             && word_graph::follow_path(wg, size_t(1), w.begin(), w.end()) == 1;
     };
     REQUIRE((p | all_of(std::move(checker2))));
   }

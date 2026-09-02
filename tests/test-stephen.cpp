@@ -1373,10 +1373,11 @@ namespace libsemigroups {
     stephen::set_word(S, "aBbcABAabCc").run();
 
     REQUIRE(S.accept_state() == 4);
-    REQUIRE(word_graph::follow_path(S.word_graph_no_run(),
-                                    static_cast<uint32_t>(0),
-                                    to_word(S.word()))
-            == 4);
+    auto w = to_word(S.word());
+    REQUIRE(
+        word_graph::follow_path(
+            S.word_graph_no_run(), static_cast<uint32_t>(0), w.begin(), w.end())
+        == 4);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
   }
 

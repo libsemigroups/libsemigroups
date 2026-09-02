@@ -548,20 +548,19 @@ namespace libsemigroups {
     //! Linear in the length of \p path.
     // TODO(2) example
     // not noexcept because WordGraph::target isn't
-    // TODO deprecate in favour of the iterator version
     template <typename Node>
-    [[nodiscard]] Node follow_path(WordGraph<Node> const& wg,
-                                   Node                   from,
-                                   word_type const&       path) {
+    [[deprecated("Use the overload taking an iterator range "
+                 "instead")]] [[nodiscard]] Node
+    follow_path(WordGraph<Node> const& wg, Node from, word_type const& path) {
       return follow_path(WordGraphView(wg), from, path.cbegin(), path.cend());
     }
 
     template <typename Node1,
               typename Node2,
               typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
-    [[deprecated]] [[nodiscard]] Node1 follow_path(WordGraph<Node1> const& wg,
-                                                   Node2                   from,
-                                                   word_type const& path) {
+    [[deprecated("Use the overload with a single Node parameter and taking an "
+                 "iterator range instead")]] [[nodiscard]] Node1
+    follow_path(WordGraph<Node1> const& wg, Node2 from, word_type const& path) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return follow_path(wg, static_cast<Node1>(from), path);
     }
@@ -636,9 +635,11 @@ namespace libsemigroups {
     //! No checks on the arguments of this function are performed.
     // TODO deprecate in favour of the iterator overload
     template <typename Node>
-    [[nodiscard]] Node follow_path_no_checks(WordGraph<Node> const& wg,
-                                             Node                   from,
-                                             word_type const& path) noexcept {
+    [[deprecated("Use the overload taking an iterator range "
+                 "instead")]] [[nodiscard]] Node
+    follow_path_no_checks(WordGraph<Node> const& wg,
+                          Node                   from,
+                          word_type const&       path) noexcept {
       return follow_path_no_checks(
           WordGraphView(wg), from, path.cbegin(), path.cend());
     }
@@ -646,7 +647,8 @@ namespace libsemigroups {
     template <typename Node1,
               typename Node2,
               typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
-    [[deprecated]] [[nodiscard]] Node1
+    [[deprecated("Use the overload with a single Node parameter and taking an "
+                 "iterator range instead")]] [[nodiscard]] Node1
     follow_path_no_checks(WordGraph<Node1> const& wg,
                           Node2                   from,
                           word_type const&        path) noexcept {
@@ -1289,7 +1291,7 @@ namespace libsemigroups {
     //! A value of type `bool`.
     //!
     //! \throws LibsemigroupsException if any target in \p wg is out of
-    //! bounds.
+    //! bounds. TODO this may or may not be accurate
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
@@ -1396,11 +1398,13 @@ namespace libsemigroups {
               typename Node2,
               typename Iterator,
               typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
-    [[deprecated]] [[nodiscard]] std::pair<Node1, Iterator>
-    last_node_on_path(WordGraph<Node1> const& wg,
-                      Node2                   source,
-                      Iterator                first,
-                      Iterator                last) {
+    [[deprecated(
+        "Use the overload with a single Node parameter")]] [[nodiscard]] std::
+        pair<Node1, Iterator>
+        last_node_on_path(WordGraph<Node1> const& wg,
+                          Node2                   source,
+                          Iterator                first,
+                          Iterator                last) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return last_node_on_path(wg, static_cast<Node1>(source), first, last);
     }
@@ -1426,7 +1430,9 @@ namespace libsemigroups {
     //! letters in the word described by \p first and \p last belong to the
     //! range \c 0 to WordGraph::out_degree.
     template <typename Node>
-    std::pair<Node, word_type::const_iterator>
+    [[deprecated(
+        "Use the overload taking an iterator range "
+        "instead")]] [[nodiscard]] std::pair<Node, word_type::const_iterator>
     last_node_on_path_no_checks(WordGraph<Node> const& wg,
                                 Node                   source,
                                 word_type const&       w) {
@@ -1437,10 +1443,12 @@ namespace libsemigroups {
     template <typename Node1,
               typename Node2,
               typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
-    [[deprecated]] std::pair<Node1, word_type::const_iterator>
-    last_node_on_path_no_checks(WordGraph<Node1> const& wg,
-                                Node2                   source,
-                                word_type const&        w) {
+    [[deprecated("Use the overload with a single Node parameter and taking an "
+                 "iterator range instead")]] [[nodiscard]] std::
+        pair<Node1, word_type::const_iterator>
+        last_node_on_path_no_checks(WordGraph<Node1> const& wg,
+                                    Node2                   source,
+                                    word_type const&        w) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return last_node_on_path_no_checks(wg, static_cast<Node1>(source), w);
     }
@@ -1465,9 +1473,10 @@ namespace libsemigroups {
     //! WordGraph::number_of_nodes), the path labelled by the word exits the
     //! word graph, which is reflected in the result value of this function,
     //! but does not cause an exception to be thrown.
-    // TODO deprecate
     template <typename Node>
-    std::pair<Node, word_type::const_iterator>
+    [[deprecated(
+        "Use the overload taking an iterator range "
+        "instead")]] [[nodiscard]] std::pair<Node, word_type::const_iterator>
     last_node_on_path(WordGraph<Node> const& wg,
                       Node                   source,
                       word_type const&       w) {
@@ -1477,10 +1486,12 @@ namespace libsemigroups {
     template <typename Node1,
               typename Node2,
               typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
-    [[deprecated]] std::pair<Node1, word_type::const_iterator>
-    last_node_on_path(WordGraph<Node1> const& wg,
-                      Node2                   source,
-                      word_type const&        w) {
+    [[deprecated("Use the overload with a single Node parameter and taking an "
+                 "iterator range instead")]] [[nodiscard]] std::
+        pair<Node1, word_type::const_iterator>
+        last_node_on_path(WordGraph<Node1> const& wg,
+                          Node2                   source,
+                          word_type const&        w) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return last_node_on_path(wg, static_cast<Node1>(source), w);
     }

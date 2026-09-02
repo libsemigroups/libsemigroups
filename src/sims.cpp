@@ -198,9 +198,11 @@ namespace libsemigroups {
       node_type root  = 0;
 
       for (auto it = first; it != last; it += 2) {
-        auto l = word_graph::follow_path_no_checks(wg, root, *it);
+        auto l = word_graph::follow_path_no_checks(
+            wg, root, it->begin(), it->end());
         if (l != UNDEFINED) {
-          auto r = word_graph::follow_path_no_checks(wg, root, *(it + 1));
+          auto r = word_graph::follow_path_no_checks(
+              wg, root, (it + 1)->begin(), (it + 1)->end());
           if (l == r) {
             return false;
           }
@@ -1604,9 +1606,11 @@ namespace libsemigroups {
     for (auto it = first; it != last; it += 2) {
       bool this_rule_compatible = true;
       for (uint32_t n = 0; n < wg.number_of_active_nodes(); ++n) {
-        auto l = word_graph::follow_path_no_checks(wg, n, *it);
+        auto l
+            = word_graph::follow_path_no_checks(wg, n, it->begin(), it->end());
         if (l != UNDEFINED) {
-          auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
+          auto r = word_graph::follow_path_no_checks(
+              wg, n, (it + 1)->begin(), (it + 1)->end());
           if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
             this_rule_compatible = false;
             break;

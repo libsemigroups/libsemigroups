@@ -89,8 +89,9 @@ namespace libsemigroups {
         using word_graph::follow_path_no_checks;
         using Node = typename std::decay_t<decltype(wg)>::node_type;
         for (auto it = e.cbegin(); it != e.cend(); it += 2) {
-          if (follow_path_no_checks(wg, Node(0), *it)
-              != follow_path_no_checks(wg, Node(0), *(it + 1))) {
+          if (follow_path_no_checks(wg, Node(0), it->begin(), it->end())
+              != follow_path_no_checks(
+                  wg, Node(0), (it + 1)->begin(), (it + 1)->end())) {
             return false;
           }
         }
@@ -303,9 +304,13 @@ namespace libsemigroups {
       presentation::reverse(p);
       Sims1 S;
       REQUIRE(S.presentation(p).number_of_congruences(5) == 9);
+      auto u = 1010_w;
+      auto v = 0_w;
       for (auto it = S.cbegin(5); it != S.cend(5); ++it) {
-        REQUIRE(word_graph::follow_path_no_checks(*it, node_type(0), 1010_w)
-                == word_graph::follow_path_no_checks(*it, node_type(0), {0}));
+        REQUIRE(word_graph::follow_path_no_checks(
+                    *it, node_type(0), u.begin(), u.end())
+                == word_graph::follow_path_no_checks(
+                    *it, node_type(0), v.begin(), v.end()));
       }
       S.for_each(5,
                  [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
@@ -943,8 +948,10 @@ namespace libsemigroups {
       for (auto it = first; it != last; it += 2) {
         bool this_rule_compatible = true;
         for (auto n : wg.nodes()) {
-          auto l = word_graph::follow_path_no_checks(wg, n, *it);
-          auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
+          auto l = word_graph::follow_path_no_checks(
+              wg, n, it->begin(), it->end());
+          auto r = word_graph::follow_path_no_checks(
+              wg, n, (it + 1)->begin(), (it + 1)->end());
           if (l != r) {
             this_rule_compatible = false;
             break;
