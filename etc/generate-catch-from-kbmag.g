@@ -448,7 +448,6 @@ RWSToLibsemigroups := function(rws, nr, comment, test_case_label, subgroups)
   Append(out, file_name);
   Append(out, "]\"");
   Append(out, ") {\n");
-  Append(out, "  auto rg = ReportGuard(false);\n\n");
   Append(out, "  Presentation<std::string> p;\n");
   Append(out, "  p.alphabet(\"");
   Append(out, gens);

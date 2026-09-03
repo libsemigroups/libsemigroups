@@ -39,16 +39,6 @@ prefix (e.g. `[order]` in `test-order.cpp`) whenever it differs from the
 family name. Tags are case insensitive. `etc/update-test-tags.py` re-times
 and retags existing tests.
 
-## Quick tests must silence reporting
-
-Every `[quick]` test must begin with:
-
-```cpp
-auto rg = ReportGuard(false);
-```
-
-Check with `python3 etc/check-quick-report-guard.py` (run from the root).
-
 ## Adding a new test file
 
 `tests/test-foo-bar.cpp` builds as target `test_foo_bar` (dashes become

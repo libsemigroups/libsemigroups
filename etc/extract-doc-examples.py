@@ -273,8 +273,6 @@ def process_folder(folder_path, recursive=False, exclude=[]):
                                 file_path.relative_to(folder)
                             }:{block["start_line"]}", "[docs][quick]") {{\n'
                         )
-                        if not re.search(r"\bReportGuard\b", block["content"]):
-                            testfile.write("    auto rg = ReportGuard(false);\n")
                         if block["content"].strip():
                             testfile.write("    " + block["content"])
                         else:
