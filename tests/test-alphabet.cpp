@@ -42,7 +42,6 @@ namespace libsemigroups {
                                    "[quick]",
                                    word_type,
                                    std::string) {
-    auto rg = ReportGuard(false);
     using W = TestType;
 
     Alphabet<W> a;
@@ -83,7 +82,6 @@ namespace libsemigroups {
                                    "[quick]",
                                    word_type,
                                    std::string) {
-    auto rg = ReportGuard(false);
     using W = TestType;
 
     Alphabet<W> a(W({0, 1, 2}));
@@ -115,7 +113,6 @@ namespace libsemigroups {
                                    "[quick]",
                                    word_type,
                                    std::string) {
-    auto rg = ReportGuard(false);
     using W = TestType;
 
     Alphabet<W> a(4);
@@ -134,7 +131,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Alphabet", "003", "init by size limits", "[quick]") {
-    auto rg = ReportGuard(false);
     using words::human_readable_letter;
 
     std::string const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHI"
@@ -153,7 +149,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Alphabet", "004", "duplicate letters", "[quick]") {
-    auto                rg = ReportGuard(false);
     Alphabet<word_type> a(word_type({0, 1, 2}));
     REQUIRE_EXCEPTION_MSG(
         a.init(word_type({0, 1, 0})),
@@ -170,7 +165,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Alphabet", "005", "letter validation", "[quick]") {
-    auto                  rg = ReportGuard(false);
     Alphabet<std::string> empty;
     REQUIRE_EXCEPTION_MSG(
         empty.throw_if_letter_not_in_alphabet(0),
@@ -230,7 +224,6 @@ namespace libsemigroups {
                           "006",
                           "add and remove letters",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     Alphabet<std::string> a("ab");
     a.add_letter('c');
     REQUIRE(a.letters() == "abc");
@@ -249,7 +242,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Alphabet", "007", "first_unused_letter", "[quick]") {
-    auto rg = ReportGuard(false);
     using words::human_readable_letter;
     Alphabet<std::string> alphabet("ab");
 
@@ -287,7 +279,6 @@ namespace libsemigroups {
                           "008",
                           "add_letter (std::string)",
                           "[quick]") {
-    auto            rg = ReportGuard(false);
     using literals::operator""_w;
 
     {
@@ -317,7 +308,6 @@ namespace libsemigroups {
                           "009",
                           "add_letter (word_type)",
                           "[quick]") {
-    auto rg = ReportGuard(false);
     {
       Alphabet<word_type> alphabet({0, 1});
       alphabet::add_letter(alphabet);
@@ -351,7 +341,6 @@ namespace libsemigroups {
     using W = TestType;
     using words::human_readable_letter;
 
-    auto        rg = ReportGuard(false);
     Alphabet<W> alphabet(10);
     alphabet.remove_letter_no_checks(human_readable_letter<W>(4));
     alphabet.remove_letter(human_readable_letter<W>(7));

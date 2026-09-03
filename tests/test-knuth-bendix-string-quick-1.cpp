@@ -81,7 +81,6 @@ namespace libsemigroups {
                                    "confluent fp semigroup 1 (infinite)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     p.rules = {"ab", "ba", "ac", "ca",  "aa", "a",  "ac", "a",  "ca", "a", "bb",
@@ -110,8 +109,6 @@ namespace libsemigroups {
                                    "confluent fp semigroup 2 (infinite)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s);
     presentation::add_rule_no_checks(p, "ac"s, "ca"s);
@@ -142,8 +139,6 @@ namespace libsemigroups {
                                    "confluent fp semigroup 3 (infinite)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("012"s);
     presentation::add_rule_no_checks(p, "01"s, "10"s);
@@ -190,8 +185,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-
-    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -249,7 +242,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -291,7 +283,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -330,7 +321,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -379,7 +369,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -424,7 +413,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abc"s);
@@ -471,7 +459,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("012"s);
@@ -523,7 +510,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abAB"s);
@@ -576,8 +562,7 @@ namespace libsemigroups {
                                    "F(2, 5) - Chap. 9, Sec. 1 in NR",
                                    "[knuth-bendix][quick]",
                                    REWRITING_SYSTEM_TYPES) {
-    using order                  = typename TestType::reduction_order;
-    auto                      rg = ReportGuard(false);
+    using order = typename TestType::reduction_order;
     Presentation<std::string> p;
     p.alphabet("abcde"s);
 
@@ -615,7 +600,6 @@ namespace libsemigroups {
                                    "Reinis example 1",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
 
@@ -641,7 +625,6 @@ namespace libsemigroups {
                                    "redundant_rule (std::string)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     presentation::add_rule(p, "a"s, "abb"s);
@@ -664,7 +647,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
 
     Presentation<std::string> p1;
     p1.contains_empty_word(true);
@@ -758,8 +740,6 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using literals::operator""_w;
 
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abc"s);
@@ -832,7 +812,6 @@ namespace libsemigroups {
                                    RevRPOTrie) {
     using order = typename TestType::reduction_order;
 
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     presentation::add_rule_no_checks(p, "ab"s, "ba"s);
@@ -947,7 +926,6 @@ namespace libsemigroups {
 
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     presentation::add_rule_no_checks(p, "ab"s, "ba"s);
@@ -979,7 +957,6 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
 
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     presentation::add_rule_no_checks(p, "ab"s, "ba"s);
@@ -1078,8 +1055,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix][kbmag][recursive]",
                                    RevRPOTrie,
                                    RevRPOSet) {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("hHgGfFyYdDcCbBaA"s).contains_empty_word(true);
 
@@ -1129,7 +1104,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix][kbmag][recursive]",
                                    RevRPOTrie,
                                    RevRPOSet) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
 
     p.contains_empty_word(true).alphabet("aAbB"s);
@@ -1161,8 +1135,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix][kbmag][recursive]",
                                    RevRPOTrie,
                                    RevRPOSet) {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("eEdDcCbBaA"s).contains_empty_word(true);
 
@@ -1219,7 +1191,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix][kbmag][recursive]",
                                    RevRPOTrie,
                                    RevRPOSet) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("cCbBaA"s).contains_empty_word(true);
     presentation::add_inverse_rules(p, "CcBbAa"s);
@@ -1243,7 +1214,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix][kbmag]",
                                    LenLexSet,
                                    LenLexTrie) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -1278,10 +1248,9 @@ namespace libsemigroups {
                                    LenLexSet,
                                    LenLexTrie) {
     using words::pow;
-    using order     = typename TestType::reduction_order;
-    auto         rg = ReportGuard(false);
-    size_t const n  = 2;
-    size_t const q  = 11;
+    using order    = typename TestType::reduction_order;
+    size_t const n = 2;
+    size_t const q = 11;
 
     Presentation<std::string> p;
     p.alphabet("ab"s);
@@ -1378,7 +1347,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    LenLexSet,
                                    LenLexTrie) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abAB"s);

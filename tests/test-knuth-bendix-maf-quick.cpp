@@ -66,8 +66,6 @@ namespace libsemigroups {
                           "558",
                           "MAF: subgroups/2374",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abB"s).contains_empty_word(true);
 
@@ -102,8 +100,6 @@ namespace libsemigroups {
                           "559",
                           "MAF: subgroups/ab1",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aA"s).contains_empty_word(true);
 
@@ -133,8 +129,6 @@ namespace libsemigroups {
                           "560",
                           "MAF: subgroups/ab2",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -190,8 +184,6 @@ namespace libsemigroups {
                           "561",
                           "MAF: subgroups/d6",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abB"s).contains_empty_word(true);
 
@@ -232,8 +224,6 @@ namespace libsemigroups {
                           "562",
                           "MAF: subgroups/edeson",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("yuUvV"s).contains_empty_word(true);
 
@@ -276,8 +266,6 @@ namespace libsemigroups {
                           "563",
                           "MAF: subgroups/inv(3)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("pqr"s).contains_empty_word(true);
 
@@ -321,8 +309,6 @@ namespace libsemigroups {
                           "564",
                           "MAF: subgroups/klein",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("wWuU"s).contains_empty_word(true);
 
@@ -374,8 +360,6 @@ namespace libsemigroups {
                           "565",
                           "MAF: subgroups/mcgq",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("sxyrRcCdD"s).contains_empty_word(true);
 
@@ -443,8 +427,6 @@ namespace libsemigroups {
                           "567",
                           "MAF: symmetric/Sym(10)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdefghi"s).contains_empty_word(true);
 
@@ -535,8 +517,6 @@ namespace libsemigroups {
                           "568",
                           "MAF: symmetric/Sym(16)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdefghijklmno"s).contains_empty_word(true);
 
@@ -673,8 +653,6 @@ namespace libsemigroups {
                           "569",
                           "MAF: symmetric/Sym(4)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abB"s).contains_empty_word(true);
 
@@ -711,8 +689,6 @@ namespace libsemigroups {
                           "570",
                           "MAF: symmetric/sym(6)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcde"s).contains_empty_word(true);
 
@@ -747,8 +723,6 @@ namespace libsemigroups {
                           "571",
                           "MAF: symmetric/Sym(7)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdef"s).contains_empty_word(true);
 
@@ -802,8 +776,6 @@ namespace libsemigroups {
                           "572",
                           "MAF: symmetric/sym(8)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdefg"s).contains_empty_word(true);
 
@@ -851,8 +823,6 @@ namespace libsemigroups {
                           "573",
                           "MAF: symmetric/Sym(9)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdefgh"s).contains_empty_word(true);
 
@@ -928,8 +898,6 @@ namespace libsemigroups {
                           "574",
                           "MAF: trivial/degen1",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet(""s).contains_empty_word(true);
 
@@ -944,8 +912,6 @@ namespace libsemigroups {
                           "575",
                           "MAF: trivial/degen2",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aA"s).contains_empty_word(true);
 
@@ -965,8 +931,6 @@ namespace libsemigroups {
                           "576",
                           "MAF: trivial/degen3",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -989,8 +953,6 @@ namespace libsemigroups {
                           "577",
                           "MAF: trivial/degen4",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -1016,8 +978,6 @@ namespace libsemigroups {
                           "578",
                           "MAF: trivial/degen4a",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("rRsStT"s).contains_empty_word(true);
 
@@ -1043,8 +1003,6 @@ namespace libsemigroups {
                           "579",
                           "MAF: unknown/g9(1_3)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAdDgGbBeEhHcCfFiI"s).contains_empty_word(true);
 
@@ -1091,8 +1049,6 @@ namespace libsemigroups {
                           "580",
                           "MAF: wallpaper/P4GM",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("gGfFm"s).contains_empty_word(true);
 
@@ -1121,8 +1077,6 @@ namespace libsemigroups {
                           "581",
                           "MAF: wallpaper/t(4_2_4)",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -1492,8 +1446,6 @@ namespace libsemigroups {
                           "583",
                           "MAF: wallpaper/t(6_2_3)",
                           "[maf][quick]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -1647,8 +1599,6 @@ namespace libsemigroups {
                           "584",
                           "MAF: coxeter/hermiller2",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("jihgfedcba"s).contains_empty_word(true);
 
@@ -1732,8 +1682,6 @@ namespace libsemigroups {
                           "585",
                           "MAF: recursive/conder",
                           "[maf][quick]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcdef"s).contains_empty_word(true);
 
@@ -1870,8 +1818,6 @@ namespace libsemigroups {
                           "586",
                           "MAF: rubik/antislice",
                           "[quick][maf][rubik]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdef"s).contains_empty_word(true);
 
@@ -1968,8 +1914,6 @@ namespace libsemigroups {
                           "587",
                           "MAF: rubik/antislice_alt",
                           "[quick][maf][rubik]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdef"s).contains_empty_word(true);
 
@@ -2072,8 +2016,6 @@ namespace libsemigroups {
                           "588",
                           "MAF: onerelq/q18",
                           "[quick][maf][onerelq]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("uUvV"s).contains_empty_word(true);
 
@@ -2122,8 +2064,6 @@ namespace libsemigroups {
                           "589",
                           "MAF: onerelq/q40_uv",
                           "[quick][maf][onerelq]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("uUvV"s).contains_empty_word(true);
 
@@ -2189,8 +2129,6 @@ namespace libsemigroups {
                           "590",
                           "MAF: onerelq/q41_xy",
                           "[quick][maf][onerelq]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("yYx"s).contains_empty_word(true);
 
@@ -2240,8 +2178,6 @@ namespace libsemigroups {
                           "591",
                           "MAF: subgroups/t(4_2_4)",
                           "[quick][maf][subgroups]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -2312,8 +2248,6 @@ namespace libsemigroups {
                           "592",
                           "MAF: subgroups/trace",
                           "[quick][maf][subgroups]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("lrfLR"s).contains_empty_word(true);
 
@@ -2352,8 +2286,6 @@ namespace libsemigroups {
                           "593",
                           "MAF: unknown/g9(1_4)",
                           "[quick][unknown][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAgGdDbBhHeEcCiIfF"s).contains_empty_word(true);
 
@@ -2411,8 +2343,6 @@ namespace libsemigroups {
                           "594",
                           "MAF: monoids/a4monoid",
                           "[quick][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abB"s).contains_empty_word(true);
 
@@ -2431,8 +2361,6 @@ namespace libsemigroups {
                           "595",
                           "MAF: lesson5/2379_i504",
                           "[quick][maf][lesson5]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("cChHgGeEdDiIfF"s).contains_empty_word(true);
 
@@ -2525,8 +2453,6 @@ namespace libsemigroups {
                           "596",
                           "MAF: lesson5/7237",
                           "[quick][maf][lesson5]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAb"s).contains_empty_word(true);
 
@@ -2550,8 +2476,6 @@ namespace libsemigroups {
                           "597",
                           "MAF: lesson5/fred2",
                           "[quick][maf][lesson5]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("cCdDeEfFgGhHiI"s).contains_empty_word(true);
 
@@ -2692,8 +2616,6 @@ namespace libsemigroups {
                           "598",
                           "MAF: lesson2/723",
                           "[quick][maf][lesson2]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAb"s).contains_empty_word(true);
 
@@ -2716,8 +2638,6 @@ namespace libsemigroups {
                           "599",
                           "MAF: lesson2/723_abc",
                           "[quick][maf][lesson2]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbcC"s).contains_empty_word(true);
 
@@ -2764,8 +2684,6 @@ namespace libsemigroups {
                           "600",
                           "MAF: hyperbolic/d(3_3_4)_abc",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -2793,8 +2711,6 @@ namespace libsemigroups {
                           "601",
                           "MAF: hyperbolic/d(3_3_4)_recursive",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -2819,8 +2735,6 @@ namespace libsemigroups {
                           "602",
                           "MAF: hyperbolic/d(3_3_7)_recursive",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -2845,8 +2759,6 @@ namespace libsemigroups {
                           "603",
                           "MAF: hyperbolic/d(3_5_7)_recursive",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -2871,8 +2783,6 @@ namespace libsemigroups {
                           "604",
                           "MAF: hyperbolic/d(4_3_7)_abc",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -2900,8 +2810,6 @@ namespace libsemigroups {
                           "605",
                           "MAF: hyperbolic/d(4_3_7)_recursive",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -2926,8 +2834,6 @@ namespace libsemigroups {
                           "606",
                           "MAF: hyperbolic/d(5_5_5)_recursive",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -2952,8 +2858,6 @@ namespace libsemigroups {
                           "607",
                           "MAF: hyperbolic/d(7_2_3)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbcC"s).contains_empty_word(true);
 
@@ -3161,8 +3065,6 @@ namespace libsemigroups {
                           "608",
                           "MAF: hyperbolic/d(7_7_7)_recursive",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -3187,8 +3089,6 @@ namespace libsemigroups {
                           "609",
                           "MAF: hyperbolic/d(7_7_8)_recursive",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -3213,8 +3113,6 @@ namespace libsemigroups {
                           "610",
                           "MAF: hyperbolic/d(7_8_8)_recursive",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -3239,8 +3137,6 @@ namespace libsemigroups {
                           "611",
                           "MAF: hyperbolic/d(8_8_8)_recursive",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -3265,8 +3161,6 @@ namespace libsemigroups {
                           "612",
                           "MAF: hyperbolic/t(12_2_3)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3304,8 +3198,6 @@ namespace libsemigroups {
                           "613",
                           "MAF: hyperbolic/t(2_3_7)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3346,8 +3238,6 @@ namespace libsemigroups {
                           "614",
                           "MAF: hyperbolic/t(2_4_5)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3386,8 +3276,6 @@ namespace libsemigroups {
                           "615",
                           "MAF: hyperbolic/t(4_2_5)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3439,8 +3327,6 @@ namespace libsemigroups {
                           "616",
                           "MAF: hyperbolic/t(4_3_4)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3496,8 +3382,6 @@ namespace libsemigroups {
                           "617",
                           "MAF: hyperbolic/t(5_2_4)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3553,8 +3437,6 @@ namespace libsemigroups {
                           "618",
                           "MAF: hyperbolic/t(5_2_5)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3597,8 +3479,6 @@ namespace libsemigroups {
                           "619",
                           "MAF: hyperbolic/t(6_2_4)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3677,8 +3557,6 @@ namespace libsemigroups {
                           "620",
                           "MAF: hyperbolic/t(6_2_6)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3717,8 +3595,6 @@ namespace libsemigroups {
                           "621",
                           "MAF: hyperbolic/t(6_3_4)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3757,8 +3633,6 @@ namespace libsemigroups {
                           "622",
                           "MAF: hyperbolic/t(6_5_4)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3797,8 +3671,6 @@ namespace libsemigroups {
                           "623",
                           "MAF: hyperbolic/t(7_2_3)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3836,8 +3708,6 @@ namespace libsemigroups {
                           "624",
                           "MAF: hyperbolic/t(8_2_3)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3887,8 +3757,6 @@ namespace libsemigroups {
                           "625",
                           "MAF: hyperbolic/t(8_2_4)",
                           "[quick][maf][hyperbolic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -3928,8 +3796,6 @@ namespace libsemigroups {
                           "626",
                           "MAF: free/Free(2)",
                           "[quick][maf][free]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -4013,8 +3879,6 @@ namespace libsemigroups {
                           "627",
                           "MAF: free/free(3)",
                           "[quick][maf][free]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -4067,8 +3931,6 @@ namespace libsemigroups {
                           "628",
                           "MAF: free/free(3)_xyz",
                           "[quick][maf][free]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("xXyYzZ"s).contains_empty_word(true);
 
@@ -4144,8 +4006,6 @@ namespace libsemigroups {
                           "629",
                           "MAF: free/free(8)",
                           "[quick][maf][free]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDeEfFgGhH"s).contains_empty_word(true);
 
@@ -4179,8 +4039,6 @@ namespace libsemigroups {
                           "630",
                           "MAF: Fibonacci/f2_5",
                           "[quick][maf][Fibonacci]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDeE"s).contains_empty_word(true);
 
@@ -4213,8 +4071,6 @@ namespace libsemigroups {
                           "631",
                           "MAF: Fibonacci/f3_5",
                           "[quick][maf][Fibonacci]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDeE"s).contains_empty_word(true);
 
@@ -4259,8 +4115,6 @@ namespace libsemigroups {
                           "632",
                           "MAF: elliptic/D(2_3_5)",
                           "[quick][maf][elliptic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abB"s).contains_empty_word(true);
 
@@ -4294,8 +4148,6 @@ namespace libsemigroups {
                           "633",
                           "MAF: elliptic/t(4_2_2)",
                           "[quick][maf][elliptic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -4318,8 +4170,6 @@ namespace libsemigroups {
                           "634",
                           "MAF: elliptic/t(4_2_3)",
                           "[quick][maf][elliptic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -4343,8 +4193,6 @@ namespace libsemigroups {
                           "635",
                           "MAF: elliptic/t(5_2_3)",
                           "[quick][maf][elliptic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -4378,8 +4226,6 @@ namespace libsemigroups {
                           "636",
                           "MAF: coxeter/~a3",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcd"s).contains_empty_word(true);
 
@@ -4421,8 +4267,6 @@ namespace libsemigroups {
                           "637",
                           "MAF: coxeter/~a4",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcde"s).contains_empty_word(true);
 
@@ -4466,8 +4310,6 @@ namespace libsemigroups {
                           "638",
                           "MAF: coxeter/~b3",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("dabc"s).contains_empty_word(true);
 
@@ -4506,8 +4348,6 @@ namespace libsemigroups {
                           "639",
                           "MAF: coxeter/~c3",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("dabc"s).contains_empty_word(true);
 
@@ -4547,8 +4387,6 @@ namespace libsemigroups {
                           "640",
                           "MAF: coxeter/~d4",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcde"s).contains_empty_word(true);
 
@@ -4596,8 +4434,6 @@ namespace libsemigroups {
                           "641",
                           "MAF: coxeter/~d5",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdef"s).contains_empty_word(true);
 
@@ -4647,8 +4483,6 @@ namespace libsemigroups {
                           "642",
                           "MAF: coxeter/~h2",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -4672,8 +4506,6 @@ namespace libsemigroups {
                           "643",
                           "MAF: coxeter/777",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("fedcba"s).contains_empty_word(true);
 
@@ -4707,8 +4539,6 @@ namespace libsemigroups {
                           "644",
                           "MAF: coxeter/a15",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdefghijklmno"s).contains_empty_word(true);
 
@@ -4857,8 +4687,6 @@ namespace libsemigroups {
                           "645",
                           "MAF: coxeter/b3",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -4894,8 +4722,6 @@ namespace libsemigroups {
                           "646",
                           "MAF: coxeter/b4",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcd"s).contains_empty_word(true);
 
@@ -4923,8 +4749,6 @@ namespace libsemigroups {
                           "647",
                           "MAF: coxeter/cox3363",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcd"s).contains_empty_word(true);
 
@@ -4984,8 +4808,6 @@ namespace libsemigroups {
                           "648",
                           "MAF: coxeter/e6",
                           "[quick][maf][coxeter]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abcdef"s).contains_empty_word(true);
 
@@ -5024,8 +4846,6 @@ namespace libsemigroups {
                           "649",
                           "MAF: braid/b3new",
                           "[quick][maf][braid]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBtTcCdD"s).contains_empty_word(true);
 
@@ -5057,8 +4877,6 @@ namespace libsemigroups {
                           "650",
                           "MAF: both/3a6",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abAB"s).contains_empty_word(true);
 
@@ -5084,8 +4902,6 @@ namespace libsemigroups {
                           "651",
                           "MAF: both/a4",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -5108,8 +4924,6 @@ namespace libsemigroups {
                           "652",
                           "MAF: both/c2",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("a"s).contains_empty_word(true);
 
@@ -5128,8 +4942,6 @@ namespace libsemigroups {
                           "653",
                           "MAF: both/c5",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aA"s).contains_empty_word(true);
 
@@ -5150,8 +4962,6 @@ namespace libsemigroups {
                           "654",
                           "MAF: both/d(2_3_5)",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abB"s).contains_empty_word(true);
 
@@ -5175,8 +4985,6 @@ namespace libsemigroups {
                           "655",
                           "MAF: both/d22",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDeEfF"s).contains_empty_word(true);
 
@@ -5226,8 +5034,6 @@ namespace libsemigroups {
                           "656",
                           "MAF: both/d6",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abB"s).contains_empty_word(true);
 
@@ -5250,8 +5056,6 @@ namespace libsemigroups {
                           "657",
                           "MAF: both/f2_unusual",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDeE"s).contains_empty_word(true);
 
@@ -5282,8 +5086,6 @@ namespace libsemigroups {
                           "658",
                           "MAF: both/gp55",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -5308,8 +5110,6 @@ namespace libsemigroups {
                           "659",
                           "MAF: both/P",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("hHvV"s).contains_empty_word(true);
 
@@ -5331,8 +5131,6 @@ namespace libsemigroups {
                           "660",
                           "MAF: both/p2mm",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("hHvVrxy"s).contains_empty_word(true);
 
@@ -5365,8 +5163,6 @@ namespace libsemigroups {
                           "661",
                           "MAF: both/zw2",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("bBaAt"s).contains_empty_word(true);
 
@@ -5390,8 +5186,6 @@ namespace libsemigroups {
                           "662",
                           "MAF: balanced/G(-3_-3)",
                           "[quick][maf][balanced]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbB"s).contains_empty_word(true);
 
@@ -5414,8 +5208,6 @@ namespace libsemigroups {
                           "663",
                           "MAF: balanced/Mennicke(-1_-1_-1)",
                           "[quick][maf][balanced]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -5441,8 +5233,6 @@ namespace libsemigroups {
                           "664",
                           "MAF: balanced/Mennicke(1_-1_-1)",
                           "[quick][maf][balanced]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -5468,8 +5258,6 @@ namespace libsemigroups {
                           "665",
                           "MAF: balanced/Mennicke(1_-1_1)",
                           "[quick][maf][balanced]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -5495,8 +5283,6 @@ namespace libsemigroups {
                           "666",
                           "MAF: balanced/Mennicke(1_1_-1)",
                           "[quick][maf][balanced]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -5522,8 +5308,6 @@ namespace libsemigroups {
                           "667",
                           "MAF: balanced/Mennicke(1_1_1)",
                           "[quick][maf][balanced]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -5549,8 +5333,6 @@ namespace libsemigroups {
                           "668",
                           "MAF: balanced/Mennicke(2_2_-2)",
                           "[quick][maf][balanced]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -5576,8 +5358,6 @@ namespace libsemigroups {
                           "669",
                           "MAF: balanced/Mennicke(2_2_2)",
                           "[quick][maf][balanced]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 
@@ -5608,8 +5388,6 @@ namespace libsemigroups {
                           "670",
                           "MAF: automatic/ul(2_Z)",
                           "[quick][maf][automatic]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("lLrRstj"s).contains_empty_word(true);
 
@@ -5640,8 +5418,6 @@ namespace libsemigroups {
                           "467",
                           "MAF: both/sfdo2",
                           "[quick][maf][both]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcC"s).contains_empty_word(true);
 

@@ -37,7 +37,6 @@ namespace libsemigroups {
                                    std::string,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
-    auto     rg  = ReportGuard(false);
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
 
     auto [it1, pos1] = detail::find_duplicates(vec.begin(), vec.end());
@@ -64,7 +63,6 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
-    auto     rg  = ReportGuard(false);
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
 
     REQUIRE_EXCEPTION_MSG(
@@ -79,7 +77,6 @@ namespace libsemigroups {
                           "002",
                           "exceptions - std::string",
                           "[quick][exception]") {
-    auto        rg  = ReportGuard(false);
     std::string vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
 
     REQUIRE_EXCEPTION_MSG(

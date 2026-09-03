@@ -44,7 +44,6 @@ namespace libsemigroups {
                           "000",
                           "Multiple rule additions",
                           "[quick]") {
-    auto                     rg = ReportGuard(false);
     IsObviouslyInfinite      ioi(3);
     std::vector<std::string> v
         = {"aababbaccabbc", "a", "aaabbbbaaabbbbacbbb", "bb"};
@@ -77,7 +76,6 @@ namespace libsemigroups {
                           "001",
                           "b^n does not occur on its own in any relation",
                           "[quick]") {
-    auto                     rg = ReportGuard(false);
     IsObviouslyInfinite      ioi(2);
     std::vector<std::string> v = {"ab", "a", "aba", "ba"};
     ioi.add_rules_no_checks("ab", v.cbegin(), v.cend());
@@ -88,7 +86,6 @@ namespace libsemigroups {
                           "002",
                           "Preserves occurrences of the generator 'a'",
                           "[quick]") {
-    auto                     rg = ReportGuard(false);
     IsObviouslyInfinite      ioi(2);
     std::vector<std::string> v = {"aba", "aa", "bb", "b", "abab", "abbba"};
     ioi.add_rules_no_checks("ab", v.cbegin(), v.cend());
@@ -99,7 +96,6 @@ namespace libsemigroups {
                           "003",
                           "Less relations than generators",
                           "[quick]") {
-    auto                     rg = ReportGuard(false);
     IsObviouslyInfinite      ioi(3);
     std::vector<std::string> v = {"aba", "bc", "ca", "b"};
     ioi.add_rules_no_checks("abc", v.cbegin(), v.cend());
@@ -110,7 +106,6 @@ namespace libsemigroups {
                           "004",
                           "Relations preserve length",
                           "[quick]") {
-    auto                     rg = ReportGuard(false);
     IsObviouslyInfinite      ioi(3);
     std::vector<std::string> v
         = {"aaa", "bbc", "cccc", "bcba", "bb", "cb", "cba", "bbc"};
@@ -122,7 +117,6 @@ namespace libsemigroups {
                           "005",
                           "Matrix has non empty kernel",
                           "[quick]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(2);
     std::vector         vv = {"aa"_w, "bba"_w, "bbaa"_w, "bbbbbb"_w};
     ioi.add_rules_no_checks("ab"_w, vv.cbegin(), vv.cend());
@@ -140,7 +134,6 @@ namespace libsemigroups {
                           "006",
                           "Free product of trivial semigroups",
                           "[quick]") {
-    auto                     rg = ReportGuard(false);
     IsObviouslyInfinite      ioi(2);
     std::vector<std::string> v = {"a", "aa", "b", "bb"};
     ioi.add_rules_no_checks("ab", v.cbegin(), v.cend());
@@ -151,7 +144,6 @@ namespace libsemigroups {
                           "007",
                           "Another free product",
                           "[quick]") {
-    auto                     rg = ReportGuard(false);
     IsObviouslyInfinite      ioi(5);
     std::vector<std::string> v
         = {"a", "aa", "b", "bb", "abe", "eee", "dc", "c", "cc", "ddd"};
@@ -163,7 +155,6 @@ namespace libsemigroups {
                           "008",
                           "Infinite but not obviously so",
                           "[quick]") {
-    auto                     rg = ReportGuard(false);
     IsObviouslyInfinite      ioi(2);
     std::vector<std::string> v = {"a", "abb", "b", "baa"};
     ioi.add_rules_no_checks("ab", v.cbegin(), v.cend());
@@ -176,7 +167,6 @@ namespace libsemigroups {
                           "009",
                           "Finite semigroup",
                           "[quick]") {
-    auto                     rg = ReportGuard(false);
     IsObviouslyInfinite      ioi(3);
     std::vector<std::string> v
         = {"a", "aa", "b", "bb", "", "cc", "ac", "cb", "abab", "ab"};
@@ -190,7 +180,6 @@ namespace libsemigroups {
                           "010",
                           "Multiple rule additions",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(3);
     auto                w = 00_w;
     std::vector         v = {0010110220112_w, 0_w, 0001111000111102111_w, 11_w};
@@ -220,7 +209,6 @@ namespace libsemigroups {
                           "011",
                           "b^n does not occur on its own in any relation",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(2);
     std::vector         v = {01_w, 0_w, 010_w, 10_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
@@ -231,7 +219,6 @@ namespace libsemigroups {
                           "012",
                           "Preserves occurrences of the generator 'a'",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(2);
     std::vector         v = {010_w, 00_w, 11_w, 1_w, 0101_w, 01110_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
@@ -242,7 +229,6 @@ namespace libsemigroups {
                           "013",
                           "Less relations than generators",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(3);
     std::vector         v = {010_w, 12_w, 20_w, 1_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
@@ -253,7 +239,6 @@ namespace libsemigroups {
                           "014",
                           "Relations preserve length",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(3);
     std::vector v = {000_w, 112_w, 2222_w, 1210_w, 11_w, 21_w, 210_w, 112_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
@@ -264,7 +249,6 @@ namespace libsemigroups {
                           "015",
                           "Matrix has non empty kernel",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(2);
     std::vector         v = {00_w, 110_w, 1100_w, 111111_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
@@ -275,7 +259,6 @@ namespace libsemigroups {
                           "016",
                           "Free product of trivial semigroups",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(2);
     std::vector         v = {0_w, 00_w, 1_w, 11_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
@@ -286,7 +269,6 @@ namespace libsemigroups {
                           "017",
                           "Another free product",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(5);
     std::vector         v
         = {0_w, 00_w, 1_w, 11_w, 014_w, 444_w, 32_w, 2_w, 22_w, 333_w};
@@ -298,7 +280,6 @@ namespace libsemigroups {
                           "018",
                           "Infinite but not obviously so",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(2);
     std::vector         v = {0_w, 011_w, 1_w, 100_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
@@ -311,7 +292,6 @@ namespace libsemigroups {
                           "019",
                           "Finite semigroup",
                           "[quick][integer-alphabet]") {
-    auto                rg = ReportGuard(false);
     IsObviouslyInfinite ioi(3);
     std::vector         v
         = {0_w, 00_w, 1_w, 11_w, ""_w, 22_w, 02_w, 21_w, 0101_w, 01_w};
@@ -325,7 +305,6 @@ namespace libsemigroups {
                           "020",
                           "from presentation",
                           "[quick][integer-alphabet]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(02_w);
     REQUIRE(is_obviously_infinite(p));
@@ -335,7 +314,6 @@ namespace libsemigroups {
                           "021",
                           "from ToddCoxeter",
                           "[quick][integer-alphabet]") {
-    auto                   rg = ReportGuard(false);
     ToddCoxeter<word_type> tc(congruence_kind::twosided,
                               WordGraph<uint32_t>(1, 2));
 

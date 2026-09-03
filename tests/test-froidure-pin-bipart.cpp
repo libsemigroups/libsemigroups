@@ -36,21 +36,20 @@ namespace libsemigroups {
                           "000",
                           "small example 1",
                           "[quick][froidure-pin][bipartition][bipart]") {
-    auto        rg = ReportGuard(false);
-    FroidurePin S  = make<FroidurePin>(
+    FroidurePin S = make<FroidurePin>(
         {make<Bipartition>({{1, 5, 8, -1, -2, -4, -10},
-                             {2, 4, 7, -8},
-                             {3, 6, 9, 10, -3},
-                             {-5, -9},
-                             {-6, -7}}),
-          make<Bipartition>({{1},
-                             {2, 3, 4, 5, -5, -6, -7},
-                             {6, 8, -2, -4, -8, -10},
-                             {7, -9},
-                             {9, -3},
-                             {10, -1}}),
-          make<Bipartition>({{1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
-                              -1, -2, -3, -4, -5, -6, -7, -8, -9, -10}})});
+                            {2, 4, 7, -8},
+                            {3, 6, 9, 10, -3},
+                            {-5, -9},
+                            {-6, -7}}),
+         make<Bipartition>({{1},
+                            {2, 3, 4, 5, -5, -6, -7},
+                            {6, 8, -2, -4, -8, -10},
+                            {7, -9},
+                            {9, -3},
+                            {10, -1}}),
+         make<Bipartition>({{1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
+                             -1, -2, -3, -4, -5, -6, -7, -8, -9, -10}})});
 
     S.reserve(10);
 
@@ -96,8 +95,6 @@ namespace libsemigroups {
                           "001",
                           "default constructed",
                           "[quick][froidure-pin][bipartition][bipart]") {
-    auto rg = ReportGuard(false);
-
     FroidurePin<Bipartition> S;
     S.add_generator(make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}));
@@ -157,7 +154,6 @@ namespace libsemigroups {
                           "002",
                           "small example 2",
                           "[quick][froidure-pin][element]") {
-    auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
     S.add_generator(make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}));
@@ -217,7 +213,6 @@ namespace libsemigroups {
                           "004",
                           "exception: is_idempotent",
                           "[quick][froidure-pin][element]") {
-    auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
     S.add_generator(make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}));

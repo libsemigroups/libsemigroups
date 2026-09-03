@@ -43,7 +43,6 @@ namespace libsemigroups {
     // this test seemingly causes undefined behaviour (multiplication of
     // signed integers that overflows), which is either a bug or a feature
     // depending on your perspective.
-    auto rg = ReportGuard(false);
 
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>({{0, 1}, {0, -1}}));
@@ -95,7 +94,6 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][intmat]",
                                    (IntMat<0, 0, int64_t>),
                                    (IntMat<2, 2, int64_t>) ) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>({{0, 0}, {0, 1}}));
     S.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
@@ -129,7 +127,6 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][element]",
                                    IntMat<2>,
                                    IntMat<>) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> T;
     T.add_generator(make<TestType>({{0, 0}, {0, 1}}));
     T.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
@@ -153,7 +150,6 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][element]",
                                    IntMat<2>,
                                    IntMat<>) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> T;
     T.add_generator(make<TestType>({{0, 0}, {0, 1}}));
     T.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
@@ -174,7 +170,6 @@ namespace libsemigroups {
       "[quick][froidure-pin][element][no-valgrind]",
       IntMat<2>,
       IntMat<>) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> T;
     T.add_generator(make<TestType>({{0, 0}, {0, 1}}));
     T.add_generator(make<TestType>({{0, 1}, {-1, 0}}));

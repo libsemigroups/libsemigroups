@@ -32,10 +32,9 @@ namespace libsemigroups {
                           "043",
                           "partial transformations",
                           "[quick][ptransf]") {
-    auto      rg = ReportGuard(false);
-    Konieczny S  = make<Konieczny>({make<HPCombi::PTransf16>({1, 0, 2, 3, 4}),
-                                    make<HPCombi::PTransf16>({1, 2, 3, 4, 0}),
-                                    make<HPCombi::PTransf16>({0, 0, 2, 3, 4})});
+    Konieczny S = make<Konieczny>({make<HPCombi::PTransf16>({1, 0, 2, 3, 4}),
+                                   make<HPCombi::PTransf16>({1, 2, 3, 4, 0}),
+                                   make<HPCombi::PTransf16>({0, 0, 2, 3, 4})});
     S.run();
     REQUIRE(S.size() == 3'125);
 
@@ -58,7 +57,6 @@ namespace libsemigroups {
                           "044",
                           "partial transformations - JDM favourite example",
                           "[quick][no-valgrind][ptransf]") {
-    auto      rg = ReportGuard(false);
     Konieczny S
         = make<Konieczny>({make<HPCombi::PTransf16>({1, 7, 2, 6, 0, 4, 1, 5}),
                            make<HPCombi::PTransf16>({2, 4, 6, 1, 4, 5, 2, 7}),
@@ -84,7 +82,6 @@ namespace libsemigroups {
                           "045",
                           "partial transformations - large example",
                           "[quick][no-valgrind][ptransf]") {
-    auto              rg = ReportGuard(false);
     std::vector const gens
         = {make<HPCombi::PTransf16>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
            make<HPCombi::PTransf16>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
@@ -115,10 +112,9 @@ namespace libsemigroups {
                           "046",
                           "partial transformations: contains",
                           "[quick][ptransf]") {
-    auto      rg = ReportGuard(false);
-    Konieczny S  = make<Konieczny>({make<HPCombi::PTransf16>({1, 0, 2, 3, 4}),
-                                    make<HPCombi::PTransf16>({1, 2, 3, 4, 0}),
-                                    make<HPCombi::PTransf16>({0, 0, 2, 3, 4})});
+    Konieczny S = make<Konieczny>({make<HPCombi::PTransf16>({1, 0, 2, 3, 4}),
+                                   make<HPCombi::PTransf16>({1, 2, 3, 4, 0}),
+                                   make<HPCombi::PTransf16>({0, 0, 2, 3, 4})});
     REQUIRE(S.contains(make<HPCombi::PTransf16>({1, 0, 2, 3, 4})));
     REQUIRE(S.contains(make<HPCombi::PTransf16>({1, 2, 3, 4, 0})));
     REQUIRE(S.contains(make<HPCombi::PTransf16>({0, 0, 2, 3, 4})));
@@ -159,8 +155,6 @@ namespace libsemigroups {
                           "047",
                           "add_generator",
                           "[quick][transf][no-valgrind]") {
-    auto rg = ReportGuard(false);
-
     Konieczny S = make<Konieczny>({make<HPCombi::PTransf16>({1, 0, 2, 3, 4})});
     S.add_generator(make<HPCombi::PTransf16>({1, 2, 3, 4, 0}));
     S.add_generator(make<HPCombi::PTransf16>({0, 0, 2, 3, 4}));

@@ -57,7 +57,6 @@ namespace libsemigroups {
                                    RewritingSystemSet_word,
                                    RewritingSystemTrie_string,
                                    RewritingSystemTrie_word) {
-    auto rg               = ReportGuard(false);
     using RewritingSystem = typename TestType::first_type;
     using Word            = typename TestType::second_type;
 
@@ -76,8 +75,6 @@ namespace libsemigroups {
                                    "[quick][to_knuth_bendix]",
                                    std::string,
                                    word_type) {
-    auto rg = ReportGuard(false);
-
     Presentation<TestType> p;
     if constexpr (std::is_same_v<TestType, std::string>) {
       p.alphabet("abB"s);
@@ -120,7 +117,6 @@ namespace libsemigroups {
                                    RewritingSystemSet_word,
                                    RewritingSystemTrie_string,
                                    RewritingSystemTrie_word) {
-    auto rg               = ReportGuard(false);
     using RewritingSystem = typename TestType::first_type;
     using Word            = typename TestType::second_type;
 

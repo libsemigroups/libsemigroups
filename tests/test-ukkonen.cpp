@@ -40,7 +40,6 @@ namespace libsemigroups {
                           "000",
                           "basic tests",
                           "[quick][ukkonen][no-valgrind]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     // aaeaaa$
     // abcd$'
@@ -190,7 +189,6 @@ namespace libsemigroups {
                           "001",
                           "maximal_piece_prefix 1",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     ukkonen::add_word(t, {0, 5, 7});
     ukkonen::add_word(t, {1, 6, 7});
@@ -216,7 +214,6 @@ namespace libsemigroups {
                           "002",
                           "maximal_piece_prefix 2",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     ukkonen::add_word(t, 004000_w);
     ukkonen::add_word(t, 45_w);
@@ -244,7 +241,6 @@ namespace libsemigroups {
                           "003",
                           "maximal_piece_prefix 3",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     REQUIRE(t.number_of_distinct_words() == 0);
     ukkonen::add_word(t, 012_w);
@@ -328,7 +324,6 @@ namespace libsemigroups {
                           "004",
                           "number_of_pieces",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     ukkonen::add_word(t, 012_w);
     ukkonen::add_word(t, 0_w);
@@ -386,7 +381,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "005", "traverse", "[quick][ukkonen]") {
-    auto rg     = ReportGuard(false);
     using State = Ukkonen::State;
     Ukkonen t;
     ukkonen::add_word(t, 004000_w);
@@ -425,7 +419,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "006", "dot", "[quick][ukkonen]") {
-    auto rg = ReportGuard(false);
     {
       Ukkonen t;
       ukkonen::add_word(t, 00_w);
@@ -450,7 +443,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "007", "strings", "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     ukkonen::add_word(t, "aaaeaa");
     ukkonen::add_word(t, "abcd");
@@ -502,7 +494,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "008", "pieces", "[quick][ukkonen]") {
-    auto       rg = ReportGuard(false);
     Ukkonen    t;
     v4::ToWord string_to_word("ab");
     ukkonen::add_word(t, string_to_word("baabbaaaa"));
@@ -531,7 +522,6 @@ namespace libsemigroups {
                           "009",
                           "code coverage",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen u;
     ukkonen::add_word_no_checks(u, 0001000_w);
     auto w = "abcdefabababab";
@@ -637,7 +627,6 @@ namespace libsemigroups {
                           "010",
                           "code coverage",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen u;
     REQUIRE(u.is_suffix(Ukkonen::State()) == UNDEFINED);
     REQUIRE(ukkonen::is_suffix(u, ""_w) == true);

@@ -38,7 +38,6 @@ namespace libsemigroups {
                                    "size",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     REQUIRE(bs.size() >= 7);
     REQUIRE(bs.size() <= 64);
@@ -49,7 +48,6 @@ namespace libsemigroups {
                                    "range constructor",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg       = ReportGuard(false);
     bool     values[] = {true, false, true, false, false, true};
     TestType bs(values, values + 6);
 
@@ -67,7 +65,6 @@ namespace libsemigroups {
                                    "operator<",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs1;
     bs1.reset();
     TestType bs2;
@@ -82,7 +79,6 @@ namespace libsemigroups {
                                    "operator==",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs1;
     bs1.reset();
     TestType bs2;
@@ -99,7 +95,6 @@ namespace libsemigroups {
                                    "operator!=",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs1;
     bs1.reset();
     TestType bs2;
@@ -116,7 +111,6 @@ namespace libsemigroups {
                                    "operator&=",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs1;
     bs1.reset();
     bs1.set(0);
@@ -135,7 +129,6 @@ namespace libsemigroups {
                                    "&",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs1;
     bs1.reset();
     bs1.set(0);
@@ -156,7 +149,6 @@ namespace libsemigroups {
                                    "operator|=",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs1;
     bs1.reset();
     bs1.set(0);
@@ -177,7 +169,6 @@ namespace libsemigroups {
                                    "operator[]",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.reset();
     bs.set(0);
@@ -196,7 +187,6 @@ namespace libsemigroups {
                                    "set(none)",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.set();
     REQUIRE(bs[0]);
@@ -213,7 +203,6 @@ namespace libsemigroups {
                                    "set(pos, value)",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.set();
     bs.set(0, false);
@@ -231,7 +220,6 @@ namespace libsemigroups {
                                    "set(first, last, value)",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.reset();
     REQUIRE(bs.count() == 0);
@@ -251,7 +239,6 @@ namespace libsemigroups {
                                    "reset(first, last)",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.set();
     REQUIRE(bs.count() == bs.size());
@@ -271,7 +258,6 @@ namespace libsemigroups {
                                    "reset(pos)",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.set();
     REQUIRE(bs.count() == bs.size());
@@ -294,7 +280,6 @@ namespace libsemigroups {
                                    "apply (iterate through set bits)",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.set();
     bs.reset(2);
@@ -323,7 +308,6 @@ namespace libsemigroups {
                                    "std::hash",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.reset();
     std::hash<TestType>()(bs);
@@ -334,7 +318,6 @@ namespace libsemigroups {
                                    "constructors",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.set();
     bs.reset(2, 6);
@@ -414,7 +397,6 @@ namespace libsemigroups {
                                    "max_size",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto rg = ReportGuard(false);
 #if LIBSEMIGROUPS_SIZEOF_VOID_P == 8
     REQUIRE(BitSet<1>::max_size() == 64);
 #else
@@ -427,7 +409,6 @@ namespace libsemigroups {
                                    "insertion operators",
                                    "[bitset][quick]",
                                    BITSET_TYPES) {
-    auto     rg = ReportGuard(false);
     TestType bs;
     bs.set();
     bs.reset(2, 6);

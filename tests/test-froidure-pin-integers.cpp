@@ -80,7 +80,6 @@ namespace libsemigroups {
                           "021",
                           "uint32_t/uint8_t",
                           "[quick][froidure-pin][integers]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<uint32_t> S;
     S.add_generator(2);
     REQUIRE(S.size() == 32);

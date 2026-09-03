@@ -65,8 +65,6 @@ namespace libsemigroups {
                           "085",
                           "chinese_monoid(3)",
                           "[Example][quick]") {
-    auto rg = ReportGuard(false);
-
     KnuthBendix kb(congruence_kind::twosided,
                    v4::to<Presentation<std::string>>(chinese_monoid(3)));
     REQUIRE(is_obviously_infinite(kb));
@@ -98,7 +96,6 @@ namespace libsemigroups {
                           "086",
                           "plactic_monoid(3)",
                           "[Example][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE(plactic_monoid(3).rules
             == std::vector({102_w,
                             120_w,
@@ -176,7 +173,6 @@ namespace libsemigroups {
                           "087",
                           "stylic_monoid(4)",
                           "[Example][quick]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, stylic_monoid(4));
     // REQUIRE(kb.number_of_classes() == 51);
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(5).count() == 50);
@@ -186,8 +182,6 @@ namespace libsemigroups {
                           "088",
                           "hypo_plactic_monoid(3)",
                           "[Example][quick]") {
-    auto rg = ReportGuard(false);
-
     KnuthBendix kb(congruence_kind::twosided, hypo_plactic_monoid(3));
     kb.run();
 
@@ -211,7 +205,6 @@ namespace libsemigroups {
       "089",
       "not_renner_type_B_monoid(3, 1) (Godelle presentation)",
       "[quick][Example][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_B_monoid(3, 1));
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
@@ -223,7 +216,6 @@ namespace libsemigroups {
       "090",
       "not_renner_type_B_monoid(3, 0) (Godelle presentation)",
       "[quick][Example][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_B_monoid(3, 0));
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
@@ -235,7 +227,6 @@ namespace libsemigroups {
       "091",
       "not_renner_type_D_monoid(2, 1) (Godelle presentation)",
       "[quick][Example][hivert]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(2, 1));
     REQUIRE(kb.presentation().rules.size() == 68);
     REQUIRE(!is_obviously_infinite(kb));
@@ -248,7 +239,6 @@ namespace libsemigroups {
       "092",
       "not_renner_type_D_monoid(2, 0) (Godelle presentation)",
       "[quick][Example][hivert]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(2, 0));
 
     REQUIRE(kb.presentation().rules.size() == 68);
@@ -261,7 +251,6 @@ namespace libsemigroups {
       "093",
       "not_renner_type_D_monoid(3, 1) (Godelle presentation)",
       "[quick][Example][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(3, 1));
     REQUIRE(kb.presentation().rules.size() == 130);
     REQUIRE(!is_obviously_infinite(kb));
@@ -273,7 +262,6 @@ namespace libsemigroups {
       "094",
       "not_renner_type_D_monoid(3, 0) (Godelle presentation)",
       "[quick][Example][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(3, 0));
     REQUIRE(kb.presentation().rules.size() == 130);
     REQUIRE(!is_obviously_infinite(kb));
@@ -285,7 +273,6 @@ namespace libsemigroups {
       "095",
       "not_renner_type_D_monoid(4, 1) (Godelle presentation)",
       "[quick][Example][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(4, 1));
     REQUIRE(kb.presentation().rules.size() == 204);
     REQUIRE(!is_obviously_infinite(kb));
@@ -298,7 +285,6 @@ namespace libsemigroups {
       "096",
       "not_renner_type_D_monoid(4, 0) (Godelle presentation)",
       "[quick][Example][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(4, 0));
     REQUIRE(kb.presentation().rules.size() == 204);
     REQUIRE(!is_obviously_infinite(kb));
@@ -310,7 +296,6 @@ namespace libsemigroups {
                           "099",
                           "Braid group 4 generators",
                           "[quick]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, braid_group(5));
     REQUIRE(kb.presentation().contains_empty_word());
     REQUIRE(kb.presentation().alphabet().size() == 8);
@@ -330,7 +315,6 @@ namespace libsemigroups {
                           "107",
                           "shifted_plactic_monoid_Ser09(3) KnuthBendix",
                           "[Example][quick]") {
-    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, shifted_plactic_monoid_Ser09(3));
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);

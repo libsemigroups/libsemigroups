@@ -25,7 +25,6 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("to<WordGraph>", "000", "from a Forest", "[quick]") {
-    auto rg         = ReportGuard(false);
     using node_type = Forest::node_type;
 
     WordGraph wg = binary_tree<node_type>(5);

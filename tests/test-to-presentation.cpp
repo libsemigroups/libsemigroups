@@ -57,7 +57,6 @@ namespace libsemigroups {
                                    word_type,
                                    (StaticVector1<uint16_t, 8>),
                                    std::string) {
-    auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
     S.add_generator(make<Bipartition>({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
     S.add_generator(make<Bipartition>({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
@@ -83,7 +82,6 @@ namespace libsemigroups {
                           "014",
                           "from FroidurePin and alphabet",
                           "[quick][to_presentation]") {
-    auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
     S.add_generator(make<Bipartition>({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
     S.add_generator(make<Bipartition>({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
@@ -135,7 +133,6 @@ namespace libsemigroups {
                                    static_vec_string,
                                    static_vec_word,
                                    static_vec_static_vec) {
-    auto rg  = ReportGuard(false);
     using W1 = typename TestType::first_type;
     using W2 = typename TestType::second_type;
 
@@ -191,7 +188,6 @@ namespace libsemigroups {
                                    static_vec_string,
                                    static_vec_word,
                                    static_vec_static_vec) {
-    auto rg  = ReportGuard(false);
     using W1 = typename TestType::first_type;
     using W2 = typename TestType::second_type;
     Presentation<W1> p;
@@ -232,7 +228,6 @@ namespace libsemigroups {
                           "017",
                           "from present. and alphabet",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(false);
@@ -261,7 +256,6 @@ namespace libsemigroups {
       "018",
       "use human readable alphabet for v4::to<Presentation>",
       "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
@@ -289,7 +283,6 @@ namespace libsemigroups {
                                    static_vec_string,
                                    static_vec_word,
                                    static_vec_static_vec) {
-    auto rg  = ReportGuard(false);
     using W1 = typename TestType::first_type;
     using W2 = typename TestType::second_type;
     InversePresentation<W1> ip;
@@ -354,7 +347,6 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    (StaticVector1<uint8_t, 6>) ) {
-    auto                   rg = ReportGuard(false);
     Presentation<TestType> p;
     p.alphabet(3);
     if constexpr (std::is_same_v<TestType, std::string>) {
@@ -393,8 +385,6 @@ namespace libsemigroups {
                           "021",
                           "from KnuthBendix<std::string>",
                           "[quick][to_presentation]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("hijkl"s);
     presentation::add_rule(p, "hi"s, "j"s);
@@ -428,7 +418,6 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -462,7 +451,6 @@ namespace libsemigroups {
                           "from KnuthBendix<std::string>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("hijkl"s);
@@ -498,7 +486,6 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -534,7 +521,6 @@ namespace libsemigroups {
                           "025",
                           "from Kambites<Word>",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -566,7 +552,6 @@ namespace libsemigroups {
                           "026",
                           "from ToddCoxeter<Word>",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -598,7 +583,6 @@ namespace libsemigroups {
                           "027",
                           "from Stephen<Presentation<Word>>",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -620,7 +604,6 @@ namespace libsemigroups {
                           "from Congruence<word_type> (twosided)",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     // Test 1: Congruence<word_type> -> Presentation<word_type> (same type)
     Presentation<word_type> p;
@@ -649,8 +632,6 @@ namespace libsemigroups {
                           "029",
                           "from Congruence<std::string> (twosided)",
                           "[quick][to_presentation]") {
-    auto rg = ReportGuard(false);
-
     // Test 1: Congruence<std::string> -> Presentation<std::string> (same type)
     Presentation<std::string> p_str;
     p_str.alphabet("abc"s);
@@ -678,7 +659,6 @@ namespace libsemigroups {
                           "from Congruence<word_type> (onesided)",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);
@@ -703,7 +683,6 @@ namespace libsemigroups {
                           "from Congruence with generating pairs",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);

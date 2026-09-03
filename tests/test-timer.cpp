@@ -31,7 +31,6 @@ namespace libsemigroups {
                             "000",
                             "string method (1 argument)",
                             "[quick]") {
-      auto                     rg = ReportGuard(false);
       Timer                    t;
       std::chrono::nanoseconds ns(1);
       REQUIRE(string_time(ns) == "1ns");
@@ -75,7 +74,6 @@ namespace libsemigroups {
                             "001",
                             "string method (0 arguments)",
                             "[quick]") {
-      auto  rg = ReportGuard(false);
       Timer t;
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
       t.string();  // Can't really test this
@@ -87,7 +85,6 @@ namespace libsemigroups {
 //  0 > 0
 #ifndef __CYGWIN__
     LIBSEMIGROUPS_TEST_CASE("Timer", "002", "reset/elapsed method", "[quick]") {
-      auto  rg = ReportGuard(false);
       Timer t;
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
       auto e
@@ -103,7 +100,6 @@ namespace libsemigroups {
 #endif
 
     LIBSEMIGROUPS_TEST_CASE("Timer", "003", "operator<<", "[quick]") {
-      auto               rg = ReportGuard(false);
       std::ostringstream os;
       Timer              t;
       os << t;

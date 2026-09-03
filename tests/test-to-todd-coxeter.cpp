@@ -36,8 +36,6 @@ namespace libsemigroups {
                           "021",
                           "from WordGraph",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-
     using Transf          = LeastTransf<5>;
     FroidurePin<Transf> S = make<FroidurePin>(
         {make<Transf>({1, 3, 4, 2, 3}), make<Transf>({3, 2, 1, 3, 3})});
@@ -82,8 +80,6 @@ namespace libsemigroups {
                           "022",
                           "from WordGraph",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-
     using Transf  = LeastTransf<5>;
     FroidurePin S = make<FroidurePin>(
         {make<Transf>({1, 3, 4, 2, 3}), make<Transf>({3, 2, 1, 3, 3})});
@@ -130,8 +126,7 @@ namespace libsemigroups {
                           "023",
                           "from WordGraph",
                           "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -194,8 +189,6 @@ namespace libsemigroups {
                           "024",
                           "from KnuthBendix",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abB"s);
     presentation::add_rule_no_checks(p, "bb"s, "B"s);

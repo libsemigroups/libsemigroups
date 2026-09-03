@@ -54,7 +54,6 @@ namespace libsemigroups {
                           "000",
                           "test semigroup/monoid status",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     // TODO(2) Add tests for all functions
     REQUIRE(alternating_group_Moo97(5).contains_empty_word());
     REQUIRE(brauer_monoid_KM07(5).contains_empty_word());
@@ -118,7 +117,6 @@ namespace libsemigroups {
                           "001",
                           "full_transformation_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(full_transformation_monoid_Aiz58(1),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(full_transformation_monoid_II74(3),
@@ -137,7 +135,6 @@ namespace libsemigroups {
                           "002",
                           "partial_transformation_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(partial_transformation_monoid_Shu60(3),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(partial_transformation_monoid_MW24(1),
@@ -148,7 +145,6 @@ namespace libsemigroups {
                           "003",
                           "symmetric_group degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(symmetric_group_Bur12(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(symmetric_group_Car56(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(symmetric_group_Moo97_a(1), LibsemigroupsException);
@@ -159,7 +155,6 @@ namespace libsemigroups {
                           "004",
                           "dual_symmetric_inverse_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(dual_symmetric_inverse_monoid(2), LibsemigroupsException);
   }
 
@@ -167,7 +162,6 @@ namespace libsemigroups {
                           "005",
                           "uniform_block_bijection_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(uniform_block_bijection_monoid(2),
                       LibsemigroupsException);
   }
@@ -176,7 +170,6 @@ namespace libsemigroups {
                           "006",
                           "partition_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(partition_monoid_Eas11(3), LibsemigroupsException);
     REQUIRE_THROWS_AS(partition_monoid_HR05(0), LibsemigroupsException);
   }
@@ -185,7 +178,6 @@ namespace libsemigroups {
                           "007",
                           "alternating_group degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(alternating_group(3), LibsemigroupsException);
   }
 
@@ -193,7 +185,6 @@ namespace libsemigroups {
                           "008",
                           "chinese_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(chinese_monoid(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(chinese_monoid(0), LibsemigroupsException);
   }
@@ -202,7 +193,6 @@ namespace libsemigroups {
                           "009",
                           "monogenic_semigroup degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(monogenic_semigroup(0, 0), LibsemigroupsException);
     REQUIRE_THROWS_AS(monogenic_semigroup(5, 0), LibsemigroupsException);
   }
@@ -211,7 +201,6 @@ namespace libsemigroups {
                           "010",
                           "rectangular_band degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(rectangular_band(0, 0), LibsemigroupsException);
     REQUIRE_THROWS_AS(rectangular_band(1, 0), LibsemigroupsException);
     REQUIRE_THROWS_AS(rectangular_band(0, 1), LibsemigroupsException);
@@ -222,7 +211,6 @@ namespace libsemigroups {
                           "011",
                           "stellar_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(stellar_monoid(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(stellar_monoid(1), LibsemigroupsException);
   }
@@ -231,7 +219,6 @@ namespace libsemigroups {
                           "012",
                           "plactic_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(plactic_monoid(0), LibsemigroupsException);
     REQUIRE_NOTHROW(plactic_monoid(1));
     REQUIRE_NOTHROW(plactic_monoid(2));
@@ -241,7 +228,6 @@ namespace libsemigroups {
                           "013",
                           "stylic_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(stylic_monoid(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(stylic_monoid(1), LibsemigroupsException);
   }
@@ -250,7 +236,6 @@ namespace libsemigroups {
                           "014",
                           "temperley_lieb_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(temperley_lieb_monoid(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(temperley_lieb_monoid(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(temperley_lieb_monoid(2), LibsemigroupsException);
@@ -260,7 +245,6 @@ namespace libsemigroups {
                           "015",
                           "singular_brauer_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(singular_brauer_monoid(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(singular_brauer_monoid(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(singular_brauer_monoid(2), LibsemigroupsException);
@@ -270,7 +254,6 @@ namespace libsemigroups {
                           "016",
                           "orientation_preserving_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(orientation_preserving_monoid(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(orientation_preserving_monoid(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(orientation_preserving_monoid(2), LibsemigroupsException);
@@ -281,7 +264,6 @@ namespace libsemigroups {
       "017",
       "orientation_preserving_reversing_monoid degree except",
       "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(orientation_preserving_reversing_monoid(0),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(orientation_preserving_reversing_monoid(1),
@@ -294,7 +276,6 @@ namespace libsemigroups {
                           "018",
                           "order_preserving_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(order_preserving_monoid(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(order_preserving_monoid(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(order_preserving_monoid(2), LibsemigroupsException);
@@ -304,7 +285,6 @@ namespace libsemigroups {
                           "019",
                           "cyclic_inverse_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(cyclic_inverse_monoid_Fer22_a(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(cyclic_inverse_monoid_Fer22_a(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(cyclic_inverse_monoid_Fer22_a(2), LibsemigroupsException);
@@ -318,7 +298,6 @@ namespace libsemigroups {
       "020",
       "order_preserving_cyclic_inverse_monoid degree except",
       "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(order_preserving_cyclic_inverse_monoid(0),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(order_preserving_cyclic_inverse_monoid(1),
@@ -331,7 +310,6 @@ namespace libsemigroups {
                           "021",
                           "partial_isometries_cycle_graph_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(partial_isometries_cycle_graph_monoid(0),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(partial_isometries_cycle_graph_monoid(1),
@@ -344,9 +322,8 @@ namespace libsemigroups {
                           "022",
                           "order_preserving_monoid(5)",
                           "[pres-examples][quick]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
-    auto   p  = order_preserving_monoid(n);
+    size_t n = 5;
+    auto   p = order_preserving_monoid(n);
     p.throw_if_bad_alphabet_or_rules();
 
     ToddCoxeter tc(congruence_kind::twosided, p);
@@ -357,7 +334,6 @@ namespace libsemigroups {
                           "023",
                           "order_preserving_monoid nr generators and relations",
                           "[pres-examples][quick]") {
-    auto                    rg    = ReportGuard(false);
     size_t                  min_n = 3;
     size_t                  max_n = 10;
     Presentation<word_type> p;
@@ -372,8 +348,7 @@ namespace libsemigroups {
                           "024",
                           "monogenic_semigroup(4, 9)",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
-    auto p  = monogenic_semigroup(4, 9);
+    auto p = monogenic_semigroup(4, 9);
     p.throw_if_bad_alphabet_or_rules();
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 12);
@@ -383,9 +358,8 @@ namespace libsemigroups {
                           "025",
                           "dual_symmetric_inverse_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
-    auto   p  = dual_symmetric_inverse_monoid(n);
+    size_t n = 5;
+    auto   p = dual_symmetric_inverse_monoid(n);
     p.throw_if_bad_alphabet_or_rules();
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 6'721);
@@ -395,9 +369,8 @@ namespace libsemigroups {
                           "026",
                           "uniform_block_bijection_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
-    auto   p  = uniform_block_bijection_monoid(n);
+    size_t n = 5;
+    auto   p = uniform_block_bijection_monoid(n);
     p.throw_if_bad_alphabet_or_rules();
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 1'496);
@@ -407,7 +380,6 @@ namespace libsemigroups {
                           "027",
                           "partition_monoid(5)",
                           "[pres-examples][standard]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, partition_monoid_Eas11(5));
     REQUIRE(tc.number_of_classes() == 115'975);
     tc.init(congruence_kind::twosided, partition_monoid_HR05(5));
@@ -418,8 +390,7 @@ namespace libsemigroups {
                           "028",
                           "singular_brauer_monoid(6)",
                           "[pres-examples][quick][no-valgrind][no-coverage]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 6;
+    size_t      n = 6;
     ToddCoxeter tc(congruence_kind::twosided, singular_brauer_monoid(n));
     REQUIRE(tc.number_of_classes() == 9'676);
   }
@@ -428,8 +399,7 @@ namespace libsemigroups {
                           "029",
                           "orientation_preserving_monoid(6)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 6;
+    size_t      n = 6;
     ToddCoxeter tc(congruence_kind::twosided, orientation_preserving_monoid(n));
     REQUIRE(tc.number_of_classes() == 2'742);
   }
@@ -438,8 +408,7 @@ namespace libsemigroups {
                           "030",
                           "orientation_preserving_reversing_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 5;
+    size_t      n = 5;
     ToddCoxeter tc(congruence_kind::twosided,
                    orientation_preserving_reversing_monoid(n));
     REQUIRE(tc.number_of_classes() == 1'015);
@@ -449,7 +418,6 @@ namespace libsemigroups {
                           "031",
                           "partition_monoid(n), 1 <= n <= 3",
                           "[pres-examples][quick]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, partition_monoid_HR05(3));
     REQUIRE(tc.number_of_classes() == 203);
     tc.init(congruence_kind::twosided, partition_monoid_HR05(2));
@@ -462,8 +430,7 @@ namespace libsemigroups {
                           "032",
                           "temperley_lieb_monoid(10)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 10;
+    size_t      n = 10;
     ToddCoxeter tc(congruence_kind::twosided, temperley_lieb_monoid(n));
     REQUIRE(tc.number_of_classes() == 16'796);
   }
@@ -472,8 +439,7 @@ namespace libsemigroups {
                           "033",
                           "brauer_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 5;
+    size_t      n = 5;
     ToddCoxeter tc(congruence_kind::twosided, brauer_monoid(n));
     REQUIRE(tc.number_of_classes() == 945);
 
@@ -494,7 +460,6 @@ namespace libsemigroups {
                           "034",
                           "rectangular_band(5, 9)",
                           "[pres-examples][quick]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, rectangular_band(5, 9));
     REQUIRE(tc.number_of_classes() == 45);
   }
@@ -504,7 +469,6 @@ namespace libsemigroups {
       "035",
       "symmetric_group nr generators, relations and classes",
       "[pres-examples][quick][no-valgrind][no-coverage]") {
-    auto                               rg = ReportGuard(false);
     Presentation<word_type>            p;
     ToddCoxeter<word_type>             tc;
     size_t                             min_n = 2;
@@ -555,8 +519,7 @@ namespace libsemigroups {
                           "036",
                           "symmetric inverse monoid Gay presentation",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
-    auto p  = symmetric_inverse_monoid_Sol04(4);
+    auto p = symmetric_inverse_monoid_Sol04(4);
 
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -574,8 +537,7 @@ namespace libsemigroups {
                           "037",
                           "0-Hecke rook monoid",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
-    auto p  = zero_rook_monoid(4);
+    auto p = zero_rook_monoid(4);
 
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -588,8 +550,7 @@ namespace libsemigroups {
                           "038",
                           "full_transformation_monoid(5) Iwahori",
                           "[pres-examples][quick][no-valgrind][no-coverage]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
+    size_t n = 5;
 
     ToddCoxeter tc(congruence_kind::twosided,
                    full_transformation_monoid_II74(n));
@@ -601,8 +562,6 @@ namespace libsemigroups {
       "039",
       "full_transformation_monoid(n = 2, 3) Mitchell + Whyte",
       "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
-
     ToddCoxeter tc2(congruence_kind::twosided, full_transformation_monoid(2));
     REQUIRE(tc2.number_of_classes() == 4);
 
@@ -619,8 +578,7 @@ namespace libsemigroups {
                           "040",
                           "full_transformation_monoid(5) Mitchell + Whyte",
                           "[pres-examples][quick][no-valgrind]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
+    size_t n = 5;
 
     ToddCoxeter tc(congruence_kind::twosided,
                    full_transformation_monoid_MW24_a(n));
@@ -656,8 +614,7 @@ namespace libsemigroups {
                           "043",
                           "partial_transformation_monoid(5) Shutov",
                           "[pres-examples][standard]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 5;
+    size_t      n = 5;
     ToddCoxeter tc(congruence_kind::twosided,
                    partial_transformation_monoid_Shu60(n));
     REQUIRE(tc.number_of_classes() == 7'776);
@@ -667,8 +624,7 @@ namespace libsemigroups {
                           "044",
                           "partial_transformation_monoid(5) Mitchell + Whyte",
                           "[pres-examples][quick][no-valgrind][no-coverage]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 5;
+    size_t      n = 5;
     ToddCoxeter tc(congruence_kind::twosided,
                    partial_transformation_monoid_MW24(n));
     REQUIRE(tc.number_of_classes() == 7'776);
@@ -678,8 +634,7 @@ namespace libsemigroups {
                           "045",
                           "symmetric_inverse_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
+    size_t n = 5;
 
     ToddCoxeter tc(congruence_kind::twosided,
                    symmetric_inverse_monoid_Shu60(n));
@@ -690,8 +645,7 @@ namespace libsemigroups {
                           "046",
                           "symmetric_inverse_monoid(4) Mitchell + Whyte",
                           "[pres-examples][quick][no-valgrind]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 4;
+    size_t n = 4;
 
     ToddCoxeter tc(congruence_kind::twosided, symmetric_inverse_monoid_MW24(n));
     REQUIRE(tc.number_of_classes() == 209);
@@ -701,8 +655,7 @@ namespace libsemigroups {
                           "047",
                           "symmetric_inverse_monoid(5) Mitchell + Whyte",
                           "[pres-examples][quick][no-valgrind]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
+    size_t n = 5;
 
     ToddCoxeter tc(congruence_kind::twosided, symmetric_inverse_monoid_MW24(n));
     REQUIRE(tc.number_of_classes() == 1'546);
@@ -712,7 +665,6 @@ namespace libsemigroups {
                           "048",
                           "fibonacci_semigroup(2, 5)",
                           "[pres-examples][quick]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, fibonacci_semigroup(2, 5));
     REQUIRE(tc.number_of_classes() == 11);
   }
@@ -721,8 +673,7 @@ namespace libsemigroups {
                           "049",
                           "alternating_group(7) Moore",
                           "[pres-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 7;
+    size_t      n = 7;
     ToddCoxeter tc(congruence_kind::twosided, alternating_group_Moo97(n));
     REQUIRE(tc.number_of_classes() == 2'520);
   }
@@ -731,8 +682,7 @@ namespace libsemigroups {
                           "050",
                           "full_transformation_monoid(4) Aizenstat",
                           "[pres-examples][quick]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 4;
+    size_t n = 4;
 
     ToddCoxeter tc(congruence_kind::twosided,
                    full_transformation_monoid_Aiz58(n));
@@ -743,8 +693,7 @@ namespace libsemigroups {
                           "051",
                           "order_preserving_monoid(10)",
                           "[pres-examples][standard]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 10;
+    size_t      n = 10;
     ToddCoxeter tc(congruence_kind::twosided, order_preserving_monoid(n));
     REQUIRE(tc.number_of_classes() == 92'378);
   }
@@ -753,8 +702,7 @@ namespace libsemigroups {
                           "052",
                           "cyclic_inverse_monoid(4) Fernandes b",
                           "[pres-examples][quick]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 4;
+    size_t n = 4;
 
     ToddCoxeter tc(congruence_kind::twosided, cyclic_inverse_monoid_Fer22_b(n));
     REQUIRE(tc.number_of_classes() == 61);
@@ -764,8 +712,7 @@ namespace libsemigroups {
                           "053",
                           "cyclic_inverse_monoid(8) Fernandes b",
                           "[pres-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 8;
+    size_t      n = 8;
     ToddCoxeter tc(congruence_kind::twosided, cyclic_inverse_monoid_Fer22_b(n));
     REQUIRE(tc.number_of_classes() == 2'041);
   }
@@ -774,7 +721,6 @@ namespace libsemigroups {
                           "054",
                           "cyclic_inverse_monoid Fernandes a",
                           "[pres-examples][quick][no-valgrind]") {
-    auto rg = ReportGuard(false);
     for (size_t n = 3; n < 10; ++n) {
       auto p = cyclic_inverse_monoid_Fer22_a(n);
       REQUIRE(p.alphabet().size() == (n + 1));
@@ -798,7 +744,6 @@ namespace libsemigroups {
                           "055",
                           "cyclic_inverse_monoid Fernandes b",
                           "[pres-examples][quick][no-valgrind]") {
-    auto rg = ReportGuard(false);
     for (size_t n = 3; n < 10; ++n) {
       auto p = cyclic_inverse_monoid_Fer22_b(n);
       REQUIRE(p.alphabet().size() == 2);
@@ -812,8 +757,7 @@ namespace libsemigroups {
                           "056",
                           "order_preserving_cyclic_inverse_monoid(4)",
                           "[pres-examples][quick]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 4;
+    size_t      n = 4;
     ToddCoxeter tc(congruence_kind::twosided,
                    order_preserving_cyclic_inverse_monoid(n));
     REQUIRE(tc.number_of_classes() == 38);
@@ -823,8 +767,7 @@ namespace libsemigroups {
                           "057",
                           "order_preserving_cyclic_inverse_monoid(11)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 11;
+    size_t      n = 11;
     ToddCoxeter tc(congruence_kind::twosided,
                    order_preserving_cyclic_inverse_monoid(n));
     REQUIRE(tc.number_of_classes() == 6'120);
@@ -834,8 +777,7 @@ namespace libsemigroups {
                           "058",
                           "order_preserving_cyclic_inverse_monoid(11)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 11;
+    size_t      n = 11;
     ToddCoxeter tc(congruence_kind::twosided,
                    order_preserving_cyclic_inverse_monoid(n));
     REQUIRE(tc.number_of_classes() == 6'120);
@@ -845,8 +787,7 @@ namespace libsemigroups {
                           "059",
                           "partial_isometries_cycle_graph_monoid(5)",
                           "[pres-examples][quick]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 5;
+    size_t      n = 5;
     ToddCoxeter tc(congruence_kind::twosided,
                    partial_isometries_cycle_graph_monoid(n));
     REQUIRE(tc.number_of_classes() == 286);
@@ -856,8 +797,7 @@ namespace libsemigroups {
                           "060",
                           "partial_isometries_cycle_graph_monoid(4)",
                           "[pres-examples][quick]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 4;
+    size_t      n = 4;
     ToddCoxeter tc(congruence_kind::twosided,
                    partial_isometries_cycle_graph_monoid(n));
     REQUIRE(tc.number_of_classes() == 97);
@@ -867,8 +807,7 @@ namespace libsemigroups {
                           "061",
                           "partial_isometries_cycle_graph_monoid(10)",
                           "[pres-examples][quick][no-valgrind][no-coverage]") {
-    auto        rg = ReportGuard(false);
-    size_t      n  = 10;
+    size_t      n = 10;
     ToddCoxeter tc(congruence_kind::twosided,
                    partial_isometries_cycle_graph_monoid(n));
     REQUIRE(tc.number_of_classes() == 20'311);
@@ -878,8 +817,7 @@ namespace libsemigroups {
                           "062",
                           "not_symmetric_group(4)",
                           "[pres-examples][quick]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 4;
+    size_t n = 4;
 
     ToddCoxeter tc(congruence_kind::twosided, not_symmetric_group(n));
     REQUIRE(tc.number_of_classes() == 72);
@@ -889,8 +827,7 @@ namespace libsemigroups {
                           "063",
                           "partial_brauer_monoid(4)",
                           "[pres-examples][quick][no-valgrind]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 4;
+    size_t n = 4;
 
     ToddCoxeter tc(congruence_kind::twosided, partial_brauer_monoid(n));
     REQUIRE(tc.number_of_classes() == 764);
@@ -901,8 +838,7 @@ namespace libsemigroups {
                           "064",
                           "motzkin_monoid(5)",
                           "[pres-examples][quick]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
+    size_t n = 5;
 
     ToddCoxeter tc(congruence_kind::twosided, motzkin_monoid(n));
     REQUIRE(tc.number_of_classes() == 2188);
@@ -926,7 +862,6 @@ namespace libsemigroups {
       "065",
       "not_renner_type_B_monoid(2, 1) (Godelle presentation)",
       "[quick][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, not_renner_type_B_monoid(2, 1));
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(!tc.started());
@@ -941,7 +876,6 @@ namespace libsemigroups {
       "066",
       "not_renner_type_B_monoid(2, 0) (Godelle presentation)",
       "[quick][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, not_renner_type_B_monoid(2, 0));
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 57);
@@ -952,7 +886,6 @@ namespace libsemigroups {
       "067",
       "renner_type_B_monoid(2, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(2, 1));
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 57);
@@ -963,7 +896,6 @@ namespace libsemigroups {
       "068",
       "renner_type_B_monoid(2, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(2, 0));
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 57);
@@ -974,7 +906,6 @@ namespace libsemigroups {
       "069",
       "renner_type_B_monoid(3, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(3, 1));
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 757);
@@ -985,7 +916,6 @@ namespace libsemigroups {
       "070",
       "renner_type_B_monoid(3, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(3, 0));
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 757);
@@ -996,7 +926,6 @@ namespace libsemigroups {
       "071",
       "renner_type_B_monoid(4, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(4, 1));
     REQUIRE(tc.presentation().rules.size() == 186);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1010,7 +939,6 @@ namespace libsemigroups {
       "072",
       "renner_type_B_monoid(4, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(4, 0));
     REQUIRE(tc.presentation().rules.size() == 186);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1024,7 +952,6 @@ namespace libsemigroups {
       "073",
       "renner_type_B_monoid(5, 1) (Gay-Hivert presentation)",
       "[standard][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(5, 1));
     REQUIRE(tc.presentation().rules.size() == 272);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1050,7 +977,6 @@ namespace libsemigroups {
       "074",
       "renner_type_B_monoid(5, 0) (Gay-Hivert presentation)",
       "[standard][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(5, 0));
     tc.strategy(decltype(tc)::options::strategy::felsch);
 
@@ -1073,7 +999,6 @@ namespace libsemigroups {
       "075",
       "renner_type_D_monoid(2, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(2, 1));
     REQUIRE(tc.presentation().rules.size() == 68);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1085,7 +1010,6 @@ namespace libsemigroups {
       "076",
       "renner_type_D_monoid(2, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(2, 0));
     REQUIRE(tc.presentation().rules.size() == 68);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1097,7 +1021,6 @@ namespace libsemigroups {
       "077",
       "renner_type_D_monoid(3, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(3, 1));
     REQUIRE(tc.presentation().rules.size() == 130);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1109,7 +1032,6 @@ namespace libsemigroups {
       "078",
       "renner_type_D_monoid(3, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(3, 0));
     REQUIRE(tc.presentation().rules.size() == 130);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1121,7 +1043,6 @@ namespace libsemigroups {
       "079",
       "renner_type_D_monoid(4, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(4, 1));
     REQUIRE(tc.presentation().rules.size() == 208);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1134,7 +1055,6 @@ namespace libsemigroups {
       "080",
       "renner_type_D_monoid(4, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(4, 0));
     REQUIRE(tc.presentation().rules.size() == 208);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1146,7 +1066,6 @@ namespace libsemigroups {
       "081",
       "renner_type_D_monoid(5, 1) (Gay-Hivert presentation)",
       "[standard][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(5, 1));
     tc.strategy(decltype(tc)::options::strategy::felsch);
 
@@ -1161,7 +1080,6 @@ namespace libsemigroups {
       "082",
       "renner_type_D_monoid(5, 0) (Gay-Hivert presentation)",
       "[standard][pres-examples][hivert]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(5, 0));
     tc.strategy(decltype(tc)::options::strategy::felsch);
 
@@ -1205,7 +1123,6 @@ namespace libsemigroups {
       "098",
       "abacus_jones_monoid(n, d) when 5 < n < 7 and 1 <= d < 4",
       "[quick][pres-examples][no-valgrind]") {
-    auto                   rg = ReportGuard(false);
     ToddCoxeter<word_type> tc;
 
     for (size_t n = 5; n < 7; ++n) {
@@ -1224,7 +1141,6 @@ namespace libsemigroups {
                           "101",
                           "catalan_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(catalan_monoid(0), LibsemigroupsException);
     REQUIRE_NOTHROW(catalan_monoid(1));
   }
@@ -1233,7 +1149,6 @@ namespace libsemigroups {
                           "104",
                           "double_catalan_monoid degree except",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(double_catalan_monoid(0), LibsemigroupsException);
     REQUIRE_NOTHROW(double_catalan_monoid(1));
   }
@@ -1242,8 +1157,6 @@ namespace libsemigroups {
                           "105",
                           "double_catalan_monoid(n), 1 <= n <= 5",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
-
     auto p = double_catalan_monoid(1);
     p.throw_if_bad_alphabet_or_rules();
     REQUIRE(p.alphabet().empty());
@@ -1289,7 +1202,6 @@ namespace libsemigroups {
                           "100",
                           "double_catalan_monoid(8)",
                           "[pres-examples][quick]") {
-    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, double_catalan_monoid(8));
     REQUIRE(tc.number_of_classes() == 15'767);
   }
@@ -1298,8 +1210,7 @@ namespace libsemigroups {
                           "102",
                           "catalan_monoid(4)",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
-    auto p  = catalan_monoid(4);
+    auto p = catalan_monoid(4);
     p.throw_if_bad_alphabet_or_rules();
     REQUIRE(p.alphabet().size() == 3);
     REQUIRE(p.rules.size() == 16);
@@ -1312,8 +1223,7 @@ namespace libsemigroups {
                           "103",
                           "catalan_monoid(10)",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
-    auto p  = catalan_monoid(10);
+    auto p = catalan_monoid(10);
     p.throw_if_bad_alphabet_or_rules();
 
     REQUIRE(p.alphabet().size() == 9);
@@ -1327,7 +1237,6 @@ namespace libsemigroups {
                           "106",
                           "shifted_plactic_monoid_Ser09 degree except and n=1",
                           "[pres-examples][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(shifted_plactic_monoid_Ser09(0), LibsemigroupsException);
     auto p = shifted_plactic_monoid_Ser09(1);
     REQUIRE(p.alphabet().size() == 1);
