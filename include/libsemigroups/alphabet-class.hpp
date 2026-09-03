@@ -29,9 +29,9 @@
 #include <utility>        // for move
 #include <vector>         // for vector
 
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION, Libs...
-#include "word-range.hpp"  // for human_readable_letter
+#include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION, Libs...
+#include "word-range-helpers.hpp"  // for human_readable_letter
 
 #include "detail/fmt.hpp"    // for format
 #include "detail/print.hpp"  // for to_printable, isprint
