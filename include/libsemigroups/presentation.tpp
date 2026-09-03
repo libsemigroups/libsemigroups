@@ -691,16 +691,17 @@ namespace libsemigroups {
 
     template <typename Word>
     void remove_redundant_generators(Presentation<Word>& p) {
-      using letter_type_ = typename Presentation<Word>::native_letter_type;
-      throw_if_odd_number_of_rules(p);
+      using native_letter_type =
+          typename Presentation<Word>::native_letter_type;
 
+      throw_if_odd_number_of_rules(p);
       remove_trivial_rules(p);
       for (size_t i = 0; i != p.rules.size(); i += 2) {
         auto lhs = p.rules[i];
         auto rhs = p.rules[i + 1];
         if (lhs.size() == 1
             && std::none_of(
-                rhs.cbegin(), rhs.cend(), [&lhs](letter_type_ const& a) {
+                rhs.cbegin(), rhs.cend(), [&lhs](native_letter_type const& a) {
                   return a == lhs[0];
                 })) {
           if (rhs.size() == 1 && lhs[0] < rhs[0]) {
@@ -709,10 +710,11 @@ namespace libsemigroups {
           replace_subword(p, lhs, rhs);
           p.remove_generator_no_checks(lhs[0]);
         } else if (rhs.size() == 1
-                   && std::none_of(
-                       lhs.cbegin(), lhs.cend(), [&rhs](letter_type_ const& a) {
-                         return a == rhs[0];
-                       })) {
+                   && std::none_of(lhs.cbegin(),
+                                   lhs.cend(),
+                                   [&rhs](native_letter_type const& a) {
+                                     return a == rhs[0];
+                                   })) {
           replace_subword(p, rhs, lhs);
           p.remove_generator_no_checks(rhs[0]);
         }
@@ -1301,7 +1303,88 @@ namespace libsemigroups {
     return _inverses[Presentation<Word>::index(x)];
   }
 
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::add_inverse(letter_type x) {
+    alphabet_v4().throw_if_letter_not_in_alphabet(x);
+    auto it = std::find(inverses().begin(), inverses().end(), x);
+    if (it != inverses().end()) {
+      LIBSEMIGROUPS_EXCEPTION("the argument {} already belongs to the inverses "
+                              "{}, expected an unused letter",
+                              detail::to_printable(x),
+                              detail::to_printable(inverses()));
+    }
+    return add_inverse_no_checks(x);
+  }
+
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::remove_inverse(letter_type x) {
+    auto it = std::find(_inverses.begin(), _inverses.end(), x);
+    if (it == _inverses.end()) {
+      LIBSEMIGROUPS_EXCEPTION("the argument {} does not belong to the inverses "
+                              "{} and cannot be removed",
+                              detail::to_printable(x),
+                              detail::to_printable(_inverses));
+    }
+    _inverses.erase(it);
+    return *this;
+  }
+
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::add_generator_and_inverse_no_checks(
+      letter_type x,
+      letter_type y) {
+    add_generator_no_checks(x);
+    add_inverse_no_checks(y);
+    if (x != y) {
+      add_generator_no_checks(y);
+      add_inverse_no_checks(x);
+    }
+    return *this;
+  }
+
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::add_generator_and_inverse(letter_type x,
+                                                       letter_type y) {
+    throw_if_bad_alphabet_rules_or_inverses();
+    alphabet_v4().throw_if_letter_in_alphabet(x);
+    alphabet_v4().throw_if_letter_in_alphabet(y);
+    return add_generator_and_inverse_no_checks(x, y);
+  }
+
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::remove_generator_and_inverse(letter_type x) {
+    // "inverse" throws if x is not a letter in the alphabet, check this first
+    // because the checks below sometimes give less helpful exception messages
+    auto inv = inverse(x);
+
+    validate(alphabet_v4());
+    presentation::throw_if_bad_inverses(*this, inverses());
+    remove_generator_no_checks(x);
+    remove_inverse_no_checks(x);
+    if (x != inv) {
+      remove_generator_no_checks(inv);
+      remove_inverse_no_checks(inv);
+    }
+    return *this;
+  }
+
   namespace presentation {
+    template <typename Word>
+    void invert_inplace_no_checks(InversePresentation<Word> const& p,
+                                  Word&                            word) {
+      std::reverse(word.begin(), word.end());
+      std::for_each(word.begin(), word.end(), [&p](auto& letter) {
+        // There's no inverse_no_checks, because we need to know the index of
+        // "letter" to know its inverse.
+        letter = p.inverse(letter);
+      });
+    }
+
     template <typename Word>
     Word inverse_alphabet_no_checks(InversePresentation<Word> const& p) {
       std::unordered_set<typename InversePresentation<Word>::letter_type> _seen;
@@ -1314,6 +1397,24 @@ namespace libsemigroups {
         }
       }
       return result;
+    }
+
+    template <typename Word>
+    void invert_inplace(InversePresentation<Word> const& p, Word& word) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(word.cbegin(),
+                                                      word.cend());
+      p.throw_if_empty_word_not_allowed(word.cbegin(), word.cend());
+      invert_inplace_no_checks(p, word);
+    }
+
+    template <typename Word>
+    Word invert(InversePresentation<Word> const& p, Word const& word) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+      p.alphabet_v4().throw_if_letter_not_in_alphabet(word.cbegin(),
+                                                      word.cend());
+      p.throw_if_empty_word_not_allowed(word.cbegin(), word.cend());
+      return invert_no_checks(p, word);
     }
 
     template <typename Word>
@@ -1380,6 +1481,46 @@ namespace libsemigroups {
 
       change_alphabet_no_checks(p, std::move(new_alphabet));
     }
+
+    template <typename Word>
+    void remove_redundant_generators(InversePresentation<Word>& p) {
+      p.throw_if_bad_alphabet_rules_or_inverses();
+      remove_trivial_rules(p);
+
+      for (size_t i = 0; i != p.rules.size(); i += 2) {
+        auto lhs = p.rules[i], rhs = p.rules[i + 1];
+        if (lhs.size() != 1 && rhs.size() != 1) {
+          continue;
+        }
+
+        if (rhs.size() == 1 && lenlex_cmp(rhs, lhs)) {
+          std::swap(lhs, rhs);
+        }
+
+        auto gen = lhs[0];
+        if (std::none_of(rhs.cbegin(), rhs.cend(), [&gen](auto a) {
+              return a == gen;
+            })) {
+          replace_subword(p, lhs, rhs);
+
+          auto inv_gen = p.inverse(gen);
+          Word inv_lhs = {inv_gen};
+          // Can't change rhs in-place because we need it to remain equal to lhs
+          // for removal later.
+          auto inv_rhs = invert_no_checks(p, rhs);
+
+          replace_subword(p, inv_lhs, inv_rhs);
+          p.remove_generator_no_checks(gen);
+          p.remove_inverse_no_checks(gen);
+          if (lhs != inv_lhs) {
+            p.remove_generator_no_checks(inv_gen);
+            p.remove_inverse_no_checks(inv_gen);
+          }
+        }
+      }
+      remove_trivial_rules(p);
+    }
+
   }  // namespace presentation
 
   namespace v4 {

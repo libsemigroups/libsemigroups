@@ -1049,6 +1049,9 @@ namespace libsemigroups {
     //! every letter in \p inverses belongs to \p alphabet. Callers requiring
     //! these checks should perform them separately or use an overload taking a
     //! \ref Presentation.
+    // TODO this doesn't check that alphabet and inverses consist of the same
+    // letters, in particular this doesn't throw whenever alphabet and inverses
+    // are disjoint !!!
     template <typename Word>
     void throw_if_bad_inverses(Word const& alphabet, Word const& inverses);
 
@@ -3780,6 +3783,10 @@ namespace libsemigroups {
       return Presentation<Word>::alphabet();
     }
 
+    [[nodiscard]] Alphabet<Word> const& alphabet_v4() const noexcept {
+      return Presentation<Word>::alphabet_v4();
+    }
+
     //! \copydoc Presentation<Word>::alphabet(size_type)
     InversePresentation& alphabet(size_type n) {
       Presentation<Word>::alphabet(n);
@@ -3859,6 +3866,170 @@ namespace libsemigroups {
     // InversePresentation specific mem fns
     ////////////////////////////////////////////////////////////////////////
 
+    //! \brief Add an inverse \p x.
+    //!
+    //! This function adds the letter \p x as an inverse. Specifically, it
+    //! appends \p x to the value returned by \ref inverses. It does not change
+    //! the alphabet however, so calls to this function should usually be
+    //! immediately adjacent to a call to \ref add_generator.
+    //!
+    //! \param x the letter to add as an inverse.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    InversePresentation& add_inverse_no_checks(letter_type x) {
+      _inverses.push_back(x);
+      return *this;
+    }
+
+    //! \brief Add \p x as an inverse.
+    //!
+    //! Appends \p x to the value returned by \ref inverses after checking that
+    //! \p x belongs to the alphabet and has not already been added as an
+    //! inverse. The new entry specifies the inverse of the letter in the same
+    //! position in the alphabet.
+    //!
+    //! This function does not change the alphabet. Calls to this function
+    //! should therefore usually be adjacent to calls to \ref add_generator.
+    //!
+    //! \param x the letter to add as an inverse.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to the alphabet,
+    //! or if \p x already belongs to the inverses.
+    //!
+    //! \complexity
+    //! Average case: linear in the number of letters already added as
+    //! inverses. Worst case: linear in the sum of the alphabet size and the
+    //! number of letters already added as inverses.
+    //!
+    //! \warning
+    //! This function does not check that the resulting entries define valid
+    //! semigroup inverses. After adding all inverses, this can be checked by
+    //! calling \ref throw_if_bad_inverses.
+    InversePresentation& add_inverse(letter_type x);
+
+    //! \brief Remove \p x from the inverses without checking.
+    //!
+    //! Removes the first occurrence of \p x from the value returned by
+    //! \ref inverses. This function does not change the alphabet or the rules.
+    //! To keep the inverse presentation valid, this function should usually be
+    //! adjacent to a call to \ref remove_generator for the letter whose inverse
+    //! is \p x.
+    //!
+    //! \param x the inverse to remove.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the number of inverses.
+    //!
+    //! \warning
+    //! This function does not check its argument. The letter \p x must belong
+    //! to the inverses; otherwise the behaviour is undefined.
+    InversePresentation& remove_inverse_no_checks(letter_type x) {
+      _inverses.erase(std::find(_inverses.begin(), _inverses.end(), x));
+      return *this;
+    }
+
+    //! \brief Remove \p x from the inverses.
+    //!
+    //! Removes the first occurrence of \p x from the value returned by
+    //! \ref inverses. This function does not change the alphabet or the rules.
+    //! To keep the inverse presentation valid, this function should usually be
+    //! adjacent to a call to \ref remove_generator for the letter whose inverse
+    //! is \p x.
+    //!
+    //! \param x the inverse to remove.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to the inverses.
+    //!
+    //! \complexity
+    //! Linear in the number of inverses.
+    InversePresentation& remove_inverse(letter_type x);
+
+    //! \brief Add a generator and its inverse without checking.
+    //!
+    //! Adds \p x to the alphabet and \p y to the inverses. If \p x and \p y
+    //! are distinct, then \p y is also added to the alphabet and \p x is added
+    //! to the inverses. In other words, distinct letters \p x and \p y are
+    //! added as mutual inverses, while `x == y` adds one self-inverse
+    //! generator.
+    //!
+    //! This function does not change the rules.
+    //!
+    //! \param x the generator to add.
+    //! \param y the inverse of \p x.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does not validate its arguments. The inverse presentation
+    //! must be valid, and neither \p x nor \p y may already belong to its
+    //! alphabet.
+    InversePresentation& add_generator_and_inverse_no_checks(letter_type x,
+                                                             letter_type y);
+
+    //! \brief Add a generator and its inverse.
+    //!
+    //! Adds \p x to the alphabet and \p y to the inverses. If \p x and \p y
+    //! are distinct, then \p y is also added to the alphabet and \p x is added
+    //! to the inverses. In other words, distinct letters \p x and \p y are
+    //! added as mutual inverses, while `x == y` adds one self-inverse
+    //! generator.
+    //!
+    //! This function does not change the rules.
+    //!
+    //! \param x the generator to add.
+    //! \param y the inverse of \p x.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref throw_if_bad_alphabet_rules_or_inverses throws, or if either \p x
+    //! or \p y already belongs to the alphabet.
+    InversePresentation& add_generator_and_inverse(letter_type x,
+                                                   letter_type y);
+
+    //! \brief Remove a generator and its inverse.
+    //!
+    //! Removes \p x and its inverse from the alphabet and from the value
+    //! returned by \ref inverses. If \p x is self-inverse, then it is removed
+    //! once; otherwise, \p x and its distinct inverse are both removed.
+    //!
+    //! This function does not change the rules.
+    //!
+    //! \param x the generator to remove.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if \ref inverse throws for \p x, if the
+    //! alphabet contains duplicate letters, or if the inverses do not define a
+    //! valid involution on the alphabet.
+    //!
+    //! \complexity
+    //! At worst quadratic in the size of the alphabet.
+    //!
+    //! \note
+    //! There is no unchecked overload of this function because determining the
+    //! inverse of \p x requires finding its index in the alphabet.
+    //!
+    //! \warning
+    //! If the rules contain \p x or its inverse, then removing these letters
+    //! leaves the presentation in an invalid state.
+    InversePresentation& remove_generator_and_inverse(letter_type x);
+
     //! \brief Set the inverse of each letter in the alphabet.
     //!
     //! This function sets the inverse of each letter in the alphabet.
@@ -3892,18 +4063,22 @@ namespace libsemigroups {
     //! * the inverses do not act as semigroup inverses
     //!
     //! \note
-    //! Whilst the alphabet is not specified as an argument to this function, it
-    //! is necessary to throw_if_bad_alphabet_or_rules the alphabet here; a
-    //! specification of inverses cannot make sense if the alphabet contains
-    //! duplicate letters.
+    //! Whilst the alphabet is not specified as an argument to this function,
+    //! it is necessary to \ref validate the alphabet here; a specification of
+    //! inverses cannot make sense if the alphabet contains duplicate letters.
     //!
     //! \sa
     //! * \ref Alphabet::throw_if_duplicate_letters
     //! * \ref presentation::throw_if_bad_inverses
-    InversePresentation& inverses(word_type const& w) {
-      this->alphabet_v4().throw_if_duplicate_letters();
+    InversePresentation& inverses(word_type&& w) {
+      validate(alphabet_v4());
       presentation::throw_if_bad_inverses(*this, w);
-      return inverses_no_checks(w);
+      return inverses_no_checks(std::move(w));
+    }
+
+    //! \copydoc inverses(word_type&&)
+    InversePresentation& inverses(word_type const& w) {
+      return inverses(word_type(w));
     }
 
     //! \brief Return the inverse of each letter in the alphabet.
@@ -4008,6 +4183,92 @@ namespace libsemigroups {
     template <typename Word>
     void normalize_alphabet(InversePresentation<Word>& p);
 
+    //! \brief Invert a word in-place without checking.
+    //!
+    //! Replaces \p word with its inverse according to the inverses specified
+    //! by \p p. More precisely, if `word` is \f$x_1 \cdots x_n\f$, then it is
+    //! replaced by \f$x_n^{-1} \cdots x_1^{-1}\f$.
+    //!
+    //! \tparam Word the type of the words in the inverse presentation.
+    //! \param p the inverse presentation specifying the inverse of every
+    //! letter.
+    //! \param word the word to invert.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::inverse throws.
+    //!
+    //! \warning
+    //! This function does not validate its arguments. The inverse presentation
+    //! must be valid and every letter in \p word must belong to its alphabet.
+    template <typename Word>
+    void invert_inplace_no_checks(InversePresentation<Word> const& p,
+                                  Word&                            word);
+
+    //! \brief Invert a word in-place.
+    //!
+    //! Replaces \p word with its inverse according to the inverses specified
+    //! by \p p. More precisely, if `word` is \f$x_1 \cdots x_n\f$, then it is
+    //! replaced by \f$x_n^{-1} \cdots x_1^{-1}\f$.
+    //!
+    //! \tparam Word the type of the words in the inverse presentation.
+    //! \param p the inverse presentation specifying the inverse of every
+    //! letter.
+    //! \param word the word to invert.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses
+    //! throws, or if \p word contains a letter that does not belong to the
+    //! alphabet of \p p.
+    template <typename Word>
+    void invert_inplace(InversePresentation<Word> const& p, Word& word);
+
+    //! \brief Invert a word without checking.
+    //!
+    //! Returns the inverse of \p word according to the inverses specified by
+    //! \p p. More precisely, if `word` is \f$x_1 \cdots x_n\f$, then the
+    //! return value is \f$x_n^{-1} \cdots x_1^{-1}\f$.
+    //!
+    //! \tparam Word the type of the words in the inverse presentation.
+    //! \param p the inverse presentation specifying the inverse of every
+    //! letter.
+    //! \param word the word to invert.
+    //!
+    //! \returns The inverse of \p word.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::inverse throws.
+    //!
+    //! \warning
+    //! This function does not validate its arguments. The inverse presentation
+    //! must be valid and every letter in \p word must belong to its alphabet.
+    template <typename Word>
+    Word invert_no_checks(InversePresentation<Word> const& p,
+                          Word const&                      word) {
+      Word result(word);
+      invert_inplace_no_checks(p, result);
+      return result;
+    }
+
+    //! \brief Invert a word.
+    //!
+    //! Returns the inverse of \p word according to the inverses specified by
+    //! \p p. More precisely, if `word` is \f$x_1 \cdots x_n\f$, then the
+    //! return value is \f$x_n^{-1} \cdots x_1^{-1}\f$.
+    //!
+    //! \tparam Word the type of the words in the inverse presentation.
+    //! \param p the inverse presentation specifying the inverse of every
+    //! letter.
+    //! \param word the word to invert.
+    //!
+    //! \returns The inverse of \p word.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses
+    //! throws, or if \p word contains a letter that does not belong to the
+    //! alphabet of \p p.
+    template <typename Word>
+    Word invert(InversePresentation<Word> const& p, Word const& word);
+
     //! \brief Change or re-order the alphabet without checking.
     //!
     //! This function replaces `p.alphabet()` with \p new_alphabet and
@@ -4036,10 +4297,6 @@ namespace libsemigroups {
       change_alphabet_no_checks(p, Word(new_alphabet));
     }
 
-    //! \copydoc change_alphabet(InversePresentation<Word>&, Word const&)
-    template <typename Word>
-    void change_alphabet(InversePresentation<Word>& p, Word&& new_alphabet);
-
     //! \brief Change or re-order the alphabet.
     //!
     //! This function replaces `p.alphabet()` with \p new_alphabet, where
@@ -4058,10 +4315,31 @@ namespace libsemigroups {
     //! * \p new_alphabet is passed as an rvalue and refers to an element of
     //!   `p.rules`.
     template <typename Word>
+    void change_alphabet(InversePresentation<Word>& p, Word&& new_alphabet);
+
+    //! \copydoc change_alphabet(InversePresentation<Word>&, Word&&)
+    template <typename Word>
     void change_alphabet(InversePresentation<Word>& p,
                          Word const&                new_alphabet) {
       change_alphabet(p, Word(new_alphabet));
     }
+
+    //! \brief Remove redundant generators.
+    //!
+    //! Removes generators that occur alone on one side of a rule and not on
+    //! the other side. If a removed generator is not self-inverse, then its
+    //! inverse is also removed and replaced by the inverse of the other side of
+    //! the rule.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the inverse presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref InversePresentation::throw_if_bad_alphabet_rules_or_inverses throws
+    //! on the initial presentation, or if the number of words in `p.rules` is
+    //! odd.
+    template <typename Word>
+    void remove_redundant_generators(InversePresentation<Word>& p);
   }  // namespace presentation
 
   //! \ingroup presentations_group

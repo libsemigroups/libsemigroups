@@ -239,6 +239,18 @@ namespace libsemigroups {
       throw_if_duplicate_letters(letters_map);
     }
 
+    //! \brief Check that a letter does not belong to the alphabet.
+    //!
+    //! Checks whether \p x belongs to the alphabet and throws if it does.
+    //!
+    //! \param x the letter to check.
+    //!
+    //! \throws LibsemigroupsException if \p x belongs to the alphabet.
+    //!
+    //! \complexity
+    //! Constant on average, worst case linear in the size of the alphabet.
+    void throw_if_letter_in_alphabet(native_letter_type x) const;
+
     ////////////////////////////////////////////////////////////////////////
     // Container type attributes
     ////////////////////////////////////////////////////////////////////////
@@ -406,7 +418,10 @@ namespace libsemigroups {
     //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if \p x is in `letters()`.
-    Alphabet& add_letter(native_letter_type x);
+    Alphabet& add_letter(native_letter_type x) {
+      throw_if_letter_in_alphabet(x);
+      return add_letter_no_checks(x);
+    }
 
     //! \brief Remove a letter.
     //!

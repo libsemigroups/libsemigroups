@@ -3245,6 +3245,25 @@ namespace libsemigroups {
     REQUIRE(q.inverses() == "aa");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "069",
+                          "remove_redundant_generators",
+                          "[quick][presentation]") {
+    auto                             rg = ReportGuard(false);
+    InversePresentation<std::string> p;
+    p.alphabet("abAB");
+    p.inverses("ABab");
+    presentation::add_rule(p, "b"s, "aa"s);
+    presentation::add_rule(p, "Ba"s, "aB"s);
+
+    presentation::remove_redundant_generators(p);
+
+    REQUIRE(p.alphabet() == "aA");
+    REQUIRE(p.rules == std::vector<std::string>({"AAa", "aAA"}));
+    REQUIRE(p.inverses() == "Aa");
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
+  }
+
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "067",
                           "longest_subword_reducing_length #01",
@@ -4280,5 +4299,177 @@ End;)xxx");
                       LibsemigroupsException);
     REQUIRE(p.alphabet() == "xyz");
 #endif
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "108",
+                          "invert",
+                          "[quick][presentation]") {
+    auto                             rg = ReportGuard(false);
+    InversePresentation<std::string> p;
+    p.alphabet("abAB"s).inverses("ABab"s).contains_empty_word(true);
+
+    std::string const input    = "BBaaBaAABA";
+    std::string const expected = "abaaAbAAbb";
+    std::string       word     = input;
+
+    presentation::invert_inplace_no_checks(p, word);
+    REQUIRE(word == expected);
+
+    word = input;
+    presentation::invert_inplace(p, word);
+    REQUIRE(word == expected);
+
+    REQUIRE(presentation::invert_no_checks(p, input) == expected);
+    REQUIRE(input == "BBaaBaAABA");
+    REQUIRE(presentation::invert(p, input) == expected);
+    REQUIRE(presentation::invert(p, expected) == input);
+    REQUIRE(presentation::invert(p, ""s).empty());
+
+    InversePresentation<word_type> q;
+    q.alphabet(0123_w).inverses(2301_w);
+    word_type const input_w    = {3, 3, 0, 0, 3, 0, 2, 2, 3, 2};
+    word_type const expected_w = {0, 1, 0, 0, 2, 1, 2, 2, 1, 1};
+    word_type       word_w     = input_w;
+
+    presentation::invert_inplace_no_checks(q, word_w);
+    REQUIRE(word_w == expected_w);
+    REQUIRE(presentation::invert_no_checks(q, input_w) == expected_w);
+
+    word_w = input_w;
+    presentation::invert_inplace(q, word_w);
+    REQUIRE(word_w == expected_w);
+    REQUIRE(presentation::invert(q, input_w) == expected_w);
+
+    word = "aBx";
+    REQUIRE_THROWS_AS(presentation::invert_inplace(p, word),
+                      LibsemigroupsException);
+    REQUIRE(word == "aBx");
+    REQUIRE_THROWS_AS(presentation::invert(p, word), LibsemigroupsException);
+
+    InversePresentation<std::string> invalid;
+    invalid.alphabet("abAB"s).inverses_no_checks("ABaa"s);
+    word = input;
+    REQUIRE_THROWS_AS(presentation::invert_inplace(invalid, word),
+                      LibsemigroupsException);
+    REQUIRE(word == input);
+    REQUIRE_THROWS_AS(presentation::invert(invalid, word),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "109",
+                          "add_inverse",
+                          "[quick][presentation]") {
+    InversePresentation<std::string> p;
+    p.alphabet("abAB"s)
+        .add_inverse('A')
+        .add_inverse('B')
+        .add_inverse('a')
+        .add_inverse('b');
+    REQUIRE(p.inverses() == "ABab"s);
+    REQUIRE_EXCEPTION_MSG(p.add_inverse('a'),
+                          "the argument 'a' already belongs to the inverses "
+                          "\"ABab\", expected an unused letter");
+    REQUIRE_EXCEPTION_MSG(p.add_inverse('c'),
+                          "invalid letter 'c', valid letters are \"abAB\"");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "110",
+                          "remove_inverse",
+                          "[quick][presentation]") {
+    InversePresentation<std::string> p;
+    p.alphabet("abAB"s)
+        .add_inverse('A')
+        .add_inverse('B')
+        .add_inverse('a')
+        .add_inverse('b');
+    REQUIRE(p.inverses() == "ABab"s);
+
+    p.remove_inverse('a');
+    REQUIRE(p.inverses() == "ABb"s);
+
+    REQUIRE_EXCEPTION_MSG(p.remove_inverse('a'),
+                          "the argument 'a' does not belong to the inverses "
+                          "\"ABb\" and cannot be removed");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "111",
+                          "add_generator_and_inverse",
+                          "[quick][presentation]") {
+    InversePresentation<std::string> p;
+    p.add_generator_and_inverse_no_checks('a', 'a')
+        .add_generator_and_inverse_no_checks('b', 'B');
+    REQUIRE(p.alphabet() == "abB"s);
+    REQUIRE(p.inverses() == "aBb"s);
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_rules_or_inverses());
+    REQUIRE_EXCEPTION_MSG(p.add_generator_and_inverse('b', 'B'),
+                          "the argument 'b' already belongs to the alphabet "
+                          "\"abB\", expected an unused letter");
+    REQUIRE(p.alphabet() == "abB"s);
+    REQUIRE(p.inverses() == "aBb"s);
+    REQUIRE_EXCEPTION_MSG(p.add_generator_and_inverse('x', 'B'),
+                          "the argument 'B' already belongs to the alphabet "
+                          "\"abB\", expected an unused letter");
+    REQUIRE(p.alphabet() == "abB"s);
+    REQUIRE(p.inverses() == "aBb"s);
+    REQUIRE_EXCEPTION_MSG(p.add_generator_and_inverse('B', 'x'),
+                          "the argument 'B' already belongs to the alphabet "
+                          "\"abB\", expected an unused letter");
+    REQUIRE(p.alphabet() == "abB"s);
+    REQUIRE(p.inverses() == "aBb"s);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "112",
+                          "remove_generator_and_inverse",
+                          "[quick][presentation]") {
+    InversePresentation<std::string> p;
+    p.add_generator_and_inverse_no_checks('a', 'a');
+    REQUIRE(p.alphabet() == "a"s);
+    REQUIRE(p.inverses() == "a"s);
+    p.remove_generator_and_inverse('a');
+    REQUIRE(p.alphabet() == ""s);
+    REQUIRE(p.inverses() == ""s);
+
+    p.add_generator_and_inverse_no_checks('b', 'B');
+    REQUIRE(p.alphabet() == "bB"s);
+    REQUIRE(p.inverses() == "Bb"s);
+    p.remove_generator_and_inverse('b');
+    REQUIRE(p.alphabet() == ""s);
+    REQUIRE(p.inverses() == ""s);
+
+    p.add_generator_and_inverse_no_checks('b', 'B');
+    REQUIRE(p.alphabet() == "bB"s);
+    REQUIRE(p.inverses() == "Bb"s);
+    p.remove_generator_and_inverse('B');
+    REQUIRE(p.alphabet() == ""s);
+    REQUIRE(p.inverses() == ""s);
+
+    p.add_generator_and_inverse_no_checks('b', 'B');
+    REQUIRE(p.alphabet() == "bB"s);
+    REQUIRE(p.inverses() == "Bb"s);
+
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('c'),
+                          "invalid letter 'c', valid letters are \"bB\"");
+
+    p.alphabet("a");
+    REQUIRE(p.alphabet() == "a"s);
+    REQUIRE(p.inverses() == "Bb"s);
+    // TODO(later) the exception messages below could be better if it said where
+    // "B" came from
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('a'),
+                          "invalid letter 'B', valid letters are \"a\"");
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('b'),
+                          "invalid letter 'b', valid letters are \"a\"");
+    p.inverses_no_checks("b");
+    REQUIRE_THROWS_AS(p.throw_if_bad_alphabet_rules_or_inverses(),
+                      LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('a'),
+                          "invalid letter 'b', valid letters are \"a\"");
+    REQUIRE_EXCEPTION_MSG(p.remove_generator_and_inverse('b'),
+                          "invalid letter 'b', valid letters are \"a\"");
   }
 }  // namespace libsemigroups
