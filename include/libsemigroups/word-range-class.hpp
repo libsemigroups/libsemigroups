@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2026 Joseph Edwards
+// Copyright (C) 2020-2026 James Mitchell + Joseph Edwards
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,6 +18,9 @@
 
 // This file contains declarations for classes related to words and strings in
 // libsemigroups.
+
+// TODO(v4): Rename this file to be `word-range.hpp` when we delete the current
+// `word-range.hpp`.
 
 #ifndef LIBSEMIGROUPS_WORD_RANGE_CLASS_HPP_
 #define LIBSEMIGROUPS_WORD_RANGE_CLASS_HPP_
