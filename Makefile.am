@@ -1275,6 +1275,7 @@ EXTRA_PROGRAMS += bench_kambites
 EXTRA_PROGRAMS += bench_konieczny
 EXTRA_PROGRAMS += bench_konieczny_maxplus
 EXTRA_PROGRAMS += bench_multi_view
+EXTRA_PROGRAMS += bench_presentation
 EXTRA_PROGRAMS += bench_rewriting_system
 EXTRA_PROGRAMS += bench_sims
 EXTRA_PROGRAMS += bench_string_range
@@ -1787,6 +1788,7 @@ bench_all_SOURCES += benchmarks/bench-freeband.cpp
 bench_all_SOURCES += benchmarks/bench-kambites.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
 bench_all_SOURCES += benchmarks/bench-multi-view.cpp
+bench_all_SOURCES += benchmarks/bench-presentation.cpp
 bench_all_SOURCES += benchmarks/bench-rewriting-system.cpp
 bench_all_SOURCES += benchmarks/bench-string-range.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
@@ -1836,6 +1838,10 @@ bench_konieczny_maxplus_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 bench_multi_view_SOURCES =  benchmarks/bench-multi-view.cpp
 bench_multi_view_SOURCES += $(CATCH2_SOURCES)
 bench_multi_view_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+
+bench_presentation_SOURCES = benchmarks/bench-presentation.cpp
+bench_presentation_SOURCES += $(CATCH2_SOURCES)
+bench_presentation_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 bench_rewriting_system_SOURCES =  benchmarks/bench-rewriting-system.cpp
 bench_rewriting_system_SOURCES += $(CATCH2_SOURCES)
