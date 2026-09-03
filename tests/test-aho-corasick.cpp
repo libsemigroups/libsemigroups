@@ -42,7 +42,6 @@ namespace libsemigroups {
                           "000",
                           "initial test",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
     aho_corasick::add_word(ac, 00101_w);
     aho_corasick::add_word(ac, 010_w);
@@ -56,7 +55,6 @@ namespace libsemigroups {
                           "001",
                           "all words size 4",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
 
     WordRange words;
@@ -94,7 +92,6 @@ namespace libsemigroups {
                           "002",
                           "add/rm_word",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
     aho_corasick::add_word(ac, 00101_w);
 
@@ -153,7 +150,6 @@ namespace libsemigroups {
                           "003",
                           "path tree",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
     aho_corasick::add_word(ac, 0_w);
     aho_corasick::add_word(ac, 00_w);
@@ -177,7 +173,6 @@ namespace libsemigroups {
                           "004",
                           "long word",
                           "[quick][aho-corasick]") {
-    auto rg = ReportGuard(false);
     using words::pow;
     using index_type = AhoCorasick::index_type;
     AhoCorasick ac;
@@ -195,7 +190,6 @@ namespace libsemigroups {
                           "005",
                           "initial test with strings",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
     std::string x = "aabab";
     std::string y = "aba";
@@ -211,7 +205,6 @@ namespace libsemigroups {
                           "006",
                           "initial test with string helpers",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
     std::string x = "aabab";
     std::string y = "aba";
@@ -230,7 +223,6 @@ namespace libsemigroups {
                           "007",
                           "init",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
 
     REQUIRE(ac.number_of_nodes() == 1);
@@ -255,7 +247,6 @@ namespace libsemigroups {
                           "008",
                           "height",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
     std::string x = "aabab";
     std::string y = "aba";
@@ -273,7 +264,6 @@ namespace libsemigroups {
                           "009",
                           "child",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
     std::string b = "aab";
     std::string c = "aac";
@@ -300,7 +290,6 @@ namespace libsemigroups {
                           "010",
                           "signature",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
 
     WordRange words;
@@ -334,7 +323,6 @@ namespace libsemigroups {
                           "011",
                           "dot",
                           "[quick][aho-corasick]") {
-    auto        rg = ReportGuard(false);
     AhoCorasick ac;
 
     WordRange words;
@@ -361,7 +349,6 @@ namespace libsemigroups {
                             "013",
                             "search",
                             "[quick][aho-corasick]") {
-      auto         rg = ReportGuard(false);
       using words::operator+;
       using index_type = AhoCorasickImpl::index_type;
 
@@ -427,7 +414,6 @@ namespace libsemigroups {
                             "014",
                             "begin_search_no_checks x1",
                             "[quick][aho-corasick]") {
-      auto         rg = ReportGuard(false);
       using words::operator+;
       using index_type = AhoCorasickImpl::index_type;
       AhoCorasickImpl ac(2);
@@ -454,7 +440,6 @@ namespace libsemigroups {
                             "015",
                             "begin_search_no_checks x2",
                             "[quick][aho-corasick]") {
-      auto rg          = ReportGuard(false);
       using index_type = AhoCorasickImpl::index_type;
 
       AhoCorasickImpl ac(2);
@@ -479,7 +464,6 @@ namespace libsemigroups {
                             "016",
                             "all words size 4",
                             "[quick][aho-corasick]") {
-      auto rg          = ReportGuard(false);
       using index_type = AhoCorasickImpl::index_type;
       AhoCorasickImpl ac(2);
 
@@ -523,7 +507,6 @@ namespace libsemigroups {
                             "017",
                             "terminal_nodes",
                             "[quick]") {
-      auto            rg = ReportGuard(false);
       using rx::      operator|;
       AhoCorasickImpl ac(2);
       REQUIRE((ac.terminal_nodes() | rx::count()) == 0);
@@ -550,7 +533,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl", "012", "erase bug", "[quick]") {
-      auto            rg = ReportGuard(false);
       AhoCorasickImpl ac(2);
 
       ac.insert(01_w, &dummy_rule);

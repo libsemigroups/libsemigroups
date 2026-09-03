@@ -37,8 +37,7 @@ namespace libsemigroups {
                           "097",
                           "not_symmetric_group(5) GKKL",
                           "[pres-examples][quick]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
+    size_t n = 5;
 
     Sims1 C;
     C.presentation(presentation::examples::not_symmetric_group_GKKL08(n));

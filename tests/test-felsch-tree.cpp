@@ -32,7 +32,6 @@ namespace libsemigroups {
                             "000",
                             "previously failing example",
                             "[quick][low-index]") {
-      auto                    rg = ReportGuard(false);
       Presentation<word_type> p;
       presentation::add_rule_no_checks(p, 121_w, 11_w);
       presentation::add_rule_no_checks(p, 33_w, 11_w);

@@ -66,8 +66,6 @@ namespace libsemigroups {
                           "671",
                           "MAF: subgroups/l3231",
                           "[standard][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("abBuvw"s).contains_empty_word(true);
 
@@ -129,8 +127,6 @@ namespace libsemigroups {
                           "672",
                           "MAF: trivial/degen4b",
                           "[standard][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("xXyYzZ"s).contains_empty_word(true);
 
@@ -155,8 +151,6 @@ namespace libsemigroups {
                           "673",
                           "MAF: unknown/g8(1_3)",
                           "[standard][maf]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDeEfFgGhH"s).contains_empty_word(true);
 
@@ -197,8 +191,6 @@ namespace libsemigroups {
                           "674",
                           "MAF: Fibonacci/f3_6",
                           "[standard][maf][Fibonacci]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDeEfF"s).contains_empty_word(true);
 

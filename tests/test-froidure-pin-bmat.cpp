@@ -44,7 +44,6 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][bmat]",
                                    BMat<4>,
                                    BMat<>) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>(
         {{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}));
@@ -97,7 +96,6 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][bmat][no-valgrind]",
                                    BMat<4>,
                                    BMat<>) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>(
         {{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -117,8 +115,6 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][bmat]",
                                    BMat<3>,
                                    BMat<>) {
-    auto rg = ReportGuard(false);
-
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}));
     S.add_generator(make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}));
@@ -155,17 +151,16 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][bmat]",
                                    BMat<4>,
                                    BMat<>) {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<TestType>(
              {{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
-          make<TestType>(
+         make<TestType>(
              {{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
-          make<TestType>(
+         make<TestType>(
              {{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
-          make<TestType>(
+         make<TestType>(
              {{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
-          make<TestType>(
+         make<TestType>(
              {{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})});
     REQUIRE(S.size() == 415);
   }

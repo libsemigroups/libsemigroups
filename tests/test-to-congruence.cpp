@@ -81,7 +81,6 @@ namespace libsemigroups {
                           "000",
                           "2-sided congruence on finite semigroup",
                           "[quick][cong][no-valgrind]") {
-    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
     auto S       = make<FroidurePin>({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                                       Transf({1, 2, 4, 4, 7, 3, 0, 7}),
@@ -167,8 +166,6 @@ namespace libsemigroups {
                           "002",
                           "2-sided congruence on finite semigroup",
                           "[quick][cong][no-valgrind]") {
-    auto rg = ReportGuard(false);
-
     auto S
         = make<FroidurePin>({LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
                              LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
@@ -192,7 +189,6 @@ namespace libsemigroups {
                           "003",
                           "2-sided congruence on finite semigroup",
                           "[quick][cong]") {
-    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
     auto S
         = make<FroidurePin>({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
@@ -220,7 +216,6 @@ namespace libsemigroups {
                           "004",
                           "duplicate generators",
                           "[quick][cong]") {
-    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
     auto S       = make<FroidurePin>({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                                       Transf({7, 3, 5, 3, 4, 2, 7, 7}),
@@ -234,7 +229,6 @@ namespace libsemigroups {
                           "005",
                           "onesided congruence on finite semigroup",
                           "[quick][cong][no-valgrind]") {
-    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
     auto S       = make<FroidurePin>({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
                                       Transf({1, 2, 3, 4, 5, 0, 6, 7}),
@@ -281,7 +275,6 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    auto rg    = ReportGuard(false);
     using BMat = BMatFastest<4>;
     std::vector gens
         = {BMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -344,7 +337,6 @@ namespace libsemigroups {
                           "007",
                           "left congruence on finite semigroup",
                           "[quick][cong]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
     S.add_generator(make<Transf<>>({3, 2, 1, 3, 3}));
@@ -377,7 +369,6 @@ namespace libsemigroups {
                           "008",
                           "onesided congruence on finite semigroup",
                           "[quick][cong]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
     S.add_generator(make<Transf<>>({3, 2, 1, 3, 3}));
@@ -408,7 +399,6 @@ namespace libsemigroups {
                           "009",
                           "onesided congruence on finite semigroup",
                           "[quick][cong]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
     S.add_generator(make<Transf<>>({3, 2, 1, 3, 3}));
@@ -448,7 +438,6 @@ namespace libsemigroups {
                           "010",
                           "for a WordGraph",
                           "[quick][cong]") {
-    auto rg = ReportGuard(false);
     // WARNING: the word graph must have a "root" node from which every other
     // node is reachable.
 

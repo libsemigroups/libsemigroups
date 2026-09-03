@@ -49,7 +49,6 @@ namespace libsemigroups {
       "026",
       "Rank of small tropical max-plus mats (dim 2, threshold 9)",
       "[quick][konieczny][tropmaxplus]") {
-    auto rg    = ReportGuard(false);
     using Mat  = MaxPlusTruncMat<9, 2>;
     using Rank = Rank<Mat>;
 
@@ -74,8 +73,6 @@ namespace libsemigroups {
       "027",
       "Lambda of tropical max-plus mats (dim 5, threshold 6)",
       "[quick][konieczny][tropmaxplus]") {
-    auto rg = ReportGuard(false);
-
     using Mat       = MaxPlusTruncMat<6, 5>;
     using LambdaVal = LambdaValue<Mat>::type;
     using Lambda    = Lambda<Mat, LambdaVal>;
@@ -160,7 +157,6 @@ namespace libsemigroups {
                           "028",
                           "Rho of tropical max-plus mats (dim 5, threshold 6)",
                           "[quick][konieczny][tropmaxplus]") {
-    auto rg      = ReportGuard(false);
     using Mat    = MaxPlusTruncMat<6, 5>;
     using RhoVal = RhoValue<Mat>::type;
     using Rho    = Rho<Mat, RhoVal>;
@@ -250,7 +246,6 @@ namespace libsemigroups {
       "029",
       "Lambda/ImageRightAction, tropical max-plus mats (d=5, t=6)",
       "[quick][konieczny][tropmaxplus]") {
-    auto rg         = ReportGuard(false);
     using Mat       = MaxPlusTruncMat<6, 5>;
     using LambdaVal = LambdaValue<Mat>::type;
     using Lambda    = Lambda<Mat, LambdaVal>;
@@ -307,7 +302,6 @@ namespace libsemigroups {
       "030",
       "Rho/ImageLeftAction for tropical max-plus mats (d=5, t=6)",
       "[quick][konieczny][tropmaxplus]") {
-    auto rg      = ReportGuard(false);
     using Mat    = MaxPlusTruncMat<6, 5>;
     using RhoVal = RhoValue<Mat>::type;
     using Rho    = Rho<Mat, RhoVal>;
@@ -363,8 +357,7 @@ namespace libsemigroups {
                           "031",
                           "small tropical max-plus (dim 3, threshold 9)",
                           "[quick][konieczny][tropmaxplus]") {
-    using Mat    = MaxPlusTruncMat<9, 2>;
-    auto      rg = ReportGuard(false);
+    using Mat = MaxPlusTruncMat<9, 2>;
     Konieczny S
         = make<Konieczny>({Mat({{1, 3}, {2, 1}}), Mat({{2, 1}, {4, 0}})});
 
@@ -375,12 +368,11 @@ namespace libsemigroups {
                           "032",
                           "small tropical max-plus (dim 3, threshold 9)",
                           "[quick][konieczny][tropmaxplus]") {
-    using Mat    = MaxPlusTruncMat<9, 3>;
-    auto      rg = ReportGuard(false);
-    Konieczny S  = make<Konieczny>(
+    using Mat   = MaxPlusTruncMat<9, 3>;
+    Konieczny S = make<Konieczny>(
         {Mat({{2, 2, 0}, {1, 0, 0}, {1, 3, 1}}),
-          Mat({{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, 1, 0}}),
-          Mat({{1, NEGATIVE_INFINITY, 0}, {2, 1, 0}, {2, 2, 0}})});
+         Mat({{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, 1, 0}}),
+         Mat({{1, NEGATIVE_INFINITY, 0}, {2, 1, 0}, {2, 2, 0}})});
 
     REQUIRE(S.size() == 423);
   }
@@ -464,8 +456,6 @@ namespace libsemigroups {
                           "full tropical max-plus monoid (dim 2, threshold 8)",
                           "[standard][konieczny][tropmaxplus]") {
     using Mat = MaxPlusTruncMat<8, 2>;
-
-    auto rg = ReportGuard(false);
 
     Konieczny S = make<Konieczny>(
         {Mat({{NEGATIVE_INFINITY, 0}, {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
@@ -689,8 +679,7 @@ namespace libsemigroups {
                           "037",
                           "dynamic tropical max-plus mats (dim 2, threshold 9)",
                           "[quick][konieczny][tropmaxplus]") {
-    using Mat    = MaxPlusTruncMat<9>;
-    auto      rg = ReportGuard(false);
+    using Mat = MaxPlusTruncMat<9>;
     Konieczny S
         = make<Konieczny>({Mat({{1, 3}, {2, 1}}), Mat({{2, 1}, {4, 0}})});
     REQUIRE(S.size() == 20);
@@ -700,14 +689,13 @@ namespace libsemigroups {
                           "038",
                           "dynamic tropical max-plus mats (dim 2, threshold 5)",
                           "[quick][konieczny][tropmaxplus]") {
-    using Mat    = MaxPlusTruncMat<5>;
-    auto      rg = ReportGuard(false);
-    Konieczny S  = make<Konieczny>(
+    using Mat   = MaxPlusTruncMat<5>;
+    Konieczny S = make<Konieczny>(
         {Mat({{1, 3}, {2, 1}}),
-          Mat({{2, 1}, {4, 0}}),
-          Mat({{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, 0}}),
-          Mat({{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
-          Mat({{NEGATIVE_INFINITY, 0}, {1, NEGATIVE_INFINITY}})});
+         Mat({{2, 1}, {4, 0}}),
+         Mat({{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, 0}}),
+         Mat({{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {1, NEGATIVE_INFINITY}})});
     REQUIRE(S.size() == 173);
   }
 
@@ -718,7 +706,6 @@ namespace libsemigroups {
       "[quick][konieczny][tropmaxplus]") {
     using Mat = MaxPlusTruncMat<>;
 
-    auto rg = ReportGuard(false);
     auto sr = std::make_unique<MaxPlusTruncSemiring<>>(5);
 
     Konieczny S = make<Konieczny>(

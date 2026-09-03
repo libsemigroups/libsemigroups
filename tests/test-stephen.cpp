@@ -110,7 +110,6 @@ namespace libsemigroups {
                                    "[quick][stephen]",
                                    word_type,
                                    std::string) {
-    auto                   rg = ReportGuard(false);
     Presentation<TestType> p;
     p.alphabet(TestType({0, 1}));
     presentation::add_rule(p, TestType({0}), TestType({0, 1}));
@@ -158,7 +157,6 @@ namespace libsemigroups {
                                    "[quick][stephen]",
                                    word_type,
                                    std::string) {
-    auto                   rg = ReportGuard(false);
     Presentation<TestType> p;
     p.alphabet(TestType({0, 1}));
     presentation::add_rule(p, TestType({0, 0, 0}), TestType({0}));
@@ -247,9 +245,8 @@ namespace libsemigroups {
                           "002",
                           "full transf monoid",
                           "[quick][stephen][no-valgrind]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
-    auto   p  = presentation::examples::full_transformation_monoid_II74(n);
+    size_t n = 5;
+    auto   p = presentation::examples::full_transformation_monoid_II74(n);
     p.throw_if_bad_alphabet_or_rules();
 
     Stephen s(std::move(p));
@@ -325,7 +322,6 @@ namespace libsemigroups {
                           "003",
                           "step_hen 002 (word_type)",
                           "[quick][stephen]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("ab");
     Presentation<word_type> p;
     p.alphabet(to_word("ab"));
@@ -356,7 +352,6 @@ namespace libsemigroups {
                           "055",
                           "step_hen 002 (std::string)",
                           "[quick][stephen]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "aaa"s, "a"s);
@@ -386,7 +381,6 @@ namespace libsemigroups {
                           "004",
                           "step_hen 003 (word_type)",
                           "[quick][stephen]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcdefg");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefg"));
@@ -459,7 +453,6 @@ namespace libsemigroups {
                           "056",
                           "step_hen 003 (std::string)",
                           "[quick][stephen]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
     presentation::add_rule(p, "aaaeaa"s, "abcd"s);
@@ -519,7 +512,6 @@ namespace libsemigroups {
                           "005",
                           "from step_hen 004 (word_type)",
                           "[quick][stephen]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abc");
     Presentation<word_type> p;
     p.alphabet(to_word("abc"));
@@ -555,7 +547,6 @@ namespace libsemigroups {
                           "057",
                           "from step_hen 004 (std::string)",
                           "[quick][stephen]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     presentation::add_rule(p, "ab"s, "ba"s);
@@ -590,7 +581,6 @@ namespace libsemigroups {
                           "006",
                           "from step_hen 005 (word_type)",
                           "[quick][stephen]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -617,7 +607,6 @@ namespace libsemigroups {
                           "058",
                           "from step_hen 005 (std::string)",
                           "[quick][stephen]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
     presentation::add_rule(p, "bb"s, "c"s);
@@ -654,7 +643,6 @@ namespace libsemigroups {
       "008",
       "C(4) monoid normal form (test_case_knuth_bendix_055)",
       "[stephen][quick]") {
-    auto                    rg = ReportGuard(false);
     v4::ToWord              to_word("abcdefg");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefg"));
@@ -719,7 +707,6 @@ namespace libsemigroups {
       "009",
       "test_case_gap_smalloverlap_85 (non-normal word_type)",
       "[stephen][quick]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(201_w);
     REQUIRE(p.alphabet() == 201_w);
@@ -753,7 +740,6 @@ namespace libsemigroups {
       "054",
       "test_case_gap_smalloverlap_85 (non-normal word_type)",
       "[stephen][quick]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(271_w);
     REQUIRE(p.alphabet() == 271_w);
@@ -784,7 +770,6 @@ namespace libsemigroups {
                           "053",
                           "test_case_gap_smalloverlap_85 (std::string)",
                           "[stephen][quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("cab"s);
     presentation::add_rule(p, "aabc"s, "acba"s);
@@ -809,7 +794,6 @@ namespace libsemigroups {
                           "010",
                           "code coverage",
                           "[stephen][quick]") {
-    auto                    rg = ReportGuard(false);
     v4::ToWord              to_word("abcdefg");
     Presentation<word_type> p;
     // TODO(2): Once we have make<Stephen> check that this error is thrown
@@ -866,8 +850,6 @@ namespace libsemigroups {
                           "060",
                           "facade and impl code coverage",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
-
     Presentation<word_type> p;
     p.alphabet(01_w);
     presentation::add_rule(p, 01_w, 10_w);
@@ -964,7 +946,6 @@ namespace libsemigroups {
       "011",
       "C(4) monoid normal form (test_case_gap_smalloverlap_49)",
       "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcdefgh"s);
 
@@ -987,7 +968,6 @@ namespace libsemigroups {
       "012",
       "C(4) monoid normal form (test_case_gap_smalloverlap_63)",
       "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcdefgh");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefgh"));
@@ -1004,7 +984,6 @@ namespace libsemigroups {
       "013",
       "C(4) monoid equal to (test_case_gap_smalloverlap_70)",
       "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghij"s);
 
@@ -1020,7 +999,6 @@ namespace libsemigroups {
                           "014",
                           "C(4) monoid normal form (test_case_ex_3_13_14)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1039,7 +1017,6 @@ namespace libsemigroups {
                           "015",
                           "C(4) monoid normal form (test_case_ex_3_15)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     v4::ToWord                to_word("abcd");
     Presentation<std::string> p;
     p.alphabet("abcd"s);
@@ -1062,7 +1039,6 @@ namespace libsemigroups {
                           "016",
                           "C(4) monoid normal form (test_case_ex_3_16)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1081,7 +1057,6 @@ namespace libsemigroups {
                           "017",
                           "C(4) monoid normal form (test_case_mt_3)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
     presentation::add_rule(p, "abcd"s, "accca"s);
@@ -1094,7 +1069,6 @@ namespace libsemigroups {
                           "018",
                           "C(4) monoid normal form (test_case_mt_5)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abc");
     Presentation<word_type> p;
     p.alphabet(to_word("abc"));
@@ -1108,7 +1082,6 @@ namespace libsemigroups {
                           "019",
                           "C(4) monoid normal form (test_case_mt_6)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     presentation::add_rule(p, "ccab"s, "cbac"s);
@@ -1123,7 +1096,6 @@ namespace libsemigroups {
                           "020",
                           "C(4) monoid normal form (test_case_mt_10)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcdefghij");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefghij"));
@@ -1139,7 +1111,6 @@ namespace libsemigroups {
                           "021",
                           "C(4) monoid normal form (test_case_mt_13)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
     presentation::add_rule(p, "abcd"s, "dcba"s);
@@ -1152,7 +1123,6 @@ namespace libsemigroups {
                           "022",
                           "C(4) monoid normal form (test_case_mt_14)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1166,7 +1136,6 @@ namespace libsemigroups {
                           "023",
                           "C(4) monoid normal form (test_case_mt_15)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
     presentation::add_rule(p, "abcd"s, "dcba"s);
@@ -1180,7 +1149,6 @@ namespace libsemigroups {
                           "024",
                           "C(4) monoid normal form (test_case_mt_16)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcdefg");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefg"));
@@ -1195,7 +1163,6 @@ namespace libsemigroups {
                           "025",
                           "C(4) monoid normal form (test_case_mt_17)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
     presentation::add_rule(
@@ -1213,7 +1180,6 @@ namespace libsemigroups {
                           "026",
                           "C(4) monoid normal form (test_case_weak_1)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1234,7 +1200,6 @@ namespace libsemigroups {
                           "027",
                           "C(4) monoid normal form (test_case_weak_2)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
     presentation::add_rule(p, "acba"s, "aabc"s);
@@ -1249,7 +1214,6 @@ namespace libsemigroups {
                           "028",
                           "C(4) monoid normal form (test_case_weak_3)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcde");
     Presentation<word_type> p;
     p.alphabet(to_word("abcde"));
@@ -1263,7 +1227,6 @@ namespace libsemigroups {
                           "029",
                           "C(4) monoid normal form (test_case_weak_4)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     v4::ToWord                to_word("abcd");
     Presentation<std::string> p;
     p.alphabet("abcd"s);
@@ -1278,7 +1241,6 @@ namespace libsemigroups {
                           "030",
                           "C(4) monoid normal form (test_case_weak_5)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1292,7 +1254,6 @@ namespace libsemigroups {
                           "031",
                           "Test behaviour when uninitialised",
                           "[stephen][quick]") {
-    ReportGuard                      rg(false);
     Stephen<Presentation<word_type>> S;
 
     REQUIRE_THROWS_AS(S.accept_state(), LibsemigroupsException);
@@ -1343,8 +1304,7 @@ namespace libsemigroups {
                           "step_hen test_schutzenbergergraph 001 "
                           "(string)",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
-    v4::ToWord  to_word("abcABC");
+    v4::ToWord to_word("abcABC");
 
     InversePresentation<std::string> p;
     p.alphabet("abcABC"s);
@@ -1371,7 +1331,6 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 001",
                           "[stephen][quick]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1399,7 +1358,6 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 002",
                           "[stephen][quick]") {
-    ReportGuard                      rg(false);
     v4::ToWord                       to_word("abcABC");
     InversePresentation<std::string> p;
     p.alphabet("abcABC"s);
@@ -1419,7 +1377,6 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 003",
                           "[stephen][quick]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
@@ -1439,7 +1396,6 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 004",
                           "[stephen][quick]") {
-    ReportGuard                      rg(false);
     v4::ToWord                       to_word("xyXY");
     InversePresentation<std::string> p;
     p.alphabet("xyXY"s);
@@ -1478,7 +1434,6 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 005",
                           "[stephen][quick]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
@@ -1499,7 +1454,6 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 006",
                           "[stephen][quick]") {
-    ReportGuard                      rg(false);
     v4::ToWord                       to_word("abcABC");
     InversePresentation<std::string> p;
     p.alphabet("abcABC"s);
@@ -1525,8 +1479,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "039", "corner case", "[stephen][quick]") {
-    ReportGuard rg(false);
-    v4::ToWord  to_word("x");
+    v4::ToWord to_word("x");
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -1543,8 +1496,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "040", "empty word", "[stephen][quick]") {
-    ReportGuard rg(false);
-    auto        p = presentation::examples::symmetric_inverse_monoid(4);
+    auto p = presentation::examples::symmetric_inverse_monoid(4);
     REQUIRE(p.contains_empty_word());
     REQUIRE(p.alphabet().size() == 4);
 
@@ -1562,7 +1514,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "041", "shared_ptr", "[stephen][quick]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1595,7 +1546,6 @@ namespace libsemigroups {
                           "042",
                           "inverse presentation -- operator==",
                           "[stephen][quick][no-valgrind]") {
-    ReportGuard            rg(false);
     ToddCoxeter<word_type> tc;
     using presentation::examples::symmetric_inverse_monoid;
     {
@@ -1681,8 +1631,7 @@ namespace libsemigroups {
                           "044",
                           "non-inverse presentation -- operator==",
                           "[stephen][quick][no-valgrind]") {
-    ReportGuard rg(false);
-    auto        p = presentation::examples::symmetric_inverse_monoid(4);
+    auto p = presentation::examples::symmetric_inverse_monoid(4);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
 
@@ -1709,8 +1658,7 @@ namespace libsemigroups {
                           "045",
                           "Plactic monoid",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-    auto p  = presentation::examples::plactic_monoid(4);
+    auto p = presentation::examples::plactic_monoid(4);
     p.contains_empty_word(true);
     Stephen s(p);
     stephen::set_word(s, 0013122_w).run();
@@ -1763,7 +1711,6 @@ namespace libsemigroups {
                           "047",
                           "Munn tree products",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
     using words::pow;
     v4::ToWord to_word("abcABC");
 
@@ -1847,8 +1794,7 @@ namespace libsemigroups {
                           "049",
                           "chinese monoid",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
-    auto        p = presentation::examples::chinese_monoid(3);
+    auto p = presentation::examples::chinese_monoid(3);
 
     Stephen S(p);
     stephen::set_word(S, 0110_w).run();
@@ -1861,7 +1807,6 @@ namespace libsemigroups {
                           "050",
                           "to_human_readable_repr",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     Presentation<word_type> p;
     p.alphabet(01_w);
     p.contains_empty_word(true);
@@ -1955,7 +1900,6 @@ namespace libsemigroups {
                           "051",
                           "shared_ptr memory check",
                           "[stephen][standard]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -2015,7 +1959,6 @@ namespace libsemigroups {
                           "052",
                           "Incomplete Munn tree products (word_type)",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
     using words::pow;
     v4::ToWord to_word("abcABC");
 
@@ -2054,7 +1997,6 @@ namespace libsemigroups {
                           "059",
                           "Incomplete Munn tree products (std::string)",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
     using words::pow;
 
     InversePresentation<std::string> p;
@@ -2089,8 +2031,6 @@ namespace libsemigroups {
                           "061",
                           "exceptions x1",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
-
     InversePresentation<std::string> p;
     p.alphabet("aA"s);
     p.inverses("Aa");
@@ -2112,7 +2052,6 @@ namespace libsemigroups {
                           "062",
                           "exceptions x2",
                           "[stephen][quick]") {
-    auto                           rg = ReportGuard(false);
     InversePresentation<word_type> p;
     REQUIRE_EXCEPTION_MSG(detail::StephenImpl{p},
                           "the presentation must not have 0 generators");
@@ -2123,8 +2062,6 @@ namespace libsemigroups {
                           "dot - partially run (std::string)",
                           "[stephen][quick]") {
     using std::literals::operator""s;
-
-    auto rg = ReportGuard(false);
 
     InversePresentation<std::string> p;
     p.alphabet("AabBCc");  // TODO(later) can't chain with .inverses because
@@ -2207,8 +2144,6 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     using std::literals::operator""s;
 
-    auto rg = ReportGuard(false);
-
     InversePresentation<word_type> p;
     //         "AabBCc"
     p.alphabet("102345"_w);
@@ -2289,8 +2224,6 @@ namespace libsemigroups {
                           "065",
                           "dot exceptions",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-
     InversePresentation<word_type> p;
     p.alphabet({0, 10, 1});
     p.inverses({0, 10, 1});
@@ -2317,8 +2250,6 @@ namespace libsemigroups {
                           "066",
                           "dot optional alphabet exceptions",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-
     InversePresentation<word_type> p;
     p.alphabet({0, 1, 2});
     p.inverses({0, 1, 2});
@@ -2344,8 +2275,6 @@ namespace libsemigroups {
                           "067",
                           "dot - duplicate optional alphabet (std::string)",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-
     InversePresentation<std::string> p;
     p.alphabet("aA");
     p.inverses("Aa");
@@ -2362,8 +2291,6 @@ namespace libsemigroups {
                           "068",
                           "dot - duplicate optional alphabet (word_type)",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-
     InversePresentation<word_type> p;
     p.alphabet({0, 1});
     p.inverses({1, 0});
@@ -2380,8 +2307,6 @@ namespace libsemigroups {
                           "069",
                           "dot - non-printable alphabet (std::string)",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-
     InversePresentation<std::string> p;
     p.alphabet({1, 0, 2, 3, 4, 5});
     p.inverses({0, 1, 3, 2, 5, 4});
@@ -2431,8 +2356,6 @@ namespace libsemigroups {
                           "070",
                           "dot - mixed non-/printable alphabet (std::string)",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-
     InversePresentation<std::string> p;
     p.alphabet({1, 97, 2, 3, 4, 5});
     p.inverses({97, 1, 3, 2, 5, 4});
@@ -2482,8 +2405,6 @@ namespace libsemigroups {
                           "071",
                           "dot - non-printable alphabet (std::string)",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-
     InversePresentation<std::string> p;
     p.alphabet({1, 127, 2, 3, 4, 5});
     p.inverses({127, 1, 3, 2, 5, 4});
@@ -2537,8 +2458,6 @@ namespace libsemigroups {
                           "072",
                           "dot - too many colors",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-
     std::string const                alphabet = "abcdefghijklmnopqrstuvwxy";
     InversePresentation<std::string> p;
     p.alphabet(alphabet);
@@ -2556,8 +2475,6 @@ namespace libsemigroups {
                           "073",
                           "dot - Presentation overloads",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-
     Presentation<word_type> p;
     p.alphabet(0_w);
     Stephen s(p);

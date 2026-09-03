@@ -74,7 +74,6 @@ namespace libsemigroups {
                                    "[knuth-bendix][standard]",
                                    REWRITING_SYSTEM_TYPES) {
     using namespace literals;
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
@@ -119,8 +118,6 @@ namespace libsemigroups {
                                    "[standard][knuth-bendix]",
                                    RevRPOTrie,
                                    LenLexTrie) {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abc"s);
@@ -156,7 +153,6 @@ namespace libsemigroups {
                                    "[standard][knuth-bendix][kbmag]",
                                    LenLexSet,
                                    LenLexTrie) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("aAbBcC"s);
@@ -195,8 +191,6 @@ namespace libsemigroups {
                                    "[standard][knuth-bendix][kbmag]",
                                    LenLexTrie,
                                    RevRPOTrie) {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abcdefgh"s);
@@ -245,8 +239,6 @@ namespace libsemigroups {
                                    "[standard][knuth-bendix]",
                                    LenLexTrie,
                                    RevRPOTrie) {
-    auto rg = ReportGuard(false);
-
     size_t n = 5;
     auto   p = presentation::examples::full_transformation_monoid_II74(n);
     KnuthBendix<word_type, TestType> kb(twosided, p);
@@ -266,7 +258,6 @@ namespace libsemigroups {
                           "[knuth-bendix][standard][tietze-explorer]") {
     using namespace knuth_bendix;
     fmt::print("\n");
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("ab"s);
@@ -320,7 +311,6 @@ namespace libsemigroups {
                                    "baabbbaba=a",
                                    "[standard][tietze-explorer]",
                                    RevRPOTrie) {
-    auto rg = ReportGuard(false);
     fmt::print("\n");
     Presentation<std::string> p;
     p.alphabet("ab"s);
@@ -360,8 +350,6 @@ namespace libsemigroups {
                           "TietzeExplorer::run_for",
                           "[standard][tietze-explorer]") {
     using literals::operator""_w;
-
-    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);

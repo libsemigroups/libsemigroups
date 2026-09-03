@@ -53,7 +53,6 @@ namespace libsemigroups {
                           "000",
                           "trivial perm. group (degree 1)",
                           "[quick][schreier-sims]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<1> S;
     using Perm = decltype(S)::element_type;
     S.add_generator(make<Perm>({0}));
@@ -66,7 +65,6 @@ namespace libsemigroups {
                           "001",
                           "trivial perm. group (degree 2)",
                           "[quick][schreier-sims]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<2> S;
     using Perm = SchreierSims<2>::element_type;
     S.add_generator(make<Perm>({0, 1}));
@@ -84,7 +82,6 @@ namespace libsemigroups {
                           "002",
                           "trivial perm. group (degree 500)",
                           "[quick][schreier-sims]") {
-    auto rg            = ReportGuard(false);
     size_t constexpr N = 100;
     // We allocate using "new" to avoid allocation on the stack,
     // since 100 is too large, and causes this test to seg fault.
@@ -120,7 +117,6 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<5>,
                                    PERM_TYPES) {
-    auto                               rg = ReportGuard(false);
     SchreierSims<5, uint8_t, TestType> S;
     S.add_generator(make<TestType>({1, 0, 2, 3, 4}));
     S.add_generator(make<TestType>({1, 2, 3, 4, 0}));
@@ -137,7 +133,6 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<8>,
                                    PERM_TYPES) {
-    auto                               rg = ReportGuard(false);
     SchreierSims<8, uint8_t, TestType> S;
     S.add_generator(make<TestType>({0, 6, 2, 3, 4, 5, 1, 7}));
 
@@ -166,7 +161,6 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<9>,
                                    PERM_TYPES) {
-    auto                               rg = ReportGuard(false);
     SchreierSims<9, uint8_t, TestType> S;
     S.add_generator(make<TestType>({1, 0, 2, 3, 4, 5, 6, 7, 8}));
     S.add_generator(make<TestType>({1, 2, 3, 4, 5, 6, 7, 8, 0}));
@@ -179,7 +173,6 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<12>,
                                    PERM_TYPES) {
-    auto                                rg = ReportGuard(false);
     SchreierSims<12, uint8_t, TestType> S;
     S.add_generator(make<TestType>({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11}));
     S.add_generator(make<TestType>({0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1}));
@@ -206,7 +199,6 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<16>,
                                    PERM_TYPES) {
-    auto                                rg = ReportGuard(false);
     SchreierSims<16, uint8_t, TestType> S;
     S.add_generator(
         make<TestType>({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
@@ -221,7 +213,6 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<15>,
                                    PERM_TYPES) {
-    auto                                rg = ReportGuard(false);
     SchreierSims<15, uint8_t, TestType> S;
     S.add_generator(
         make<TestType>({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
@@ -249,7 +240,6 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<16>,
                                    PERM_TYPES) {
-    auto                                rg = ReportGuard(false);
     SchreierSims<16, uint8_t, TestType> S;
     S.add_generator(
         make<TestType>({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
@@ -298,7 +288,6 @@ namespace libsemigroups {
                           "010",
                           "dihedral perm. group (order 10)",
                           "[quick][schreier-sims]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<5> S;
     using Perm = decltype(S)::element_type;
     S.add_generator(make<Perm>({0, 4, 3, 2, 1}));
@@ -311,7 +300,6 @@ namespace libsemigroups {
                           "011",
                           "dihedral perm. group (order 200)",
                           "[quick][schreier-sims]") {
-    auto rg = ReportGuard(false);
     // At N = 4'000 or so, this starts to take an appreciable amount of time.
     constexpr size_t N = 200;
     auto             S = std::make_unique<SchreierSims<N>>();
@@ -343,7 +331,6 @@ namespace libsemigroups {
                           "012",
                           "perm. group T (order 12)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<12> S;
     using Perm = decltype(S)::element_type;
     S.add_generator(make<Perm>({1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 6}));
@@ -355,7 +342,6 @@ namespace libsemigroups {
                           "013",
                           "quaternion perm. group (order 8)",
                           "[quick][schreier-sims]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<9> S;
     using Perm = decltype(S)::element_type;
     S.add_generator(make<Perm>({0, 2, 4, 6, 7, 3, 8, 1, 5}));
@@ -378,10 +364,9 @@ namespace libsemigroups {
                           "014",
                           "perm. group (order 84'129'611'558'952'960)",
                           "[quick][schreier-sims][no-valgrind]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 729;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 729;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,
@@ -499,10 +484,9 @@ namespace libsemigroups {
                           "015",
                           "perm. group SL(3, 5) (order 372'000)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 126;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 126;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {0,   1,   76,  101, 26,  51,  6,   81,  106, 31,  56,  11,  86,  111,
@@ -601,10 +585,9 @@ namespace libsemigroups {
                           "016",
                           "perm. group PSL(4, 8) (order 34'558'531'338'240)",
                           "[quick][schreier-sims][no-valgrind]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 585;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 585;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {1,   9,   17,  25,  33,  41,  49,  57,  65,  73,  81,  89,  97,  105,
@@ -700,10 +683,9 @@ namespace libsemigroups {
                           "017",
                           "perm. Mathieu group M11 (order 7'920)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 11;
-    using Perm          = Perm<0, size_t>;
-    auto S              = SchreierSims<N, size_t, Perm>();
+    constexpr size_t N = 11;
+    using Perm         = Perm<0, size_t>;
+    auto S             = SchreierSims<N, size_t, Perm>();
 
     S.add_generator(make<Perm>({0, 9, 2, 10, 6, 5, 4, 8, 7, 1, 3}));
     S.add_generator(make<Perm>({3, 4, 7, 2, 5, 8, 6, 0, 1, 9, 10}));
@@ -722,10 +704,9 @@ namespace libsemigroups {
                           "018",
                           "perm. Mathieu group M24 (order 244'823'040)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 24;
-    auto             S  = SchreierSims<N>();
-    using Perm          = decltype(S)::element_type;
+    constexpr size_t N = 24;
+    auto             S = SchreierSims<N>();
+    using Perm         = decltype(S)::element_type;
 
     S.add_generator(
         make<Perm>({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
@@ -763,10 +744,9 @@ namespace libsemigroups {
                           "019",
                           "perm. Janko Group J1 (order 175'560)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 267;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 267;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {0,   262, 107, 21,  213, 191, 22,  133, 234, 232, 151, 139, 176, 202,
@@ -951,10 +931,9 @@ namespace libsemigroups {
                           "020",
                           "perm. Hall-Janko group (order 604'800)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 101;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 101;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {0,  84, 20, 48, 56, 82, 67, 55, 41, 35, 40, 78, 100, 49, 37, 94, 76,
@@ -1022,10 +1001,9 @@ namespace libsemigroups {
                           "021",
                           "perm. Hall-Janko group (alt.) (order 604'800)",
                           "[quick][schreier-sims][no-valgrind]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 841;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 841;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {0,   2,   1,   5,   7,   3,   10,  4,   12,  13,  6,   16,  8,   9,
@@ -1159,10 +1137,9 @@ namespace libsemigroups {
                           "022",
                           "perm. Conway group Co3 (order 495'766'656'000)",
                           "[quick][schreier-sims][no-valgrind]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 277;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 277;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {0,   245, 42,  112, 15,  131, 7,   188, 75,  132, 10,  11,  187, 186,
@@ -1344,10 +1321,9 @@ namespace libsemigroups {
       "023",
       "perm. Conway group Co3 (alt.) (order 495'766'656'000) ",
       "[quick][schreier-sims][no-valgrind]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 553;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 553;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {0,   3,   4,   5,   6,   1,   2,   10,  12,  14,  16,  18,  20,  21,
@@ -1440,10 +1416,9 @@ namespace libsemigroups {
                           "024",
                           "perm. Suzuki group (order 448'345'497'600)",
                           "[no-valgrind][quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 1'783;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 1'783;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {0,    926,  1366, 1336, 1696, 1688, 610,  1412, 1390, 374,  1774, 1572,
@@ -1753,7 +1728,6 @@ namespace libsemigroups {
                           "025",
                           "perm. Fischer group Fi22 (order 64'561'751'654'400)",
                           "[standard][schreier-sims]") {
-    auto rg = ReportGuard(false);
     // Slower than GAP
     constexpr size_t N = 3'511;
     auto             S = std::make_unique<SchreierSims<N>>();
@@ -2356,10 +2330,9 @@ namespace libsemigroups {
                           "026",
                           "perm. Held group (order 4'030'387'200)",
                           "[no-valgrind][quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 2059;
-    auto             S  = std::make_unique<SchreierSims<N>>();
-    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
+    constexpr size_t N = 2059;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     S->add_generator(make<Perm>(
         {0,    374,  708,  1312, 1036, 1151, 1366, 1307, 1571, 1402, 236,  1438,
@@ -2716,10 +2689,9 @@ namespace libsemigroups {
                           "027",
                           "perm. group C2 x C2 x C2 (order 8)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 8;
-    using Perm          = libsemigroups::Perm<0, size_t>;
-    auto S              = SchreierSims<N, size_t, Perm>();
+    constexpr size_t N = 8;
+    using Perm         = libsemigroups::Perm<0, size_t>;
+    auto S             = SchreierSims<N, size_t, Perm>();
 
     S.add_generator(make<Perm>({1, 0, 2, 3, 4, 5, 6, 7}));
     S.add_generator(make<Perm>({0, 1, 3, 2, 4, 5, 6, 7}));
@@ -2732,10 +2704,9 @@ namespace libsemigroups {
                           "028",
                           "perm. group C2 x C2 x C2 x C2 (order 16)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 8;
-    using Perm          = Perm<>;
-    auto S              = SchreierSims<N, Perm::point_type, Perm>();
+    constexpr size_t N = 8;
+    using Perm         = Perm<>;
+    auto S             = SchreierSims<N, Perm::point_type, Perm>();
 
     S.add_generator(make<Perm>({1, 0, 2, 3, 4, 5, 6, 7}));
     S.add_generator(make<Perm>({0, 1, 3, 2, 4, 5, 6, 7}));
@@ -2759,10 +2730,9 @@ namespace libsemigroups {
                           "029",
                           "perm. group (S5 x S5) : C2 (order 28'800)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 10;
-    using Perm          = Perm<>;
-    auto S              = SchreierSims<N, Perm::point_type, Perm>();
+    constexpr size_t N = 10;
+    using Perm         = Perm<>;
+    auto S             = SchreierSims<N, Perm::point_type, Perm>();
 
     S.add_generator(make<Perm>({0, 9, 2, 3, 4, 5, 6, 7, 8, 1}));
     S.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
@@ -2774,10 +2744,9 @@ namespace libsemigroups {
                           "030",
                           "perm. group C3 x D8 x A5 (order 1'440)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 12;
-    using Perm          = Perm<>;
-    auto S              = SchreierSims<N, Perm::point_type, Perm>();
+    constexpr size_t N = 12;
+    using Perm         = Perm<>;
+    auto S             = SchreierSims<N, Perm::point_type, Perm>();
 
     S.add_generator(make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 10, 9}));
     S.add_generator(make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 11, 10}));
@@ -2793,10 +2762,9 @@ namespace libsemigroups {
                           "031",
                           "perm. group GL(4, 3) (order 24'261'120)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 81;
-    auto             S  = SchreierSims<N>();
-    using Perm          = decltype(S)::element_type;
+    constexpr size_t N = 81;
+    auto             S = SchreierSims<N>();
+    using Perm         = decltype(S)::element_type;
 
     S.add_generator(make<Perm>(
         {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
@@ -2861,9 +2829,8 @@ namespace libsemigroups {
                           "032",
                           "perm. group PSL(3, 7) (order 1'876'896)",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
-    constexpr size_t N  = 57;
-    using Perm          = Perm<>;
+    constexpr size_t N = 57;
+    using Perm         = Perm<>;
     auto S = std::make_unique<SchreierSims<N, Perm::point_type, Perm>>();
 
     S->add_generator(
@@ -2989,7 +2956,6 @@ namespace libsemigroups {
                           "033",
                           "symmetric perm. group (degree 5)",
                           "[quick][schreier-sims]") {
-    auto rg    = ReportGuard(false);
     using Perm = Perm<>;
     SchreierSims<5, Perm::point_type, Perm> S;
     S.add_generator(make<Perm>({1, 2, 3, 4, 0}));
@@ -3001,7 +2967,6 @@ namespace libsemigroups {
                           "034",
                           "alternating perm. group (degree 17)",
                           "[quick][schreier-sims][no-valgrind]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<17> S;
     S.init();
     using Perm = SchreierSims<17>::element_type;
@@ -3067,7 +3032,6 @@ namespace libsemigroups {
                           "035",
                           "exceptions",
                           "[quick][schreier-sims]") {
-    auto rg    = ReportGuard(false);
     using Perm = Perm<>;
     SchreierSims<5, Perm::point_type, Perm> S;
     S.add_generator(make<Perm>({1, 2, 3, 4, 0}));
@@ -3099,7 +3063,6 @@ namespace libsemigroups {
                           "036",
                           "exceptions",
                           "[quick][schreier-sims]") {
-    auto rg    = ReportGuard(false);
     using Perm = Perm<>;
     SchreierSims<5, Perm::point_type, Perm> S;
     S.add_generator(make<Perm>({1, 2, 3, 4, 0}));
@@ -3116,7 +3079,6 @@ namespace libsemigroups {
                           "037",
                           "trivial group",
                           "[quick][schreier-sims]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<5> S;
     using Perm = typename decltype(S)::element_type;
     S.add_generator(make<Perm>({1, 2, 3, 4, 0}));
@@ -3132,7 +3094,6 @@ namespace libsemigroups {
                           "038",
                           "A17 bug",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<17> S, T;
     using Perm = SchreierSims<17>::element_type;
     S.add_generator(
@@ -3186,7 +3147,6 @@ namespace libsemigroups {
                           "039",
                           "orbit_lookup test",
                           "[quick][schreier-sims]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<64> S, T;
     using Perm = typename decltype(S)::element_type;
     S.add_base_point(0);
@@ -3295,7 +3255,6 @@ namespace libsemigroups {
       "040",
       "transversal_element and inverse_transversal_element test",
       "[quick][schreier-sims][no-valgrind]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<64> S;
     using Perm   = typename decltype(S)::element_type;
     using Action = typename decltype(S)::Action;
@@ -3352,7 +3311,6 @@ namespace libsemigroups {
                           "041",
                           "trivial perm. group intersection (degree 1)",
                           "[quick][schreier-sims][intersection]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<1> S, T, U;
     using Perm = decltype(S)::element_type;
     S.add_generator(make<Perm>({0}));
@@ -3366,7 +3324,6 @@ namespace libsemigroups {
                           "042",
                           "trivial perm. group intersection (degree 2)",
                           "[quick][schreier-sims][intersection]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<2> S, T, U;
     using Perm = SchreierSims<2>::element_type;
     S.add_generator(make<Perm>({0, 1}));
@@ -3382,7 +3339,6 @@ namespace libsemigroups {
                           "043",
                           "cyclic group intersection (degree 13)",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<13> S, T, U;
     using Perm = SchreierSims<13>::element_type;
     // Adapted from:
@@ -3402,7 +3358,6 @@ namespace libsemigroups {
                           "044",
                           "D10 and Z5 intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<12> S, T, U;
     using Perm = SchreierSims<12>::element_type;
     // (0, 2, 4, 6, 8)(1, 3, 5, 7, 9)(10, 11)
@@ -3421,7 +3376,6 @@ namespace libsemigroups {
                           "045",
                           "D8 and Q8 intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<8> S, T, U;
     using Perm = SchreierSims<8>::element_type;
     S.add_generator(make<Perm>({1, 3, 7, 5, 2, 0, 4, 6}));
@@ -3439,7 +3393,6 @@ namespace libsemigroups {
                           "046",
                           "primitive on 8 points intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<8> S, T, U;
     using Perm = SchreierSims<8>::element_type;
     S.add_generator(make<Perm>({0, 2, 3, 4, 1, 5, 6, 7}));
@@ -3456,7 +3409,6 @@ namespace libsemigroups {
                           "047",
                           "primitive on 8 points intersection (swap order)",
                           "[quick][schreier-sims][intersection]") {
-    auto            rg = ReportGuard(false);
     SchreierSims<8> S, T, U;
     using Perm = SchreierSims<8>::element_type;
     S.add_generator(make<Perm>({0, 2, 3, 4, 1, 5, 6, 7}));
@@ -3473,7 +3425,6 @@ namespace libsemigroups {
                           "048",
                           "A13 and PGL(2, 11) intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<13> S, T, U;
     using Perm = SchreierSims<13>::element_type;
     S.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0}));
@@ -3492,7 +3443,6 @@ namespace libsemigroups {
                           "049",
                           "A13 and PGL(2, 11) intersection (swap order)",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<13> S, T, U;
     using Perm = SchreierSims<13>::element_type;
     S.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0}));
@@ -3511,7 +3461,6 @@ namespace libsemigroups {
                           "050",
                           "S17 and A39 intersection",
                           "[quick][schreier-sims][no-valgrind][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<50> S, T, U;
     using Perm = SchreierSims<50>::element_type;
     S.add_generator(make<Perm>(
@@ -3546,7 +3495,6 @@ namespace libsemigroups {
                           "051",
                           "A50 and PGL(2, 49) intersection",
                           "[standard][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<50> S, T, U;
     using Perm = SchreierSims<50>::element_type;
     S.add_generator(make<Perm>(
@@ -3597,7 +3545,6 @@ namespace libsemigroups {
                           "052",
                           "3^3:13 and 3^3.2.A(4) intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<27> S, T, U;
     using Perm = SchreierSims<27>::element_type;
     S.add_generator(
@@ -3636,7 +3583,6 @@ namespace libsemigroups {
       "053",
       "PGamma(2, 9) wreath Sym(2) and Alt(6)^2.D_8 intersection",
       "[quick][schreier-sims][no-valgrind][intersection]") {
-    auto              rg = ReportGuard(false);
     SchreierSims<100> S, T, U;
     using Perm = SchreierSims<100>::element_type;
     S.add_generator(make<Perm>(
@@ -3689,7 +3635,6 @@ namespace libsemigroups {
                           "054",
                           "Alt(6)^2.2^2:4 and Alt(6)^2.4 intersection",
                           "[quick][schreier-sims][no-valgrind][intersection]") {
-    auto              rg = ReportGuard(false);
     SchreierSims<100> S, T, U;
     using Perm = SchreierSims<100>::element_type;
     S.add_generator(make<Perm>(
@@ -3735,7 +3680,6 @@ namespace libsemigroups {
                           "055",
                           "3^3(S(4) x 2) and ASL(3, 3) intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<27> S, T, U;
     using Perm = SchreierSims<27>::element_type;
     S.add_generator(
@@ -3776,7 +3720,6 @@ namespace libsemigroups {
                           "056",
                           "7^2:3 x Q(8) and 7^2:D(2*6) intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<49> S, T, U;
     using Perm = SchreierSims<49>::element_type;
     S.add_generator(make<Perm>(
@@ -3831,7 +3774,6 @@ namespace libsemigroups {
                           "057",
                           "D(2*53) and 53:13 intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<53> S, T, U;
     using Perm = SchreierSims<53>::element_type;
     S.add_generator(make<Perm>(
@@ -3862,7 +3804,6 @@ namespace libsemigroups {
                           "058",
                           "2^6:(7 x D_14) and PSL(2, 6)^2.4 intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<64> S, T, U;
     using Perm = SchreierSims<64>::element_type;
     S.add_generator(make<Perm>(
@@ -3918,7 +3859,6 @@ namespace libsemigroups {
                           "059",
                           "2^6:(S_3 x GL(3, 2)) and 2.6:Alt(7) intersection",
                           "[quick][schreier-sims][intersection][no-valgrind]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<64> S, T, U;
     using Perm = SchreierSims<64>::element_type;
     S.add_generator(make<Perm>(
@@ -3989,7 +3929,6 @@ namespace libsemigroups {
                           "060",
                           "AGL(7, 2) and PGL(2, 127) intersection",
                           "[standard][schreier-sims][intersection]") {
-    auto              rg = ReportGuard(false);
     SchreierSims<128> S, T, U;
     using Perm = SchreierSims<128>::element_type;
     S.add_generator(make<Perm>(
@@ -4076,7 +4015,6 @@ namespace libsemigroups {
                           "061",
                           "PSL(2, 127) and AGL(1, 2^7) intersection",
                           "[quick][schreier-sims][intersection][no-valgrind]") {
-    auto              rg = ReportGuard(false);
     SchreierSims<128> S, T, U;
     using Perm = SchreierSims<128>::element_type;
     S.add_generator(make<Perm>(
@@ -4161,7 +4099,6 @@ namespace libsemigroups {
       "062",
       "PSL(3, 4).2 and PSL(3, 4).2 (nontrivial) intersection",
       "[quick][schreier-sims][intersection]") {
-    auto              rg = ReportGuard(false);
     SchreierSims<120> S, T, U;
     using Perm = SchreierSims<120>::element_type;
     S.add_generator(make<Perm>(
@@ -4262,7 +4199,6 @@ namespace libsemigroups {
                           "063",
                           "PSL(3, 4).Sym(3) and PSL(3, 4).2 intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto              rg = ReportGuard(false);
     SchreierSims<105> S, T, U;
     using Perm = SchreierSims<105>::element_type;
     S.add_generator(make<Perm>(
@@ -4369,7 +4305,6 @@ namespace libsemigroups {
                           "064",
                           "3^4:5:4 and D_16:4 intersection",
                           "[quick][schreier-sims][intersection]") {
-    auto             rg = ReportGuard(false);
     SchreierSims<81> S, T, U;
     using Perm = SchreierSims<81>::element_type;
     S.add_generator(make<Perm>(
@@ -4446,7 +4381,6 @@ namespace libsemigroups {
                           "065",
                           "uint8_t Perm",
                           "[quick][schreier-sims][copy constructor]") {
-    auto rg    = ReportGuard(false);
     using Perm = Perm<0, uint8_t>;
     auto S1    = std::make_unique<SchreierSims<255, uint8_t, Perm>>();
     S1->add_generator(make<Perm>(

@@ -120,7 +120,6 @@ namespace libsemigroups {
   */
 
   LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "002", "", "[freeband][quick]") {
-    auto         rg = ReportGuard(false);
     using words::operator+;
     REQUIRE(freeband_equal_to({}, {}));
     REQUIRE(!freeband_equal_to(00_w, {}));

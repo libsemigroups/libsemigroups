@@ -44,7 +44,6 @@ namespace libsemigroups {
   using namespace rx;
 
   LIBSEMIGROUPS_TEST_CASE("number_of_words", "000", "", "[quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE(39 == number_of_words(3, 1, 4));
     REQUIRE(29'524 == number_of_words(3, 0, 10));
     REQUIRE(32 == number_of_words(2, 5, 6));
@@ -56,7 +55,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord", "001", "", "[quick]") {
-    auto rg = ReportGuard(false);
     {
       ToWord toword("BCA");
       REQUIRE(!toword.empty());
@@ -94,7 +92,6 @@ namespace libsemigroups {
                           "002",
                           "literal",
                           "[quick][WordRange]") {
-    auto rg = ReportGuard(false);
     REQUIRE(0120210_w == word_type({0, 1, 2, 0, 2, 1, 0}));
     REQUIRE(0_w == word_type({0}));
     REQUIRE(1_w == word_type({1}));
@@ -114,7 +111,6 @@ namespace libsemigroups {
                           "003",
                           "n: 2, min; 1, max: 4",
                           "[wislo][quick]") {
-    auto      rg    = ReportGuard(false);
     word_type first = 0_w;
     word_type last  = 0000_w;
     auto      w
@@ -148,7 +144,6 @@ namespace libsemigroups {
                           "004",
                           "corner cases",
                           "[wislo][quick]") {
-    auto      rg    = ReportGuard(false);
     word_type first = 0000_w;
     word_type last  = 00000_w;
     auto      w1
@@ -177,7 +172,6 @@ namespace libsemigroups {
                           "005",
                           "n: 3, min; 0, max: 10",
                           "[wislo][quick]") {
-    auto      rg    = ReportGuard(false);
     word_type first = {};
     word_type last(10, 0);
     auto      w
@@ -191,7 +185,6 @@ namespace libsemigroups {
                           "006",
                           "n: 3, min; 0, max: 13",
                           "[wislo][quick][no-valgrind]") {
-    auto                   rg    = ReportGuard(false);
     word_type              first = {};
     word_type              last(13, 0);
     std::vector<word_type> w;
@@ -220,7 +213,6 @@ namespace libsemigroups {
                           "008",
                           "code coverage",
                           "[wislo][quick]") {
-    auto      rg    = ReportGuard(false);
     word_type first = 000_w;
     word_type last  = 0000_w;
 
@@ -261,9 +253,8 @@ namespace libsemigroups {
     REQUIRE(*it3 == word_type(001_w));
   }
   LIBSEMIGROUPS_TEST_CASE("WordRange", "009", "corner cases", "[wilo][quick]") {
-    auto            rg = ReportGuard(false);
-    word_type const u  = 0000_w;
-    word_type const v  = 1111_w;
+    word_type const u = 0000_w;
+    word_type const v = 1111_w;
     auto w1 = std::vector(cbegin_wilo(2, 1, v, u), cend_wilo(2, 1, v, u));
     REQUIRE(w1.empty());
     auto w2 = std::vector(cbegin_wilo(2, 1, u, u), cend_wilo(2, 1, u, u));
@@ -284,8 +275,7 @@ namespace libsemigroups {
                           "010",
                           "letters: 2, min: 1, max: 4",
                           "[wilo][quick]") {
-    auto rg = ReportGuard(false);
-    auto w  = std::vector(cbegin_wilo(2, 4, 0_w, 1111_w),
+    auto w = std::vector(cbegin_wilo(2, 4, 0_w, 1111_w),
                          cend_wilo(2, 4, 0_w, 1111_w));
     REQUIRE(w
             == std::vector({0_w,
@@ -313,7 +303,6 @@ namespace libsemigroups {
                           "011",
                           "letters: 2, min: 1, max: 4",
                           "[wilo][quick]") {
-    auto      rg    = ReportGuard(false);
     word_type first = 0_w;
     word_type last  = 2222_w;
     auto      w     = std::vector(cbegin_wilo(3, 4, first, last),
@@ -336,7 +325,6 @@ namespace libsemigroups {
                           "012",
                           "letters: 3, min: 0, max: 10",
                           "[wilo][quick][no-valgrind]") {
-    auto      rg    = ReportGuard(false);
     word_type first = {};
     word_type last(10, 2);
     auto      w = std::vector(cbegin_wilo(3, 10, first, last),
@@ -353,7 +341,6 @@ namespace libsemigroups {
                           "013",
                           "letters: 3, min: 0, max: 13",
                           "[wilo][quick][no-valgrind]") {
-    auto      rg    = ReportGuard(false);
     word_type first = {};
     word_type last(13, 2);
 
@@ -368,7 +355,6 @@ namespace libsemigroups {
                           "014",
                           "forward iterator requirements",
                           "[wilo][quick][no-valgrind]") {
-    auto      rg    = ReportGuard(false);
     word_type first = {};
     word_type last(4, 1);
     auto      it = cbegin_wilo(2, 4, first, last);
@@ -391,7 +377,6 @@ namespace libsemigroups {
                           "015",
                           "more corner cases",
                           "[wilo][quick]") {
-    auto      rg    = ReportGuard(false);
     word_type first = {};
     word_type last(10, 0);
     auto      w = std::vector(cbegin_wilo(1, 10, first, last),
@@ -428,7 +413,6 @@ namespace libsemigroups {
                           "016",
                           "starting at a given word 1",
                           "[wilo][quick]") {
-    auto      rg    = ReportGuard(false);
     word_type first = {0, 1, 2, 3};
     word_type last(5, 4);
     auto      result   = std::vector(cbegin_wilo(4, 5, first, last),
@@ -447,7 +431,6 @@ namespace libsemigroups {
                           "017",
                           "starting at a given word 2",
                           "[wilo][quick]") {
-    auto      rg     = ReportGuard(false);
     word_type first  = {0, 1};
     word_type last   = {1, 1, 1};
     auto      result = std::vector(cbegin_wilo(2, 3, first, last),
@@ -463,7 +446,6 @@ namespace libsemigroups {
                           "018",
                           "code coverage",
                           "[wilo][quick]") {
-    auto      rg    = ReportGuard(false);
     word_type first = 000_w;
     word_type last  = 1111_w;
 
@@ -498,7 +480,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange", "019", "check count", "[words][quick]") {
-    auto rg = ReportGuard(false);
     using words::pow;
     size_t const m = 27;
     size_t const n = 2;
@@ -577,7 +558,6 @@ namespace libsemigroups {
                           "020",
                           "lex | alphabet = a | min = 0 | max = 10",
                           "[lex][quick]") {
-    auto        rg = ReportGuard(false);
     StringRange strings;
 
     strings.order(Order::lex)
@@ -608,7 +588,6 @@ namespace libsemigroups {
                           "021",
                           "lex | corner cases",
                           "[lex][quick]") {
-    auto        rg = ReportGuard(false);
     StringRange strings;
     strings.order(Order::lex)
         .alphabet("ab")
@@ -632,7 +611,6 @@ namespace libsemigroups {
                           "022",
                           "lex | alphabet = ab | min = 1 | max = 4",
                           "[lex][quick]") {
-    auto        rg = ReportGuard(false);
     StringRange strings;
     strings.alphabet("ab")
         .order(Order::lex)
@@ -697,7 +675,6 @@ namespace libsemigroups {
                           "023",
                           "lex | alphabet = abc | min = 0 | max = 13",
                           "[lex][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     StringRange strings;
     strings.order(Order::lex)
         .alphabet("abc")
@@ -714,7 +691,6 @@ namespace libsemigroups {
                           "024",
                           "lex | code coverage",
                           "[lex][quick]") {
-    auto        rg    = ReportGuard(false);
     auto        first = "aaa";
     auto        last  = "bbbb";
     StringRange strings;
@@ -750,7 +726,6 @@ namespace libsemigroups {
                           "025",
                           "lenlex | alphabet = a | min = 0 | max = 10",
                           "[lenlex][quick]") {
-    auto      rg = ReportGuard(false);
     WordRange words;
     words.alphabet_size(1).min(0).max(10);
 
@@ -776,7 +751,6 @@ namespace libsemigroups {
                           "026",
                           "lenlex | corner cases",
                           "[lenlex][quick]") {
-    auto        rg = ReportGuard(false);
     StringRange strings;
     strings.alphabet("ab").last("").first("bbaaab");
 
@@ -820,7 +794,6 @@ namespace libsemigroups {
                           "027",
                           "lenlex | alphabet = ab | min = 1 | max = 4",
                           "[lenlex][quick]") {
-    auto        rg = ReportGuard(false);
     StringRange strings;
 
     strings.alphabet("ab").first("a").last("aaaa");
@@ -868,7 +841,6 @@ namespace libsemigroups {
                           "028",
                           "lenlex | alphabet = abc | min = 0 | max = 13",
                           "[lenlex][quick][no-valgrind]") {
-    auto        rg = ReportGuard(false);
     StringRange strings;
     strings.alphabet("abc").max(13);
     REQUIRE((strings | count()) == number_of_words(3, 0, 13));
@@ -880,7 +852,6 @@ namespace libsemigroups {
                           "029",
                           "lenlex | code coverage",
                           "[lenlex][quick]") {
-    auto        rg    = ReportGuard(false);
     auto        first = "aaa";
     auto        last  = "bbbb";
     StringRange strings;
@@ -993,7 +964,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange", "031", "parsing", "[lenlex][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE(words::parse("cd(ab)^2ef") == "cdababef");
     REQUIRE("cd(ab)^2ef"_p == "cdababef");
     REQUIRE("cd((ab)^2)^4ef"_p == "cdababababababababef");
@@ -1074,7 +1044,6 @@ namespace libsemigroups {
                           "032",
                           "operator+",
                           "[quick][word_functions]") {
-    auto rg = ReportGuard(false);
     using namespace literals;
     using words::operator+;
     word_type    w = 01_w;
@@ -1094,7 +1063,6 @@ namespace libsemigroups {
                           "033",
                           "operator+=",
                           "[quick][word_functions]") {
-    auto rg = ReportGuard(false);
     using namespace literals;
     using words::operator+=;
     word_type    w = 123_w;
@@ -1119,7 +1087,6 @@ namespace libsemigroups {
                           "034",
                           "pow",
                           "[quick][word_functions]") {
-    auto rg = ReportGuard(false);
     using namespace literals;
     using words::pow;
     word_type w = 01_w;
@@ -1138,7 +1105,6 @@ namespace libsemigroups {
                           "035",
                           "pow_inplace",
                           "[quick][word_functions][no-coverage][no-valgrind]") {
-    auto rg = ReportGuard(false);
     using namespace literals;
     using words::pow_inplace;
     word_type w = 01_w;
@@ -1172,7 +1138,6 @@ namespace libsemigroups {
                           "036",
                           "prod",
                           "[quick][word_functions]") {
-    auto rg = ReportGuard(false);
     using namespace literals;
     using words::pow;
     using words::prod;
@@ -1215,8 +1180,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("random_word", "037", "", "[quick]") {
-    auto rg = ReportGuard(false);
-    auto w  = random_word(10, 3);
+    auto w = random_word(10, 3);
     REQUIRE(w.size() == 10);
     REQUIRE(
         std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; }));
@@ -1238,7 +1202,6 @@ namespace libsemigroups {
                           "038",
                           "check all chars",
                           "[quick]") {
-    auto rg = ReportGuard(false);
     using words::human_readable_index;
     using words::human_readable_letter;
     std::array<uint8_t,
@@ -1266,7 +1229,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("to_word", "039", "", "[quick]") {
-    auto   rg = ReportGuard(false);
     ToWord to_word;
     REQUIRE(to_word("abc") == 012_w);
     REQUIRE(to_word("ABC") == word_type({26, 27, 28}));
@@ -1274,7 +1236,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord", "040", "code coverage", "[quick]") {
-    auto        rg = ReportGuard(false);
     StringRange strings;
     strings.alphabet("ab").first("a").last("bbbb");
 
@@ -1315,7 +1276,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToString", "041", "code coverage", "[quick]") {
-    auto rg = ReportGuard(false);
     using words::pow;
 
     WordRange words;
@@ -1390,7 +1350,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange", "042", "empty iterator", "[quick]") {
-    auto rg = ReportGuard(false);
     using words::pow;
 
     WordRange words;
@@ -1407,7 +1366,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord", "043", "alphabet", "[quick]") {
-    auto   rg = ReportGuard(false);
     ToWord to_word("BAaC1");
     REQUIRE(to_word.alphabet() == "BAaC1");
 
@@ -1428,7 +1386,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToString", "044", "alphabet", "[quick]") {
-    auto     rg = ReportGuard(false);
     ToString to_string("BAaC1");
     REQUIRE(to_string.alphabet() == "BAaC1");
 
@@ -1449,7 +1406,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange", "045", "doxygen examples", "[quick]") {
-    auto rg = ReportGuard(false);
     // cbegin_wilo
     {
       REQUIRE(std::vector(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
@@ -1535,7 +1491,6 @@ namespace libsemigroups {
                           "046",
                           "to_human_readable_repr",
                           "[quick]") {
-    auto      rg = ReportGuard(false);
     WordRange wr;
     wr.min(0).max(1).alphabet_size(4);
     REQUIRE(to_human_readable_repr(wr, 120)
@@ -1551,7 +1506,6 @@ namespace libsemigroups {
                           "047",
                           "to_human_readable_repr",
                           "[quick]") {
-    auto   rg = ReportGuard(false);
     ToWord to_word("BAc2w");
     REQUIRE(to_human_readable_repr(to_word)
             == "<ToWord object with alphabet \"BAc2w\">");
@@ -1561,7 +1515,6 @@ namespace libsemigroups {
                           "048",
                           "to_human_readable_repr",
                           "[quick]") {
-    auto        rg = ReportGuard(false);
     StringRange sr;
     sr.min(3).max(5).alphabet("bcd");
     REQUIRE(to_human_readable_repr(sr, 120)
@@ -1576,7 +1529,6 @@ namespace libsemigroups {
                           "049",
                           "to_human_readable_repr",
                           "[quick]") {
-    auto     rg = ReportGuard(false);
     ToString to_string("BAc2w");
     REQUIRE(to_human_readable_repr(to_string)
             == "<ToString object with alphabet \"BAc2w\">");

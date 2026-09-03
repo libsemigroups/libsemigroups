@@ -85,7 +85,6 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
     // Kambites doesn't work in this example
-    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);
@@ -110,7 +109,6 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
     // Kambites doesn't work in this example
-    auto rg = ReportGuard(false);
 
     TestType cong;
     REQUIRE_THROWS_AS(congruence_common::currently_contains(cong, {0}, {1}),
@@ -142,8 +140,6 @@ namespace libsemigroups {
                                    ToddCoxeter<word_type>,
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
-    auto rg = ReportGuard(false);
-
     TestType cong;
 
     REQUIRE(!is_obviously_infinite(cong));
@@ -182,8 +178,7 @@ namespace libsemigroups {
                                    ToddCoxeter<word_type>,
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -227,8 +222,7 @@ namespace libsemigroups {
                                    ToddCoxeter<word_type>,
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -263,8 +257,6 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>,
                                    Kambites<word_type>) {
-    auto rg = ReportGuard(false);
-
     Presentation<word_type> p;
     p.alphabet(4);
 
@@ -281,7 +273,6 @@ namespace libsemigroups {
                                    "to<FroidurePin>",
                                    "[quick]",
                                    Kambites<>) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
 
@@ -320,7 +311,6 @@ namespace libsemigroups {
                                    KnuthBendix<std::string>,
                                    ToddCoxeter<std::string>) {
     // Congruence<std::string>) {
-    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -341,7 +331,6 @@ namespace libsemigroups {
                                    "to<FroidurePin>",
                                    "[quick][no-valgrind]",
                                    Congruence<std::string>) {
-    auto rg = ReportGuard(false);
     using knuth_bendix::normal_forms;
     using todd_coxeter::normal_forms;
 
@@ -378,7 +367,6 @@ namespace libsemigroups {
                                    "[quick]",
                                    KnuthBendix<std::string>,
                                    ToddCoxeter<std::string>) {
-    auto rg = ReportGuard(false);
     using knuth_bendix::normal_forms;
     using todd_coxeter::normal_forms;
 
@@ -415,8 +403,6 @@ namespace libsemigroups {
                                    Congruence<std::string>) {
     using knuth_bendix::normal_forms;
     using todd_coxeter::normal_forms;
-
-    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);

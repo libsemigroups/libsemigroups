@@ -36,7 +36,6 @@ namespace libsemigroups {
   namespace detail {
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "000", "constructors", "[quick]") {
-      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S;
       S.add_generator(make<Transf<>>({1, 0}));
       S.add_generator(make<Transf<>>({0, 0}));
@@ -59,7 +58,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
-      auto        rg = ReportGuard(false);
       FroidurePin S
           = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 
@@ -88,7 +86,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
-      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
           = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 
@@ -101,7 +98,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
-      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
           = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 
@@ -121,7 +117,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "004", "adapters", "[quick]") {
-      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
           = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 
@@ -139,7 +134,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
-      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
           = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 

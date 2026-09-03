@@ -35,7 +35,6 @@ namespace libsemigroups {
                           "000",
                           "default constructor and entire graph",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraphView<size_t> v;
     REQUIRE_THROWS(v.number_of_nodes() == 0);
     REQUIRE_THROWS(v.reshape(2, 3));
@@ -54,7 +53,6 @@ namespace libsemigroups {
                           "001",
                           "construct new graph",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     REQUIRE(v.number_of_nodes() == 5 - 2);
@@ -66,7 +64,6 @@ namespace libsemigroups {
                           "002",
                           "equality operator",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g1(10, 5);
     WordGraphView<size_t> v1(g1, 2, 5);
 
@@ -102,7 +99,6 @@ namespace libsemigroups {
                           "003",
                           "copy constructor + assignment",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     WordGraphView<size_t> v1(v);
@@ -120,7 +116,6 @@ namespace libsemigroups {
                           "004",
                           "move constructor + assignment",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     WordGraphView<size_t> v1(std::move(v));
@@ -135,7 +130,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "005", "target", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(2, 3, 5);
     g.target(3, 4, 5);
@@ -147,7 +141,6 @@ namespace libsemigroups {
                           "006",
                           "target throws correctly",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(2, 3, 5);
     g.target(3, 4, 5);
@@ -156,7 +149,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "007", "exceptions", "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     REQUIRE_THROWS_AS(v.target(0, 7), LibsemigroupsException);
@@ -171,7 +163,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "008", "cbegin_targets", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(2, 0, 5);
     WordGraphView<size_t> v(g, 2, 5);
@@ -183,7 +174,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "009", "cend_targets", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(2, 4, 5);
     WordGraphView<size_t> v(g, 2, 5);
@@ -204,7 +194,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "010", "nodes", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(2, 4, 5);
     WordGraphView<size_t> v(g, 2, 5);
@@ -218,7 +207,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "011", "labels", "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     auto                  v_labels = v.labels();
@@ -231,7 +219,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "012", "targets", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(2, 1, 5);
     g.target(2, 2, 6);
@@ -248,7 +235,6 @@ namespace libsemigroups {
                           "013",
                           "next_label_and_target",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(2, 1, 5);
     g.target(2, 2, 6);
@@ -265,7 +251,6 @@ namespace libsemigroups {
 
   // TODO(0) Move this into test-to-word-graph.cpp
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "014", "to<WordGraph>", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(2, 1, 5);
     g.target(2, 2, 6);
@@ -286,14 +271,12 @@ namespace libsemigroups {
                           "015",
                           "to_graph for UNDEFINED",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     REQUIRE(v.target(0, 0) == UNDEFINED);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "016", "reshape", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(3, 0, 4);
     WordGraphView<size_t> v(g, 2, 5);
@@ -309,7 +292,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "017", "init", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(3, 0, 4);
     g.target(4, 0, 3);
@@ -331,7 +313,6 @@ namespace libsemigroups {
                           "018",
                           "number_of_edges",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     word_graph::add_cycle_no_checks(g, g.cbegin_nodes(), g.cbegin_nodes() + 5);
     word_graph::add_cycle_no_checks(g, g.cbegin_nodes() + 5, g.cend_nodes());
@@ -365,7 +346,6 @@ namespace libsemigroups {
                           "019",
                           "number_of_nodes",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g);
 
@@ -377,7 +357,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "020", "accessors", "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g);
 
@@ -388,7 +367,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "021", "modifiers", "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g);
 
@@ -413,7 +391,6 @@ namespace libsemigroups {
                           "022",
                           "labels_and_targets",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(10, 5);
     g.target(2, 1, 5);
     g.target(2, 2, 6);
@@ -433,7 +410,6 @@ namespace libsemigroups {
                           "023",
                           "exception messages",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     WordGraphView<size_t> v;
     REQUIRE_EXCEPTION_MSG(std::ignore = v.out_degree(),
                           "the underlying WordGraph is not defined");
@@ -489,8 +465,6 @@ namespace libsemigroups {
                           "024",
                           "standardization and helper branches",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-
     WordGraph<size_t> empty(0, 2);
     WordGraphView     empty_view(empty);
     REQUIRE(word_graph::is_strictly_cyclic(empty_view));
@@ -526,8 +500,6 @@ namespace libsemigroups {
                           "025",
                           "checked compatibility and path overloads",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-
     auto          graph = make<WordGraph<size_t>>(2, {{1, 0}, {1, 0}});
     WordGraphView view(graph);
     std::vector<size_t> const nodes = {0, 1};

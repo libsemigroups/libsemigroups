@@ -51,7 +51,6 @@ namespace libsemigroups {
                           "000",
                           "from WordGraph",
                           "[quick]") {
-    auto rg = ReportGuard(false);
     auto wg = make<WordGraph<uint8_t>>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
@@ -69,7 +68,6 @@ namespace libsemigroups {
                           "001",
                           "from WordGraph (exceptions)",
                           "[quick]") {
-    auto rg = ReportGuard(false);
     auto wg = make<WordGraph<uint8_t>>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
@@ -146,7 +144,6 @@ namespace libsemigroups {
                           "002",
                           "from Kambites (code cov)",
                           "[quick][no-valgrind]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg"s);
     presentation::add_rule(p, "abcd"s, "aaaeaa"s);
@@ -160,7 +157,6 @@ namespace libsemigroups {
                           "003",
                           "from Kambites (exceptions)",
                           "[quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "bababa"s, "aba"s);
@@ -177,7 +173,6 @@ namespace libsemigroups {
                           "004",
                           "from KnuthBendix",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 0}));
     S.add_generator(make<Transf<>>({0, 0}));
@@ -193,7 +188,6 @@ namespace libsemigroups {
                           "from Todd-Coxeter",
                           "[quick][no-valgrind]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(4);
@@ -232,7 +226,6 @@ namespace libsemigroups {
                           "006",
                           "from Congruence",
                           "[quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abBe"s);
     presentation::add_identity_rules(p, 'e');
@@ -254,7 +247,6 @@ namespace libsemigroups {
                                    "[quick]",
                                    REWRITER_TYPES) {
     using literals::        operator""_w;
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
@@ -277,7 +269,6 @@ namespace libsemigroups {
                           "008",
                           "from ToddCoxeter",
                           "[quick][no-valgrind]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
@@ -315,14 +306,12 @@ namespace libsemigroups {
                           "009",
                           "from default constructed Kambites",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     Kambites<std::string> k;
     auto                  fp = to<FroidurePin>(k);
     REQUIRE(fp.size() == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>", "010", "exceptions", "[quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaaa"s, "aaa"s);
@@ -339,7 +328,6 @@ namespace libsemigroups {
                           "011",
                           "from ToddCoxeter",
                           "[quick]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);

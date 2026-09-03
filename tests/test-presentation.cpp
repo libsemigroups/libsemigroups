@@ -63,7 +63,6 @@ namespace libsemigroups {
                           "000",
                           "vectors of ints",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(012_w);
     REQUIRE(p.alphabet() == 012_w);
@@ -84,7 +83,6 @@ namespace libsemigroups {
                           "001",
                           "strings",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     REQUIRE(p.alphabet() == "abc");
@@ -109,7 +107,6 @@ namespace libsemigroups {
                                    StaticVector) {
     using W = TestType;
 
-    auto            rg = ReportGuard(false);
     Presentation<W> p;
     p.alphabet(W({0, 1, 2}));
     presentation::add_rule_no_checks(p, W({0, 0, 0}), W({0}));
@@ -144,7 +141,6 @@ namespace libsemigroups {
                                    word_type,
                                    std::string,
                                    StaticVector) {
-    auto rg = ReportGuard(false);
     using W = TestType;
     Presentation<W> p;
     p.alphabet(W({0, 1, 2}));
@@ -186,7 +182,6 @@ namespace libsemigroups {
                           "006",
                           "alphabet + letters x 2 - std::string",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     REQUIRE(p.alphabet() == "abc");
@@ -217,7 +212,6 @@ namespace libsemigroups {
                                    word_type,
                                    StaticVector,
                                    std::string) {
-    auto rg = ReportGuard(false);
     using W = TestType;
     Presentation<W> p;
     W               empty;
@@ -241,8 +235,7 @@ namespace libsemigroups {
                                    word_type,
                                    StaticVector,
                                    std::string) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     presentation::add_rule_no_checks(p, W({0, 5}), W({0, 4}));
     presentation::add_rule_no_checks(
@@ -261,8 +254,7 @@ namespace libsemigroups {
                                    word_type,
                                    StaticVector,
                                    std::string) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     p.rules.emplace_back();
     REQUIRE_THROWS_AS(p.throw_if_bad_rules(), LibsemigroupsException);
@@ -275,8 +267,7 @@ namespace libsemigroups {
                                    word_type,
                                    StaticVector,
                                    std::string) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({0, 0}));
     Presentation<W> q;
@@ -322,7 +313,6 @@ namespace libsemigroups {
                           "011",
                           "helpers add_rule(s) (std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     presentation::add_rule_no_checks(p, "abcb"s, "aa"s);
     Presentation<std::string> q;
@@ -375,8 +365,7 @@ namespace libsemigroups {
                                    "[quick][presentation]",
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({0, 0}));
     REQUIRE_THROWS_AS(presentation::add_identity_rules(p, 0),
@@ -404,8 +393,7 @@ namespace libsemigroups {
                                    "[quick][presentation]",
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({0, 0}));
     REQUIRE_THROWS_AS(presentation::add_zero_rules(p, 0),
@@ -431,7 +419,6 @@ namespace libsemigroups {
                           "014",
                           "helpers add_identity_rules (std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     presentation::add_rule_no_checks(p, "abcb"s, "aa"s);
     REQUIRE_THROWS_AS(presentation::add_identity_rules(p, 'a'),
@@ -457,7 +444,6 @@ namespace libsemigroups {
                           "015",
                           "helpers add_zero_rules (std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     presentation::add_rule_no_checks(p, "abcb"s, "aa"s);
     REQUIRE_THROWS_AS(presentation::add_zero_rules(p, '0'),
@@ -491,8 +477,7 @@ namespace libsemigroups {
                                    "[quick][presentation]",
                                    std::string,
                                    word_type) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     REQUIRE_THROWS_AS(presentation::add_commutes_rules(p, W{0}, W{1}),
                       LibsemigroupsException);
@@ -572,8 +557,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     REQUIRE_THROWS_AS(presentation::add_idempotent_rules(p, W({0, 1})),
                       LibsemigroupsException);
@@ -592,8 +576,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     REQUIRE_THROWS_AS(presentation::add_involution_rules(p, W({0, 1})),
                       LibsemigroupsException);
@@ -616,8 +599,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({0, 0}));
     p.alphabet_from_rules();
@@ -660,7 +642,6 @@ namespace libsemigroups {
                           "helpers add_inverse_rules "
                           "(std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(false);
 
@@ -701,8 +682,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     p.rules.push_back(W({0, 1, 2, 1}));
     REQUIRE_THROWS_AS(presentation::remove_duplicate_rules(p),
@@ -722,8 +702,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     p.rules.push_back(W({0, 1, 2, 1}));
     REQUIRE_THROWS_AS(presentation::reduce_complements(p),
@@ -753,7 +732,6 @@ namespace libsemigroups {
                           "003",
                           "helpers reduce_complements - std::string",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
     using words::human_readable_letter;
 
     Presentation<std::string> p;
@@ -795,7 +773,6 @@ namespace libsemigroups {
                                    word_type) {
     // TODO(1) Add StaticVector.
     // Can't do this until StaticVector has .front or . end
-    auto rg = ReportGuard(false);
     using W = TestType;
 
     Presentation<W> p;
@@ -904,7 +881,6 @@ namespace libsemigroups {
                                    word_type) {
     // TODO(1) Add StaticVector.
     // Can't do this until StaticVector has .front or . end
-    auto rg = ReportGuard(false);
     using W = TestType;
 
     Presentation<W> p;
@@ -920,8 +896,6 @@ namespace libsemigroups {
                           "084",
                           "helpers balance (3 args, word_type)",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
-
     Presentation<word_type> p;
     p.alphabet(2).contains_empty_word(true);
     presentation::add_rule(p, 00000000_w, ""_w);
@@ -946,8 +920,6 @@ namespace libsemigroups {
                           "085",
                           "helpers balance (3 args, std::string)",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet(std::string({0, 1})).contains_empty_word(true);
     presentation::add_rule(
@@ -977,8 +949,6 @@ namespace libsemigroups {
                           "087",
                           "helpers balance (2 args, std::string)",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.alphabet("ab"s).contains_empty_word(true);
 
@@ -1013,7 +983,6 @@ namespace libsemigroups {
                           "088",
                           "helpers balance (1 arg)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
 
@@ -1102,7 +1071,6 @@ namespace libsemigroups {
                           "helpers balance_no_checks "
                           "(std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     presentation::add_rule_no_checks(p, "aaaaaaaa"s, ""s);
@@ -1142,7 +1110,6 @@ namespace libsemigroups {
                                    word_type,
                                    StaticVector) {
     using W = TestType;
-    auto rg = ReportGuard(false);
 
     Presentation<W> p;
     p.rules.push_back(W({0, 1, 2, 1}));
@@ -1175,8 +1142,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     p.rules.push_back(W({0, 1, 2, 1}));
     REQUIRE_THROWS_AS(presentation::sort_rules(p), LibsemigroupsException);
@@ -1209,7 +1175,6 @@ namespace libsemigroups {
                                    word_type,
                                    StaticVector) {
     using W = TestType;
-    auto rg = ReportGuard(false);
     {
       // Normalized alphabet
       Presentation<W> p;
@@ -1273,8 +1238,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W                     = TestType;
-    auto                     rg = ReportGuard(false);
+    using W = TestType;
     FroidurePin<Bipartition> S;
     S.add_generator(Bipartition({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
     S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
@@ -1318,8 +1282,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     p.rules.push_back(W({0, 1, 2, 1}));
     REQUIRE_THROWS_AS(presentation::remove_trivial_rules(p),
@@ -1352,8 +1315,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     p.rules.push_back(W({0, 1, 2, 1}));
     // existing, replacement
@@ -1404,7 +1366,6 @@ namespace libsemigroups {
                           "031",
                           "helpers replace_subword (std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     presentation::add_rule_no_checks(p, "abababab"s, "bbaabb"s);
     presentation::replace_subword(p, "ab"s, "c"s);
@@ -1418,8 +1379,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     presentation::add_rule_no_checks(p, W({0, 1, 0}), W({}));
     p.alphabet_from_rules();
@@ -1458,8 +1418,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     REQUIRE(presentation::longest_rule(p) == p.rules.cend());
     REQUIRE(presentation::shortest_rule(p) == p.rules.cend());
@@ -1491,8 +1450,7 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     REQUIRE(presentation::longest_rule_length(p) == 0);
     REQUIRE(presentation::shortest_rule_length(p) == 0);
@@ -1526,8 +1484,7 @@ namespace libsemigroups {
                                    word_type,
                                    std::string,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     p.rules.push_back(W({0, 1, 2, 1}));
     p.alphabet(W({0, 1, 2}));
@@ -1589,7 +1546,6 @@ namespace libsemigroups {
                           "036",
                           "helpers remove_redundant_generators",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghi"s);
     presentation::add_rule(p, "d"s, "ffg"s);
@@ -1615,8 +1571,7 @@ namespace libsemigroups {
                                    word_type,
                                    std::string,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({1, 2, 1}));
     presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
@@ -1644,7 +1599,6 @@ namespace libsemigroups {
                                    StaticVector) {
     using W = TestType;
 
-    auto            rg = ReportGuard(false);
     Presentation<W> p;
     presentation::add_rule_no_checks(p, W({0, 1, 2, 1}), W({1, 2, 1}));
     presentation::add_rule_no_checks(p, W({1, 1, 2, 1}), W({1, 1}));
@@ -1668,7 +1622,6 @@ namespace libsemigroups {
                           "039",
                           "replace_subword with empty word",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet(2);
     p.contains_empty_word(true);
@@ -1682,7 +1635,6 @@ namespace libsemigroups {
                           "040",
                           "clear",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet(2);
     p.contains_empty_word(true);
@@ -1697,7 +1649,6 @@ namespace libsemigroups {
                           "041",
                           "change_alphabet",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "ba"s, "abaaabaa"s);
@@ -1785,7 +1736,6 @@ namespace libsemigroups {
                           "042",
                           "letter",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
     using words::human_readable_letter;
     Presentation<std::vector<uint16_t>> p;
     REQUIRE_THROWS_AS(human_readable_letter<std::vector<uint16_t>>(65536),
@@ -1806,7 +1756,6 @@ namespace libsemigroups {
                           "043",
                           "normalize_alphabet",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("axy"s);
     presentation::normalize_alphabet(p);
@@ -1821,7 +1770,6 @@ namespace libsemigroups {
                           "044",
                           "first_unused_letter/letter",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
     using words::human_readable_letter;
     Presentation<std::string> p;
     p.alphabet("ab"s);
@@ -1861,7 +1809,6 @@ namespace libsemigroups {
                           "045",
                           "longest_subword_reducing_length issue",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("a"s);
     presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaa"s, "a"s);
@@ -1917,7 +1864,6 @@ namespace libsemigroups {
                                    word_type,
                                    std::string,
                                    StaticVector) {
-    auto rg = ReportGuard(false);
     using W = TestType;
     Presentation<W> p;
     presentation::add_rule_no_checks(p, W({0, 0}), W({}));
@@ -1967,7 +1913,6 @@ namespace libsemigroups {
                           "047",
                           "greedy_reduce_length",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     p.rules.clear();
@@ -1995,7 +1940,6 @@ namespace libsemigroups {
                           "048",
                           "greedy_reduce_length_and_number_of_gens",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p1;
     p1.alphabet("ab"s);
     p1.rules.clear();
@@ -2034,7 +1978,6 @@ namespace libsemigroups {
                           "aaaaaaaab = aaaaaaaaab strong "
                           "compression",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaaaaab"s, "aaaaaaaaab"s);
@@ -2062,7 +2005,6 @@ namespace libsemigroups {
                           "case where strong compression doesn't "
                           "work",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "abaaaabab"s, "abbabaaaab"s);
@@ -2082,7 +2024,6 @@ namespace libsemigroups {
                           "051",
                           "proof that",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "aabb"s, "aaabaaab"s);
@@ -2120,7 +2061,6 @@ namespace libsemigroups {
                           "052",
                           "decompression",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     p.rules = {"aabb", "aaabaab"};
@@ -2136,7 +2076,6 @@ namespace libsemigroups {
                           "053",
                           "sort_rules bug",
                           "[quick][presentation]") {
-    auto        rg      = ReportGuard(false);
     std::string prefix1 = "dabd", suffix1 = "cbb", prefix2 = "abbaba",
                 suffix2 = "c";
 
@@ -2685,7 +2624,6 @@ namespace libsemigroups {
                           "meaningful exception messages",
                           "[quick][presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     {
       Presentation<std::string> p;
@@ -2821,7 +2759,6 @@ namespace libsemigroups {
                           "055",
                           "add_generator (std::string)",
                           "[quick][presentation]") {
-    auto            rg = ReportGuard(false);
     using literals::operator""_w;
 
     {
@@ -2855,7 +2792,6 @@ namespace libsemigroups {
                           "056",
                           "add_generator (word_type)",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
     {
       Presentation<word_type> p;
       p.alphabet(word_type({0, 1}));
@@ -2893,7 +2829,6 @@ namespace libsemigroups {
     using W = TestType;
     using words::human_readable_letter;
 
-    auto            rg = ReportGuard(false);
     Presentation<W> p;
     p.alphabet(10);
     p.remove_generator_no_checks(human_readable_letter<W>(4));
@@ -2933,7 +2868,6 @@ namespace libsemigroups {
                           "058",
                           "to_human_readble_repr",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
     {
       Presentation<std::string> p;
       presentation::add_rule_no_checks(p, "abcb"s, "aa"s);
@@ -2991,7 +2925,6 @@ namespace libsemigroups {
                           "059",
                           "to_word",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
 
     p.alphabet("ab"s);
@@ -3008,7 +2941,6 @@ namespace libsemigroups {
                           "060",
                           "to_string",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
 
     p.alphabet("ab"s);
@@ -3024,7 +2956,6 @@ namespace libsemigroups {
                           "061",
                           "to_gap_string",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
 
     p.alphabet(50);
@@ -3065,7 +2996,6 @@ namespace libsemigroups {
                           "004",
                           "to_gap_string",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
     std::string var_name("my_var");
@@ -3105,7 +3035,6 @@ namespace libsemigroups {
                                    StaticVector) {
     using W = TestType;
 
-    auto                   rg = ReportGuard(false);
     InversePresentation<W> ip;
     ip.alphabet(W({0, 1, 2}));
     presentation::add_rule_no_checks(ip, W({0, 0, 0}), W({0}));
@@ -3149,8 +3078,7 @@ namespace libsemigroups {
                                    word_type,
                                    std::string,
                                    StaticVector) {
-    using W            = TestType;
-    auto            rg = ReportGuard(false);
+    using W = TestType;
     Presentation<W> p;
     p.alphabet(W({0, 1, 2}));
     presentation::add_rule_no_checks(p, W({0, 0, 0}), W({0}));
@@ -3182,8 +3110,7 @@ namespace libsemigroups {
                                    word_type,
                                    std::string,
                                    StaticVector) {
-    using W                   = TestType;
-    auto                   rg = ReportGuard(false);
+    using W = TestType;
     InversePresentation<W> ip;
     ip.alphabet(W({0, 1, 2}));
     presentation::add_rule_no_checks(ip, W({0, 0, 0}), W({0}));
@@ -3207,8 +3134,6 @@ namespace libsemigroups {
                           "067",
                           "fluent modifiers",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
-
     using inverse_presentation_type = InversePresentation<std::string>;
     inverse_presentation_type p;
     static_assert(
@@ -3253,7 +3178,6 @@ namespace libsemigroups {
                           "068",
                           "change_alphabet",
                           "[quick][presentation]") {
-    auto                             rg = ReportGuard(false);
     InversePresentation<std::string> p;
     p.alphabet("102345");
     p.inverses("013254");
@@ -3325,7 +3249,6 @@ namespace libsemigroups {
                           "067",
                           "longest_subword_reducing_length #01",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
@@ -3339,7 +3262,6 @@ namespace libsemigroups {
                           "068",
                           "longest_subword_reducing_length #02",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaa"s, "bbb"s);
@@ -3351,7 +3273,6 @@ namespace libsemigroups {
                           "069",
                           "longest_subword_reducing_length #03",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
     presentation::add_rule(p, "aaaaa"s, "bbb"s);
@@ -3364,7 +3285,6 @@ namespace libsemigroups {
                           "070",
                           "longest_subword_reducing_length #04",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
@@ -3382,7 +3302,6 @@ namespace libsemigroups {
                           "071",
                           "longest_subword_reducing_length #05",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(5).contains_empty_word(true);
@@ -3401,7 +3320,6 @@ namespace libsemigroups {
                           "072",
                           "longest_subword_reducing_length #06",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(6).contains_empty_word(true);
@@ -3420,7 +3338,6 @@ namespace libsemigroups {
                           "073",
                           "longest_subword_reducing_length #07",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
     presentation::add_rule(p, "aaaaaaaaaaaaaa"s, "bbbbbbbbbbbbbb"s);
@@ -3439,7 +3356,6 @@ namespace libsemigroups {
                           "074",
                           "longest_subword_reducing_length #08",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd"s);
     presentation::add_rule(p, "aaaaaaaaaaaaaa"s, "bbbbbbbbbbbbbb"s);
@@ -3457,7 +3373,6 @@ namespace libsemigroups {
                           "075",
                           "longest_subword_reducing_length #09",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"s, "bbb"s);
@@ -3471,7 +3386,6 @@ namespace libsemigroups {
                           "076",
                           "longest_subword_reducing_length #10",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcABC"s).contains_empty_word(true);
     presentation::add_rule(p, "aBCbac"s, "bACbaacA"s);
@@ -3484,7 +3398,6 @@ namespace libsemigroups {
                           "077",
                           "greedy_reduce_length",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     // Want to go over the number 127, in case char's are signed, to check that
     // this works properly.
@@ -3519,7 +3432,6 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    auto rg    = ReportGuard(false);
     using Word = TestType;
 
     Presentation<Word> p;
@@ -3561,7 +3473,6 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    StaticVector) {
-    auto                   rg = ReportGuard(false);
     Presentation<TestType> p;
     p.alphabet(TestType({0, 1, 2}));
     REQUIRE_NOTHROW(presentation::throw_if_not_normalized(p));
@@ -3577,7 +3488,6 @@ namespace libsemigroups {
                           "080",
                           "add_cyclic_conjugates(std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     p.contains_empty_word(true);
@@ -3611,7 +3521,6 @@ namespace libsemigroups {
                           "081",
                           "to_report_string",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     REQUIRE(presentation::to_report_string(p)
             == "|A| = 0, |R| = 0, |u| + |v| ∈ "
@@ -3623,7 +3532,6 @@ namespace libsemigroups {
                           "082",
                           "throw_if_bad_inverses 2 args",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "adc"s),
@@ -3643,7 +3551,6 @@ namespace libsemigroups {
                           "083",
                           "throw_if_bad_inverses 3 args",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     REQUIRE_NOTHROW(presentation::throw_if_bad_inverses(p, "ab"s, "ab"s));
@@ -3668,7 +3575,6 @@ namespace libsemigroups {
                           "089",
                           "is_rule (std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
     p.rules = {"aaa", "", "ba", "", "ba", "ab"};
@@ -3688,7 +3594,6 @@ namespace libsemigroups {
                           "090",
                           "find_rule (std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
     p.rules = {"aaa", "", "ba", "", "ba", "ab"};
@@ -3711,7 +3616,6 @@ namespace libsemigroups {
                           "091",
                           "index_rule (std::string)",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s).contains_empty_word(true);
     p.rules = {"aaa", "", "ba", "", "ba", "ab"};
@@ -3730,7 +3634,6 @@ namespace libsemigroups {
                           "092",
                           "index_rule (word_type)",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3).contains_empty_word(true);
     p.rules = {000_w, ""_w, 10_w, ""_w, 10_w, 01_w};
@@ -3748,7 +3651,6 @@ namespace libsemigroups {
                                    "[quick]",
                                    std::string,
                                    word_type) {
-    auto rg = ReportGuard(false);
     using W = TestType;
     Presentation<W> p;
     p.contains_empty_word(true);
@@ -3806,7 +3708,6 @@ namespace libsemigroups {
                           "094",
                           "commutator exceptions (string)",
                           "[quick]") {
-    auto rg = ReportGuard(false);
     using W = std::string;
     SECTION("alphabet specified, inverses specified ") {
       REQUIRE_EXCEPTION_MSG(
@@ -3922,7 +3823,6 @@ namespace libsemigroups {
                                    "[quick][presentation]",
                                    std::string,
                                    word_type) {
-    auto rg = ReportGuard(false);
     using W = TestType;
     using L = typename Presentation<W>::native_letter_type;
     Presentation<W> p;
@@ -3968,7 +3868,6 @@ namespace libsemigroups {
                           "096",
                           "add_commutator_rule exceptions (string)",
                           "[quick]") {
-    auto rg = ReportGuard(false);
     using W = std::string;
     Presentation<W> p;
     SECTION("alphabet specified, inverses specified ") {
@@ -4133,7 +4032,6 @@ namespace libsemigroups {
                           "063",
                           "constructed from Presentation",
                           "[quick]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
@@ -4145,7 +4043,6 @@ namespace libsemigroups {
                           "064",
                           "check inverses copied",
                           "[quick]") {
-    auto                             rg = ReportGuard(false);
     InversePresentation<std::string> p;
     p.alphabet("abcABC"s);
     p.inverses("ABCabc");
@@ -4159,7 +4056,6 @@ namespace libsemigroups {
                           "097",
                           "to_ace_string",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc"s);
     p.contains_empty_word(true);
@@ -4177,7 +4073,6 @@ End;)xxx");
                           "098",
                           "Higman-Sims to_ace_string",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     p.contains_empty_word(true);
@@ -4213,7 +4108,6 @@ End;)xxx");
                           "099",
                           "Mathieu M11 to_ace_string",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab"s);
     p.contains_empty_word(true);
@@ -4236,7 +4130,6 @@ End;)xxx");
                           "100",
                           "to_ace_string exceptions",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abAB"s);
     REQUIRE_EXCEPTION_MSG(presentation::to_ace_string(p),
@@ -4248,7 +4141,6 @@ End;)xxx");
                           "101",
                           "to_ace_string word_type",
                           "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
@@ -4267,7 +4159,6 @@ End;)xxx");
                           "102",
                           "inverse_alphabet_no_checks (word_type)",
                           "[quick][presentation]") {
-    auto                           rg = ReportGuard(false);
     InversePresentation<word_type> p;
 
     p.alphabet(0123_w);
@@ -4287,7 +4178,6 @@ End;)xxx");
                           "103",
                           "inverse_alphabet_no_checks (std::string)",
                           "[quick][presentation]") {
-    auto                             rg = ReportGuard(false);
     InversePresentation<std::string> p;
     p.alphabet("abAB");
     p.inverses("ABab");
@@ -4307,7 +4197,6 @@ End;)xxx");
                           "104",
                           "normalize_alphabet (InversePresentation<word_type>)",
                           "[quick][presentation]") {
-    auto                           rg = ReportGuard(false);
     InversePresentation<word_type> p;
     p.alphabet(word_type({5, 7, 3, 9}));
     p.inverses(word_type({7, 5, 9, 3}));
@@ -4326,7 +4215,6 @@ End;)xxx");
       "105",
       "normalize_alphabet (InversePresentation<std::string>)",
       "[quick][presentation]") {
-    auto                             rg = ReportGuard(false);
     InversePresentation<std::string> p;
     p.alphabet("xXyY"s);
     p.inverses("XxYy"s);
@@ -4344,7 +4232,6 @@ End;)xxx");
                           "106",
                           "is_normalized",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     REQUIRE(presentation::is_normalized(p));
     REQUIRE_NOTHROW(presentation::throw_if_not_normalized(p));
@@ -4371,7 +4258,6 @@ End;)xxx");
                           "107",
                           "set alphabet from Alphabet",
                           "[quick][presentation]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
 
     Alphabet<std::string> const copy_alphabet("ab");

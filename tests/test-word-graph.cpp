@@ -190,7 +190,6 @@ namespace libsemigroups {
                           "000",
                           "constructor with 1  default arg",
                           "[quick][word-graph]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g;
     REQUIRE(g.number_of_nodes() == 0);
     REQUIRE(g.number_of_edges() == 0);
@@ -200,7 +199,6 @@ namespace libsemigroups {
                           "001",
                           "constructor with 0 default args",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
     for (size_t j = 0; j < 100; ++j) {
       WordGraph<size_t> g(j);
       REQUIRE(g.number_of_nodes() == j);
@@ -212,7 +210,6 @@ namespace libsemigroups {
                           "002",
                           "constructor with empty targets",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
     auto wg = make<WordGraph<size_t>>(10, {});
     REQUIRE(wg.number_of_nodes() == 10);
     REQUIRE(wg.number_of_edges() == 0);
@@ -223,7 +220,6 @@ namespace libsemigroups {
                           "003",
                           "add nodes",
                           "[quick][word-graph]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(3);
     REQUIRE(g.number_of_nodes() == 3);
     REQUIRE(g.number_of_edges() == 0);
@@ -238,7 +234,6 @@ namespace libsemigroups {
                           "004",
                           "add edges",
                           "[quick][word-graph]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> g(17, 31);
 
     for (size_t i = 0; i < 17; ++i) {
@@ -276,7 +271,6 @@ namespace libsemigroups {
                           "005",
                           "exceptions",
                           "[quick][word-graph]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> graph(10, 5);
     REQUIRE_THROWS_AS(graph.target(10, 0), LibsemigroupsException);
     REQUIRE(graph.target(0, 1) == UNDEFINED);
@@ -292,7 +286,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "006", "random", "[quick][word-graph]") {
-    auto      rg    = ReportGuard(false);
     WordGraph graph = WordGraph<size_t>::random(10, 10);
     REQUIRE(graph.number_of_nodes() == 10);
     REQUIRE(graph.number_of_edges() == 100);
@@ -302,7 +295,6 @@ namespace libsemigroups {
                           "007",
                           "reserve",
                           "[quick][word-graph]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> graph;
     graph.reserve(10, 10);
     REQUIRE(graph.number_of_nodes() == 0);
@@ -318,7 +310,6 @@ namespace libsemigroups {
                           "008",
                           "default constructors",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
     auto g1 = WordGraph<size_t>();
     g1.add_to_out_degree(1);
     word_graph::add_cycle(g1, 10);
@@ -343,7 +334,6 @@ namespace libsemigroups {
                           "009",
                           "iterator to edges",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
     for (size_t n = 10; n < 512; n *= 4) {
       auto g = clique(n);
       REQUIRE(g.number_of_nodes() == n);
@@ -366,7 +356,6 @@ namespace libsemigroups {
                           "010",
                           "reverse node iterator",
                           "[quick]") {
-    auto rg         = ReportGuard(false);
     using node_type = WordGraph<size_t>::node_type;
     WordGraph<size_t> wg;
     wg.add_nodes(10);
@@ -387,7 +376,6 @@ namespace libsemigroups {
                           "011",
                           "random/random_acyclic exceptions",
                           "[quick][no-valgrind]") {
-    auto rg = ReportGuard(false);
     // Too few nodes
     REQUIRE_THROWS_AS(word_graph::random_acyclic<size_t>(0, 0),
                       LibsemigroupsException);
@@ -411,7 +399,6 @@ namespace libsemigroups {
                           "012",
                           "unsafe (next) neighbour",
                           "[quick]") {
-    auto rg = ReportGuard(false);
     auto wg = binary_tree(10);
     REQUIRE(wg.target_no_checks(0, 1) == wg.target(0, 1));
     REQUIRE(wg.next_label_and_target_no_checks(0, 1)
@@ -422,7 +409,6 @@ namespace libsemigroups {
                           "013",
                           "number_of_egdes incident to a node",
                           "[quick]") {
-    auto rg = ReportGuard(false);
     auto wg = binary_tree(10);
     REQUIRE(wg.number_of_nodes() == 1023);
     REQUIRE(
@@ -436,7 +422,6 @@ namespace libsemigroups {
                           "014",
                           "induced_subgraph_no_checks",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(3);
     wg.add_to_out_degree(2);
@@ -452,7 +437,6 @@ namespace libsemigroups {
                           "015",
                           "remove_target_no_checks",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(3);
     wg.add_to_out_degree(2);
@@ -469,7 +453,6 @@ namespace libsemigroups {
                           "016",
                           "swap_edge_no_checks",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(3);
     wg.add_to_out_degree(2);
@@ -483,7 +466,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "017", "operator<<", "[quick]") {
-    auto                rg = ReportGuard(false);
     WordGraph<uint64_t> wg;
     wg.add_nodes(3);
     wg.add_to_out_degree(2);
@@ -505,7 +487,6 @@ namespace libsemigroups {
                           "018",
                           "is_acyclic | 2-cycle",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(1);
@@ -519,7 +500,6 @@ namespace libsemigroups {
                           "019",
                           "is_acyclic | 1-cycle",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(1);
     wg.add_to_out_degree(1);
@@ -532,7 +512,6 @@ namespace libsemigroups {
                           "020",
                           "is_acyclic | multi-digraph",
                           "[quick]") {
-    auto rg         = ReportGuard(false);
     using node_type = WordGraph<size_t>::node_type;
     WordGraph<size_t> wg;
     wg.add_nodes(2);
@@ -547,7 +526,6 @@ namespace libsemigroups {
                           "021",
                           "is_acyclic | complete digraph 100",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     size_t const      n = 100;
     wg.add_nodes(n);
@@ -567,7 +545,6 @@ namespace libsemigroups {
                           "022",
                           "is_acyclic | acyclic digraph with 20000 nodes",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     size_t const      n = 20000;
     wg.add_nodes(n);
@@ -610,7 +587,6 @@ namespace libsemigroups {
                           "024",
                           "is_acyclic | for a node",
                           "[quick]") {
-    auto rg         = ReportGuard(false);
     using node_type = WordGraph<size_t>::node_type;
     WordGraph<size_t> wg;
     size_t const      n = 100;
@@ -636,7 +612,6 @@ namespace libsemigroups {
                           "025",
                           "is_acyclic | for a node | 2",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     using node_type = decltype(wg)::node_type;
     wg.add_nodes(4);
@@ -662,7 +637,6 @@ namespace libsemigroups {
                           "026",
                           "is_reachable | acyclic 20 node digraph",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     size_t const      n = 20;
     wg.add_nodes(n);
@@ -689,7 +663,6 @@ namespace libsemigroups {
                           "027",
                           "is_reachable | 100 node chain",
                           "[quick][no-valgrind]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     size_t const      n = 100;
     wg.add_nodes(n);
@@ -709,7 +682,6 @@ namespace libsemigroups {
                           "028",
                           "is_reachable | 100 node cycle",
                           "[quick][no-valgrind]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
     word_graph::add_cycle(wg, 100);
@@ -725,7 +697,6 @@ namespace libsemigroups {
                           "029",
                           "is_reachable | 20 node clique",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg = clique(20);
     for (auto it1 = wg.cbegin_nodes(); it1 < wg.cend_nodes(); ++it1) {
       for (auto it2 = it1 + 1; it2 < wg.cend_nodes(); ++it2) {
@@ -742,7 +713,6 @@ namespace libsemigroups {
                           "030",
                           "follow_path | 20 node chain",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg = chain(20);
     for (auto it = cbegin_pilo(wg, 0); it != cend_pilo(wg); ++it) {
       REQUIRE(word_graph::follow_path(wg, 0, *it) == it.target());
@@ -754,7 +724,6 @@ namespace libsemigroups {
                           "031",
                           "throw_if_label_out_of_bounds | 20 node chain",
                           "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg = chain(20);
     REQUIRE_THROWS_AS(word_graph::throw_if_label_out_of_bounds(wg, 10),
                       LibsemigroupsException);
@@ -764,7 +733,6 @@ namespace libsemigroups {
                           "032",
                           "last_node_on_path_no_checks | 20 node chain",
                           "[quick]") {
-    auto              rg    = ReportGuard(false);
     WordGraph<size_t> wg    = chain(20);
     word_type         chain = {};
     for (size_t i = 0; i < 19; ++i) {
@@ -782,14 +750,12 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "033", "to_string", "[quick]") {
-    auto                rg = ReportGuard(false);
     WordGraph<uint64_t> wg = chain(6);
     REQUIRE(detail::to_string(wg)
             == "{6, {{1}, {2}, {3}, {4}, {5}, {18446744073709551615}}}");
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "034", "make<WordGraph>", "[quick]") {
-    auto rg = ReportGuard(false);
     auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(detail::to_string(wg)
             == "{5, {{0, 0}, {1, 1}, {2, 255}, {3, 3}, {255, 255}}}");
@@ -803,7 +769,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "035", "is_connected", "[quick]") {
-    auto rg = ReportGuard(false);
     auto wg = make<WordGraph<size_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(!word_graph::is_connected(wg));
     wg = chain(1'000);
@@ -823,7 +788,6 @@ namespace libsemigroups {
                           "036",
                           "is_strictly_cyclic",
                           "[quick][no-valgrind]") {
-    auto rg = ReportGuard(false);
     auto wg = make<WordGraph<size_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(!word_graph::is_strictly_cyclic(wg));
     wg = chain(1'000);
@@ -841,7 +805,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "037", "Joiner x 1", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> x(
         make<WordGraph<size_t>>(3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
     WordGraph<size_t> y = x;
@@ -866,7 +829,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "038", "Joiner x 2", "[quick]") {
-    auto              rg = ReportGuard(false);
     WordGraph<size_t> x(
         make<WordGraph<size_t>>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}}));
 
@@ -884,7 +846,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "039", "Meeter x 1", "[quick]") {
-    auto rg = ReportGuard(false);
     // These word graphs were taken from the lattice of
     // 2-sided congruences of the free semigroup with 2
     // generators.
@@ -912,9 +873,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "040", "Meeter x 2", "[quick]") {
-    auto rg = ReportGuard(false);
-    auto x  = make<WordGraph<size_t>>(5, {{1, 0}, {1, 2}, {1, 2}});
-    auto y  = make<WordGraph<size_t>>(5, {{0, 1}, {0, 1}});
+    auto x = make<WordGraph<size_t>>(5, {{1, 0}, {1, 2}, {1, 2}});
+    auto y = make<WordGraph<size_t>>(5, {{0, 1}, {0, 1}});
     REQUIRE(word_graph::number_of_nodes_reachable_from(x, 0) == 3);
     REQUIRE(word_graph::number_of_nodes_reachable_from(y, 0) == 2);
 
@@ -930,7 +890,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "041", "Joiner incomplete", "[quick]") {
-    auto                rg = ReportGuard(false);
     WordGraph<uint32_t> wg(0, 1);
     word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
@@ -939,7 +898,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "042", "Meeter incomplete", "[quick]") {
-    auto                rg = ReportGuard(false);
     WordGraph<uint32_t> wg(0, 1);
     word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
@@ -951,7 +909,6 @@ namespace libsemigroups {
                           "043",
                           "WordGraph to_input_string",
                           "[quick]") {
-    auto                rg = ReportGuard(false);
     WordGraph<uint32_t> wg(0, 1);
     word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
@@ -965,7 +922,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "045", "hash_value", "[quick]") {
-    auto                rg = ReportGuard(false);
     WordGraph<uint32_t> wg(0, 1);
     word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
@@ -976,13 +932,11 @@ namespace libsemigroups {
                           "044",
                           "disjoint_union_inplace exception",
                           "[quick]") {
-    auto                rg = ReportGuard(false);
     WordGraph<uint32_t> wg(0, 1);
     REQUIRE_THROWS_AS(wg.disjoint_union_inplace(wg), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "046", "3-arg dot", "[quick]") {
-    auto rg = ReportGuard(false);
     auto wg = make<WordGraph<uint32_t>>(4, {{0, 2}, {3, 1}, {3, 2}, {3, 3}});
 
     std::vector<std::string> node_labels = {"a", "b", "ab", "ba"};
@@ -1032,7 +986,6 @@ namespace libsemigroups {
                           "047",
                           "exception: 3-arg dot",
                           "[quick]") {
-    auto rg = ReportGuard(false);
     auto wg = make<WordGraph<uint32_t>>(4, {{0, 1}, {1, 2}, {2, 3}, {3, 2}});
 
     std::vector<std::string> node_labels = {"a", "b", "ab", "ba"};
@@ -1053,8 +1006,6 @@ namespace libsemigroups {
                           "048",
                           "rev_rpo standardization | textbook example",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     auto wg = make<WordGraph<size_t>>(
         6, {{1, 3}, {2}, {0, 5}, {4}, {UNDEFINED, 2}, {0}});
 
@@ -1075,8 +1026,6 @@ namespace libsemigroups {
                           "049",
                           "rev_rpo standardization | permuted textbook example",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     auto canonical = make<WordGraph<size_t>>(
         6, {{1, 3}, {2}, {0, 5}, {4}, {UNDEFINED, 2}, {0}});
     auto permuted = canonical;
@@ -1113,8 +1062,6 @@ namespace libsemigroups {
       "050",
       "rev_rpo standardization | recursive three-letter case",
       "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     auto wg
         = make<WordGraph<size_t>>(7, {{1, 3, 5}, {2, 4}, {}, {6}, {}, {4}, {}});
 
@@ -1138,8 +1085,6 @@ namespace libsemigroups {
                           "051",
                           "random standardization",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     WordGraph wg = WordGraph<size_t>::random(5000, 8);
     REQUIRE(wg.number_of_nodes() == 5000);
     REQUIRE(wg.number_of_edges() == 40000);
@@ -1178,8 +1123,6 @@ namespace libsemigroups {
                           "052",
                           "all words standardization",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     // Construct the WordGraph such that the paths from 0 are labelled by the
     // words with length in [0, max_depth), consisting of letters in
     // [0, num_letters).
@@ -1280,7 +1223,6 @@ namespace libsemigroups {
                           "055",
                           "uncovered validation overloads",
                           "[quick][word-graph]") {
-    auto                rg = ReportGuard(false);
     WordGraph<uint32_t> wg(2, 2);
 
     word_type const valid = {0, 1};
@@ -1302,7 +1244,6 @@ namespace libsemigroups {
                           "056",
                           "disjoint_union_inplace",
                           "[quick][word-graph]") {
-    auto rg  = ReportGuard(false);
     auto lhs = make<WordGraph<uint32_t>>(2, {{1}, {1}});
     auto rhs = make<WordGraph<uint32_t>>(2, {{1}, {0}});
 
@@ -1321,8 +1262,6 @@ namespace libsemigroups {
                           "057",
                           "random_acyclic with a fixed seed",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     auto const random = WordGraph<uint16_t>::random(12, 5, std::mt19937(0));
     REQUIRE(random.number_of_nodes() == 12);
     REQUIRE(random.number_of_edges() == 60);
@@ -1348,8 +1287,6 @@ namespace libsemigroups {
                           "058",
                           "standardization and Joiner/Meeter branches",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     WordGraph<uint32_t> empty;
     Forest              forest;
     REQUIRE(!word_graph::standardize_no_checks(empty, forest, LenLexCmp()));
@@ -1379,8 +1316,6 @@ namespace libsemigroups {
                           "059",
                           "random generic standardization",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     WordGraph wg = WordGraph<size_t>::random(5000, 8);
     REQUIRE(wg.number_of_nodes() == 5000);
     REQUIRE(wg.number_of_edges() == 40000);
@@ -1424,8 +1359,6 @@ namespace libsemigroups {
                           "060",
                           "all words generic standardization",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     // Construct the WordGraph such that the paths from 0 are labelled by the
     // words with length in [0, max_depth), consisting of letters in
     // [0, num_letters).
@@ -1490,8 +1423,6 @@ namespace libsemigroups {
                           "061",
                           "random is_standardized",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     WordGraph wg = WordGraph<size_t>::random(5000, 8);
     REQUIRE(wg.number_of_nodes() == 5000);
     REQUIRE(wg.number_of_edges() == 40000);
@@ -1526,8 +1457,6 @@ namespace libsemigroups {
                           "062",
                           "random generic is_standardized",
                           "[quick][word-graph]") {
-    auto rg = ReportGuard(false);
-
     WordGraph wg = WordGraph<size_t>::random(5000, 8);
     REQUIRE(wg.number_of_nodes() == 5000);
     REQUIRE(wg.number_of_edges() == 40000);

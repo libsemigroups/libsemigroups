@@ -34,8 +34,6 @@ namespace libsemigroups {
                           "037",
                           "example 1",
                           "[quick][froidure-pin][pperm]") {
-    auto rg = ReportGuard(false);
-
     FroidurePin<PPerm<>> S;
     S.add_generator(make<PPerm<>>({0, 3, 4, 5}, {1, 0, 3, 2}, 6));
     S.add_generator(make<PPerm<>>({1, 2, 3}, {0, 5, 2}, 6));
@@ -80,7 +78,6 @@ namespace libsemigroups {
                           "038",
                           "example 2",
                           "[quick][froidure-pin][pperm]") {
-    auto                 rg = ReportGuard(false);
     FroidurePin<PPerm<>> S;
     S.add_generator(
         make<PPerm<>>({0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11));
@@ -124,7 +121,6 @@ namespace libsemigroups {
                           "039",
                           "exceptions: add_generator(s)",
                           "[quick][froidure-pin][pperm]") {
-    auto                 rg = ReportGuard(false);
     FroidurePin<PPerm<>> S;
     S.add_generator(
         make<PPerm<>>({0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10));

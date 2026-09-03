@@ -36,7 +36,6 @@ namespace libsemigroups {
                             "000",
                             "default constructor with 3 default args",
                             "[containers][quick]") {
-      auto                rg = ReportGuard(false);
       DynamicArray2<bool> rv = DynamicArray2<bool>();
       REQUIRE(rv.size() == 0);
       REQUIRE(rv.number_of_rows() == 0);
@@ -47,7 +46,6 @@ namespace libsemigroups {
                             "001",
                             "default constructor with 2 default args",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(5);
       REQUIRE(rv.size() == 0);
       REQUIRE(rv.number_of_cols() == 5);
@@ -58,7 +56,6 @@ namespace libsemigroups {
                             "002",
                             "default constructor with 1 default args",
                             "[containers][quick]") {
-      auto                rg = ReportGuard(false);
       DynamicArray2<bool> rv = DynamicArray2<bool>(5, 5);
       REQUIRE(rv.size() == 25);
       REQUIRE(rv.number_of_cols() == 5);
@@ -71,7 +68,6 @@ namespace libsemigroups {
                             "003",
                             "default constructor with 0 default args",
                             "[containers][quick]") {
-      auto                rg = ReportGuard(false);
       DynamicArray2<bool> rv = DynamicArray2<bool>(2, 7, true);
       REQUIRE(rv.size() == 14);
       REQUIRE(rv.number_of_cols() == 2);
@@ -84,7 +80,6 @@ namespace libsemigroups {
                             "004",
                             "copy constructor with 1 default args",
                             "[containers][quick]") {
-      auto                  rg   = ReportGuard(false);
       DynamicArray2<size_t> rv   = DynamicArray2<size_t>(3, 7, 666);
       DynamicArray2<size_t> copy = DynamicArray2<size_t>(rv);
       REQUIRE(copy.size() == 21);
@@ -98,7 +93,6 @@ namespace libsemigroups {
                             "005",
                             "copy constructor with 0 default args",
                             "[containers][quick]") {
-      auto                  rg   = ReportGuard(false);
       DynamicArray2<size_t> rv   = DynamicArray2<size_t>(3, 7, 666);
       DynamicArray2<size_t> copy = DynamicArray2<size_t>(rv, 2);
       REQUIRE(copy.size() == 35);
@@ -121,7 +115,6 @@ namespace libsemigroups {
                             "006",
                             "construct from empty vector",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(
           std::initializer_list<std::initializer_list<size_t>>());
       REQUIRE(rv.empty());
@@ -131,7 +124,6 @@ namespace libsemigroups {
                             "007",
                             "add_rows",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 7, 666);
       rv.add_rows(1);
       REQUIRE(rv.size() == 24);
@@ -157,7 +149,6 @@ namespace libsemigroups {
                             "008",
                             "add_rows",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 7, 666);
       rv.add_rows(10);
       REQUIRE(rv.size() == 51);
@@ -177,7 +168,6 @@ namespace libsemigroups {
                             "009",
                             "add_cols",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2, 666);
       rv.add_cols(10);
       REQUIRE(rv.size() == 220);
@@ -197,7 +187,6 @@ namespace libsemigroups {
                             "010",
                             "set/get",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 50, 666);
       rv.set(0, 98, 0);
       REQUIRE(rv.get(0, 98) == 0);
@@ -229,7 +218,6 @@ namespace libsemigroups {
                             "011",
                             "append 1/2",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(100, 50, 555);
       DynamicArray2<size_t> rv2 = DynamicArray2<size_t>(100, 50, 666);
       REQUIRE(rv1.size() == 5000);
@@ -265,7 +253,6 @@ namespace libsemigroups {
                             "012",
                             "append 2/2",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 555);
       REQUIRE(rv1.size() == 100);
       REQUIRE(rv1.number_of_cols() == 10);
@@ -312,7 +299,6 @@ namespace libsemigroups {
                             "013",
                             "count",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10);
       for (size_t i = 0; i < 9; i++) {
         rv.set(i, i, 1);
@@ -339,7 +325,6 @@ namespace libsemigroups {
                             "014",
                             "clear",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10);
       REQUIRE(rv.size() == 100);
       REQUIRE(rv.number_of_cols() == 10);
@@ -354,7 +339,6 @@ namespace libsemigroups {
                             "015",
                             "begin_row and end_row",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2);
       for (size_t i = 0; i < rv.number_of_rows(); i++) {
         for (auto it = rv.begin_row(i); it < rv.end_row(i); it++) {
@@ -373,7 +357,6 @@ namespace libsemigroups {
                             "016",
                             "cbegin_row and cend_row",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10, 66);
       for (size_t i = 0; i < rv.number_of_rows(); i++) {
         for (auto it = rv.cbegin_row(i); it < rv.cend_row(i); it++) {
@@ -386,7 +369,6 @@ namespace libsemigroups {
                             "017",
                             "iterator operator++ (postfix)",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(100, 2);  // cols, rows
       rv1.add_cols(10);  // rv1 has 129 = 5 * 100 / 4 + 4 cols in total
 
@@ -448,7 +430,6 @@ namespace libsemigroups {
                             "018",
                             "iterator operator++ (prefix)",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(100, 2);  // cols, rows
       for (auto it = rv1.begin(); it < rv1.end(); ++it) {
         auto tmp(it);
@@ -560,7 +541,6 @@ namespace libsemigroups {
                             "019",
                             "iterator operator-- (postfix)",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2);  // cols, rows
       rv.add_cols(10);  // rv has 129 = 5 * 100 / 4 + 4 cols in total
 
@@ -600,7 +580,6 @@ namespace libsemigroups {
                             "020",
                             "iterator operator-- (prefix)",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2);  // cols, rows
       rv.add_cols(10);  // rv has 129 = 5 * 100 / 4 + 4 cols in total
 
@@ -640,7 +619,6 @@ namespace libsemigroups {
                             "021",
                             "operator=",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 3);
       DynamicArray2<size_t> rv2 = DynamicArray2<size_t>(9, 9, 2);
       rv1.                  operator=(rv2);
@@ -670,7 +648,6 @@ namespace libsemigroups {
                             "022",
                             "operator== and operator!=",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 3);
       DynamicArray2<size_t> rv2 = DynamicArray2<size_t>(10, 10, 2);
 
@@ -756,7 +733,6 @@ namespace libsemigroups {
                             "023",
                             "empty and clear",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10);
       REQUIRE(!rv1.empty());
       rv1.clear();
@@ -790,7 +766,6 @@ namespace libsemigroups {
                             "024",
                             "max_size",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10);
       REQUIRE(rv1.max_size() != 0);
 
@@ -802,7 +777,6 @@ namespace libsemigroups {
                             "025",
                             "swap",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 3);
       DynamicArray2<size_t> rv2 = DynamicArray2<size_t>(9, 9, 2);
 
@@ -877,7 +851,6 @@ namespace libsemigroups {
                             "026",
                             "iterator arithmetic",
                             "[containers][quick]") {
-      auto rg = ReportGuard(false);
       {
         DynamicArray2<size_t> rv  = DynamicArray2<size_t>(10, 10, 1000);
         size_t                val = 0;
@@ -1061,7 +1034,6 @@ namespace libsemigroups {
                             "027",
                             "iterator comparison",
                             "[containers][quick]") {
-      auto rg = ReportGuard(false);
       {
         DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10, 1000);
         REQUIRE(rv.begin() < rv.end());
@@ -1092,7 +1064,6 @@ namespace libsemigroups {
                             "028",
                             "iterator operator=",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10, 1000);
       {
         auto it  = rv.begin();
@@ -1116,7 +1087,6 @@ namespace libsemigroups {
                             "029",
                             "iterator operator[]",
                             "[containers][quick]") {
-      auto rg = ReportGuard(false);
       {
         DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10, 1000);
         {
@@ -1173,7 +1143,6 @@ namespace libsemigroups {
                             "030",
                             "iterator operator->",
                             "[containers][quick][30]") {
-      auto                               rg = ReportGuard(false);
       DynamicArray2<DynamicArray2<bool>> rv
           = DynamicArray2<DynamicArray2<bool>>(13, 13, DynamicArray2<bool>());
       {
@@ -1190,7 +1159,6 @@ namespace libsemigroups {
                             "031",
                             "const_iterator operator++/--",
                             "[containers][quick]") {
-      auto                  rg  = ReportGuard(false);
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(100, 2);  // cols, rows
       rv1.add_cols(10);  // rv1 has 129 = 5 * 100 / 4 + 4 cols in total
 
@@ -1254,7 +1222,6 @@ namespace libsemigroups {
                             "032",
                             "const_iterator operator++/--",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(1, 1, 6);  // cols, rows
 
       auto const it_b = rv.begin();
@@ -1268,7 +1235,6 @@ namespace libsemigroups {
                             "033",
                             "column iterators",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 3);
       for (size_t i = 0; i < rv.number_of_cols(); i++) {
         std::fill(rv.begin_column(i), rv.end_column(i), i);
@@ -1334,7 +1300,6 @@ namespace libsemigroups {
                             "034",
                             "column iterator arithmetic",
                             "[containers][quick][no-valgrind]") {
-      auto rg = ReportGuard(false);
       {
         DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10, 1000);
         for (size_t i = 0; i < rv.number_of_cols(); i++) {
@@ -1430,7 +1395,6 @@ namespace libsemigroups {
                             "035",
                             "iterator assignment constructor",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 100);
 
       for (size_t i = 0; i < 100; i++) {
@@ -1459,7 +1423,6 @@ namespace libsemigroups {
                             "036",
                             "reserve method",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 100);
       rv.reserve(1000);
       REQUIRE(rv.number_of_cols() == 100);
@@ -1470,7 +1433,6 @@ namespace libsemigroups {
                             "037",
                             "erase column",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10);
       for (size_t i = 0; i < 10; i++) {
         std::iota(rv.begin_row(i), rv.end_row(i), 0);
@@ -1490,7 +1452,6 @@ namespace libsemigroups {
                             "038",
                             "swap_rows",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 10);
       for (size_t i = 0; i < 10; i++) {
         std::fill(rv.begin_row(i), rv.end_row(i), i);
@@ -1513,7 +1474,6 @@ namespace libsemigroups {
                             "039",
                             "apply_row_permutation_no_checks",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 10);
       for (size_t i = 0; i < 10; i++) {
         std::fill(rv.begin_row(i), rv.end_row(i), i);
@@ -1532,7 +1492,6 @@ namespace libsemigroups {
                             "040",
                             "swap",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> da = DynamicArray2<size_t>({{0, 1}, {2, 3}});
       REQUIRE(da.get(0, 0) == 0);
       REQUIRE(da.get(0, 1) == 1);
@@ -1549,7 +1508,6 @@ namespace libsemigroups {
                             "041",
                             "shrink_rows_to",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> da = DynamicArray2<size_t>({{0, 1}, {2, 3}});
       REQUIRE(da.number_of_rows() == 2);
       REQUIRE(da.number_of_cols() == 2);
@@ -1582,7 +1540,6 @@ namespace libsemigroups {
                             "042",
                             "shrink_rows_to - for range",
                             "[containers][quick]") {
-      auto                  rg = ReportGuard(false);
       DynamicArray2<size_t> da = DynamicArray2<size_t>({{0, 1}, {2, 3}});
       REQUIRE(da.number_of_rows() == 2);
       REQUIRE(da.number_of_cols() == 2);
@@ -1619,7 +1576,6 @@ namespace libsemigroups {
                             "043",
                             "all",
                             "[containers][quick]") {
-      auto                     rg = ReportGuard(false);
       StaticVector2<size_t, 3> sv;
       REQUIRE(sv.size(0) == 0);
       REQUIRE(sv.size(1) == 0);
@@ -1664,7 +1620,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Array2", "044", "all", "[containers][quick]") {
-      auto              rg = ReportGuard(false);
       Array2<size_t, 3> rry;
       rry.fill(10);
       REQUIRE(std::vector<size_t>(rry.cbegin(0), rry.cend(0))
@@ -1702,7 +1657,6 @@ namespace libsemigroups {
                             "045",
                             "all",
                             "[containers][quick]") {
-      auto                        rg = ReportGuard(false);
       StaticTriVector2<size_t, 3> stv;
       REQUIRE(stv.size(0) == 0);
       REQUIRE(stv.size(1) == 0);

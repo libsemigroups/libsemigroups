@@ -47,7 +47,6 @@ namespace libsemigroups {
                           "000",
                           "different weights",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {0, 1};  // weight = 2 + 1 = 3
     word_type           w2      = {2};     // weight = 6
@@ -60,7 +59,6 @@ namespace libsemigroups {
                           "001",
                           "same weight, different length",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {0, 0, 0};  // weight = 2 + 2 + 2 = 6
     word_type           w2      = {2};        // weight = 6
@@ -73,7 +71,6 @@ namespace libsemigroups {
                           "002",
                           "same weight, same length, lexicographic",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {1, 1, 3};  // weight = 1 + 1 + 3 = 5
     word_type           w2      = {0, 0, 1};  // weight = 2 + 2 + 1 = 5
@@ -86,7 +83,6 @@ namespace libsemigroups {
                           "003",
                           "equal words",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {0, 1, 2};
     word_type           w2      = {0, 1, 2};
@@ -99,7 +95,6 @@ namespace libsemigroups {
                           "004",
                           "empty word vs non-empty",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {};   // weight = 0
     word_type           w2      = {1};  // weight = 1
@@ -116,7 +111,6 @@ namespace libsemigroups {
                           "005",
                           "iterator version",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {0, 1};  // weight = 3
     word_type           w2      = {2};     // weight = 6
@@ -133,7 +127,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg = ReportGuard(false);
     Alphabet            alphabet("ba"s);
     std::vector<size_t> weights       = {10, 1};
     std::vector<size_t> equal_weights = {1, 1};
@@ -157,7 +150,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg = ReportGuard(false);
     Alphabet            alphabet("ba"s);
     std::vector<size_t> weights       = {10, 1};
     std::vector<size_t> equal_weights = {1, 1};
@@ -181,7 +173,6 @@ namespace libsemigroups {
                           "008",
                           "struct with operator()",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     WtLenLexCmp         comp(weights);
 
@@ -196,7 +187,6 @@ namespace libsemigroups {
                           "009",
                           "same weight fallback to lenlex",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {1, 1, 1, 1, 1};
     WtLenLexCmp         comp(weights);
 
@@ -211,7 +201,6 @@ namespace libsemigroups {
                           "010",
                           "complex example from documentation",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     WtLenLexCmp         comp(weights);
 
@@ -238,7 +227,6 @@ namespace libsemigroups {
                           "011",
                           "std::string format",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     std::string         w1      = {0, 1};  // weight = 2 + 1 = 3
     std::string         w2      = {2};     // weight = 6
@@ -251,7 +239,6 @@ namespace libsemigroups {
                           "012",
                           "std::array format",
                           "[quick][order]") {
-    auto                  rg      = ReportGuard(false);
     std::vector<size_t>   weights = {2, 1, 6, 3, 4};
     std::array<size_t, 2> w1      = {0, 1};  // weight = 2 + 1 = 3
     std::array<size_t, 1> w2      = {2};     // weight = 6
@@ -267,7 +254,6 @@ namespace libsemigroups {
                           "013",
                           "std::vector with different content",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     std::vector<size_t> w1      = {0, 1, 1};  // weight = 2 + 1 + 1 = 4
     std::vector<size_t> w2      = {3, 1};     // weight = 3 + 1 = 4
@@ -285,7 +271,6 @@ namespace libsemigroups {
                           "014",
                           "uniform weights (lenlex)",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {1, 1, 1, 1, 1};
     word_type           w1      = {0, 1};  // weight = 2
     word_type           w2      = {2, 3};  // weight = 2
@@ -299,7 +284,6 @@ namespace libsemigroups {
                           "015",
                           "single letter alphabet",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {5};
     word_type           w1      = {0};        // weight = 5
     word_type           w2      = {0, 0};     // weight = 10
@@ -314,7 +298,6 @@ namespace libsemigroups {
                           "016",
                           "words with same prefix",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {0, 1, 2};     // weight = 2+1+6 = 9
     word_type           w2      = {0, 1, 2, 1};  // weight = 2+1+6+1 = 10
@@ -326,7 +309,6 @@ namespace libsemigroups {
                           "017",
                           "repeated letters",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {3, 2, 1};
     word_type           w1      = {2, 2, 2, 2};  // weight = 1+1+1+1 = 4
     word_type           w2      = {1, 1};        // weight = 2+2 = 4
@@ -344,7 +326,6 @@ namespace libsemigroups {
                           "018",
                           "irreflexivity: !(a < a)",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w       = {0, 1, 2, 3};
 
@@ -355,7 +336,6 @@ namespace libsemigroups {
                           "019",
                           "transitivity: a<b && b<c => a<c",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {1};     // weight = 1
     word_type           w2      = {0, 1};  // weight = 3
@@ -370,7 +350,6 @@ namespace libsemigroups {
                           "020",
                           "antisymmetry: a<b => !(b<a)",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {1};  // weight = 1
     word_type           w2      = {2};  // weight = 6
@@ -387,7 +366,6 @@ namespace libsemigroups {
                           "021",
                           "valid letters with word_type",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {0, 1};  // weight = 3
     word_type           w2      = {2};     // weight = 6
@@ -400,7 +378,6 @@ namespace libsemigroups {
                           "022",
                           "invalid letter throws exception",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};  // alphabet size = 5
     word_type           w1      = {0, 1};
     word_type           w2      = {5};  // invalid: 5 >= weights.size()
@@ -415,7 +392,6 @@ namespace libsemigroups {
                           "023",
                           "std::string format with validation",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     std::string         w1      = {0, 1};  // weight = 3
     std::string         w2      = {2};     // weight = 6
@@ -428,7 +404,6 @@ namespace libsemigroups {
                           "024",
                           "iterator version with validation",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     word_type           w1      = {0, 1};  // weight = 3
     word_type           w2      = {2};     // weight = 6
@@ -445,7 +420,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg = ReportGuard(false);
     Alphabet            alphabet("ba"s);
     std::vector<size_t> weights       = {10, 1};
     std::vector<size_t> equal_weights = {1, 1};
@@ -471,7 +445,6 @@ namespace libsemigroups {
                           "026",
                           "both words invalid",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6};  // alphabet size = 3
     word_type           w1      = {5};        // invalid
     word_type           w2      = {10};       // invalid
@@ -485,7 +458,6 @@ namespace libsemigroups {
                           "027",
                           "invalid letter in middle of word",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6};  // alphabet size = 3
     word_type           w1      = {0, 1, 2};  // valid
     word_type           w2      = {0, 5, 2};  // invalid in middle
@@ -502,7 +474,6 @@ namespace libsemigroups {
                           "028",
                           "empty weights vector",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {};   // empty alphabet
     word_type           w1      = {};   // empty word is valid
     word_type           w2      = {0};  // invalid: no letters in alphabet
@@ -517,7 +488,6 @@ namespace libsemigroups {
                           "029",
                           "struct with validation enabled",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     WtLenLexCmp         comp(weights);
 
@@ -534,7 +504,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg = ReportGuard(false);
     Alphabet            alphabet("ba"s);
     std::vector<size_t> weights = {10, 1};
     auto                a       = "a"s;
@@ -553,7 +522,6 @@ namespace libsemigroups {
                           "031",
                           "exceptions",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};  // alphabet size = 5
     WtLenLexCmp         comp(weights);
 
@@ -575,7 +543,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1};
 
     REQUIRE(to_human_readable_repr(WtLenLexCmp(weights))
@@ -605,7 +572,6 @@ namespace libsemigroups {
                           "034",
                           "use in std::set",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {3, 2, 1};
     WtLenLexCmp         comp(weights);
 
@@ -633,7 +599,6 @@ namespace libsemigroups {
                                    "[quick][order]",
                                    word_type,
                                    std::string) {
-    auto rg                     = ReportGuard(false);
     using W                     = TestType;
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
     W                   w1      = {0, 1};  // weight = 3
@@ -649,7 +614,6 @@ namespace libsemigroups {
                                    "[quick][order]",
                                    word_type,
                                    std::string) {
-    auto rg                     = ReportGuard(false);
     using W                     = TestType;
     std::vector<size_t> weights = {2, 1, 6};
     W                   w1      = {0, 1};  // valid
@@ -666,7 +630,6 @@ namespace libsemigroups {
   // =========================================================================
 
   LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "037", "empty word", "[quick][order]") {
-    auto      rg = ReportGuard(false);
     word_type w1(12_w);
     word_type w2;
 
@@ -676,7 +639,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("RPOCmp", "038", "empty word", "[quick][order]") {
-    auto      rg = ReportGuard(false);
     word_type w1(12_w);
     word_type w2;
 
@@ -1040,8 +1002,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto rg = ReportGuard(false);
-
     REQUIRE(to_human_readable_repr(LexCmp<>()) == "<LexCmp object>");
     REQUIRE(to_human_readable_repr(LexCmp<Default, false>())
             == "<LexCmp object>");
@@ -1132,8 +1092,6 @@ namespace libsemigroups {
                           "to_human_readable_repr",
                           "[quick][order]") {
     using std::string_literals::operator""s;
-
-    auto rg = ReportGuard(false);
 
     REQUIRE(to_human_readable_repr(LenLexCmp<>()) == "<LenLexCmp object>");
     REQUIRE(to_human_readable_repr(LenLexCmp<Default, false>())
@@ -1381,8 +1339,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto rg = ReportGuard(false);
-
     // Function instantiations that are easy to miss in the coverage report.
     std::vector<size_t> v1 = {0, 1};
     std::vector<size_t> v2 = {0, 2};
@@ -1422,9 +1378,8 @@ namespace libsemigroups {
                                    (RevRPOCmp<Default, false>) ) {
     using std::string_literals::operator""s;
 
-    auto rg = ReportGuard(false);
-    auto a  = "a"s;
-    auto b  = "b"s;
+    auto a = "a"s;
+    auto b = "b"s;
 
     TestType cmp;
     STATIC_REQUIRE(noexcept(cmp.init()));
@@ -1458,7 +1413,6 @@ namespace libsemigroups {
                                    RevRPOCmp<std::string>) {
     using std::string_literals::operator""s;
 
-    auto                  rg = ReportGuard(false);
     Alphabet<std::string> ba("ba"s);
     Alphabet<std::string> ab("ab"s);
     auto                  a = "a"s;
@@ -1507,7 +1461,6 @@ namespace libsemigroups {
                                    (RevRPOCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
-    auto                  rg = ReportGuard(false);
     Alphabet<std::string> ba("ba"s);
     Alphabet<std::string> ab("ab"s);
     auto                  a = "a"s;
@@ -1562,7 +1515,6 @@ namespace libsemigroups {
                                    (RevLenWtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
-    auto                  rg = ReportGuard(false);
     Alphabet<std::string> ba("ba"s);
     Alphabet<std::string> ab("ab"s);
     std::vector<size_t>   ba_weights = {10, 1};
@@ -1604,8 +1556,6 @@ namespace libsemigroups {
                                    (LenWtLexCmp<Default, false>),
                                    RevLenWtLexCmp<>,
                                    (RevLenWtLexCmp<Default, false>) ) {
-    auto rg = ReportGuard(false);
-
     std::vector<size_t> ba_weights = {10, 1};
     std::vector<size_t> equal      = {1, 1};
     word_type           zero       = {0};
@@ -1642,7 +1592,6 @@ namespace libsemigroups {
                                    (RevWtLenLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
-    auto                  rg = ReportGuard(false);
     Alphabet<std::string> ba("ba"s);
     Alphabet<std::string> ab("ab"s);
     std::vector<size_t>   ba_weights = {10, 1};
@@ -1693,8 +1642,6 @@ namespace libsemigroups {
                                    (WtLenLexCmp<Default, false>),
                                    RevWtLenLexCmp<>,
                                    (RevWtLenLexCmp<Default, false>) ) {
-    auto rg = ReportGuard(false);
-
     std::vector<size_t> ba_weights = {10, 1};
     std::vector<size_t> equal      = {1, 1};
     word_type           zero       = {0};
@@ -1741,7 +1688,6 @@ namespace libsemigroups {
                                    (RevLenWtLexCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
-    auto                  rg = ReportGuard(false);
     Alphabet<std::string> ba("ba"s);
     Alphabet<std::string> ab("ab"s);
     std::vector<size_t>   ba_weights = {10, 1};
@@ -1796,8 +1742,6 @@ namespace libsemigroups {
                                    (LenWtLexCmp<Default, false>),
                                    RevLenWtLexCmp<>,
                                    (RevLenWtLexCmp<Default, false>) ) {
-    auto rg = ReportGuard(false);
-
     std::vector<size_t> ba_weights = {10, 1};
     std::vector<size_t> equal      = {1, 1};
     word_type           zero       = {0};
@@ -1834,7 +1778,6 @@ namespace libsemigroups {
                           "058",
                           "object and iterator overloads",
                           "[quick][order]") {
-    auto                rg     = ReportGuard(false);
     std::vector<size_t> levels = {0, 0, 1};
     word_type           x      = {0, 2};
     word_type           y      = {1, 2};
@@ -1849,7 +1792,6 @@ namespace libsemigroups {
                           "059",
                           "invalid letters",
                           "[quick][order]") {
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> levels  = {0, 1};
     word_type           valid   = {0, 1};
     word_type           invalid = {0, 2};
@@ -1867,7 +1809,6 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("wr_cmp", "060", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg = ReportGuard(false);
     Alphabet            alphabet("ba"s);
     std::vector<size_t> levels = {0, 0};
     auto                b      = "b"s;
@@ -1900,7 +1841,6 @@ namespace libsemigroups {
                                    (RevWrCmp<std::string, false>) ) {
     using std::string_literals::operator""s;
 
-    auto                  rg = ReportGuard(false);
     Alphabet<std::string> ba("ba"s);
     Alphabet<std::string> ab("ab"s);
     std::vector<size_t>   levels = {0, 0};
@@ -1950,8 +1890,6 @@ namespace libsemigroups {
                                    (WrCmp<Default, false>),
                                    RevWrCmp<>,
                                    (RevWrCmp<Default, false>) ) {
-    auto rg = ReportGuard(false);
-
     TestType default_constructed;
     STATIC_REQUIRE(noexcept(default_constructed.init()));
     REQUIRE(default_constructed.levels().empty());
@@ -1996,7 +1934,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg     = ReportGuard(false);
     std::vector<size_t> levels = {0, 1};
 
     REQUIRE(to_human_readable_repr(WrCmp(levels))
@@ -2023,7 +1960,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                  rg = ReportGuard(false);
     Alphabet<std::string> alphabet("ba"s);
     std::vector<size_t>   levels = {0, 0};
 
@@ -2161,8 +2097,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto rg = ReportGuard(false);
-
     REQUIRE(to_human_readable_repr(RPOCmp<>()) == "<RPOCmp object>");
     REQUIRE(to_human_readable_repr(RPOCmp<Default, false>())
             == "<RPOCmp object>");
@@ -2184,8 +2118,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto rg = ReportGuard(false);
-
     REQUIRE(to_human_readable_repr(RevRPOCmp<>()) == "<RevRPOCmp object>");
     REQUIRE(to_human_readable_repr(RevRPOCmp<Default, false>())
             == "<RevRPOCmp object>");
@@ -2206,8 +2138,6 @@ namespace libsemigroups {
                           "to_human_readable_repr",
                           "[quick][order]") {
     using std::string_literals::operator""s;
-
-    auto rg = ReportGuard(false);
 
     REQUIRE(to_human_readable_repr(RevLenLexCmp<>())
             == "<RevLenLexCmp object>");
@@ -2268,8 +2198,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto rg = ReportGuard(false);
-
     REQUIRE(to_human_readable_repr(RevLexCmp<>()) == "<RevLexCmp object>");
     REQUIRE(to_human_readable_repr(RevLexCmp<Default, false>())
             == "<RevLexCmp object>");
@@ -2327,7 +2255,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1};
 
     REQUIRE(to_human_readable_repr(RevWtLenLexCmp(weights))
@@ -2417,7 +2344,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1};
 
     REQUIRE(to_human_readable_repr(WtLexCmp(weights))
@@ -2449,7 +2375,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1};
 
     REQUIRE(to_human_readable_repr(RevWtLexCmp(weights))
@@ -2537,7 +2462,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg     = ReportGuard(false);
     std::vector<size_t> levels = {0, 1};
 
     REQUIRE(to_human_readable_repr(RevWrCmp(levels))
@@ -2616,7 +2540,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1};
 
     REQUIRE(to_human_readable_repr(LenWtLexCmp(weights))
@@ -2716,7 +2639,6 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1};
 
     REQUIRE(to_human_readable_repr(RevLenWtLexCmp(weights))

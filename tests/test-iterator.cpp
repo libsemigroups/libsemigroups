@@ -41,7 +41,6 @@ namespace libsemigroups {
   };
 
   LIBSEMIGROUPS_TEST_CASE("ConstIteratorStateless", "000", "?", "[quick]") {
-    auto                rg = ReportGuard(false);
     std::vector<size_t> vec(10, 0);
 
     auto it1
@@ -57,7 +56,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ConstIteratorStateless", "001", "?", "[quick]") {
-    auto                rg = ReportGuard(false);
     std::vector<size_t> vec(10, 0);
 
     auto it1 = detail::ConstIteratorStateless<IteratorTraitsCustomTypes1>(

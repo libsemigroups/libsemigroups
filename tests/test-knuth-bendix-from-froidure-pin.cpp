@@ -77,7 +77,6 @@ namespace libsemigroups {
                                    "transformation semigroup (size 4)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
     auto S
         = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
     REQUIRE(S.size() == 4);
@@ -98,7 +97,6 @@ namespace libsemigroups {
                                    "transformation semigroup (size 9)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
     S.add_generator(make<Transf<>>({0, 0, 0, 0, 0}));
@@ -120,7 +118,6 @@ namespace libsemigroups {
                                    "transformation semigroup (size 88)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
     S.add_generator(make<Transf<>>({3, 2, 1, 3, 3}));
@@ -142,7 +139,6 @@ namespace libsemigroups {
                                    "to_froidure_pin x 1",
                                    "[quick]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 0}));
     S.add_generator(make<Transf<>>({0, 0}));
@@ -160,8 +156,7 @@ namespace libsemigroups {
                                    "to_froidure_pin x 2",
                                    "[quick]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -181,8 +176,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -279,8 +273,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -374,8 +367,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -439,8 +431,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -566,7 +557,6 @@ namespace libsemigroups {
                           "128",
                           "left congruence on finite semigroup",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
     S.add_generator(make<Transf<>>({3, 2, 1, 3, 3}));
@@ -590,7 +580,6 @@ namespace libsemigroups {
                                    "[quick][congruence][knuth-bendix]",
                                    RevRPOTrie,
                                    RevRPOSet) {
-    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
     FroidurePin<Transf> S;
     S.add_generator(make<Transf>({1, 3, 4, 2, 3}));
