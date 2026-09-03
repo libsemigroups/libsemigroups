@@ -1595,4 +1595,48 @@ namespace libsemigroups {
     graph.target_no_checks(1, 0, 2);
     REQUIRE_NOTHROW(validate(graph));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "065",
+                          "WordGraphView helper pass-throughs",
+                          "[quick][word-graph]") {
+    auto rg = ReportGuard(false);
+
+    auto graph = make<WordGraph<size_t>>(3, {{1, 2}, {2}, {}});
+    auto view  = WordGraphView(graph);
+
+    auto const graph_matrix = word_graph::adjacency_matrix_no_checks(graph);
+    auto const view_matrix  = word_graph::adjacency_matrix_no_checks(view);
+    for (auto source : graph.nodes()) {
+      for (auto target : graph.nodes()) {
+        REQUIRE(graph_matrix(source, target) == view_matrix(source, target));
+      }
+    }
+
+    REQUIRE(word_graph::dot_no_checks(graph).to_string()
+            == word_graph::dot_no_checks(view).to_string());
+    std::vector<std::string> const node_labels = {"0", "1", "2"};
+    std::vector<std::string> const edge_labels = {"a", "b"};
+    REQUIRE(
+        word_graph::dot_no_checks(graph, node_labels, edge_labels).to_string()
+        == word_graph::dot_no_checks(view, node_labels, edge_labels)
+               .to_string());
+
+    REQUIRE(word_graph::is_acyclic_no_checks(graph)
+            == word_graph::is_acyclic_no_checks(view));
+    REQUIRE(word_graph::is_acyclic_no_checks(graph, size_t(0))
+            == word_graph::is_acyclic_no_checks(view, size_t(0)));
+    REQUIRE(word_graph::is_acyclic_no_checks(graph, size_t(0), size_t(2))
+            == word_graph::is_acyclic_no_checks(view, size_t(0), size_t(2)));
+    REQUIRE(word_graph::is_connected_no_checks(graph)
+            == word_graph::is_connected_no_checks(view));
+    REQUIRE(word_graph::is_standardized_no_checks(graph, LenLexCmp())
+            == word_graph::is_standardized_no_checks(view, LenLexCmp()));
+    REQUIRE(word_graph::is_strictly_cyclic_no_checks(graph)
+            == word_graph::is_strictly_cyclic_no_checks(view));
+    REQUIRE(word_graph::topological_sort_no_checks(graph)
+            == word_graph::topological_sort_no_checks(view));
+    REQUIRE(word_graph::topological_sort_no_checks(graph, size_t(0))
+            == word_graph::topological_sort_no_checks(view, size_t(0)));
+  }
 }  // namespace libsemigroups
