@@ -38,7 +38,7 @@
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
 #include "word-graph-class.hpp"    // for WordGraph
 #include "word-graph-helpers.hpp"  // for is_acyclic etc
-#include "word-range.hpp"          // for number_of_words
+#include "words-helpers.hpp"       // for number_of_words
 
 // TODO(v4) Remove the below line so this appears in the documentation
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN

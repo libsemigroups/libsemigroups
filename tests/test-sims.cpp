@@ -49,6 +49,7 @@
 #include "libsemigroups/sims.hpp"                   // for Sims1 etc
 #include "libsemigroups/stephen.hpp"                // for accepts
 #include "libsemigroups/to-presentation.hpp"        // for to<Presentation>
+#include "libsemigroups/to-word.hpp"                // for ToWord
 #include "libsemigroups/todd-coxeter-class.hpp"     // for ToddCoxe...
 #include "libsemigroups/todd-coxeter-helpers.hpp"   // for index_of
 #include "libsemigroups/transf.hpp"                 // for Transf
@@ -56,7 +57,7 @@
 #include "libsemigroups/word-graph-helpers.hpp"     // for standardize
 #include "libsemigroups/word-graph-view.hpp"        // for WordGrap...
 #include "libsemigroups/word-graph.hpp"             // for WordGrap...
-#include "libsemigroups/word-range.hpp"             // for ToWord
+#include "libsemigroups/words-helpers.hpp"          // for pow, operator+
 
 #include "libsemigroups/detail/containers.hpp"          // for apply_ro...
 #include "libsemigroups/detail/eigen.hpp"               // for DenseBase::row

@@ -27,10 +27,11 @@
 #include "libsemigroups/detail/rewriting-system.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/exception.hpp"   // for LibsemigroupsException
-#include "libsemigroups/order.hpp"       // for wt_lenlex_cmp*
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/word-range.hpp"  // for operator ""_w
+#include "libsemigroups/exception.hpp"      // for LibsemigroupsException
+#include "libsemigroups/order.hpp"          // for wt_lenlex_cmp*
+#include "libsemigroups/types.hpp"          // for word_type
+#include "libsemigroups/word-range.hpp"     // for StringRange
+#include "libsemigroups/words-helpers.hpp"  // for operator ""_w
 
 #include "libsemigroups/detail/fmt.hpp"     // for format
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard

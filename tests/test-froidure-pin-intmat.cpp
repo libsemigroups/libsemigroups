@@ -25,7 +25,7 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/froidure-pin.hpp"   // for FroidurePin
 #include "libsemigroups/matrix.hpp"         // for IntMat
-#include "libsemigroups/word-range.hpp"     // for namespace literals
+#include "libsemigroups/words-helpers.hpp"  // for namespace literals
 
 namespace libsemigroups {
   using namespace literals;  // for operator""_w

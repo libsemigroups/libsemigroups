@@ -33,9 +33,9 @@
 #include <vector>     // for vector
 
 #include "config.hpp"              // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "to-word.hpp"             // for ToWord
 #include "types.hpp"               // for word_type etc
 #include "word-graph-helpers.hpp"  // for word_graph
-#include "word-range.hpp"          // for ToWord
 
 #include "detail/eigen.hpp"  // for eigen
 #include "detail/uf.hpp"     // for Duf

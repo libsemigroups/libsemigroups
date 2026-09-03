@@ -29,7 +29,6 @@
 #include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/presentation.hpp"  // for Presentation, to_string, to_word
 #include "libsemigroups/types.hpp"         // for word_type
-#include "libsemigroups/word-range.hpp"    // for human_readable_letter
 
 #include "libsemigroups/detail/fmt.hpp"  // for format
 

@@ -36,11 +36,13 @@
 #include "libsemigroups/to-knuth-bendix.hpp"        // for to_knuth_bendix
 #include "libsemigroups/to-presentation.hpp"        // for Presentation
 #include "libsemigroups/to-todd-coxeter.hpp"        // for to
+#include "libsemigroups/to-word.hpp"                // for ToWord
 #include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
 #include "libsemigroups/transf.hpp"                 // for Transf
 #include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
-#include "libsemigroups/word-range.hpp"             // for operator""_w
+#include "libsemigroups/word-range.hpp"             // for WordRange
+#include "libsemigroups/words-helpers.hpp"          // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"             // for ReportGuard
 #include "libsemigroups/detail/tce.hpp"                // for TCE

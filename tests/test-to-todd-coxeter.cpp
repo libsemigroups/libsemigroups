@@ -21,6 +21,7 @@
 #include "libsemigroups/to-todd-coxeter.hpp"  // for to<ToddCoxeter>
 #include "libsemigroups/transf.hpp"
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
+#include "libsemigroups/words-helpers.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

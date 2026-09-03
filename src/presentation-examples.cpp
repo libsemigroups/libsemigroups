@@ -30,13 +30,13 @@
 #include <unordered_map>     // for operator==
 #include <utility>           // for move, swap
 
-#include "libsemigroups/constants.hpp"     // for operator==
-#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/presentation.hpp"  // for add_rule_no_checks, Presen...
-#include "libsemigroups/ranges.hpp"        // for operator|, to_vector, enum...
-#include "libsemigroups/types.hpp"         // for word_type, letter_type
-#include "libsemigroups/word-range.hpp"    // for operator""_w, operator+, pow
+#include "libsemigroups/constants.hpp"      // for operator==
+#include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/presentation.hpp"   // for add_rule_no_checks, Presen...
+#include "libsemigroups/ranges.hpp"         // for operator|, to_vector, enum...
+#include "libsemigroups/types.hpp"          // for word_type, letter_type
+#include "libsemigroups/words-helpers.hpp"  // for operator""_w, operator+, pow
 
 #include "libsemigroups/detail/fmt.hpp"  // for format, format_string
 

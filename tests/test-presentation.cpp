@@ -44,8 +44,9 @@
 #include "libsemigroups/presentation.hpp"     // for Presentation, human_r...
 #include "libsemigroups/ranges.hpp"           // for chain, lenlex_cmp
 #include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
+#include "libsemigroups/to-word.hpp"          // for ToWord
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
-#include "libsemigroups/word-range.hpp"       // for operator+=, operator""_w
+#include "libsemigroups/words-helpers.hpp"    // for operator+=, operator""_w
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector, operat...
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard

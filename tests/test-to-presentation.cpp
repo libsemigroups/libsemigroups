@@ -38,7 +38,7 @@
 #include "libsemigroups/to-presentation.hpp"  // for v4::to<Presentation>
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for word_type, congruence_kind
-#include "libsemigroups/word-range.hpp"       // for operator""_w
+#include "libsemigroups/words-helpers.hpp"    // for operator""_w
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard

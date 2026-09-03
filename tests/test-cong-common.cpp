@@ -47,12 +47,13 @@
 #include "libsemigroups/runner.hpp"                // for delta
 #include "libsemigroups/to-froidure-pin.hpp"       // for to<FroidurePin>
 #include "libsemigroups/to-presentation.hpp"       // for to<Presentation>
+#include "libsemigroups/to-word.hpp"               // for ToString, ToWord
 #include "libsemigroups/todd-coxeter-helpers.hpp"  // for normal_forms, ind...
 #include "libsemigroups/transf.hpp"                // for Transf
 #include "libsemigroups/types.hpp"                 // for word_type, tril
 #include "libsemigroups/ukkonen.hpp"               // for Ukkonen
 #include "libsemigroups/word-graph.hpp"            // for is_complete
-#include "libsemigroups/word-range.hpp"            // for operator""_w, hum...
+#include "libsemigroups/words-helpers.hpp"         // for operator""_w, hum...
 
 #include "libsemigroups/detail/fmt.hpp"       // for print etc
 #include "libsemigroups/detail/iterator.hpp"  // for operator+

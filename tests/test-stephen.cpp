@@ -45,12 +45,14 @@
 #include "libsemigroups/presentation.hpp"           // for InverseP...
 #include "libsemigroups/ranges.hpp"                 // for operator|
 #include "libsemigroups/stephen.hpp"                // for Stephen
+#include "libsemigroups/to-word.hpp"                // for ToWord
 #include "libsemigroups/todd-coxeter-class.hpp"     // for ToddCoxeter
 #include "libsemigroups/todd-coxeter-helpers.hpp"   // for index_of
 #include "libsemigroups/types.hpp"                  // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
-#include "libsemigroups/word-range.hpp"             // for ToWord
+#include "libsemigroups/word-range.hpp"             // for StringRange
+#include "libsemigroups/words-helpers.hpp"          // for operator+, pow
 
 #include "libsemigroups/detail/fmt.hpp"       // for format
 #include "libsemigroups/detail/iterator.hpp"  // for operator+

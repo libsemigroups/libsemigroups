@@ -25,10 +25,10 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/alphabet.hpp"    // for Alphabet
-#include "libsemigroups/exception.hpp"   // for LibsemigroupsException
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/word-range.hpp"  // for human_readable_letter
+#include "libsemigroups/alphabet.hpp"       // for Alphabet
+#include "libsemigroups/exception.hpp"      // for LibsemigroupsException
+#include "libsemigroups/types.hpp"          // for word_type
+#include "libsemigroups/words-helpers.hpp"  // for human_readable_letter
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard

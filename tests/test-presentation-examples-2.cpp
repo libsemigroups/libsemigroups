@@ -42,9 +42,9 @@
 #include "libsemigroups/presentation.hpp"           // for longest_rule_length
 #include "libsemigroups/ranges.hpp"                 // for operator|, to_vector
 #include "libsemigroups/to-presentation.hpp"        // for to<Presentation>
-#include "libsemigroups/types.hpp"       // for congruence_kind, word_type
-#include "libsemigroups/word-graph.hpp"  // for is_complete
-#include "libsemigroups/word-range.hpp"  // for operator""_w, to_string
+#include "libsemigroups/types.hpp"          // for congruence_kind, word_type
+#include "libsemigroups/word-graph.hpp"     // for is_complete
+#include "libsemigroups/words-helpers.hpp"  // for operator""_w
 
 #include "libsemigroups/detail/eigen.hpp"  // // for DenseBase::row, DenseBa...
 #include "libsemigroups/detail/fmt.hpp"    // for format, print

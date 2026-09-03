@@ -36,10 +36,11 @@
 #include "libsemigroups/to-froidure-pin.hpp"     // for to<FroidurePin>
 #include "libsemigroups/to-knuth-bendix.hpp"     // for to<KnuthBendix>
 #include "libsemigroups/to-presentation.hpp"     // for to<Presentation>
+#include "libsemigroups/to-word.hpp"             // for ToString
 #include "libsemigroups/transf.hpp"              // for Transf
 #include "libsemigroups/types.hpp"               // for word_type, letter_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
-#include "libsemigroups/word-range.hpp"          // for operator""_w
+#include "libsemigroups/words-helpers.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/kbe.hpp"     // for KBE
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard

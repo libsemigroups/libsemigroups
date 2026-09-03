@@ -40,9 +40,9 @@
 #include "presentation.hpp"          // for Presentation
 #include "ranges.hpp"                // for rx
 #include "runner.hpp"                // for Runner
+#include "to-word.hpp"               // for ToString
 #include "types.hpp"                 // for word_type
 #include "word-graph.hpp"            // for WordGraph
-#include "word-range.hpp"            // for ToString
 
 #include "detail/citow.hpp"         // for citow
 #include "detail/fmt.hpp"           // for format

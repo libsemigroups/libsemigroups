@@ -30,12 +30,13 @@
 #include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/adapters.hpp"      // for ReturnFalse
-#include "libsemigroups/aho-corasick.hpp"  // for dot
-#include "libsemigroups/order.hpp"         // for LenLexCmp
-#include "libsemigroups/ranges.hpp"        // for rx::
-#include "libsemigroups/types.hpp"         // for tril, word_type
-#include "libsemigroups/word-range.hpp"    // for operator""_w
+#include "libsemigroups/adapters.hpp"       // for ReturnFalse
+#include "libsemigroups/aho-corasick.hpp"   // for dot
+#include "libsemigroups/order.hpp"          // for LenLexCmp
+#include "libsemigroups/ranges.hpp"         // for rx::
+#include "libsemigroups/to-word.hpp"        // for ToWord
+#include "libsemigroups/types.hpp"          // for tril, word_type
+#include "libsemigroups/words-helpers.hpp"  // for operator""_w
 
 #include "libsemigroups/detail/aho-corasick-impl.hpp"  // for AhoCorasickImpl
 #include "libsemigroups/detail/fmt.hpp"                // for fmt

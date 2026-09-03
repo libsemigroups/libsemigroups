@@ -26,7 +26,7 @@
 #include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
 #include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/transf.hpp"           // for Transf<>
-#include "libsemigroups/word-range.hpp"       // for literals
+#include "libsemigroups/words-helpers.hpp"    // for literals
 
 #include "libsemigroups/detail/kbe.hpp"  // for KBE
 

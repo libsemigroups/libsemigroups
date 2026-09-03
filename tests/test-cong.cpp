@@ -33,7 +33,8 @@
 #include "libsemigroups/todd-coxeter-helpers.hpp"   // for TODO
 #include "libsemigroups/transf.hpp"                 // for Transf<>
 #include "libsemigroups/types.hpp"                  // for word_type
-#include "libsemigroups/word-range.hpp"             // for literals
+#include "libsemigroups/word-range.hpp"             // for WordRange, StringR...
+#include "libsemigroups/words-helpers.hpp"          // for literals
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

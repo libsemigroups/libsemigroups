@@ -28,7 +28,7 @@
 #include "libsemigroups/todd-coxeter-class.hpp"  // for ToddCoxeter
 #include "libsemigroups/transf.hpp"              // for Transf
 #include "libsemigroups/types.hpp"               // for word_type
-#include "libsemigroups/word-range.hpp"
+#include "libsemigroups/words-helpers.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"            // for ReportGuard
 #include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemSet, Rewri...

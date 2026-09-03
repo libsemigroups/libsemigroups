@@ -23,13 +23,14 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/aho-corasick.hpp"  // for traverse_word, AhoCorasick
-#include "libsemigroups/constants.hpp"     // for operator==, operator!=
-#include "libsemigroups/dot.hpp"           // for Dot
-#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
-#include "libsemigroups/ranges.hpp"        // for rx::ranges
-#include "libsemigroups/types.hpp"         // for word_type
-#include "libsemigroups/word-range.hpp"    // for operator""_w, WordRange, pow
+#include "libsemigroups/aho-corasick.hpp"   // for traverse_word, AhoCorasick
+#include "libsemigroups/constants.hpp"      // for operator==, operator!=
+#include "libsemigroups/dot.hpp"            // for Dot
+#include "libsemigroups/exception.hpp"      // for LibsemigroupsException
+#include "libsemigroups/ranges.hpp"         // for rx::ranges
+#include "libsemigroups/types.hpp"          // for word_type
+#include "libsemigroups/word-range.hpp"     // for WordRange
+#include "libsemigroups/words-helpers.hpp"  // for operator""_w, pow
 
 #include "libsemigroups/detail/aho-corasick-impl.hpp"  // for traverse_word, AhoCorasick
 #include "libsemigroups/detail/report.hpp"             // for ReportGuard
