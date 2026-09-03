@@ -22,10 +22,10 @@
 namespace libsemigroups {
   namespace detail {
     template <typename Iterator, typename Map, typename Ignore>
-    std::pair<Iterator, uint64_t>
+    std::pair<Iterator, size_t>
     find_duplicates(Iterator first, Iterator last, Map& seen, Ignore&& ignore) {
       seen.clear();
-      uint64_t pos = 0;
+      size_t pos = 0;
       for (auto it = first; it != last; ++it, ++pos) {
         if (!ignore(*it)) {
           auto [prev_it, inserted] = seen.emplace(*it, pos);
@@ -38,15 +38,14 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    std::pair<Iterator, uint64_t> find_duplicates(Iterator first,
-                                                  Iterator last) {
-      std::unordered_map<std::decay_t<decltype(*first)>, uint64_t> seen;
+    std::pair<Iterator, size_t> find_duplicates(Iterator first, Iterator last) {
+      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
       return find_duplicates(first, last, seen);
     }
 
     template <typename Iterator, typename Ignore>
     bool has_duplicates(Iterator first, Iterator last, Ignore&& ignore) {
-      std::unordered_map<std::decay_t<decltype(*first)>, uint64_t> seen;
+      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
       return find_duplicates(first, last, seen, std::forward<Ignore>(ignore))
                  .first
              != last;
@@ -57,7 +56,7 @@ namespace libsemigroups {
                              Iterator         last,
                              std::string_view what,
                              Ignore&&         ignore) {
-      std::unordered_map<std::decay_t<decltype(*first)>, uint64_t> seen;
+      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
       auto [it, pos]
           = find_duplicates(first, last, seen, std::forward<Ignore>(ignore));
       if (it != last) {

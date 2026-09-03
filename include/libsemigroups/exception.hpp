@@ -19,6 +19,7 @@
 #ifndef LIBSEMIGROUPS_EXCEPTION_HPP_
 #define LIBSEMIGROUPS_EXCEPTION_HPP_
 
+#include <cstddef>        // for size_t
 #include <cstdint>        // for uint64_t
 #include <iterator>       // for distance
 #include <stdexcept>      // for runtime_error
@@ -98,15 +99,15 @@ namespace libsemigroups {
 
   namespace detail {
     template <typename Iterator, typename Map, typename Ignore = ReturnFalse>
-    [[nodiscard]] std::pair<Iterator, uint64_t> find_duplicates(Iterator first,
-                                                                Iterator last,
-                                                                Map&     seen,
-                                                                Ignore&& ignore
-                                                                = Ignore{});
+    [[nodiscard]] std::pair<Iterator, size_t> find_duplicates(Iterator first,
+                                                              Iterator last,
+                                                              Map&     seen,
+                                                              Ignore&& ignore
+                                                              = Ignore{});
 
     template <typename Iterator>
-    [[nodiscard]] std::pair<Iterator, uint64_t> find_duplicates(Iterator first,
-                                                                Iterator last);
+    [[nodiscard]] std::pair<Iterator, size_t> find_duplicates(Iterator first,
+                                                              Iterator last);
 
     template <typename Iterator, typename Ignore = ReturnFalse>
     [[nodiscard]] bool has_duplicates(Iterator first,
