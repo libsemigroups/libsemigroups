@@ -38,24 +38,11 @@
 namespace libsemigroups {
   namespace detail {
     std::string const& chars_in_human_readable_order();
-  }
 
-  //! \ingroup words_group
-  //! \brief Reverse an object.
-  //!
-  //! This function just calls `std::reverse(w.begin(), w.end())`
-  //! and is for convenience.
-  //!
-  //! \tparam Word.
-  //!
-  //! \param w the word to reverse.
-  //!
-  //! \returns A reference to the parameter \p w.
-  template <typename Word>
-  Word& reverse(Word&& w) {
-    std::reverse(w.begin(), w.end());
-    return w;
-  }
+    void throw_if_random_string_should_throw(std::string const& alphabet,
+                                             size_t             min,
+                                             size_t             max);
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // Words
@@ -86,6 +73,23 @@ namespace libsemigroups {
   //! * parsing algebraic expressions in a string:
   //!
   //!   - \ref literal_operator_p "operator\"\"_p"
+
+  //! \ingroup words_group
+  //! \brief Reverse an object.
+  //!
+  //! This function just calls `std::reverse(w.begin(), w.end())`
+  //! and is for convenience.
+  //!
+  //! \tparam Word.
+  //!
+  //! \param w the word to reverse.
+  //!
+  //! \returns A reference to the parameter \p w.
+  template <typename Word>
+  Word& reverse(Word&& w) {
+    std::reverse(w.begin(), w.end());
+    return w;
+  }
 
   //! \ingroup words_group
   //! \brief Returns the number of words over an alphabet with a given number of
@@ -123,16 +127,6 @@ namespace libsemigroups {
   //!
   //! \sa \ref random_string
   [[nodiscard]] word_type random_word(size_t length, size_t nr_letters);
-
-  ////////////////////////////////////////////////////////////////////////
-  // Words
-  ////////////////////////////////////////////////////////////////////////
-
-  namespace detail {
-    void throw_if_random_string_should_throw(std::string const& alphabet,
-                                             size_t             min,
-                                             size_t             max);
-  }  // namespace detail
 
   //! \ingroup words_group
   //! \brief Returns a random string.
@@ -202,107 +196,6 @@ namespace libsemigroups {
            })
            | rx::take(number);
   }
-
-  ////////////////////////////////////////////////////////////////////////
-  // Literals
-  ////////////////////////////////////////////////////////////////////////
-
-  //! \ingroup words_group
-  //!
-  //! \brief Namespace containing some custom literals for creating words.
-  //!
-  //! Defined in `word-range.hpp`.
-  //!
-  //! This namespace contains some functions for creating \ref word_type objects
-  //! in a compact form.
-  //! \par Example
-  //! \code_no_test
-  //! 012_w      //-> word_type({0, 1, 2})
-  //! "abc"_w    //-> word_type({0, 1, 2})
-  //! "(ab)^3"_p //-> "ababab"
-  //! \end_code_no_test
-  namespace literals {
-    //! \anchor literal_operator_w
-    //! \brief Literal for defining \ref word_type over integers less than 10.
-    //!
-    //! This operator provides a convenient brief means of constructing a
-    //! \ref word_type from an sequence of literal integer digits or a string.
-    //! For example, \c 0123_w produces the same output as
-    //! `word_type({0, 1, 2, 3})` and so too does `"abcd"_w`.
-    //!
-    //! There are some gotchas and this operator should be used with some care:
-    //!
-    //! * the parameter \p w must consist of the integers
-    //!   \f$\{0, \ldots, 9\}\f$ or the characters in `a-zA-Z` but not both.
-    //! * if \p w starts with \c 0 and is follows by a value greater than \c 7,
-    //!   then it is necessary to enclose \p w in quotes. For example, \c 08_w
-    //!   will not compile because it is interpreted as an invalid octal.
-    //!   However `"08"_w` behaves as expected.
-    //! * if \p w consists of characters in `a-zA-Z`, then the output is
-    //!   the same as that of `ToWord::operator()(w)`, see
-    //!   \ref ToWord::operator()()
-    //!
-    //! \param w the letters of the word.
-    //! \param n the length of \p w (defaults to the length of \p w).
-    //!
-    //! \returns A value of type \ref word_type.
-    //!
-    //! \throws LibsemigroupsException if the input contains a mixture of
-    //! integers and non-integers.
-    word_type operator""_w(const char* w, size_t n);
-
-    //! \brief Literal for defining \ref word_type over integers less than 10.
-    //!
-    //! See \ref literal_operator_w "operator\"\"_w" for details.
-    word_type operator""_w(const char* w);
-
-    //! \anchor literal_operator_p
-    //! \brief Literal for defining std::string by parsing an algebraic
-    //! expression.
-    //!
-    //! This operator provides a convenient concise means of constructing a
-    //! std::string from an algebraic expression.
-    //! For example, \c "((ab)^3cc)^2"_p equals
-    //! \c "abababccabababcc", \c "(ab,ba)" equals \c "BAABabba" and \c "a^0"_p
-    //! equals the empty string \c "".
-    //!
-    //! This function has the following behaviour:
-    //! * arbitrarily nested brackets;
-    //! * spaces are ignored;
-    //! * redundant matched brackets are ignored;
-    //! * `^` is treated as the power binary operator;
-    //! * `,` is treated as the commutator binary operator;
-    //! * only the characters in `()^, ` and in \c a-zA-Z0-9 are allowed.
-    //!
-    //! When using `,` as the commutator operator, it is not possible to
-    //! specify what the inverse of each letter should be. Instead, it is
-    //! assumed that the inverse of a lowercase letter is the corresponding
-    //! uppercase letter, and the inverse of an uppercase letter is the
-    //! corresponding lowercase letter. If this is requirement is not applicable
-    //! for your use case, see \ref presentation::commutator instead.
-    //!
-    //! Additionally, it is not possible to specify commutators using square
-    //! brackets. Round brackets must be used instead.
-    //!
-    //! \param w the letters of the word.
-    //! \param n the length of \p w (defaults to the length of \p w).
-    //!
-    //! \returns A value of type \ref std::string.
-    //!
-    //! \throws LibsemigroupsException if the string cannot be parsed.
-    //!
-    //! \sa words::parse
-    std::string operator""_p(const char* w, size_t n);
-
-    //! \brief Literal for defining \ref word_type by parsing an algebraic
-    //! expression.
-    //!
-    //! See \ref literal_operator_p "operator\"\"_p" for details.
-    std::string operator""_p(const char* w);
-
-  }  // namespace literals
-
-  ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup words_group
   //!
@@ -647,6 +540,106 @@ namespace libsemigroups {
     }
 
   }  // namespace words
+
+  ////////////////////////////////////////////////////////////////////////
+  // Literals
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup words_group
+  //!
+  //! \brief Namespace containing some custom literals for creating words.
+  //!
+  //! Defined in `word-range.hpp`.
+  //!
+  //! This namespace contains some functions for creating \ref word_type objects
+  //! in a compact form.
+  //! \par Example
+  //! \code_no_test
+  //! 012_w      //-> word_type({0, 1, 2})
+  //! "abc"_w    //-> word_type({0, 1, 2})
+  //! "(ab)^3"_p //-> "ababab"
+  //! \end_code_no_test
+  namespace literals {
+    //! \anchor literal_operator_w
+    //! \brief Literal for defining \ref word_type over integers less than 10.
+    //!
+    //! This operator provides a convenient brief means of constructing a
+    //! \ref word_type from an sequence of literal integer digits or a string.
+    //! For example, \c 0123_w produces the same output as
+    //! `word_type({0, 1, 2, 3})` and so too does `"abcd"_w`.
+    //!
+    //! There are some gotchas and this operator should be used with some care:
+    //!
+    //! * the parameter \p w must consist of the integers
+    //!   \f$\{0, \ldots, 9\}\f$ or the characters in `a-zA-Z` but not both.
+    //! * if \p w starts with \c 0 and is follows by a value greater than \c 7,
+    //!   then it is necessary to enclose \p w in quotes. For example, \c 08_w
+    //!   will not compile because it is interpreted as an invalid octal.
+    //!   However `"08"_w` behaves as expected.
+    //! * if \p w consists of characters in `a-zA-Z`, then the output is
+    //!   the same as that of `ToWord::operator()(w)`, see
+    //!   \ref ToWord::operator()()
+    //!
+    //! \param w the letters of the word.
+    //! \param n the length of \p w (defaults to the length of \p w).
+    //!
+    //! \returns A value of type \ref word_type.
+    //!
+    //! \throws LibsemigroupsException if the input contains a mixture of
+    //! integers and non-integers.
+    word_type operator""_w(const char* w, size_t n);
+
+    //! \brief Literal for defining \ref word_type over integers less than 10.
+    //!
+    //! See \ref literal_operator_w "operator\"\"_w" for details.
+    word_type operator""_w(const char* w);
+
+    //! \anchor literal_operator_p
+    //! \brief Literal for defining std::string by parsing an algebraic
+    //! expression.
+    //!
+    //! This operator provides a convenient concise means of constructing a
+    //! std::string from an algebraic expression.
+    //! For example, \c "((ab)^3cc)^2"_p equals
+    //! \c "abababccabababcc", \c "(ab,ba)" equals \c "BAABabba" and \c "a^0"_p
+    //! equals the empty string \c "".
+    //!
+    //! This function has the following behaviour:
+    //! * arbitrarily nested brackets;
+    //! * spaces are ignored;
+    //! * redundant matched brackets are ignored;
+    //! * `^` is treated as the power binary operator;
+    //! * `,` is treated as the commutator binary operator;
+    //! * only the characters in `()^, ` and in \c a-zA-Z0-9 are allowed.
+    //!
+    //! When using `,` as the commutator operator, it is not possible to
+    //! specify what the inverse of each letter should be. Instead, it is
+    //! assumed that the inverse of a lowercase letter is the corresponding
+    //! uppercase letter, and the inverse of an uppercase letter is the
+    //! corresponding lowercase letter. If this is requirement is not applicable
+    //! for your use case, see \ref presentation::commutator instead.
+    //!
+    //! Additionally, it is not possible to specify commutators using square
+    //! brackets. Round brackets must be used instead.
+    //!
+    //! \param w the letters of the word.
+    //! \param n the length of \p w (defaults to the length of \p w).
+    //!
+    //! \returns A value of type \ref std::string.
+    //!
+    //! \throws LibsemigroupsException if the string cannot be parsed.
+    //!
+    //! \sa words::parse
+    std::string operator""_p(const char* w, size_t n);
+
+    //! \brief Literal for defining \ref word_type by parsing an algebraic
+    //! expression.
+    //!
+    //! See \ref literal_operator_p "operator\"\"_p" for details.
+    std::string operator""_p(const char* w);
+
+  }  // namespace literals
+
 }  // namespace libsemigroups
 
 #include "words-helpers.tpp"
