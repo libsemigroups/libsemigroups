@@ -29,7 +29,7 @@
 #include "libsemigroups/froidure-pin.hpp"   // for FroidurePin, FroidurePi...
 #include "libsemigroups/ranges.hpp"         // for iterator_range
 #include "libsemigroups/types.hpp"          // for word_type
-#include "libsemigroups/word-range.hpp"     // for namespace literals
+#include "libsemigroups/words-helpers.hpp"  // for namespace literals
 
 namespace libsemigroups {
   using namespace literals;

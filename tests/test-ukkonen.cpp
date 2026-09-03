@@ -23,11 +23,13 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"   // for operator==, POSITIVE_INFINITY
-#include "libsemigroups/exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/ukkonen.hpp"     // for Ukkonen, Ukkonen::State
-#include "libsemigroups/word-range.hpp"  // for literals
+#include "libsemigroups/constants.hpp"      // for operator==, POSITIVE_INFINITY
+#include "libsemigroups/exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/to-word.hpp"        // for ToWord
+#include "libsemigroups/types.hpp"          // for word_type
+#include "libsemigroups/ukkonen.hpp"        // for Ukkonen, Ukkonen::State
+#include "libsemigroups/word-range.hpp"     // for WordRange
+#include "libsemigroups/words-helpers.hpp"  // for literals
 
 #include "libsemigroups/detail/int-range.hpp"  // for IntRange
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard

@@ -52,6 +52,7 @@
 #include "libsemigroups/word-graph-view.hpp"        // for WordGraphView:...
 #include "libsemigroups/word-graph.hpp"             // for WordGraph::target
 #include "libsemigroups/word-range.hpp"             // for StringRange
+#include "libsemigroups/words-helpers.hpp"          // for parse
 
 #include "libsemigroups/to-presentation.hpp"
 

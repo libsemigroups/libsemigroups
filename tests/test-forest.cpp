@@ -30,7 +30,7 @@
 #include "libsemigroups/types.hpp"               // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for spanning_tree
 #include "libsemigroups/word-graph.hpp"          // for WordGraph::target, ...
-#include "libsemigroups/word-range.hpp"          // for operator""_w
+#include "libsemigroups/words-helpers.hpp"       // for operator""_w
 
 namespace libsemigroups {
   using literals::operator""_w;

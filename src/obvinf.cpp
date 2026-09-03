@@ -24,12 +24,10 @@
 #include <utility>    // for pair
 #include <vector>     // for vector
 
-#include "libsemigroups/cong.hpp"          // for ToWord
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeterImpl
-#include "libsemigroups/word-range.hpp"    // for ToWord
 
 #include "libsemigroups/detail/eigen.hpp"
 

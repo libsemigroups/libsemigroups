@@ -44,6 +44,7 @@
 #include "libsemigroups/types.hpp"               // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 #include "libsemigroups/word-graph.hpp"          // for WordGraph
+#include "libsemigroups/words-helpers.hpp"       // for pow
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

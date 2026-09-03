@@ -50,10 +50,10 @@
 #include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
 #include "is_specialization_of.hpp"  // for is_specialization_of
 #include "order.hpp"                 // for LenLexCmp
-#include "ranges.hpp"      // for seq, operator|, rx, take, chain, is_sorted
-#include "types.hpp"       // for word_type
-#include "ukkonen.hpp"     // for GreedyReduceHelper, Ukkonen
-#include "word-range.hpp"  // for operator+
+#include "ranges.hpp"         // for seq, operator|, rx, take, chain, is_sorted
+#include "types.hpp"          // for word_type
+#include "ukkonen.hpp"        // for GreedyReduceHelper, Ukkonen
+#include "words-helpers.hpp"  // for operator+
 
 #include "detail/fmt.hpp"     // for format
 #include "detail/print.hpp"   // for isprint etc

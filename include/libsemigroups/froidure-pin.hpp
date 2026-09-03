@@ -34,7 +34,6 @@
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
 #include "types.hpp"              // for letter_type, word_type
-#include "word-range.hpp"         // for ToString
 
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "detail/iterator.hpp"          // for ConstIteratorStateless

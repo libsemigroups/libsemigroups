@@ -25,10 +25,12 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/exception.hpp"
-#include "libsemigroups/order.hpp"       // for number_of_words
-#include "libsemigroups/ranges.hpp"      // for equals
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/word-range.hpp"  // for number_of_words
+#include "libsemigroups/order.hpp"          // for number_of_words
+#include "libsemigroups/ranges.hpp"         // for equals
+#include "libsemigroups/to-word.hpp"        // for ToWord
+#include "libsemigroups/types.hpp"          // for word_type
+#include "libsemigroups/word-range.hpp"     // for number_of_words
+#include "libsemigroups/words-helpers.hpp"  // for number_of_words
 
 #include "libsemigroups/detail/report.hpp"          // for ReportGuard
 #include "libsemigroups/detail/word-iterators.hpp"  // for const_wilo_iterator

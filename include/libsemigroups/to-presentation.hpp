@@ -28,7 +28,7 @@
 #include "froidure-pin-base.hpp"   // for FroidurePinBase
 #include "knuth-bendix-class.hpp"  // for KnuthBendix
 #include "presentation.hpp"        // for Presentation
-#include "word-range.hpp"          // for human_readable...
+#include "words-helpers.hpp"       // for human_readable...
 
 // TODO(1): Make as many of these functions const as possible
 namespace libsemigroups {

@@ -25,7 +25,7 @@
 #include "libsemigroups/obvinf.hpp"         // for IsObviouslyInfinite
 #include "libsemigroups/presentation.hpp"   // for Presentation
 #include "libsemigroups/todd-coxeter.hpp"   // for ToddCoxeter
-#include "libsemigroups/word-range.hpp"     // for operator""_w
+#include "libsemigroups/words-helpers.hpp"  // for operator""_w
 
 namespace libsemigroups {
   namespace {

@@ -30,6 +30,7 @@
 #include "libsemigroups/to-froidure-pin.hpp"        // for to<FroidurePin>
 #include "libsemigroups/types.hpp"                  // for word_type
 #include "libsemigroups/word-range.hpp"             // for operator""_w
+#include "libsemigroups/words-helpers.hpp"          // for WordRange
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

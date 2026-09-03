@@ -24,7 +24,7 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/freeband.hpp"       // for freeband_equal_to
 #include "libsemigroups/types.hpp"          // for word_type
-#include "libsemigroups/word-range.hpp"     // for literals
+#include "libsemigroups/words-helpers.hpp"  // for literals
 
 namespace libsemigroups {
   using literals::operator""_w;

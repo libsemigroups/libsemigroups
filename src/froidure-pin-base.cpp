@@ -22,13 +22,14 @@
 #include <cstdint>    // for uint64_t
 #include <vector>     // for vector
 
-#include "libsemigroups/constants.hpp"   // for Undefined, Max, UNDEF...
-#include "libsemigroups/debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/runner.hpp"      // for Runner
-#include "libsemigroups/types.hpp"       // for letter_type, word_type
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
-#include "libsemigroups/word-range.hpp"  // for chars_in_human_readable_order
+#include "libsemigroups/constants.hpp"      // for Undefined, Max, UNDEF...
+#include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/runner.hpp"         // for Runner
+#include "libsemigroups/to-word.hpp"        // for ToString
+#include "libsemigroups/types.hpp"          // for letter_type, word_type
+#include "libsemigroups/word-graph.hpp"     // for WordGraph
+#include "libsemigroups/words-helpers.hpp"  // for chars_in_human_readable_order
 
 #include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
 #include "libsemigroups/detail/report.hpp"      // for REPORT_DEFAULT, Reporter

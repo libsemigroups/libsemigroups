@@ -27,11 +27,11 @@
 #include <string>   // for string
 #include <utility>  // for hash
 
-#include "libsemigroups/adapters.hpp"      // for One
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
-#include "libsemigroups/types.hpp"         // for word_type, letter_type
-#include "libsemigroups/word-range.hpp"    // for namespace words
+#include "libsemigroups/adapters.hpp"       // for One
+#include "libsemigroups/froidure-pin.hpp"   // for FroidurePin
+#include "libsemigroups/obvinf.hpp"         // for is_obviously_infinite
+#include "libsemigroups/types.hpp"          // for word_type, letter_type
+#include "libsemigroups/words-helpers.hpp"  // for namespace words
 
 namespace libsemigroups {
   namespace detail {

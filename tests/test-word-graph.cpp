@@ -34,7 +34,7 @@
 #include "libsemigroups/paths.hpp"               // for cbegin_pilo
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 #include "libsemigroups/word-graph.hpp"          // for WordGraph
-#include "libsemigroups/word-range.hpp"          // for literals, WordRange
+#include "libsemigroups/words-helpers.hpp"       // for literals
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/string.hpp"  // for detail::to_string
