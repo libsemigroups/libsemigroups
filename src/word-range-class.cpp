@@ -32,7 +32,6 @@
 #include "libsemigroups/detail/formatters.hpp"  // for magic_enum formatting
 
 namespace libsemigroups {
-
   namespace {
     bool word_in_language(size_t n, word_type const& w) {
       return std::all_of(
@@ -41,7 +40,7 @@ namespace libsemigroups {
   }  // namespace
 
   ////////////////////////////////////////////////////////////////////////
-  // 1. WordRange
+  // Word iterators
   ////////////////////////////////////////////////////////////////////////
 
   detail::const_wilo_iterator cbegin_wilo(size_t      n,
@@ -109,6 +108,10 @@ namespace libsemigroups {
                                           word_type const& last) {
     return cend_wislo(n, word_type(), word_type(last));
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // WordRange
+  ////////////////////////////////////////////////////////////////////////
 
   void WordRange::set_iterator() const {
     if (!_current_valid) {
@@ -198,7 +201,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // 4. StringRange
+  // StringRange
   ////////////////////////////////////////////////////////////////////////
 
   StringRange& StringRange::init() {

@@ -38,6 +38,10 @@
 #include "detail/word-iterators.hpp"  // for const_wilo_iterator, const_wisl...
 
 namespace libsemigroups {
+  //////////////////////////////////////////////////////////////////////
+  // Word iterators
+  //////////////////////////////////////////////////////////////////////
+
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //!
@@ -182,6 +186,10 @@ namespace libsemigroups {
   [[nodiscard]] detail::const_wislo_iterator cend_wislo(size_t           n,
                                                         word_type const& first,
                                                         word_type const& last);
+
+  //////////////////////////////////////////////////////////////////////
+  // WordRange
+  //////////////////////////////////////////////////////////////////////
 
   //! \ingroup words_group
   //! \brief Class for generating words in a given range and in a particular
