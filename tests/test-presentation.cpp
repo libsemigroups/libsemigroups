@@ -4282,4 +4282,25 @@ End;)xxx");
     REQUIRE(p.alphabet() == "xyz");
 #endif
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "108",
+                          "remove_trivial_rules perf",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab"s).contains_empty_word(true);
+    std::vector rules(50'000, ""s);
+    p.rules = rules;
+    presentation::add_rule(p, "aaa"s, ""s);
+    p.rules.insert(p.rules.end(), rules.begin(), rules.end());
+    presentation::add_rule(p, "bbbbb"s, ""s);
+    p.rules.insert(p.rules.end(), rules.begin(), rules.end());
+    presentation::add_rule(p, "abababababa"s, "ababab"s);
+    p.rules.insert(p.rules.end(), rules.begin(), rules.end());
+
+    presentation::remove_trivial_rules(p);
+    REQUIRE(p.rules
+            == std::vector<std::string>(
+                {"aaa"s, ""s, "bbbbb"s, ""s, "abababababa"s, "ababab"s}));
+  }
 }  // namespace libsemigroups
