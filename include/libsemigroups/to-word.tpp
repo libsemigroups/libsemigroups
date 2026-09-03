@@ -1,4 +1,3 @@
-
 //
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2020-2026 James D. Mitchell
@@ -17,15 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains implementations for function related to words (counting,
-// and converting) in libsemigroups.
+// This file contains implementations for classes related to converting to
+// word-types and converting to strings.
 
 namespace libsemigroups {
-
-  ////////////////////////////////////////////////////////////////////////
-  // cbegin/cend for wilo and wislo
-  ////////////////////////////////////////////////////////////////////////
-
   namespace v4 {
     ////////////////////////////////////////////////////////////////////////
     // ToWord mem fns

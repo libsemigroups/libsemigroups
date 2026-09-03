@@ -19,15 +19,14 @@
 // This file contains declarations for function related to words (counting, and
 // converting) in libsemigroups.
 
-// TODO:
-// * iwyu
-// * nodiscard
-// * tests for code coverage
+// TODO (v4): Delete this file; it only exists for backwards compatibility, and
+// the concepts below don't need to be linked.
 
 #ifndef LIBSEMIGROUPS_WORD_RANGE_HPP_
 #define LIBSEMIGROUPS_WORD_RANGE_HPP_
 
+#include "to-word.hpp"
 #include "word-range-class.hpp"
-#include "word-range-helpers.hpp"
+#include "words-helpers.hpp"
 
 #endif  // LIBSEMIGROUPS_WORD_RANGE_HPP_

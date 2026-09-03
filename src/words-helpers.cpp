@@ -17,9 +17,9 @@
 //
 
 // This file contains the implementations of the functionality declared in
-// word-range-helpers.hpp
+// words-helpers.hpp
 
-#include "libsemigroups/word-range-helpers.hpp"
+#include "libsemigroups/words-helpers.hpp"
 
 #include <cctype>         // for isalpha, isdigit
 #include <cmath>          // for pow
