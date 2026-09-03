@@ -482,7 +482,7 @@ namespace libsemigroups {
     }
 
     //! \copydoc last_node_on_path(WordGraph<Node> const&, Node, word_type
-    //! const&)
+    //!  const&)
     //! \deprecated_warning{function} Use the \ref last_node_on_path iterator
     //! overload instead.
     template <typename Node1,

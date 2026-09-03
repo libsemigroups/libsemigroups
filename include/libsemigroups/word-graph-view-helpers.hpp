@@ -1500,7 +1500,8 @@ namespace libsemigroups {
   }  // namespace word_graph
 
   //! \ingroup word_graph_group
-  //! Output the edges of a wordGraphView to a stream.
+  //!
+  //! \brief Output the edges of a WordGraphView to a stream.
   //!
   //! This function outputs the word graph view \p wgv to the stream \p os.
   //! The word graph view is represented by the out-neighbours of each node
@@ -1518,7 +1519,7 @@ namespace libsemigroups {
   //! \exceptions
   //! \no_libsemigroups_except
   template <typename Node>
-  std::ostream& operator<<(std::ostream& os, WordGraphView<Node> const&);
+  std::ostream& operator<<(std::ostream& os, WordGraphView<Node> const& wgv);
 
   //! \ingroup word_graph_group
   //!
@@ -1583,7 +1584,7 @@ namespace libsemigroups {
   //! * the values \ref WordGraphView::start_node() is strictly greater than
   //! \ref WordGraphView::end_node();
   //! * any target in the portion of the underlying WordGraph represented by
-  //! \ref wgv is greater than or equal to \ref WordGraphView::number_of_nodes.
+  //! \p wgv is greater than or equal to \ref WordGraphView::number_of_nodes.
   template <typename Node>
   void validate(WordGraphView<Node> const& wgv) {
     // NOTE: WordGraphView::throw_if_invalid_view is required because it calls

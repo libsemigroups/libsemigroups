@@ -1146,11 +1146,6 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any target in \p wg is out of
     //! bounds.
     //!
-    //! \note If \p cmp corresponds to one of the orders in \ref Order for which
-    //! there is a bespoke salgorithm for checking standardization, then
-    //! \ref is_standardized(WordGraph&, Order) should be used instead of this
-    //! function for improved performance.
-    //!
     //! \sa
     //! standardize.
     template <typename Node, typename Cmp>
