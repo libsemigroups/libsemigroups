@@ -1361,6 +1361,41 @@ namespace libsemigroups {
             == std::vector<W>(
                 {{1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1},
                  {1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1}}));
+
+    auto check = [&p](W const& input,
+                      W const& existing,
+                      W const& replacement,
+                      W const& expected) {
+      p.rules = {input, W(), input};
+      presentation::replace_subword(p, existing, replacement);
+      REQUIRE(p.rules == std::vector<W>({expected, W(), expected}));
+    };
+
+    // Skip overlapping matches and matches created by replacement/deletion.
+    check(W({0, 0, 0, 0, 0}), W({0, 0}), W({0, 1}), W({0, 1, 0, 1, 0}));
+    check(W({0, 0, 1, 1}), W({0, 1}), W(), W({0, 1}));
+    check(W({0, 1, 0, 1, 0}),
+          W({0, 1}),
+          W({0, 1, 0, 1}),
+          W({0, 1, 0, 1, 0, 1, 0, 1, 0}));
+
+    // Compact unmatched spans, including a prefix and a trailing suffix.
+    check(W({2, 2, 2, 0, 0, 1, 2, 2, 2, 0, 0, 1, 2, 2, 2}),
+          W({0, 0, 1}),
+          W({0}),
+          W({2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2}));
+    check(W({2, 0, 1, 2, 0, 1, 2}),
+          W({0, 1}),
+          W({0, 0, 0}),
+          W({2, 0, 0, 0, 2, 0, 0, 0, 2}));
+
+    // Exercise full-capacity StaticVector inputs and outputs.
+    check(W(size_t(64), 0), W({0}), W({1}), W(size_t(64), 1));
+    check(W(size_t(64), 0), W({0, 0}), W({1}), W(size_t(32), 1));
+    check(W(size_t(64), 0), W({0}), W(), W());
+    check(W(size_t(32), 0), W({0}), W({1, 1}), W(size_t(64), 1));
+    check(W(size_t(64), 0), W({1}), W({1, 1}), W(size_t(64), 0));
+    check(W({0}), W({0, 0}), W({1, 1, 1}), W({0}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
@@ -4302,5 +4337,22 @@ End;)xxx");
     REQUIRE(p.rules
             == std::vector<std::string>(
                 {"aaa"s, ""s, "bbbbb"s, ""s, "abababababa"s, "ababab"s}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "109",
+                          "replace_subword perf",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab"s).contains_empty_word(true);
+    p.rules = random_strings("ab"s, 2'000'000, 8, 9) | rx::to_vector();
+
+    REQUIRE(p.rules.size() == 2'000'000);
+
+    presentation::replace_subword(p, "a"s, "b"s);
+    auto rule = p.rules[393450];
+    REQUIRE(rule.size() == 8);
+    REQUIRE(std::all_of(
+        rule.begin(), rule.end(), [](auto letter) { return letter == 'b'; }));
   }
 }  // namespace libsemigroups

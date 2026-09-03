@@ -524,30 +524,47 @@ namespace libsemigroups {
                          Iterator2           first_replacement,
                          Iterator2           last_replacement) {
       if (first_existing == last_existing) {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd and 3rd argument must not be equal");
+        LIBSEMIGROUPS_EXCEPTION(
+            "cannot replace the empty word with a new subword, but the 2nd "
+            "and 3rd arguments (iterators) are equal and represent the empty "
+            "word");
       }
-      auto rplc_sbwrd = [&first_existing,
-                         &last_existing,
-                         &first_replacement,
-                         &last_replacement](Word& word) {
-        size_t const M  = std::distance(first_existing, last_existing);
-        size_t const N  = std::distance(first_replacement, last_replacement);
-        auto         it = std::search(
+      size_t const M = std::distance(first_existing, last_existing);
+      size_t const N = std::distance(first_replacement, last_replacement);
+
+      for (auto& word : p.rules) {
+        auto it = std::search(
             word.begin(), word.end(), first_existing, last_existing);
-        while (it != word.end()) {
-          // found existing
-          auto replacement_first = it - word.begin();
-          word.erase(it, it + M);
-          word.insert(word.begin() + replacement_first,
-                      first_replacement,
-                      last_replacement);
-          it = std::search(word.begin() + replacement_first + N,
-                           word.end(),
-                           first_existing,
-                           last_existing);
+        if (it == word.end()) {
+          continue;
         }
-      };
-      std::for_each(p.rules.begin(), p.rules.end(), rplc_sbwrd);
+        if (M == N) {
+          while (it != word.end()) {
+            std::copy(first_replacement, last_replacement, it);
+            it = std::search(it + M, word.end(), first_existing, last_existing);
+          }
+        } else if (N < M) {
+          // Compact behind the search position, then erase the tail once.
+          auto out = it;
+          while (it != word.end()) {
+            out        = std::copy(first_replacement, last_replacement, out);
+            auto first = it + M;
+            it  = std::search(first, word.end(), first_existing, last_existing);
+            out = std::move(first, it, out);
+          }
+          word.erase(out, word.end());
+        } else {
+          // Append to a new word so that each suffix is copied only once.
+          Word result(word.begin(), it);
+          while (it != word.end()) {
+            result.insert(result.end(), first_replacement, last_replacement);
+            auto first = it + M;
+            it = std::search(first, word.end(), first_existing, last_existing);
+            result.insert(result.end(), first, it);
+          }
+          word = std::move(result);
+        }
+      }
     }
 
     template <typename Word>
