@@ -26,8 +26,8 @@
 
 #include "alphabet-class.hpp"  // for Alphabet
 
-#include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
-#include "word-range-helpers.hpp"  // for human_readable_letter
+#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "words-helpers.hpp"  // for human_readable_letter
 
 //! \ingroup presentations_group
 //!

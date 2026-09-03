@@ -19,8 +19,8 @@
 // This file contains declarations for functions related to words (counting, and
 // converting) in libsemigroups.
 
-#ifndef LIBSEMIGROUPS_WORD_RANGE_HELPERS_HPP_
-#define LIBSEMIGROUPS_WORD_RANGE_HELPERS_HPP_
+#ifndef LIBSEMIGROUPS_WORDS_HELPERS_HPP_
+#define LIBSEMIGROUPS_WORDS_HELPERS_HPP_
 
 #include <cstddef>           // for size_t
 #include <cstdint>           // for uint64_t, uint8_t
@@ -649,5 +649,5 @@ namespace libsemigroups {
   }  // namespace words
 }  // namespace libsemigroups
 
-#include "word-range-helpers.tpp"
-#endif  // LIBSEMIGROUPS_WORD_RANGE_HELPERS_HPP_
+#include "words-helpers.tpp"
+#endif  // LIBSEMIGROUPS_WORDS_HELPERS_HPP_
