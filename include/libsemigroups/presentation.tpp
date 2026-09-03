@@ -336,13 +336,22 @@ namespace libsemigroups {
     void remove_trivial_rules(Presentation<Word>& p) {
       throw_if_odd_number_of_rules(p);
 
-      for (size_t i = 0; i < p.rules.size();) {
-        if (p.rules[i] == p.rules[i + 1]) {
-          p.rules.erase(p.rules.cbegin() + i, p.rules.cbegin() + i + 2);
+      size_t read  = 0;
+      size_t write = 0;
+
+      while (read + 1 < p.rules.size()) {
+        if (p.rules[read] == p.rules[read + 1]) {
+          read += 2;  // Remove both
         } else {
-          i += 2;
+          if (write != read) {
+            p.rules[write]     = std::move(p.rules[read]);
+            p.rules[write + 1] = std::move(p.rules[read + 1]);
+          }
+          write += 2;
+          read += 2;
         }
       }
+      p.rules.resize(write);
     }
 
     // This appears to be non-deterministic (different results with
