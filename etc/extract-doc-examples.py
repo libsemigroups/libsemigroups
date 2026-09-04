@@ -271,7 +271,7 @@ def process_folder(folder_path, recursive=False, exclude=[]):
                                 "{:03}".format(total_blocks)
                             }", "./include/libsemigroups/{
                                 file_path.relative_to(folder)
-                            }:{block["start_line"]}", "[docs][quick]") {{\n'
+                            }:{block["start_line"]}", "[docs][quick][no-valgrind]") {{\n'
                         )
                         if block["content"].strip():
                             testfile.write("    " + block["content"])
