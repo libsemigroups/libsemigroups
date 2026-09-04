@@ -1230,6 +1230,7 @@ EXTRA_PROGRAMS += test_is_transf
 EXTRA_PROGRAMS += test_iterator
 EXTRA_PROGRAMS += test_kambites
 EXTRA_PROGRAMS += test_kbe
+EXTRA_PROGRAMS += test_knuth_bendix_backtrack
 EXTRA_PROGRAMS += test_knuth_bendix
 EXTRA_PROGRAMS += test_konieczny
 EXTRA_PROGRAMS += test_matrix
@@ -1327,6 +1328,7 @@ test_all_SOURCES += tests/test-iterator.cpp
 test_all_SOURCES += tests/test-is-transf.cpp
 test_all_SOURCES += tests/test-kambites.cpp
 test_all_SOURCES += tests/test-kbe.cpp
+test_all_SOURCES += tests/test-knuth-bendix-backtrack.cpp
 test_all_SOURCES += tests/test-knuth-bendix-extreme.cpp
 test_all_SOURCES += tests/test-knuth-bendix-fail.cpp
 test_all_SOURCES += tests/test-knuth-bendix-from-froidure-pin.cpp
@@ -1588,6 +1590,11 @@ test_kambites_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 test_kbe_SOURCES =  tests/test-main.cpp
 test_kbe_SOURCES += tests/test-kbe.cpp
 test_kbe_SOURCES += third_party/Catch2-3.14.0/catch_amalgamated_patch.cpp
+
+test_knuth_bendix_backtrack_SOURCES =  tests/test-knuth-bendix-backtrack.cpp
+test_knuth_bendix_backtrack_SOURCES += tests/test-main.cpp
+test_knuth_bendix_backtrack_SOURCES += $(CATCH2_SOURCES)
+test_knuth_bendix_backtrack_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-extreme.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-fail.cpp
