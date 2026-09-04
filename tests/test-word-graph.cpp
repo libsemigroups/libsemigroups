@@ -1139,7 +1139,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "052",
                           "all words standardization",
-                          "[quick][word-graph]") {
+                          "[quick][word-graph][no-valgrind]") {
     // Construct the WordGraph such that the paths from 0 are labelled by the
     // words with length in [0, max_depth), consisting of letters in
     // [0, num_letters).
@@ -1188,7 +1188,10 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph", "053", "spanning_tree", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "053",
+                          "spanning_tree",
+                          "[quick][no-valgrind]") {
     auto          rg = ReportGuard(false);
     WordGraph     wg = binary_tree(16);
     WordGraphView wgv(wg);
@@ -1206,7 +1209,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "054",
                           "nodes_reachable_from (with max_depth)",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     auto          rg = ReportGuard(false);
     WordGraph     wg = binary_tree(16);
     WordGraphView wgv(wg);
@@ -1330,7 +1333,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "059",
                           "random generic standardization",
-                          "[quick][word-graph]") {
+                          "[quick][word-graph][no-valgrind]") {
     WordGraph wg = WordGraph<size_t>::random(5000, 8);
     REQUIRE(wg.number_of_nodes() == 5000);
     REQUIRE(wg.number_of_edges() == 40000);
@@ -1373,7 +1376,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "060",
                           "all words generic standardization",
-                          "[quick][word-graph]") {
+                          "[quick][word-graph][no-valgrind]") {
     // Construct the WordGraph such that the paths from 0 are labelled by the
     // words with length in [0, max_depth), consisting of letters in
     // [0, num_letters).
@@ -1471,7 +1474,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "062",
                           "random generic is_standardized",
-                          "[quick][word-graph]") {
+                          "[quick][word-graph][no-valgrind]") {
     WordGraph wg = WordGraph<size_t>::random(5000, 8);
     REQUIRE(wg.number_of_nodes() == 5000);
     REQUIRE(wg.number_of_edges() == 40000);
