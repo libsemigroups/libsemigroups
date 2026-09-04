@@ -837,7 +837,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Example",
                           "064",
                           "motzkin_monoid(5)",
-                          "[pres-examples][quick]") {
+                          "[pres-examples][quick][no-valgrind]") {
     size_t n = 5;
 
     ToddCoxeter tc(congruence_kind::twosided, motzkin_monoid(n));
