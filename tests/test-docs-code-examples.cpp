@@ -32,7 +32,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "000",
                           "./include/libsemigroups/action.hpp:59",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
     o.add_generator(
@@ -59,7 +59,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "001",
                           "./include/libsemigroups/action.hpp:141",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     auto rg = ReportGuard(true);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
@@ -88,7 +88,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "002",
                           "./include/libsemigroups/cong-class.hpp:145",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
@@ -104,7 +104,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "003",
                           "./include/libsemigroups/freeband.hpp:75",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     bool example
         = freeband_equal_to({0, 1, 2, 3, 2, 1, 0}, {0, 1, 2, 3, 2, 3, 2, 1, 0});
     REQUIRE(example == true);
@@ -133,7 +133,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "004",
                           "./include/libsemigroups/froidure-pin-base.hpp:1343",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     FroidurePin<BMat8> S;
     S.add_generator(
         BMat8({{1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}}));
@@ -167,7 +167,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "005",
                           "./include/libsemigroups/froidure-pin-base.hpp:1447",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     FroidurePin<BMat8> S;
     S.add_generator(
         BMat8({{1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}}));
@@ -201,7 +201,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "006",
                           "./include/libsemigroups/is_specialization_of.hpp:46",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     REQUIRE(is_specialization_of_v<std::vector<int>, std::vector> == true);
     REQUIRE(is_specialization_of_v<std::vector<int>, std::unordered_map>
             == false);
@@ -211,7 +211,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "007",
                           "./include/libsemigroups/is_specialization_of.hpp:75",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     REQUIRE(is_specialization_of_v<std::vector<int>, std::vector> == true);
     REQUIRE(is_specialization_of_v<std::vector<int>, std::unordered_map>
             == false);
@@ -221,7 +221,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "008",
                           "./include/libsemigroups/knuth-bendix-class.hpp:78",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abcd");
@@ -243,7 +243,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "009",
                           "./include/libsemigroups/konieczny.hpp:69",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     auto S = make<Konieczny>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -257,7 +257,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "010",
                           "./include/libsemigroups/matrix-class.hpp:270",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     using Mat = BMat8;
     Mat m({{1, 1}, {0, 0}});
   }
@@ -266,7 +266,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "011",
                           "./include/libsemigroups/matrix-class.hpp:1216",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     using Mat = IntMat<>;
     Mat m(2, 3);  // construct a 2 x 3 matrix
   }
@@ -275,7 +275,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "012",
                           "./include/libsemigroups/matrix-class.hpp:1239",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     using Mat = BMat<>;
     Mat m({1, 1, 0, 0});
   }
@@ -284,7 +284,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "013",
                           "./include/libsemigroups/matrix-class.hpp:1262",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     using Mat = IntMat<>;
     Mat m({{1, 1}, {0, 0}});
   }
@@ -293,7 +293,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "014",
                           "./include/libsemigroups/matrix-class.hpp:2009",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] BMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -304,7 +304,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "015",
                           "./include/libsemigroups/matrix-class.hpp:2205",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] IntMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -315,7 +315,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "016",
                           "./include/libsemigroups/matrix-class.hpp:2419",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] MaxPlusMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -326,7 +326,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "017",
                           "./include/libsemigroups/matrix-class.hpp:2633",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] MinPlusMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -337,7 +337,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "018",
                           "./include/libsemigroups/matrix-class.hpp:2857",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     // construct an uninitialized 3 x 3 static matrix with threshold 11
     [[maybe_unused]] MaxPlusTruncMat<11, 3> m3_11;
     // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
@@ -353,7 +353,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "019",
                           "./include/libsemigroups/matrix-class.hpp:3204",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     // construct an uninitialized 3 x 3 static matrix with threshold 11
     [[maybe_unused]] MinPlusTruncMat<11, 3> m3_11;
     // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
@@ -369,7 +369,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "020",
                           "./include/libsemigroups/matrix-class.hpp:3552",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     // construct an uninitialized 3 x 3 static matrix with threshold
     // 11, period 2
     [[maybe_unused]] NTPMat<11, 2, 3> m3_11_2;
@@ -387,7 +387,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "021",
                           "./include/libsemigroups/matrix-class.hpp:4358",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     // default construct an uninitialized 3 x 3 static matrix
     ProjMaxPlusMat<3> m3;
     // construct an uninitialized 4 x 4 dynamic matrix
@@ -398,7 +398,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "022",
                           "./include/libsemigroups/matrix-helpers.hpp:241",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     auto x = make<ProjMaxPlusMat<>>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
     // returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}
     matrix::pow(x, 100);
@@ -408,7 +408,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "023",
                           "./include/libsemigroups/matrix-helpers.hpp:805",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     auto x = make<BMat<>>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
     matrix::row_space_size(x);  // returns 7
   }
@@ -417,7 +417,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "024",
                           "./include/libsemigroups/presentation.hpp:1183",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     Presentation<std::string> p;
     presentation::to_report_string(p);
     // "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], ∑(|u| + |v|) = 0"
@@ -427,7 +427,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "025",
                           "./include/libsemigroups/ranges.hpp:87",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     using rx::operator|;
     auto      wg = make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
     Paths     p(wg);
@@ -440,7 +440,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "026",
                           "./include/libsemigroups/schreier-sims.hpp:167",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     SchreierSims<5> S;
     using Perm = decltype(S)::element_type;
     S.add_generator(Perm({1, 0, 2, 3, 4}));
@@ -448,11 +448,69 @@ namespace libsemigroups {
     REQUIRE(S.size() == 120);
   }
 
-  // todd-coxeter-class.hpp: Line 80
+  // to-word.hpp: Line 59
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "027",
+                          "./include/libsemigroups/to-word.hpp:59",
+                          "[docs][quick][no-valgrind]") {
+    ToWord toword("bac");
+    REQUIRE(toword("bac") == 012_w);
+    REQUIRE(toword("bababbbcbc") == 0101000202_w);
+
+    toword.init();
+    REQUIRE(toword("bac") == 102_w);
+  }
+
+  // to-word.hpp: Line 348
+  LIBSEMIGROUPS_TEST_CASE("docs",
+                          "028",
+                          "./include/libsemigroups/to-word.hpp:348",
+                          "[docs][quick][no-valgrind]") {
+    using rx::  operator|;
+    StringRange strings;
+    strings.alphabet("ab").first("a").last("bbbb");
+    auto words = (strings | ToWord("ba"));
+    // contains the words
+    // {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,
+    //  110_w,  101_w,  100_w,  011_w,  010_w,  001_w,  000_w,
+    //  1111_w, 1110_w, 1101_w, 1100_w, 1011_w, 1010_w, 1001_w,
+    //  1000_w, 0111_w, 0110_w, 0101_w, 0100_w, 0011_w, 0010_w,
+    //  0001_w}));
+  }
+
+  // to-word.hpp: Line 453
+  LIBSEMIGROUPS_TEST_CASE("docs",
+                          "029",
+                          "./include/libsemigroups/to-word.hpp:453",
+                          "[docs][quick][no-valgrind]") {
+    ToString tostring("bac");
+    REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
+    REQUIRE(tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2})) == "baabaabc");
+
+    tostring.init();
+    REQUIRE(tostring(word_type({1, 0, 2})) == "bac");
+  }
+
+  // to-word.hpp: Line 704
+  LIBSEMIGROUPS_TEST_CASE("docs",
+                          "030",
+                          "./include/libsemigroups/to-word.hpp:704",
+                          "[docs][quick][no-valgrind]") {
+    using rx::operator|;
+    WordRange words;
+    words.alphabet_size(1).min(0).max(10);
+
+    auto strings = (words | ToString("a"));
+    // Contains the strings
+    // {"", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa",
+    // "aaaaaaaa", "aaaaaaaaa"};
+  }
+
+  // todd-coxeter-class.hpp: Line 80
+  LIBSEMIGROUPS_TEST_CASE("docs",
+                          "031",
                           "./include/libsemigroups/todd-coxeter-class.hpp:80",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     using options = detail::ToddCoxeterImpl::options;
 
     Presentation<word_type> p;
@@ -469,9 +527,9 @@ namespace libsemigroups {
 
   // todd-coxeter-class.hpp: Line 96
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "028",
+                          "032",
                           "./include/libsemigroups/todd-coxeter-class.hpp:96",
-                          "[docs][quick]") {
+                          "[docs][quick][no-valgrind]") {
     using options = detail::ToddCoxeterImpl::options;
 
     Presentation<word_type> p;
@@ -522,9 +580,9 @@ namespace libsemigroups {
   // word-graph-view-helpers.hpp: Line 458
   LIBSEMIGROUPS_TEST_CASE(
       "docs",
-      "029",
+      "033",
       "./include/libsemigroups/word-graph-view-helpers.hpp:458",
-      "[docs][quick]") {
+      "[docs][quick][no-valgrind]") {
     WordGraph<size_t> wgv;
     wgv.add_nodes(2);
     wgv.add_to_out_degree(1);
@@ -536,9 +594,9 @@ namespace libsemigroups {
   // word-graph-view-helpers.hpp: Line 518
   LIBSEMIGROUPS_TEST_CASE(
       "docs",
-      "030",
+      "034",
       "./include/libsemigroups/word-graph-view-helpers.hpp:518",
-      "[docs][quick]") {
+      "[docs][quick][no-valgrind]") {
     WordGraph<size_t> wg;
     wg.add_nodes(4);
     wg.add_to_out_degree(1);
@@ -556,9 +614,9 @@ namespace libsemigroups {
   // word-graph-view-helpers.hpp: Line 960
   LIBSEMIGROUPS_TEST_CASE(
       "docs",
-      "031",
+      "035",
       "./include/libsemigroups/word-graph-view-helpers.hpp:960",
-      "[docs][quick]") {
+      "[docs][quick][no-valgrind]") {
     WordGraph<size_t> wg;
     wg.add_nodes(4);
     wg.add_to_out_degree(1);
@@ -576,38 +634,38 @@ namespace libsemigroups {
   // word-graph-view-helpers.hpp: Line 1079
   LIBSEMIGROUPS_TEST_CASE(
       "docs",
-      "032",
+      "036",
       "./include/libsemigroups/word-graph-view-helpers.hpp:1079",
-      "[docs][quick]") {
+      "[docs][quick][no-valgrind]") {
     auto wgv = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     word_graph::is_strictly_cyclic(WordGraphView<uint8_t>(wgv));  //
   }
 
-  // word-range.hpp: Line 183
+  // word-range-class.hpp: Line 86
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "033",
-                          "./include/libsemigroups/word-range.hpp:183",
-                          "[docs][quick]") {
+                          "037",
+                          "./include/libsemigroups/word-range-class.hpp:86",
+                          "[docs][quick][no-valgrind]") {
     std::vector<word_type>(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
                            cend_wilo(2, 3, {0}, {1, 1, 1}));
     // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
   }
 
-  // word-range.hpp: Line 253
+  // word-range-class.hpp: Line 156
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "034",
-                          "./include/libsemigroups/word-range.hpp:253",
-                          "[docs][quick]") {
+                          "038",
+                          "./include/libsemigroups/word-range-class.hpp:156",
+                          "[docs][quick][no-valgrind]") {
     std::vector<word_type>(cbegin_wislo(2, {0}, {0, 0, 0}),
                            cend_wislo(2, {0}, {0, 0, 0}));
     // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
   }
 
-  // word-range.hpp: Line 313
+  // word-range-class.hpp: Line 220
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "035",
-                          "./include/libsemigroups/word-range.hpp:313",
-                          "[docs][quick]") {
+                          "039",
+                          "./include/libsemigroups/word-range-class.hpp:220",
+                          "[docs][quick][no-valgrind]") {
     WordRange words;
     words
         .order(Order::lenlex)  // words in lenlex order
@@ -616,69 +674,11 @@ namespace libsemigroups {
         .max(5);               // to 5
   }
 
-  // word-range.hpp: Line 761
-  LIBSEMIGROUPS_TEST_CASE("docs",
-                          "036",
-                          "./include/libsemigroups/word-range.hpp:761",
-                          "[docs][quick]") {
-    ToWord toword("bac");
-    REQUIRE(toword("bac") == 012_w);
-    REQUIRE(toword("bababbbcbc") == 0101000202_w);
-
-    toword.init();
-    REQUIRE(toword("bac") == 102_w);
-  }
-
-  // word-range.hpp: Line 1050
-  LIBSEMIGROUPS_TEST_CASE("docs",
-                          "037",
-                          "./include/libsemigroups/word-range.hpp:1050",
-                          "[docs][quick]") {
-    using rx::  operator|;
-    StringRange strings;
-    strings.alphabet("ab").first("a").last("bbbb");
-    auto words = (strings | ToWord("ba"));
-    // contains the words
-    // {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,
-    //  110_w,  101_w,  100_w,  011_w,  010_w,  001_w,  000_w,
-    //  1111_w, 1110_w, 1101_w, 1100_w, 1011_w, 1010_w, 1001_w,
-    //  1000_w, 0111_w, 0110_w, 0101_w, 0100_w, 0011_w, 0010_w,
-    //  0001_w}));
-  }
-
-  // word-range.hpp: Line 1155
-  LIBSEMIGROUPS_TEST_CASE("docs",
-                          "038",
-                          "./include/libsemigroups/word-range.hpp:1155",
-                          "[docs][quick]") {
-    ToString tostring("bac");
-    REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
-    REQUIRE(tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2})) == "baabaabc");
-
-    tostring.init();
-    REQUIRE(tostring(word_type({1, 0, 2})) == "bac");
-  }
-
-  // word-range.hpp: Line 1406
-  LIBSEMIGROUPS_TEST_CASE("docs",
-                          "039",
-                          "./include/libsemigroups/word-range.hpp:1406",
-                          "[docs][quick]") {
-    using rx::operator|;
-    WordRange words;
-    words.alphabet_size(1).min(0).max(10);
-
-    auto strings = (words | ToString("a"));
-    // Contains the strings
-    // {"", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa",
-    // "aaaaaaaa", "aaaaaaaaa"};
-  }
-
-  // word-range.hpp: Line 1604
+  // word-range-class.hpp: Line 680
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "040",
-                          "./include/libsemigroups/word-range.hpp:1604",
-                          "[docs][quick]") {
+                          "./include/libsemigroups/word-range-class.hpp:680",
+                          "[docs][quick][no-valgrind]") {
     StringRange strings;
     strings
         .order(Order::lenlex)  // strings in lenlex order
@@ -687,11 +687,11 @@ namespace libsemigroups {
         .max(5);               // to 5
   }
 
-  // word-range.hpp: Line 2344
+  // words-helpers.hpp: Line 440
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "041",
-                          "./include/libsemigroups/word-range.hpp:2344",
-                          "[docs][quick]") {
+                          "./include/libsemigroups/words-helpers.hpp:440",
+                          "[docs][quick][no-valgrind]") {
     using namespace words;
     word_type w = 012345_w;
     prod(w, 0, 5, 2);               // {0, 2, 4}
