@@ -1243,4 +1243,55 @@ namespace libsemigroups {
     REQUIRE(p.rules.empty());
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "108",
+                          "okada_monoid degree except and small degrees",
+                          "[pres-examples][quick]") {
+    REQUIRE_THROWS_AS(okada_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(okada_monoid_HS26(0), LibsemigroupsException);
+
+    auto p = okada_monoid(1);
+    p.throw_if_bad_alphabet_or_rules();
+    REQUIRE(p.contains_empty_word());
+    REQUIRE(p.alphabet().empty());
+    REQUIRE(p.rules.empty());
+
+    size_t expected_size = 1;
+    for (size_t n = 2; n <= 7; ++n) {
+      CAPTURE(n);
+      expected_size *= n;
+      p = okada_monoid(n);
+      p.throw_if_bad_alphabet_or_rules();
+      REQUIRE(p == okada_monoid_HS26(n));
+      REQUIRE(p.contains_empty_word());
+      REQUIRE(p.alphabet().size() == n - 1);
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      REQUIRE(tc.number_of_classes() == expected_size);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "109",
+                          "Okada and Temperley-Lieb adjacent relations",
+                          "[pres-examples][quick]") {
+    auto        rg = ReportGuard(false);
+    ToddCoxeter okada(congruence_kind::twosided, okada_monoid(4));
+    ToddCoxeter jones(congruence_kind::twosided, temperley_lieb_monoid(4));
+    for (size_t i = 0; i < 3; ++i) {
+      REQUIRE(todd_coxeter::contains(okada, word_type({i, i}), word_type({i})));
+    }
+    REQUIRE(todd_coxeter::contains(okada, 02_w, 20_w));
+    REQUIRE(!todd_coxeter::contains(okada, 01_w, 10_w));
+    REQUIRE(todd_coxeter::contains(okada, 101_w, 1_w));
+    REQUIRE(todd_coxeter::contains(okada, 212_w, 2_w));
+    REQUIRE(!todd_coxeter::contains(okada, 010_w, 0_w));
+    REQUIRE(!todd_coxeter::contains(okada, 121_w, 1_w));
+    REQUIRE(todd_coxeter::contains(jones, 101_w, 1_w));
+    REQUIRE(todd_coxeter::contains(jones, 212_w, 2_w));
+    REQUIRE(todd_coxeter::contains(jones, 010_w, 0_w));
+    REQUIRE(todd_coxeter::contains(jones, 121_w, 1_w));
+    REQUIRE(okada.number_of_classes() == 24);
+    REQUIRE(jones.number_of_classes() == 14);
+  }
+
 }  // namespace libsemigroups
