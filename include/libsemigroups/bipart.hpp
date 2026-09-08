@@ -1335,8 +1335,8 @@ namespace libsemigroups {
     //! \brief Modify the current bipartition in-place to contain the product of
     //! two bipartitions.
     //!
-    //! The parameter \p thread_id can be used some temporary storage is
-    //! required to find the product of \p x and \p y.
+    //! The parameter \p thread_id selects the temporary storage used to find
+    //! the product of \p x and \p y.
     //!
     //! \param x the first bipartition to multiply.
     //! \param y the second bipartition to multiply.
@@ -1352,11 +1352,45 @@ namespace libsemigroups {
     //! If different threads call this function concurrently with the same
     //! parameter \p thread_id, then bad things will happen.
     //!
-    //! \warning This function expects its arguments to have equal degree, but
-    //! this is not checked.
+    //! \warning This function expects \p x, \p y, and `*this` to be valid
+    //! bipartitions of equal degree, with `this` distinct from `&x` and `&y`.
+    //! The value of \p thread_id must be at most
+    //! `std::thread::hardware_concurrency()`. These conditions are not checked.
+    //!
+    //! \sa product_inplace.
     void product_inplace_no_checks(Bipartition const& x,
                                    Bipartition const& y,
                                    size_t             thread_id = 0);
+
+    //! \brief Multiply two bipartitions and store the product in `*this`.
+    //!
+    //! Replaces the contents of `*this` by the product of \p x and \p y.
+    //! All three bipartitions must have equal degree, and the destination must
+    //! be distinct from both operands. The operands may be the same object.
+    //!
+    //! The parameter \p thread_id selects the temporary storage used to find
+    //! the product of \p x and \p y.
+    //!
+    //! \param x the first bipartition to multiply.
+    //! \param y the second bipartition to multiply.
+    //! \param thread_id the index of the calling thread (defaults to \c 0).
+    //!
+    //! \throws LibsemigroupsException if:
+    //! * \p x, \p y, and `*this` do not all have equal degree;
+    //! * `this` is equal to `&x` or `&y`;
+    //! * \p thread_id exceeds `std::thread::hardware_concurrency()`; or
+    //! * \p x, \p y, or `*this` is invalid.
+    //! \strong_guarantee
+    //!
+    //! \complexity
+    //! Quadratic in `x.degree()`.
+    //!
+    //! \warning Concurrent calls must use distinct values of \p thread_id.
+    //!
+    //! \sa product_inplace_no_checks, bipartition::throw_if_invalid.
+    void product_inplace(Bipartition const& x,
+                         Bipartition const& y,
+                         size_t             thread_id = 0);
 
     //! \brief Return the number of transverse blocks.
     //!
@@ -1698,14 +1732,17 @@ namespace libsemigroups {
   //! \returns
   //! A value of type \c Bipartition
   //!
-  //! \exceptions
-  //! \no_libsemigroups_except
+  //! \throws LibsemigroupsException if \p x and \p y have different degrees
+  //! or either operand is invalid.
   //!
   //! \complexity
   //! Quadratic in `x.degree()`.
   //!
-  //! \warning This function expects its arguments to have equal degree, but
-  //! this is not checked.
+  //! \warning This function uses the same temporary storage as
+  //! Bipartition::product_inplace with `thread_id = 0`. Concurrent calls must
+  //! not use this storage.
+  //!
+  //! \sa Bipartition::product_inplace.
   [[nodiscard]] Bipartition operator*(Bipartition const& x,
                                       Bipartition const& y);
 

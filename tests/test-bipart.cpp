@@ -19,7 +19,10 @@
 #include <cstddef>           // for size_t
 #include <cstdint>           // for uint32_t, int32_t
 #include <initializer_list>  // for initializer_list
+#include <iterator>          // for distance
+#include <limits>            // for numeric_limits
 #include <string>            // for allocator, basic_string
+#include <thread>            // for hardware_concurrency
 #include <unordered_set>     // for unordered_set
 #include <utility>           // for move
 #include <vector>            // for operator==
@@ -722,6 +725,171 @@ namespace libsemigroups {
                           "uniform_random chi-squared test x2",
                           "[fail][bipart]") {
     test_uniform_bipartition(5, 115'975, 117'097.3, 10);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "024",
+                          "checked products",
+                          "[quick][bipart]") {
+    auto const  x = make<Bipartition>({0, 0, 0, 1});
+    auto const  y = make<Bipartition>({0, 1, 0, 0});
+    Bipartition z(2);
+    z.product_inplace(x, y);
+    REQUIRE(z == make<Bipartition>({0, 0, 0, 0}));
+    REQUIRE(x * y == z);
+
+    z.product_inplace(y, x, std::thread::hardware_concurrency());
+    REQUIRE(z == make<Bipartition>({0, 1, 0, 2}));
+    REQUIRE(y * x == z);
+
+    auto const id = Bipartition::one(2);
+    z.product_inplace(x, id);
+    REQUIRE(z == x);
+    z.product_inplace(id, x);
+    REQUIRE(z == x);
+
+    auto const swap = make<Bipartition>({0, 1, 1, 0});
+    z.product_inplace(swap, swap);
+    REQUIRE(z == id);
+    REQUIRE(swap * swap == id);
+
+    Bipartition const empty;
+    Bipartition       result;
+    result.product_inplace(empty, empty);
+    REQUIRE(result == empty);
+    REQUIRE(result.degree() == 0);
+    REQUIRE(result.number_of_blocks() == 0);
+    REQUIRE(result.rank() == 0);
+    REQUIRE(empty * empty == empty);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "025",
+                          "checked products require equal degrees",
+                          "[quick][bipart]") {
+    // The example from Semigroups issue #1183 and libsemigroups issue #989.
+    auto const x = make<Bipartition>(
+        {{1, -1, -2}, {2, 5}, {3, 4, -3}, {-4, -5}, {6, -6}});
+    auto const y
+        = make<Bipartition>({{1, -4}, {2}, {3, -1}, {4}, {5, -3}, {-2}, {-5}});
+    auto       z      = Bipartition::one(6);
+    auto const before = z;
+    REQUIRE_EXCEPTION_MSG(
+        z.product_inplace(x, y),
+        "the 1st and 2nd arguments (bipartitions) must have the same degree, "
+        "found degrees 6 and 5");
+    REQUIRE(z == before);
+    REQUIRE_THROWS_AS(x * y, LibsemigroupsException);
+    REQUIRE_THROWS_AS(y * x, LibsemigroupsException);
+
+    auto       smaller        = Bipartition::one(5);
+    auto const smaller_before = smaller;
+    REQUIRE_EXCEPTION_MSG(
+        smaller.product_inplace(y, x),
+        "the 1st and 2nd arguments (bipartitions) must have the same degree, "
+        "found degrees 5 and 6");
+    REQUIRE(smaller == smaller_before);
+
+    for (size_t degree : {0, 4, 6}) {
+      auto       destination = Bipartition::one(degree);
+      auto const original    = destination;
+      REQUIRE_EXCEPTION_MSG(
+          destination.product_inplace(y, y),
+          fmt::format("the 1st argument (bipartition) must have degree {} "
+                      "(the degree of \"*this\"), found 5",
+                      degree));
+      REQUIRE(destination == original);
+    }
+
+    Bipartition const empty;
+    REQUIRE_THROWS_AS(empty * x, LibsemigroupsException);
+    REQUIRE_THROWS_AS(x * empty, LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "026",
+                          "checked products reject invalid arguments",
+                          "[quick][bipart]") {
+    auto const id = Bipartition::one(2);
+    auto       z  = id;
+    z.set_number_of_blocks(2);
+    REQUIRE(z.rank() == 2);
+    auto const before = z;
+
+    REQUIRE_EXCEPTION_MSG(z.product_inplace(z, id),
+                          "the 1st argument (bipartition) cannot be the same "
+                          "object as \"*this\"");
+    REQUIRE_EXCEPTION_MSG(z.product_inplace(id, z),
+                          "the 2nd argument (bipartition) cannot be the same "
+                          "object as \"*this\"");
+    REQUIRE_EXCEPTION_MSG(z.product_inplace(z, z),
+                          "the 1st argument (bipartition) cannot be the same "
+                          "object as \"*this\"");
+    size_t const thread_count = std::thread::hardware_concurrency() + 1;
+    REQUIRE_EXCEPTION_MSG(
+        z.product_inplace(id, id, thread_count),
+        fmt::format("the 3rd argument (thread index) is out of range, "
+                    "expected a value in [0, {}), but found {}",
+                    thread_count,
+                    thread_count));
+    REQUIRE_EXCEPTION_MSG(
+        z.product_inplace(id, id, std::numeric_limits<size_t>::max()),
+        fmt::format("the 3rd argument (thread index) is out of range, "
+                    "expected a value in [0, {}), but found {}",
+                    thread_count,
+                    std::numeric_limits<size_t>::max()));
+
+    // Unchecked constructors can produce invalid labels or an odd length.
+    for (auto const& invalid : {Bipartition({1, 0, 0, 0}),
+                                Bipartition({0, 2, 0, 0}),
+                                Bipartition({0, 1, 0, 1, 0})}) {
+      REQUIRE_THROWS_AS(z.product_inplace(invalid, id), LibsemigroupsException);
+      REQUIRE_THROWS_AS(z.product_inplace(id, invalid), LibsemigroupsException);
+      REQUIRE_THROWS_AS(invalid * id, LibsemigroupsException);
+      REQUIRE_THROWS_AS(id * invalid, LibsemigroupsException);
+      auto destination = invalid;
+      REQUIRE_THROWS_AS(destination.product_inplace(id, id),
+                        LibsemigroupsException);
+      REQUIRE(destination == invalid);
+    }
+    REQUIRE(z == before);
+    REQUIRE(z.number_of_blocks() == 2);
+    REQUIRE(z.number_of_left_blocks() == 2);
+    REQUIRE(z.number_of_right_blocks() == 2);
+    REQUIRE(z.rank() == 2);
+    REQUIRE(std::vector<bool>(z.cbegin_lookup(), z.cend_lookup())
+            == std::vector<bool>({true, true}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "027",
+                          "products invalidate cached block information",
+                          "[quick][bipart]") {
+    for (bool checked : {false, true}) {
+      auto z = Bipartition::one(2);
+      for (auto const& x : {make<Bipartition>({0, 0, 0, 0}),
+                            make<Bipartition>({0, 1, 2, 3}),
+                            Bipartition::one(2)}) {
+        z.set_number_of_blocks(z.number_of_blocks());
+        z.set_number_of_left_blocks(z.number_of_left_blocks());
+        z.set_rank(z.rank());
+        REQUIRE(std::distance(z.cbegin_lookup(), z.cend_lookup())
+                == z.number_of_left_blocks());
+        if (checked) {
+          z.product_inplace(x, x);
+        } else {
+          z.product_inplace_no_checks(x, x);
+        }
+        // Each operand here is idempotent, with different block information.
+        REQUIRE(z == x);
+        REQUIRE(z.number_of_blocks() == x.number_of_blocks());
+        REQUIRE(z.number_of_left_blocks() == x.number_of_left_blocks());
+        REQUIRE(z.number_of_right_blocks() == x.number_of_right_blocks());
+        REQUIRE(z.rank() == x.rank());
+        REQUIRE(std::vector<bool>(z.cbegin_lookup(), z.cend_lookup())
+                == std::vector<bool>(x.cbegin_lookup(), x.cend_lookup()));
+      }
+    }
   }
 
 }  // namespace libsemigroups
