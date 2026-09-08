@@ -1133,6 +1133,38 @@ namespace libsemigroups {
       return p;
     }
 
+    // From Definition 3.2 in https://arxiv.org/abs/2609.01440
+    Presentation<word_type> okada_monoid_HS26(size_t n) {
+      if (n < 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 1, found {}", n);
+      }
+
+      Presentation<word_type> p;
+      p.alphabet(n - 1);
+      p.contains_empty_word(true);
+
+      // (I)
+      presentation::add_idempotent_rules_no_checks(p, range(0, n - 1));
+
+      // (C)
+      for (size_t i = 0; i < n - 1; ++i) {
+        for (size_t j = 0; j < n - 1; ++j) {
+          if (i + 1 < j || j + 1 < i) {
+            presentation::add_rule_no_checks(
+                p, word_type({i, j}), word_type({j, i}));
+          }
+        }
+      }
+
+      // (S): only the higher-indexed generator is repeated.
+      for (size_t i = 1; i < n - 1; ++i) {
+        presentation::add_rule_no_checks(
+            p, word_type({i, i - 1, i}), word_type({i}));
+      }
+      return p;
+    }
+
     // From Theorem 2.2 in https://doi.org/10.1093/qmath/haab001
     Presentation<word_type> temperley_lieb_monoid_Eas21(size_t n) {
       if (n < 3) {
@@ -1140,34 +1172,11 @@ namespace libsemigroups {
             "expected 1st argument to be at least 3, found {}", n);
       }
 
-      Presentation<word_type> p;
-      p.alphabet(n - 1);
-      p.contains_empty_word(true);
-
-      // E1
-      presentation::add_idempotent_rules_no_checks(p, range(0, n - 1));
-
-      int64_t m = n;
-      // E2 + E3
-      for (int64_t i = 0; i < m - 1; ++i) {
-        for (int64_t j = 0; j < m - 1; ++j) {
-          auto d = std::abs(i - j);
-          if (d > 1) {
-            presentation::add_rule_no_checks(
-                p,
-                word_type(
-                    {static_cast<letter_type>(i), static_cast<letter_type>(j)}),
-                word_type({static_cast<letter_type>(j),
-                           static_cast<letter_type>(i)}));
-          } else if (d == 1) {
-            presentation::add_rule_no_checks(
-                p,
-                word_type({static_cast<letter_type>(i),
-                           static_cast<letter_type>(j),
-                           static_cast<letter_type>(i)}),
-                word_type({static_cast<letter_type>(i)}));
-          }
-        }
+      auto p = okada_monoid_HS26(n);
+      // Add the other direction of the adjacent-generator relations (E3).
+      for (size_t i = 0; i < n - 2; ++i) {
+        presentation::add_rule_no_checks(
+            p, word_type({i, i + 1, i}), word_type({i}));
       }
       return p;
     }
