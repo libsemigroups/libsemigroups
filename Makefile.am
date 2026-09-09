@@ -1162,11 +1162,13 @@ EXTRA_DIST += README.md
 EXTRA_DIST += autogen.sh
 EXTRA_DIST += benchmarks/uf-old.hpp
 EXTRA_DIST += docs
+EXTRA_DIST += etc/libsemigroups-docs.py
 EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += hpcombi.mk.in
 EXTRA_DIST += tests/bmat-data.hpp
+EXTRA_DIST += tests/test-docs-cli.py
 EXTRA_DIST += tests/test-main.hpp
 EXTRA_DIST += tests/word-graph-test-common.hpp
 EXTRA_DIST += third_party/Catch2-3.14.0/catch_amalgamated.cpp
@@ -1936,6 +1938,10 @@ lint:
 doc:
 	@echo "Running doxygen . . ."
 	@etc/make-doc.sh
+
+check-docs-cli:
+	python3 $(srcdir)/tests/test-docs-cli.py
+.PHONY: check-docs-cli
 
 doc-test:
 	@etc/make-doc-test.sh

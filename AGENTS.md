@@ -45,6 +45,19 @@ finitely presented semigroups and monoids. The build system is GNU Autotools.
   install system packages without the user's confirmation; otherwise skip
   the check and report it as not run.
 
+## Querying local documentation
+
+Agents can search documentation in this checkout without building the library
+or the documentation:
+
+```sh
+python3 etc/libsemigroups-docs.py search 'FroidurePin size'
+```
+
+The CLI returns JSON with source locations. Use `show` with a returned ID to
+read the full entry. See the [documentation CLI guide](docs/documentation-cli.md)
+for options and the output contract.
+
 ## Setup (once per checkout or worktree)
 
 `make` fails until the build system has been generated:

@@ -1057,6 +1057,7 @@ INPUT                  = "../include/libsemigroups" \
                          "../README.md" \
                          "authors.md" \
                          "deprecate.md" \
+                         "documentation-cli.md" \
                          "install.md" \
                          "changelog-v1.md" \
                          "changelog-v2.md" \
