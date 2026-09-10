@@ -29,6 +29,7 @@
 #include <cstdint>      // for uint64_t, uint32_t, uint8_t
 #include <iostream>     // for cout
 #include <iterator>     // for distance
+#include <stdexcept>    // for runtime_error
 #include <string>       // for basic_string, operator==, string
 #include <thread>       // for thread
 #include <tuple>        // for tuple, operator==
@@ -5256,5 +5257,141 @@ namespace libsemigroups {
                       })
                 .number_of_active_nodes()
             > 128);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Sims",
+                                   "138",
+                                   "propagate callback exceptions",
+                                   "[quick][low-index]",
+                                   Sims1,
+                                   Sims2) {
+    auto const              threads = GENERATE(1, 2);
+    Presentation<word_type> p;
+    p.alphabet(1).contains_empty_word(true);
+    presentation::add_rule(p, 0000_w, ""_w);
+    TestType s(p);
+    s.number_of_threads(threads);
+    if (threads == 2 && s.number_of_threads() < 2) {
+      SKIP("requires at least two worker threads");
+    }
+
+    auto const       caller = std::this_thread::get_id();
+    std::atomic_bool called_on_worker(false);
+    auto             fail = [&](auto const&) -> bool {
+      called_on_worker = std::this_thread::get_id() != caller;
+      throw std::runtime_error("Sims callback failed");
+    };
+
+    SECTION("find_if predicate") {
+      REQUIRE_THROWS_MATCHES(s.find_if(4, fail),
+                             std::runtime_error,
+                             Catch::Matchers::Message("Sims callback failed"));
+    }
+    SECTION("for_each action") {
+      REQUIRE_THROWS_MATCHES(s.for_each(4, fail),
+                             std::runtime_error,
+                             Catch::Matchers::Message("Sims callback failed"));
+    }
+    SECTION("find_if pruner") {
+      s.add_pruner(fail);
+      REQUIRE_THROWS_MATCHES(s.find_if(4, [](auto const&) { return false; }),
+                             std::runtime_error,
+                             Catch::Matchers::Message("Sims callback failed"));
+    }
+    SECTION("for_each pruner") {
+      s.add_pruner(fail);
+      REQUIRE_THROWS_MATCHES(s.for_each(4, [](auto const&) {}),
+                             std::runtime_error,
+                             Catch::Matchers::Message("Sims callback failed"));
+    }
+    SECTION("number_of_congruences pruner") {
+      s.add_pruner(fail);
+      REQUIRE_THROWS_MATCHES(s.number_of_congruences(4),
+                             std::runtime_error,
+                             Catch::Matchers::Message("Sims callback failed"));
+    }
+
+    REQUIRE(called_on_worker == (threads == 2));
+    // The same object remains usable after the failing operation has joined
+    // its workers and propagated the exception.
+    s.clear_pruners();
+    REQUIRE(s.number_of_congruences(4) == 3);
+    REQUIRE(
+        s.find_if(
+             4, [](auto const& wg) { return wg.number_of_active_nodes() == 4; })
+            .number_of_active_nodes()
+        == 4);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Sims",
+                                   "139",
+                                   "propagate worker callback copy exceptions",
+                                   "[quick][low-index]",
+                                   Sims1,
+                                   Sims2) {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(1).contains_empty_word(true);
+    presentation::add_rule(p, 0000_w, ""_w);
+    TestType s(p);
+    s.number_of_threads(2);
+    if (s.number_of_threads() < 2) {
+      SKIP("requires at least two worker threads");
+    }
+
+    struct ThrowOnWorkerCopy {
+      std::thread::id caller = std::this_thread::get_id();
+
+      ThrowOnWorkerCopy() = default;
+      ThrowOnWorkerCopy(ThrowOnWorkerCopy const& that) : caller(that.caller) {
+        if (std::this_thread::get_id() != caller) {
+          throw std::runtime_error("Sims callback copy failed");
+        }
+      }
+
+      bool operator()(word_graph_type const&) const {
+        return false;
+      }
+    };
+
+    REQUIRE_THROWS_MATCHES(
+        s.find_if(4, ThrowOnWorkerCopy()),
+        std::runtime_error,
+        Catch::Matchers::Message("Sims callback copy failed"));
+    REQUIRE(s.number_of_congruences(4) == 3);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Sims",
+                                   "140",
+                                   "preserve non-standard worker exceptions",
+                                   "[quick][low-index]",
+                                   Sims1,
+                                   Sims2) {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(1).contains_empty_word(true);
+    presentation::add_rule(p, 0000_w, ""_w);
+    TestType s(p);
+    s.number_of_threads(2);
+    if (s.number_of_threads() < 2) {
+      SKIP("requires at least two worker threads");
+    }
+
+    struct Error {
+      std::thread::id thread;
+      int             value;
+    };
+    auto const caller = std::this_thread::get_id();
+    try {
+      s.find_if(4, [](auto const&) -> bool {
+        throw Error{std::this_thread::get_id(), 42};
+      });
+      FAIL("expected the worker exception on the calling thread");
+    } catch (Error const& error) {
+      REQUIRE(error.thread != caller);
+      REQUIRE(std::this_thread::get_id() == caller);
+      REQUIRE(error.value == 42);
+    }
+    REQUIRE(s.number_of_congruences(4) == 3);
   }
 }  // namespace libsemigroups
