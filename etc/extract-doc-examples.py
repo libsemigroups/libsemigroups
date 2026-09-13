@@ -6,7 +6,9 @@ Automated code block extraction from documentation for testing.
 
 import sys
 import argparse
+import io
 import re
+import subprocess
 from pathlib import Path
 
 ########################################################################
@@ -98,6 +100,18 @@ def __parse_args() -> argparse.Namespace:
         "--exclude",
         nargs="+",
         help="Files to exclude from docs code example collection",
+    )
+
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Check the formatted test file is up to date without rewriting it",
+    )
+
+    parser.add_argument(
+        "--clang-format",
+        default="clang-format-15",
+        help="Formatter executable for --check (default: clang-format-15)",
     )
 
     parser.add_argument(
@@ -206,7 +220,9 @@ def extract_code_blocks(file_path):
 ########################################################################
 
 
-def process_folder(folder_path, recursive=False, exclude=[]):
+def process_folder(
+    folder_path, recursive=False, exclude=[], check=False, clang_format="clang-format-15"
+):
     """
     Process all files in a folder to find code examples.
 
@@ -240,12 +256,11 @@ def process_folder(folder_path, recursive=False, exclude=[]):
 
     if len(files) == 0:
         print("No files found in the specified directory.")
-        return
 
     total_blocks = 0
 
     try:
-        with open(TEST_FILEPATH, "w") as testfile:
+        with io.StringIO() as testfile:
             testfile.write(f"{HEADER_TEXT}\n")
             testfile.write("namespace libsemigroups {\n")  # Open namespace
 
@@ -285,13 +300,36 @@ def process_folder(folder_path, recursive=False, exclude=[]):
 
             #  Pragma Pop
             testfile.write("#pragma GCC diagnostic pop\n")
-    except IOError as e:
-        print(f"Could not write to test file: {e}")
+            output = testfile.getvalue().encode("utf-8")
+
+        if check:
+            output = subprocess.run(
+                [clang_format, f"--assume-filename={TEST_FILEPATH}"],
+                input=output,
+                stdout=subprocess.PIPE,
+                check=True,
+            ).stdout
+            try:
+                current = Path(TEST_FILEPATH).read_bytes()
+            except FileNotFoundError:
+                current = None
+            if current != output:
+                __error(
+                    f"{TEST_FILEPATH} is out of date.\n"
+                    "Run etc/make-doc-test.sh and stage the result."
+                )
+                return 1
+        else:
+            Path(TEST_FILEPATH).write_bytes(output)
+    except (OSError, subprocess.CalledProcessError) as e:
+        __error(f"Could not generate or check test file: {e}")
+        return 1
 
     if total_blocks == 0:
         print("No code blocks found in any files.")
     else:
         print(f"Total code blocks found: {total_blocks}")
+    return 0
 
 
 ########################################################################
@@ -307,9 +345,14 @@ def main():
     if args.exclude is not None:
         exclude.append(args.exclude)
 
-    process_folder(args.folder_path, args.recursive, exclude)
+    result = process_folder(
+        args.folder_path, args.recursive, exclude, args.check, args.clang_format
+    )
+    if result:
+        return result
     print("\nDocs code block extraction completed successfully. Exiting.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
