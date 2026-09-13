@@ -92,6 +92,7 @@
 #include "to-presentation.hpp"
 #include "to-todd-coxeter.hpp"
 #include "to-word-graph.hpp"
+#include "to-word.hpp"
 #include "todd-coxeter-class.hpp"
 #include "todd-coxeter-helpers.hpp"
 #include "todd-coxeter.hpp"
@@ -106,7 +107,9 @@
 #include "word-graph-view-helpers.hpp"
 #include "word-graph-view.hpp"
 #include "word-graph.hpp"
+#include "word-range-class.hpp"
 #include "word-range.hpp"
+#include "words-helpers.hpp"
 
 #include "detail/aho-corasick-impl.hpp"
 #include "detail/bruidhinn-traits.hpp"
