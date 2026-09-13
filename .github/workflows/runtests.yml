@@ -112,7 +112,7 @@ jobs:
           sudo apt-get --yes update
           sudo apt-get install graphviz --yes
       - name: Set up Homebrew . . .
-        uses: Homebrew/actions/setup-homebrew@master
+        uses: Homebrew/actions/setup-homebrew@main
       - name: Install latest doxygen . . .
         run: |
           brew install gcc
