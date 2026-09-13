@@ -4,9 +4,18 @@ A simple script to generate the header file libsemigroups.hpp.
 """
 # pylint: disable=invalid-name
 
+import argparse
 import datetime
 import os
 import sys
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--check",
+    action="store_true",
+    help="check that libsemigroups.hpp is up to date without rewriting it",
+)
+args = parser.parse_args()
 
 year = datetime.date.today().year
 
@@ -44,13 +53,16 @@ head = f"""//
 foot = "#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_\n"
 
 include_dirs = ["include/libsemigroups", "include/libsemigroups/detail"]
-exclude_files = {"libsemigroups.hpp", "rewriters.hpp"}
+# order-deprecated.hpp must be included by order.hpp inside its namespace.
+exclude_files = {"libsemigroups.hpp", "order-deprecated.hpp", "rewriters.hpp"}
 
 output = head
 for dir in include_dirs:
-    files = [file for file in os.listdir(dir) if file.endswith(".hpp")]
-    files.sort()
-    for file in files:
+    files = {file for file in os.listdir(dir) if file.endswith(".hpp")}
+    if dir == include_dirs[0]:
+        # configure generates this header, so it may not exist yet.
+        files.add("config.hpp")
+    for file in sorted(files):
         if file not in exclude_files:
             if dir.endswith("detail"):
                 output += f'#include "detail/{file}"\n'
@@ -60,10 +72,22 @@ for dir in include_dirs:
 
 output += foot
 
-with open(
-    os.path.join(include_dirs[0], "libsemigroups.hpp"), "w", encoding="utf-8"
-) as f:
-    print(f"Writing {include_dirs[0]}/libsemigroups.hpp . . .")
+output_path = os.path.join(include_dirs[0], "libsemigroups.hpp")
+if args.check:
+    try:
+        with open(output_path, "rb") as f:
+            current = f.read()
+    except FileNotFoundError:
+        current = None
+    if current != output.encode("utf-8"):
+        sys.exit(
+            f"{output_path} is out of date.\n"
+            "Run python3 etc/generate-libsemigroups-hpp.py and stage the result."
+        )
+    sys.exit(0)
+
+with open(output_path, "w", encoding="utf-8", newline="\n") as f:
+    print(f"Writing {output_path} . . .")
     f.write(output)
 
 sys.exit(0)
