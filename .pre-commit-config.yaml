@@ -22,6 +22,13 @@ repos:
         stages: ["pre-push"]
         pass_filenames: false
         always_run: true
+      - id: check-libsemigroups-hpp
+        name: Check libsemigroups.hpp is up to date
+        entry: python etc/generate-libsemigroups-hpp.py --check
+        language: python
+        stages: ["pre-push"]
+        pass_filenames: false
+        always_run: true
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v15.0.7
     hooks:
