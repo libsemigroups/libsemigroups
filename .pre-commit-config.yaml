@@ -7,6 +7,21 @@ exclude: |
   )$
 default_install_hook_types: [pre-commit, pre-push]
 repos:
+  - repo: local
+    hooks:
+      - id: check-docs-code-examples
+        name: Check documentation code examples are up to date
+        entry: python etc/extract-doc-examples.py
+        args:
+          - include/libsemigroups
+          - --recursive
+          - --check
+          - --clang-format=clang-format
+        language: python
+        additional_dependencies: [clang-format==15.0.7]
+        stages: ["pre-push"]
+        pass_filenames: false
+        always_run: true
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v15.0.7
     hooks:
