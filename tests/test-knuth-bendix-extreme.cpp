@@ -460,8 +460,11 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("abAB"s);
 
-    auto rules = StringRange().alphabet(p.alphabet()).min(11).max(12);
-    p.rules    = rules | rx::to_vector();
+    v4::WordRange<std::string> rules;
+    rules.order(LenLexCmp(p.alphabet_v4()))
+        .first(std::string(11, 'a'))
+        .last(std::string(12, 'a'));
+    p.rules = rules | rx::to_vector();
     presentation::add_rule(p, "aaabbb"s, "aabb"s);
     KnuthBendix<std::string, TestType> k(twosided, p);
     REQUIRE(k.rewriting_system().number_of_rules() == 2'097'153);

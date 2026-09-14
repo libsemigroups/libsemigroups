@@ -932,8 +932,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("lex_cmp", "042", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet<std::string>("ab"))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1024,8 +1024,8 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet<std::string>("ab"))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1116,8 +1116,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "044", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet<std::string>("ab"))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1177,8 +1177,8 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet<std::string>("ab"))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1234,8 +1234,8 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet<std::string>("ab"))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1278,8 +1278,8 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet<std::string>("ab"))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 

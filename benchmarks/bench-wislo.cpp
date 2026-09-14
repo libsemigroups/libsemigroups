@@ -101,4 +101,32 @@ namespace libsemigroups {
       REQUIRE(count == 97656);
     };
   }
+
+  TEST_CASE("new WordRange vs old WordRange", "[quick]") {
+    using literals::operator""_w;
+    size_t          alphabet_size = 5;
+    size_t          max_length    = 10;
+
+    BENCHMARK("new WordRange LenLexCmp for length 0 to 10") {
+      size_t        count = 0;
+      v4::WordRange new_wr;
+      new_wr.order(LenLexCmp(Alphabet<word_type>(alphabet_size)))
+          .max(max_length);
+
+      for (auto const& word : new_wr) {
+        count++;
+      }
+      REQUIRE(count == 2441406);
+    };
+    BENCHMARK("old WordRange LenLexCmp for length 0 to 10") {
+      size_t    count = 0;
+      WordRange old_wr;
+      old_wr.order(Order::lenlex).alphabet_size(alphabet_size).max(max_length);
+
+      for (auto const& word : old_wr) {
+        count++;
+      }
+      REQUIRE(count == 2441406);
+    };
+  }
 }  // namespace libsemigroups

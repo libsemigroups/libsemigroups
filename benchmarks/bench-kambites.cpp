@@ -224,15 +224,22 @@ namespace libsemigroups {
   namespace {
     template <typename T>
     auto c4_check_2_gen_1_rel_all(size_t len) {
-      StringRange lhs;
-      lhs.alphabet("ab").min(len).max(len + 1);
+      v4::WordRange<std::string> lhs;
+      lhs.order(LenLexCmp(Alphabet<std::string>("ab")))
+          .first(std::string(len, 'a'))
+          .last(std::string(len + 1, 'a'));
 
       rx::advance_by(lhs, lhs.count() - 1);
       auto last = lhs.get();
-      lhs.init().alphabet("ab").min(len).max(len + 1);
+      lhs.init()
+          .order(LenLexCmp(Alphabet<std::string>("ab")))
+          .first(std::string(len, 'a'))
+          .last(std::string(len + 1, 'a'));
 
-      StringRange rhs;
-      rhs.alphabet("ab").min(1).max(len);
+      v4::WordRange<std::string> rhs;
+      rhs.order(LenLexCmp(Alphabet<std::string>("ab")))
+          .first("a")
+          .last(std::string(len, 'a'));
 
       uint64_t total_c4     = 0;
       uint64_t total        = 0;
