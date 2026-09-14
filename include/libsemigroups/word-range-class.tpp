@@ -195,7 +195,7 @@ namespace libsemigroups {
         print_short = true;
       }
 
-      // TODO(1): re-add order and alphabet info
+      // TODO(1): re-add order info
       if (!print_short) {
         out = fmt::format("<WordRange of length {} between {} and {} over {}>",
                           group_digits(count),

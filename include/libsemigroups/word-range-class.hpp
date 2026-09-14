@@ -46,10 +46,6 @@ namespace libsemigroups {
   // Word iterators
   //////////////////////////////////////////////////////////////////////
 
-  // TODO(0): Check the semantics of the `upper_bound` parameter. It claims that
-  // only words less than the length of `upper_bound` are checked, but it seems
-  // as though the implementation is less than or equal to.
-
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //!
