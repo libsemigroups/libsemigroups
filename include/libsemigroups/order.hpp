@@ -6203,6 +6203,63 @@ namespace libsemigroups {
   //! reduction order comparison types.
   // TODO these should not only be specialised for Default
   namespace order {
+    //! \brief Struct for checking if a template parameter is a specialization
+    //! of another.
+    //!
+    //! This struct contains the unique member `value` which indicates whether
+    //! or not the template parameter \p Thing is a specialization of the
+    //! template template parameter \p Primary. This particular struct is
+    //! designed for checking `libsemigroups` order types, and therefore
+    //! \p Primary has a type template parameter and a boolean non-type template
+    //! parameter.
+    //!
+    //! \tparam Thing the type we are checking is a specialization of
+    //! \p Primary.
+    //! \tparam Primary the type we are checking \p Thing against.
+    //!
+    //! \par Example
+    //! \code_no_test
+    //! // true
+    //! order::is_specialization_of_v<LexCmp<word_type, false>, LexCmp>;
+    //! // false
+    //! order::is_specialization_of_v<LenLexCmp<word_type, false>, LexCmp>;
+    //! \endcode_no_test
+    //!
+    //! \sa
+    //! \ref libsemigroups::is_specialization_of
+    template <typename Thing, template <typename, bool> typename Primary>
+    struct is_specialization_of : std::false_type {};
+
+    //! \copydoc is_specialization_of
+    template <template <typename, bool> typename Primary,
+              typename Word,
+              bool checks>
+    struct is_specialization_of<Primary<Word, checks>, Primary>
+        : std::true_type {};
+
+    //! \brief Helper variable template for \ref is_specialization_of.
+    //!
+    //! This helper is just a short version of
+    //! `is_specialization_of<Thing, Primary>::value`.
+    //!
+    //! \tparam Thing the type we are checking is a specialization of
+    //! \p Primary.
+    //! \tparam Primary the type we are checking \p Thing against.
+    //!
+    //! \par Example
+    //! \code_no_test
+    //! // true
+    //! order::is_specialization_of_v<LexCmp<word_type, false>, LexCmp>;
+    //! // false
+    //! order::is_specialization_of_v<LenLexCmp<word_type, false>, LexCmp>;
+    //! \endcode_no_test
+    //!
+    //! \sa
+    //! \ref is_specialization_of
+    template <typename Thing, template <typename, bool> typename Primary>
+    inline constexpr bool is_specialization_of_v
+        = is_specialization_of<Thing, Primary>::value;
+
     //! \brief Helper used to indicate whether or not an order is length
     //! non-increasing.
     //!
