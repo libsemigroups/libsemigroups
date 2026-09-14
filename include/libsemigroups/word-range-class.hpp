@@ -236,8 +236,9 @@ namespace libsemigroups {
     using output_type = word_type const&;
 
    private:
-    using const_iterator = std::variant<detail::const_wilo_iterator,
-                                        detail::const_wislo_iterator>;
+    using const_iterator
+        = std::variant<detail::const_wilo_iterator<word_type>,
+                       detail::const_wislo_iterator<word_type>>;
 
     size_type              _alphabet_size;
     mutable const_iterator _current;
