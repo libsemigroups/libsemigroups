@@ -58,8 +58,8 @@ namespace libsemigroups {
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
 
-    WordRange words;
-    words.alphabet_size(2).min(4).max(5);
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(2))).min(4).max(5);
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
@@ -228,8 +228,8 @@ namespace libsemigroups {
 
     REQUIRE(ac.number_of_nodes() == 1);
 
-    WordRange words;
-    words.alphabet_size(2).min(4).max(5);
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(2))).min(4).max(5);
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
@@ -293,8 +293,8 @@ namespace libsemigroups {
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
 
-    WordRange words;
-    words.alphabet_size(2).min(4).max(5);
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(2))).min(4).max(5);
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
@@ -326,8 +326,8 @@ namespace libsemigroups {
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
 
-    WordRange words;
-    words.alphabet_size(2).min(4).max(5);
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(2))).min(4).max(5);
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
@@ -389,8 +389,8 @@ namespace libsemigroups {
       REQUIRE(*aho_corasick_impl::begin_search_no_checks(ac, ""_w)
               == UNDEFINED);
 
-      WordRange words;
-      words.alphabet_size(2).min(0).max(4);
+      v4::WordRange words;
+      words.order(LenLexCmp(Alphabet<word_type>(2))).min(0).max(4);
       for (auto const& w : words) {
         REQUIRE(*aho_corasick_impl::begin_search_no_checks(ac, w) == UNDEFINED);
       }
@@ -468,8 +468,8 @@ namespace libsemigroups {
       using index_type = AhoCorasickImpl::index_type;
       AhoCorasickImpl ac(2);
 
-      WordRange words;
-      words.alphabet_size(2).min(4).max(5);
+      v4::WordRange words;
+      words.order(LenLexCmp(Alphabet<word_type>(2))).min(4).max(5);
       for (auto const& w : words) {
         ac.insert(w, &dummy_rule);
       }

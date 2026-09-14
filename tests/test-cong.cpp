@@ -889,8 +889,8 @@ namespace libsemigroups {
         REQUIRE_THROWS_AS(to<FroidurePin>(cong), LibsemigroupsException);
       }
 
-      WordRange w;
-      w.alphabet_size(2).min(1).max(5);
+      v4::WordRange w;
+      w.order(LenLexCmp(Alphabet<word_type>(2))).min(1).max(5);
 
       REQUIRE(w.count() == 30);
 

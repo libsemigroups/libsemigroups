@@ -201,8 +201,8 @@ namespace libsemigroups {
         size_t const m = tc.number_of_classes();
         size_t const n = tc.presentation().alphabet().size();
 
-        WordRange words;
-        words.alphabet_size(n).min(1).max(m + 1);
+        v4::WordRange words;
+        words.order(LenLexCmp(Alphabet<word_type>(n))).min(1).max(m + 1);
 
         std::unordered_map<node_type, word_type> map;
         for (auto const& w : words) {
@@ -229,9 +229,8 @@ namespace libsemigroups {
         size_t const m = tc.number_of_classes();
         size_t const n = tc.presentation().alphabet().size();
 
-        WordRange words;
-        words.order(Order::lex)
-            .alphabet_size(n)
+        v4::WordRange words;
+        words.order(LexCmp(Alphabet<word_type>(n)))
             .upper_bound(m + 1)
             .min(1)
             .max(m + 1);
@@ -4465,9 +4464,9 @@ namespace libsemigroups {
     for (size_t a = 0; a < n; ++a) {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
-    using words::operator+;
-    WordRange    words;
-    words.alphabet_size(n).min(0).max(8);
+    using words:: operator+;
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(n))).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
       for (size_t b = a; b < n - 1; ++b) {
@@ -5418,8 +5417,8 @@ namespace libsemigroups {
         tc,
         froidure_pin::factorisation(S, make<Transf>({3, 4, 4, 4, 4})),
         froidure_pin::factorisation(S, make<Transf>({3, 1, 3, 3, 3})));
-    WordRange words;
-    words.alphabet_size(2).min(1).max(5);
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(2))).min(1).max(5);
 
     auto w = 010001_w;
     REQUIRE(tc.current_index_of(w.begin(), w.end()) == 49);
