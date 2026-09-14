@@ -25,15 +25,19 @@
 #ifndef LIBSEMIGROUPS_WORD_RANGE_CLASS_HPP_
 #define LIBSEMIGROUPS_WORD_RANGE_CLASS_HPP_
 
-#include <cstddef>  // for size_t
-#include <string>   // for basic_string
-#include <variant>  // for variant, visit, operator==
-#include <vector>   // for vector, operator==
+#include <algorithm>  // for any_of, all_of
+#include <cstddef>    // for size_t
+#include <string>     // for basic_string
+#include <variant>    // for variant, visit, operator==
+#include <vector>     // for vector, operator==
 
-#include "order.hpp"    // for Order
-#include "ranges.hpp"   // for begin, end
-#include "to-word.hpp"  // for ToWord
-#include "types.hpp"    // for word_type
+#include "alphabet-class.hpp"        // for Alphabet
+#include "alphabet-helpers.hpp"      // for has_alphabet
+#include "is_specialization_of.hpp"  // for is_specialization_of
+#include "order.hpp"                 // for Order
+#include "ranges.hpp"                // for begin, end
+#include "to-word.hpp"               // for ToWord
+#include "types.hpp"                 // for word_type
 
 #include "detail/word-iterators.hpp"  // for const_wilo_iterator, const_wisl...
 
@@ -390,6 +394,413 @@ namespace libsemigroups {
   // WordRange
   //////////////////////////////////////////////////////////////////////
 
+  namespace v4 {
+    template <typename Word = word_type>
+    class WordRange {
+     public:
+      //! Alias for the size type.
+      using size_type = typename std::vector<Word>::size_type;
+
+      //! The type of the output of a WordRange object.
+      using output_type = Word const&;
+
+     private:
+      using const_iterator = std::variant<detail::const_wio_iterator<Word>,
+                                          detail::const_wilo_iterator<Word>,
+                                          detail::const_wislo_iterator<Word>>;
+
+      mutable const_iterator _current;
+      mutable const_iterator _end;
+      mutable bool           _current_valid;
+      Word                   _first;
+      Word                   _last;
+      size_type              _upper_bound;
+      mutable size_type      _visited;
+
+      void set_iterator() const;
+
+     public:
+      //! \brief Get the current value.
+      //!
+      //! Returns the current word in a WordRange object.
+      //!
+      //! \returns A value of type \ref WordRange<Word>::output_type.
+      //!
+      //! \throws LibsemigroupsException if \c first or \c last contain letters
+      //! that are not in the provided alphabet.
+      //!
+      //! \warning If `at_end()` returns \c true, then the return value of this
+      //! function could be anything.
+      // not noexcept because set_iterator isn't
+      [[nodiscard]] output_type get() const {
+        set_iterator();
+        return std::visit(
+            [](auto& it) -> auto const& { return *it; }, _current);
+      }
+
+      //! \brief Advance to the next value.
+      //!
+      //! Advances a WordRange object to the next value (if any).
+      //!
+      //! \throws LibsemigroupsException if \c first or \c last contain letters
+      //! that are not in the provided alphabet.
+      //!
+      //! \sa \ref WordRange<Word>::at_end
+      // not noexcept because set_iterator isn't
+      void next() {
+        set_iterator();
+        if (!at_end()) {
+          ++_visited;
+        }
+        std::visit([](auto& it) { ++it; }, _current);
+      }
+
+      //! \brief Check if the range object is exhausted.
+      //!
+      //! Returns \c true if a WordRange object is exhausted, and \c false if
+      //! not.
+      //!
+      //! \returns A value of type \c bool.
+      //!
+      //! \throws LibsemigroupsException if \c first or \c last contain letters
+      //! that are not in the provided alphabet.
+      // not noexcept because set_iterator isn't
+      [[nodiscard]] bool at_end() const {
+        set_iterator();
+        return _current == _end;
+      }
+
+      //! \brief The possible size of the range.
+      //!
+      //! Returns the number of words in a WordRange object if order() is
+      //! Order::lenlex. If order() is not Order::lenlex, then the return
+      //! value of this function is meaningless.
+      //!
+      //! \returns A value of type \c size_t.
+      //!
+      //! \exceptions
+      //! \noexcept
+      // This is only the actual size if the order is lenlex
+      [[nodiscard]] size_t size_hint() const noexcept {
+        return number_of_words(
+                   std::visit([](auto& it) { return it.alphabet().size(); },
+                              _current),
+                   _first.size(),
+                   _last.size())
+               - _visited;
+      }
+
+      //! \brief The actual size of the range.
+      //!
+      //! Returns the number of words in a WordRange object. If order() is
+      //! Order::lenlex, then size_hint() is used. If order() is not
+      //! Order::lenlex, then a copy of the range may have to be looped over in
+      //! order to find the return value of this function.
+      //!
+      //! \returns A value of type \c size_t.
+      //!
+      //! \throws LibsemigroupsException if \c first or \c last contain letters
+      //! that are not in the provided alphabet.
+      // not noexcept because set_iterator isn't
+      [[nodiscard]] size_t count() const;
+
+      // For some reason, there needs to be two doxygen comment lines here for
+      // this to render.
+      //! Value indicating that the range is finite.
+      static constexpr bool is_finite = true;  // This may not always be true
+
+      //! Value indicating that if get() is called twice on a WordRange object
+      //! that is not changed between the two calls, then the return value of
+      //! get() is the same both times.
+      static constexpr bool is_idempotent = true;
+
+      //! \brief Default constructor.
+      //!
+      //! Constructs an empty range over words in lenlex order with:
+      //! * first() equal to the empty word;
+      //! * last() equal to the empty word;
+      //! * upper_bound() equal to \c 0;
+      //! * alphabet() equal to the empty alphabet.
+      WordRange() {
+        init();
+      }
+
+      //! \brief Initialize an existing WordRange object.
+      //!
+      //! This function puts a WordRange object back into the same state as if
+      //! it had been newly default constructed.
+      //!
+      //! \returns A reference to \c *this.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      WordRange& init();
+
+      //! \brief Default copy constructor.
+      //!
+      //! Default copy constructor.
+      WordRange(WordRange const&);
+
+      //! \brief Default move constructor.
+      //!
+      //! Default move constructor.
+      WordRange(WordRange&&);
+
+      //! \brief Default copy assignment operator.
+      //!
+      //! Default copy assignment operator.
+      WordRange& operator=(WordRange const&);
+
+      //! \brief Default move assignment operator.
+      //!
+      //! Default move assignment operator.
+      WordRange& operator=(WordRange&&);
+
+      //! \brief Default destructor.
+      //!
+      //! Default destructor.
+      ~WordRange();
+
+      //! \brief The alphabet the range.
+      //!
+      //! Returns the alphabet a WordRange object.
+      //!
+      //! \returns A const reference to an \ref Alphabet<Word>.
+      //!
+      //! \exceptions
+      //! \noexcept
+      Alphabet<Word> const& alphabet() const noexcept {
+        return std::visit(
+            [](auto const& it) -> Alphabet<Word> const& {
+              return it.alphabet();
+            },
+            _current);
+      }
+
+      //! \brief Set the first word in the range.
+      //!
+      //! Sets the first word in a WordRange object to be \p frst. If first() is
+      //! greater than last() with respect to the specified order, then the
+      //! object will be empty.
+      //!
+      //! \param frst the first word.
+      //!
+      //! \returns A reference to \c *this.
+      //!
+      //! \sa \ref WordRange<Word>::min
+      WordRange& first(Word const& frst) {
+        _current_valid &= (frst == _first);
+        _first = frst;
+        return *this;
+      }
+
+      //! \brief The current first word in the range.
+      //!
+      //! Returns the first word in a WordRange object.
+      //!
+      //! \returns A const reference to a Word.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa \ref WordRange<Word>::min
+      [[nodiscard]] Word const& first() const noexcept {
+        return _first;
+      }
+
+      //! \brief Set one past the last word in the range.
+      //!
+      //! Sets one past the last word in a WordRange object to be \p lst.
+      //!
+      //! \param lst one past the last word.
+      //!
+      //! \returns A reference to \c *this.
+      //!
+      //! \sa \ref WordRange<Word>::max
+      WordRange& last(Word const& lst) {
+        _current_valid &= (lst == _last);
+        _last = lst;
+        return *this;
+      }
+
+      //! \brief The current one past the last word in the range.
+      //!
+      //! Returns one past the last word in a WordRange object.
+      //!
+      //! \returns A const reference to a Word.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa \ref WordRange<Word>::max
+      [[nodiscard]] Word const& last() const noexcept {
+        return _last;
+      }
+
+      //! \brief Set the order of the words in the range.
+      //!
+      //! Sets the comparator used to determine the order of the words in a
+      //! WordRange object to \p cmp.
+      //!
+      //! \tparam Cmp the type of the comparator
+      //!
+      //! \param cmp the comparator.
+      //!
+      //! \returns A reference to \c *this.
+      template <typename Cmp,
+                typename = typename std::enable_if_t<has_alphabet<Cmp>>>
+      WordRange& order(Cmp&& cmp);
+
+      //! \brief Set an upper bound for the length of a word in the range.
+      //!
+      //! Sets an upper bound for the length of a word in a WordRange object.
+      //! This setting is not used if the order is LenLexCmp.
+      //!
+      //! \param n the upper bound.
+      //!
+      //! \returns A reference to \c *this.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      WordRange& upper_bound(size_type n) {
+        _current_valid &= (n == _upper_bound);
+        _upper_bound = n;
+        return *this;
+      }
+
+      //! \brief The current upper bound on the length of a word in the range.
+      //!
+      //! Returns the current upper bound on the length of a word in a WordRange
+      //! object. This setting is not used if the order is LenLexCmp.
+      //!
+      //! \returns A value of type \ref WordRange<Word>::size_type.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] size_type upper_bound() const noexcept {
+        return _upper_bound;
+      }
+
+      //! \brief Set the first word in the range by length.
+      //!
+      //! Sets the first word in a WordRange object to be  `pow(0_w, val)` (the
+      //! word consisting of \p val letters equal to \c 0).
+      //!
+      //! \param val the exponent.
+      //!
+      //! \returns A reference to \c *this.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      // TODO(0): This doesn't really make sense when Word is std::string.
+      WordRange& min(size_type val) {
+        first(Word(val, 0));
+        return *this;
+      }
+
+      //! \brief Set one past the last word in the range by length.
+      //!
+      //! Sets one past the last word in a WordRange object to be
+      //! `pow(0_w, val)` (the word consisting of \p val letters equal to \c 0).
+      //!
+      //! \param val the exponent.
+      //!
+      //! \returns A reference to \c *this.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      // TODO(0): This doesn't really make sense when Word is std::string.
+      WordRange& max(size_type val) {
+        last(Word(val, 0));
+        return *this;
+      }
+
+      //! \brief Returns an input iterator pointing to the first word in the
+      //! range.
+      //!
+      //! This function returns an input iterator pointing to the first word in
+      //! a WordRange object.
+      //!
+      //! \returns An input iterator.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \note The return type of \ref WordRange<Word>::end might be different
+      //! from the return type of \ref WordRange<Word>::begin.
+      //!
+      //! \sa \ref WordRange<Word>::end.
+      // REQUIRED so that we can use StringRange in range based loops
+      // TODO(0) Remove this once StringRange is removed?
+      auto begin() const noexcept {
+        return rx::begin(*this);
+      }
+
+      //! \brief Returns an input iterator pointing one beyond the last word in
+      //! the range.
+      //!
+      //! This function returns an input iterator pointing one beyond the last
+      //! word in a WordRange object.
+      //!
+      //! \returns An input iterator.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \note The return type of \ref WordRange<Word>::end might be different
+      //! from the return type of \ref WordRange<Word>::begin.
+      //!
+      //! \sa \ref WordRange<Word>::begin.
+      // REQUIRED so that we can use StringRange in range based loops
+      // TODO(0): Remove this once StringRange is removed?
+      auto end() const noexcept {
+        return rx::end(*this);
+      }
+
+      //! \brief Returns whether the settings have been changed since the
+      //! last time either \ref WordRange<Word>::next or
+      //! \ref WordRange<Word>::get has been called.
+      //!
+      //! Other than by calling \ref WordRange<Word>::next, the value returned
+      //! by \ref WordRange<Word>::get may be altered by a call to one of the
+      //! following:
+      //! * \ref WordRange<Word>::order
+      //! * \ref WordRange<Word>::min
+      //! * \ref WordRange<Word>::max
+      //! * \ref WordRange<Word>::first
+      //! * \ref WordRange<Word>::last
+      //! * \ref WordRange<Word>::upper_bound
+      //!
+      //! This function returns \c true if none of the above settings have been
+      //! changed since the last time \ref WordRange<Word>::next or
+      //! \ref WordRange<Word>::get is called, and \c false otherwise.
+      //!
+      //! \returns A value of type `bool`.
+      // Required so StringRange can accurately set _current_valid
+      // TODO(0): Remove this once StringRange is removed?
+      bool valid() const noexcept {
+        return _current_valid;
+      }
+    };
+
+    //! \ingroup words_group
+    //!
+    //! \brief Return a human readable representation of a WordRange object.
+    //!
+    //! Return a human readable representation of a WordRange object.
+    //!
+    //! \param wr the WordRange object.
+    //! \param max_width the maximum width of the returned string (default:
+    //! \c 72).
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    template <typename Word>
+    [[nodiscard]] std::string to_human_readable_repr(WordRange<Word> const& wr,
+                                                     size_t max_width = 72);
+
+  }  // namespace v4
+
   //! \ingroup words_group
   //! \brief Class for generating words in a given range and in a particular
   //! order.
@@ -698,9 +1109,6 @@ namespace libsemigroups {
     [[nodiscard]] Order order() const noexcept {
       return _order;
     }
-
-    template <typename Cmp>
-    WordRange& order(Cmp&& cmp);
 
     //! \brief Set an upper bound for the length of a word in the range.
     //!

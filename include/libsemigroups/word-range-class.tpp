@@ -109,4 +109,113 @@ namespace libsemigroups {
     return detail::const_wislo_iterator<Word>(alphabet, last, last);
   }
 
+  //////////////////////////////////////////////////////////////////////
+  // WordRange
+  //////////////////////////////////////////////////////////////////////
+
+  namespace v4 {
+
+    template <typename Word>
+    void WordRange<Word>::set_iterator() const {
+      if (!_current_valid) {
+        _current_valid = true;
+        _visited       = 0;
+        std::visit(
+            [&](auto& visitor) { visitor.reset(_upper_bound, _first, _last); },
+            _current);
+      }
+    }
+
+    template <typename Word>
+    size_t WordRange<Word>::count() const {
+      if (std::holds_alternative<detail::const_wislo_iterator<Word>>(
+              _current)) {
+        return size_hint();
+      } else {
+        return (*this | rx::count());
+      }
+    }
+
+    template <typename Word>
+    WordRange<Word>& WordRange<Word>::init() {
+      _current_valid = false;
+      _first         = {};
+      _last          = {};
+      _upper_bound   = 0;  // does nothing if the comparison order is lenlex
+      _visited       = 0;
+      order(LenLexCmp((Alphabet(Word{}))));
+      return *this;
+    }
+
+    template <typename Word>
+    WordRange<Word>::WordRange(WordRange const&) = default;
+
+    template <typename Word>
+    WordRange<Word>::WordRange(WordRange&&) = default;
+
+    template <typename Word>
+    WordRange<Word>& WordRange<Word>::operator=(WordRange const&) = default;
+
+    template <typename Word>
+    WordRange<Word>& WordRange<Word>::operator=(WordRange&&) = default;
+
+    template <typename Word>
+    WordRange<Word>::~WordRange() = default;
+
+    template <typename Word>
+    template <typename Cmp, typename>
+    WordRange<Word>& WordRange<Word>::order(Cmp&& cmp) {
+      if constexpr (order::is_specialization_of_v<Cmp, LenLexCmp>) {
+        _current = cbegin_wislo(cmp.alphabet(), _first, _last);
+        _end     = cend_wislo(cmp.alphabet(), _first, _last);
+      } else if constexpr (order::is_specialization_of_v<Cmp, LexCmp>) {
+        _current = cbegin_wilo(cmp.alphabet(), _upper_bound, _first, _last);
+        _end     = cend_wilo(cmp.alphabet(), _upper_bound, _first, _last);
+      } else {
+        _current = cbegin_wio(_upper_bound, _first, _last, cmp);
+        _end = cend_wio(_upper_bound, _first, _last, std::forward<Cmp>(cmp));
+      }
+      _current_valid = true;
+      _visited       = 0;
+      return *this;
+    }
+
+    template <typename Word>
+    std::string to_human_readable_repr(WordRange<Word> const& wr,
+                                       size_t                 max_width) {
+      using detail::group_digits;
+      Word const&  first = wr.first();
+      Word const&  last  = wr.last();
+      size_t const count = wr.count();
+      std::string  out;
+
+      bool print_short = false;
+
+      if (first.size() > max_width || last.size() > max_width) {
+        print_short = true;
+      }
+
+      // TODO(1): re-add order and alphabet info
+      if (!print_short) {
+        out = fmt::format("<WordRange of length {} between {} and {} over {}>",
+                          group_digits(count),
+                          first,
+                          last,
+                          to_human_readable_repr(wr.alphabet()));
+      }
+
+      if (out.size() > max_width) {
+        print_short = true;
+      }
+
+      if (print_short) {
+        out = fmt::format("<WordRange of length {} over {}>",
+                          group_digits(count),
+                          to_human_readable_repr(wr.alphabet()));
+      }
+
+      return out;
+    }
+  }  // namespace v4
+
 }  // namespace libsemigroups
