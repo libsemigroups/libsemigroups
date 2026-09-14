@@ -50,7 +50,8 @@ namespace libsemigroups {
     if (!word_in_language(n, first)
         || !std::lexicographical_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
-      return cend_wilo(n, upper_bound, std::move(first), std::move(last));
+      return detail::const_wilo_iterator<word_type>(
+          Alphabet<word_type>(n), upper_bound, last, last);
     }
     // If <first> is not a valid word in the range, the iterator needs to be
     // incremented before it is returned so that the first word is in the
@@ -67,7 +68,21 @@ namespace libsemigroups {
                                                      size_t upper_bound,
                                                      word_type const& first,
                                                      word_type const& last) {
-    return cbegin_wilo(n, upper_bound, word_type(first), word_type(last));
+    if (!word_in_language(n, first)
+        || !std::lexicographical_compare(
+            first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
+      return detail::const_wilo_iterator<word_type>(
+          Alphabet<word_type>(n), upper_bound, last, last);
+    }
+    // If <first> is not a valid word in the range, the iterator needs to be
+    // incremented before it is returned so that the first word is in the
+    // specified range.
+    if (first.size() >= upper_bound) {
+      return ++detail::const_wilo_iterator<word_type>(
+          Alphabet<word_type>(n), upper_bound, first, last);
+    }
+    return detail::const_wilo_iterator<word_type>(
+        Alphabet<word_type>(n), upper_bound, first, last);
   }
 
   detail::const_wilo_iterator<word_type>
@@ -80,7 +95,8 @@ namespace libsemigroups {
                                                    size_t upper_bound,
                                                    word_type const&,
                                                    word_type const& last) {
-    return cend_wilo(n, upper_bound, word_type(), word_type(last));
+    return detail::const_wilo_iterator<word_type>(
+        Alphabet<word_type>(n), upper_bound, last, last);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -93,7 +109,8 @@ namespace libsemigroups {
     if (!word_in_language(n, first)
         || !lenlex_cmp(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
-      return cend_wislo(Alphabet<word_type>(n), first, last);
+      return detail::const_wislo_iterator<word_type>(
+          Alphabet<word_type>(n), last, last);
     }
     return detail::const_wislo_iterator<word_type>(
         Alphabet<word_type>(n), first, last);
@@ -102,7 +119,14 @@ namespace libsemigroups {
   detail::const_wislo_iterator<word_type> cbegin_wislo(size_t           n,
                                                        word_type const& first,
                                                        word_type const& last) {
-    return cbegin_wislo(n, word_type(first), word_type(last));
+    if (!word_in_language(n, first)
+        || !lenlex_cmp(
+            first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
+      return detail::const_wislo_iterator<word_type>(
+          Alphabet<word_type>(n), last, last);
+    }
+    return detail::const_wislo_iterator<word_type>(
+        Alphabet<word_type>(n), first, last);
   }
 
   detail::const_wislo_iterator<word_type> cend_wislo(size_t n,
@@ -115,7 +139,8 @@ namespace libsemigroups {
   detail::const_wislo_iterator<word_type> cend_wislo(size_t n,
                                                      word_type const&,
                                                      word_type const& last) {
-    return cend_wislo(n, word_type(), word_type(last));
+    return detail::const_wislo_iterator<word_type>(
+        Alphabet<word_type>(n), last, last);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -127,11 +152,27 @@ namespace libsemigroups {
       _current_valid = true;
       _visited       = 0;
       if (_order == Order::lenlex) {
-        _current = cbegin_wislo(_alphabet_size, _first, _last);
-        _end     = cend_wislo(_alphabet_size, _first, _last);
+        _end = detail::const_wislo_iterator_impl(
+            _alphabet_size, word_type(_last), word_type(_last));
+
+        if (!lenlex_cmp(_first, _last)) {
+          _current = _end;
+        } else {
+          _current = detail::const_wislo_iterator_impl(
+              _alphabet_size, word_type(_first), word_type(_last));
+        }
       } else if (_order == Order::lex) {
-        _current = cbegin_wilo(_alphabet_size, _upper_bound, _first, _last);
-        _end     = cend_wilo(_alphabet_size, _upper_bound, _first, _last);
+        _end = detail::const_wilo_iterator_impl(
+            _alphabet_size, _upper_bound, word_type(_last), word_type(_last));
+
+        if (!lex_cmp(_first, _last)) {
+          _current = _end;
+        } else {
+          _current = detail::const_wilo_iterator_impl(_alphabet_size,
+                                                      _upper_bound,
+                                                      word_type(_first),
+                                                      word_type(_last));
+        }
       }
     }
   }
