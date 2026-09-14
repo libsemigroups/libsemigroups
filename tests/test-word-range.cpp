@@ -135,10 +135,10 @@ namespace libsemigroups {
     REQUIRE(w.size() == 14);
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LenLexCmp()));
 
-    WordRange words;
+    v4::WordRange words;
     words.first(first).last(last);
     REQUIRE(words.count() == 0);
-    words.alphabet_size(2);
+    words.order(LenLexCmp(Alphabet<word_type>(2)));
     REQUIRE(words.count() == 14);
   }
 
@@ -254,6 +254,7 @@ namespace libsemigroups {
     REQUIRE(*it3++ == word_type(000_w));
     REQUIRE(*it3 == word_type(001_w));
   }
+
   LIBSEMIGROUPS_TEST_CASE("WordRange", "009", "corner cases", "[wilo][quick]") {
     word_type const u = 0000_w;
     word_type const v = 1111_w;
@@ -395,19 +396,22 @@ namespace libsemigroups {
                             0000000_w,
                             00000000_w,
                             000000000_w}));
-    w = std::vector(cbegin_wilo(0, 0, first, last),
-                    cend_wilo(0, 0, first, last));
-    REQUIRE(w.size() == 0);
-    REQUIRE(w.empty());
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = cbegin_wilo(0, 0, first, last),
+        "invalid letter 0, there are no letters in the alphabet");
+
     first = 00_w;
     last  = 0000_w;
     w     = std::vector(cbegin_wilo(1, 4, first, last),
                     cend_wilo(1, 4, first, last));
     REQUIRE(w == std::vector({00_w, 000_w}));
+
     w = std::vector(cbegin_wilo(1, 1, first, last),
                     cend_wilo(1, 1, first, last));
     REQUIRE(w == std::vector<word_type>());
-    w = std::vector(cbegin_wilo(1, 5, {0}, {1}), cend_wilo(1, 5, {0}, {1}));
+
+    w = std::vector(cbegin_wilo(1, 5, {0}, {000000_w}),
+                    cend_wilo(1, 5, {0}, {000000_w}));
     REQUIRE(w == std::vector({0_w, 00_w, 000_w, 0000_w}));
   }
 
@@ -416,7 +420,7 @@ namespace libsemigroups {
                           "starting at a given word 1",
                           "[wilo][quick]") {
     word_type first = {0, 1, 2, 3};
-    word_type last(5, 4);
+    word_type last(6, 3);
     auto      result   = std::vector(cbegin_wilo(4, 5, first, last),
                               cend_wilo(4, 5, first, last));
     auto      expected = std::vector(std::find(cbegin_wilo(4, 5, {}, last),
@@ -486,9 +490,8 @@ namespace libsemigroups {
     size_t const m = 27;
     size_t const n = 2;
 
-    WordRange words;
-    words.order(Order::lex)
-        .alphabet_size(n)
+    v4::WordRange words;
+    words.order(LexCmp(Alphabet<word_type>(n)))
         .upper_bound(m + 1)
         .min(1)
         .max(m + 1);
@@ -505,11 +508,8 @@ namespace libsemigroups {
     REQUIRE(words.last() == pow(0_w, 28));
     REQUIRE(words.count() == 26);
 
-    REQUIRE_THROWS_AS(words.order(Order::none), LibsemigroupsException);
-    REQUIRE_THROWS_AS(words.order(Order::rpo), LibsemigroupsException);
-
-    WordRange copy;
-    copy.     operator=(words);
+    v4::WordRange copy;
+    copy.         operator=(words);
     REQUIRE(copy.get() == 00_w);
     copy.next();
     REQUIRE(copy.get() == 000_w);
@@ -521,49 +521,46 @@ namespace libsemigroups {
     REQUIRE(copy.last() == pow(0_w, 28));
     REQUIRE(copy.count() == 25);
 
-    WordRange move;
-    move.     operator=(std::move(words));
+    v4::WordRange move;
+    move.         operator=(std::move(words));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == 0_w);
     REQUIRE(move.last() == pow(0_w, 28));
     REQUIRE(move.count() == 25);
-    REQUIRE(move.alphabet_size() == 2);
 
     auto thing = move | rx::skip_n(10);
     REQUIRE(thing.count() == move.count() - 10);
 
-    WordRange more;
+    v4::WordRange more;
     REQUIRE(more.at_end());
     REQUIRE_NOTHROW(more.next());
     REQUIRE(more.get() == ""_w);
-    REQUIRE(more.alphabet_size() == 0);
-    REQUIRE(more.order() == Order::lenlex);
     REQUIRE(more.is_finite);
     REQUIRE(more.is_idempotent);
     REQUIRE(more.size_hint() == 0);
     REQUIRE(more.count() == 0);
     REQUIRE(equal(more, move.init()));
 
-    WordRange swap;
-    swap.alphabet_size(3).first("abc"_w).last("abcbcbcbcb"_w);
+    v4::WordRange swap;
+    swap.order(LenLexCmp(Alphabet<word_type>(3)))
+        .first("abc"_w)
+        .last("abcbcbcbcb"_w);
     std::swap(swap, more);
     REQUIRE(equal(move, swap));
     REQUIRE(swap.upper_bound() == move.upper_bound());
     REQUIRE(swap.first() == move.first());
     REQUIRE(swap.last() == move.last());
     REQUIRE(swap.count() == move.count());
-    REQUIRE(swap.alphabet_size() == move.alphabet_size());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "020",
                           "lex | alphabet = a | min = 0 | max = 10",
                           "[lex][quick]") {
-    StringRange strings;
+    v4::WordRange<std::string> strings;
 
-    strings.order(Order::lex)
-        .alphabet("a")
+    strings.order(LexCmp(Alphabet<std::string>("a")))
         .first("")
         .last("aaaaaaaaaa")
         .upper_bound(10);
@@ -579,23 +576,23 @@ namespace libsemigroups {
                                          "aaaaaaa",
                                          "aaaaaaaa",
                                          "aaaaaaaaa"}));
-    strings.alphabet("");
-    REQUIRE((strings | count()) == 1);
+    REQUIRE_THROWS_AS(strings.order(LexCmp(Alphabet<std::string>(""))),
+                      LibsemigroupsException);
 
-    strings.alphabet("a").upper_bound(4).first("aa");
+    strings.upper_bound(4).first("aa");
     REQUIRE((strings | to_vector()) == std::vector<std::string>({"aa", "aaa"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "021",
                           "lex | corner cases",
                           "[lex][quick]") {
-    StringRange strings;
-    strings.order(Order::lex)
-        .alphabet("ab")
+    v4::WordRange<std::string> strings;
+    strings.order(LexCmp(Alphabet<std::string>("ab")))
         .first("aaaaaaaaaa")
         .last("")
         .upper_bound(4);
+
     REQUIRE((strings | count()) == 0);
 
     strings.first("");
@@ -609,13 +606,12 @@ namespace libsemigroups {
     REQUIRE((strings | to_vector()) == std::vector<std::string>({""}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "022",
                           "lex | alphabet = ab | min = 1 | max = 4",
                           "[lex][quick]") {
-    StringRange strings;
-    strings.alphabet("ab")
-        .order(Order::lex)
+    v4::WordRange<std::string> strings;
+    strings.order(LexCmp(Alphabet<std::string>("ab")))
         .upper_bound(4)
         .first("a")
         .last("bbbbb");
@@ -654,7 +650,7 @@ namespace libsemigroups {
                             111_w}));
     REQUIRE(is_sorted(strings, LexCmp()));
 
-    strings.alphabet("ba").first("b").last("aaaaa");
+    strings.order(LexCmp(Alphabet<std::string>("ba"))).first("b").last("aaaaa");
     REQUIRE((strings | count()) == 14);
     REQUIRE((strings | to_vector())
             == std::vector<std::string>({"b",
@@ -673,13 +669,12 @@ namespace libsemigroups {
                                          "aaa"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "023",
                           "lex | alphabet = abc | min = 0 | max = 13",
                           "[lex][quick][no-valgrind]") {
-    StringRange strings;
-    strings.order(Order::lex)
-        .alphabet("abc")
+    v4::WordRange<std::string> strings;
+    strings.order(LexCmp(Alphabet<std::string>("abc")))
         .upper_bound(13)
         .first("")
         .last(std::string(13, 'c'));
@@ -689,16 +684,18 @@ namespace libsemigroups {
     REQUIRE((strings | count()) == 797'161);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "024",
                           "lex | code coverage",
                           "[lex][quick]") {
-    auto        first = "aaa";
-    auto        last  = "bbbb";
-    StringRange strings;
+    auto                       first = "aaa";
+    auto                       last  = "bbbb";
+    v4::WordRange<std::string> strings;
 
-    strings.alphabet("ab").first(first).last(last).upper_bound(5).order(
-        Order::lex);
+    strings.order(LexCmp(Alphabet<std::string>("ab")))
+        .first(first)
+        .last(last)
+        .upper_bound(5);
 
     auto it = begin(strings);
     REQUIRE(*it == "aaa");
@@ -728,8 +725,8 @@ namespace libsemigroups {
                           "025",
                           "lenlex | alphabet = a | min = 0 | max = 10",
                           "[lenlex][quick]") {
-    WordRange words;
-    words.alphabet_size(1).min(0).max(10);
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(1))).min(0).max(10);
 
     auto w = (words | ToString("a"));
     REQUIRE((w | count()) == 10);
@@ -749,22 +746,27 @@ namespace libsemigroups {
             == std::vector<std::string>({"bb", "bbb"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "026",
                           "lenlex | corner cases",
                           "[lenlex][quick]") {
-    StringRange strings;
-    strings.alphabet("ab").last("").first("bbaaab");
-
-    REQUIRE_THROWS_AS(strings.last("c"), LibsemigroupsException);
-    REQUIRE_THROWS_AS(strings.first("c"), LibsemigroupsException);
-
+    v4::WordRange<std::string> strings;
+    strings.order(LenLexCmp(Alphabet<std::string>("ab")))
+        .last("")
+        .first("bbaaab");
     REQUIRE((strings | count()) == 0);
+
+    strings.first("c");
+    REQUIRE_THROWS_AS(strings.at_end(), LibsemigroupsException);
+
+    strings.first("");
+    strings.last("c");
+    REQUIRE_THROWS_AS(strings.at_end(), LibsemigroupsException);
 
     strings.first("").last("");
     REQUIRE((strings | count()) == 0);
 
-    strings.alphabet("ab").first("a").last("aa");
+    strings.first("a").last("aa");
     REQUIRE((strings | count()) == 2);
     REQUIRE((strings | to_vector()) == std::vector<std::string>({"a", "b"}));
 
@@ -792,13 +794,15 @@ namespace libsemigroups {
                  "babbab", "babbba", "babbbb", "bbaaaa"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "027",
                           "lenlex | alphabet = ab | min = 1 | max = 4",
                           "[lenlex][quick]") {
-    StringRange strings;
+    v4::WordRange<std::string> strings;
 
-    strings.alphabet("ab").first("a").last("aaaa");
+    strings.order(LenLexCmp(Alphabet<std::string>("ab")))
+        .first("a")
+        .last("aaaa");
     REQUIRE((strings | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
@@ -818,10 +822,12 @@ namespace libsemigroups {
     REQUIRE((strings | count()) == 14);
     REQUIRE(is_sorted(strings, LenLexCmp()));
 
-    strings.alphabet("ab").first("a").last("bbbbb");
+    strings.first("a").last("bbbbb");
     REQUIRE(is_sorted(strings, LenLexCmp()));
 
-    strings.alphabet("ba").first("b").last("bbbb");
+    strings.order(LenLexCmp(Alphabet<std::string>("ba")))
+        .first("b")
+        .last("bbbb");
     REQUIRE((strings | to_vector())
             == std::vector<std::string>({"b",
                                          "a",
@@ -839,27 +845,30 @@ namespace libsemigroups {
                                          "aaa"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "028",
                           "lenlex | alphabet = abc | min = 0 | max = 13",
                           "[lenlex][quick][no-valgrind]") {
-    StringRange strings;
-    strings.alphabet("abc").max(13);
+    v4::WordRange<std::string> strings;
+    strings.order(LenLexCmp(Alphabet<std::string>("abc")))
+        .last((std::string(13, 'a')));
     REQUIRE((strings | count()) == number_of_words(3, 0, 13));
-    REQUIRE(strings.count() == 797'161);
+    REQUIRE((strings.count()) == number_of_words(3, 0, 13));
     REQUIRE(is_sorted(strings, LenLexCmp()));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "029",
                           "lenlex | code coverage",
                           "[lenlex][quick]") {
-    auto        first = "aaa";
-    auto        last  = "bbbb";
-    StringRange strings;
+    auto                       first = "aaa";
+    auto                       last  = "bbbb";
+    v4::WordRange<std::string> strings;
 
-    strings.alphabet("ab").first(first).last(last).upper_bound(5).order(
-        Order::lenlex);
+    strings.order(LenLexCmp(Alphabet<std::string>("ab")))
+        .first(first)
+        .last(last)
+        .upper_bound(5);
     auto it = begin(strings);
     REQUIRE(*it == "aaa");
     REQUIRE(it->size() == 3);
@@ -883,17 +892,19 @@ namespace libsemigroups {
     REQUIRE(*(++it) == *(++it2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange", "030", "code coverage", "[words]") {
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
+                          "030",
+                          "code coverage",
+                          "[words][quick]") {
     using words::pow;
 
     size_t const m = 27;
 
-    StringRange strings;
-    strings.order(Order::lex)
-        .alphabet("ab")
+    v4::WordRange<std::string> strings;
+    strings.order(LexCmp(Alphabet<std::string>("ab")))
         .upper_bound(m + 1)
-        .min(1)
-        .max(m + 1);
+        .first("a")
+        .last(std::string(m + 1, 'a'));
     REQUIRE(strings.get() == "a");
     strings.next();
     REQUIRE(strings.get() == "aa");
@@ -903,13 +914,8 @@ namespace libsemigroups {
     REQUIRE(strings.last() == pow("a", 28));
     REQUIRE(strings.count() == 26);
 
-    REQUIRE_THROWS_AS(strings.alphabet("aba"), LibsemigroupsException);
-
-    REQUIRE_THROWS_AS(strings.order(Order::none), LibsemigroupsException);
-    REQUIRE_THROWS_AS(strings.order(Order::rpo), LibsemigroupsException);
-
-    StringRange copy;
-    copy.       operator=(strings);
+    v4::WordRange<std::string> copy;
+    copy.                      operator=(strings);
     REQUIRE(copy.get() == "aa");
     copy.next();
     REQUIRE(copy.get() == "aaa");
@@ -921,44 +927,41 @@ namespace libsemigroups {
     REQUIRE(copy.last() == pow("a", 28));
     REQUIRE(copy.count() == 25);
 
-    StringRange move;
-    move.       operator=(std::move(strings));
+    v4::WordRange<std::string> move;
+    move.                      operator=(std::move(strings));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
     REQUIRE(move.last() == pow("a", 28));
     REQUIRE(move.count() == 25);
-    REQUIRE(move.alphabet() == "ab");
 
-    StringRange more;
+    v4::WordRange<std::string> more;
     REQUIRE(more.at_end());
     REQUIRE_NOTHROW(more.next());
     REQUIRE(more.get() == "");
-    REQUIRE(more.alphabet() == "");
-    REQUIRE(more.order() == Order::lenlex);
     REQUIRE(more.is_finite);
     REQUIRE(more.is_idempotent);
     REQUIRE(more.size_hint() == 0);
     REQUIRE(more.count() == 0);
     REQUIRE(equal(more, move.init()));
 
-    StringRange move2(std::move(copy));
+    v4::WordRange<std::string> move2(std::move(copy));
     REQUIRE(equal(move, move2));
     REQUIRE(move2.upper_bound() == 28);
     REQUIRE(move2.first() == "a");
     REQUIRE(move2.last() == pow("a", 28));
     REQUIRE(move2.count() == 25);
-    REQUIRE(move2.alphabet() == "ab");
 
-    StringRange swap;
-    swap.alphabet("abc").first("abc").last("abcbcbcbcb");
+    v4::WordRange<std::string> swap;
+    swap.order(LenLexCmp(Alphabet<std::string>("abc")))
+        .first("abc")
+        .last("abcbcbcbcb");
     std::swap(swap, move2);
     REQUIRE(equal(move, swap));
     REQUIRE(swap.upper_bound() == 28);
     REQUIRE(swap.first() == "a");
     REQUIRE(swap.last() == pow("a", 28));
     REQUIRE(swap.count() == 25);
-    REQUIRE(swap.alphabet() == "ab");
 
     for (auto const& s : swap) {
       REQUIRE(s.size() > 0);
@@ -1238,10 +1241,13 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord", "040", "code coverage", "[quick]") {
-    StringRange strings;
-    strings.alphabet("ab").first("a").last("bbbb");
+    v4::WordRange<std::string> strings;
+    Alphabet<std::string>      alphabet("ab");
+    strings.order(LenLexCmp(Alphabet<std::string>(alphabet)))
+        .first("a")
+        .last("bbbb");
 
-    REQUIRE((strings | ToWord(strings.alphabet()) | to_vector())
+    REQUIRE((strings | ToWord(alphabet.letters()) | to_vector())
             == std::vector({0_w,    1_w,    00_w,   01_w,   10_w,   11_w,
                             000_w,  001_w,  010_w,  011_w,  100_w,  101_w,
                             110_w,  111_w,  0000_w, 0001_w, 0010_w, 0011_w,
@@ -1280,8 +1286,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToString", "041", "code coverage", "[quick]") {
     using words::pow;
 
-    WordRange words;
-    words.alphabet_size(2).first(0_w).last(pow(1_w, 3));
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(2))).first(0_w).last(pow(1_w, 3));
 
     REQUIRE((words | ToString("ba") | to_vector())
             == std::vector<std::string>({"b",
@@ -1342,7 +1348,9 @@ namespace libsemigroups {
                                          "yxy",
                                          "yyx"}));
     using words::pow;
-    words.alphabet_size(10).first(pow(0_w, 100)).last(pow(1_w, 1'000));
+    words.order(LenLexCmp(Alphabet<word_type>(10)))
+        .first(pow(0_w, 100))
+        .last(pow(1_w, 1'000));
     for (auto const& s :
          words | ToString("abcdefghij") | skip_n(1'000) | take(1)) {
       REQUIRE(s
@@ -1354,14 +1362,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordRange", "042", "empty iterator", "[quick]") {
     using words::pow;
 
-    WordRange words;
-    words.alphabet_size(1).first("01"_w).last("11"_w);
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(2))).first("11"_w).last("11"_w);
     REQUIRE(words.at_end());
     REQUIRE(words.count() == 0);
     REQUIRE((words | to_vector()) == std::vector<word_type>({}));
 
     words.init();
-    words.alphabet_size(0).min(2).max(5);
+    words.order(LenLexCmp(Alphabet<word_type>(1))).min(2).max(2);
     REQUIRE(words.at_end());
     REQUIRE(words.count() == 0);
     REQUIRE((words | to_vector()) == std::vector<word_type>({}));
@@ -1431,8 +1439,10 @@ namespace libsemigroups {
     }
     // ToWord combinator
     {
-      StringRange strings;
-      strings.alphabet("ab").first("a").last("bbbb");
+      v4::WordRange<std::string> strings;
+      strings.order(LenLexCmp(Alphabet<std::string>("ab")))
+          .first("a")
+          .last("bbbb");
       auto words = (strings | ToWord("ba"));
       REQUIRE((words | to_vector())
               == std::vector({1_w,    0_w,    11_w,   10_w,   01_w,   00_w,
@@ -1452,8 +1462,8 @@ namespace libsemigroups {
     }
     // ToString combinator
     {
-      WordRange words;
-      words.alphabet_size(1).min(0).max(10);
+      v4::WordRange words;
+      words.order(LenLexCmp(Alphabet<word_type>(1))).min(0).max(10);
 
       auto strings = (words | ToString("a"));
       REQUIRE((strings | to_vector())
@@ -1493,15 +1503,14 @@ namespace libsemigroups {
                           "046",
                           "to_human_readable_repr",
                           "[quick]") {
-    WordRange wr;
-    wr.min(0).max(1).alphabet_size(4);
+    v4::WordRange wr;
+    wr.min(0).max(1).order(LenLexCmp(Alphabet<word_type>(4)));
     REQUIRE(to_human_readable_repr(wr, 120)
-            == "<WordRange of length 1 between [] and [0] with letters in "
-               "[0, 4) in lenlex order>");
+            == "<WordRange of length 1 between [] and [0] over <alphabet [0, "
+               "1, 2, 3]>>");
     wr.max(10);
     REQUIRE(to_human_readable_repr(wr)
-            == "<WordRange of length 349,525 with letters in [0, 4) in lenlex "
-               "order>");
+            == "<WordRange of length 349,525 over <alphabet [0, 1, 2, 3]>>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord",
@@ -1513,18 +1522,20 @@ namespace libsemigroups {
             == "<ToWord object with alphabet \"BAc2w\">");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange",
+  LIBSEMIGROUPS_TEST_CASE("WordRange<std::string>",
                           "048",
                           "to_human_readable_repr",
                           "[quick]") {
-    StringRange sr;
-    sr.min(3).max(5).alphabet("bcd");
+    v4::WordRange<std::string> sr;
+    sr.first(std::string(3, 'b'))
+        .last(std::string(5, 'b'))
+        .order(LenLexCmp(Alphabet<std::string>("bcd")));
     REQUIRE(to_human_readable_repr(sr, 120)
-            == "<StringRange of length 108 between \"bbb\" and \"bbbbb\" with "
-               "letters in \"bcd\" in lenlex order>");
-    sr.max(20);
+            == "<WordRange of length 108 between bbb and bbbbb over <alphabet "
+               "\"bcd\">>");
+    sr.last(std::string(21, 'b'));
     REQUIRE(to_human_readable_repr(sr)
-            == "<StringRange of length 1,743,392,187 in lenlex order>");
+            == "<WordRange of length 5,230,176,588 over <alphabet \"bcd\">>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToString",
@@ -1535,6 +1546,128 @@ namespace libsemigroups {
     REQUIRE(to_human_readable_repr(to_string)
             == "<ToString object with alphabet \"BAc2w\">");
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordRange",
+                          "050",
+                          "wilo arbitrary alphabet",
+                          "[wilo][quick]") {
+    auto first  = word_type({10});
+    auto last   = word_type({20, 20});
+    auto result = std::vector(
+        detail::const_wilo_iterator(Alphabet<word_type>(word_type({10, 20})),
+                                    3,
+                                    word_type(first),
+                                    word_type(last)),
+        detail::const_wilo_iterator(Alphabet<word_type>(word_type({10, 20})),
+                                    3,
+                                    word_type(last),
+                                    word_type(last)));
+
+    REQUIRE(result
+            == std::vector({word_type({10}),
+                            word_type({10, 10}),
+                            word_type({10, 20}),
+                            word_type({20}),
+                            word_type({20, 10})}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordRange",
+                          "051",
+                          "lex | corner cases",
+                          "[lex][quick]") {
+    v4::WordRange words;
+    words.order(LexCmp(Alphabet<word_type>(2)))
+        .first("0000000"_w)
+        .last(""_w)
+        .upper_bound(4);
+
+    REQUIRE((words | count()) == 0);
+
+    words.first({});
+    REQUIRE((words | count()) == 0);
+
+    words.first("0"_w).last("11"_w).upper_bound(2);
+    REQUIRE((words | count()) == 2);
+    REQUIRE((words | to_vector()) == std::vector<word_type>({"0"_w, "1"_w}));
+
+    words.upper_bound(1).first(""_w).last("0000000000000"_w);
+    REQUIRE((words | to_vector()) == std::vector<word_type>({""_w}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "052", "different orders", "[quick]") {
+    Alphabet<word_type> alphabet({1, 0, 2});
+    v4::WordRange       words;
+    words.first("2"_w).last("200"_w).upper_bound(3);
+
+    SECTION("LenLex") {
+      words.order(LenLexCmp(alphabet));
+      REQUIRE(is_sorted(words, LenLexCmp(alphabet)));
+      REQUIRE((words | to_vector())
+              == std::vector<word_type>{
+                  {2},       {1, 1},    {1, 0},    {1, 2},    {0, 1},
+                  {0, 0},    {0, 2},    {2, 1},    {2, 0},    {2, 2},
+                  {1, 1, 1}, {1, 1, 0}, {1, 1, 2}, {1, 0, 1}, {1, 0, 0},
+                  {1, 0, 2}, {1, 2, 1}, {1, 2, 0}, {1, 2, 2}, {0, 1, 1},
+                  {0, 1, 0}, {0, 1, 2}, {0, 0, 1}, {0, 0, 0}, {0, 0, 2},
+                  {0, 2, 1}, {0, 2, 0}, {0, 2, 2}, {2, 1, 1}, {2, 1, 0},
+                  {2, 1, 2}, {2, 0, 1}});
+    }
+
+    SECTION("Lex") {
+      words.order(LexCmp(alphabet));
+      REQUIRE(is_sorted(words, LexCmp(alphabet)));
+      REQUIRE((words | to_vector())
+              == std::vector<word_type>{{2}, {2, 1}, {2, 0}});
+    }
+
+    SECTION("RPO") {
+      words.order(RPOCmp(alphabet));
+      REQUIRE(is_sorted(words, RPOCmp(alphabet)));
+      REQUIRE((words | to_vector())
+              == std::vector<word_type>{{2}, {1, 2}, {0, 2}, {2, 1}, {2, 0}});
+    }
+
+    SECTION("RevRPO") {
+      words.order(RevRPOCmp(alphabet));
+      REQUIRE(is_sorted(words, RevRPOCmp(alphabet)));
+      REQUIRE((words | to_vector())
+              == std::vector<word_type>{{2}, {2, 1}, {2, 0}});
+    }
+
+    SECTION("WtLenLex") {
+      words.order(WtLenLexCmp(alphabet, {1, 6, 3}));
+      REQUIRE(is_sorted(words, WtLenLexCmp(alphabet, {1, 6, 3})));
+      REQUIRE((words | to_vector())
+              == std::vector<word_type>{{2},
+                                        {1, 2},
+                                        {2, 1},
+                                        {0},
+                                        {2, 2},
+                                        {1, 0},
+                                        {0, 1},
+                                        {0, 2},
+                                        {2, 0},
+                                        {0, 0}});
+    }
+
+    SECTION("Wreath") {
+      words.order(WrCmp(alphabet, {0, 1, 0}));
+      REQUIRE(is_sorted(words, WrCmp(alphabet, {0, 1, 0})));
+      REQUIRE((words | to_vector())
+              == std::vector<word_type>{{2},
+                                        {1, 1},
+                                        {1, 2},
+                                        {2, 1},
+                                        {2, 2},
+                                        {0},
+                                        {0, 1},
+                                        {0, 2},
+                                        {1, 0},
+                                        {2, 0},
+                                        {0, 0}});
+    }
+  }
+
 }  // namespace libsemigroups
 
 #pragma GCC diagnostic pop
