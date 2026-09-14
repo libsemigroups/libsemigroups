@@ -40,72 +40,81 @@ namespace libsemigroups {
   }  // namespace
 
   ////////////////////////////////////////////////////////////////////////
-  // Word iterators
+  // Word iterators - wilo (deprecated)
   ////////////////////////////////////////////////////////////////////////
 
-  detail::const_wilo_iterator cbegin_wilo(size_t      n,
-                                          size_t      upper_bound,
-                                          word_type&& first,
-                                          word_type&& last) {
+  detail::const_wilo_iterator<word_type> cbegin_wilo(size_t      n,
+                                                     size_t      upper_bound,
+                                                     word_type&& first,
+                                                     word_type&& last) {
     if (!word_in_language(n, first)
         || !std::lexicographical_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wilo(n, upper_bound, std::move(first), std::move(last));
     }
+    // If <first> is not a valid word in the range, the iterator needs to be
+    // incremented before it is returned so that the first word is in the
+    // specified range.
     if (first.size() >= upper_bound) {
-      return ++detail::const_wilo_iterator(
-          n, upper_bound, std::move(first), std::move(last));
+      return ++detail::const_wilo_iterator<word_type>(
+          Alphabet<word_type>(n), upper_bound, first, last);
     }
-    return detail::const_wilo_iterator(
-        n, upper_bound, std::move(first), std::move(last));
+    return detail::const_wilo_iterator<word_type>(
+        Alphabet<word_type>(n), upper_bound, first, last);
   }
 
-  detail::const_wilo_iterator cbegin_wilo(size_t           n,
-                                          size_t           upper_bound,
-                                          word_type const& first,
-                                          word_type const& last) {
+  detail::const_wilo_iterator<word_type> cbegin_wilo(size_t n,
+                                                     size_t upper_bound,
+                                                     word_type const& first,
+                                                     word_type const& last) {
     return cbegin_wilo(n, upper_bound, word_type(first), word_type(last));
   }
 
-  detail::const_wilo_iterator
+  detail::const_wilo_iterator<word_type>
   cend_wilo(size_t n, size_t upper_bound, word_type&&, word_type&& last) {
-    return detail::const_wilo_iterator(
-        n, upper_bound, word_type(last), std::move(last));
+    return detail::const_wilo_iterator<word_type>(
+        Alphabet<word_type>(n), upper_bound, last, last);
   }
 
-  detail::const_wilo_iterator cend_wilo(size_t n,
-                                        size_t upper_bound,
-                                        word_type const&,
-                                        word_type const& last) {
+  detail::const_wilo_iterator<word_type> cend_wilo(size_t n,
+                                                   size_t upper_bound,
+                                                   word_type const&,
+                                                   word_type const& last) {
     return cend_wilo(n, upper_bound, word_type(), word_type(last));
   }
 
-  detail::const_wislo_iterator cbegin_wislo(size_t      n,
-                                            word_type&& first,
-                                            word_type&& last) {
+  ////////////////////////////////////////////////////////////////////////
+  // Word iterators - wislo (deprecated)
+  ////////////////////////////////////////////////////////////////////////
+
+  detail::const_wislo_iterator<word_type> cbegin_wislo(size_t      n,
+                                                       word_type&& first,
+                                                       word_type&& last) {
     if (!word_in_language(n, first)
         || !lenlex_cmp(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
-      return cend_wislo(n, std::move(first), std::move(last));
+      return cend_wislo(Alphabet<word_type>(n), first, last);
     }
-    return detail::const_wislo_iterator(n, std::move(first), std::move(last));
+    return detail::const_wislo_iterator<word_type>(
+        Alphabet<word_type>(n), first, last);
   }
 
-  detail::const_wislo_iterator cbegin_wislo(size_t           n,
-                                            word_type const& first,
-                                            word_type const& last) {
+  detail::const_wislo_iterator<word_type> cbegin_wislo(size_t           n,
+                                                       word_type const& first,
+                                                       word_type const& last) {
     return cbegin_wislo(n, word_type(first), word_type(last));
   }
 
-  detail::const_wislo_iterator cend_wislo(size_t n,
-                                          word_type&&,
-                                          word_type&& last) {
-    return detail::const_wislo_iterator(n, word_type(last), std::move(last));
+  detail::const_wislo_iterator<word_type> cend_wislo(size_t n,
+                                                     word_type&&,
+                                                     word_type&& last) {
+    return detail::const_wislo_iterator<word_type>(
+        Alphabet<word_type>(n), last, last);
   }
 
-  detail::const_wislo_iterator cend_wislo(size_t n,
-                                          word_type const&,
-                                          word_type const& last) {
+  detail::const_wislo_iterator<word_type> cend_wislo(size_t n,
+                                                     word_type const&,
+                                                     word_type const& last) {
     return cend_wislo(n, word_type(), word_type(last));
   }
 

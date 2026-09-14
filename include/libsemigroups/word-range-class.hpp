@@ -47,6 +47,73 @@ namespace libsemigroups {
   // as though the implementation is less than or equal to.
 
   //! \ingroup words_group
+  //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
+  //!
+  //! Returns a forward iterator used to iterate over words in order (wio), as
+  //! specified by \p cmp. If incremented, the iterator will point to the next
+  //! least word after \p first over an the alphabet specified by \p cmp with
+  //! length less than \p upper_bound.  Iterators of the type returned by this
+  //! function are equal whenever they are obtained by advancing the return
+  //! value of any call to \c cbegin_wio by the same amount, or they are both
+  //! obtained by any call to \c cend_wio.
+  //!
+  //! This function must be used when \p cmp has a member function with the
+  //! signature `alphabet()`.
+  //!
+  //! \tparam Cmp the type of the comparator.
+  //!
+  //! \param upper_bound  only words of length less than this value are
+  //!   considered.
+  //! \param first the starting point for the iteration.
+  //! \param last the last value in the iteration.
+  //! \param cmp the comparator used to order the words.
+  //!
+  //! \returns An iterator pointing to \p first.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \note
+  //! The parameter \p upper_bound is required because ordering may not be not a
+  //! well-ordering, and there might be infinitely many words between a given
+  //! pair of words.
+  //!
+  //! \warning
+  //! Copying iterators of this type is expensive. As a consequence, prefix
+  //! incrementing \c ++it the iterator \c it returned by \c cbegin_wio is
+  //! significantly cheaper than postfix incrementing \c it++.
+  //!
+  //! \warning
+  //! Iterators constructed using different parameters may not be equal, so
+  //! best not to loop over them.
+  //!
+  //! \sa cend_wio
+  template <typename Word,
+            typename Cmp,
+            typename = typename std::enable_if_t<has_alphabet<Cmp>>>
+  [[nodiscard]] detail::const_wio_iterator<Word> cbegin_wio(size_t upper_bound,
+                                                            Word const& first,
+                                                            Word const& last,
+                                                            Cmp&&       cmp);
+
+  //! \ingroup words_group
+  //! \brief Returns a forward iterator pointing to one after the end of the
+  //! range from \p first to \p last.
+  //!
+  //! The iterator returned by this function is still dereferenceable and
+  //! incrementable, but does not point to a word in the correct range.
+  //!
+  //! This function must be used when \p cmp has a member function with the
+  //! signature `alphabet()`.
+  //!
+  //! \sa cbegin_wio
+  template <typename Word,
+            typename Cmp,
+            typename = typename std::enable_if_t<has_alphabet<Cmp>>>
+  [[nodiscard]] detail::const_wio_iterator<Word>
+  cend_wio(size_t upper_bound, Word const& first, Word const& last, Cmp&& cmp);
+
+  //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //!
   //! Returns a forward iterator used to iterate over words in lexicographic
@@ -83,26 +150,103 @@ namespace libsemigroups {
   //! Iterators constructed using different parameters may not be equal, so
   //! best not to loop over them.
   //!
-  //! \sa cend_wilo
+  //! \deprecated_warning{function} Use
+  //! \ref cbegin_wilo(Alphabet<Word> const&, size_t, Word const&, Word const&)
+  //! instead
   //!
-  //! \par Example
-  //! \code
-  //! std::vector<word_type>(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
-  //!                        cend_wilo(2, 3, {0}, {1, 1, 1}));
-  //! // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
-  //! \endcode
-  [[nodiscard]] detail::const_wilo_iterator cbegin_wilo(size_t      n,
-                                                        size_t      upper_bound,
-                                                        word_type&& first,
-                                                        word_type&& last);
+  //! \sa cend_wilo
+  [[deprecated]] [[nodiscard]] detail::const_wilo_iterator<word_type>
+  cbegin_wilo(size_t      n,
+              size_t      upper_bound,
+              word_type&& first,
+              word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //! \copydoc cbegin_wilo(size_t, size_t, word_type&&, word_type&&)
-  [[nodiscard]] detail::const_wilo_iterator cbegin_wilo(size_t n,
-                                                        size_t upper_bound,
-                                                        word_type const& first,
-                                                        word_type const& last);
+  [[deprecated]] [[nodiscard]] detail::const_wilo_iterator<word_type>
+  cbegin_wilo(size_t           n,
+              size_t           upper_bound,
+              word_type const& first,
+              word_type const& last);
+
+  //! \ingroup words_group
+  //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
+  //!
+  //! Returns a forward iterator used to iterate over words in lexicographic
+  //! order (wilo). If incremented, the iterator will point to the next least
+  //! lexicographic word after \p first over the alphabet specified by
+  //! \p alphabet with length less than \p upper_bound. Iterators of the type
+  //! returned by this function are equal whenever they are obtained by
+  //! advancing the return value of any call to \c cbegin_wilo by the same
+  //! amount, or they are both obtained by any call to \c cend_wilo.
+  //!
+  //! \param alphabet the alphabet.
+  //! \param upper_bound only words of length less than this value are
+  //!   considered.
+  //! \param first the starting point for the iteration.
+  //! \param last the value one past the end of the last value in the
+  //! iteration.
+  //!
+  //! \returns An iterator pointing to \p first.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \note
+  //! The parameter \p upper_bound is required because lexicographical
+  //! ordering is not a well-ordering, and there might be infinitely many words
+  //! between a given pair of words.
+  //!
+  //! \warning
+  //! Copying iterators of this type is expensive.  As a consequence, prefix
+  //! incrementing \c ++it the iterator \c it returned by \c cbegin_wilo is
+  //! significantly cheaper than postfix incrementing \c it++.
+  //!
+  //! \warning
+  //! Iterators constructed using different parameters may not be equal, so
+  //! best not to loop over them.
+  //!
+  //! \sa cend_wilo
+  //!
+  //! \par Example
+  //! \code
+  //! std::vector<word_type>(
+  //!     cbegin_wilo(Alphabet<word_type>(2), 3, {0}, {1, 1, 1}),
+  //!     cend_wilo(Alphabet<word_type>(2), 3, {0}, {1, 1, 1}));
+  //! // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
+  //! \endcode
+  template <typename Word>
+  [[nodiscard]] detail::const_wilo_iterator<Word>
+  cbegin_wilo(Alphabet<Word> const& alphabet,
+              size_t                upper_bound,
+              Word const&           first,
+              Word const&           last);
+
+  //! \ingroup words_group
+  //! \brief Returns a forward iterator pointing to one after the end of the
+  //! range from \p first to \p last.
+  //!
+  //! The iterator returned by this function is still dereferenceable and
+  //! incrementable, but does not point to a word in the correct range.
+  //!
+  //! \deprecated_warning{function} Use
+  //! \ref cend_wilo(Alphabet<Word> const&, size_t, Word const&, Word const&)
+  //! instead
+  //!
+  //! \sa cbegin_wilo
+  [[deprecated]] [[nodiscard]] detail::const_wilo_iterator<word_type>
+  cend_wilo(size_t n, size_t upper_bound, word_type&& first, word_type&& last);
+
+  //! \ingroup words_group
+  //! \brief Returns a forward iterator pointing to one after the end of the
+  //! range from \p first to \p last.
+  //! \copydoc cend_wilo(size_t, size_t, word_type&&, word_type&&)
+  [[deprecated]] [[nodiscard]] detail::const_wilo_iterator<word_type>
+  cend_wilo(size_t           n,
+            size_t           upper_bound,
+            word_type const& first,
+            word_type const& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
@@ -112,17 +256,12 @@ namespace libsemigroups {
   //! incrementable, but does not point to a word in the correct range.
   //!
   //! \sa cbegin_wilo
-  [[nodiscard]] detail::const_wilo_iterator
-  cend_wilo(size_t n, size_t upper_bound, word_type&& first, word_type&& last);
-
-  //! \ingroup words_group
-  //! \brief Returns a forward iterator pointing to one after the end of the
-  //! range from \p first to \p last.
-  //! \copydoc cend_wilo(size_t, size_t, word_type&&, word_type&&)
-  [[nodiscard]] detail::const_wilo_iterator cend_wilo(size_t n,
-                                                      size_t upper_bound,
-                                                      word_type const& first,
-                                                      word_type const& last);
+  template <typename Word>
+  [[nodiscard]] detail::const_wilo_iterator<Word>
+  cend_wilo(Alphabet<Word> const& alphabet,
+            size_t                upper_bound,
+            Word const&           first,
+            Word const&           last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
@@ -153,23 +292,85 @@ namespace libsemigroups {
   //! Iterators constructed using different parameters may not be equal, so
   //! best not to loop over them.
   //!
-  //! \sa cend_wislo
+  //! \deprecated_warning{function} Use
+  //! \ref cbegin_wislo(Alphabet<Word> const&, Word const&, Word const&)
+  //! instead
   //!
-  //! \par Example
-  //! \code
-  //! std::vector<word_type>(cbegin_wislo(2, {0}, {0, 0, 0}),
-  //!                        cend_wislo(2,  {0}, {0, 0, 0}));
-  //! // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
-  //! \endcode
-  [[nodiscard]] detail::const_wislo_iterator cbegin_wislo(size_t      n,
-                                                          word_type&& first,
-                                                          word_type&& last);
+  //! \sa cend_wislo
+  [[deprecated]] [[nodiscard]] detail::const_wislo_iterator<word_type>
+  cbegin_wislo(size_t n, word_type&& first, word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //! \copydoc cbegin_wislo(size_t const, word_type&&, word_type&&)
-  [[nodiscard]] detail::const_wislo_iterator
+  [[deprecated]] [[nodiscard]] detail::const_wislo_iterator<word_type>
   cbegin_wislo(size_t n, word_type const& first, word_type const& last);
+
+  //! \ingroup words_group
+  //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
+  //!
+  //! Returns a forward iterator used to iterate over words in
+  //! lenlex order (wislo). If incremented, the iterator will point
+  //! to the next least lenlex word after \p w over an alphabet specified by
+  //! \p alphabet. Iterators of the type returned by this function are equal
+  //! whenever they are obtained by advancing the return value of any call to
+  //! \c cbegin_wislo by the same amount, or they are both obtained by any call
+  //! to \c cend_wislo.
+  //!
+  //! \param alphabet the alphabet.
+  //! \param first the starting point for the iteration.
+  //! \param last the ending point for the iteration.
+  //!
+  //! \returns An iterator pointing to \p first.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \warning
+  //! Copying iterators of this type is expensive.  As a consequence, prefix
+  //! incrementing \c ++it the iterator \c it returned by \c cbegin_wislo is
+  //! significantly cheaper than postfix incrementing \c it++.
+  //!
+  //! \warning
+  //! Iterators constructed using different parameters may not be equal, so
+  //! best not to loop over them.
+  //!
+  //! \sa cend_wislo
+  //!
+  //! \par Example
+  //! \code
+  //! std::vector<word_type>(
+  //!     cbegin_wislo(Alphabet<word_type>(2), {0}, {0, 0, 0}),
+  //!     cend_wislo(Alphabet<word_type>(2), {0}, {0, 0, 0}));
+  //! // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
+  //! \endcode
+  template <typename Word>
+  [[nodiscard]] detail::const_wislo_iterator<Word>
+  cbegin_wislo(Alphabet<Word> const& alphabet,
+               Word const&           first,
+               Word const&           last);
+
+  //! \ingroup words_group
+  //! \brief Returns a forward iterator pointing to one after the end of the
+  //! range from \p first to \p last.
+  //!
+  //! The iterator returned by this is still dereferenceable and incrementable,
+  //! but does not point to a word in the correct range.
+  //!
+  //! \deprecated_warning{function} Use
+  //! \ref cend_wislo(Alphabet<Word> const&, Word const&, Word const&)
+  //! instead
+  //!
+  //! \sa cbegin_wislo
+  [[deprecated]] [[nodiscard]] detail::const_wislo_iterator<word_type>
+  cend_wislo(size_t n, word_type&& first, word_type&& last);
+
+  //! \ingroup words_group
+  //! \brief Returns a forward iterator pointing to one after the end of the
+  //! range from \p first to \p last.
+  //! \copydoc cend_wislo(size_t, word_type&&, word_type&&)
+  [[deprecated]] [[nodiscard]] detail::const_wislo_iterator<word_type>
+  cend_wislo(size_t n, word_type const& first, word_type const& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
@@ -179,17 +380,11 @@ namespace libsemigroups {
   //! but does not point to a word in the correct range.
   //!
   //! \sa cbegin_wislo
-  [[nodiscard]] detail::const_wislo_iterator cend_wislo(size_t      n,
-                                                        word_type&& first,
-                                                        word_type&& last);
-
-  //! \ingroup words_group
-  //! \brief Returns a forward iterator pointing to one after the end of the
-  //! range from \p first to \p last.
-  //! \copydoc cend_wislo(size_t const, word_type&&, word_type&&)
-  [[nodiscard]] detail::const_wislo_iterator cend_wislo(size_t           n,
-                                                        word_type const& first,
-                                                        word_type const& last);
+  template <typename Word>
+  [[nodiscard]] detail::const_wislo_iterator<Word>
+  cend_wislo(Alphabet<Word> const& alphabet,
+             Word const&           first,
+             Word const&           last);
 
   //////////////////////////////////////////////////////////////////////
   // WordRange
@@ -1082,5 +1277,7 @@ namespace libsemigroups {
                                                    size_t max_width = 72);
 
 }  // namespace libsemigroups
+
+#include "word-range-class.tpp"
 
 #endif  // LIBSEMIGROUPS_WORD_RANGE_CLASS_HPP_
