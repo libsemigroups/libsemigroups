@@ -461,10 +461,10 @@ namespace libsemigroups {
     REQUIRE(toword("bac") == 102_w);
   }
 
-  // to-word.hpp: Line 348
+  // to-word.hpp: Line 349
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "028",
-                          "./include/libsemigroups/to-word.hpp:348",
+                          "./include/libsemigroups/to-word.hpp:349",
                           "[docs][quick][no-valgrind]") {
     using rx::  operator|;
     StringRange strings;
@@ -478,10 +478,10 @@ namespace libsemigroups {
     //  0001_w}));
   }
 
-  // to-word.hpp: Line 453
+  // to-word.hpp: Line 454
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "029",
-                          "./include/libsemigroups/to-word.hpp:453",
+                          "./include/libsemigroups/to-word.hpp:454",
                           "[docs][quick][no-valgrind]") {
     ToString tostring("bac");
     REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
@@ -491,10 +491,10 @@ namespace libsemigroups {
     REQUIRE(tostring(word_type({1, 0, 2})) == "bac");
   }
 
-  // to-word.hpp: Line 704
+  // to-word.hpp: Line 707
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "030",
-                          "./include/libsemigroups/to-word.hpp:704",
+                          "./include/libsemigroups/to-word.hpp:707",
                           "[docs][quick][no-valgrind]") {
     using rx::operator|;
     WordRange words;
@@ -641,30 +641,31 @@ namespace libsemigroups {
     word_graph::is_strictly_cyclic(WordGraphView<uint8_t>(wgv));  //
   }
 
-  // word-range-class.hpp: Line 86
+  // word-range-class.hpp: Line 214
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "037",
-                          "./include/libsemigroups/word-range-class.hpp:86",
+                          "./include/libsemigroups/word-range-class.hpp:214",
                           "[docs][quick][no-valgrind]") {
-    std::vector<word_type>(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
-                           cend_wilo(2, 3, {0}, {1, 1, 1}));
+    std::vector<word_type>(
+        cbegin_wilo(Alphabet<word_type>(2), 3, {0}, {1, 1, 1}),
+        cend_wilo(Alphabet<word_type>(2), 3, {0}, {1, 1, 1}));
     // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
   }
 
-  // word-range-class.hpp: Line 156
+  // word-range-class.hpp: Line 342
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "038",
-                          "./include/libsemigroups/word-range-class.hpp:156",
+                          "./include/libsemigroups/word-range-class.hpp:342",
                           "[docs][quick][no-valgrind]") {
-    std::vector<word_type>(cbegin_wislo(2, {0}, {0, 0, 0}),
-                           cend_wislo(2, {0}, {0, 0, 0}));
+    std::vector<word_type>(cbegin_wislo(Alphabet<word_type>(2), {0}, {0, 0, 0}),
+                           cend_wislo(Alphabet<word_type>(2), {0}, {0, 0, 0}));
     // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
   }
 
-  // word-range-class.hpp: Line 220
+  // word-range-class.hpp: Line 792
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "039",
-                          "./include/libsemigroups/word-range-class.hpp:220",
+                          "./include/libsemigroups/word-range-class.hpp:792",
                           "[docs][quick][no-valgrind]") {
     WordRange words;
     words
@@ -674,10 +675,10 @@ namespace libsemigroups {
         .max(5);               // to 5
   }
 
-  // word-range-class.hpp: Line 680
+  // word-range-class.hpp: Line 1249
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "040",
-                          "./include/libsemigroups/word-range-class.hpp:680",
+                          "./include/libsemigroups/word-range-class.hpp:1249",
                           "[docs][quick][no-valgrind]") {
     StringRange strings;
     strings
