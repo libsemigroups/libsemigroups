@@ -1532,9 +1532,9 @@ namespace libsemigroups {
     REQUIRE(to_human_readable_repr(sr, 120)
             == "<WordRange of length 108 between bbb and bbbbb over <alphabet "
                "\"bcd\">>");
-    sr.last(std::string(21, 'b'));
+    sr.last(std::string(20, 'b'));
     REQUIRE(to_human_readable_repr(sr)
-            == "<WordRange of length 5,230,176,588 over <alphabet \"bcd\">>");
+            == "<WordRange of length 1,743,392,187 over <alphabet \"bcd\">>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToString",
