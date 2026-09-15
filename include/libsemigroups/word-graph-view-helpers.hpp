@@ -1566,8 +1566,83 @@ namespace libsemigroups {
                                             std::string const& braces = "{}",
                                             std::string const& suffix = "");
 
-  // TODO(later) implement "make" for WordGraphView, these are just checking
-  // versions of its constructors, and not analogue of make<WordGraph>!!
+  //! \defgroup make_word_graph_view_group make<WordGraphView>
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Safely construct a \ref WordGraphView instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref WordGraphView instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_word_graph_view_group
+  //!
+  //! \brief Construct a checked view over a range of nodes of a word graph.
+  //!
+  //! This function constructs a view of \p wg over the range of nodes
+  //! `[start, end)`, after checking the range and the targets of edges with
+  //! sources in this range. Undefined edges are permitted. Invoke this as
+  //! `make<WordGraphView>(wg, start, end)`; the node type is deduced from
+  //! \p wg.
+  //!
+  //! \tparam Return the class template to construct. Must be WordGraphView.
+  //! \tparam Node the type of the nodes, deduced from \p wg.
+  //!
+  //! \param wg the underlying word graph.
+  //! \param start the first node in the range.
+  //! \param end one beyond the last node in the range.
+  //!
+  //! \returns A view of \p wg over the range `[start, end)`.
+  //!
+  //! \throws LibsemigroupsException if any of the following hold:
+  //! * \p start is greater than \p end;
+  //! * \p end is greater than `wg.number_of_nodes()`;
+  //! * \p end cannot be represented by \p Node;
+  //! * an edge with source in `[start, end)` has a defined target outside
+  //! this range.
+  //!
+  //! \complexity
+  //! \f$O((e - s)k)\f$ where \f$e\f$ is \p end, \f$s\f$ is \p start, and
+  //! \f$k\f$ is `wg.out_degree()`.
+  //!
+  //! \warning
+  //! The returned view does not own \p wg, which must outlive the view.
+  template <template <typename...> typename Return, typename Node>
+  [[nodiscard]] auto make(WordGraph<Node> const& wg, size_t start, size_t end)
+      -> std::enable_if_t<std::is_same_v<Return<Node>, WordGraphView<Node>>,
+                          WordGraphView<Node>>;
+
+  //! \ingroup make_word_graph_view_group
+  //!
+  //! \brief Construct a checked view over an entire word graph.
+  //!
+  //! Invoke this as `make<WordGraphView>(wg)`; the node type is deduced
+  //! from \p wg. This function is equivalent to
+  //! `make<WordGraphView>(wg, 0, wg.number_of_nodes())`.
+  //!
+  //! \tparam Return the class template to construct. Must be WordGraphView.
+  //! \tparam Node the type of the nodes, deduced from \p wg.
+  //!
+  //! \param wg the underlying word graph.
+  //!
+  //! \returns A view of all the nodes of \p wg.
+  //!
+  //! \throws LibsemigroupsException if `wg.number_of_nodes()` cannot be
+  //! represented by \p Node, or a defined target in \p wg is
+  //! greater than or equal to `wg.number_of_nodes()`.
+  //!
+  //! \complexity
+  //! \f$O(nk)\f$ where \f$n\f$ is `wg.number_of_nodes()` and \f$k\f$ is
+  //! `wg.out_degree()`.
+  //!
+  //! \warning
+  //! The returned view does not own \p wg, which must outlive the view.
+  template <template <typename...> typename Return, typename Node>
+  [[nodiscard]] auto make(WordGraph<Node> const& wg)
+      -> std::enable_if_t<std::is_same_v<Return<Node>, WordGraphView<Node>>,
+                          WordGraphView<Node>>;
 
   //! \ingroup word_graph_group
   //!
