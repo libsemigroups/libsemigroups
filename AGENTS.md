@@ -29,7 +29,15 @@ finitely presented semigroups and monoids. The build system is GNU Autotools.
 - All work should be done under a separate branch. If the user instructs you
   to begin working, make sure you pull in the upstream changes (check the
   remote at `github.com/libsemigroups/libsemigroups`) and checkout a new
-  branch.
+  branch with `--no-track` so it does not track upstream `main`.
+- Push feature branches to a personal fork and open PRs against that fork,
+  rather than `libsemigroups/libsemigroups`, unless the user explicitly
+  requests a different PR destination. In this checkout, prefer the `jdm`
+  remote (`github.com/james-d-mitchell/libsemigroups`).
+- Feature branches must track the branch of the same name on the personal
+  fork, never `main`. Leave a new branch untracked until its first push, then
+  use `git push --set-upstream jdm HEAD` (substitute the appropriate remote
+  when using another personal fork).
 - Files under `include/libsemigroups/` are public API unless clearly marked
   otherwise. Do not break source compatibility unless there is an explicit
   requirement and it has been confirmed by the user.
