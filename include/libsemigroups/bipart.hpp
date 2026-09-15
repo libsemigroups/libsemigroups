@@ -824,6 +824,7 @@ namespace libsemigroups {
   //! * \ref make_pperm_group
   //! * \ref make_perm_group
   //! * \ref make_word_graph_group
+  //! * \ref make_word_graph_view_group
 
   //! \defgroup make_blocks_group make<Blocks>
   //! \ingroup bipart_group

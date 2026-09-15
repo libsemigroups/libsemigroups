@@ -16,13 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>  // for size_t
-#include <sstream>  // for ostringstream
-#include <utility>  // for std::move, std::ignore
-#include <vector>   // for vector
+#include <cstddef>      // for size_t
+#include <cstdint>      // for uint8_t, uint16_t, uint32_t, uint64_t
+#include <limits>       // for numeric_limits
+#include <sstream>      // for ostringstream
+#include <type_traits>  // for is_same_v
+#include <utility>      // for std::move, std::ignore
+#include <vector>       // for vector
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/detail/fmt.hpp"     // for fmt::format
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/to-word-graph.hpp"
 #include "libsemigroups/word-graph-helpers.hpp"
@@ -688,6 +692,161 @@ namespace libsemigroups {
 
     graph.target(2, 0, 1);
     REQUIRE_NOTHROW(validate(view));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("WordGraphView",
+                                   "031",
+                                   "make from a word graph",
+                                   "[quick]",
+                                   uint8_t,
+                                   uint16_t,
+                                   uint32_t,
+                                   uint64_t,
+                                   size_t) {
+    auto rg = ReportGuard(false);
+
+    WordGraph<TestType> graph(4, 2);
+    graph.target(1, 0, 2);
+    graph.target(2, 1, 1);
+    auto const& const_graph = graph;
+    auto        view        = make<WordGraphView>(const_graph);
+    static_assert(std::is_same_v<decltype(view), WordGraphView<TestType>>);
+    REQUIRE(view.word_graph() == &graph);
+    REQUIRE(view.start_node() == 0);
+    REQUIRE(view.end_node() == 4);
+    REQUIRE(view.number_of_nodes() == 4);
+    REQUIRE(view.out_degree() == 2);
+    REQUIRE(view.target(1, 0) == 2);
+    REQUIRE(view.target(2, 1) == 1);
+    REQUIRE(view.target(0, 0) == UNDEFINED);
+    REQUIRE_NOTHROW(validate(view));
+
+    graph.target(1, 0, 3);
+    REQUIRE(view.target(1, 0) == 3);
+
+    WordGraph<TestType> empty(0, 2);
+    auto                empty_view = make<WordGraphView>(empty);
+    REQUIRE(empty_view.word_graph() == &empty);
+    REQUIRE(empty_view.number_of_nodes() == 0);
+    REQUIRE(empty_view.out_degree() == 2);
+
+    graph.add_nodes(1);
+    graph.target(1, 0, 4);
+    // Leave an out-of-bounds target in the underlying graph.
+    graph.induced_subgraph_no_checks(0, 4);
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph),
+        "target out of bounds, the edge with source 1 and label 0 has target "
+        "4, but expected value in the range [0, 4)");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("WordGraphView",
+                                   "032",
+                                   "make from a word graph and node range",
+                                   "[quick]",
+                                   uint8_t,
+                                   uint16_t,
+                                   uint32_t,
+                                   uint64_t,
+                                   size_t) {
+    auto rg = ReportGuard(false);
+
+    WordGraph<TestType> graph(5, 2);
+    graph.target(2, 0, 3);
+    graph.target(3, 1, 2);
+    graph.target(0, 0, 4);
+    auto view = make<WordGraphView>(graph, 2, 4);
+    static_assert(std::is_same_v<decltype(view), WordGraphView<TestType>>);
+    REQUIRE(view.word_graph() == &graph);
+    REQUIRE(view.start_node() == 2);
+    REQUIRE(view.end_node() == 4);
+    REQUIRE(view.number_of_nodes() == 2);
+    REQUIRE(view.out_degree() == 2);
+    REQUIRE(view.target(0, 0) == 1);
+    REQUIRE(view.target(1, 1) == 0);
+    REQUIRE(view.target(0, 1) == UNDEFINED);
+    REQUIRE_NOTHROW(validate(view));
+
+    for (size_t node = 0; node <= graph.number_of_nodes(); ++node) {
+      auto empty_view = make<WordGraphView>(graph, node, node);
+      REQUIRE(empty_view.word_graph() == &graph);
+      REQUIRE(empty_view.number_of_nodes() == 0);
+      REQUIRE(empty_view.start_node() == node);
+      REQUIRE(empty_view.end_node() == node);
+    }
+    REQUIRE(make<WordGraphView>(graph, 0, 5) == make<WordGraphView>(graph));
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph, 4, 2),
+        "start value out of bounds, expected value in the range [0, 3), got 4");
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph, 0, 6),
+        "end value out of bounds, expected value in the range [0, 6), got 6");
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph, 6, 6),
+        "end value out of bounds, expected value in the range [0, 6), got 6");
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph, 256, 257),
+        "end value out of bounds, expected value in the range [0, 6), got 257");
+    auto const max = std::numeric_limits<size_t>::max();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph, max, max),
+        fmt::format("end value out of bounds, expected value in the range "
+                    "[0, 6), got {}",
+                    max));
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph, 0, max),
+        fmt::format("end value out of bounds, expected value in the range "
+                    "[0, 6), got {}",
+                    max));
+
+    graph.target(2, 0, 4);
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph, 2, 4),
+        "target out of bounds, the edge with source 0 and label 0 has target "
+        "2, but expected value in the range [0, 2)");
+    graph.target(2, 0, 0);
+    auto const max_node = std::numeric_limits<TestType>::max();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph, 2, 4),
+        fmt::format("target out of bounds, the edge with source 0 and label 0 "
+                    "has target {}, but expected value in the range [0, 2)",
+                    max_node - 1));
+    graph.target(2, 0, 1);
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = make<WordGraphView>(graph, 2, 4),
+        fmt::format("target out of bounds, the edge with source 0 and label 0 "
+                    "has target {}, but expected value in the range [0, 2)",
+                    max_node));
+    REQUIRE_EXCEPTION_MSG(
+        validate(view),
+        fmt::format("target out of bounds, the edge with source 0 and label 0 "
+                    "has target {}, but expected value in the range [0, 2)",
+                    max_node));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "033",
+                          "make checks that node ranges are representable",
+                          "[quick]") {
+    auto rg = ReportGuard(false);
+
+    // Graph sizes use size_t, but view boundaries use node_type.
+    WordGraph<uint8_t> graph(256, 1);
+    graph.target(254, 0, 254);
+    auto view = make<WordGraphView>(graph, 0, 255);
+    REQUIRE(view.number_of_nodes() == 255);
+    REQUIRE(view.target(254, 0) == 254);
+    REQUIRE(make<WordGraphView>(graph, 255, 255).number_of_nodes() == 0);
+    REQUIRE_EXCEPTION_MSG(std::ignore = make<WordGraphView>(graph),
+                          "end value out of bounds, expected value in the "
+                          "range [0, 256), got 256");
+    REQUIRE_EXCEPTION_MSG(std::ignore = make<WordGraphView>(graph, 0, 256),
+                          "end value out of bounds, expected value in the "
+                          "range [0, 256), got 256");
+    REQUIRE_EXCEPTION_MSG(std::ignore = make<WordGraphView>(graph, 256, 256),
+                          "end value out of bounds, expected value in the "
+                          "range [0, 256), got 256");
   }
 
 }  // namespace libsemigroups

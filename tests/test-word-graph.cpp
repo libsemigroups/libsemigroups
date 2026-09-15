@@ -19,11 +19,12 @@
 #include <algorithm>      // for min_element, reverse, sort
 #include <cmath>          // for pow
 #include <cstddef>        // for ptrdiff_t, size_t
+#include <limits>         // for numeric_limits
 #include <numeric>        // for iota
 #include <random>         // for mt19937
 #include <stdexcept>      // for runtime_error
 #include <unordered_set>  // for unordered_set
-#include <utility>        // for move
+#include <utility>        // for ignore, move
 #include <vector>         // for vector
 
 #include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
@@ -36,6 +37,7 @@
 #include "libsemigroups/word-graph.hpp"          // for WordGraph
 #include "libsemigroups/words-helpers.hpp"       // for literals
 
+#include "libsemigroups/detail/fmt.hpp"     // for fmt::format
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/string.hpp"  // for detail::to_string
 
@@ -1570,7 +1572,13 @@ namespace libsemigroups {
     REQUIRE(
         !word_graph::equal_to_no_checks(graph1, graph2, size_t(1), size_t(3)));
     REQUIRE(word_graph::equal_to(graph1, graph2, size_t(0), size_t(2)));
-    REQUIRE(!word_graph::equal_to(graph1, graph2, size_t(1), size_t(3)));
+    // These views contain edges to node 0, outside the range [1, 3).
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore
+        = word_graph::equal_to(graph1, graph2, size_t(1), size_t(3)),
+        fmt::format("target out of bounds, the edge with source 0 and label 0 "
+                    "has target {}, but expected value in the range [0, 2)",
+                    std::numeric_limits<size_t>::max()));
     REQUIRE(word_graph::equal_to_no_checks(
         graph1, different_size, size_t(0), size_t(2)));
     REQUIRE(word_graph::equal_to(graph1, different_size, size_t(0), size_t(2)));

@@ -1119,16 +1119,21 @@ namespace libsemigroups {
     void throw_if_any_target_out_of_bounds(WordGraphView<Node> const& wgv,
                                            Iterator                   first,
                                            Iterator                   last) {
+      auto const  start = wgv.start_node();
+      auto const  end   = wgv.end_node();
+      auto const* graph = wgv.word_graph();
       for (auto it = first; it != last; ++it) {
         auto s = *it;
-        for (auto [a, t] : wgv.labels_and_targets_no_checks(s)) {
-          if (t != UNDEFINED && t >= wgv.number_of_nodes_no_checks()) {
+        // Check the original targets before subtraction can turn start - 1
+        // into UNDEFINED in the view.
+        for (auto [a, t] : graph->labels_and_targets_no_checks(s + start)) {
+          if (t != UNDEFINED && (t < start || t >= end)) {
             LIBSEMIGROUPS_EXCEPTION(
                 "target out of bounds, the edge with source {} and label {} "
                 "has target {}, but expected value in the range [0, {})",
                 s,
                 a,
-                t,
+                static_cast<Node>(t - start),
                 wgv.number_of_nodes_no_checks());
           }
         }
@@ -1195,6 +1200,28 @@ namespace libsemigroups {
       return topological_sort_no_checks(wgv, source);
     }
   }  // namespace word_graph
+
+  template <template <typename...> typename Return, typename Node>
+  auto make(WordGraph<Node> const& wg, size_t start, size_t end)
+      -> std::enable_if_t<std::is_same_v<Return<Node>, WordGraphView<Node>>,
+                          WordGraphView<Node>> {
+    auto const upper
+        = std::min<size_t>(wg.number_of_nodes(), static_cast<Node>(UNDEFINED));
+    detail::throw_if_not_less(end, upper + 1, "end ");
+    detail::throw_if_not_less(start, end + 1, "start ");
+    WordGraphView<Node> result(wg, start, end);
+    result.throw_if_invalid_view();
+    word_graph::throw_if_any_target_out_of_bounds(
+        result, result.cbegin_nodes_no_checks(), result.cend_nodes_no_checks());
+    return result;
+  }
+
+  template <template <typename...> typename Return, typename Node>
+  auto make(WordGraph<Node> const& wg)
+      -> std::enable_if_t<std::is_same_v<Return<Node>, WordGraphView<Node>>,
+                          WordGraphView<Node>> {
+    return make<Return>(wg, 0, wg.number_of_nodes());
+  }
 
   // This function is implemented here because it is declared by for
   // to_input_string in the header.
