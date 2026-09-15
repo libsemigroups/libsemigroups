@@ -1053,7 +1053,9 @@ namespace libsemigroups {
     p.contains_empty_word(true);
 
     v4::WordRange wr;
-    wr.order(LenLexCmp(Alphabet<word_type>(2))).min(0).max(19);
+    wr.order(LenLexCmp(Alphabet<word_type>(2)))
+        .first({})
+        .last(word_type(19, 0));
     for (auto const& word : wr) {
       presentation::add_rule_no_checks(p, word, ""_w);
     }

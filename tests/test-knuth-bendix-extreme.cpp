@@ -582,7 +582,9 @@ namespace libsemigroups {
     p.contains_empty_word(true);
 
     v4::WordRange wr;
-    wr.order(LenLexCmp(Alphabet<word_type>(2))).min(23).max(24);
+    wr.order(LenLexCmp(Alphabet<word_type>(2)))
+        .first(word_type(23, 0))
+        .last(word_type(24, 0));
     REQUIRE(wr.count() == 8'388'608);
     for (auto const& word : wr) {
       presentation::add_rule_no_checks(p, word, ""_w);
@@ -607,7 +609,9 @@ namespace libsemigroups {
     p.contains_empty_word(true);
 
     v4::WordRange wr;
-    wr.order(LenLexCmp(Alphabet<word_type>(2))).min(23).max(24);
+    wr.order(LenLexCmp(Alphabet<word_type>(2)))
+        .first(word_type(23, 0))
+        .last(word_type(24, 0));
     for (auto const& word : wr) {
       presentation::add_rule(p, word, ""_w);
     }

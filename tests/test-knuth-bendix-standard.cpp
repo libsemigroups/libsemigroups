@@ -80,7 +80,9 @@ namespace libsemigroups {
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words:: operator+;
     v4::WordRange words;
-    words.order(LenLexCmp(Alphabet<word_type>(2))).min(0).max(6);
+    words.order(LenLexCmp(Alphabet<word_type>(2)))
+        .first({})
+        .last(word_type(6, 0));
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {
       for (size_t b = a; b < n - 1; ++b) {

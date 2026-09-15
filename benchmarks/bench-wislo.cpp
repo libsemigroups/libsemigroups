@@ -111,7 +111,7 @@ namespace libsemigroups {
       size_t        count = 0;
       v4::WordRange new_wr;
       new_wr.order(LenLexCmp(Alphabet<word_type>(alphabet_size)))
-          .max(max_length);
+          .last(word_type(max_length, 0));
 
       for (auto const& word : new_wr) {
         count++;

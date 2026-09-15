@@ -99,8 +99,8 @@ namespace libsemigroups {
                                            size_t num_letters = 3) {
         v4::WordRange<std::string> words;
         words.order(LenLexCmp(Alphabet<std::string>({0, 1, 2})))
-            .min(min_length_rule)
-            .max(max_length_rule);
+            .first(std::string(min_length_rule, 0))
+            .last(std::string(max_length_rule, 0));
         Rewriter rt;
         rt.increase_alphabet_size_by(num_letters);
         std::string empty = "";

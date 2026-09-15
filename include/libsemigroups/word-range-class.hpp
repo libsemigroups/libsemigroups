@@ -582,8 +582,6 @@ namespace libsemigroups {
       //! \param frst the first word.
       //!
       //! \returns A reference to \c *this.
-      //!
-      //! \sa \ref WordRange<Word>::min
       WordRange& first(Word const& frst) {
         _current_valid &= (frst == _first);
         _first = frst;
@@ -598,8 +596,6 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \sa \ref WordRange<Word>::min
       [[nodiscard]] Word const& first() const noexcept {
         return _first;
       }
@@ -611,8 +607,6 @@ namespace libsemigroups {
       //! \param lst one past the last word.
       //!
       //! \returns A reference to \c *this.
-      //!
-      //! \sa \ref WordRange<Word>::max
       WordRange& last(Word const& lst) {
         _current_valid &= (lst == _last);
         _last = lst;
@@ -627,8 +621,6 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \sa \ref WordRange<Word>::max
       [[nodiscard]] Word const& last() const noexcept {
         return _last;
       }
@@ -677,39 +669,15 @@ namespace libsemigroups {
         return _upper_bound;
       }
 
-      //! \brief Set the first word in the range by length.
-      //!
-      //! Sets the first word in a WordRange object to be  `pow(0_w, val)` (the
-      //! word consisting of \p val letters equal to \c 0).
-      //!
-      //! \param val the exponent.
-      //!
-      //! \returns A reference to \c *this.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      // TODO(0): This doesn't really make sense when Word is std::string.
-      WordRange& min(size_type val) {
-        first(Word(val, 0));
-        return *this;
-      }
-
-      //! \brief Set one past the last word in the range by length.
-      //!
-      //! Sets one past the last word in a WordRange object to be
-      //! `pow(0_w, val)` (the word consisting of \p val letters equal to \c 0).
-      //!
-      //! \param val the exponent.
-      //!
-      //! \returns A reference to \c *this.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      // TODO(0): This doesn't really make sense when Word is std::string.
-      WordRange& max(size_type val) {
-        last(Word(val, 0));
-        return *this;
-      }
+      // NOTE: There used to be `min` and `max` functions that would set `first`
+      // and `last` according to some desired length. The intention of these
+      // functions was to provide a means of constructing a WordRange that
+      // iterates over all words of size between `min` and `max`; however, this
+      // goal was not achieved when the comparator was LexCmp (amongst others).
+      // This is because there may be infinitely many words between `first` and
+      // `last`. As a result, it is not possible to implement something that
+      // iterates over words of a prescribed length without changing the
+      // implementation of the iterators themselves.
 
       //! \brief Returns an input iterator pointing to the first word in the
       //! range.
@@ -761,8 +729,6 @@ namespace libsemigroups {
       //! by \ref WordRange<Word>::get may be altered by a call to one of the
       //! following:
       //! * \ref WordRange<Word>::order
-      //! * \ref WordRange<Word>::min
-      //! * \ref WordRange<Word>::max
       //! * \ref WordRange<Word>::first
       //! * \ref WordRange<Word>::last
       //! * \ref WordRange<Word>::upper_bound

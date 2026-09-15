@@ -493,8 +493,8 @@ namespace libsemigroups {
     v4::WordRange words;
     words.order(LexCmp(Alphabet<word_type>(n)))
         .upper_bound(m + 1)
-        .min(1)
-        .max(m + 1);
+        .first({0})
+        .last(word_type(m + 1, 0));
     REQUIRE(words.get() == 0_w);
     words.next();
     REQUIRE(words.get() == 00_w);
@@ -726,7 +726,9 @@ namespace libsemigroups {
                           "lenlex | alphabet = a | min = 0 | max = 10",
                           "[lenlex][quick]") {
     v4::WordRange words;
-    words.order(LenLexCmp(Alphabet<word_type>(1))).min(0).max(10);
+    words.order(LenLexCmp(Alphabet<word_type>(1)))
+        .first({})
+        .last(word_type(10, 0));
 
     auto w = (words | ToString("a"));
     REQUIRE((w | count()) == 10);
@@ -741,7 +743,8 @@ namespace libsemigroups {
                                          "aaaaaaa",
                                          "aaaaaaaa",
                                          "aaaaaaaaa"}));
-    words.min(2).max(4);
+
+    words.first(word_type(2, 0)).last(word_type(4, 0));
     REQUIRE((words | ToString("b") | to_vector())
             == std::vector<std::string>({"bb", "bbb"}));
   }
@@ -1367,12 +1370,6 @@ namespace libsemigroups {
     REQUIRE(words.at_end());
     REQUIRE(words.count() == 0);
     REQUIRE((words | to_vector()) == std::vector<word_type>({}));
-
-    words.init();
-    words.order(LenLexCmp(Alphabet<word_type>(1))).min(2).max(2);
-    REQUIRE(words.at_end());
-    REQUIRE(words.count() == 0);
-    REQUIRE((words | to_vector()) == std::vector<word_type>({}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord", "043", "alphabet", "[quick]") {
@@ -1463,7 +1460,9 @@ namespace libsemigroups {
     // ToString combinator
     {
       v4::WordRange words;
-      words.order(LenLexCmp(Alphabet<word_type>(1))).min(0).max(10);
+      words.order(LenLexCmp(Alphabet<word_type>(1)))
+          .first({})
+          .last(word_type(10, 0));
 
       auto strings = (words | ToString("a"));
       REQUIRE((strings | to_vector())
@@ -1504,11 +1503,11 @@ namespace libsemigroups {
                           "to_human_readable_repr",
                           "[quick]") {
     v4::WordRange wr;
-    wr.min(0).max(1).order(LenLexCmp(Alphabet<word_type>(4)));
+    wr.first({}).last({0}).order(LenLexCmp(Alphabet<word_type>(4)));
     REQUIRE(to_human_readable_repr(wr, 120)
             == "<WordRange of length 1 between [] and [0] over <alphabet [0, "
                "1, 2, 3]>>");
-    wr.max(10);
+    wr.last(word_type(10, 0));
     REQUIRE(to_human_readable_repr(wr)
             == "<WordRange of length 349,525 over <alphabet [0, 1, 2, 3]>>");
   }

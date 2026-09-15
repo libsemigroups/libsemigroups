@@ -65,7 +65,7 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_subword(t, 1_w));
     REQUIRE(ukkonen::number_of_distinct_subwords(t) == 16);
     v4::WordRange w;
-    w.order(LenLexCmp(Alphabet<word_type>(6))).min(0).max(8);
+    w.order(LenLexCmp(Alphabet<word_type>(6))).first({}).last(word_type(8, 0));
     REQUIRE((w | rx::filter([&t](word_type const& u) {
                return ukkonen::is_subword(t, u);
              })
@@ -153,7 +153,7 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_suffix_no_checks(t, "ab"));
     REQUIRE(!ukkonen::is_suffix_no_checks(t, std::string("ab")));
 
-    w.order(LenLexCmp(Alphabet<word_type>(5))).min(0).max(7);
+    w.order(LenLexCmp(Alphabet<word_type>(5))).first({}).last(word_type(7, 0));
     REQUIRE((w | rx::filter([&t](word_type const& u) {
                return ukkonen::is_suffix(t, u);
              })
@@ -274,7 +274,9 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_subword(t, 13_w));
 
     v4::WordRange words;
-    words.order(LenLexCmp(Alphabet<word_type>(5))).min(0).max(5);
+    words.order(LenLexCmp(Alphabet<word_type>(5)))
+        .first({})
+        .last(word_type(5, 0));
     REQUIRE((words | rx::filter([&t](word_type const& w) {
                return ukkonen::is_subword(t, w);
              })
@@ -436,7 +438,9 @@ namespace libsemigroups {
       // No words
       REQUIRE_THROWS_AS(ukkonen::dot(u), LibsemigroupsException);
       v4::WordRange words;
-      words.order(LenLexCmp(Alphabet<word_type>(2))).min(0).max(5);
+      words.order(LenLexCmp(Alphabet<word_type>(2)))
+          .first({})
+          .last(word_type(5, 0));
       ukkonen::add_words(u, rx::begin(words), rx::end(words));
       REQUIRE(u.number_of_distinct_words() == 30);
       // Too many words

@@ -890,7 +890,9 @@ namespace libsemigroups {
       }
 
       v4::WordRange w;
-      w.order(LenLexCmp(Alphabet<word_type>(2))).min(1).max(5);
+      w.order(LenLexCmp(Alphabet<word_type>(2)))
+          .first(word_type(1, 0))
+          .last(word_type(5, 0));
 
       REQUIRE(w.count() == 30);
 

@@ -347,9 +347,10 @@ namespace libsemigroups {
     size_t const N = 18;
 
     v4::WordRange w;
-    w.order(LenLexCmp(Alphabet<word_type>(2))).min(4).max(5);
 
-    auto expected2 = (w.order(LenLexCmp(Alphabet<word_type>(2))).min(0).max(N)
+    auto expected2 = (w.order(LenLexCmp(Alphabet<word_type>(2)))
+                          .first({})
+                          .last(word_type(N, 0))
                       | filter([&wg](auto const& ww) {
                           return word_graph::follow_path(
                                      wg, size_t(0), ww.begin(), ww.end())
@@ -507,7 +508,9 @@ namespace libsemigroups {
 
     v4::WordRange w;
 
-    expected = (w.order(LenLexCmp(Alphabet<word_type>(2))).min(0).max(N)
+    expected = (w.order(LenLexCmp(Alphabet<word_type>(2)))
+                    .first({})
+                    .last(word_type(N, 0))
                 | filter([&wg](auto const& ww) {
                     return word_graph::follow_path(
                                wg, size_t(0), ww.begin(), ww.end())
