@@ -35,18 +35,18 @@ namespace libsemigroups {
 
     const_wilo_iterator_impl::const_wilo_iterator_impl() noexcept = default;
     const_wilo_iterator_impl::const_wilo_iterator_impl(
-        const_wilo_iterator_impl const&)
+        const_wilo_iterator_impl const&) noexcept
         = default;
     const_wilo_iterator_impl::const_wilo_iterator_impl(
         const_wilo_iterator_impl&&) noexcept
         = default;
-    const_wilo_iterator_impl&
-    const_wilo_iterator_impl::operator=(const_wilo_iterator_impl const&)
+    const_wilo_iterator_impl& const_wilo_iterator_impl::operator=(
+        const_wilo_iterator_impl const&) noexcept
         = default;
     const_wilo_iterator_impl&
     const_wilo_iterator_impl::operator=(const_wilo_iterator_impl&&) noexcept
         = default;
-    const_wilo_iterator_impl::~const_wilo_iterator_impl() = default;
+    const_wilo_iterator_impl::~const_wilo_iterator_impl() noexcept = default;
 
     void const_wilo_iterator_impl::init(size_type n, size_type upper_bound) {
       _letter         = 0;
@@ -147,18 +147,18 @@ namespace libsemigroups {
 
     const_wislo_iterator_impl::const_wislo_iterator_impl() noexcept = default;
     const_wislo_iterator_impl::const_wislo_iterator_impl(
-        const_wislo_iterator_impl const&)
+        const_wislo_iterator_impl const&) noexcept
         = default;
     const_wislo_iterator_impl::const_wislo_iterator_impl(
         const_wislo_iterator_impl&&) noexcept
         = default;
-    const_wislo_iterator_impl&
-    const_wislo_iterator_impl::operator=(const_wislo_iterator_impl const&)
+    const_wislo_iterator_impl& const_wislo_iterator_impl::operator=(
+        const_wislo_iterator_impl const&) noexcept
         = default;
     const_wislo_iterator_impl&
     const_wislo_iterator_impl::operator=(const_wislo_iterator_impl&&) noexcept
         = default;
-    const_wislo_iterator_impl::~const_wislo_iterator_impl() = default;
+    const_wislo_iterator_impl::~const_wislo_iterator_impl() noexcept = default;
 
     void const_wislo_iterator_impl::init(size_type n) {
       _number_letters = n;

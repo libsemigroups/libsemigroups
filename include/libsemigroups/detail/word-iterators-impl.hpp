@@ -56,11 +56,12 @@ namespace libsemigroups {
 
      public:
       const_wilo_iterator_impl() noexcept;
-      const_wilo_iterator_impl(const_wilo_iterator_impl const&);
+      const_wilo_iterator_impl(const_wilo_iterator_impl const&) noexcept;
       const_wilo_iterator_impl(const_wilo_iterator_impl&&) noexcept;
-      const_wilo_iterator_impl& operator=(const_wilo_iterator_impl const&);
+      const_wilo_iterator_impl&
+      operator=(const_wilo_iterator_impl const&) noexcept;
       const_wilo_iterator_impl& operator=(const_wilo_iterator_impl&&) noexcept;
-      ~const_wilo_iterator_impl();
+      ~const_wilo_iterator_impl() noexcept;
 
       const_wilo_iterator_impl(size_type   n,
                                size_type   upper_bound,
@@ -145,12 +146,13 @@ namespace libsemigroups {
 
      public:
       const_wislo_iterator_impl() noexcept;
-      const_wislo_iterator_impl(const_wislo_iterator_impl const&);
+      const_wislo_iterator_impl(const_wislo_iterator_impl const&) noexcept;
       const_wislo_iterator_impl(const_wislo_iterator_impl&&) noexcept;
-      const_wislo_iterator_impl& operator=(const_wislo_iterator_impl const&);
+      const_wislo_iterator_impl&
+      operator=(const_wislo_iterator_impl const&) noexcept;
       const_wislo_iterator_impl&
       operator=(const_wislo_iterator_impl&&) noexcept;
-      ~const_wislo_iterator_impl();
+      ~const_wislo_iterator_impl() noexcept;
 
       const_wislo_iterator_impl(size_type   n,
                                 word_type&& first,

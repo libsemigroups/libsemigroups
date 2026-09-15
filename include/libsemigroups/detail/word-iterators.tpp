@@ -28,7 +28,8 @@ namespace libsemigroups {
     const_wio_iterator<Word>::const_wio_iterator() noexcept = default;
 
     template <typename Word>
-    const_wio_iterator<Word>::const_wio_iterator(const_wio_iterator const&)
+    const_wio_iterator<Word>::const_wio_iterator(
+        const_wio_iterator const&) noexcept
         = default;
 
     template <typename Word>
@@ -37,7 +38,7 @@ namespace libsemigroups {
 
     template <typename Word>
     const_wio_iterator<Word>&
-    const_wio_iterator<Word>::operator=(const_wio_iterator const&)
+    const_wio_iterator<Word>::operator=(const_wio_iterator const&) noexcept
         = default;
 
     template <typename Word>
@@ -46,7 +47,7 @@ namespace libsemigroups {
         = default;
 
     template <typename Word>
-    const_wio_iterator<Word>::~const_wio_iterator() = default;
+    const_wio_iterator<Word>::~const_wio_iterator() noexcept = default;
 
     template <typename Word>
     template <typename Cmp, typename>
@@ -158,7 +159,8 @@ namespace libsemigroups {
     const_wilo_iterator<Word>::const_wilo_iterator() noexcept = default;
 
     template <typename Word>
-    const_wilo_iterator<Word>::const_wilo_iterator(const_wilo_iterator const&)
+    const_wilo_iterator<Word>::const_wilo_iterator(
+        const_wilo_iterator const&) noexcept
         = default;
 
     template <typename Word>
@@ -168,7 +170,7 @@ namespace libsemigroups {
 
     template <typename Word>
     const_wilo_iterator<Word>&
-    const_wilo_iterator<Word>::operator=(const_wilo_iterator const&)
+    const_wilo_iterator<Word>::operator=(const_wilo_iterator const&) noexcept
         = default;
 
     template <typename Word>
@@ -177,7 +179,7 @@ namespace libsemigroups {
         = default;
 
     template <typename Word>
-    const_wilo_iterator<Word>::~const_wilo_iterator() = default;
+    const_wilo_iterator<Word>::~const_wilo_iterator() noexcept = default;
 
     template <typename Word>
     const_wilo_iterator<Word>::const_wilo_iterator(
@@ -244,7 +246,7 @@ namespace libsemigroups {
 
     template <typename Word>
     const_wislo_iterator<Word>::const_wislo_iterator(
-        const_wislo_iterator const&)
+        const_wislo_iterator const&) noexcept
         = default;
 
     template <typename Word>
@@ -254,7 +256,7 @@ namespace libsemigroups {
 
     template <typename Word>
     const_wislo_iterator<Word>&
-    const_wislo_iterator<Word>::operator=(const_wislo_iterator const&)
+    const_wislo_iterator<Word>::operator=(const_wislo_iterator const&) noexcept
         = default;
 
     template <typename Word>
@@ -263,7 +265,7 @@ namespace libsemigroups {
         = default;
 
     template <typename Word>
-    const_wislo_iterator<Word>::~const_wislo_iterator() = default;
+    const_wislo_iterator<Word>::~const_wislo_iterator() noexcept = default;
 
     template <typename Word>
     const_wislo_iterator<Word>::const_wislo_iterator(

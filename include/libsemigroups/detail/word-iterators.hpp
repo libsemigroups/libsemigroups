@@ -70,11 +70,11 @@ namespace libsemigroups {
 
      public:
       const_wio_iterator() noexcept;
-      const_wio_iterator(const_wio_iterator const&);
+      const_wio_iterator(const_wio_iterator const&) noexcept;
       const_wio_iterator(const_wio_iterator&&) noexcept;
-      const_wio_iterator& operator=(const_wio_iterator const&);
+      const_wio_iterator& operator=(const_wio_iterator const&) noexcept;
       const_wio_iterator& operator=(const_wio_iterator&&) noexcept;
-      ~const_wio_iterator();
+      ~const_wio_iterator() noexcept;
 
       template <typename Cmp,
                 typename = typename std::enable_if_t<has_alphabet<Cmp>>>
@@ -154,11 +154,11 @@ namespace libsemigroups {
 
      public:
       const_wilo_iterator() noexcept;
-      const_wilo_iterator(const_wilo_iterator const&);
+      const_wilo_iterator(const_wilo_iterator const&) noexcept;
       const_wilo_iterator(const_wilo_iterator&&) noexcept;
-      const_wilo_iterator& operator=(const_wilo_iterator const&);
+      const_wilo_iterator& operator=(const_wilo_iterator const&) noexcept;
       const_wilo_iterator& operator=(const_wilo_iterator&&) noexcept;
-      ~const_wilo_iterator();
+      ~const_wilo_iterator() noexcept;
 
       const_wilo_iterator(Alphabet<Word> const& alphabet,
                           size_type             upper_bound,
@@ -235,11 +235,11 @@ namespace libsemigroups {
 
      public:
       const_wislo_iterator() noexcept;
-      const_wislo_iterator(const_wislo_iterator const&);
+      const_wislo_iterator(const_wislo_iterator const&) noexcept;
       const_wislo_iterator(const_wislo_iterator&&) noexcept;
-      const_wislo_iterator& operator=(const_wislo_iterator const&);
+      const_wislo_iterator& operator=(const_wislo_iterator const&) noexcept;
       const_wislo_iterator& operator=(const_wislo_iterator&&) noexcept;
-      ~const_wislo_iterator();
+      ~const_wislo_iterator() noexcept;
 
       const_wislo_iterator(Alphabet<Word> const& alphabet,
                            Word const&           first,
