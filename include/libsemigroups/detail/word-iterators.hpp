@@ -69,12 +69,12 @@ namespace libsemigroups {
       std::function<bool(const Word&, const Word&)> _cmp;
 
      public:
-      const_wio_iterator() noexcept;
-      const_wio_iterator(const_wio_iterator const&) noexcept;
-      const_wio_iterator(const_wio_iterator&&) noexcept;
-      const_wio_iterator& operator=(const_wio_iterator const&) noexcept;
-      const_wio_iterator& operator=(const_wio_iterator&&) noexcept;
-      ~const_wio_iterator() noexcept;
+      const_wio_iterator();
+      const_wio_iterator(const_wio_iterator const&);
+      const_wio_iterator(const_wio_iterator&&);
+      const_wio_iterator& operator=(const_wio_iterator const&);
+      const_wio_iterator& operator=(const_wio_iterator&&);
+      ~const_wio_iterator();
 
       template <typename Cmp,
                 typename = typename std::enable_if_t<has_alphabet<Cmp>>>
@@ -106,10 +106,10 @@ namespace libsemigroups {
       }
 
       // prefix
-      const_wio_iterator const& operator++() noexcept;
+      const_wio_iterator const& operator++();
 
       // postfix
-      const_wio_iterator operator++(int) noexcept {
+      const_wio_iterator operator++(int) {
         return default_postfix_increment<const_wio_iterator>(*this);
       }
 
@@ -117,12 +117,11 @@ namespace libsemigroups {
         return _alphabet;
       }
 
-      void swap(const_wio_iterator& that) noexcept;
+      void swap(const_wio_iterator& that);
     };
 
     template <typename Word>
-    inline void swap(const_wio_iterator<Word>& x,
-                     const_wio_iterator<Word>& y) noexcept {
+    inline void swap(const_wio_iterator<Word>& x, const_wio_iterator<Word>& y) {
       x.swap(y);
     }
 
@@ -153,12 +152,12 @@ namespace libsemigroups {
       void update_external_current() const;
 
      public:
-      const_wilo_iterator() noexcept;
-      const_wilo_iterator(const_wilo_iterator const&) noexcept;
-      const_wilo_iterator(const_wilo_iterator&&) noexcept;
-      const_wilo_iterator& operator=(const_wilo_iterator const&) noexcept;
-      const_wilo_iterator& operator=(const_wilo_iterator&&) noexcept;
-      ~const_wilo_iterator() noexcept;
+      const_wilo_iterator();
+      const_wilo_iterator(const_wilo_iterator const&);
+      const_wilo_iterator(const_wilo_iterator&&);
+      const_wilo_iterator& operator=(const_wilo_iterator const&);
+      const_wilo_iterator& operator=(const_wilo_iterator&&);
+      ~const_wilo_iterator();
 
       const_wilo_iterator(Alphabet<Word> const& alphabet,
                           size_type             upper_bound,
@@ -168,14 +167,14 @@ namespace libsemigroups {
       // This is called reset for consistency with wio.
       void reset(size_type upper_bound, Word const& first, Word const& last);
 
-      [[nodiscard]] const_reference operator*() const noexcept {
+      [[nodiscard]] const_reference operator*() const {
         if (!_external_current_set) {
           update_external_current();
         }
         return _external_current;
       }
 
-      [[nodiscard]] const_pointer operator->() const noexcept {
+      [[nodiscard]] const_pointer operator->() const {
         if (!_external_current_set) {
           update_external_current();
         }
@@ -183,14 +182,14 @@ namespace libsemigroups {
       }
 
       // prefix
-      const_wilo_iterator const& operator++() noexcept {
+      const_wilo_iterator const& operator++() {
         const_wilo_iterator_impl::operator++();
         _external_current_set = false;
         return *this;
       }
 
       // postfix
-      const_wilo_iterator operator++(int) noexcept {
+      const_wilo_iterator operator++(int) {
         return default_postfix_increment<const_wilo_iterator>(*this);
       }
 
@@ -198,12 +197,12 @@ namespace libsemigroups {
         return _alphabet;
       }
 
-      void swap(const_wilo_iterator& that) noexcept;
+      void swap(const_wilo_iterator& that);
     };
 
     template <typename Word>
     inline void swap(const_wilo_iterator<Word>& x,
-                     const_wilo_iterator<Word>& y) noexcept {
+                     const_wilo_iterator<Word>& y) {
       x.swap(y);
     }
 
@@ -234,12 +233,12 @@ namespace libsemigroups {
       void update_external_current() const;
 
      public:
-      const_wislo_iterator() noexcept;
-      const_wislo_iterator(const_wislo_iterator const&) noexcept;
-      const_wislo_iterator(const_wislo_iterator&&) noexcept;
-      const_wislo_iterator& operator=(const_wislo_iterator const&) noexcept;
-      const_wislo_iterator& operator=(const_wislo_iterator&&) noexcept;
-      ~const_wislo_iterator() noexcept;
+      const_wislo_iterator();
+      const_wislo_iterator(const_wislo_iterator const&);
+      const_wislo_iterator(const_wislo_iterator&&);
+      const_wislo_iterator& operator=(const_wislo_iterator const&);
+      const_wislo_iterator& operator=(const_wislo_iterator&&);
+      ~const_wislo_iterator();
 
       const_wislo_iterator(Alphabet<Word> const& alphabet,
                            Word const&           first,
@@ -248,14 +247,14 @@ namespace libsemigroups {
       // This is called reset for consistency with wio.
       void reset(size_type upper_bound, Word const& first, Word const& last);
 
-      [[nodiscard]] const_reference operator*() const noexcept {
+      [[nodiscard]] const_reference operator*() const {
         if (!_external_current_set) {
           update_external_current();
         }
         return _external_current;
       }
 
-      [[nodiscard]] const_pointer operator->() const noexcept {
+      [[nodiscard]] const_pointer operator->() const {
         if (!_external_current_set) {
           update_external_current();
         }
@@ -263,14 +262,14 @@ namespace libsemigroups {
       }
 
       // prefix
-      const_wislo_iterator const& operator++() noexcept {
+      const_wislo_iterator const& operator++() {
         const_wislo_iterator_impl::operator++();
         _external_current_set = false;
         return *this;
       }
 
       // postfix
-      const_wislo_iterator operator++(int) noexcept {
+      const_wislo_iterator operator++(int) {
         return default_postfix_increment<const_wislo_iterator>(*this);
       }
 
@@ -278,12 +277,12 @@ namespace libsemigroups {
         return _alphabet;
       }
 
-      void swap(const_wislo_iterator& that) noexcept;
+      void swap(const_wislo_iterator& that);
     };
 
     template <typename Word>
     inline void swap(const_wislo_iterator<Word>& x,
-                     const_wislo_iterator<Word>& y) noexcept {
+                     const_wislo_iterator<Word>& y) {
       x.swap(y);
     }
 

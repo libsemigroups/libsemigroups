@@ -25,29 +25,28 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////
 
     template <typename Word>
-    const_wio_iterator<Word>::const_wio_iterator() noexcept = default;
+    const_wio_iterator<Word>::const_wio_iterator() = default;
 
     template <typename Word>
-    const_wio_iterator<Word>::const_wio_iterator(
-        const_wio_iterator const&) noexcept
+    const_wio_iterator<Word>::const_wio_iterator(const_wio_iterator const&)
         = default;
 
     template <typename Word>
-    const_wio_iterator<Word>::const_wio_iterator(const_wio_iterator&&) noexcept
-        = default;
-
-    template <typename Word>
-    const_wio_iterator<Word>&
-    const_wio_iterator<Word>::operator=(const_wio_iterator const&) noexcept
+    const_wio_iterator<Word>::const_wio_iterator(const_wio_iterator&&)
         = default;
 
     template <typename Word>
     const_wio_iterator<Word>&
-    const_wio_iterator<Word>::operator=(const_wio_iterator&&) noexcept
+    const_wio_iterator<Word>::operator=(const_wio_iterator const&)
         = default;
 
     template <typename Word>
-    const_wio_iterator<Word>::~const_wio_iterator() noexcept = default;
+    const_wio_iterator<Word>&
+    const_wio_iterator<Word>::operator=(const_wio_iterator&&)
+        = default;
+
+    template <typename Word>
+    const_wio_iterator<Word>::~const_wio_iterator() = default;
 
     template <typename Word>
     template <typename Cmp, typename>
@@ -88,8 +87,7 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    const_wio_iterator<Word> const&
-    const_wio_iterator<Word>::operator++() noexcept {
+    const_wio_iterator<Word> const& const_wio_iterator<Word>::operator++() {
       if (_index != UNDEFINED) {
         ++_index;
 
@@ -130,7 +128,7 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void const_wio_iterator<Word>::swap(const_wio_iterator& that) noexcept {
+    void const_wio_iterator<Word>::swap(const_wio_iterator& that) {
       std::swap(_index, that._index);
       std::swap(_upper_bound, that._upper_bound);
       std::swap(_first, that._first);
@@ -156,30 +154,28 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////
 
     template <typename Word>
-    const_wilo_iterator<Word>::const_wilo_iterator() noexcept = default;
+    const_wilo_iterator<Word>::const_wilo_iterator() = default;
 
     template <typename Word>
-    const_wilo_iterator<Word>::const_wilo_iterator(
-        const_wilo_iterator const&) noexcept
+    const_wilo_iterator<Word>::const_wilo_iterator(const_wilo_iterator const&)
         = default;
 
     template <typename Word>
-    const_wilo_iterator<Word>::const_wilo_iterator(
-        const_wilo_iterator&&) noexcept
-        = default;
-
-    template <typename Word>
-    const_wilo_iterator<Word>&
-    const_wilo_iterator<Word>::operator=(const_wilo_iterator const&) noexcept
+    const_wilo_iterator<Word>::const_wilo_iterator(const_wilo_iterator&&)
         = default;
 
     template <typename Word>
     const_wilo_iterator<Word>&
-    const_wilo_iterator<Word>::operator=(const_wilo_iterator&&) noexcept
+    const_wilo_iterator<Word>::operator=(const_wilo_iterator const&)
         = default;
 
     template <typename Word>
-    const_wilo_iterator<Word>::~const_wilo_iterator() noexcept = default;
+    const_wilo_iterator<Word>&
+    const_wilo_iterator<Word>::operator=(const_wilo_iterator&&)
+        = default;
+
+    template <typename Word>
+    const_wilo_iterator<Word>::~const_wilo_iterator() = default;
 
     template <typename Word>
     const_wilo_iterator<Word>::const_wilo_iterator(
@@ -219,7 +215,7 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void const_wilo_iterator<Word>::swap(const_wilo_iterator& that) noexcept {
+    void const_wilo_iterator<Word>::swap(const_wilo_iterator& that) {
       const_wilo_iterator_impl::swap(that);
       std::swap(_alphabet, that._alphabet);
       std::swap(_external_current_set, that._external_current_set);
@@ -241,30 +237,29 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////
 
     template <typename Word>
-    const_wislo_iterator<Word>::const_wislo_iterator() noexcept = default;
+    const_wislo_iterator<Word>::const_wislo_iterator() = default;
 
     template <typename Word>
     const_wislo_iterator<Word>::const_wislo_iterator(
-        const_wislo_iterator const&) noexcept
+        const_wislo_iterator const&)
         = default;
 
     template <typename Word>
-    const_wislo_iterator<Word>::const_wislo_iterator(
-        const_wislo_iterator&&) noexcept
+    const_wislo_iterator<Word>::const_wislo_iterator(const_wislo_iterator&&)
         = default;
 
     template <typename Word>
     const_wislo_iterator<Word>&
-    const_wislo_iterator<Word>::operator=(const_wislo_iterator const&) noexcept
+    const_wislo_iterator<Word>::operator=(const_wislo_iterator const&)
         = default;
 
     template <typename Word>
     const_wislo_iterator<Word>&
-    const_wislo_iterator<Word>::operator=(const_wislo_iterator&&) noexcept
+    const_wislo_iterator<Word>::operator=(const_wislo_iterator&&)
         = default;
 
     template <typename Word>
-    const_wislo_iterator<Word>::~const_wislo_iterator() noexcept = default;
+    const_wislo_iterator<Word>::~const_wislo_iterator() = default;
 
     template <typename Word>
     const_wislo_iterator<Word>::const_wislo_iterator(
@@ -307,7 +302,7 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void const_wislo_iterator<Word>::swap(const_wislo_iterator& that) noexcept {
+    void const_wislo_iterator<Word>::swap(const_wislo_iterator& that) {
       const_wislo_iterator_impl::swap(that);
       std::swap(_alphabet, that._alphabet);
       std::swap(_external_current_set, that._external_current_set);

@@ -55,13 +55,12 @@ namespace libsemigroups {
       size_type   _number_letters;
 
      public:
-      const_wilo_iterator_impl() noexcept;
-      const_wilo_iterator_impl(const_wilo_iterator_impl const&) noexcept;
-      const_wilo_iterator_impl(const_wilo_iterator_impl&&) noexcept;
-      const_wilo_iterator_impl&
-      operator=(const_wilo_iterator_impl const&) noexcept;
-      const_wilo_iterator_impl& operator=(const_wilo_iterator_impl&&) noexcept;
-      ~const_wilo_iterator_impl() noexcept;
+      const_wilo_iterator_impl();
+      const_wilo_iterator_impl(const_wilo_iterator_impl const&);
+      const_wilo_iterator_impl(const_wilo_iterator_impl&&);
+      const_wilo_iterator_impl& operator=(const_wilo_iterator_impl const&);
+      const_wilo_iterator_impl& operator=(const_wilo_iterator_impl&&);
+      ~const_wilo_iterator_impl();
 
       const_wilo_iterator_impl(size_type   n,
                                size_type   upper_bound,
@@ -106,21 +105,20 @@ namespace libsemigroups {
       }
 
       // prefix
-      const_wilo_iterator_impl const& operator++() noexcept;
+      const_wilo_iterator_impl const& operator++();
 
       // postfix
-      const_wilo_iterator_impl operator++(int) noexcept {
+      const_wilo_iterator_impl operator++(int) {
         return default_postfix_increment<const_wilo_iterator_impl>(*this);
       }
 
-      void swap(const_wilo_iterator_impl& that) noexcept;
+      void swap(const_wilo_iterator_impl& that);
 
      private:
       void init(size_type n, size_type upper_bound);
     };
 
-    inline void swap(const_wilo_iterator_impl& x,
-                     const_wilo_iterator_impl& y) noexcept {
+    inline void swap(const_wilo_iterator_impl& x, const_wilo_iterator_impl& y) {
       x.swap(y);
     }
 
@@ -145,14 +143,12 @@ namespace libsemigroups {
       size_type _number_letters;
 
      public:
-      const_wislo_iterator_impl() noexcept;
-      const_wislo_iterator_impl(const_wislo_iterator_impl const&) noexcept;
-      const_wislo_iterator_impl(const_wislo_iterator_impl&&) noexcept;
-      const_wislo_iterator_impl&
-      operator=(const_wislo_iterator_impl const&) noexcept;
-      const_wislo_iterator_impl&
-      operator=(const_wislo_iterator_impl&&) noexcept;
-      ~const_wislo_iterator_impl() noexcept;
+      const_wislo_iterator_impl();
+      const_wislo_iterator_impl(const_wislo_iterator_impl const&);
+      const_wislo_iterator_impl(const_wislo_iterator_impl&&);
+      const_wislo_iterator_impl& operator=(const_wislo_iterator_impl const&);
+      const_wislo_iterator_impl& operator=(const_wislo_iterator_impl&&);
+      ~const_wislo_iterator_impl();
 
       const_wislo_iterator_impl(size_type   n,
                                 word_type&& first,
@@ -191,22 +187,22 @@ namespace libsemigroups {
       }
 
       // prefix
-      const_wislo_iterator_impl const& operator++() noexcept;
+      const_wislo_iterator_impl const& operator++();
 
       // postfix
-      const_wislo_iterator_impl operator++(int) noexcept {
+      const_wislo_iterator_impl operator++(int) {
         return detail::default_postfix_increment<const_wislo_iterator_impl>(
             *this);
       }
 
-      void swap(const_wislo_iterator_impl& that) noexcept;
+      void swap(const_wislo_iterator_impl& that);
 
      private:
       void init(size_type n);
     };
 
     inline void swap(const_wislo_iterator_impl& x,
-                     const_wislo_iterator_impl& y) noexcept {
+                     const_wislo_iterator_impl& y) {
       x.swap(y);
     }
   }  // namespace detail

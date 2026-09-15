@@ -33,20 +33,20 @@ namespace libsemigroups {
     // wilo
     //////////////////////////////////////////////////////////////////
 
-    const_wilo_iterator_impl::const_wilo_iterator_impl() noexcept = default;
+    const_wilo_iterator_impl::const_wilo_iterator_impl() = default;
     const_wilo_iterator_impl::const_wilo_iterator_impl(
-        const_wilo_iterator_impl const&) noexcept
+        const_wilo_iterator_impl const&)
         = default;
     const_wilo_iterator_impl::const_wilo_iterator_impl(
-        const_wilo_iterator_impl&&) noexcept
-        = default;
-    const_wilo_iterator_impl& const_wilo_iterator_impl::operator=(
-        const_wilo_iterator_impl const&) noexcept
+        const_wilo_iterator_impl&&)
         = default;
     const_wilo_iterator_impl&
-    const_wilo_iterator_impl::operator=(const_wilo_iterator_impl&&) noexcept
+    const_wilo_iterator_impl::operator=(const_wilo_iterator_impl const&)
         = default;
-    const_wilo_iterator_impl::~const_wilo_iterator_impl() noexcept = default;
+    const_wilo_iterator_impl&
+    const_wilo_iterator_impl::operator=(const_wilo_iterator_impl&&)
+        = default;
+    const_wilo_iterator_impl::~const_wilo_iterator_impl() = default;
 
     void const_wilo_iterator_impl::init(size_type n, size_type upper_bound) {
       _letter         = 0;
@@ -99,8 +99,7 @@ namespace libsemigroups {
       init(n, upper_bound);
     }
 
-    const_wilo_iterator_impl const&
-    const_wilo_iterator_impl::operator++() noexcept {
+    const_wilo_iterator_impl const& const_wilo_iterator_impl::operator++() {
       if (_index != UNDEFINED) {
         ++_index;
       begin:
@@ -120,8 +119,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    void
-    const_wilo_iterator_impl::swap(const_wilo_iterator_impl& that) noexcept {
+    void const_wilo_iterator_impl::swap(const_wilo_iterator_impl& that) {
       std::swap(_letter, that._letter);
       std::swap(_index, that._index);
       std::swap(_upper_bound, that._upper_bound);
@@ -145,20 +143,20 @@ namespace libsemigroups {
     // wislo
     //////////////////////////////////////////////////////////////////
 
-    const_wislo_iterator_impl::const_wislo_iterator_impl() noexcept = default;
+    const_wislo_iterator_impl::const_wislo_iterator_impl() = default;
     const_wislo_iterator_impl::const_wislo_iterator_impl(
-        const_wislo_iterator_impl const&) noexcept
+        const_wislo_iterator_impl const&)
         = default;
     const_wislo_iterator_impl::const_wislo_iterator_impl(
-        const_wislo_iterator_impl&&) noexcept
-        = default;
-    const_wislo_iterator_impl& const_wislo_iterator_impl::operator=(
-        const_wislo_iterator_impl const&) noexcept
+        const_wislo_iterator_impl&&)
         = default;
     const_wislo_iterator_impl&
-    const_wislo_iterator_impl::operator=(const_wislo_iterator_impl&&) noexcept
+    const_wislo_iterator_impl::operator=(const_wislo_iterator_impl const&)
         = default;
-    const_wislo_iterator_impl::~const_wislo_iterator_impl() noexcept = default;
+    const_wislo_iterator_impl&
+    const_wislo_iterator_impl::operator=(const_wislo_iterator_impl&&)
+        = default;
+    const_wislo_iterator_impl::~const_wislo_iterator_impl() = default;
 
     void const_wislo_iterator_impl::init(size_type n) {
       _number_letters = n;
@@ -201,8 +199,7 @@ namespace libsemigroups {
       init(n);
     }
 
-    const_wislo_iterator_impl const&
-    const_wislo_iterator_impl::operator++() noexcept {
+    const_wislo_iterator_impl const& const_wislo_iterator_impl::operator++() {
       if (_index != UNDEFINED) {
         ++_index;
         size_t n = _current.size();
@@ -218,8 +215,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    void
-    const_wislo_iterator_impl::swap(const_wislo_iterator_impl& that) noexcept {
+    void const_wislo_iterator_impl::swap(const_wislo_iterator_impl& that) {
       std::swap(_current, that._current);
       std::swap(_index, that._index);
       std::swap(_last, that._last);
