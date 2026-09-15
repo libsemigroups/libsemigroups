@@ -209,12 +209,11 @@ namespace libsemigroups {
                                                citow(_alphabet, last.cend())));
       _external_current.clear();
       _external_current_set = false;
-      update_external_current();
     }
 
     template <typename Word>
     void const_wilo_iterator<Word>::update_external_current() const {
-      _external_current     = Word(cifrw(_alphabet, _current.cbegin()),
+      _external_current.assign(cifrw(_alphabet, _current.cbegin()),
                                cifrw(_alphabet, _current.cend()));
       _external_current_set = true;
     }
@@ -298,12 +297,11 @@ namespace libsemigroups {
                     citow(_alphabet, last.cend())));
       _external_current.clear();
       _external_current_set = false;
-      update_external_current();
     }
 
     template <typename Word>
     void const_wislo_iterator<Word>::update_external_current() const {
-      _external_current     = Word(cifrw(_alphabet, _current.cbegin()),
+      _external_current.assign(cifrw(_alphabet, _current.cbegin()),
                                cifrw(_alphabet, _current.cend()));
       _external_current_set = true;
     }
