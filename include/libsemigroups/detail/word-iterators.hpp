@@ -46,7 +46,7 @@ namespace libsemigroups {
     // There is no const_wio_iterator_impl because the comparator, which
     // contains an alphabet, is baked into the implementation of operator++.
     // Therefore, there is no need for a facade and an impl.
-    template <typename Word = word_type>
+    template <typename Word>
     class const_wio_iterator {
      public:
       using size_type         = typename std::vector<Word>::size_type;
