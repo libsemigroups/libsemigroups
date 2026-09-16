@@ -66,7 +66,7 @@ namespace libsemigroups {
       Word                                          _last;
       std::vector<Word>                             _frontier;
       Alphabet<Word>                                _alphabet;
-      std::function<bool(const Word&, const Word&)> _cmp;
+      std::function<bool(Word const&, Word const&)> _cmp;
 
      public:
       const_wio_iterator();
