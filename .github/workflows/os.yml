@@ -190,3 +190,44 @@ jobs:
             make -j4
             make test_all -j4
             ./test_all [quick]
+  Windows:
+    name: Windows
+    timeout-minutes: 60
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sys:
+          - mingw64
+          - mingw32
+          - ucrt64
+          - clang64
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.sys }}
+          pacboy: |
+            ${{ matrix.sys == 'clang64' && 'clang:p' || 'gcc:p' }}
+          install: |
+            automake
+            autoconf
+            libtool
+            make
+      - name: Setup ccache
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          windows_compile_environment: msys2
+      - name: Build libsemigroups . . .
+        run: |
+          ./autogen.sh
+          ./configure ${{ matrix.sys == 'mingw32' && '--disable-hpcombi' || '' }} # hpcombi is not supported on 32-bit systems
+          make -j4
+      - name: Build test_all . . .
+        run: make test_all.exe -j4
+      - name: Run the quick tests . . .
+        run: ./test_all.exe "[quick]"
