@@ -143,7 +143,7 @@ namespace libsemigroups {
      private:
       // _external_current and _external_current_set are mutable because we
       // defined the "state" of the iterator to be determined by the state of
-      // the date defined in const_wilo_iterator_impl. The _external things are
+      // the data defined in const_wilo_iterator_impl. The _external things are
       // merely wrappers.
       Alphabet<Word> _alphabet;
       mutable Word   _external_current;

@@ -139,16 +139,6 @@ namespace libsemigroups {
       _current.swap(that._current);
     }
 
-    // Assert that the forward iterator requirements are met
-    // static_assert(std::is_default_constructible<const_wio_iterator>::value,
-    //               "forward iterator requires default-constructible");
-    // static_assert(std::is_copy_constructible<const_wio_iterator>::value,
-    //               "forward iterator requires copy-constructible");
-    // static_assert(std::is_copy_assignable<const_wio_iterator>::value,
-    //               "forward iterator requires copy-assignable");
-    // static_assert(std::is_destructible<const_wio_iterator>::value,
-    //               "forward iterator requires destructible");
-
     //////////////////////////////////////////////////////////////////
     // wilo
     //////////////////////////////////////////////////////////////////
@@ -221,16 +211,6 @@ namespace libsemigroups {
       std::swap(_external_current_set, that._external_current_set);
       _external_current.swap(that._external_current);
     }
-
-    // Assert that the forward iterator requirements are met
-    // static_assert(std::is_default_constructible<const_wilo_iterator>::value,
-    //               "forward iterator requires default-constructible");
-    // static_assert(std::is_copy_constructible<const_wilo_iterator>::value,
-    //               "forward iterator requires copy-constructible");
-    // static_assert(std::is_copy_assignable<const_wilo_iterator>::value,
-    //               "forward iterator requires copy-assignable");
-    // static_assert(std::is_destructible<const_wilo_iterator>::value,
-    //               "forward iterator requires destructible");
 
     //////////////////////////////////////////////////////////////////
     // wislo
@@ -308,16 +288,6 @@ namespace libsemigroups {
       std::swap(_external_current_set, that._external_current_set);
       _external_current.swap(that._external_current);
     }
-
-    // Assert that the forward iterator requirements are met
-    // static_assert(std::is_default_constructible<const_wislo_iterator>::value,
-    //               "forward iterator requires default-constructible");
-    // static_assert(std::is_copy_constructible<const_wislo_iterator>::value,
-    //               "forward iterator requires copy-constructible");
-    // static_assert(std::is_copy_assignable<const_wislo_iterator>::value,
-    //               "forward iterator requires copy-assignable");
-    // static_assert(std::is_destructible<const_wislo_iterator>::value,
-    //               "forward iterator requires destructible");
 
   }  // namespace detail
 }  // namespace libsemigroups
