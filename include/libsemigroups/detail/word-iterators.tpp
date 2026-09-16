@@ -55,14 +55,14 @@ namespace libsemigroups {
         Word const&                                  first,
         Word const&                                  last,
         Cmp&&                                        cmp)
-        : _current(),
-          _index(),
-          _upper_bound(),
+        : _alphabet(cmp.alphabet()),
+          _cmp(std::forward<Cmp>(cmp)),
+          _current(),
           _first(),
-          _last(),
           _frontier(),
-          _alphabet(cmp.alphabet()),
-          _cmp(std::forward<Cmp>(cmp)) {
+          _index(),
+          _last(),
+          _upper_bound() {
       reset(upper_bound, first, last);
     }
 
@@ -129,13 +129,13 @@ namespace libsemigroups {
 
     template <typename Word>
     void const_wio_iterator<Word>::swap(const_wio_iterator& that) {
-      std::swap(_index, that._index);
-      std::swap(_upper_bound, that._upper_bound);
-      std::swap(_first, that._first);
-      std::swap(_last, that._last);
-      std::swap(_frontier, that._frontier);
       std::swap(_alphabet, that._alphabet);
       std::swap(_cmp, that._cmp);
+      std::swap(_first, that._first);
+      std::swap(_frontier, that._frontier);
+      std::swap(_index, that._index);
+      std::swap(_last, that._last);
+      std::swap(_upper_bound, that._upper_bound);
       _current.swap(that._current);
     }
 

@@ -59,14 +59,14 @@ namespace libsemigroups {
       using iterator_category = std::forward_iterator_tag;
 
      private:
-      Word                                          _current;
-      size_type                                     _index;
-      size_type                                     _upper_bound;
-      Word                                          _first;
-      Word                                          _last;
-      std::vector<Word>                             _frontier;
       Alphabet<Word>                                _alphabet;
       std::function<bool(Word const&, Word const&)> _cmp;
+      Word                                          _current;
+      Word                                          _first;
+      std::vector<Word>                             _frontier;
+      size_type                                     _index;
+      Word                                          _last;
+      size_type                                     _upper_bound;
 
      public:
       const_wio_iterator();
