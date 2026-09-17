@@ -67,24 +67,33 @@ namespace libsemigroups {
                                word_type&& first,
                                word_type&& last);
 
-      const_wilo_iterator_impl(size_type                 n,
-                               size_type                 upper_bound,
-                               word_type::const_iterator first_begin,
-                               word_type::const_iterator first_end,
-                               word_type::const_iterator last_begin,
-                               word_type::const_iterator last_end);
+      template <typename Iterator>
+      const_wilo_iterator_impl(size_type n,
+                               size_type upper_bound,
+                               Iterator  first_begin,
+                               Iterator  first_end,
+                               Iterator  last_begin,
+                               Iterator  last_end)
+          : const_wilo_iterator_impl() {
+        init(n, upper_bound, first_begin, first_end, last_begin, last_end);
+      }
 
       void init(size_type   n,
                 size_type   upper_bound,
                 word_type&& first,
                 word_type&& last);
 
-      void init(size_type                 n,
-                size_type                 upper_bound,
-                word_type::const_iterator first_begin,
-                word_type::const_iterator first_end,
-                word_type::const_iterator last_begin,
-                word_type::const_iterator last_end);
+      template <typename Iterator>
+      void init(size_type n,
+                size_type upper_bound,
+                Iterator  first_begin,
+                Iterator  first_end,
+                Iterator  last_begin,
+                Iterator  last_end) {
+        _current.assign(first_begin, first_end);
+        _last.assign(last_begin, last_end);
+        init(n, upper_bound);
+      }
 
       [[nodiscard]] bool
       operator==(const_wilo_iterator_impl const& that) const noexcept {
@@ -154,19 +163,28 @@ namespace libsemigroups {
                                 word_type&& first,
                                 word_type&& last);
 
-      const_wislo_iterator_impl(size_type                 n,
-                                word_type::const_iterator first_begin,
-                                word_type::const_iterator first_end,
-                                word_type::const_iterator last_begin,
-                                word_type::const_iterator last_end);
+      template <typename Iterator>
+      const_wislo_iterator_impl(size_type n,
+                                Iterator  first_begin,
+                                Iterator  first_end,
+                                Iterator  last_begin,
+                                Iterator  last_end)
+          : const_wislo_iterator_impl() {
+        init(n, first_begin, first_end, last_begin, last_end);
+      }
 
       void init(size_type n, word_type&& first, word_type&& last);
 
-      void init(size_type                 n,
-                word_type::const_iterator first_begin,
-                word_type::const_iterator first_end,
-                word_type::const_iterator last_begin,
-                word_type::const_iterator last_end);
+      template <typename Iterator>
+      void init(size_type n,
+                Iterator  first_begin,
+                Iterator  first_end,
+                Iterator  last_begin,
+                Iterator  last_end) {
+        _current.assign(first_begin, first_end);
+        _last.assign(last_begin, last_end);
+        init(n);
+      }
 
       [[nodiscard]] bool
       operator==(const_wislo_iterator_impl const& that) const noexcept {

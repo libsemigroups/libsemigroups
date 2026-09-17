@@ -192,10 +192,10 @@ namespace libsemigroups {
       _alphabet.throw_if_letter_not_in_alphabet(last.cbegin(), last.cend());
       const_wilo_iterator_impl::init(_alphabet.size(),
                                      upper_bound,
-                                     word_type(citow(_alphabet, first.cbegin()),
-                                               citow(_alphabet, first.cend())),
-                                     word_type(citow(_alphabet, last.cbegin()),
-                                               citow(_alphabet, last.cend())));
+                                     citow(_alphabet, first.cbegin()),
+                                     citow(_alphabet, first.cend()),
+                                     citow(_alphabet, last.cbegin()),
+                                     citow(_alphabet, last.cend()));
       _external_current.clear();
       _external_current_set = false;
     }
@@ -267,12 +267,11 @@ namespace libsemigroups {
       _alphabet.throw_if_letter_not_in_alphabet(first.cbegin(), first.cend());
       _alphabet.throw_if_letter_not_in_alphabet(last.cbegin(), last.cend());
 
-      const_wislo_iterator_impl::init(
-          _alphabet.size(),
-          word_type(citow(_alphabet, first.cbegin()),
-                    citow(_alphabet, first.cend())),
-          word_type(citow(_alphabet, last.cbegin()),
-                    citow(_alphabet, last.cend())));
+      const_wislo_iterator_impl::init(_alphabet.size(),
+                                      citow(_alphabet, first.cbegin()),
+                                      citow(_alphabet, first.cend()),
+                                      citow(_alphabet, last.cbegin()),
+                                      citow(_alphabet, last.cend()));
       _external_current.clear();
       _external_current_set = false;
     }

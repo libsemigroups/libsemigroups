@@ -60,17 +60,6 @@ namespace libsemigroups {
       }
     }
 
-    const_wilo_iterator_impl::const_wilo_iterator_impl(
-        size_type                 n,
-        size_type                 upper_bound,
-        word_type::const_iterator first_begin,
-        word_type::const_iterator first_end,
-        word_type::const_iterator last_begin,
-        word_type::const_iterator last_end)
-        : const_wilo_iterator_impl() {
-      init(n, upper_bound, first_begin, first_end, last_begin, last_end);
-    }
-
     const_wilo_iterator_impl::const_wilo_iterator_impl(size_type   n,
                                                        size_type   upper_bound,
                                                        word_type&& first,
@@ -85,17 +74,6 @@ namespace libsemigroups {
                                         word_type&& last) {
       _current = std::move(first);
       _last    = std::move(last);
-      init(n, upper_bound);
-    }
-
-    void const_wilo_iterator_impl::init(size_type                 n,
-                                        size_type                 upper_bound,
-                                        word_type::const_iterator first_begin,
-                                        word_type::const_iterator first_end,
-                                        word_type::const_iterator last_begin,
-                                        word_type::const_iterator last_end) {
-      _current.assign(first_begin, first_end);
-      _last.assign(last_begin, last_end);
       init(n, upper_bound);
     }
 
@@ -171,31 +149,11 @@ namespace libsemigroups {
       init(n, std::move(first), std::move(last));
     }
 
-    const_wislo_iterator_impl::const_wislo_iterator_impl(
-        size_type                 n,
-        word_type::const_iterator first_begin,
-        word_type::const_iterator first_end,
-        word_type::const_iterator last_begin,
-        word_type::const_iterator last_end)
-        : const_wislo_iterator_impl() {
-      init(n, first_begin, first_end, last_begin, last_end);
-    }
-
     void const_wislo_iterator_impl::init(size_type   n,
                                          word_type&& first,
                                          word_type&& last) {
       _current = std::move(first);
       _last    = std::move(last);
-      init(n);
-    }
-
-    void const_wislo_iterator_impl::init(size_type                 n,
-                                         word_type::const_iterator first_begin,
-                                         word_type::const_iterator first_end,
-                                         word_type::const_iterator last_begin,
-                                         word_type::const_iterator last_end) {
-      _current.assign(first_begin, first_end);
-      _last.assign(last_begin, last_end);
       init(n);
     }
 
