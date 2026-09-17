@@ -62,6 +62,7 @@ namespace libsemigroups {
           _frontier(),
           _index(),
           _last(),
+          _tmp_word(),
           _upper_bound() {
       reset(upper_bound, first, last);
     }
@@ -106,16 +107,16 @@ namespace libsemigroups {
           }
           LIBSEMIGROUPS_ASSERT(!_frontier.empty());
           std::pop_heap(_frontier.begin(), _frontier.end(), flipped_cmp);
-          _current = _frontier.back();
+          _current = std::move(_frontier.back());
           _frontier.pop_back();
 
           if (_current.size() < _upper_bound) {
             // Update the frontier with words of length at most _upper_bound
-            for (letter_type a : _alphabet.letters()) {
-              Word new_word = _current;
-              new_word.push_back(a);
-              if (!_cmp(_last, new_word)) {
-                _frontier.push_back(new_word);
+            for (auto const& a : _alphabet.letters()) {
+              _tmp_word.assign(_current.cbegin(), _current.cend());
+              _tmp_word.push_back(a);
+              if (!_cmp(_last, _tmp_word)) {
+                _frontier.push_back(std::move(_tmp_word));
                 std::push_heap(_frontier.begin(), _frontier.end(), flipped_cmp);
               }
             }
@@ -135,6 +136,8 @@ namespace libsemigroups {
       std::swap(_frontier, that._frontier);
       std::swap(_index, that._index);
       std::swap(_last, that._last);
+      // There is no point swapping _tmp_word because its value is almost always
+      // nonsense except for a brief period during a call to operator++
       std::swap(_upper_bound, that._upper_bound);
       _current.swap(that._current);
     }

@@ -66,6 +66,7 @@ namespace libsemigroups {
       std::vector<Word>                             _frontier;
       size_type                                     _index;
       Word                                          _last;
+      Word                                          _tmp_word;
       size_type                                     _upper_bound;
 
      public:
