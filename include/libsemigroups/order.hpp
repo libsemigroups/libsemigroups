@@ -26,7 +26,7 @@
 #include <cstddef>           // for size_t
 #include <cstdint>           // for uint8_t
 #include <initializer_list>  // for initializer_list
-#include <iterator>          // for distance
+#include <iterator>          // for begin, distance, end
 #include <numeric>           // for accumulate
 #include <string_view>       // for string_view
 #include <tuple>             // for tie
@@ -177,6 +177,28 @@ namespace libsemigroups {
     return lex_cmp_no_checks(alphabet, first1, last1, first2, last2);
   }
 
+  //! \brief Compare two objects using lexicographic order without checks.
+  //!
+  //! This is equivalent to \ref lex_cmp(Word const&, Word const&) because
+  //! there is no explicit alphabet to validate.
+  //!
+  //! \tparam Word the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is lexicographically less
+  //! than \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref lex_cmp(Word const&, Word const&).
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool lex_cmp_no_checks(Word const& x, Word const& y) {
+    return std::lexicographical_compare(
+        std::begin(x), std::end(x), std::begin(y), std::end(y));
+  }
+
   //! \brief Compare two objects of the same type using
   //! std::lexicographical_compare.
   //!
@@ -202,13 +224,13 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code_no_test
-  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
+  //! std::lexicographical_compare(
+  //!     std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   template <typename Word,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
   [[nodiscard]] bool lex_cmp(Word const& x, Word const& y) {
-    return std::lexicographical_compare(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return lex_cmp_no_checks(x, y);
   }
 
   //! \brief Compare two objects lexicographically without checking an alphabet.
@@ -228,7 +250,7 @@ namespace libsemigroups {
                                        Word const&           x,
                                        Word const&           y) {
     return lex_cmp_no_checks(
-        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects lexicographically with respect to an alphabet.
@@ -250,7 +272,8 @@ namespace libsemigroups {
   [[nodiscard]] bool lex_cmp(Alphabet<Word> const& alphabet,
                              Word const&           x,
                              Word const&           y) {
-    return lex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return lex_cmp(
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Marker type used for stateless comparison specializations.
@@ -513,7 +536,7 @@ namespace libsemigroups {
         "provided.")]] bool
     operator()(std::initializer_list<T> x, std::initializer_list<T> y) const {
       return std::lexicographical_compare(
-          x.begin(), x.end(), y.begin(), y.end());
+          std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
   };  // struct LexCmp<Default, true>
 
@@ -569,6 +592,35 @@ namespace libsemigroups {
   // Reversed lex
   //////////////////////////////////////////////////////////////////////
 
+  //! \brief Compare two ranges using reversed lexicographic order without
+  //! checks.
+  //!
+  //! There is no explicit alphabet to validate, so this is equivalent to
+  //! \ref rev_lex_cmp(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \tparam Iterator the type of the iterators.
+  //!
+  //! \param first1 beginning iterator of the first range.
+  //! \param last1 ending iterator of the first range.
+  //! \param first2 beginning iterator of the second range.
+  //! \param last2 ending iterator of the second range.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range in this ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref rev_lex_cmp(Iterator, Iterator, Iterator, Iterator).
+  template <typename Iterator>
+  [[nodiscard]] bool rev_lex_cmp_no_checks(Iterator first1,
+                                           Iterator last1,
+                                           Iterator first2,
+                                           Iterator last2) {
+    return std::lexicographical_compare(std::make_reverse_iterator(last1),
+                                        std::make_reverse_iterator(first1),
+                                        std::make_reverse_iterator(last2),
+                                        std::make_reverse_iterator(first2));
+  }
+
   //! \brief Compare two ranges using reversed lexicographic order.
   //!
   //! This function applies \ref lex_cmp to the ranges read from right to
@@ -586,10 +638,7 @@ namespace libsemigroups {
                                  Iterator last1,
                                  Iterator first2,
                                  Iterator last2) {
-    return LexCmp<>()(std::make_reverse_iterator(last1),
-                      std::make_reverse_iterator(first1),
-                      std::make_reverse_iterator(last2),
-                      std::make_reverse_iterator(first2));
+    return rev_lex_cmp_no_checks(first1, last1, first2, last2);
   }
 
   //! \brief Compare two ranges using reversed lexicographic order without
@@ -628,11 +677,34 @@ namespace libsemigroups {
                    std::make_reverse_iterator(first2));
   }
 
+  //! \brief Compare two objects using reversed lexicographic order without
+  //! checks.
+  //!
+  //! This is equivalent to \ref rev_lex_cmp(Word const&, Word const&) because
+  //! there is no explicit alphabet to validate.
+  //!
+  //! \tparam Word the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is reversed lexicographically
+  //! less than \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref rev_lex_cmp(Word const&, Word const&).
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool rev_lex_cmp_no_checks(Word const& x, Word const& y) {
+    return rev_lex_cmp_no_checks(
+        std::begin(x), std::end(x), std::begin(y), std::end(y));
+  }
+
   //! \brief Compare two objects using reversed lexicographic order.
   template <typename Word,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
   [[nodiscard]] bool rev_lex_cmp(Word const& x, Word const& y) {
-    return rev_lex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_lex_cmp_no_checks(x, y);
   }
 
   //! \brief Compare two objects using reversed lexicographic order without
@@ -642,7 +714,7 @@ namespace libsemigroups {
                                            Word const&           x,
                                            Word const&           y) {
     return rev_lex_cmp_no_checks(
-        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using reversed lexicographic order with
@@ -651,7 +723,8 @@ namespace libsemigroups {
   [[nodiscard]] bool rev_lex_cmp(Alphabet<Word> const& alphabet,
                                  Word const&           x,
                                  Word const&           y) {
-    return rev_lex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_lex_cmp(
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   template <typename Word = Default, bool check = true>
@@ -701,7 +774,7 @@ namespace libsemigroups {
 
     //! \brief Compare two words using reversed lexicographic order.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed lexicographic order.
@@ -733,7 +806,7 @@ namespace libsemigroups {
     //! \brief Compare two words using reversed lexicographic order.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed lexicographic order.
@@ -794,6 +867,33 @@ namespace libsemigroups {
   // Lenlex
   //////////////////////////////////////////////////////////////////////
 
+  //! \brief Compare two ranges using lenlex order without checks.
+  //!
+  //! There is no explicit alphabet to validate, so this is equivalent to
+  //! \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \tparam Iterator the type of the iterators.
+  //!
+  //! \param first1 beginning iterator of the first range.
+  //! \param last1 ending iterator of the first range.
+  //! \param first2 beginning iterator of the second range.
+  //! \param last2 ending iterator of the second range.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range in this ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  template <typename Iterator>
+  [[nodiscard]] bool lenlex_cmp_no_checks(Iterator first1,
+                                          Iterator last1,
+                                          Iterator first2,
+                                          Iterator last2) {
+    return (last1 - first1) < (last2 - first2)
+           || ((last1 - first1) == (last2 - first2)
+               && std::lexicographical_compare(first1, last1, first2, last2));
+  }
+
   //! \brief Compare two objects of the same type using the lenlex reduction
   //! ordering.
   //!
@@ -833,14 +933,10 @@ namespace libsemigroups {
   //!                  first1, last1, first2, last2));
   //! }
   //! \end_code_no_test
-  // NOTE no alphabet means nothing can go wrong here, so this is both the
-  // checks and no_checks version
   template <typename Iterator>
   [[nodiscard]] bool
   lenlex_cmp(Iterator first1, Iterator last1, Iterator first2, Iterator last2) {
-    return (last1 - first1) < (last2 - first2)
-           || ((last1 - first1) == (last2 - first2)
-               && std::lexicographical_compare(first1, last1, first2, last2));
+    return lenlex_cmp_no_checks(first1, last1, first2, last2);
   }
 
   //! \brief Compare two ranges using lenlex without checking an alphabet.
@@ -896,6 +992,28 @@ namespace libsemigroups {
     return lenlex_cmp_no_checks(alphabet, first1, last1, first2, last2);
   }
 
+  //! \brief Compare two objects using lenlex order without checks.
+  //!
+  //! This is equivalent to \ref lenlex_cmp(Word const&, Word const&) because
+  //! there is no explicit alphabet to validate.
+  //!
+  //! \tparam Word the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is lenlex less than \p y,
+  //! and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool lenlex_cmp_no_checks(Word const& x, Word const& y) {
+    return lenlex_cmp_no_checks(
+        std::begin(x), std::end(x), std::begin(y), std::end(y));
+  }
+
   //! \brief Compare two objects of the same type using \ref lenlex_cmp.
   //!
   //! Defined in `order.hpp`.
@@ -920,7 +1038,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code_no_test
-  //! lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! lenlex_cmp(std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   //!
   //! \sa
@@ -928,10 +1046,8 @@ namespace libsemigroups {
   template <typename Word,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
   [[nodiscard]] bool lenlex_cmp(Word const& x, Word const& y) {
-    return lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return lenlex_cmp_no_checks(x, y);
   }
-
-  // TODO there's no no_checks version of lenlex_cmp for two objects
 
   //! \brief Compare two objects using lenlex with respect to an alphabet.
   //!
@@ -952,7 +1068,8 @@ namespace libsemigroups {
   [[nodiscard]] bool lenlex_cmp(Alphabet<Word> const& alphabet,
                                 Word const&           x,
                                 Word const&           y) {
-    return lenlex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return lenlex_cmp(
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using lenlex without checking an alphabet.
@@ -972,7 +1089,7 @@ namespace libsemigroups {
                                           Word const&           x,
                                           Word const&           y) {
     return lenlex_cmp_no_checks(
-        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   template <typename Word = Default, bool check = true>
@@ -1230,6 +1347,34 @@ namespace libsemigroups {
   // Reversed lenlex
   //////////////////////////////////////////////////////////////////////
 
+  //! \brief Compare two ranges using reversed lenlex order without checks.
+  //!
+  //! There is no explicit alphabet to validate, so this is equivalent to
+  //! \ref rev_lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \tparam Iterator the type of the iterators.
+  //!
+  //! \param first1 beginning iterator of the first range.
+  //! \param last1 ending iterator of the first range.
+  //! \param first2 beginning iterator of the second range.
+  //! \param last2 ending iterator of the second range.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range in this ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref rev_lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  template <typename Iterator>
+  [[nodiscard]] bool rev_lenlex_cmp_no_checks(Iterator first1,
+                                              Iterator last1,
+                                              Iterator first2,
+                                              Iterator last2) {
+    return lenlex_cmp_no_checks(std::make_reverse_iterator(last1),
+                                std::make_reverse_iterator(first1),
+                                std::make_reverse_iterator(last2),
+                                std::make_reverse_iterator(first2));
+  }
+
   //! \brief Compare two ranges using reversed lenlex.
   //!
   //! This function applies \ref lenlex_cmp to the ranges read from right to
@@ -1247,10 +1392,7 @@ namespace libsemigroups {
                                     Iterator last1,
                                     Iterator first2,
                                     Iterator last2) {
-    return lenlex_cmp(std::make_reverse_iterator(last1),
-                      std::make_reverse_iterator(first1),
-                      std::make_reverse_iterator(last2),
-                      std::make_reverse_iterator(first2));
+    return rev_lenlex_cmp_no_checks(first1, last1, first2, last2);
   }
 
   //! \brief Compare two ranges using reversed lenlex without checking an
@@ -1289,11 +1431,33 @@ namespace libsemigroups {
                       std::make_reverse_iterator(first2));
   }
 
+  //! \brief Compare two objects using reversed lenlex order without checks.
+  //!
+  //! This is equivalent to \ref rev_lenlex_cmp(Word const&, Word const&)
+  //! because there is no explicit alphabet to validate.
+  //!
+  //! \tparam Word the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is reversed lenlex less than
+  //! \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref rev_lenlex_cmp(Word const&, Word const&).
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool rev_lenlex_cmp_no_checks(Word const& x, Word const& y) {
+    return rev_lenlex_cmp_no_checks(
+        std::begin(x), std::end(x), std::begin(y), std::end(y));
+  }
+
   //! \brief Compare two objects using reversed lenlex.
   template <typename Word,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
   [[nodiscard]] bool rev_lenlex_cmp(Word const& x, Word const& y) {
-    return rev_lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_lenlex_cmp_no_checks(x, y);
   }
 
   //! \brief Compare two objects using reversed lenlex without checking an
@@ -1303,7 +1467,7 @@ namespace libsemigroups {
                                               Word const&           x,
                                               Word const&           y) {
     return rev_lenlex_cmp_no_checks(
-        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using reversed lenlex with respect to an
@@ -1312,7 +1476,8 @@ namespace libsemigroups {
   [[nodiscard]] bool rev_lenlex_cmp(Alphabet<Word> const& alphabet,
                                     Word const&           x,
                                     Word const&           y) {
-    return rev_lenlex_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_lenlex_cmp(
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   template <typename Word = Default, bool check = true>
@@ -1363,7 +1528,7 @@ namespace libsemigroups {
 
     //! \brief Compare two words using reversed lenlex.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed lenlex.
@@ -1395,7 +1560,7 @@ namespace libsemigroups {
     //! \brief Compare two words using reversed lenlex.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed lenlex.
@@ -1456,6 +1621,29 @@ namespace libsemigroups {
   // Recursive path order (RPO)
   //////////////////////////////////////////////////////////////////////
 
+  //! \brief Compare two ranges using recursive path order without checks.
+  //!
+  //! There is no explicit alphabet to validate, so this is equivalent to
+  //! \ref rpo_cmp(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \tparam Iterator the type of the iterators.
+  //!
+  //! \param first1 beginning iterator of the first range.
+  //! \param last1 ending iterator of the first range.
+  //! \param first2 beginning iterator of the second range.
+  //! \param last2 ending iterator of the second range.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range in this ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  template <typename Iterator>
+  [[nodiscard]] bool rpo_cmp_no_checks(Iterator first1,
+                                       Iterator last1,
+                                       Iterator first2,
+                                       Iterator last2) noexcept;
+
   //! \brief Compare two objects of the same type using the recursive path
   //! comparison.
   //!
@@ -1495,7 +1683,9 @@ namespace libsemigroups {
   [[nodiscard]] bool rpo_cmp(Iterator first1,
                              Iterator last1,
                              Iterator first2,
-                             Iterator last2) noexcept;
+                             Iterator last2) noexcept {
+    return rpo_cmp_no_checks(first1, last1, first2, last2);
+  }
 
   //! \brief Compare two ranges using recursive path order without checks.
   //!
@@ -1542,6 +1732,27 @@ namespace libsemigroups {
                              Iterator              first2,
                              Iterator              last2);
 
+  //! \brief Compare two objects using recursive path order without checks.
+  //!
+  //! This is equivalent to \ref rpo_cmp(Word const&, Word const&) because
+  //! there is no explicit alphabet to validate.
+  //!
+  //! \tparam Word the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y in
+  //! recursive path order, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  template <typename Word>
+  [[nodiscard]] bool rpo_cmp_no_checks(Word const& x, Word const& y) noexcept {
+    return rpo_cmp_no_checks(
+        std::begin(x), std::end(x), std::begin(y), std::end(y));
+  }
+
   //! \brief Compare two objects of the same type using \ref rpo_cmp.
   //!
   //! Defined in `order.hpp`.
@@ -1562,14 +1773,14 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code_no_test
-  //! rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! rpo_cmp(std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   //!
   //! \sa
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
   template <typename Word>
   [[nodiscard]] bool rpo_cmp(Word const& x, Word const& y) noexcept {
-    return rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rpo_cmp_no_checks(x, y);
   }
 
   //! \brief Compare two objects using recursive path order and an alphabet.
@@ -1587,7 +1798,8 @@ namespace libsemigroups {
   [[nodiscard]] bool rpo_cmp(Alphabet<Word> const& alphabet,
                              Word const&           x,
                              Word const&           y) {
-    return rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rpo_cmp(
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using recursive path order without checks.
@@ -1607,7 +1819,7 @@ namespace libsemigroups {
                                        Word const&           x,
                                        Word const&           y) {
     return rpo_cmp_no_checks(
-        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   template <typename Word = Default, bool check = true>
@@ -1863,6 +2075,30 @@ namespace libsemigroups {
   // Reversed recursive path order (RPO)
   //////////////////////////////////////////////////////////////////////
 
+  //! \brief Compare two ranges using reversed recursive path order without
+  //! checks.
+  //!
+  //! There is no explicit alphabet to validate, so this is equivalent to
+  //! \ref rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \tparam Iterator the type of the iterators.
+  //!
+  //! \param first1 beginning iterator of the first range.
+  //! \param last1 ending iterator of the first range.
+  //! \param first2 beginning iterator of the second range.
+  //! \param last2 ending iterator of the second range.
+  //!
+  //! \returns The boolean value \c true if the first range is less than the
+  //! second range in this ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  template <typename Iterator>
+  [[nodiscard]] bool rev_rpo_cmp_no_checks(Iterator first1,
+                                           Iterator last1,
+                                           Iterator first2,
+                                           Iterator last2) noexcept;
+
   //! \brief Compare two ranges using reversed recursive path compare.
   //!
   //! This function applies \ref libsemigroups::rpo_cmp to the ranges read from
@@ -1885,7 +2121,9 @@ namespace libsemigroups {
   [[nodiscard]] bool rev_rpo_cmp(Iterator first1,
                                  Iterator last1,
                                  Iterator first2,
-                                 Iterator last2) noexcept;
+                                 Iterator last2) noexcept {
+    return rev_rpo_cmp_no_checks(first1, last1, first2, last2);
+  }
 
   //! \brief Compare two ranges using reversed recursive path order without
   //! checks.
@@ -1936,6 +2174,30 @@ namespace libsemigroups {
                                  Iterator              first2,
                                  Iterator              last2);
 
+  //! \brief Compare two objects using reversed recursive path order without
+  //! checks.
+  //!
+  //! This is equivalent to \ref rev_rpo_cmp(Word const&, Word const&) because
+  //! there is no explicit alphabet to validate.
+  //!
+  //! \tparam Word the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y in
+  //! reversed recursive path order, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  template <typename Word,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
+  [[nodiscard]] bool rev_rpo_cmp_no_checks(Word const& x,
+                                           Word const& y) noexcept {
+    return rev_rpo_cmp_no_checks(
+        std::begin(x), std::end(x), std::begin(y), std::end(y));
+  }
+
   //! \brief Compare two objects of the same type using
   //! \ref libsemigroups::rev_rpo_cmp.
   //!
@@ -1957,7 +2219,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code_no_test
-  //! rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! rev_rpo_cmp(std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   //!
   //! \sa
@@ -1965,7 +2227,7 @@ namespace libsemigroups {
   template <typename Word,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Word>>>
   [[nodiscard]] bool rev_rpo_cmp(Word const& x, Word const& y) noexcept {
-    return rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_rpo_cmp_no_checks(x, y);
   }
 
   //! \brief Compare two objects using reversed recursive path order without
@@ -1986,7 +2248,7 @@ namespace libsemigroups {
                                            Word const&           x,
                                            Word const&           y) {
     return rev_rpo_cmp_no_checks(
-        alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using reversed recursive path order and an
@@ -2005,7 +2267,8 @@ namespace libsemigroups {
   [[nodiscard]] bool rev_rpo_cmp(Alphabet<Word> const& alphabet,
                                  Word const&           x,
                                  Word const&           y) {
-    return rev_rpo_cmp(alphabet, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_rpo_cmp(
+        alphabet, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   template <typename Word = Default, bool check = true>
@@ -2389,7 +2652,7 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wr_cmp_no_checks(
-  //!   levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //!   levels, std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   //!
   //! \warning
@@ -2403,7 +2666,8 @@ namespace libsemigroups {
   [[nodiscard]] bool wr_cmp_no_checks(std::vector<size_t> const& levels,
                                       Thing const&               x,
                                       Thing const&               y) {
-    return wr_cmp_no_checks(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wr_cmp_no_checks(
+        levels, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using the wreath-product ordering without
@@ -2426,8 +2690,12 @@ namespace libsemigroups {
                                       std::vector<size_t> const& levels,
                                       Word const&                x,
                                       Word const&                y) {
-    return wr_cmp_no_checks(
-        alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wr_cmp_no_checks(alphabet,
+                            levels,
+                            std::begin(x),
+                            std::end(x),
+                            std::begin(y),
+                            std::end(y));
   }
 
   //! \brief Compare two ranges using the wreath-product ordering and check
@@ -2526,7 +2794,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code_no_test
-  //! wr_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! wr_cmp(levels, std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   //!
   //! \sa
@@ -2536,7 +2804,8 @@ namespace libsemigroups {
   [[nodiscard]] bool wr_cmp(std::vector<size_t> const& levels,
                             Thing const&               x,
                             Thing const&               y) {
-    return wr_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wr_cmp(
+        levels, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using the wreath-product ordering, check
@@ -2560,7 +2829,12 @@ namespace libsemigroups {
                             std::vector<size_t> const& levels,
                             Word const&                x,
                             Word const&                y) {
-    return wr_cmp(alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wr_cmp(alphabet,
+                  levels,
+                  std::begin(x),
+                  std::end(x),
+                  std::begin(y),
+                  std::end(y));
   }
 
   namespace detail {
@@ -2673,7 +2947,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \c check is \c true and a letter in
     //! \p x or \p y does not belong to the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using wreath-product order.
@@ -2944,7 +3218,7 @@ namespace libsemigroups {
                                           Thing const&               x,
                                           Thing const&               y) {
     return rev_wr_cmp_no_checks(
-        levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        levels, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using reversed wreath-product order without
@@ -2954,8 +3228,12 @@ namespace libsemigroups {
                                           std::vector<size_t> const& levels,
                                           Word const&                x,
                                           Word const&                y) {
-    return rev_wr_cmp_no_checks(
-        alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_wr_cmp_no_checks(alphabet,
+                                levels,
+                                std::begin(x),
+                                std::end(x),
+                                std::begin(y),
+                                std::end(y));
   }
 
   //! \brief Compare two ranges using reversed wreath-product order and check
@@ -2996,7 +3274,8 @@ namespace libsemigroups {
   [[nodiscard]] bool rev_wr_cmp(std::vector<size_t> const& levels,
                                 Thing const&               x,
                                 Thing const&               y) {
-    return rev_wr_cmp(levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_wr_cmp(
+        levels, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using reversed wreath-product order and a
@@ -3006,8 +3285,12 @@ namespace libsemigroups {
                                 std::vector<size_t> const& levels,
                                 Word const&                x,
                                 Word const&                y) {
-    return rev_wr_cmp(
-        alphabet, levels, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_wr_cmp(alphabet,
+                      levels,
+                      std::begin(x),
+                      std::end(x),
+                      std::begin(y),
+                      std::end(y));
   }
 
   //! \brief Forward declaration of \ref RevWrCmp.
@@ -3061,7 +3344,7 @@ namespace libsemigroups {
 
     //! \brief Compare two words using reversed wreath-product order.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed wreath-product order.
@@ -3139,7 +3422,7 @@ namespace libsemigroups {
     //! \brief Compare two words using reversed wreath-product order.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed wreath-product order.
@@ -3319,7 +3602,7 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lenlex_cmp_no_checks(
-  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //!   weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   //!
   //! \warning
@@ -3334,7 +3617,7 @@ namespace libsemigroups {
                                              Word const&                x,
                                              Word const&                y) {
     return wt_lenlex_cmp_no_checks(
-        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using
@@ -3359,8 +3642,12 @@ namespace libsemigroups {
                                              std::vector<size_t> const& weights,
                                              Word const&                x,
                                              Word const&                y) {
-    return wt_lenlex_cmp_no_checks(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wt_lenlex_cmp_no_checks(alphabet,
+                                   weights,
+                                   std::begin(x),
+                                   std::end(x),
+                                   std::begin(y),
+                                   std::end(y));
   }
 
   //! \brief Compare two objects of the same type using the weighted lenlex
@@ -3474,7 +3761,7 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lenlex_cmp(
-  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //!   weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   //!
   //! \sa
@@ -3484,7 +3771,8 @@ namespace libsemigroups {
   [[nodiscard]] bool wt_lenlex_cmp(std::vector<size_t> const& weights,
                                    Word const&                x,
                                    Word const&                y) {
-    return wt_lenlex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wt_lenlex_cmp(
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using \ref wt_lenlex_cmp and with a specified
@@ -3507,8 +3795,12 @@ namespace libsemigroups {
                                    std::vector<size_t> const& weights,
                                    Word const&                x,
                                    Word const&                y) {
-    return wt_lenlex_cmp(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wt_lenlex_cmp(alphabet,
+                         weights,
+                         std::begin(x),
+                         std::end(x),
+                         std::begin(y),
+                         std::end(y));
   }
 
   //! \brief Forward declaration of \ref WtLenLexCmp.
@@ -3620,7 +3912,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \c check is \c true and a letter in
     //! \p x or \p y does not belong to the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.begin(), x.end(), y.begin(), y.end());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Call operator that compares two iterator ranges.
@@ -3951,7 +4243,7 @@ namespace libsemigroups {
                               Word const&                x,
                               Word const&                y) {
     return rev_wt_lenlex_cmp_no_checks(
-        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using reversed weighted lenlex without
@@ -3962,8 +4254,12 @@ namespace libsemigroups {
                               std::vector<size_t> const& weights,
                               Word const&                x,
                               Word const&                y) {
-    return rev_wt_lenlex_cmp_no_checks(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_wt_lenlex_cmp_no_checks(alphabet,
+                                       weights,
+                                       std::begin(x),
+                                       std::end(x),
+                                       std::begin(y),
+                                       std::end(y));
   }
 
   //! \brief Compare two ranges using reversed weighted lenlex and check
@@ -4005,7 +4301,7 @@ namespace libsemigroups {
                                        Word const&                x,
                                        Word const&                y) {
     return rev_wt_lenlex_cmp(
-        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using reversed weighted lenlex and a
@@ -4015,8 +4311,12 @@ namespace libsemigroups {
                                        std::vector<size_t> const& weights,
                                        Word const&                x,
                                        Word const&                y) {
-    return rev_wt_lenlex_cmp(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_wt_lenlex_cmp(alphabet,
+                             weights,
+                             std::begin(x),
+                             std::end(x),
+                             std::begin(y),
+                             std::end(y));
   }
 
   //! \brief Forward declaration of \ref RevWtLenLexCmp.
@@ -4072,7 +4372,7 @@ namespace libsemigroups {
 
     //! \brief Compare two words using reversed weighted lenlex.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed weighted lenlex.
@@ -4151,7 +4451,7 @@ namespace libsemigroups {
     //! \brief Compare two words using reversed weighted lenlex.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed weighted lenlex.
@@ -4323,7 +4623,7 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lex_cmp_no_checks(
-  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //!   weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   //!
   //! \warning
@@ -4338,7 +4638,7 @@ namespace libsemigroups {
                                           Word const&                x,
                                           Word const&                y) {
     return wt_lex_cmp_no_checks(
-        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using weighted lex without checking an
@@ -4360,8 +4660,12 @@ namespace libsemigroups {
                                           std::vector<size_t> const& weights,
                                           Word const&                x,
                                           Word const&                y) {
-    return wt_lex_cmp_no_checks(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wt_lex_cmp_no_checks(alphabet,
+                                weights,
+                                std::begin(x),
+                                std::end(x),
+                                std::begin(y),
+                                std::end(y));
   }
 
   //! \brief Compare two objects of the same type using the weighted lex
@@ -4469,7 +4773,7 @@ namespace libsemigroups {
   //! \par Possible Implementation
   //! \code_no_test
   //! wt_lex_cmp(
-  //!   weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //!   weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   //! \end_code_no_test
   //!
   //! \sa
@@ -4479,7 +4783,8 @@ namespace libsemigroups {
   [[nodiscard]] bool wt_lex_cmp(std::vector<size_t> const& weights,
                                 Word const&                x,
                                 Word const&                y) {
-    return wt_lex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wt_lex_cmp(
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using weighted lex and an alphabet.
@@ -4499,8 +4804,12 @@ namespace libsemigroups {
                                 std::vector<size_t> const& weights,
                                 Word const&                x,
                                 Word const&                y) {
-    return wt_lex_cmp(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return wt_lex_cmp(alphabet,
+                      weights,
+                      std::begin(x),
+                      std::end(x),
+                      std::begin(y),
+                      std::end(y));
   }
 
   //! \brief Forward declaration of \ref WtLexCmp.
@@ -4619,7 +4928,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \c check is \c true and a letter in
     //! \p x or \p y does not belong to the stored alphabet.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.begin(), x.end(), y.begin(), y.end());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Call operator that compares two iterator ranges.
@@ -4936,7 +5245,7 @@ namespace libsemigroups {
                            Word const&                x,
                            Word const&                y) {
     return rev_wt_lex_cmp_no_checks(
-        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using reversed weighted lex without checks and
@@ -4947,8 +5256,12 @@ namespace libsemigroups {
                            std::vector<size_t> const& weights,
                            Word const&                x,
                            Word const&                y) {
-    return rev_wt_lex_cmp_no_checks(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_wt_lex_cmp_no_checks(alphabet,
+                                    weights,
+                                    std::begin(x),
+                                    std::end(x),
+                                    std::begin(y),
+                                    std::end(y));
   }
 
   //! \brief Compare two ranges using reversed weighted lex and check validity.
@@ -4988,7 +5301,8 @@ namespace libsemigroups {
   [[nodiscard]] bool rev_wt_lex_cmp(std::vector<size_t> const& weights,
                                     Word const&                x,
                                     Word const&                y) {
-    return rev_wt_lex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_wt_lex_cmp(
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects using reversed weighted lex and a specified
@@ -4998,8 +5312,12 @@ namespace libsemigroups {
                                     std::vector<size_t> const& weights,
                                     Word const&                x,
                                     Word const&                y) {
-    return rev_wt_lex_cmp(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_wt_lex_cmp(alphabet,
+                          weights,
+                          std::begin(x),
+                          std::end(x),
+                          std::begin(y),
+                          std::end(y));
   }
 
   //! \brief Forward declaration of \ref RevWtLexCmp.
@@ -5055,7 +5373,7 @@ namespace libsemigroups {
 
     //! \brief Compare two words using reversed weighted lex.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed weighted lex.
@@ -5134,7 +5452,7 @@ namespace libsemigroups {
     //! \brief Compare two words using reversed weighted lex.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two iterator ranges using reversed weighted lex.
@@ -5248,7 +5566,7 @@ namespace libsemigroups {
                            Word const&                x,
                            Word const&                y) {
     return len_wt_lex_cmp_no_checks(
-        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects first by length and then by weighted lex
@@ -5259,8 +5577,12 @@ namespace libsemigroups {
                            std::vector<size_t> const& weights,
                            Word const&                x,
                            Word const&                y) {
-    return len_wt_lex_cmp_no_checks(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return len_wt_lex_cmp_no_checks(alphabet,
+                                    weights,
+                                    std::begin(x),
+                                    std::end(x),
+                                    std::begin(y),
+                                    std::end(y));
   }
 
   //! \brief Compare two ranges first by length and then by weighted lex and
@@ -5291,7 +5613,8 @@ namespace libsemigroups {
   [[nodiscard]] bool len_wt_lex_cmp(std::vector<size_t> const& weights,
                                     Word const&                x,
                                     Word const&                y) {
-    return len_wt_lex_cmp(weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return len_wt_lex_cmp(
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects first by length and then by weighted lex,
@@ -5301,8 +5624,12 @@ namespace libsemigroups {
                                     std::vector<size_t> const& weights,
                                     Word const&                x,
                                     Word const&                y) {
-    return len_wt_lex_cmp(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return len_wt_lex_cmp(alphabet,
+                          weights,
+                          std::begin(x),
+                          std::end(x),
+                          std::begin(y),
+                          std::end(y));
   }
 
   //! \brief Forward declaration of \ref LenWtLexCmp.
@@ -5358,7 +5685,7 @@ namespace libsemigroups {
 
     //! \brief Compare two words by length then weighted lex.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two ranges by length then weighted lex.
@@ -5449,7 +5776,7 @@ namespace libsemigroups {
     //! \brief Compare two words by length then weighted lex.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two ranges by length then weighted lex.
@@ -5566,7 +5893,7 @@ namespace libsemigroups {
                                Word const&                x,
                                Word const&                y) {
     return rev_len_wt_lex_cmp_no_checks(
-        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects by length, weight, and reversed lex without
@@ -5577,8 +5904,12 @@ namespace libsemigroups {
                                std::vector<size_t> const& weights,
                                Word const&                x,
                                Word const&                y) {
-    return rev_len_wt_lex_cmp_no_checks(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_len_wt_lex_cmp_no_checks(alphabet,
+                                        weights,
+                                        std::begin(x),
+                                        std::end(x),
+                                        std::begin(y),
+                                        std::end(y));
   }
 
   //! \brief Compare two ranges by length, weight, and reversed lex and check
@@ -5620,7 +5951,7 @@ namespace libsemigroups {
                                         Word const&                x,
                                         Word const&                y) {
     return rev_len_wt_lex_cmp(
-        weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+        weights, std::begin(x), std::end(x), std::begin(y), std::end(y));
   }
 
   //! \brief Compare two objects by length, weight, and reversed lex, check
@@ -5630,8 +5961,12 @@ namespace libsemigroups {
                                         std::vector<size_t> const& weights,
                                         Word const&                x,
                                         Word const&                y) {
-    return rev_len_wt_lex_cmp(
-        alphabet, weights, x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_len_wt_lex_cmp(alphabet,
+                              weights,
+                              std::begin(x),
+                              std::end(x),
+                              std::begin(y),
+                              std::end(y));
   }
 
   //! \brief Forward declaration of \ref RevLenWtLexCmp.
@@ -5687,7 +6022,7 @@ namespace libsemigroups {
 
     //! \brief Compare two words by length, weight, and reversed lex.
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two ranges by length, weight, and reversed lex.
@@ -5778,7 +6113,7 @@ namespace libsemigroups {
     //! \brief Compare two words by length, weight, and reversed lex.
     template <typename Word>
     [[nodiscard]] bool operator()(Word const& x, Word const& y) const {
-      return operator()(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+      return operator()(std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     //! \brief Compare two ranges by length, weight, and reversed lex.
