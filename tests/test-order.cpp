@@ -2726,4 +2726,185 @@ namespace libsemigroups {
     static_assert(order::is_well_founded_v<RevLenWtLexCmp<>>);
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("order.hpp",
+                                   "086",
+                                   "comparisons without an alphabet",
+                                   "[quick][order]",
+                                   std::string,
+                                   word_type) {
+    TestType const empty;
+    TestType const a  = {'a'};
+    TestType const b  = {'b'};
+    TestType const aa = {'a', 'a'};
+    TestType const ab = {'a', 'b'};
+    TestType const ba = {'b', 'a'};
+
+    auto check_order
+        = [](bool (*cmp)(TestType const&, TestType const&),
+             bool (*cmp_no_checks)(TestType const&, TestType const&),
+             std::vector<TestType> const& words) {
+            for (size_t i = 0; i < words.size(); ++i) {
+              for (size_t j = 0; j < words.size(); ++j) {
+                CAPTURE(i, j);
+                REQUIRE(cmp(words[i], words[j]) == (i < j));
+                REQUIRE(cmp_no_checks(words[i], words[j]) == (i < j));
+              }
+            }
+          };
+
+    using Iterator = typename TestType::const_iterator;
+    auto check_range_order
+        = [](bool (*cmp)(Iterator, Iterator, Iterator, Iterator),
+             bool (*cmp_no_checks)(Iterator, Iterator, Iterator, Iterator),
+             std::vector<TestType> const& words) {
+            for (size_t i = 0; i < words.size(); ++i) {
+              for (size_t j = 0; j < words.size(); ++j) {
+                CAPTURE(i, j);
+                REQUIRE(cmp(words[i].cbegin(),
+                            words[i].cend(),
+                            words[j].cbegin(),
+                            words[j].cend())
+                        == (i < j));
+                REQUIRE(cmp_no_checks(words[i].cbegin(),
+                                      words[i].cend(),
+                                      words[j].cbegin(),
+                                      words[j].cend())
+                        == (i < j));
+              }
+            }
+          };
+
+    SECTION("lexicographic") {
+      check_order(lex_cmp<TestType>,
+                  lex_cmp_no_checks<TestType>,
+                  {empty, a, aa, ab, b, ba});
+    }
+    SECTION("reversed lexicographic") {
+      check_order(rev_lex_cmp<TestType>,
+                  rev_lex_cmp_no_checks<TestType>,
+                  {empty, a, aa, ba, b, ab});
+      check_range_order(rev_lex_cmp<Iterator>,
+                        rev_lex_cmp_no_checks<Iterator>,
+                        {empty, a, aa, ba, b, ab});
+    }
+    SECTION("lenlex") {
+      check_order(lenlex_cmp<TestType>,
+                  lenlex_cmp_no_checks<TestType>,
+                  {empty, a, b, aa, ab, ba});
+      check_range_order(lenlex_cmp<Iterator>,
+                        lenlex_cmp_no_checks<Iterator>,
+                        {empty, a, b, aa, ab, ba});
+    }
+    SECTION("reversed lenlex") {
+      check_order(rev_lenlex_cmp<TestType>,
+                  rev_lenlex_cmp_no_checks<TestType>,
+                  {empty, a, b, aa, ba, ab});
+      check_range_order(rev_lenlex_cmp<Iterator>,
+                        rev_lenlex_cmp_no_checks<Iterator>,
+                        {empty, a, b, aa, ba, ab});
+    }
+    SECTION("recursive path") {
+      STATIC_REQUIRE(noexcept(rpo_cmp_no_checks(a, b)));
+      STATIC_REQUIRE(noexcept(
+          rpo_cmp_no_checks(a.cbegin(), a.cend(), b.cbegin(), b.cend())));
+      check_order(rpo_cmp<TestType>,
+                  rpo_cmp_no_checks<TestType>,
+                  {empty, a, aa, b, ab, ba});
+      check_range_order(rpo_cmp<Iterator>,
+                        rpo_cmp_no_checks<Iterator>,
+                        {empty, a, aa, b, ab, ba});
+    }
+    SECTION("reversed recursive path") {
+      STATIC_REQUIRE(noexcept(rev_rpo_cmp_no_checks(a, b)));
+      STATIC_REQUIRE(noexcept(
+          rev_rpo_cmp_no_checks(a.cbegin(), a.cend(), b.cbegin(), b.cend())));
+      check_order(rev_rpo_cmp<TestType>,
+                  rev_rpo_cmp_no_checks<TestType>,
+                  {empty, a, aa, b, ba, ab});
+      check_range_order(rev_rpo_cmp<Iterator>,
+                        rev_rpo_cmp_no_checks<Iterator>,
+                        {empty, a, aa, b, ba, ab});
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("order.hpp",
+                          "087",
+                          "object comparisons with C arrays",
+                          "[quick][order]") {
+    using Word   = size_t[2];
+    Word const a = {0, 0};
+    Word const b = {1, 1};
+
+    auto check_order = [&a, &b](auto const& cmp) {
+      REQUIRE(cmp(a, b));
+      REQUIRE(!cmp(b, a));
+      REQUIRE(!cmp(a, a));
+    };
+
+    SECTION("unweighted functions") {
+      using Compare               = bool (*)(Word const&, Word const&);
+      Compare const comparisons[] = {lex_cmp<Word>,
+                                     lex_cmp_no_checks<Word>,
+                                     rev_lex_cmp<Word>,
+                                     rev_lex_cmp_no_checks<Word>,
+                                     lenlex_cmp<Word>,
+                                     lenlex_cmp_no_checks<Word>,
+                                     rev_lenlex_cmp<Word>,
+                                     rev_lenlex_cmp_no_checks<Word>,
+                                     rpo_cmp<Word>,
+                                     rpo_cmp_no_checks<Word>,
+                                     rev_rpo_cmp<Word>,
+                                     rev_rpo_cmp_no_checks<Word>};
+      for (auto cmp : comparisons) {
+        check_order(cmp);
+      }
+    }
+
+    SECTION("unweighted functors") {
+      check_order(LexCmp<>());
+      check_order(RevLexCmp<>());
+      check_order(LenLexCmp<>());
+      check_order(RevLenLexCmp<>());
+      check_order(RPOCmp<>());
+      check_order(RevRPOCmp<>());
+    }
+
+    std::vector<size_t> const weights = {1, 2};
+    SECTION("weighted and wreath-product functions") {
+      using Compare
+          = bool (*)(std::vector<size_t> const&, Word const&, Word const&);
+      Compare const comparisons[] = {wr_cmp<Word>,
+                                     wr_cmp_no_checks<Word>,
+                                     rev_wr_cmp<Word>,
+                                     rev_wr_cmp_no_checks<Word>,
+                                     wt_lex_cmp<Word>,
+                                     wt_lex_cmp_no_checks<Word>,
+                                     rev_wt_lex_cmp<Word>,
+                                     rev_wt_lex_cmp_no_checks<Word>,
+                                     wt_lenlex_cmp<Word>,
+                                     wt_lenlex_cmp_no_checks<Word>,
+                                     rev_wt_lenlex_cmp<Word>,
+                                     rev_wt_lenlex_cmp_no_checks<Word>,
+                                     len_wt_lex_cmp<Word>,
+                                     len_wt_lex_cmp_no_checks<Word>,
+                                     rev_len_wt_lex_cmp<Word>,
+                                     rev_len_wt_lex_cmp_no_checks<Word>};
+      for (auto cmp : comparisons) {
+        check_order(
+            [&](auto const& x, auto const& y) { return cmp(weights, x, y); });
+      }
+    }
+
+    SECTION("weighted and wreath-product functors") {
+      check_order(WrCmp(weights));
+      check_order(RevWrCmp(weights));
+      check_order(WtLexCmp(weights));
+      check_order(RevWtLexCmp(weights));
+      check_order(WtLenLexCmp(weights));
+      check_order(RevWtLenLexCmp(weights));
+      check_order(LenWtLexCmp(weights));
+      check_order(RevLenWtLexCmp(weights));
+    }
+  }
+
 }  // namespace libsemigroups

@@ -71,10 +71,10 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Iterator>
-  bool rpo_cmp(Iterator first1,
-               Iterator last1,
-               Iterator first2,
-               Iterator last2) noexcept {
+  bool rpo_cmp_no_checks(Iterator first1,
+                         Iterator last1,
+                         Iterator first2,
+                         Iterator last2) noexcept {
     int lastmoved = 0;
 
     while (true) {
@@ -107,10 +107,10 @@ namespace libsemigroups {
                          Iterator              last1,
                          Iterator              first2,
                          Iterator              last2) {
-    return rpo_cmp(detail::citow(alphabet, first1),
-                   detail::citow(alphabet, last1),
-                   detail::citow(alphabet, first2),
-                   detail::citow(alphabet, last2));
+    return rpo_cmp_no_checks(detail::citow(alphabet, first1),
+                             detail::citow(alphabet, last1),
+                             detail::citow(alphabet, first2),
+                             detail::citow(alphabet, last2));
   }
 
   template <typename Word, typename Iterator>
@@ -125,14 +125,14 @@ namespace libsemigroups {
   }
 
   template <typename Iterator>
-  bool rev_rpo_cmp(Iterator first1,
-                   Iterator last1,
-                   Iterator first2,
-                   Iterator last2) noexcept {
-    return rpo_cmp(std::make_reverse_iterator(last1),
-                   std::make_reverse_iterator(first1),
-                   std::make_reverse_iterator(last2),
-                   std::make_reverse_iterator(first2));
+  bool rev_rpo_cmp_no_checks(Iterator first1,
+                             Iterator last1,
+                             Iterator first2,
+                             Iterator last2) noexcept {
+    return rpo_cmp_no_checks(std::make_reverse_iterator(last1),
+                             std::make_reverse_iterator(first1),
+                             std::make_reverse_iterator(last2),
+                             std::make_reverse_iterator(first2));
   }
 
   template <typename Word, typename Iterator>
@@ -330,7 +330,7 @@ namespace libsemigroups {
       return weight1 < weight2;
     }
 
-    return lenlex_cmp(first1, last1, first2, last2);
+    return lenlex_cmp_no_checks(first1, last1, first2, last2);
   }
 
   template <typename Iterator>
