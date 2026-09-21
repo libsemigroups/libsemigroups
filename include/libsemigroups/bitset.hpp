@@ -41,10 +41,10 @@ namespace libsemigroups {
 
   // The code below for popcnt is borrowed/adapted from GAP.
 
-#if LIBSEMIGROUPS_USE_POPCNT && defined(LIBSEMIGROUPS_HAVE___BUILTIN_POPCOUNTL)
+#if LIBSEMIGROUPS_USE_POPCNT && defined(LIBSEMIGROUPS_HAVE___BUILTIN_POPCOUNTLL)
   template <typename T>
   static inline size_t COUNT_TRUES_BLOCK(T block) {
-    return __builtin_popcountl(block);
+    return __builtin_popcountll(block);
   }
 #else
 #if LIBSEMIGROUPS_SIZEOF_VOID_P == 8
