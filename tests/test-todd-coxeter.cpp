@@ -5437,4 +5437,148 @@ namespace libsemigroups {
                                                    {{1, 1}, {1, 1, 1, 1}},
                                                    {{1, 0, 1}, {1, 1, 0, 1}}});
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "136",
+                          "spanning tree queried during HLT enumeration",
+                          "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 01_w, 1_w);
+    presentation::add_rule(p, 11_w, 10_w);
+    ToddCoxeter tc(twosided, p);
+    tc.save(GENERATE(false, true));
+    tc.standardize(Order::lenlex);
+
+    auto const& graph = tc.current_word_graph();
+    REQUIRE(graph.current_spanning_tree().number_of_nodes() == 1);
+    tc.run_until([&graph]() {
+      REQUIRE(graph.current_spanning_tree().number_of_nodes()
+              == graph.max_active_node() + 1);
+      return graph.number_of_nodes_active() > 1;
+    });
+
+    REQUIRE(graph.number_of_nodes_active() == 4);
+    REQUIRE(graph.number_of_nodes_killed() == 0);
+    REQUIRE_FALSE(graph.is_standardized());
+    REQUIRE(todd_coxeter::reduce_no_run(tc, 00_w) == 0_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "ToddCoxeter",
+      "137",
+      "lookahead invalidates cached paths without new nodes",
+      "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 1_w);
+    WordGraph<uint32_t> initial(4, 2);
+    initial.target(0, 0, 1);
+    initial.target(1, 0, 2);
+    initial.target(2, 0, 3);
+
+    ToddCoxeter<word_type> tc;
+    tc.init(twosided, p, initial);
+    tc.standardize(Order::lenlex);
+    auto const& graph = tc.current_word_graph();
+    REQUIRE(graph.current_spanning_tree().parent(3) == 2);
+    tc.strategy(options::strategy::lookahead);
+    tc.lookahead_extent(options::lookahead_extent::full);
+    tc.lookahead_style(GENERATE(options::lookahead_style::hlt,
+                                options::lookahead_style::felsch));
+    tc.def_version(
+        GENERATE(options::def_version::one, options::def_version::two));
+    tc.run_until([] { return false; });
+
+    REQUIRE(graph.number_of_nodes_active() == 4);
+    REQUIRE(graph.number_of_nodes_killed() == 0);
+    REQUIRE(graph.target(0, 1) == 3);
+    REQUIRE_FALSE(graph.is_standardized());
+    REQUIRE(graph.current_spanning_tree().parent(3) == 0);
+    REQUIRE(graph.current_spanning_tree().label(3) == 1);
+    REQUIRE(todd_coxeter::reduce_no_run(tc, 000_w) == 1_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "138",
+                          "unchanged graph preserves cached tree and order",
+                          "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(1);
+    presentation::add_rule(p, 00_w, 0_w);
+    WordGraph<uint32_t> initial(2, 1);
+    initial.target(0, 0, 1);
+    initial.target(1, 0, 1);
+
+    ToddCoxeter<word_type> tc;
+    tc.init(twosided, p, initial);
+    tc.standardize(Order::lex);
+    tc.def_version(
+        GENERATE(options::def_version::one, options::def_version::two));
+    SECTION("HLT") {
+      tc.strategy(options::strategy::hlt);
+      tc.save(GENERATE(false, true));
+    }
+    SECTION("lookahead") {
+      tc.strategy(options::strategy::lookahead);
+      tc.lookahead_extent(options::lookahead_extent::full);
+      tc.lookahead_style(GENERATE(options::lookahead_style::hlt,
+                                  options::lookahead_style::felsch));
+    }
+
+    auto const& graph = tc.current_word_graph();
+    auto const  tree  = graph.current_spanning_tree();
+    tc.run();
+
+    REQUIRE(WordGraph(graph) == initial);
+    REQUIRE(graph.is_spanning_tree_valid());
+    REQUIRE(graph.is_standardized(Order::lex));
+    REQUIRE(graph.current_spanning_tree() == tree);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "139",
+                          "merge invalidates caches with unchanged edge count",
+                          "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 0_w, 1_w);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    WordGraph<uint32_t> initial(3, 2);
+    initial.target(0, 0, 1);
+    initial.target(0, 1, 2);
+    initial.target(1, 0, 1);
+    initial.target(2, 1, 2);
+
+    ToddCoxeter<word_type> tc;
+    tc.init(twosided, p, initial);
+    tc.standardize(Order::lenlex);
+    tc.strategy(options::strategy::lookahead);
+    tc.lookahead_extent(options::lookahead_extent::full);
+    tc.lookahead_style(GENERATE(options::lookahead_style::hlt,
+                                options::lookahead_style::felsch));
+    tc.def_version(
+        GENERATE(options::def_version::one, options::def_version::two));
+    tc.large_collapse(GENERATE(size_t(1), size_t(100'000)));
+
+    auto const& graph = tc.current_word_graph();
+    REQUIRE(graph.number_of_edges_active() == 4);
+    REQUIRE(graph.current_spanning_tree().number_of_nodes() == 3);
+    tc.run();
+
+    REQUIRE(graph.number_of_edges_active() == 4);
+    REQUIRE(graph.number_of_nodes_active() == 2);
+    REQUIRE(graph.number_of_nodes_killed() == 1);
+    REQUIRE(graph.target(0, 1) == 1);
+    REQUIRE_FALSE(graph.is_spanning_tree_valid());
+    REQUIRE_FALSE(graph.is_standardized());
+    REQUIRE(graph.current_spanning_tree().number_of_nodes() == 2);
+    REQUIRE(todd_coxeter::reduce_no_run(tc, 1_w) == 0_w);
+  }
 }  // namespace libsemigroups

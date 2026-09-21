@@ -232,8 +232,15 @@ namespace libsemigroups::detail {
       // NodeManager but the RuleIterators returned by them are invalidated
       // by any changes to the graph, such as those made by
       // felsch_graph::make_compatible.
+      // This pass only adds edges and queues coincidences; compare before
+      // process_coincidences merges nodes and invalidates the caches below.
+      auto const old_number_of_edges = number_of_edges_active();
       felsch_graph::make_compatible<do_not_register_defs>(
           *this, current, current + 1, first, last, incompat, prefdefs);
+      if (number_of_edges_active() != old_number_of_edges) {
+        _forest_valid          = false;
+        _standardization_order = Order::none;
+      }
       // Using NoPreferredDefs is just a (more or less) arbitrary
       // choice, could allow the other choices here too (which works,
       // but didn't seem to be very useful).
@@ -267,11 +274,18 @@ namespace libsemigroups::detail {
     auto&      defs = FelschGraph_::definitions();
     Definition d;
     while (!defs.empty()) {
+      auto const old_number_of_edges = number_of_edges_active();
       while (!defs.empty()) {
         defs.pop(d);
         if (NodeManager<node_type>::is_active_node(d.first)) {
           FelschGraph_::process_definition(d, incompat, pref_defs);
         }
+      }
+      // Check additions before merging nodes, which can remove edges.
+      // process_coincidences invalidates the caches if any nodes merge.
+      if (number_of_edges_active() != old_number_of_edges) {
+        _forest_valid          = false;
+        _standardization_order = Order::none;
       }
       process_coincidences(DoRegisterDefs(this));
     }
@@ -282,6 +296,9 @@ namespace libsemigroups::detail {
                                                    word_type const& u,
                                                    word_type const& v) {
     LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
+
+    // Paths and preferred definitions only add edges; coincidences are queued.
+    auto const old_number_of_edges = number_of_edges_active();
 
     node_type   x, y;
     letter_type a, b;
@@ -314,6 +331,10 @@ namespace libsemigroups::detail {
 
     FelschGraph_::merge_targets_of_nodes_if_possible<RegDefs>(
         x, a, y, b, incompat, pref_defs);
+    if (number_of_edges_active() != old_number_of_edges) {
+      _forest_valid          = false;
+      _standardization_order = Order::none;
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////
