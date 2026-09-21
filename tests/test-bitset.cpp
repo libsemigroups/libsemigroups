@@ -419,4 +419,18 @@ namespace libsemigroups {
     std::ostream   os(&buff);
     os << bs;  // does nothing visible
   }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("BitSet",
+                                   "019",
+                                   "count individual bits",
+                                   "[bitset][quick]",
+                                   BITSET_TYPES) {
+    TestType bs;
+    REQUIRE(bs.count() == 0);
+    for (size_t i = 0; i < bs.size(); ++i) {
+      CAPTURE(i);
+      bs.reset().set(i);
+      REQUIRE(bs.count() == 1);
+    }
+  }
 }  // namespace libsemigroups
