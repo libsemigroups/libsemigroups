@@ -171,14 +171,13 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     v4::WordRange<std::string> lhss;
-    lhss.order(LenLexCmp(Alphabet<std::string>("ab")))
+    lhss.order(LenLexCmp(Alphabet("ab"s)))
         .first("a")
         .last(std::string(11, 'a'));
     REQUIRE((lhss | count()) == 2'046);
 
     v4::WordRange<std::string> rhss;
-    rhss.order(LenLexCmp(Alphabet<std::string>("ab")))
-        .last(std::string(11, 'a'));
+    rhss.order(LenLexCmp(Alphabet("ab"s))).last(std::string(11, 'a'));
 
     size_t total_c4 = 0;
     size_t total    = 0;

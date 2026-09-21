@@ -143,7 +143,7 @@ namespace libsemigroups {
       _last          = {};
       _upper_bound   = 0;  // does nothing if the comparison order is lenlex
       _visited       = 0;
-      order(LenLexCmp((Alphabet(Word{}))));
+      order(LenLexCmp((Alphabet<Word>())));
       return *this;
     }
 
@@ -165,10 +165,13 @@ namespace libsemigroups {
     template <typename Word>
     template <typename Cmp, typename>
     WordRange<Word>& WordRange<Word>::order(Cmp&& cmp) {
-      if constexpr (order::is_specialization_of_v<Cmp, LenLexCmp>) {
+      if constexpr (std::is_same_v<Cmp, LenLexCmp<>>
+                    || std::is_same_v<Cmp, LenLexCmp<Word>>) {
         _current = cbegin_wislo(cmp.alphabet(), _first, _last);
         _end     = cend_wislo(cmp.alphabet(), _first, _last);
-      } else if constexpr (order::is_specialization_of_v<Cmp, LexCmp>) {
+        // NOLINTNEXTLINE(readability/braces)
+      } else if constexpr (std::is_same_v<Cmp, LexCmp<>>
+                           || std::is_same_v<Cmp, LexCmp<Word>>) {
         _current = cbegin_wilo(cmp.alphabet(), _upper_bound, _first, _last);
         _end     = cend_wilo(cmp.alphabet(), _upper_bound, _first, _last);
       } else {

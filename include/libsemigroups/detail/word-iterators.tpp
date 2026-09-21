@@ -94,10 +94,9 @@ namespace libsemigroups {
 
         // We need flipped_cmp so that we can maintain a min-heap, rather than a
         // max-heap
-        auto const& flipped_cmp
-            = [&cmp = this->_cmp](Word const& lhs, Word const& rhs) {
-                return cmp(rhs, lhs);
-              };
+        auto flipped_cmp = [this](Word const& lhs, Word const& rhs) {
+          return _cmp(rhs, lhs);
+        };
 
         // Get the next word
         do {

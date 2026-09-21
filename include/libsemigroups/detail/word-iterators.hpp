@@ -84,8 +84,7 @@ namespace libsemigroups {
                          Word const& last,
                          Cmp&&       cmp);
 
-      // This is called reset rather than init because, unlike the constructor,
-      // there is no comparator argument.
+      // TODO: Replace this with three setters and getters
       void reset(size_type upper_bound, Word const& first, Word const& last);
 
       [[nodiscard]] bool
@@ -165,7 +164,7 @@ namespace libsemigroups {
                           Word const&           first,
                           Word const&           last);
 
-      // This is called reset for consistency with wio.
+      // TODO: Replace this with three setters and getters
       void reset(size_type upper_bound, Word const& first, Word const& last);
 
       [[nodiscard]] const_reference operator*() const {
@@ -245,7 +244,7 @@ namespace libsemigroups {
                            Word const&           first,
                            Word const&           last);
 
-      // This is called reset for consistency with wio.
+      // TODO: Replace this with three setters and getters
       void reset(size_type upper_bound, Word const& first, Word const& last);
 
       [[nodiscard]] const_reference operator*() const {

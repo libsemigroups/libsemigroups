@@ -42,6 +42,7 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 namespace libsemigroups {
+  using std::literals::operator""s;
   using namespace literals;
   using namespace rx;
 
@@ -560,7 +561,7 @@ namespace libsemigroups {
                           "[lex][quick]") {
     v4::WordRange<std::string> strings;
 
-    strings.order(LexCmp(Alphabet<std::string>("a")))
+    strings.order(LexCmp(Alphabet("a"s)))
         .first("")
         .last("aaaaaaaaaa")
         .upper_bound(10);
@@ -588,7 +589,7 @@ namespace libsemigroups {
                           "lex | corner cases",
                           "[lex][quick]") {
     v4::WordRange<std::string> strings;
-    strings.order(LexCmp(Alphabet<std::string>("ab")))
+    strings.order(LexCmp(Alphabet("ab"s)))
         .first("aaaaaaaaaa")
         .last("")
         .upper_bound(4);
@@ -611,7 +612,7 @@ namespace libsemigroups {
                           "lex | alphabet = ab | min = 1 | max = 4",
                           "[lex][quick]") {
     v4::WordRange<std::string> strings;
-    strings.order(LexCmp(Alphabet<std::string>("ab")))
+    strings.order(LexCmp(Alphabet("ab"s)))
         .upper_bound(4)
         .first("a")
         .last("bbbbb");
@@ -650,7 +651,7 @@ namespace libsemigroups {
                             111_w}));
     REQUIRE(is_sorted(strings, LexCmp()));
 
-    strings.order(LexCmp(Alphabet<std::string>("ba"))).first("b").last("aaaaa");
+    strings.order(LexCmp(Alphabet("ba"s))).first("b").last("aaaaa");
     REQUIRE((strings | count()) == 14);
     REQUIRE((strings | to_vector())
             == std::vector<std::string>({"b",
@@ -674,7 +675,7 @@ namespace libsemigroups {
                           "lex | alphabet = abc | min = 0 | max = 13",
                           "[lex][quick][no-valgrind]") {
     v4::WordRange<std::string> strings;
-    strings.order(LexCmp(Alphabet<std::string>("abc")))
+    strings.order(LexCmp(Alphabet("abc"s)))
         .upper_bound(13)
         .first("")
         .last(std::string(13, 'c'));
@@ -692,7 +693,7 @@ namespace libsemigroups {
     auto                       last  = "bbbb";
     v4::WordRange<std::string> strings;
 
-    strings.order(LexCmp(Alphabet<std::string>("ab")))
+    strings.order(LexCmp(Alphabet("ab"s)))
         .first(first)
         .last(last)
         .upper_bound(5);
@@ -754,9 +755,7 @@ namespace libsemigroups {
                           "lenlex | corner cases",
                           "[lenlex][quick]") {
     v4::WordRange<std::string> strings;
-    strings.order(LenLexCmp(Alphabet<std::string>("ab")))
-        .last("")
-        .first("bbaaab");
+    strings.order(LenLexCmp(Alphabet("ab"s))).last("").first("bbaaab");
     REQUIRE((strings | count()) == 0);
 
     strings.first("c");
@@ -803,9 +802,7 @@ namespace libsemigroups {
                           "[lenlex][quick]") {
     v4::WordRange<std::string> strings;
 
-    strings.order(LenLexCmp(Alphabet<std::string>("ab")))
-        .first("a")
-        .last("aaaa");
+    strings.order(LenLexCmp(Alphabet("ab"s))).first("a").last("aaaa");
     REQUIRE((strings | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
@@ -828,9 +825,7 @@ namespace libsemigroups {
     strings.first("a").last("bbbbb");
     REQUIRE(is_sorted(strings, LenLexCmp()));
 
-    strings.order(LenLexCmp(Alphabet<std::string>("ba")))
-        .first("b")
-        .last("bbbb");
+    strings.order(LenLexCmp(Alphabet("ba"s))).first("b").last("bbbb");
     REQUIRE((strings | to_vector())
             == std::vector<std::string>({"b",
                                          "a",
@@ -853,8 +848,7 @@ namespace libsemigroups {
                           "lenlex | alphabet = abc | min = 0 | max = 13",
                           "[lenlex][quick][no-valgrind]") {
     v4::WordRange<std::string> strings;
-    strings.order(LenLexCmp(Alphabet<std::string>("abc")))
-        .last((std::string(13, 'a')));
+    strings.order(LenLexCmp(Alphabet("abc"s))).last((std::string(13, 'a')));
     REQUIRE((strings | count()) == number_of_words(3, 0, 13));
     REQUIRE((strings.count()) == number_of_words(3, 0, 13));
     REQUIRE(is_sorted(strings, LenLexCmp()));
@@ -868,7 +862,7 @@ namespace libsemigroups {
     auto                       last  = "bbbb";
     v4::WordRange<std::string> strings;
 
-    strings.order(LenLexCmp(Alphabet<std::string>("ab")))
+    strings.order(LenLexCmp(Alphabet("ab"s)))
         .first(first)
         .last(last)
         .upper_bound(5);
@@ -904,7 +898,7 @@ namespace libsemigroups {
     size_t const m = 27;
 
     v4::WordRange<std::string> strings;
-    strings.order(LexCmp(Alphabet<std::string>("ab")))
+    strings.order(LexCmp(Alphabet("ab"s)))
         .upper_bound(m + 1)
         .first("a")
         .last(std::string(m + 1, 'a'));
@@ -956,9 +950,7 @@ namespace libsemigroups {
     REQUIRE(move2.count() == 25);
 
     v4::WordRange<std::string> swap;
-    swap.order(LenLexCmp(Alphabet<std::string>("abc")))
-        .first("abc")
-        .last("abcbcbcbcb");
+    swap.order(LenLexCmp(Alphabet("abc"s))).first("abc").last("abcbcbcbcb");
     std::swap(swap, move2);
     REQUIRE(equal(move, swap));
     REQUIRE(swap.upper_bound() == 28);
@@ -1437,9 +1429,7 @@ namespace libsemigroups {
     // ToWord combinator
     {
       v4::WordRange<std::string> strings;
-      strings.order(LenLexCmp(Alphabet<std::string>("ab")))
-          .first("a")
-          .last("bbbb");
+      strings.order(LenLexCmp(Alphabet("ab"s))).first("a").last("bbbb");
       auto words = (strings | ToWord("ba"));
       REQUIRE((words | to_vector())
               == std::vector({1_w,    0_w,    11_w,   10_w,   01_w,   00_w,
@@ -1528,7 +1518,7 @@ namespace libsemigroups {
     v4::WordRange<std::string> sr;
     sr.first(std::string(3, 'b'))
         .last(std::string(5, 'b'))
-        .order(LenLexCmp(Alphabet<std::string>("bcd")));
+        .order(LenLexCmp(Alphabet("bcd"s)));
     REQUIRE(to_human_readable_repr(sr, 120)
             == "<WordRange of length 108 between bbb and bbbbb over <alphabet "
                "\"bcd\">>");

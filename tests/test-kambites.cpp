@@ -487,9 +487,7 @@ namespace libsemigroups {
     REQUIRE(number_of_words(3, 4, 16) == 21'523'320);
 
     v4::WordRange<std::string> s;
-    s.order(LenLexCmp(Alphabet<std::string>("cab")))
-        .first("aabc")
-        .last("aaabc");
+    s.order(LenLexCmp(Alphabet("cab"s))).first("aabc").last("aaabc");
     REQUIRE((s | count()) == 162);
 
     s.first("cccc").last("ccccc");
@@ -664,9 +662,7 @@ namespace libsemigroups {
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
     v4::WordRange<std::string> lhs;
-    lhs.order(LenLexCmp(Alphabet<std::string>("abcdefghijkl")))
-        .first("a")
-        .last("bgdk");
+    lhs.order(LenLexCmp(Alphabet("abcdefghijkl"s))).first("a").last("bgdk");
     v4::WordRange<std::string> rhs = lhs;
 
     REQUIRE((lhs | count()) == 4'522);
@@ -787,7 +783,7 @@ namespace libsemigroups {
     Kambites<TestType> k(twosided, p);
 
     v4::WordRange<std::string> s;
-    s.order(LenLexCmp(Alphabet<std::string>("abcd"))).first("a").last("aaaa");
+    s.order(LenLexCmp(Alphabet("abcd"s))).first("a").last("aaaa");
     REQUIRE(
         (s | all_of([&k](auto& w) { return kambites::reduce(k, w) == w; })));
 
@@ -1053,9 +1049,7 @@ namespace libsemigroups {
     REQUIRE(number_of_words(4, 4, 6) == 1280);
 
     v4::WordRange<std::string> s;
-    s.order(LenLexCmp(Alphabet<std::string>("abcd")))
-        .first("aaaa")
-        .last("aaaaaa");
+    s.order(LenLexCmp(Alphabet("abcd"s))).first("aaaa").last("aaaaaa");
     REQUIRE(
         (s | filter([&k](auto& w) { return contains(k, "acba", w); }) | count())
         == 3);
@@ -1084,9 +1078,7 @@ namespace libsemigroups {
     REQUIRE(contains(k, "aabcabc", kambites::reduce(k, "acbacba")));
 
     v4::WordRange<std::string> s;
-    s.order(LenLexCmp(Alphabet<std::string>("abcd")))
-        .first("aaaa")
-        .last("aaaaaa");
+    s.order(LenLexCmp(Alphabet("abcd"s))).first("aaaa").last("aaaaaa");
 
     REQUIRE(
         (s | filter([&k](auto& w) { return contains(k, "acba", w); }) | count())
@@ -1108,9 +1100,7 @@ namespace libsemigroups {
     REQUIRE(contains(k, "aeebbcaeebbc", kambites::reduce(k, "bceacdabcd")));
 
     v4::WordRange<std::string> s;
-    s.order(LenLexCmp(Alphabet<std::string>("abcd")))
-        .first("aaaa")
-        .last("aaaaaa");
+    s.order(LenLexCmp(Alphabet("abcd"s))).first("aaaa").last("aaaaaa");
 
     REQUIRE(
         (s | filter([&k](auto& w) { return contains(k, "acba", w); }) | count())
@@ -1210,7 +1200,7 @@ namespace libsemigroups {
   template <typename TestType>
   auto count_2_gen_1_rel(size_t min, size_t max) {
     v4::WordRange<std::string> x;
-    x.order(LenLexCmp(Alphabet<std::string>("ab")))
+    x.order(LenLexCmp(Alphabet("ab"s)))
         .first(std::string(min, 'a'))
         .last(std::string(max, 'a'));
     v4::WordRange<std::string> y = x;

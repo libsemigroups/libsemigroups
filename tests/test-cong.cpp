@@ -919,9 +919,7 @@ namespace libsemigroups {
     REQUIRE(cong.get<Kambites<std::string>>()->success());
 
     v4::WordRange<std::string> w;
-    w.order(LenLexCmp(Alphabet<std::string>("abcdefg")))
-        .first("a")
-        .last("aaaa");
+    w.order(LenLexCmp(Alphabet("abcdefg"s))).first("a").last("aaaa");
     REQUIRE(w.count() == 399);
     // REQUIRE(cong.get<Kambites<word_type>>()->presentation().alphabet()
     //         == word_type({0, 1, 2, 3, 4, 5, 6}));
