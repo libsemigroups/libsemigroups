@@ -25,14 +25,13 @@
 
 namespace libsemigroups {
 
-  TEST_CASE("StringRange", "[quick]") {
+  TEST_CASE("WordRange<std::string>", "[quick]") {
     BENCHMARK("3-letter alphabet + length 0 to 13 + lex") {
-      StringRange strings;
-      std::string last(13, 'c');
-      strings.alphabet("abc")
+      v4::WordRange<std::string> strings;
+      std::string                last(13, 'c');
+      strings.order(LexCmp(Alphabet<std::string>("abc")))
           .first("")
           .last(last)
-          .order(Order::lex)
           .upper_bound(13);
 
       REQUIRE(strings.count() == number_of_words(3, 0, 13));
@@ -41,9 +40,11 @@ namespace libsemigroups {
     };
 
     BENCHMARK("3-letter alphabet + length 0 to 13 + lenlex") {
-      StringRange strings;
-      std::string last(13, 'c');
-      strings.alphabet("abc").first("").last(last).order(Order::lenlex);
+      v4::WordRange<std::string> strings;
+      std::string                last(13, 'c');
+      strings.order(LenLexCmp(Alphabet<std::string>("abc")))
+          .first("")
+          .last(last);
       REQUIRE(strings.count() == number_of_words(3, 0, 13));
       REQUIRE(strings.count() == 797'161);
       REQUIRE(is_sorted(strings, LenLexCmp()));

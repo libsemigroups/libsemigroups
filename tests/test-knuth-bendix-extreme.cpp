@@ -460,8 +460,11 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     p.alphabet("abAB"s);
 
-    auto rules = StringRange().alphabet(p.alphabet()).min(11).max(12);
-    p.rules    = rules | rx::to_vector();
+    v4::WordRange<std::string> rules;
+    rules.order(LenLexCmp(p.alphabet_v4()))
+        .first(std::string(11, 'a'))
+        .last(std::string(12, 'a'));
+    p.rules = rules | rx::to_vector();
     presentation::add_rule(p, "aaabbb"s, "aabb"s);
     KnuthBendix<std::string, TestType> k(twosided, p);
     REQUIRE(k.rewriting_system().number_of_rules() == 2'097'153);
@@ -578,8 +581,10 @@ namespace libsemigroups {
     p.alphabet(2);
     p.contains_empty_word(true);
 
-    WordRange wr;
-    wr.alphabet_size(2).min(23).max(24);
+    v4::WordRange wr;
+    wr.order(LenLexCmp(Alphabet<word_type>(2)))
+        .first(word_type(23, 0))
+        .last(word_type(24, 0));
     REQUIRE(wr.count() == 8'388'608);
     for (auto const& word : wr) {
       presentation::add_rule_no_checks(p, word, ""_w);
@@ -603,8 +608,10 @@ namespace libsemigroups {
     p.alphabet(2);
     p.contains_empty_word(true);
 
-    WordRange wr;
-    wr.alphabet_size(2).min(23).max(24);
+    v4::WordRange wr;
+    wr.order(LenLexCmp(Alphabet<word_type>(2)))
+        .first(word_type(23, 0))
+        .last(word_type(24, 0));
     for (auto const& word : wr) {
       presentation::add_rule(p, word, ""_w);
     }

@@ -1622,8 +1622,8 @@ namespace libsemigroups {
     auto S = Stephen(p);
     auto T = Stephen(p);
 
-    StringRange strings;
-    strings.alphabet("abcABC").first("aaa").last("aaaaa");
+    v4::WordRange<std::string> strings;
+    strings.order(LenLexCmp(Alphabet("abcABC"s))).first("aaa").last("aaaaa");
 
     for (auto const& w : strings) {
       stephen::set_word(S, to_word(w));

@@ -889,8 +889,10 @@ namespace libsemigroups {
         REQUIRE_THROWS_AS(to<FroidurePin>(cong), LibsemigroupsException);
       }
 
-      WordRange w;
-      w.alphabet_size(2).min(1).max(5);
+      v4::WordRange w;
+      w.order(LenLexCmp(Alphabet<word_type>(2)))
+          .first(word_type(1, 0))
+          .last(word_type(5, 0));
 
       REQUIRE(w.count() == 30);
 
@@ -916,8 +918,8 @@ namespace libsemigroups {
     REQUIRE(cong.get<Kambites<std::string>>()->finished());
     REQUIRE(cong.get<Kambites<std::string>>()->success());
 
-    StringRange w;
-    w.alphabet("abcdefg").min(1).max(4);
+    v4::WordRange<std::string> w;
+    w.order(LenLexCmp(Alphabet("abcdefg"s))).first("a").last("aaaa");
     REQUIRE(w.count() == 399);
     // REQUIRE(cong.get<Kambites<word_type>>()->presentation().alphabet()
     //         == word_type({0, 1, 2, 3, 4, 5, 6}));

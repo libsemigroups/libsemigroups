@@ -932,8 +932,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("lex_cmp", "042", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet("ab"s))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1024,8 +1024,8 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet("ab"s))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1116,8 +1116,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("rpo_cmp", "044", "with alphabet", "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet("ab"s))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1177,8 +1177,8 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet("ab"s))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1234,8 +1234,8 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet("ab"s))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1278,8 +1278,8 @@ namespace libsemigroups {
                           "[quick][order]") {
     using std::string_literals::operator""s;
 
-    StringRange sr;
-    sr.alphabet("ab").min(2).max(5);
+    v4::WordRange<std::string> sr;
+    sr.order(LenLexCmp(Alphabet("ab"s))).first("aa").last("aaaaa");
 
     auto strings = (sr | rx::to_vector());
 
@@ -1426,11 +1426,11 @@ namespace libsemigroups {
 
     REQUIRE(&cmp.init(ab) == &cmp);
     REQUIRE(cmp(a, b));
-    REQUIRE(&cmp.init(Alphabet<std::string>("ba"s)) == &cmp);
+    REQUIRE(&cmp.init(Alphabet("ba"s)) == &cmp);
     REQUIRE(cmp(b, a));
     REQUIRE(&cmp.init(cmp.alphabet()) == &cmp);
 
-    TestType from_rvalue(Alphabet<std::string>("ba"s));
+    TestType from_rvalue(Alphabet("ba"s));
     REQUIRE(from_rvalue(b, a));
     REQUIRE(from_rvalue(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
     REQUIRE(from_rvalue.alphabet().size() == 2);
@@ -1474,11 +1474,11 @@ namespace libsemigroups {
 
     REQUIRE(&cmp.init(ab) == &cmp);
     REQUIRE(cmp(a, b));
-    REQUIRE(&cmp.init(Alphabet<std::string>("ba"s)) == &cmp);
+    REQUIRE(&cmp.init(Alphabet("ba"s)) == &cmp);
     REQUIRE(cmp(b, a));
     REQUIRE(&cmp.init(cmp.alphabet()) == &cmp);
 
-    TestType from_rvalue(Alphabet<std::string>("ba"s));
+    TestType from_rvalue(Alphabet("ba"s));
     REQUIRE(from_rvalue(b, a));
     REQUIRE(from_rvalue(b.cbegin(), b.cend(), a.cbegin(), a.cend()));
     REQUIRE(from_rvalue.alphabet().size() == 2);
@@ -1532,10 +1532,10 @@ namespace libsemigroups {
 
     cmp.init(ab, ab_weights);
     REQUIRE(cmp(a, b));
-    cmp.init(Alphabet<std::string>("ba"s), std::vector<size_t>{10, 1});
+    cmp.init(Alphabet("ba"s), std::vector<size_t>{10, 1});
     REQUIRE(cmp(a, b));
 
-    TestType moved(Alphabet<std::string>("ab"s), std::vector<size_t>{1, 10});
+    TestType moved(Alphabet("ab"s), std::vector<size_t>{1, 10});
     REQUIRE(moved(a, b));
     moved.init(ba, equal);
     REQUIRE(moved(b, a));
@@ -1605,8 +1605,7 @@ namespace libsemigroups {
     REQUIRE(from_lvalue.alphabet().size() == 2);
     REQUIRE(from_lvalue.weights() == ba_weights);
 
-    TestType from_rvalue(Alphabet<std::string>("ba"s),
-                         std::vector<size_t>{10, 1});
+    TestType from_rvalue(Alphabet("ba"s), std::vector<size_t>{10, 1});
     REQUIRE(from_rvalue(a, b));
     REQUIRE(from_rvalue.alphabet().size() == 2);
     REQUIRE(from_rvalue.weights() == ba_weights);
@@ -1701,8 +1700,7 @@ namespace libsemigroups {
     REQUIRE(from_lvalue.alphabet().size() == 2);
     REQUIRE(from_lvalue.weights() == ba_weights);
 
-    TestType from_rvalue(Alphabet<std::string>("ba"s),
-                         std::vector<size_t>{10, 1});
+    TestType from_rvalue(Alphabet("ba"s), std::vector<size_t>{10, 1});
     REQUIRE(from_rvalue(a, b));
     REQUIRE(from_rvalue.alphabet().size() == 2);
     REQUIRE(from_rvalue.weights() == ba_weights);
@@ -1854,8 +1852,7 @@ namespace libsemigroups {
     REQUIRE(from_lvalue.alphabet().size() == 2);
     REQUIRE(from_lvalue.levels() == levels);
 
-    TestType from_rvalue(Alphabet<std::string>("ba"s),
-                         std::vector<size_t>{0, 0});
+    TestType from_rvalue(Alphabet("ba"s), std::vector<size_t>{0, 0});
     REQUIRE(from_rvalue(b, a));
 
     TestType copied(from_lvalue);
@@ -1874,7 +1871,7 @@ namespace libsemigroups {
 
     copy_assigned.init(ab, levels);
     REQUIRE(!copy_assigned(b, a));
-    copy_assigned.init(Alphabet<std::string>("ba"s), std::vector<size_t>{0, 0});
+    copy_assigned.init(Alphabet("ba"s), std::vector<size_t>{0, 0});
     REQUIRE(copy_assigned(b, a));
 
     std::vector<size_t> short_levels = {0};

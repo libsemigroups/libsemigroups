@@ -346,13 +346,16 @@ namespace libsemigroups {
 
     size_t const N = 18;
 
-    WordRange w;
+    v4::WordRange w;
 
-    auto expected2
-        = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
-             return word_graph::follow_path(wg, size_t(0), ww.begin(), ww.end())
-                    == 4;
-           }));
+    auto expected2 = (w.order(LenLexCmp(Alphabet<word_type>(2)))
+                          .first({})
+                          .last(word_type(N, 0))
+                      | filter([&wg](auto const& ww) {
+                          return word_graph::follow_path(
+                                     wg, size_t(0), ww.begin(), ww.end())
+                                 == 4;
+                        }));
     REQUIRE((expected2 | count()) == 131'062);
     REQUIRE((w | skip_n(w.size_hint() - 1)).get().size() == 17);
 
@@ -503,13 +506,17 @@ namespace libsemigroups {
 
     size_t const N = 18;
 
-    WordRange w;
-    expected
-        = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
-             return word_graph::follow_path(wg, size_t(0), ww.begin(), ww.end())
-                    == 4;
-           })
-           | to_vector());
+    v4::WordRange w;
+
+    expected = (w.order(LenLexCmp(Alphabet<word_type>(2)))
+                    .first({})
+                    .last(word_type(N, 0))
+                | filter([&wg](auto const& ww) {
+                    return word_graph::follow_path(
+                               wg, size_t(0), ww.begin(), ww.end())
+                           == 4;
+                  })
+                | to_vector());
     REQUIRE(expected.size() == 131'062);
 
     p.order(Order::lenlex).source(0).target(4).min(0).max(N - 1);

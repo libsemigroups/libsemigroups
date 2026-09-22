@@ -337,6 +337,7 @@ namespace libsemigroups {
       template <typename InputRange>
       struct Range;
 
+      // TODO (v4) remove once StringRange is removed.
       //! \brief Call operator for combining with other range objects.
       //!
       //! A custom combinator for rx::ranges to convert the output of a
@@ -693,6 +694,8 @@ namespace libsemigroups {
     template <typename InputRange>
     struct Range;
 
+    // TODO(0): Is this still necessary now that WordRange can be specified with
+    // an alphabet?
     //! \brief Call operator for combining with other range objects.
     //!
     //! A custom combinator for rx::ranges to convert the output of a WordRange

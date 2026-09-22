@@ -29,77 +29,96 @@
 #include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
 #include "words-helpers.hpp"  // for human_readable_letter
 
-//! \ingroup presentations_group
-//!
-//! \brief Namespace for Alphabet helper functions.
-//!
-//! Defined in `alphabet-helpers.hpp`.
-//!
-//! This namespace contains various helper functions for the class
-//! \ref Alphabet. These functions could be functions of \ref Alphabet
-//! but they only use public member functions of \ref Alphabet, and so
-//! they are declared as free functions instead.
-namespace libsemigroups::alphabet {
-  //! \brief Return the first letter **not** in the alphabet.
-  //!
-  //! This function returns `words::human_readable_letter<Word>(i)`, where
-  //! \c i is the least possible value such that the returned letter does not
-  //! belong to \p alphabet.
-  //!
-  //! \tparam Word the word type of the alphabet.
-  //!
-  //! \param alphabet the alphabet.
-  //!
-  //! \returns A value of type `Alphabet<Word>::native_letter_type`.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  //!
-  //! \warning
-  //! This function does not check that an unused letter exists. Use
-  //! \ref first_unused_letter if the alphabet might already contain every
-  //! supported letter.
-  template <typename Word>
-  typename Alphabet<Word>::native_letter_type
-  first_unused_letter_no_checks(Alphabet<Word> const& alphabet);
+namespace libsemigroups {
 
-  //! \brief Return the first letter **not** in the alphabet.
+  //! \ingroup presentations_group
   //!
-  //! This function returns `words::human_readable_letter<Word>(i)`, where
-  //! \c i is the least possible value such that the returned letter does not
-  //! belong to \p alphabet.
+  //! \brief Namespace for Alphabet helper functions.
   //!
-  //! \tparam Word the word type of the alphabet.
+  //! Defined in `alphabet-helpers.hpp`.
   //!
-  //! \param alphabet the alphabet.
-  //!
-  //! \returns A value of type `Alphabet<Word>::native_letter_type`.
-  //!
-  //! \throws LibsemigroupsException if \p alphabet already contains the
-  //! maximum possible number of letters supported by
-  //! `Alphabet<Word>::native_letter_type`.
-  template <typename Word>
-  typename Alphabet<Word>::native_letter_type
-  first_unused_letter(Alphabet<Word> const& alphabet);
+  //! This namespace contains various helper functions for the class
+  //! \ref Alphabet. These functions could be functions of \ref Alphabet
+  //! but they only use public member functions of \ref Alphabet, and so
+  //! they are declared as free functions instead.
+  namespace alphabet {
+    //! \brief Return the first letter **not** in the alphabet.
+    //!
+    //! This function returns `words::human_readable_letter<Word>(i)`, where
+    //! \c i is the least possible value such that the returned letter does not
+    //! belong to \p alphabet.
+    //!
+    //! \tparam Word the word type of the alphabet.
+    //!
+    //! \param alphabet the alphabet.
+    //!
+    //! \returns A value of type `Alphabet<Word>::native_letter_type`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does not check that an unused letter exists. Use
+    //! \ref first_unused_letter if the alphabet might already contain every
+    //! supported letter.
+    template <typename Word>
+    typename Alphabet<Word>::native_letter_type
+    first_unused_letter_no_checks(Alphabet<Word> const& alphabet);
 
-  //! \brief Add a letter.
-  //!
-  //! Adds the first letter not in \p alphabet and returns the added letter.
-  //! The added letter is the value returned by
-  //! \ref first_unused_letter before the alphabet is modified.
-  //!
-  //! \param alphabet the alphabet.
-  //!
-  //! \returns A value of type `Alphabet<Word>::native_letter_type`.
-  //!
-  //! \throws LibsemigroupsException if \p alphabet already contains the
-  //! maximum possible number of letters supported by
-  //! `Alphabet<Word>::native_letter_type`.
-  template <typename Word>
-  typename Alphabet<Word>::native_letter_type
-  add_letter(Alphabet<Word>& alphabet);
-}  // namespace libsemigroups::alphabet
+    //! \brief Return the first letter **not** in the alphabet.
+    //!
+    //! This function returns `words::human_readable_letter<Word>(i)`, where
+    //! \c i is the least possible value such that the returned letter does not
+    //! belong to \p alphabet.
+    //!
+    //! \tparam Word the word type of the alphabet.
+    //!
+    //! \param alphabet the alphabet.
+    //!
+    //! \returns A value of type `Alphabet<Word>::native_letter_type`.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet already contains the
+    //! maximum possible number of letters supported by
+    //! `Alphabet<Word>::native_letter_type`.
+    template <typename Word>
+    typename Alphabet<Word>::native_letter_type
+    first_unused_letter(Alphabet<Word> const& alphabet);
 
+    //! \brief Add a letter.
+    //!
+    //! Adds the first letter not in \p alphabet and returns the added letter.
+    //! The added letter is the value returned by
+    //! \ref first_unused_letter before the alphabet is modified.
+    //!
+    //! \param alphabet the alphabet.
+    //!
+    //! \returns A value of type `Alphabet<Word>::native_letter_type`.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet already contains the
+    //! maximum possible number of letters supported by
+    //! `Alphabet<Word>::native_letter_type`.
+    template <typename Word>
+    typename Alphabet<Word>::native_letter_type
+    add_letter(Alphabet<Word>& alphabet);
+  }  // namespace alphabet
+
+  //! \relates Alphabet
+  //!
+  //! \brief Variable used to indicate whether or not a type has an `alphabet`
+  //! member function.
+  template <typename, typename = void>
+  constexpr bool has_alphabet = false;
+
+  //! \relates Alphabet
+  //!
+  //! \brief Variable used to indicate whether or not a type has an `alphabet`
+  //! member function.
+  template <typename T>
+  constexpr bool
+      has_alphabet<T, std::void_t<decltype(std::declval<T>().alphabet())>>
+      = true;
+
+}  // namespace libsemigroups
 #include "alphabet-helpers.tpp"
 
 #endif  // LIBSEMIGROUPS_ALPHABET_HELPERS_HPP_

@@ -170,8 +170,8 @@ namespace libsemigroups {
     s.enumerate(100);
     REQUIRE(s.current_size() == 8'205);
 
-    StringRange strings;
-    strings.alphabet(p.alphabet()).min(1).max(4);
+    v4::WordRange<std::string> strings;
+    strings.order(LenLexCmp(p.alphabet_v4())).first("a").last("aaaa");
     REQUIRE(strings.count() == 399);
     REQUIRE(non_trivial_classes(k, strings)
             == std::vector<std::vector<std::string>>({{"dg", "ef"},
@@ -486,8 +486,8 @@ namespace libsemigroups {
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(number_of_words(3, 4, 16) == 21'523'320);
 
-    StringRange s;
-    s.alphabet("cab").first("aabc").last("aaabc");
+    v4::WordRange<std::string> s;
+    s.order(LenLexCmp(Alphabet("cab"s))).first("aabc").last("aaabc");
     REQUIRE((s | count()) == 162);
 
     s.first("cccc").last("ccccc");
@@ -661,9 +661,9 @@ namespace libsemigroups {
 
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
-    StringRange lhs;
-    lhs.alphabet("abcdefghijkl").first("a").last("bgdk");
-    StringRange rhs = lhs;
+    v4::WordRange<std::string> lhs;
+    lhs.order(LenLexCmp(Alphabet("abcdefghijkl"s))).first("a").last("bgdk");
+    v4::WordRange<std::string> rhs = lhs;
 
     REQUIRE((lhs | count()) == 4'522);
     size_t N = 4'522;
@@ -782,8 +782,8 @@ namespace libsemigroups {
 
     Kambites<TestType> k(twosided, p);
 
-    StringRange s;
-    s.alphabet("abcd").first("a").last("aaaa");
+    v4::WordRange<std::string> s;
+    s.order(LenLexCmp(Alphabet("abcd"s))).first("a").last("aaaa");
     REQUIRE(
         (s | all_of([&k](auto& w) { return kambites::reduce(k, w) == w; })));
 
@@ -804,7 +804,7 @@ namespace libsemigroups {
     for (auto& w :
          std::vector<std::string>({"accaccabd", "accbaccad", "abcdbcacca"})) {
       auto nf = kambites::reduce(k, w);
-      s.min(w.size()).last(nf);
+      s.first(std::string(w.size(), 'a')).last(nf);
       REQUIRE((s | all_of([&k, &nf](auto& u) { return !contains(k, u, nf); })));
     }
   }
@@ -1048,8 +1048,8 @@ namespace libsemigroups {
     REQUIRE(contains(k, "adbbbd", "aaabc"));
     REQUIRE(number_of_words(4, 4, 6) == 1280);
 
-    StringRange s;
-    s.alphabet("abcd").first("aaaa").last("aaaaaa");
+    v4::WordRange<std::string> s;
+    s.order(LenLexCmp(Alphabet("abcd"s))).first("aaaa").last("aaaaaa");
     REQUIRE(
         (s | filter([&k](auto& w) { return contains(k, "acba", w); }) | count())
         == 3);
@@ -1077,8 +1077,8 @@ namespace libsemigroups {
     REQUIRE(contains(k, kambites::reduce(k, "acbacba"), "aabcabc"));
     REQUIRE(contains(k, "aabcabc", kambites::reduce(k, "acbacba")));
 
-    StringRange s;
-    s.alphabet("abcd").first("aaaa").last("aaaaaa");
+    v4::WordRange<std::string> s;
+    s.order(LenLexCmp(Alphabet("abcd"s))).first("aaaa").last("aaaaaa");
 
     REQUIRE(
         (s | filter([&k](auto& w) { return contains(k, "acba", w); }) | count())
@@ -1099,8 +1099,8 @@ namespace libsemigroups {
     REQUIRE(contains(k, kambites::reduce(k, "bceacdabcd"), "aeebbcaeebbc"));
     REQUIRE(contains(k, "aeebbcaeebbc", kambites::reduce(k, "bceacdabcd")));
 
-    StringRange s;
-    s.alphabet("abcd").first("aaaa").last("aaaaaa");
+    v4::WordRange<std::string> s;
+    s.order(LenLexCmp(Alphabet("abcd"s))).first("aaaa").last("aaaaaa");
 
     REQUIRE(
         (s | filter([&k](auto& w) { return contains(k, "acba", w); }) | count())
@@ -1199,9 +1199,11 @@ namespace libsemigroups {
 
   template <typename TestType>
   auto count_2_gen_1_rel(size_t min, size_t max) {
-    StringRange x;
-    x.alphabet("ab").min(min).max(max);
-    StringRange y = x;
+    v4::WordRange<std::string> x;
+    x.order(LenLexCmp(Alphabet("ab"s)))
+        .first(std::string(min, 'a'))
+        .last(std::string(max, 'a'));
+    v4::WordRange<std::string> y = x;
 
     uint64_t total_c4 = 0;
     uint64_t total    = 0;

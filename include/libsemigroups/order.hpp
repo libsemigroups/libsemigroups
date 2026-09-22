@@ -46,10 +46,9 @@ namespace libsemigroups {
   //! \brief The possible orderings of words and strings.
   //!
   //! The values in this enum can be used as the arguments for functions such as
-  //! \ref ToddCoxeter::standardize(Order) or \ref WordRange::order(Order) to
-  //! specify which ordering should be used. The normal forms for congruence
-  //! classes are given with respect to one of the orders specified by the
-  //! values in this enum.
+  //! \ref ToddCoxeter::standardize(Order) to specify which ordering should be
+  //! used. The normal forms for congruence classes are given with respect to
+  //! one of the orders specified by the values in this enum.
   //!
   //! \sa orders_group
   enum class Order : uint8_t {
@@ -6203,6 +6202,7 @@ namespace libsemigroups {
   //! reduction order comparison types.
   // TODO these should not only be specialised for Default
   namespace order {
+
     //! \brief Helper used to indicate whether or not an order is length
     //! non-increasing.
     //!

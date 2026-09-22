@@ -170,12 +170,14 @@ namespace libsemigroups {
       REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
-    StringRange lhss;
-    lhss.alphabet("ab").min(1).max(11);
+    v4::WordRange<std::string> lhss;
+    lhss.order(LenLexCmp(Alphabet("ab"s)))
+        .first("a")
+        .last(std::string(11, 'a'));
     REQUIRE((lhss | count()) == 2'046);
 
-    StringRange rhss;
-    rhss.alphabet("ab").max(11);
+    v4::WordRange<std::string> rhss;
+    rhss.order(LenLexCmp(Alphabet("ab"s))).last(std::string(11, 'a'));
 
     size_t total_c4 = 0;
     size_t total    = 0;

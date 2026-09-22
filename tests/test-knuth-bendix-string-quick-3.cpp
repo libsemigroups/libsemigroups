@@ -219,8 +219,8 @@ namespace libsemigroups {
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
     REQUIRE(nf.count() == 62);
 
-    StringRange s;
-    s.alphabet(p.alphabet()).min(1).max(6);
+    v4::WordRange<std::string> s;
+    s.order(LenLexCmp(p.alphabet_v4())).first("a").last("aaaaaa");
     REQUIRE(equal(s, nf));
   }
 

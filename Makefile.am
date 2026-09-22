@@ -186,6 +186,7 @@ pkginclude_HEADERS += include/libsemigroups/word-graph-view.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
 pkginclude_HEADERS += include/libsemigroups/word-range-class.hpp
+pkginclude_HEADERS += include/libsemigroups/word-range-class.tpp
 pkginclude_HEADERS += include/libsemigroups/words-helpers.hpp
 pkginclude_HEADERS += include/libsemigroups/words-helpers.tpp
 pkginclude_HEADERS += include/libsemigroups/word-range.hpp
@@ -247,7 +248,9 @@ detailinclude_HEADERS += include/libsemigroups/detail/value-guard.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/value-guard.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/word-iterators-impl.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.tpp
 
 if USE_BUNDLED_CATCH
 catch2includedir = $(includedir)/libsemigroups/Catch2-3.14.0/
@@ -1139,6 +1142,7 @@ libsemigroups_la_SOURCES += src/detail/timer.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-report.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-stats.cpp
+libsemigroups_la_SOURCES += src/detail/word-iterator-impl.cpp
 libsemigroups_la_SOURCES += src/detail/word-iterators.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)

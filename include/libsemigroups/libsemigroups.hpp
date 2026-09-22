@@ -150,6 +150,7 @@
 #include "detail/uf.hpp"
 #include "detail/value-guard.hpp"
 #include "detail/word-graph-with-sources.hpp"
+#include "detail/word-iterators-impl.hpp"
 #include "detail/word-iterators.hpp"
 
 #endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
