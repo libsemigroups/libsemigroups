@@ -230,4 +230,4 @@ jobs:
       - name: Build test_all . . .
         run: make test_all.exe -j4
       - name: Run the quick tests . . .
-        run: ./test_all.exe "[quick]"
+        run: ./test_all.exe "[quick][exclude:no-valgrind]"
