@@ -25,6 +25,7 @@
 #include <cstdint>           // for uint64_t
 #include <cstdlib>           // for size_t
 #include <initializer_list>  // for initializer_list
+#include <memory>            // for unique_ptr
 #include <string>            // for basic_string, allocator
 #include <string_view>       // for basic_string_view, string_...
 #include <vector>            // for vector
@@ -33,8 +34,9 @@
 #include "libsemigroups/runner.hpp"  // for Runner
 #include "libsemigroups/types.hpp"   // for tril
 
-#include "libsemigroups/detail/fmt.hpp"    // for fmt
-#include "libsemigroups/detail/timer.hpp"  // for string_time
+#include "libsemigroups/detail/fmt.hpp"     // for fmt
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/timer.hpp"   // for string_time
 
 CATCH_REGISTER_ENUM(libsemigroups::tril,
                     libsemigroups::tril::TRUE,
@@ -305,6 +307,10 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
     _current_section_name = testInfo.name;
     _test_case_time       = std::chrono::nanoseconds(0);
     set_current_test_case_info(testInfo);
+    static std::unique_ptr<libsemigroups::ReportGuard> report_guard;
+    if (current_test_case_info().category != "extreme" && !report_guard) {
+      report_guard = std::make_unique<libsemigroups::ReportGuard>(false);
+    }
     auto summary = fmt::format("{}", to_string(current_test_case_info()));
     if (current_test_case_info().category != "extreme") {
       fmt::print(summary);

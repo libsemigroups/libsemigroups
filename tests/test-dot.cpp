@@ -35,9 +35,8 @@ namespace libsemigroups {
                           "000",
                           "edge attributes",
                           "[dot][quick]") {
-    auto      rg    = ReportGuard(false);
-    auto      wg    = v4::make<WordGraph<size_t>>(3, {{0, 1}, {1, 0}, {2, 2}});
-    const Dot d     = v4::word_graph::dot(wg);
+    auto      wg    = make<WordGraph<size_t>>(3, {{0, 1}, {1, 0}, {2, 2}});
+    const Dot d     = word_graph::dot(wg);
     auto      edges = d.edges();
     REQUIRE(edges.size() == 6);
     REQUIRE(edges[0].head == "0");
@@ -59,9 +58,8 @@ namespace libsemigroups {
                           "001",
                           "node attributes",
                           "[dot][quick]") {
-    auto      rg    = ReportGuard(false);
-    auto      wg    = v4::make<WordGraph<size_t>>(3, {{0, 1}, {1, 0}, {2, 2}});
-    const Dot d     = v4::word_graph::dot(wg);
+    auto      wg    = make<WordGraph<size_t>>(3, {{0, 1}, {1, 0}, {2, 2}});
+    const Dot d     = word_graph::dot(wg);
     auto      nodes = d.nodes() | to_vector();
     REQUIRE((nodes.size()) == 3);
     REQUIRE(nodes[0].attrs
@@ -77,9 +75,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "002", "dot attributes", "[dot][quick]") {
-    auto rg = ReportGuard(false);
-    auto wg = v4::make<WordGraph<size_t>>(3, {{0, 1}, {1, 0}, {2, 2}});
-    Dot  d  = v4::word_graph::dot(wg);
+    auto wg = make<WordGraph<size_t>>(3, {{0, 1}, {1, 0}, {2, 2}});
+    Dot  d  = word_graph::dot(wg);
     d.add_attr("node [shape=circle]");
     REQUIRE(d.attrs()
             == std::map<std::string, std::string>{{"node [shape=circle]", ""}});
@@ -90,8 +87,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "003", "add_node", "[dot][quick]") {
-    auto rg = ReportGuard(false);
-    Dot  d;
+    Dot d;
     d.add_node("cat");
     REQUIRE_THROWS_AS(d.add_node("cat"), LibsemigroupsException);
     auto& n = d.add_node("dog");
@@ -102,8 +98,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "004", "add_edge", "[dot][quick]") {
-    auto rg = ReportGuard(false);
-    Dot  d;
+    Dot d;
     d.add_node("cat");
     d.add_node("dog");
     REQUIRE(d.edges().size() == 0);
@@ -116,8 +111,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "005", "add_subgraph", "[dot][quick]") {
-    auto rg = ReportGuard(false);
-    Dot  d;
+    Dot d;
     d.name("pets");
     REQUIRE(d.name() == "pets");
     d.add_node("cat");
@@ -136,8 +130,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "006", "kind", "[dot][quick]") {
-    auto rg = ReportGuard(false);
-    Dot  d;
+    Dot d;
     REQUIRE(d.kind() == Dot::Kind::digraph);
     d.kind(Dot::Kind::graph);
     REQUIRE(d.kind() == Dot::Kind::graph);
@@ -149,16 +142,33 @@ namespace libsemigroups {
                           "007",
                           "to_human_readable_repr",
                           "[dot][quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE(to_human_readable_repr(Dot::Attr::string) == "<enum Dot::Attr>");
     REQUIRE(to_human_readable_repr(Dot::Attr::html, ".") == "<enum Dot.Attr>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "008", "is_node", "[dot][quick]") {
-    auto rg = ReportGuard(false);
-    Dot  d;
+    Dot d;
     d.add_node("cat");
     REQUIRE(d.is_node("cat:dog"));
     REQUIRE(d.is_node("cat"));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Dot", "009", "rm_node", "[dot][quick]") {
+    Dot d;
+    d.add_node("cat");
+    d.add_node("dog");
+    d.add_node(42);
+
+    REQUIRE_NOTHROW(d.rm_node("cat"));
+    REQUIRE(!d.is_node("cat"));
+    REQUIRE(d.is_node("dog"));
+    REQUIRE((d.nodes() | count()) == 2);
+    REQUIRE(d.to_string() == "digraph {\n\n  42\n  dog\n}");
+
+    REQUIRE_NOTHROW(d.rm_node(42));
+    REQUIRE(!d.is_node(42));
+    REQUIRE((d.nodes() | count()) == 1);
+    REQUIRE_EXCEPTION_MSG(d.rm_node("cat"),
+                          "there is no node named cat to remove!");
   }
 }  // namespace libsemigroups

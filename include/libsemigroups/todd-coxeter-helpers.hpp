@@ -38,6 +38,7 @@
 #include "paths.hpp"                // for Paths
 #include "presentation.hpp"         // for Presentation::val...
 #include "ranges.hpp"               // for seq, operator|
+#include "to-word.hpp"              // for ToString
 #include "todd-coxeter-class.hpp"   // for ToddCoxeter
 #include "types.hpp"                // for word_type, congru...
 #include "word-graph.hpp"           // for follow_path_no_ch...
@@ -815,7 +816,7 @@ namespace libsemigroups {
     //! This function performs a "lookbehind" on the argument \p tc which is
     //! defined as follows. For every node \c n in the so-far computed
     //! \ref WordGraph (obtained from \ref ToddCoxeter::current_word_graph) we
-    //! use the current word graph to rewrite the current short-lex least path
+    //! use the current word graph to rewrite the current lenlex least path
     //! from the initial node to \c n. If this rewritten word is not equal to
     //! the original word, and it also labels a path from the initial node in
     //! the current word graph to a node \c m, then \c m and \c n represent the

@@ -47,12 +47,13 @@
 #include "libsemigroups/runner.hpp"                // for delta
 #include "libsemigroups/to-froidure-pin.hpp"       // for to<FroidurePin>
 #include "libsemigroups/to-presentation.hpp"       // for to<Presentation>
+#include "libsemigroups/to-word.hpp"               // for ToString, ToWord
 #include "libsemigroups/todd-coxeter-helpers.hpp"  // for normal_forms, ind...
 #include "libsemigroups/transf.hpp"                // for Transf
 #include "libsemigroups/types.hpp"                 // for word_type, tril
 #include "libsemigroups/ukkonen.hpp"               // for Ukkonen
 #include "libsemigroups/word-graph.hpp"            // for is_complete
-#include "libsemigroups/word-range.hpp"            // for operator""_w, hum...
+#include "libsemigroups/words-helpers.hpp"         // for operator""_w, hum...
 
 #include "libsemigroups/detail/fmt.hpp"       // for print etc
 #include "libsemigroups/detail/iterator.hpp"  // for operator+
@@ -61,6 +62,8 @@
 #include "libsemigroups/detail/timer.hpp"     // for string_time
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   template <typename Word>
   class Congruence;
   template <typename Word>
@@ -83,7 +86,6 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
     // Kambites doesn't work in this example
-    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);
@@ -108,7 +110,6 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
     // Kambites doesn't work in this example
-    auto rg = ReportGuard(false);
 
     TestType cong;
     REQUIRE_THROWS_AS(congruence_common::currently_contains(cong, {0}, {1}),
@@ -140,8 +141,6 @@ namespace libsemigroups {
                                    ToddCoxeter<word_type>,
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
-    auto rg = ReportGuard(false);
-
     TestType cong;
 
     REQUIRE(!is_obviously_infinite(cong));
@@ -180,8 +179,7 @@ namespace libsemigroups {
                                    ToddCoxeter<word_type>,
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -225,8 +223,7 @@ namespace libsemigroups {
                                    ToddCoxeter<word_type>,
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -261,8 +258,6 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>,
                                    Kambites<word_type>) {
-    auto rg = ReportGuard(false);
-
     Presentation<word_type> p;
     p.alphabet(4);
 
@@ -279,12 +274,11 @@ namespace libsemigroups {
                                    "to<FroidurePin>",
                                    "[quick]",
                                    Kambites<>) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefg");
+    p.alphabet("abcdefg"s);
 
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "abcd"s, "aaaeaa"s);
+    presentation::add_rule(p, "ef"s, "dg"s);
 
     TestType cong(twosided, p);
 
@@ -318,15 +312,14 @@ namespace libsemigroups {
                                    KnuthBendix<std::string>,
                                    ToddCoxeter<std::string>) {
     // Congruence<std::string>) {
-    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("Bab");
-    presentation::add_rule_no_checks(p, "aa", "");
-    presentation::add_rule_no_checks(p, "bB", "");
-    presentation::add_rule_no_checks(p, "bbb", "");
-    presentation::add_rule_no_checks(p, "ababab", "");
+    p.alphabet("Bab"s);
+    presentation::add_rule_no_checks(p, "aa"s, ""s);
+    presentation::add_rule_no_checks(p, "bB"s, ""s);
+    presentation::add_rule_no_checks(p, "bbb"s, ""s);
+    presentation::add_rule_no_checks(p, "ababab"s, ""s);
 
     TestType cong(twosided, p);
 
@@ -339,17 +332,16 @@ namespace libsemigroups {
                                    "to<FroidurePin>",
                                    "[quick][no-valgrind]",
                                    Congruence<std::string>) {
-    auto rg = ReportGuard(false);
     using knuth_bendix::normal_forms;
     using todd_coxeter::normal_forms;
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("Bab");
-    presentation::add_rule_no_checks(p, "aa", "");
-    presentation::add_rule_no_checks(p, "bB", "");
-    presentation::add_rule_no_checks(p, "bbb", "");
-    presentation::add_rule_no_checks(p, "ababab", "");
+    p.alphabet("Bab"s);
+    presentation::add_rule_no_checks(p, "aa"s, ""s);
+    presentation::add_rule_no_checks(p, "bB"s, ""s);
+    presentation::add_rule_no_checks(p, "bbb"s, ""s);
+    presentation::add_rule_no_checks(p, "ababab"s, ""s);
 
     TestType cong(twosided, p);
 
@@ -357,10 +349,10 @@ namespace libsemigroups {
     REQUIRE(to<FroidurePin>(cong)->size() == 12);
 
     p.init();
-    p.alphabet("abcdefg");
+    p.alphabet("abcdefg"s);
     p.contains_empty_word(false);
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "abcd"s, "aaaeaa"s);
+    presentation::add_rule(p, "ef"s, "dg"s);
 
     cong.init(twosided, p);
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
@@ -376,17 +368,16 @@ namespace libsemigroups {
                                    "[quick]",
                                    KnuthBendix<std::string>,
                                    ToddCoxeter<std::string>) {
-    auto rg = ReportGuard(false);
     using knuth_bendix::normal_forms;
     using todd_coxeter::normal_forms;
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("Bab");
-    presentation::add_rule_no_checks(p, "aa", "");
-    presentation::add_rule_no_checks(p, "bB", "");
-    presentation::add_rule_no_checks(p, "bbb", "");
-    presentation::add_rule_no_checks(p, "ababab", "");
+    p.alphabet("Bab"s);
+    presentation::add_rule_no_checks(p, "aa"s, ""s);
+    presentation::add_rule_no_checks(p, "bB"s, ""s);
+    presentation::add_rule_no_checks(p, "bbb"s, ""s);
+    presentation::add_rule_no_checks(p, "ababab"s, ""s);
 
     TestType cong(twosided, p);
 
@@ -414,16 +405,14 @@ namespace libsemigroups {
     using knuth_bendix::normal_forms;
     using todd_coxeter::normal_forms;
 
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("Bab");
+    p.alphabet("Bab"s);
 
-    presentation::add_rule_no_checks(p, "aa", "");
-    presentation::add_rule_no_checks(p, "bB", "");
-    presentation::add_rule_no_checks(p, "bbb", "");
-    presentation::add_rule_no_checks(p, "ababab", "");
+    presentation::add_rule_no_checks(p, "aa"s, ""s);
+    presentation::add_rule_no_checks(p, "bB"s, ""s);
+    presentation::add_rule_no_checks(p, "bbb"s, ""s);
+    presentation::add_rule_no_checks(p, "ababab"s, ""s);
 
     TestType cong(twosided, p);
 

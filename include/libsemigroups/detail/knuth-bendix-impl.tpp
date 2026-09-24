@@ -667,9 +667,16 @@ namespace libsemigroups {
       report_after_run();
     }
 
+    // The Gilman-graph <G> is produced from the rule trie <T> as follows. The
+    // nodes <N> of <G> are the non-terminal nodes in <T>. For every <n> in <N>
+    // and <a> in the alphabet of <T>, define <m> in <N> to be the result of
+    // reading <a> at <n> in <T> (following suffix links if necessary). If <m>
+    // is terminal or undefined, do nothing. Otherwise, add the edge (<n>, <a>,
+    // <m>) to <G>.
     template <typename RewritingSystem>
-    WordGraph<uint32_t> const&
-    KnuthBendixImpl<RewritingSystem>::gilman_graph() {
+    template <typename SFINAE>
+    auto KnuthBendixImpl<RewritingSystem>::gilman_graph()
+        -> std::enable_if_t<has_trie<RewritingSystem>, SFINAE> {
       if (_gilman_graph.number_of_nodes() == 0
           && !internal_presentation().alphabet().empty()) {
         // TODO(1) should implement a SettingsGuard as in ToddCoxeterImpl
@@ -678,6 +685,94 @@ namespace libsemigroups {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
         LIBSEMIGROUPS_ASSERT(_rewriting_system.confluent());
+
+        auto const& trie = _rewriting_system.trie();
+        auto const& p    = internal_presentation();
+
+        using index_type = typename std::decay_t<decltype(trie)>::index_type;
+
+        size_t const num_nodes = trie.number_of_nodes()
+                                 - std::distance(trie.cbegin_terminal_nodes(),
+                                                 trie.cend_terminal_nodes());
+        bool const onesided_presentation
+            = (kind() != congruence_kind::twosided
+               && !internal_generating_pairs().empty());
+        size_t const out_degree = (onesided_presentation)
+                                      ? p.alphabet().size() - 1
+                                      : p.alphabet().size();
+
+        std::vector<index_type> old_nodes(num_nodes, UNDEFINED);
+        std::unordered_map<index_type, index_type> new_nodes;
+
+        _gilman_graph.add_nodes(num_nodes);
+        _gilman_graph.add_to_out_degree(out_degree);
+
+        // Make sure the Gilman-graph starts from the node represented by the
+        // octo if the presentation is one-sided.
+        if (onesided_presentation) {
+          letter_type const octo = p.index(p.alphabet().back());
+          index_type const  src  = trie.traverse_no_checks(0, octo);
+          old_nodes[0]           = src;
+          new_nodes.emplace(src, 0);
+        } else {
+          old_nodes[0] = 0;
+          new_nodes.emplace(0, 0);
+        }
+
+        index_type largest_used_node = 0;
+        index_type next_node         = 0;
+
+        // Traverse the trie in breadth-first order, updating the gilman graph
+        // every time a new non-terminal node is found.
+        // TODO (1): Changing the order the nodes are traversed would change
+        // the normal forms of the graph. Therefore, we should probably make
+        // this more general/integrate with the standardization stuff so that
+        // normal forms don't have to be lenlex normal forms.
+        while (next_node <= largest_used_node) {
+          for (letter_type a = 0; a < out_degree; ++a) {
+            index_type const old_target
+                = trie.traverse_no_checks(old_nodes[next_node], a);
+            if (old_target != UNDEFINED
+                && !trie.node_no_checks(old_target).terminal()) {
+              index_type new_target;
+              auto       it = new_nodes.find(old_target);
+              if (it == new_nodes.end()) {
+                ++largest_used_node;
+                old_nodes[largest_used_node] = old_target;
+                new_nodes.emplace(old_target, largest_used_node);
+                new_target = largest_used_node;
+              } else {
+                new_target = it->second;
+              }
+              _gilman_graph.target_no_checks(next_node, a, new_target);
+            }
+          }
+          ++next_node;
+        }
+
+        // Remove any nodes that we never actually reached. This should only
+        // be possible if the presentation was one-sided.
+        if (largest_used_node + 1 < num_nodes) {
+          LIBSEMIGROUPS_ASSERT(onesided_presentation);
+          _gilman_graph.induced_subgraph_no_checks(0, largest_used_node + 1);
+        }
+      }
+      return _gilman_graph;
+    }
+
+    template <typename RewritingSystem>
+    template <typename SFINAE>
+    auto KnuthBendixImpl<RewritingSystem>::gilman_graph()
+        -> std::enable_if_t<!has_trie<RewritingSystem>, SFINAE> {
+      if (_gilman_graph.number_of_nodes() == 0
+          && !internal_presentation().alphabet().empty()) {
+        // TODO(1) should implement a SettingsGuard as in ToddCoxeterImpl
+        // reset the settings so that we really run!
+        max_rules(POSITIVE_INFINITY);
+        run();
+        LIBSEMIGROUPS_ASSERT(finished());
+        LIBSEMIGROUPS_ASSERT(_rewriting_system.confluent());
+
         std::unordered_map<Rule::native_word_type, size_t> prefixes;
         prefixes.emplace(Rule::native_word_type(), 0);
         size_t n = 1;
@@ -724,7 +819,7 @@ namespace libsemigroups {
           auto        src  = _gilman_graph.target_no_checks(0, octo);
           LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
           _gilman_graph.remove_label_no_checks(octo);
-          auto nodes = v4::word_graph::nodes_reachable_from(_gilman_graph, src);
+          auto nodes = word_graph::nodes_reachable_from(_gilman_graph, src);
           LIBSEMIGROUPS_ASSERT(std::find(nodes.cbegin(), nodes.cend(), src)
                                != nodes.cend());
           // This is a bit awkward, it exists to ensure
@@ -744,6 +839,44 @@ namespace libsemigroups {
         }
       }
       return _gilman_graph;
+    }
+
+    template <typename RewritingSystem>
+    std::vector<
+        typename KnuthBendixImpl<RewritingSystem>::native_word_type> const&
+    KnuthBendixImpl<RewritingSystem>::gilman_graph_node_labels() {
+      // Ensure that gilman_graph is initialised
+      gilman_graph();
+
+      // The node labels are already populated if the Gilman graph was built
+      // without the use of a trie, so only generate the node labels if the
+      // Gilman graph was built using a trie.
+      if constexpr (has_trie<RewritingSystem>) {
+        using label_type = typename decltype(_gilman_graph)::label_type;
+        using node_type  = typename decltype(_gilman_graph)::node_type;
+
+        _gilman_graph_node_labels.resize(_gilman_graph.number_of_nodes(),
+                                         native_word_type());
+
+        // Traverse the Gilman graph in breadth-first order
+        for (node_type const& source : _gilman_graph.nodes()) {
+          native_word_type const& parent_label
+              = _gilman_graph_node_labels[source];
+          for (label_type const& a : _gilman_graph.labels()) {
+            node_type const& target = _gilman_graph.target_no_checks(source, a);
+
+            // Check we haven't already set the target's label
+            if (target == UNDEFINED
+                || !_gilman_graph_node_labels[target].empty()) {
+              continue;
+            }
+
+            _gilman_graph_node_labels[target] = parent_label;
+            _gilman_graph_node_labels[target].push_back(a);
+          }
+        }
+      }
+      return _gilman_graph_node_labels;
     }
 
     //////////////////////////////////////////////////////////////////////////

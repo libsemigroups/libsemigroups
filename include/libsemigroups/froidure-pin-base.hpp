@@ -24,17 +24,22 @@
 #include <cstdint>           // for uint32_t
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for forward_iterator_tag
+#include <string>            // for string
+#include <type_traits>       // for is_copy_assignable_v
 #include <utility>           // for swap
 #include <vector>            // for vector, allocator
 
 #include "constants.hpp"           // for UNDEFINED
-#include "ranges.hpp"              // for iterator_range
+#include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
+#include "dot.hpp"                 // for Dot
 #include "runner.hpp"              // for Runner
 #include "types.hpp"               // for word_type, generator_index_type, tril
+#include "word-graph-class.hpp"    // for WordGraph
 #include "word-graph-helpers.hpp"  // for word_graph
-#include "word-graph.hpp"          // for WordGraph
 
 #include "detail/containers.hpp"  // for DynamicArray2
+
+#include "ranges.hpp"  // for iterator_range
 
 namespace libsemigroups {
 
@@ -447,9 +452,9 @@ namespace libsemigroups {
     //! \brief Returns the maximum length of a word in the generators so far
     //! computed.
     //!
-    //! Every element can be expressed as the short-lex least product of the
+    //! Every element can be expressed as the lenlex least product of the
     //! generators that equals that element.  This function returns the length
-    //! of the longest short-lex least word in the generators that has so far
+    //! of the longest lenlex least word in the generators that has so far
     //! been enumerated.
     //!
     //! \returns
@@ -733,10 +738,10 @@ namespace libsemigroups {
       return final_letter_no_checks(pos);
     }
 
-    //! \brief Returns the length of the short-lex least word equal to the
+    //! \brief Returns the length of the lenlex least word equal to the
     //! element with given index.
     //!
-    //! This function returns the length of the short-lex least word (in the
+    //! This function returns the length of the lenlex least word (in the
     //! generators) equal to the element with index \p pos. No enumeration is
     //! triggered by calls to this function.
     //!
@@ -759,10 +764,10 @@ namespace libsemigroups {
       return _length[pos];
     }
 
-    //! \brief Returns the length of the short-lex least word equal to the
+    //! \brief Returns the length of the lenlex least word equal to the
     //! element with given index.
     //!
-    //! This function returns the length of the short-lex least word (in the
+    //! This function returns the length of the lenlex least word (in the
     //! generators) equal to the element with index \p pos.
     //!
     //! \param pos the position.
@@ -783,10 +788,10 @@ namespace libsemigroups {
       return current_length_no_checks(pos);
     }
 
-    //! \brief Returns the length of the short-lex least word equal to the
+    //! \brief Returns the length of the lenlex least word equal to the
     //! element with given index.
     //!
-    //! This function returns the length of the short-lex least word equal to
+    //! This function returns the length of the lenlex least word equal to
     //! the element with given index.
     //!
     //! \param pos the position.
@@ -807,10 +812,10 @@ namespace libsemigroups {
     // this as a mem fn.
     [[nodiscard]] size_t length(element_index_type pos);
 
-    //! \brief Returns the length of the short-lex least word equal to the
+    //! \brief Returns the length of the lenlex least word equal to the
     //! element with given index.
     //!
-    //! This function returns the length of the short-lex least word equal to
+    //! This function returns the length of the lenlex least word equal to
     //! the element with given index.
     //!
     //! \param pos the position.
@@ -1003,10 +1008,10 @@ namespace libsemigroups {
     // [x] current_minimal_factorisation(2 args)
     // [x] minimal_factorisation(2 args)
 
-    //! \brief Output to an iterator the short-lex least word representing an
+    //! \brief Output to an iterator the lenlex least word representing an
     //! element given by index.
     //!
-    //! This function computes a minimal word with respect to the short-lex
+    //! This function computes a minimal word with respect to the lenlex
     //! ordering (of the generators) equal to the element in position \p pos and
     //! stores the result in the output range starting from \p d_first.
     //!
@@ -1032,10 +1037,10 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Output to an iterator the short-lex least word representing an
+    //! \brief Output to an iterator the lenlex least word representing an
     //! element given by index.
     //!
-    //! This function computes a minimal word with respect to the short-lex
+    //! This function computes a minimal word with respect to the lenlex
     //! ordering (of the generators) equal to the element in position \p pos and
     //! stores the result in the output range starting from \p d_first.
     //!
@@ -1058,10 +1063,10 @@ namespace libsemigroups {
       current_minimal_factorisation_no_checks(d_first, pos);
     }
 
-    //! \brief Output to an iterator the short-lex least word representing an
+    //! \brief Output to an iterator the lenlex least word representing an
     //! element given by index.
     //!
-    //! This function computes a minimal word with respect to the short-lex
+    //! This function computes a minimal word with respect to the lenlex
     //! ordering (of the generators) equal to the element in position \p pos and
     //! stores the result in the output range starting from \p d_first.
     //!
@@ -1833,7 +1838,7 @@ namespace libsemigroups {
       }
     }
     element_index_type s = position_of_generator_no_checks(*first);
-    return v4::word_graph::follow_path_no_checks(
+    return word_graph::follow_path_no_checks(
         current_right_cayley_graph(), s, first + 1, last);
   }
 
@@ -2051,10 +2056,10 @@ namespace libsemigroups {
     // Minimal factorisation helper functions
     ////////////////////////////////////////////////////////////////////////
 
-    //! \brief Modify a word to contain the short-lex least word representing an
+    //! \brief Modify a word to contain the lenlex least word representing an
     //! element given by index.
     //!
-    //! This function changes \p word in-place to contain the short-lex minimal
+    //! This function changes \p word in-place to contain the lenlex minimal
     //! word (in the generators) equal to the element in position \p pos.
     //!
     //! \tparam Word the type of the second argument.
@@ -2083,7 +2088,7 @@ namespace libsemigroups {
                                                   pos);
     }
 
-    //! \brief Returns the short-lex least word representing an element given by
+    //! \brief Returns the lenlex least word representing an element given by
     //! index.
     //!
     //! This function is similar to the 3-argument version
@@ -2116,10 +2121,10 @@ namespace libsemigroups {
       return word;
     }
 
-    //! \brief Modify a word to contain the short-lex least word representing an
+    //! \brief Modify a word to contain the lenlex least word representing an
     //! element given by index.
     //!
-    //! This function changes \p word in-place to contain the short-lex minimal
+    //! This function changes \p word in-place to contain the lenlex minimal
     //! word (in the generators) equal to the element in position \p pos.
     //!
     //! \tparam Word the type of the second argument.
@@ -2146,7 +2151,7 @@ namespace libsemigroups {
       fpb.current_minimal_factorisation(std::back_inserter(word), pos);
     }
 
-    //! \brief Returns the short-lex least word representing an element given by
+    //! \brief Returns the lenlex least word representing an element given by
     //! index.
     //!
     //! This function is similar to the 3-argument version
@@ -2178,10 +2183,10 @@ namespace libsemigroups {
       return word;
     }
 
-    //! \brief Modify a word to contain the short-lex least word representing an
+    //! \brief Modify a word to contain the lenlex least word representing an
     //! element given by index.
     //!
-    //! This function changes \p word in-place to contain the short-lex minimal
+    //! This function changes \p word in-place to contain the lenlex minimal
     //! word (in the generators) equal to the element in position \p pos.
     //!
     //! \tparam Word the type of the second argument.
@@ -2211,7 +2216,7 @@ namespace libsemigroups {
       fpb.minimal_factorisation(std::back_inserter(word), pos);
     }
 
-    //! \brief Returns the short-lex least word representing an element given by
+    //! \brief Returns the lenlex least word representing an element given by
     //! index.
     //!
     //! This is similar to the three-argument version for

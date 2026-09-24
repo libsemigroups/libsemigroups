@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2025-2026 Joseph Edwards
+// Copyright (C) 2025-2026 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,22 +21,20 @@
 #include "libsemigroups/word-graph-helpers.hpp"
 
 namespace libsemigroups {
-  namespace v4 {
 
-    Meeter::Meeter()                         = default;
-    Meeter::Meeter(Meeter const&)            = default;
-    Meeter::Meeter(Meeter&&)                 = default;
-    Meeter& Meeter::operator=(Meeter const&) = default;
-    Meeter& Meeter::operator=(Meeter&&)      = default;
+  Meeter::Meeter()                         = default;
+  Meeter::Meeter(Meeter const&)            = default;
+  Meeter::Meeter(Meeter&&)                 = default;
+  Meeter& Meeter::operator=(Meeter const&) = default;
+  Meeter& Meeter::operator=(Meeter&&)      = default;
 
-    Meeter::~Meeter() = default;
+  Meeter::~Meeter() = default;
 
-    Joiner::Joiner()                         = default;
-    Joiner::Joiner(Joiner const&)            = default;
-    Joiner::Joiner(Joiner&&)                 = default;
-    Joiner& Joiner::operator=(Joiner const&) = default;
-    Joiner& Joiner::operator=(Joiner&&)      = default;
+  Joiner::Joiner()                         = default;
+  Joiner::Joiner(Joiner const&)            = default;
+  Joiner::Joiner(Joiner&&)                 = default;
+  Joiner& Joiner::operator=(Joiner const&) = default;
+  Joiner& Joiner::operator=(Joiner&&)      = default;
 
-    Joiner::~Joiner() = default;
-  }  // namespace v4
+  Joiner::~Joiner() = default;
 }  // namespace libsemigroups

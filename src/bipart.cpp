@@ -25,7 +25,7 @@
 #include <limits>    // for numeric_limits
 #include <numeric>   // for iota
 #include <random>    // for discrete_distribution
-#include <thread>    // for get_id
+#include <thread>    // for hardware_concurrency
 #include <utility>   // for move
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED, operator==, operator!=
@@ -68,9 +68,13 @@ namespace libsemigroups {
       return bell[1];
     }
 
+    size_t thread_storage_size() {
+      static size_t const size = std::thread::hardware_concurrency() + 1;
+      return size;
+    }
+
     std::vector<uint32_t>& thread_lookup(size_t thread_id) {
-      static std::vector<std::vector<uint32_t>> lookups(
-          std::thread::hardware_concurrency() + 1);
+      static std::vector<std::vector<uint32_t>> lookups(thread_storage_size());
       LIBSEMIGROUPS_ASSERT(thread_id < lookups.size());
       return lookups[thread_id];
     }
@@ -494,7 +498,7 @@ namespace libsemigroups {
   // TODO(2) Should be defined for all of the new element types
   Bipartition operator*(Bipartition const& x, Bipartition const& y) {
     Bipartition xy(x.degree());
-    xy.product_inplace_no_checks(x, y);
+    xy.product_inplace(x, y);
     return xy;
   }
 
@@ -569,6 +573,43 @@ namespace libsemigroups {
     return Bipartition(std::move(vector));
   }
 
+  void Bipartition::product_inplace(Bipartition const& x,
+                                    Bipartition const& y,
+                                    size_t             thread_id) {
+    if (x.degree() != y.degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 1st and 2nd arguments (bipartitions) must have the same degree, "
+          "found degrees {} and {}",
+          x.degree(),
+          y.degree());
+    }
+    if (degree() != x.degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 1st argument (bipartition) must have degree {} "
+          "(the degree of \"*this\"), found {}",
+          degree(),
+          x.degree());
+    }
+    if (this == &x) {
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (bipartition) cannot be the "
+                              "same object as \"*this\"");
+    } else if (this == &y) {
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (bipartition) cannot be the "
+                              "same object as \"*this\"");
+    }
+    if (thread_id >= thread_storage_size()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 3rd argument (thread index) is out of range, "
+          "expected a value in [0, {}), but found {}",
+          thread_storage_size(),
+          thread_id);
+    }
+    bipartition::throw_if_invalid(x);
+    bipartition::throw_if_invalid(y);
+    bipartition::throw_if_invalid(*this);
+    product_inplace_no_checks(x, y, thread_id);
+  }
+
   // multiply x and y into this
   void Bipartition::product_inplace_no_checks(Bipartition const& x,
                                               Bipartition const& y,
@@ -588,8 +629,7 @@ namespace libsemigroups {
     uint32_t const nrx(xx.number_of_blocks());
     uint32_t const nry(yy.number_of_blocks());
 
-    static std::vector<std::vector<uint32_t>> fuses(
-        std::thread::hardware_concurrency() + 1);
+    static std::vector<std::vector<uint32_t>> fuses(thread_storage_size());
     LIBSEMIGROUPS_ASSERT(thread_id < fuses.size());
     std::vector<uint32_t>& fuse = fuses[thread_id];
     std::vector<uint32_t>& lookup(thread_lookup(thread_id));
@@ -629,6 +669,10 @@ namespace libsemigroups {
       }
       _vector[i] = lookup[j];
     }
+    _nr_blocks      = UNDEFINED;
+    _nr_left_blocks = UNDEFINED;
+    _rank           = UNDEFINED;
+    _trans_blocks_lookup.clear();
   }
 
   uint32_t Bipartition::number_of_blocks() const {

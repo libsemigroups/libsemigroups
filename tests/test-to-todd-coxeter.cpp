@@ -21,10 +21,13 @@
 #include "libsemigroups/to-todd-coxeter.hpp"  // for to<ToddCoxeter>
 #include "libsemigroups/transf.hpp"
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
+#include "libsemigroups/words-helpers.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   using literals::operator""_w;
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
@@ -34,8 +37,6 @@ namespace libsemigroups {
                           "021",
                           "from WordGraph",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-
     using Transf          = LeastTransf<5>;
     FroidurePin<Transf> S = make<FroidurePin>(
         {make<Transf>({1, 3, 4, 2, 3}), make<Transf>({3, 2, 1, 3, 3})});
@@ -60,7 +61,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     tc.shrink_to_fit();
     REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(Order::rpo);
+    tc.standardize(Order::rev_rpo);
     auto w = (todd_coxeter::normal_forms(tc) | rx::to_vector());
     REQUIRE(w.size() == 21);
     REQUIRE(w
@@ -80,8 +81,6 @@ namespace libsemigroups {
                           "022",
                           "from WordGraph",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-
     using Transf  = LeastTransf<5>;
     FroidurePin S = make<FroidurePin>(
         {make<Transf>({1, 3, 4, 2, 3}), make<Transf>({3, 2, 1, 3, 3})});
@@ -108,7 +107,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     tc.shrink_to_fit();
     REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(Order::rpo);
+    tc.standardize(Order::rev_rpo);
     auto w = (todd_coxeter::normal_forms(tc) | rx::to_vector());
     REQUIRE(w.size() == 21);
     REQUIRE(w
@@ -128,8 +127,7 @@ namespace libsemigroups {
                           "023",
                           "from WordGraph",
                           "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -149,8 +147,7 @@ namespace libsemigroups {
     REQUIRE(tc.generating_pairs()[0] == 010001100_w);
     REQUIRE(tc.number_of_classes() == 21);
     auto const& wg = tc.current_word_graph();
-    REQUIRE(
-        v4::word_graph::is_compatible_no_checks(wg,
+    REQUIRE(word_graph::is_compatible_no_checks(wg,
                                                 wg.cbegin_active_nodes(),
                                                 wg.cend_active_nodes(),
                                                 tc.generating_pairs().cbegin(),
@@ -193,14 +190,12 @@ namespace libsemigroups {
                           "024",
                           "from KnuthBendix",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
-    p.alphabet("abB");
-    presentation::add_rule_no_checks(p, "bb", "B");
-    presentation::add_rule_no_checks(p, "BaB", "aba");
-    presentation::add_rule_no_checks(p, "a", "b");
-    presentation::add_rule_no_checks(p, "b", "B");
+    p.alphabet("abB"s);
+    presentation::add_rule_no_checks(p, "bb"s, "B"s);
+    presentation::add_rule_no_checks(p, "BaB"s, "aba"s);
+    presentation::add_rule_no_checks(p, "a"s, "b"s);
+    presentation::add_rule_no_checks(p, "b"s, "B"s);
 
     REQUIRE(!p.contains_empty_word());
 

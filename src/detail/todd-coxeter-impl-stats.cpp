@@ -37,6 +37,12 @@ namespace libsemigroups::detail {
     create_or_init_time = std::chrono::high_resolution_clock::now();
     run_index           = 0;
 
+    all_runs_time              = std::chrono::nanoseconds::zero();
+    all_hlt_phases_time        = std::chrono::nanoseconds::zero();
+    all_felsch_phases_time     = std::chrono::nanoseconds::zero();
+    all_lookahead_phases_time  = std::chrono::nanoseconds::zero();
+    all_lookbehind_phases_time = std::chrono::nanoseconds::zero();
+
     all_num_hlt_phases        = 0;
     all_num_felsch_phases     = 0;
     all_num_lookahead_phases  = 0;

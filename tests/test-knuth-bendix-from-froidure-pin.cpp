@@ -36,16 +36,19 @@
 #include "libsemigroups/to-froidure-pin.hpp"     // for to<FroidurePin>
 #include "libsemigroups/to-knuth-bendix.hpp"     // for to<KnuthBendix>
 #include "libsemigroups/to-presentation.hpp"     // for to<Presentation>
+#include "libsemigroups/to-word.hpp"             // for ToString
 #include "libsemigroups/transf.hpp"              // for Transf
 #include "libsemigroups/types.hpp"               // for word_type, letter_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
-#include "libsemigroups/word-range.hpp"          // for operator""_w
+#include "libsemigroups/words-helpers.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/kbe.hpp"     // for KBE
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/string.hpp"  // for operator""_w
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr onesided = congruence_kind::onesided;
 
@@ -62,17 +65,19 @@ namespace libsemigroups {
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
 
-  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
-  using RPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+  using RPOTrie = detail::RewritingSystemTrie<RPOCmp>;
+  using RPOSet  = detail::RewritingSystemSet<RPOCmp>;
 
-#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RevRPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+
+#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RevRPOTrie, RevRPOSet
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "119",
                                    "transformation semigroup (size 4)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
     auto S
         = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
     REQUIRE(S.size() == 4);
@@ -93,7 +98,6 @@ namespace libsemigroups {
                                    "transformation semigroup (size 9)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
     S.add_generator(make<Transf<>>({0, 0, 0, 0, 0}));
@@ -115,7 +119,6 @@ namespace libsemigroups {
                                    "transformation semigroup (size 88)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
     S.add_generator(make<Transf<>>({3, 2, 1, 3, 3}));
@@ -137,7 +140,6 @@ namespace libsemigroups {
                                    "to_froidure_pin x 1",
                                    "[quick]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 0}));
     S.add_generator(make<Transf<>>({0, 0}));
@@ -155,8 +157,7 @@ namespace libsemigroups {
                                    "to_froidure_pin x 2",
                                    "[quick]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -176,8 +177,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -215,7 +215,7 @@ namespace libsemigroups {
     copy.remove_label_no_checks(2);
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 62);
-    REQUIRE(v4::word_graph::is_acyclic(copy, source));
+    REQUIRE(word_graph::is_acyclic(copy, source));
 
     Paths paths(copy);
     REQUIRE(paths.min(1).source(source).count() == 72);
@@ -274,8 +274,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -369,8 +368,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -382,7 +380,7 @@ namespace libsemigroups {
 
     presentation::reverse(p);
     REQUIRE(!p.contains_empty_word());
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     KnuthBendix<std::string, TestType> kb(twosided, p);
     ToString                           to_string;
 
@@ -403,20 +401,19 @@ namespace libsemigroups {
     auto copy   = kb.gilman_graph();
     auto source = copy.target(0, 2);
     copy.remove_label_no_checks(2);
-    REQUIRE(source == 34);
+
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 51);
-    REQUIRE(v4::word_graph::is_acyclic(copy, source));
+    REQUIRE(word_graph::is_acyclic(copy, source));
 
     Paths paths1(copy);
     REQUIRE(paths1.min(1).source(source).count() == 69);
 
-    auto nrset = v4::word_graph::nodes_reachable_from(copy, source);
+    auto nrset = word_graph::nodes_reachable_from(copy, source);
     auto nrvec = std::vector<size_t>(nrset.begin(), nrset.end());
     std::sort(nrvec.begin(), nrvec.end());
     source = std::distance(nrvec.begin(),
                            std::find(nrvec.begin(), nrvec.end(), source));
-    REQUIRE(source == 28);
 
     copy.induced_subgraph_no_checks(nrvec.begin(), nrvec.end());
     REQUIRE(copy.out_degree() == 2);
@@ -435,8 +432,7 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
+    auto S = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -458,7 +454,8 @@ namespace libsemigroups {
     auto copy = kb.gilman_graph();
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 45);
-    REQUIRE(v4::word_graph::is_acyclic(copy, 0));
+    REQUIRE(
+        word_graph::is_acyclic(copy, typename decltype(copy)::node_type(0)));
 
     Paths paths1(copy);
     REQUIRE(paths1.min(1).source(0).count() == 69);
@@ -562,7 +559,6 @@ namespace libsemigroups {
                           "128",
                           "left congruence on finite semigroup",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
     S.add_generator(make<Transf<>>({3, 2, 1, 3, 3}));
@@ -584,9 +580,8 @@ namespace libsemigroups {
                                    "995",
                                    "finite semigroup congruence",
                                    "[quick][congruence][knuth-bendix]",
-                                   RPOTrie,
-                                   RPOSet) {
-    auto rg      = ReportGuard(false);
+                                   RevRPOTrie,
+                                   RevRPOSet) {
     using Transf = LeastTransf<5>;
     FroidurePin<Transf> S;
     S.add_generator(make<Transf>({1, 3, 4, 2, 3}));

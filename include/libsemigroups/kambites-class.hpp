@@ -40,14 +40,14 @@
 #include <utility>           // for get, move, swap, make_pair
 #include <vector>            // for vector, swap
 
-#include "constants.hpp"     // for UNDEFINED, operator==
-#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-#include "order.hpp"         // for lex_cmp
-#include "presentation.hpp"  // for operator!=, Presentation
-#include "types.hpp"         // for tril, congruence_kind
-#include "ukkonen.hpp"       // for maximal_piece_prefix_no...
-#include "word-range.hpp"    // for operator+=, operator+
+#include "constants.hpp"      // for UNDEFINED, operator==
+#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "order.hpp"          // for lex_cmp
+#include "presentation.hpp"   // for operator!=, Presentation
+#include "types.hpp"          // for tril, congruence_kind
+#include "ukkonen.hpp"        // for maximal_piece_prefix_no...
+#include "words-helpers.hpp"  // for operator+=, operator+
 
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/fmt.hpp"                // for format
@@ -783,10 +783,16 @@ namespace libsemigroups {
     //!
     //! \throw LibsemigroupsException if any letter in the range from
     //! \p first to \p last is out of bounds.
+    //!
+    //! \deprecated_warning{function} Use
+    //! `presentation().throw_if_empty_word_not_allowed(first, last)` and
+    //! `presentation().alphabet_v4().throw_if_letter_not_in_alphabet(first,
+    //! last)` instead.
     template <typename Iterator1, typename Iterator2>
-    void throw_if_letter_not_in_alphabet(Iterator1 first,
-                                         Iterator2 last) const {
-      _presentation.throw_if_letter_not_in_alphabet(first, last);
+    [[deprecated]] void throw_if_letter_not_in_alphabet(Iterator1 first,
+                                                        Iterator2 last) const {
+      _presentation.throw_if_empty_word_not_allowed(first, last);
+      _presentation.alphabet_v4().throw_if_letter_not_in_alphabet(first, last);
     }
 
     //! \ingroup kambites_class_init_group

@@ -71,10 +71,10 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Iterator>
-  bool rpo_cmp(Iterator first1,
-               Iterator last1,
-               Iterator first2,
-               Iterator last2) noexcept {
+  bool rpo_cmp_no_checks(Iterator first1,
+                         Iterator last1,
+                         Iterator first2,
+                         Iterator last2) noexcept {
     int lastmoved = 0;
 
     while (true) {
@@ -107,10 +107,10 @@ namespace libsemigroups {
                          Iterator              last1,
                          Iterator              first2,
                          Iterator              last2) {
-    return rpo_cmp(detail::citow(alphabet, first1),
-                   detail::citow(alphabet, last1),
-                   detail::citow(alphabet, first2),
-                   detail::citow(alphabet, last2));
+    return rpo_cmp_no_checks(detail::citow(alphabet, first1),
+                             detail::citow(alphabet, last1),
+                             detail::citow(alphabet, first2),
+                             detail::citow(alphabet, last2));
   }
 
   template <typename Word, typename Iterator>
@@ -125,14 +125,14 @@ namespace libsemigroups {
   }
 
   template <typename Iterator>
-  bool rev_rpo_cmp(Iterator first1,
-                   Iterator last1,
-                   Iterator first2,
-                   Iterator last2) noexcept {
-    return rpo_cmp(std::make_reverse_iterator(last1),
-                   std::make_reverse_iterator(first1),
-                   std::make_reverse_iterator(last2),
-                   std::make_reverse_iterator(first2));
+  bool rev_rpo_cmp_no_checks(Iterator first1,
+                             Iterator last1,
+                             Iterator first2,
+                             Iterator last2) noexcept {
+    return rpo_cmp_no_checks(std::make_reverse_iterator(last1),
+                             std::make_reverse_iterator(first1),
+                             std::make_reverse_iterator(last2),
+                             std::make_reverse_iterator(first2));
   }
 
   template <typename Word, typename Iterator>
@@ -160,10 +160,10 @@ namespace libsemigroups {
   }
 
   // This algorithm determines if the first sequence (word 1) is strictly
-  // smaller than the second sequence (word 2) with respect to a wreath product
+  // smaller than the second sequence (word 2) with respect to a wreath-product
   // order. Generators are assigned levels. Differences between generators at
   // higher levels dominate differences at lower levels. Differences within the
-  // same level are determined by len-lex.
+  // same level are determined by lenlex.
   //
   // The words are read from right to left, and the dominant level is stored in
   // the variable <relevant_level>. This level is the highest level that is
@@ -183,11 +183,11 @@ namespace libsemigroups {
   // consumed. At this point, a final check of the remaining letters is
   // performed, and the result is returned.
   template <typename Iterator>
-  [[nodiscard]] bool wreath_cmp_no_checks(std::vector<size_t> const& levels,
-                                          Iterator                   first1,
-                                          Iterator                   last1,
-                                          Iterator                   first2,
-                                          Iterator                   last2) {
+  [[nodiscard]] bool wr_cmp_no_checks(std::vector<size_t> const& levels,
+                                      Iterator                   first1,
+                                      Iterator                   last1,
+                                      Iterator                   first2,
+                                      Iterator                   last2) {
     // Remove common prefix
     std::tie(first1, first2) = std::mismatch(first1, last1, first2, last2);
 
@@ -271,39 +271,39 @@ namespace libsemigroups {
   }
 
   template <typename Word, typename Iterator>
-  bool wreath_cmp_no_checks(Alphabet<Word> const&      alphabet,
-                            std::vector<size_t> const& levels,
-                            Iterator                   first1,
-                            Iterator                   last1,
-                            Iterator                   first2,
-                            Iterator                   last2) {
-    return wreath_cmp_no_checks(levels,
-                                detail::citow(alphabet, first1),
-                                detail::citow(alphabet, last1),
-                                detail::citow(alphabet, first2),
-                                detail::citow(alphabet, last2));
+  bool wr_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                        std::vector<size_t> const& levels,
+                        Iterator                   first1,
+                        Iterator                   last1,
+                        Iterator                   first2,
+                        Iterator                   last2) {
+    return wr_cmp_no_checks(levels,
+                            detail::citow(alphabet, first1),
+                            detail::citow(alphabet, last1),
+                            detail::citow(alphabet, first2),
+                            detail::citow(alphabet, last2));
   }
 
   template <typename Iterator>
-  bool wreath_cmp(std::vector<size_t> const& levels,
-                  Iterator                   first1,
-                  Iterator                   last1,
-                  Iterator                   first2,
-                  Iterator                   last2) {
+  bool wr_cmp(std::vector<size_t> const& levels,
+              Iterator                   first1,
+              Iterator                   last1,
+              Iterator                   first2,
+              Iterator                   last2) {
     detail::throw_if_incompat_weights_or_levels(
         levels, first1, last1, "levels");
     detail::throw_if_incompat_weights_or_levels(
         levels, first2, last2, "levels");
-    return wreath_cmp_no_checks(levels, first1, last1, first2, last2);
+    return wr_cmp_no_checks(levels, first1, last1, first2, last2);
   }
 
   template <typename Word, typename Iterator>
-  bool wreath_cmp(Alphabet<Word> const&      alphabet,
-                  std::vector<size_t> const& levels,
-                  Iterator                   first1,
-                  Iterator                   last1,
-                  Iterator                   first2,
-                  Iterator                   last2) {
+  bool wr_cmp(Alphabet<Word> const&      alphabet,
+              std::vector<size_t> const& levels,
+              Iterator                   first1,
+              Iterator                   last1,
+              Iterator                   first2,
+              Iterator                   last2) {
     alphabet.throw_if_letter_not_in_alphabet(first1, last1);
     alphabet.throw_if_letter_not_in_alphabet(first2, last2);
     detail::throw_if_incompat_weights_or_levels(levels,
@@ -314,7 +314,7 @@ namespace libsemigroups {
                                                 detail::citow(alphabet, first2),
                                                 detail::citow(alphabet, last2),
                                                 "levels");
-    return wreath_cmp_no_checks(alphabet, levels, first1, last1, first2, last2);
+    return wr_cmp_no_checks(alphabet, levels, first1, last1, first2, last2);
   }
 
   template <typename Iterator>
@@ -330,7 +330,7 @@ namespace libsemigroups {
       return weight1 < weight2;
     }
 
-    return lenlex_cmp(first1, last1, first2, last2);
+    return lenlex_cmp_no_checks(first1, last1, first2, last2);
   }
 
   template <typename Iterator>
@@ -465,6 +465,68 @@ namespace libsemigroups {
         alphabet, weights, first1, last1, first2, last2);
   }
 
+  template <typename Iterator>
+  bool len_wt_lex_cmp_no_checks(std::vector<size_t> const& weights,
+                                Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2) {
+    auto const length1 = last1 - first1;
+    auto const length2 = last2 - first2;
+    return length1 < length2
+           || (length1 == length2
+               && wt_lex_cmp_no_checks(weights, first1, last1, first2, last2));
+  }
+
+  template <typename Word, typename Iterator>
+  bool len_wt_lex_cmp_no_checks(Alphabet<Word> const&      alphabet,
+                                std::vector<size_t> const& weights,
+                                Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2) {
+    auto const length1 = last1 - first1;
+    auto const length2 = last2 - first2;
+    return length1 < length2
+           || (length1 == length2
+               && wt_lex_cmp_no_checks(
+                   alphabet, weights, first1, last1, first2, last2));
+  }
+
+  template <typename Iterator>
+  bool len_wt_lex_cmp(std::vector<size_t> const& weights,
+                      Iterator                   first1,
+                      Iterator                   last1,
+                      Iterator                   first2,
+                      Iterator                   last2) {
+    detail::throw_if_incompat_weights_or_levels(
+        weights, first1, last1, "weights");
+    detail::throw_if_incompat_weights_or_levels(
+        weights, first2, last2, "weights");
+    return len_wt_lex_cmp_no_checks(weights, first1, last1, first2, last2);
+  }
+
+  template <typename Word, typename Iterator>
+  bool len_wt_lex_cmp(Alphabet<Word> const&      alphabet,
+                      std::vector<size_t> const& weights,
+                      Iterator                   first1,
+                      Iterator                   last1,
+                      Iterator                   first2,
+                      Iterator                   last2) {
+    alphabet.throw_if_letter_not_in_alphabet(first1, last1);
+    alphabet.throw_if_letter_not_in_alphabet(first2, last2);
+    detail::throw_if_incompat_weights_or_levels(weights,
+                                                detail::citow(alphabet, first1),
+                                                detail::citow(alphabet, last1),
+                                                "weights");
+    detail::throw_if_incompat_weights_or_levels(weights,
+                                                detail::citow(alphabet, first2),
+                                                detail::citow(alphabet, last2),
+                                                "weights");
+    return len_wt_lex_cmp_no_checks(
+        alphabet, weights, first1, last1, first2, last2);
+  }
+
   template <typename Word, bool check>
   LexCmp<Word, check>&
   LexCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
@@ -480,6 +542,28 @@ namespace libsemigroups {
       _alphabet = std::move(alphabet);
     }
     return *this;
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(LexCmp<Word, check> const& cmp) {
+    return fmt::format("<LexCmp object over {}>",
+                       to_human_readable_repr(cmp.alphabet()));
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(LexCmp<Default, check> const&) {
+    return "<LexCmp object>";
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(RevLexCmp<Word, check> const& cmp) {
+    return fmt::format("<RevLexCmp object over {}>",
+                       to_human_readable_repr(cmp.alphabet()));
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(RevLexCmp<Default, check> const&) {
+    return "<RevLexCmp object>";
   }
 
   template <typename Word, bool check>
@@ -501,6 +585,28 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  std::string to_human_readable_repr(LenLexCmp<Word, check> const& cmp) {
+    return fmt::format("<LenLexCmp object over {}>",
+                       to_human_readable_repr(cmp.alphabet()));
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(LenLexCmp<Default, check> const&) {
+    return "<LenLexCmp object>";
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(RevLenLexCmp<Word, check> const& cmp) {
+    return fmt::format("<RevLenLexCmp object over {}>",
+                       to_human_readable_repr(cmp.alphabet()));
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(RevLenLexCmp<Default, check> const&) {
+    return "<RevLenLexCmp object>";
+  }
+
+  template <typename Word, bool check>
   RPOCmp<Word, check>&
   RPOCmp<Word, check>::init(Alphabet<Word> const& alphabet) {
     if (&alphabet != &_alphabet) {
@@ -515,6 +621,17 @@ namespace libsemigroups {
       _alphabet = std::move(alphabet);
     }
     return *this;
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(RPOCmp<Word, check> const& cmp) {
+    return fmt::format("<RPOCmp object over {}>",
+                       to_human_readable_repr(cmp.alphabet()));
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(RPOCmp<Default, check> const&) {
+    return "<RPOCmp object>";
   }
 
   template <typename Word, bool check>
@@ -536,9 +653,20 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
-  WreathCmp<Word, check>&
-  WreathCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
-                               std::vector<size_t> const& levels) {
+  std::string to_human_readable_repr(RevRPOCmp<Word, check> const& cmp) {
+    return fmt::format("<RevRPOCmp object over {}>",
+                       to_human_readable_repr(cmp.alphabet()));
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(RevRPOCmp<Default, check> const&) {
+    return "<RevRPOCmp object>";
+  }
+
+  template <typename Word, bool check>
+  WrCmp<Word, check>&
+  WrCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
+                           std::vector<size_t> const& levels) {
     detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
     if (&alphabet != &_alphabet) {
       _alphabet = alphabet;
@@ -550,9 +678,8 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
-  WreathCmp<Word, check>&
-  WreathCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
-                               std::vector<size_t>&& levels) {
+  WrCmp<Word, check>& WrCmp<Word, check>::init(Alphabet<Word>&&      alphabet,
+                                               std::vector<size_t>&& levels) {
     detail::throw_if_incompat_weights_or_levels(alphabet, levels, "levels");
     if (&alphabet != &_alphabet) {
       _alphabet = std::move(alphabet);
@@ -561,6 +688,48 @@ namespace libsemigroups {
       _levels = std::move(levels);
     }
     return *this;
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(WrCmp<Word, check> const& cmp) {
+    if (cmp.levels().size() < 10) {
+      return fmt::format("<WrCmp object over {} with levels {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.levels()));
+    }
+    return fmt::format("<WrCmp object over {} with {} levels>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.levels().size());
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(WrCmp<Default, check> const& cmp) {
+    if (cmp.levels().size() < 10) {
+      return fmt::format("<WrCmp object with levels {}>",
+                         detail::to_printable(cmp.levels()));
+    }
+    return fmt::format("<WrCmp object with {} levels>", cmp.levels().size());
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(RevWrCmp<Word, check> const& cmp) {
+    if (cmp.levels().size() < 10) {
+      return fmt::format("<RevWrCmp object over {} with levels {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.levels()));
+    }
+    return fmt::format("<RevWrCmp object over {} with {} levels>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.levels().size());
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(RevWrCmp<Default, check> const& cmp) {
+    if (cmp.levels().size() < 10) {
+      return fmt::format("<RevWrCmp object with levels {}>",
+                         detail::to_printable(cmp.levels()));
+    }
+    return fmt::format("<RevWrCmp object with {} levels>", cmp.levels().size());
   }
 
   template <typename Word, bool check>
@@ -592,6 +761,51 @@ namespace libsemigroups {
   }
 
   template <typename Word, bool check>
+  std::string to_human_readable_repr(WtLenLexCmp<Word, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<WtLenLexCmp object over {} with weights {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<WtLenLexCmp object over {} with {} weights>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.weights().size());
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(WtLenLexCmp<Default, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<WtLenLexCmp object with weights {}>",
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<WtLenLexCmp object with {} weights>",
+                       cmp.weights().size());
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(RevWtLenLexCmp<Word, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<RevWtLenLexCmp object over {} with weights {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<RevWtLenLexCmp object over {} with {} weights>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.weights().size());
+  }
+
+  template <bool check>
+  std::string
+  to_human_readable_repr(RevWtLenLexCmp<Default, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<RevWtLenLexCmp object with weights {}>",
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<RevWtLenLexCmp object with {} weights>",
+                       cmp.weights().size());
+  }
+
+  template <typename Word, bool check>
   WtLexCmp<Word, check>&
   WtLexCmp<Word, check>::init(Alphabet<Word> const&      alphabet,
                               std::vector<size_t> const& weights) {
@@ -617,6 +831,95 @@ namespace libsemigroups {
       _weights = std::move(weights);
     }
     return *this;
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(WtLexCmp<Word, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<WtLexCmp object over {} with weights {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<WtLexCmp object over {} with {} weights>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.weights().size());
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(WtLexCmp<Default, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<WtLexCmp object with weights {}>",
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<WtLexCmp object with {} weights>",
+                       cmp.weights().size());
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(RevWtLexCmp<Word, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<RevWtLexCmp object over {} with weights {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<RevWtLexCmp object over {} with {} weights>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.weights().size());
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(RevWtLexCmp<Default, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<RevWtLexCmp object with weights {}>",
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<RevWtLexCmp object with {} weights>",
+                       cmp.weights().size());
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(LenWtLexCmp<Word, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<LenWtLexCmp object over {} with weights {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<LenWtLexCmp object over {} with {} weights>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.weights().size());
+  }
+
+  template <bool check>
+  std::string to_human_readable_repr(LenWtLexCmp<Default, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<LenWtLexCmp object with weights {}>",
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<LenWtLexCmp object with {} weights>",
+                       cmp.weights().size());
+  }
+
+  template <typename Word, bool check>
+  std::string to_human_readable_repr(RevLenWtLexCmp<Word, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<RevLenWtLexCmp object over {} with weights {}>",
+                         to_human_readable_repr(cmp.alphabet()),
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<RevLenWtLexCmp object over {} with {} weights>",
+                       to_human_readable_repr(cmp.alphabet()),
+                       cmp.weights().size());
+  }
+
+  template <bool check>
+  std::string
+  to_human_readable_repr(RevLenWtLexCmp<Default, check> const& cmp) {
+    if (cmp.weights().size() < 10) {
+      return fmt::format("<RevLenWtLexCmp object with weights {}>",
+                         detail::to_printable(cmp.weights()));
+    }
+    return fmt::format("<RevLenWtLexCmp object with {} weights>",
+                       cmp.weights().size());
   }
 
 }  // namespace libsemigroups

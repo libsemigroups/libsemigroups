@@ -23,11 +23,13 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"   // for operator==, POSITIVE_INFINITY
-#include "libsemigroups/exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/ukkonen.hpp"     // for Ukkonen, Ukkonen::State
-#include "libsemigroups/word-range.hpp"  // for literals
+#include "libsemigroups/constants.hpp"      // for operator==, POSITIVE_INFINITY
+#include "libsemigroups/exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/to-word.hpp"        // for ToWord
+#include "libsemigroups/types.hpp"          // for word_type
+#include "libsemigroups/ukkonen.hpp"        // for Ukkonen, Ukkonen::State
+#include "libsemigroups/word-range.hpp"     // for WordRange
+#include "libsemigroups/words-helpers.hpp"  // for literals
 
 #include "libsemigroups/detail/int-range.hpp"  // for IntRange
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard
@@ -40,7 +42,6 @@ namespace libsemigroups {
                           "000",
                           "basic tests",
                           "[quick][ukkonen][no-valgrind]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     // aaeaaa$
     // abcd$'
@@ -63,8 +64,8 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_subword(t, 0000_w));
     REQUIRE(!ukkonen::is_subword(t, 1_w));
     REQUIRE(ukkonen::number_of_distinct_subwords(t) == 16);
-    WordRange w;
-    w.alphabet_size(6).min(0).max(8);
+    v4::WordRange w;
+    w.order(LenLexCmp(Alphabet<word_type>(6))).first({}).last(word_type(8, 0));
     REQUIRE((w | rx::filter([&t](word_type const& u) {
                return ukkonen::is_subword(t, u);
              })
@@ -152,7 +153,7 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_suffix_no_checks(t, "ab"));
     REQUIRE(!ukkonen::is_suffix_no_checks(t, std::string("ab")));
 
-    w.alphabet_size(5).min(0).max(7);
+    w.order(LenLexCmp(Alphabet<word_type>(5))).first({}).last(word_type(7, 0));
     REQUIRE((w | rx::filter([&t](word_type const& u) {
                return ukkonen::is_suffix(t, u);
              })
@@ -190,7 +191,6 @@ namespace libsemigroups {
                           "001",
                           "maximal_piece_prefix 1",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     ukkonen::add_word(t, {0, 5, 7});
     ukkonen::add_word(t, {1, 6, 7});
@@ -216,7 +216,6 @@ namespace libsemigroups {
                           "002",
                           "maximal_piece_prefix 2",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     ukkonen::add_word(t, 004000_w);
     ukkonen::add_word(t, 45_w);
@@ -244,7 +243,6 @@ namespace libsemigroups {
                           "003",
                           "maximal_piece_prefix 3",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     REQUIRE(t.number_of_distinct_words() == 0);
     ukkonen::add_word(t, 012_w);
@@ -275,8 +273,10 @@ namespace libsemigroups {
     REQUIRE(!ukkonen::is_subword(t, 3_w));
     REQUIRE(!ukkonen::is_subword(t, 13_w));
 
-    WordRange words;
-    words.alphabet_size(5).min(0).max(5);
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(5)))
+        .first({})
+        .last(word_type(5, 0));
     REQUIRE((words | rx::filter([&t](word_type const& w) {
                return ukkonen::is_subword(t, w);
              })
@@ -328,7 +328,6 @@ namespace libsemigroups {
                           "004",
                           "number_of_pieces",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     ukkonen::add_word(t, 012_w);
     ukkonen::add_word(t, 0_w);
@@ -386,7 +385,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "005", "traverse", "[quick][ukkonen]") {
-    auto rg     = ReportGuard(false);
     using State = Ukkonen::State;
     Ukkonen t;
     ukkonen::add_word(t, 004000_w);
@@ -425,7 +423,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "006", "dot", "[quick][ukkonen]") {
-    auto rg = ReportGuard(false);
     {
       Ukkonen t;
       ukkonen::add_word(t, 00_w);
@@ -440,8 +437,10 @@ namespace libsemigroups {
       Ukkonen u;
       // No words
       REQUIRE_THROWS_AS(ukkonen::dot(u), LibsemigroupsException);
-      WordRange words;
-      words.alphabet_size(2).min(0).max(5);
+      v4::WordRange words;
+      words.order(LenLexCmp(Alphabet<word_type>(2)))
+          .first({})
+          .last(word_type(5, 0));
       ukkonen::add_words(u, rx::begin(words), rx::end(words));
       REQUIRE(u.number_of_distinct_words() == 30);
       // Too many words
@@ -450,7 +449,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "007", "strings", "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen t;
     ukkonen::add_word(t, "aaaeaa");
     ukkonen::add_word(t, "abcd");
@@ -502,7 +500,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "008", "pieces", "[quick][ukkonen]") {
-    auto       rg = ReportGuard(false);
     Ukkonen    t;
     v4::ToWord string_to_word("ab");
     ukkonen::add_word(t, string_to_word("baabbaaaa"));
@@ -531,7 +528,6 @@ namespace libsemigroups {
                           "009",
                           "code coverage",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen u;
     ukkonen::add_word_no_checks(u, 0001000_w);
     auto w = "abcdefabababab";
@@ -637,7 +633,6 @@ namespace libsemigroups {
                           "010",
                           "code coverage",
                           "[quick][ukkonen]") {
-    auto    rg = ReportGuard(false);
     Ukkonen u;
     REQUIRE(u.is_suffix(Ukkonen::State()) == UNDEFINED);
     REQUIRE(ukkonen::is_suffix(u, ""_w) == true);

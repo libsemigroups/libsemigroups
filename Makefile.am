@@ -82,6 +82,7 @@ pkginclude_HEADERS += include/libsemigroups/deprecated.hpp
 pkginclude_HEADERS += include/libsemigroups/dot.hpp
 pkginclude_HEADERS += include/libsemigroups/du-narendran-rusinowitch.hpp
 pkginclude_HEADERS += include/libsemigroups/exception.hpp
+pkginclude_HEADERS += include/libsemigroups/exception.tpp
 pkginclude_HEADERS += include/libsemigroups/forest.hpp
 pkginclude_HEADERS += include/libsemigroups/forest.tpp
 pkginclude_HEADERS += include/libsemigroups/freeband.hpp
@@ -156,6 +157,8 @@ pkginclude_HEADERS += include/libsemigroups/to-todd-coxeter.hpp
 pkginclude_HEADERS += include/libsemigroups/to-todd-coxeter.tpp
 pkginclude_HEADERS += include/libsemigroups/to-word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/to-word-graph.tpp
+pkginclude_HEADERS += include/libsemigroups/to-word.hpp
+pkginclude_HEADERS += include/libsemigroups/to-word.tpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter-class.hpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter-class.tpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter-helpers.hpp
@@ -166,12 +169,26 @@ pkginclude_HEADERS += include/libsemigroups/transf.tpp
 pkginclude_HEADERS += include/libsemigroups/types.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-class.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-class.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-helpers-deprecated.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-helpers-deprecated.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-helpers.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-helpers.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view-class.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view-class.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view-helpers-deprecated.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view-helpers-deprecated.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view-helpers.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view-helpers.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-view.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-view.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
+pkginclude_HEADERS += include/libsemigroups/word-range-class.hpp
+pkginclude_HEADERS += include/libsemigroups/word-range-class.tpp
+pkginclude_HEADERS += include/libsemigroups/words-helpers.hpp
+pkginclude_HEADERS += include/libsemigroups/words-helpers.tpp
 pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
@@ -231,7 +248,9 @@ detailinclude_HEADERS += include/libsemigroups/detail/value-guard.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/value-guard.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/word-iterators-impl.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.tpp
 
 if USE_BUNDLED_CATCH
 catch2includedir = $(includedir)/libsemigroups/Catch2-3.14.0/
@@ -1100,11 +1119,13 @@ libsemigroups_la_SOURCES += src/presentation-examples.cpp
 libsemigroups_la_SOURCES += src/presentation.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
 libsemigroups_la_SOURCES += src/sims.cpp
+libsemigroups_la_SOURCES += src/to-word.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter-helpers.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/word-graph.cpp
 libsemigroups_la_SOURCES += src/word-graph-helpers.cpp
-libsemigroups_la_SOURCES += src/word-range.cpp
+libsemigroups_la_SOURCES += src/word-range-class.cpp
+libsemigroups_la_SOURCES += src/words-helpers.cpp
 
 libsemigroups_la_SOURCES += src/detail/aho-corasick-impl.cpp
 libsemigroups_la_SOURCES += src/detail/cong-common-class.cpp
@@ -1121,6 +1142,7 @@ libsemigroups_la_SOURCES += src/detail/timer.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-report.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-stats.cpp
+libsemigroups_la_SOURCES += src/detail/word-iterator-impl.cpp
 libsemigroups_la_SOURCES += src/detail/word-iterators.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
@@ -1144,11 +1166,13 @@ EXTRA_DIST += README.md
 EXTRA_DIST += autogen.sh
 EXTRA_DIST += benchmarks/uf-old.hpp
 EXTRA_DIST += docs
+EXTRA_DIST += etc/libsemigroups-docs.py
 EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += hpcombi.mk.in
 EXTRA_DIST += tests/bmat-data.hpp
+EXTRA_DIST += tests/test-docs-cli.py
 EXTRA_DIST += tests/test-main.hpp
 EXTRA_DIST += tests/word-graph-test-common.hpp
 EXTRA_DIST += third_party/Catch2-3.14.0/catch_amalgamated.cpp
@@ -1189,6 +1213,7 @@ EXTRA_PROGRAMS += test_containers
 EXTRA_PROGRAMS += test_docs_code_examples
 EXTRA_PROGRAMS += test_dot
 EXTRA_PROGRAMS += test_du_narendran_rusinowitch
+EXTRA_PROGRAMS += test_exception
 EXTRA_PROGRAMS += test_felsch_tree
 EXTRA_PROGRAMS += test_forest
 EXTRA_PROGRAMS += test_freeband
@@ -1256,6 +1281,7 @@ EXTRA_PROGRAMS += bench_kambites
 EXTRA_PROGRAMS += bench_konieczny
 EXTRA_PROGRAMS += bench_konieczny_maxplus
 EXTRA_PROGRAMS += bench_multi_view
+EXTRA_PROGRAMS += bench_presentation
 EXTRA_PROGRAMS += bench_rewriting_system
 EXTRA_PROGRAMS += bench_sims
 EXTRA_PROGRAMS += bench_string_range
@@ -1286,6 +1312,7 @@ test_all_SOURCES += tests/test-containers.cpp
 test_all_SOURCES += tests/test-docs-code-examples.cpp
 test_all_SOURCES += tests/test-du-narendran-rusinowitch.cpp
 test_all_SOURCES += tests/test-dot.cpp
+test_all_SOURCES += tests/test-exception.cpp
 test_all_SOURCES += tests/test-felsch-tree.cpp
 test_all_SOURCES += tests/test-forest.cpp
 test_all_SOURCES += tests/test-freeband.cpp
@@ -1442,6 +1469,11 @@ test_du_narendran_rusinowitch_SOURCES += tests/test-main.cpp
 test_du_narendran_rusinowitch_SOURCES += $(CATCH2_SOURCES)
 test_du_narendran_rusinowitch_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
+test_exception_SOURCES =  tests/test-exception.cpp
+test_exception_SOURCES += tests/test-main.cpp
+test_exception_SOURCES += $(CATCH2_SOURCES)
+test_exception_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
 test_forest_SOURCES += $(CATCH2_SOURCES)
@@ -1567,6 +1599,10 @@ test_kbe_SOURCES += third_party/Catch2-3.14.0/catch_amalgamated_patch.cpp
 test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-extreme.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-fail.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-from-froidure-pin.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-maf-extreme.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-maf-fail.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-maf-quick.cpp
+test_knuth_bendix_SOURCES += tests/test-knuth-bendix-maf-standard.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-standard.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-string-quick-1.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-string-quick-2.cpp
@@ -1758,6 +1794,7 @@ bench_all_SOURCES += benchmarks/bench-freeband.cpp
 bench_all_SOURCES += benchmarks/bench-kambites.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
 bench_all_SOURCES += benchmarks/bench-multi-view.cpp
+bench_all_SOURCES += benchmarks/bench-presentation.cpp
 bench_all_SOURCES += benchmarks/bench-rewriting-system.cpp
 bench_all_SOURCES += benchmarks/bench-string-range.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
@@ -1807,6 +1844,10 @@ bench_konieczny_maxplus_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 bench_multi_view_SOURCES =  benchmarks/bench-multi-view.cpp
 bench_multi_view_SOURCES += $(CATCH2_SOURCES)
 bench_multi_view_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+
+bench_presentation_SOURCES = benchmarks/bench-presentation.cpp
+bench_presentation_SOURCES += $(CATCH2_SOURCES)
+bench_presentation_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 bench_rewriting_system_SOURCES =  benchmarks/bench-rewriting-system.cpp
 bench_rewriting_system_SOURCES += $(CATCH2_SOURCES)
@@ -1901,6 +1942,10 @@ lint:
 doc:
 	@echo "Running doxygen . . ."
 	@etc/make-doc.sh
+
+check-docs-cli:
+	python3 $(srcdir)/tests/test-docs-cli.py
+.PHONY: check-docs-cli
 
 doc-test:
 	@etc/make-doc-test.sh

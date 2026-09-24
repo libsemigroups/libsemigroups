@@ -40,7 +40,6 @@ namespace libsemigroups {
                           "000",
                           "catch all",
                           "[quick][multistringview]") {
-    auto rg = ReportGuard(false);
     // REQUIRE(sizeof(detail::MultiView) == 32);
     // REQUIRE(sizeof(uint64_t) == 8);
     std::string       s = "abcdefghijkl";
@@ -137,7 +136,6 @@ namespace libsemigroups {
                           "001",
                           "is_prefix",
                           "[quick][multistringview]") {
-    auto rg = ReportGuard(false);
     using detail::MultiView;
     std::string s = "abcdefghijkl";
     MultiView   m1(s.cbegin(), s.cend() - 4);
@@ -162,8 +160,7 @@ namespace libsemigroups {
                           "002",
                           "erase",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     m.append(s.begin(), s.cend());
@@ -190,8 +187,7 @@ namespace libsemigroups {
                           "003",
                           "iterators",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     m.append(s.begin(), s.cend());
@@ -213,8 +209,7 @@ namespace libsemigroups {
                           "004",
                           "constructors (long)",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     m.append(s.begin(), s.cend());
@@ -252,8 +247,7 @@ namespace libsemigroups {
                           "005",
                           "constructors (short)",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
 
@@ -285,8 +279,7 @@ namespace libsemigroups {
                           "006",
                           "copy assignment (short assigned to long)",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     REQUIRE(m.size() == 20);
@@ -309,8 +302,7 @@ namespace libsemigroups {
                           "007",
                           "copy assignment (short assigned to short)",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     REQUIRE(m.size() == 20);
@@ -333,8 +325,7 @@ namespace libsemigroups {
                           "008",
                           "move assignment (short assigned to long)",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     REQUIRE(m.size() == 20);
@@ -357,8 +348,7 @@ namespace libsemigroups {
                           "009",
                           "move assignment (short assigned to short)",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     REQUIRE(m.size() == 20);
@@ -381,8 +371,7 @@ namespace libsemigroups {
                           "010",
                           "code coverage",
                           "[quick][stringview]") {
-    auto                  rg = ReportGuard(false);
-    std::string           s  = "abcdefghijkl";
+    std::string           s = "abcdefghijkl";
     detail::ViewContainer m;
     m.emplace_back(s.cbegin() + 1, s.cbegin() + 5);
     m.emplace_back(s.cbegin() + 2, s.cbegin() + 6);
@@ -456,8 +445,7 @@ namespace libsemigroups {
                           "011",
                           "pop_front",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin(), s.begin() + 4);
     m.append(s.begin() + 1, s.begin() + 3);
     REQUIRE(m.number_of_views() == 2);
@@ -495,8 +483,7 @@ namespace libsemigroups {
                           "012",
                           "append",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin() + 3, s.begin() + 6);
     REQUIRE(std::string(m) == "def");
     m.append(m.cbegin(), m.cbegin() + 1);
@@ -522,8 +509,7 @@ namespace libsemigroups {
                           "013",
                           "operators",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin() + 3, s.begin() + 6);
     m.append(m.cbegin(), m.cbegin() + 1);
     m.append(m.cbegin(), m.cend());
@@ -548,8 +534,7 @@ namespace libsemigroups {
                           "014",
                           "maximum_common_suffix",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "abcdefghijkl";
+    std::string s = "abcdefghijkl";
     MultiView   m(s.cbegin() + 3, s.begin() + 6);
     m.append(m.cbegin(), m.cbegin() + 1);
     m.append(m.cbegin(), m.cend());
@@ -564,8 +549,7 @@ namespace libsemigroups {
                           "015",
                           "deep tests",
                           "[quick][multistringview]") {
-    auto        rg = ReportGuard(false);
-    std::string s  = "bcdabcd";
+    std::string s = "bcdabcd";
     MultiView   m(s.cbegin(), s.begin() + 2);
     m.append(s.cbegin() + 2, s.end());
 

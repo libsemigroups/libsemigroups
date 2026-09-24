@@ -369,7 +369,7 @@ namespace libsemigroups {
         ////////////////////////////////////////////////////////////////////////
 
         using FelschGraph_::presentation;
-        using FelschGraph_::standardize;
+        using FelschGraph_::standardize_no_checks;
         using FelschGraph_::target_no_checks;
 
         ////////////////////////////////////////////////////////////////////////
@@ -564,12 +564,6 @@ namespace libsemigroups {
                             WordGraph<Node> const&         wg);
 #endif
 
-      template <typename Iterator1, typename Iterator2>
-      void throw_if_letter_not_in_alphabet(Iterator1 first,
-                                           Iterator2 last) const {
-        internal_presentation().throw_if_letter_not_in_alphabet(first, last);
-      }
-
       ////////////////////////////////////////////////////////////////////////
       // Interface requirements - add_generating_pair
       ////////////////////////////////////////////////////////////////////////
@@ -584,18 +578,6 @@ namespace libsemigroups {
                                                      Iterator4 last2) {
         return CongruenceCommon::add_internal_generating_pair_no_checks<
             ToddCoxeterImpl>(first1, last1, first2, last2);
-      }
-
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      ToddCoxeterImpl& add_generating_pair(Iterator1 first1,
-                                           Iterator2 last1,
-                                           Iterator3 first2,
-                                           Iterator4 last2) {
-        return CongruenceCommon::add_generating_pair<ToddCoxeterImpl>(
-            first1, last1, first2, last2);
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -621,6 +603,9 @@ namespace libsemigroups {
       // Interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
+      // NOTE: there are no "checks" versions of the functions below because
+      // this isn't a user-facing class and they are redundant.
+
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -634,31 +619,10 @@ namespace libsemigroups {
                 typename Iterator2,
                 typename Iterator3,
                 typename Iterator4>
-      tril currently_contains(Iterator1 first1,
-                              Iterator2 last1,
-                              Iterator3 first2,
-                              Iterator4 last2) const {
-        return CongruenceCommon::currently_contains<ToddCoxeterImpl>(
-            first1, last1, first2, last2);
-      }
-
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
       bool contains_no_checks(Iterator1 first1,
                               Iterator2 last1,
                               Iterator3 first2,
                               Iterator4 last2);
-
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      bool contains(Iterator1 first1,
-                    Iterator2 last1,
-                    Iterator3 first2,
-                    Iterator4 last2);
 
       ////////////////////////////////////////////////////////////////////////
       // Interface requirements - reduce
@@ -674,30 +638,11 @@ namespace libsemigroups {
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
-      OutputIterator reduce_no_run(OutputIterator d_first,
-                                   InputIterator1 first,
-                                   InputIterator2 last) const {
-        return CongruenceCommon::reduce_no_run<ToddCoxeterImpl>(
-            d_first, first, last);
-      }
-
-      template <typename OutputIterator,
-                typename InputIterator1,
-                typename InputIterator2>
       OutputIterator reduce_no_checks(OutputIterator d_first,
                                       InputIterator1 first,
                                       InputIterator2 last) {
         return CongruenceCommon::reduce_no_checks<ToddCoxeterImpl>(
             d_first, first, last);
-      }
-
-      template <typename OutputIterator,
-                typename InputIterator1,
-                typename InputIterator2>
-      OutputIterator reduce(OutputIterator d_first,
-                            InputIterator1 first,
-                            InputIterator2 last) {
-        return CongruenceCommon::reduce<ToddCoxeterImpl>(d_first, first, last);
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -1562,7 +1507,7 @@ namespace libsemigroups {
       //! \ldots, n - 1\}\f$ where \f$n\f$ is the number of classes in the
       //! congruence if \ref presentation contains the empty word; or the
       //! number of classes plus one if \ref presentation does not contain
-      //! the empty word. The returned WordGraph is also short-lex
+      //! the empty word. The returned WordGraph is also lenlex
       //! standardized. The returned WordGraph will usually be complete and
       //! compatible with the relations of the \ref presentation and with
       //! the \ref ToddCoxeter::generating_pairs. The WordGraph may not be
@@ -1607,7 +1552,7 @@ namespace libsemigroups {
       //!
       //! This function returns a const reference to a spanning tree (a
       //! \ref Forest) for the underlying WordGraph (returned by
-      //! \ref word_graph) with the nodes appearing in short-lex order. This
+      //! \ref word_graph) with the nodes appearing in lenlex order. This
       //! function triggers a full congruence enumeration.
       //!
       //! \returns A const reference to a spanning tree of the underlying
@@ -1638,11 +1583,11 @@ namespace libsemigroups {
       //!   order;
       //! * Order::lenlex implies that:
       //!   - the return value of \ref ToddCoxeter::reduce will be the
-      //!   short-lex least word belonging to a given congruence class;
+      //!   lenlex least word belonging to a given congruence class;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
-      //!   in short-lex order;
-      //!   - the classes of the congruence will be indexed in short-lex order
-      //!   on the short-lex least word;
+      //!   in lenlex order;
+      //!   - the classes of the congruence will be indexed in lenlex order
+      //!   on the lenlex least word;
       //! * Order::lex implies that:
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   ordered lexicographically.
@@ -1851,7 +1796,7 @@ namespace libsemigroups {
       //! This function performs a "lookbehind" which is
       //! defined as follows. For every node \c n in the so-far computed
       //! \ref WordGraph (obtained from \ref current_word_graph) we
-      //! use the current word graph to rewrite the current short-lex least path
+      //! use the current word graph to rewrite the current lenlex least path
       //! from the initial node to \c n. If this rewritten word is not equal to
       //! the original word, and it also labels a path from the initial node in
       //! the current word graph to a node \c m, then \c m and \c n represent
@@ -1915,7 +1860,7 @@ namespace libsemigroups {
       //! decide whether or not to collapse nodes. For example, it might be the
       //! case that \p collapser uses a \ref_knuth_bendix instance to determine
       //! whether or not nodes in the graph represent the same class of the
-      //! congruence. More specifically, the shortlex least path from the
+      //! congruence. More specifically, the lenlex least path from the
       //! initial node to every node \c n is rewritten using \p collapser, and
       //! if the rewritten word labels a path in the graph to a node \c m, then
       //! it is assumed that \c m and \c n represent the same class of the
@@ -2177,7 +2122,9 @@ namespace libsemigroups {
       //! \cong_common_throws_if_letters_out_of_bounds
       template <typename Iterator1, typename Iterator2>
       index_type current_index_of(Iterator1 first, Iterator2 last) const {
-        throw_if_letter_not_in_alphabet(first, last);
+        internal_presentation().throw_if_empty_word_not_allowed(first, last);
+        internal_presentation().alphabet_v4().throw_if_letter_not_in_alphabet(
+            first, last);
         return current_index_of_no_checks(first, last);
       }
 
@@ -2236,7 +2183,9 @@ namespace libsemigroups {
       //! \cong_common_throws_if_letters_out_of_bounds
       template <typename Iterator1, typename Iterator2>
       index_type index_of(Iterator1 first, Iterator2 last) {
-        throw_if_letter_not_in_alphabet(first, last);
+        internal_presentation().throw_if_empty_word_not_allowed(first, last);
+        internal_presentation().alphabet_v4().throw_if_letter_not_in_alphabet(
+            first, last);
         return index_of_no_checks(first, last);
       }
 

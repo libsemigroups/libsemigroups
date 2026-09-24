@@ -150,7 +150,7 @@ namespace libsemigroups {
 
     return fmt::format(
         "<Paths in {} with{}{} length in [{}, {})>",
-        v4::to_human_readable_repr(p.word_graph()),
+        to_human_readable_repr(p.word_graph()),
         source_target,
         sep,
         group_digits(p.min()),

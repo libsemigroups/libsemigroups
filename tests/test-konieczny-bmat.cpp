@@ -32,8 +32,6 @@ namespace libsemigroups {
                                    "[quick][bmat]",
                                    BMat<>,
                                    BMat<4>) {
-    auto rg = ReportGuard(false);
-
     Konieczny S = make<Konieczny>(
         {make<TestType>(
              {{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}),
@@ -51,8 +49,6 @@ namespace libsemigroups {
                                    "[quick][bmat][no-valgrind]",
                                    BMat<>,
                                    BMat<4>) {
-    auto rg = ReportGuard(false);
-
     Konieczny S = make<Konieczny>(
         {make<TestType>(
              {{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
@@ -90,7 +86,6 @@ namespace libsemigroups {
                                    "[quick][bmat]",
                                    BMat<>,
                                    BMat<4>) {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(
         make<Konieczny>(
             {make<TestType>(
@@ -105,8 +100,6 @@ namespace libsemigroups {
                                    "[quick][bmat][no-valgrind]",
                                    BMat<>,
                                    BMat<5>) {
-    auto rg = ReportGuard(false);
-
     Konieczny S = make<Konieczny>({make<TestType>({{0, 1, 1, 1, 0},
                                                    {0, 0, 1, 0, 0},
                                                    {1, 0, 0, 1, 0},

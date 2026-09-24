@@ -25,5 +25,6 @@ dependencies:
   - pre-commit
   - rich
   - seaborn
+  - tqdm
   - pip:
       - accepts

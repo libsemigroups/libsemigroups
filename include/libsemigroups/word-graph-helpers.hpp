@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2025-2026 Nadim Searight
+// Copyright (C) 2025-2026 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains helper functions for word graphs and word graph views
+// This file contains helper functions for word graphs, which mostly just
+// delegate to the WordGraphView overloads. The exception is when the WordGraph
+// is to be modified, then the functionality is implemented here and not
+// available for WordGraphView which provide read-only const access to the
+// underlying WordGraph.
+//
+// The header include order is:
+// 1. word-graph-class.hpp
+// 2. word-graph-view-class.hpp
+// 3. word-graph-view-helpers.hpp
+// 4. word-graph-helpers.hpp
 
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_HELPERS_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_HELPERS_HPP_
@@ -26,34 +36,32 @@
 #include <iosfwd>            // for ostream
 #include <iterator>          // for empty
 #include <limits>            // for numeric_limits
-#include <numeric>           // for iota
-#include <queue>             // for queue
 #include <random>            // for mt19937, random_device
 #include <stack>             // for stack
 #include <stddef.h>          // for size_t
-#include <stdint.h>          // for uint64_t, uint8_t
+#include <stdint.h>          // for uint64_t
 #include <string>            // for basic_string, allocator
-#include <tuple>             // for tie
 #include <type_traits>       // for enable_if_t, decay_t
 #include <unordered_map>     // for unordered_map
 #include <unordered_set>     // for unordered_set
 #include <utility>           // for pair, move, make_pair
 #include <vector>            // for vector, swap
 
-#include "libsemigroups/adapters.hpp"         // for Hash
-#include "libsemigroups/config.hpp"           // for LIBSEMIGROUPS_EIGEN_...
-#include "libsemigroups/constants.hpp"        // for UNDEFINED
-#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/dot.hpp"              // for Dot
-#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/forest.hpp"           // for Forest
-#include "libsemigroups/order.hpp"            // for Order
-#include "libsemigroups/types.hpp"            // for word_type, letter_type
-#include "libsemigroups/word-graph-view.hpp"  // for WordGraphView
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/adapters.hpp"   // for Hash
+#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "libsemigroups/constants.hpp"  // for POSITIVE_INFINITY, UNDEFINED
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/dot.hpp"        // for Dot
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/forest.hpp"     // for Forest
+#include "libsemigroups/is_specialization_of.hpp"  // for is_specialization_of
+#include "libsemigroups/order.hpp"                 // for Order
+#include "libsemigroups/types.hpp"                 // for word_type, letter_type
+#include "libsemigroups/word-graph-class.hpp"      // for WordGraph
+#include "libsemigroups/word-graph-view-class.hpp"    // for WordGraphView
+#include "libsemigroups/word-graph-view-helpers.hpp"  // for follow_path
 
 #include "libsemigroups/detail/fmt.hpp"     // for fmt::format
-#include "libsemigroups/detail/stl.hpp"     // for HasLessEqual
 #include "libsemigroups/detail/string.hpp"  // for group_digits
 #include "libsemigroups/detail/uf.hpp"      // for Duf
 
@@ -65,3142 +73,1743 @@
 
 namespace libsemigroups {
 
-  namespace v4 {
-
-    // TODO(v4) Turn this into a doxygen comment once it is moved out of the v4
-    // namespace
-    // \ingroup word_graph_group
-    //
-    // \brief Namespace containing helper functions for the \ref WordGraph
-    // class.
-    //
-    // Defined in `word-graph-helpers.hpp`.
-    //
-    // \brief This namespace contains helper functions for the \ref WordGraph
-    // class.
-    namespace word_graph {
-
-      //////////////////////////////////////////////////////////////////////////
-      // WordGraph - helper functions - in alphabetical order!!!
-      //////////////////////////////////////////////////////////////////////////
-
-      //! \brief Adds a cycle involving the specified range of nodes to a word
-      //! graph.
-      //!
-      //! This function adds a cycle involving the specified range of nodes.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //!
-      //! \tparam Iterator the type of an iterator pointing to nodes of a word
-      //! graph.
-      //!
-      //! \param wg the WordGraph object to add a cycle to.
-      //! \param first an iterator to nodes of \p wg.
-      //! \param last an iterator to nodes of \p wg.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m)\f$ where \f$m\f$ is the distance between \p first and \p last.
-      //!
-      //! \note
-      //! The edges added by this function are all labelled \c 0.
-      // TODO(1) add add_cycle with checks version.
-      template <typename Node, typename Iterator>
-      void add_cycle_no_checks(WordGraph<Node>& wg,
-                               Iterator         first,
-                               Iterator         last);
-
-      //! \brief Adds a cycle consisting of \p N new nodes.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //!
-      //! \param wg the WordGraph object to add a cycle to.
-      //! \param N the length of the cycle and number of new nodes to add.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(N)\f$ where \f$N\f$ is the second parameter.
-      //!
-      //! \note
-      //! The edges added by this function are all labelled \c 0.
-      template <typename Node>
-      void add_cycle(WordGraph<Node>& wg, size_t N) {
-        size_t M = wg.number_of_nodes();
-        wg.add_nodes(N);
-        add_cycle_no_checks(wg, wg.cbegin_nodes() + M, wg.cend_nodes());
-      }
-
-      //! \brief Returns the adjacency matrix of a word graph view.
-      //!
-      //! This function returns the adjacency matrix of the word graph view
-      //! \p wg. The type of the returned matrix depends on whether or not
-      //! `libsemigroups` is compiled with [eigen][] enabled. The returned
-      //! matrix has the number of edges with source \c s and target \c t in the
-      //! `(s, t)`-entry.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraphView.
-      //!
-      //! \param wg the word graph view.
-      //!
-      //! \returns The adjacency matrix.
-      //!
-      //! [eigen]: http://eigen.tuxfamily.org/
-      template <typename Node>
-      [[nodiscard]] auto adjacency_matrix(WordGraphView<Node> const& wg);
-
-      //! \brief Returns the adjacency matrix of a word graph.
-      //!
-      //! This function returns the adjacency matrix of the word graph \p wg.
-      //! The type of the returned matrix depends on whether or not
-      //! `libsemigroups` is compiled with [eigen][] enabled. The returned
-      //! matrix has the number of edges with source \c s and target \c t in the
-      //! `(s, t)`-entry.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \returns The adjacency matrix.
-      //!
-      //! [eigen]: http://eigen.tuxfamily.org/
-      template <typename Node>
-      [[nodiscard]] auto adjacency_matrix(WordGraph<Node> const& wg) {
-        return adjacency_matrix(WordGraphView<Node>(wg));
-      }
-
-      //! \brief Returns a \ref Dot object representing a word graph view.
-      //!
-      //! This function returns a \ref Dot object representing the word graph
-      //! view \p wg.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraphView.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \returns A \ref Dot object.
-      template <typename Node>
-      [[nodiscard]] Dot dot(WordGraphView<Node> const& wg);
-
-      //! \brief Returns a \ref Dot object representing a word graph.
-      //!
-      //! This function returns a \ref Dot object representing the word graph
-      //! \p wg.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \returns A \ref Dot object.
-      template <typename Node>
-      [[nodiscard]] Dot dot(WordGraph<Node> const& wg) {
-        return dot(WordGraphView<Node>(wg));
-      }
-
-      //! \brief Returns a labelled \ref Dot object representing a word graph
-      //! view.
-      //!
-      //! This function returns a \ref Dot object representing the word graph
-      //! view \p wg. The nodes of the returned graph are labelled using
-      //! \p node_labels, and the colours used for edges are shown in a legend
-      //! labelled by \p edge_labels.
-      //!
-      //! \tparam Node the type of the nodes of the WordGraphView.
-      //!
-      //! \param wg the word graph view.
-      //! \param node_labels the labels for the nodes of \p wg.
-      //! \param edge_labels the labels for the edge labels of \p wg.
-      //!
-      //! \returns A \ref Dot object representing \p wg.
-      //!
-      //! \throws LibsemigroupsException if \p node_labels has size different
-      //! from `wg.number_of_nodes()`.
-      //! \throws LibsemigroupsException if \p edge_labels has size different
-      //! from `wg.out_degree()`.
-      //! \throws LibsemigroupsException if the out-degree of \p wg is greater
-      //! than the number of colours in Dot::colors.
-      //!
-      //! \note This function does not trigger an enumeration.
-      template <typename Node>
-      [[nodiscard]] Dot dot(WordGraphView<Node> const&      wg,
-                            std::vector<std::string> const& node_labels,
-                            std::vector<std::string> const& edge_labels);
-
-      //! \brief Returns a labelled \ref Dot object representing a word graph.
-      //!
-      //! This function returns a \ref Dot object representing the word graph
-      //! \p wg. The nodes of the returned graph are labelled using
-      //! \p node_labels, and the colours used for edges are shown in a legend
-      //! labelled by \p edge_labels.
-      //!
-      //! \tparam Node the type of the nodes of the WordGraph.
-      //!
-      //! \param wg the word graph.
-      //! \param node_labels the labels for the nodes of \p wg.
-      //! \param edge_labels the labels for the edge labels of \p wg.
-      //!
-      //! \returns A \ref Dot object representing \p wg.
-      //!
-      //! \throws LibsemigroupsException if \p node_labels has size different
-      //! from `wg.number_of_nodes()`.
-      //! \throws LibsemigroupsException if \p edge_labels has size different
-      //! from `wg.out_degree()`.
-      //! \throws LibsemigroupsException if the out-degree of \p wg is greater
-      //! than the number of colours in Dot::colors.
-      //!
-      //! \note This function does not trigger an enumeration.
-      //!
-      //! \sa dot(WordGraphView<Node> const&,
-      //! std::vector<std::string> const&, std::vector<std::string> const&).
-      template <typename Node>
-      [[nodiscard]] Dot dot(WordGraph<Node> const&          wg,
-                            std::vector<std::string> const& node_labels,
-                            std::vector<std::string> const& edge_labels) {
-        return dot(WordGraphView<Node>(wg), node_labels, edge_labels);
-      }
-
-      //! \brief Compares two word graphs on a range of nodes.
-      //!
-      //! This function returns \c true if the word graphs \p x and \p y are
-      //! equal on the range of nodes from \p first to \p last; and \c false
-      //! otherwise.  The word graphs \p x and \p y are equal at a node \c s if:
-      //! * the out-degrees of \p x and \p y coincide;
-      //! * the edges with source \c s and label \c a have equal targets in \p x
-      //! and \p y for every label \c a.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //!
-      //! \param x  the first word graph for comparison.
-      //! \param y the second word graph for comparison.
-      //! \param first the first node in the range.
-      //! \param last the last node in the range plus \c 1.
-      //!
-      //! \returns Whether or not the word graphs are equal at the specified
-      //! range of nodes.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \warning No checks are performed to ensure that the arguments
-      //! are valid.
-      //!
-      //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-      template <typename Node>
-      [[nodiscard]] bool equal_to_no_checks(WordGraph<Node> const& x,
-                                            WordGraph<Node> const& y,
-                                            Node                   first,
-                                            Node                   last) {
-        WordGraphView<Node> x_view = WordGraphView<Node>(x, first, last);
-        WordGraphView<Node> y_view = WordGraphView<Node>(y, first, last);
-        return x_view == y_view;
-      }
-
-      //! \brief Compares two word graphs on a range of nodes.
-      //!
-      //! This function returns \c true if the word graphs \p x and \p y are
-      //! equal on the range of nodes from \p first to \p last; and \c false
-      //! otherwise.  The word graphs \p x and \p y are equal at a node \c s if:
-      //! * the out-degrees of \p x and \p y coincide;
-      //! * the edges with source \c s and label \c a have equal targets in \p x
-      //! and \p y for every label \c a.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //!
-      //! \param x  the first word graph for comparison.
-      //! \param y the second word graph for comparison.
-      //! \param first the first node in the range.
-      //! \param last the last node in the range plus \c 1.
-      //!
-      //! \returns Whether or not the word graphs are equal at the specified
-      //! range of nodes.
-      //!
-      //! \throw LibsemigroupsException if \p first  is not a node
-      //! in \p x or not a node in \p y; or if `last - 1` is not a node in \p or
-      //! not a node in \p y.
-      //!
-      //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-      template <typename Node>
-      [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
-                                  WordGraph<Node> const& y,
-                                  Node                   first,
-                                  Node                   last);
-
-      //! \brief Find the node that a path starting at a given node leads to (if
-      //! any).
-      //!
-      //! This function attempts to follow the path in the word graph view \p wg
-      //! starting at the node \p from  labelled by the word defined by \p first
-      //! and \p last. If this path exists, then the last node on that path is
-      //! returned. If this path does not exist, then \ref UNDEFINED is
-      //! returned.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraphView
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p from (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \tparam Iterator the type of \p first and \p last.
-      //!
-      //! \param wg a word graph view.
-      //! \param source the starting node.
-      //! \param first an iterator point at the start of the word.
-      //! \param last an iterator point one beyond the last letter of the word.
-      //!
-      //! \returns
-      //! A value of type \p Node1. If one or more edges in \p path are not
-      //! defined, then \ref UNDEFINED is returned.
-      //!
-      //! \throw LibsemigroupsException if \p from is not a node in the word
-      //! graph or the word defined by \p first and \p last contains a value
-      //! that is not an edge-label.
-      //!
-      //! \par Complexity
-      //! Linear in the distance between \p first and \p last.
-      template <typename Node1, typename Node2, typename Iterator>
-      [[nodiscard]] Node1 follow_path(WordGraphView<Node1> const& wg,
-                                      Node2                       source,
-                                      Iterator                    first,
-                                      Iterator                    last);
-
-      //! \brief Find the node that a path starting at a given node leads to (if
-      //! any).
-      //!
-      //! This function attempts to follow the path in the word graph \p wg
-      //! starting at the node \p from  labelled by the word defined by \p first
-      //! and \p last. If this path exists, then the last node on that path is
-      //! returned. If this path does not exist, then \ref UNDEFINED is
-      //! returned.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraph
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p from (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \tparam Iterator the type of \p first and \p last.
-      //!
-      //! \param wg a word graph.
-      //! \param source the starting node.
-      //! \param first an iterator point at the start of the word.
-      //! \param last an iterator point one beyond the last letter of the word.
-      //!
-      //! \returns
-      //! A value of type \p Node1. If one or more edges in \p path are not
-      //! defined, then \ref UNDEFINED is returned.
-      //!
-      //! \throw LibsemigroupsException if \p from is not a node in the word
-      //! graph or the word defined by \p first and \p last contains a value
-      //! that is not an edge-label.
-      //!
-      //! \par Complexity
-      //! Linear in the distance between \p first and \p last.
-      template <typename Node1, typename Node2, typename Iterator>
-      [[nodiscard]] Node1 follow_path(WordGraph<Node1> const& wg,
-                                      Node2                   source,
-                                      Iterator                first,
-                                      Iterator                last) {
-        return follow_path(WordGraphView<Node1>(wg), source, first, last);
-      }
-
-      //! \brief Find the node that a path starting at a given node leads to (if
-      //! any).
-      //!
-      //! This function attempts to follow the path in the word graph view \p wg
-      //! starting at the node \p from  labelled by the word \p path. If this
-      //! path exists, then the last node on that path is returned. If this path
-      //! does not exist, then \ref UNDEFINED is returned.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraphView
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p from (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg a word graph view.
-      //! \param from the starting node.
-      //! \param path the path to follow.
-      //!
-      //! \returns
-      //! A value of type \p Node1. If one or more edges in \p path are not
-      //! defined, then \ref UNDEFINED is returned.
-      //!
-      //! \throw LibsemigroupsException if \p from is not a node in the word
-      //! graph view or \p path contains a value that is not an edge-label.
-      //!
-      //! \par Complexity
-      //! Linear in the length of \p path.
-      // TODO(2) example
-      // not noexcept because WordGraph::target isn't
-      template <typename Node1, typename Node2>
-      [[nodiscard]] Node1 follow_path(WordGraphView<Node1> const& wg,
-                                      Node2                       from,
-                                      word_type const&            path) {
-        static_assert(sizeof(Node2) <= sizeof(Node1));
-        return follow_path(wg, from, path.cbegin(), path.cend());
-      }
-
-      //! \brief Find the node that a path starting at a given node leads to (if
-      //! any).
-      //!
-      //! This function attempts to follow the path in the word graph  \p wg
-      //! starting at the node \p from  labelled by the word \p path. If this
-      //! path exists, then the last node on that path is returned. If this path
-      //! does not exist, then \ref UNDEFINED is returned.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraph
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p from (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg a word graph.
-      //! \param from the starting node.
-      //! \param path the path to follow.
-      //!
-      //! \returns
-      //! A value of type \p Node1. If one or more edges in \p path are not
-      //! defined, then \ref UNDEFINED is returned.
-      //!
-      //! \throw LibsemigroupsException if \p from is not a node in the word
-      //! graph or \p path contains a value that is not an edge-label.
-      //!
-      //! \par Complexity
-      //! Linear in the length of \p path.
-      // TODO(2) example
-      // not noexcept because WordGraph::target isn't
-      template <typename Node1, typename Node2>
-      [[nodiscard]] Node1 follow_path(WordGraph<Node1> const& wg,
-                                      Node2                   from,
-                                      word_type const&        path) {
-        static_assert(sizeof(Node2) <= sizeof(Node1));
-        return follow_path(
-            WordGraphView<Node1>(wg), from, path.cbegin(), path.cend());
-      }
-
-      //! \brief Follow the path from a specified node labelled by a word.
-      //!
-      //! This function returns the last node on the path in the word graph view
-      //! \p wg starting at the node \p from labelled by the word defined by
-      //! \p first and \p last or \ref UNDEFINED.
-      //!
-      //! \tparam Node1 the type of the nodes of the WordGraphView \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p from (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg a word graph view.
-      //! \param from the source node.
-      //! \param first iterator into a word.
-      //! \param last iterator into a word.
-      //!
-      //! \returns A value of type \p Node1.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! At worst the distance from \p first to \p last.
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed.
-      template <typename Node1, typename Node2, typename Iterator>
-      [[nodiscard]] Node1 follow_path_no_checks(WordGraphView<Node1> const& wg,
-                                                Node2    from,
-                                                Iterator first,
-                                                Iterator last) noexcept;
-
-      //! \brief Follow the path from a specified node labelled by a word.
-      //!
-      //! This function returns the last node on the path in the word graph
-      //! \p wg starting at the node \p from labelled by the word defined by
-      //! \p first and \p last or \ref UNDEFINED.
-      //!
-      //! \tparam Node1 the type of the nodes of the WordGraph \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p from (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg a word graph.
-      //! \param from the source node.
-      //! \param first iterator into a word.
-      //! \param last iterator into a word.
-      //!
-      //! \returns A value of type \p Node1.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! At worst the distance from \p first to \p last.
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed.
-      template <typename Node1, typename Node2, typename Iterator>
-      [[nodiscard]] Node1 follow_path_no_checks(WordGraph<Node1> const& wg,
-                                                Node2                   from,
-                                                Iterator                first,
-                                                Iterator last) noexcept {
-        return follow_path_no_checks(
-            WordGraphView<Node1>(wg), from, first, last);
-      }
-
-      //! \brief Follow the path from a specified node labelled by a word.
-      //!
-      //! This function returns the last node on the path in the word graph view
-      //! \p wg starting at the node \p from labelled by \p path or
-      //! \ref UNDEFINED.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraphView
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p from (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg a word graph view.
-      //! \param from the source node.
-      //! \param path the word.
-      //!
-      //! \returns A value of type \p Node1.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! At worst the length of \p path.
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] Node1
-      follow_path_no_checks(WordGraphView<Node1> const& wg,
-                            Node2                       from,
-                            word_type const&            path) noexcept {
-        static_assert(sizeof(Node2) <= sizeof(Node1));
-        return follow_path_no_checks(wg, from, path.cbegin(), path.cend());
-      }
-
-      //! \brief Follow the path from a specified node labelled by a word.
-      //!
-      //! This function returns the last node on the path in the word graph
-      //! \p wg starting at the node \p from labelled by \p path or
-      //! \ref UNDEFINED.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraph
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p from (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg a word graph.
-      //! \param from the source node.
-      //! \param path the word.
-      //!
-      //! \returns A value of type \p Node1.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! At worst the length of \p path.
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] Node1
-      follow_path_no_checks(WordGraph<Node1> const& wg,
-                            Node2                   from,
-                            word_type const&        path) noexcept {
-        static_assert(sizeof(Node2) <= sizeof(Node1));
-        return follow_path_no_checks(
-            WordGraphView<Node1>(wg), from, path.cbegin(), path.cend());
-      }
-
-      //! \brief Check if a word graph view is acyclic.
-      //!
-      //! This function returns \c true if the word graph view \p wg is acyclic
-      //! and
-      //! \c false otherwise. A word graph is acyclic if every directed cycle in
-      //! the word graph is trivial.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraphView.
-      //!
-      //! \param wg the WordGraphView object to check.
-      //!
-      //! \returns
-      //! A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraphView \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraphView objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the \ref WordGraphView::out_degree.
-      //!
-      //!
-      //! \par Example
-      //! \code
-      //! WordGraph<size_t> wg;
-      //! wg.add_nodes(2);
-      //! wg.add_to_out_degree(1);
-      //! wg.target(0, 0, 1);
-      //! wg.target(1, 0, 0);
-      //! word_graph::is_acyclic(WordGraphView<size_t>(wg)); // returns false
-      //! \endcode
-      // Not noexcept because detail::is_acyclic isn't
-      template <typename Node>
-      [[nodiscard]] bool is_acyclic(WordGraphView<Node> const& wg);
-
-      //! \brief Check if a word graph is acyclic.
-      //!
-      //! This function returns \c true if the word graph \p wg is acyclic and
-      //! \c false otherwise. A word graph is acyclic if every directed cycle in
-      //! the word graph is trivial.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //!
-      //! \param wg the WordGraph object to check.
-      //!
-      //! \returns
-      //! A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraph objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the \ref WordGraph::out_degree.
-      //!
-      //!
-      //! \par Example
-      //! \code
-      //! WordGraph<size_t> wg;
-      //! wg.add_nodes(2);
-      //! wg.add_to_out_degree(1);
-      //! wg.target(0, 0, 1);
-      //! wg.target(1, 0, 0);
-      //! word_graph::is_acyclic(wg); // returns false
-      //! \endcode
-      // Not noexcept because detail::is_acyclic isn't
-      template <typename Node>
-      [[nodiscard]] bool is_acyclic(WordGraph<Node> const& wg) {
-        return is_acyclic(WordGraphView<Node>(wg));
-      }
-
-      //! \brief Check if the word graph view induced by the nodes reachable
-      //! from a source node is acyclic.
-      //!
-      //! This function returns \c true if the word graph view consisting of the
-      //! nodes reachable from \p source in the word graph view \p wg is acyclic
-      //! and \c false if not. A word graph view is acyclic if every directed
-      //! cycle in the word graph is trivial.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraphView
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p source (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg the WordGraphView object to check.
-      //! \param source the source node.
-      //!
-      //! \returns
-      //! A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraphView \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraphView objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the \ref WordGraphView::out_degree.
-      //!
-      //!
-      //! \par Example
-      //! \code
-      //! WordGraph<size_t> g;
-      //! g.add_nodes(4);
-      //! g.add_to_out_degree(1);
-      //! g.target(0, 0, 1);
-      //! g.target(1, 0, 0);
-      //! g.target(2, 0, 3);
-      //! WordGraphView<size_t> wg(g);
-      //! word_graph::is_acyclic(wg); // returns false
-      //! word_graph::is_acyclic(wg, 0); // returns false
-      //! word_graph::is_acyclic(wg, 1); // returns false
-      //! word_graph::is_acyclic(wg, 2); // returns true
-      //! word_graph::is_acyclic(wg, 3); // returns true
-      //! \endcode
-      // Not noexcept because detail::is_acyclic isn't
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool is_acyclic(WordGraphView<Node1> const& wg,
-                                    Node2                       source);
-
-      //! \brief Check if the word graph induced by the nodes reachable from a
-      //! source node is acyclic.
-      //!
-      //! This function returns \c true if the word graph consisting of the
-      //! nodes reachable from \p source in the word graph \p wg is acyclic and
-      //! \c false if not. A word graph is acyclic if every directed cycle in
-      //! the word graph is trivial.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraph
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the node \p source (must satisfy
-      //! `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg the WordGraph object to check.
-      //! \param source the source node.
-      //!
-      //! \returns
-      //! A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraph objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the \ref WordGraph::out_degree.
-      //!
-      //!
-      //! \par Example
-      //! \code
-      //! WordGraph<size_t> wg;
-      //! wg.add_nodes(4);
-      //! wg.add_to_out_degree(1);
-      //! wg.target(0, 0, 1);
-      //! wg.target(1, 0, 0);
-      //! wg.target(2, 0, 3);
-      //! word_graph::is_acyclic(wg); // returns false
-      //! word_graph::is_acyclic(wg, 0); // returns false
-      //! word_graph::is_acyclic(wg, 1); // returns false
-      //! word_graph::is_acyclic(wg, 2); // returns true
-      //! word_graph::is_acyclic(wg, 3); // returns true
-      //! \endcode
-      // Not noexcept because detail::is_acyclic isn't
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool is_acyclic(WordGraph<Node1> const& wg, Node2 source) {
-        return is_acyclic(WordGraphView<Node1>(wg), source);
-      }
-
-      //! \brief Check if the word graph view induced by the nodes reachable
-      //! from a source node and from which a target node can be reached is
-      //! acyclic.
-      //!
-      //! This function returns \c true if the word graph view consisting of the
-      //! nodes reachable from \p source and from which \p target is reachable,
-      //! in the word graph \p wg, is acyclic; and \c false if not. A word graph
-      //! view is acyclic if every directed cycle of the word graph is trivial.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraphView
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the nodes \p source and \p target (must
-      //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg the WordGraphView object to check.
-      //! \param source the source node.
-      //! \param target the target node.
-      //!
-      //! \returns
-      //! A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraphView \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraphView objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the \ref WordGraphView::out_degree.
-      // Not noexcept because detail::is_acyclic isn't
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool is_acyclic(WordGraphView<Node1> const& wg,
-                                    Node2                       source,
-                                    Node2                       target);
-
-      //! \brief Check if the word graph induced by the nodes reachable from a
-      //! source node and from which a target node can be reached is acyclic.
-      //!
-      //! This function returns \c true if the word graph consisting of the
-      //! nodes reachable from \p source and from which \p target is reachable,
-      //! in the word graph \p wg, is acyclic; and \c false if not. A word graph
-      //! is acyclic if every directed cycle of the word graph is trivial.
-      //!
-      //! \tparam Node1  the type of the nodes of the WordGraph
-      //! \p wg.
-      //!
-      //! \tparam Node2 the type of the nodes \p source and \p target (must
-      //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg the WordGraph object to check.
-      //! \param source the source node.
-      //! \param target the target node.
-      //!
-      //! \returns
-      //! A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraph objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the \ref WordGraph::out_degree.
-      // Not noexcept because detail::is_acyclic isn't
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool is_acyclic(WordGraph<Node1> const& wg,
-                                    Node2                   source,
-                                    Node2                   target) {
-        return is_acyclic(WordGraphView<Node1>(wg), source, target);
-      }
-
-      //! \brief Check if a word graph view is compatible with some relations at
-      //! a range of nodes.
-      //!
-      //! This function returns \c true if the word graph view \p wg is
-      //! compatible with the relations in the range \p first_rule to
-      //! \p last_rule at every node in the range from \p first_node to
-      //! \p last_node. This means that the paths with given sources that are
-      //! labelled by one side of a relation leads to the same node as the path
-      //! labelled by the other side of the relation.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraphView
-      //! \p wg.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
-      //!
-      //! \param wg the word graph view.
-      //!
-      //! \param first_node iterator pointing at the first node.
-      //!
-      //! \param last_node iterator pointing at one beyond the last node.
-      //!
-      //! \param first_rule iterator pointing to the first rule.
-      //!
-      //! \param last_rule iterator pointing one beyond the last rule.
-      //!
-      //! \return Whether or not the word graph view is compatible with the
-      //! given rules at each one of the given nodes.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \note This function ignores out of bound targets in \p wg (if any).
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed.
-      // TODO(1) add a version of this function with one that returns a float
-      // representing the proportion of the nodes in the range that are
-      // compatible with the rules. Don't replace the current version because it
-      // can return early knowing that it isn't compatible.
-      template <typename Node,
-                typename Iterator1,
-                typename Iterator2,
-                typename Iterator3>
-      [[nodiscard]] bool is_compatible_no_checks(WordGraphView<Node> const& wg,
-                                                 Iterator1 first_node,
-                                                 Iterator2 last_node,
-                                                 Iterator3 first_rule,
-                                                 Iterator3 last_rule);
-
-      //! \brief Check if a word graph is compatible with some relations at a
-      //! range of nodes.
-      //!
-      //! This function returns \c true if the word graph \p wg is compatible
-      //! with the relations in the range \p first_rule to \p last_rule at every
-      //! node in the range from \p first_node to \p last_node. This means that
-      //! the paths with given sources that are labelled by one side of a
-      //! relation leads to the same node as the path labelled by the other side
-      //! of the relation.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph
-      //! \p wg.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \param first_node iterator pointing at the first node.
-      //!
-      //! \param last_node iterator pointing at one beyond the last node.
-      //!
-      //! \param first_rule iterator pointing to the first rule.
-      //!
-      //! \param last_rule iterator pointing one beyond the last rule.
-      //!
-      //! \return Whether or not the word graph is compatible with the given
-      //! rules at each one of the given nodes.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \note This function ignores out of bound targets in \p wg (if any).
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed.
-      template <typename Node,
-                typename Iterator1,
-                typename Iterator2,
-                typename Iterator3>
-      [[nodiscard]] bool is_compatible_no_checks(WordGraph<Node> const& wg,
-                                                 Iterator1 first_node,
-                                                 Iterator2 last_node,
-                                                 Iterator3 first_rule,
-                                                 Iterator3 last_rule) {
-        return is_compatible_no_checks(WordGraphView<Node>(wg),
-                                       first_node,
-                                       last_node,
-                                       first_rule,
-                                       last_rule);
-      }
-
-      //! \brief Check if a word graph view is compatible with some relations at
-      //! a range of nodes.
-      //!
-      //! This function returns \c true if the word graph view \p wg is
-      //! compatible with the relations in the range \p first_rule to
-      //! \p last_rule at every node in the range from \p first_node to
-      //! \p last_node. This means that the paths with given sources that are
-      //! labelled by one side of a relation leads to the same node as the path
-      //! labelled by the other side of the relation.
-      //!
-      //! \tparam Node the type of the nodes of the WordGraphView.
-      //! \p wg.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
-      //!
-      //! \param wg the word graph view.
-      //!
-      //! \param first_node iterator pointing at the first node.
-      //!
-      //! \param last_node iterator pointing at one beyond the last node.
-      //!
-      //! \param first_rule iterator pointing to the first rule.
-      //!
-      //! \param last_rule iterator pointing one beyond the last rule.
-      //!
-      //! \return Whether or not the word graph view is compatible with the
-      //! given rules at each one of the given nodes.
-      //!
-      //! \throws LibsemigroupsException if any of the nodes in the range
-      //! between \p first_node and \p last_node does not belong to \p wg (i.e.
-      //! is greater than or equal to WordGraphView::number_of_nodes).
-      //!
-      //! \throws LibsemigroupsException if any of the rules in the range
-      //! between \p first_rule and \p last_rule contains an invalid label (i.e.
-      //! one greater than or equal to WordGraphView::out_degree).
-      //!
-      //! \note This function ignores out of bound targets in \p wg (if any).
-      template <typename Node,
-                typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename = std::enable_if_t<
-                    !std::is_same_v<std::decay_t<Iterator3>, word_type>>>
-      [[nodiscard]] bool is_compatible(WordGraphView<Node> const& wg,
-                                       Iterator1                  first_node,
-                                       Iterator2                  last_node,
-                                       Iterator3                  first_rule,
-                                       Iterator3                  last_rule);
-
-      //! \brief Check if a word graph is compatible with some relations at a
-      //! range of nodes.
-      //!
-      //! This function returns \c true if the word graph \p wg is compatible
-      //! with the relations in the range \p first_rule to \p last_rule at every
-      //! node in the range from \p first_node to \p last_node. This means that
-      //! the paths with given sources that are labelled by one side of a
-      //! relation leads to the same node as the path labelled by the other side
-      //! of the relation.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //! \p wg.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \param first_node iterator pointing at the first node.
-      //!
-      //! \param last_node iterator pointing at one beyond the last node.
-      //!
-      //! \param first_rule iterator pointing to the first rule.
-      //!
-      //! \param last_rule iterator pointing one beyond the last rule.
-      //!
-      //! \return Whether or not the word graph is compatible with the given
-      //! rules at each one of the given nodes.
-      //!
-      //! \throws LibsemigroupsException if any of the nodes in the range
-      //! between
-      //! \p first_node and \p last_node does not belong to \p wg (i.e. is
-      //! greater than or equal to WordGraph::number_of_nodes).
-      //!
-      //! \throws LibsemigroupsException if any of the rules in the range
-      //! between
-      //! \p first_rule and \p last_rule contains an invalid label (i.e. one
-      //! greater than or equal to WordGraph::out_degree).
-      //!
-      //! \note This function ignores out of bound targets in \p wg (if any).
-      template <typename Node,
-                typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename = std::enable_if_t<
-                    !std::is_same_v<std::decay_t<Iterator3>, word_type>>>
-      [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
-                                       Iterator1              first_node,
-                                       Iterator2              last_node,
-                                       Iterator3              first_rule,
-                                       Iterator3              last_rule) {
-        WordGraphView<Node> wgv(wg);
-        return is_compatible(wgv, first_node, last_node, first_rule, last_rule);
-      }
-
-      //! \brief Check if a word graph view is compatible with a pair of words
-      //! for a range of nodes.
-      //!
-      //! This function returns \c true if the word graph view \p wg is
-      //! compatible with the words \p lhs and \p rhs at every node in the range
-      //! from
-      //! \p first_node to \p last_node. This means that the paths with given
-      //! sources that are labelled by \p lhs leads to the same node as the path
-      //! labelled by \p rhs.
-      //!
-      //! \tparam Node the type of the nodes of the WordGraphView \p wg.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \param wg the word graph view.
-      //!
-      //! \param first_node iterator pointing at the first node.
-      //!
-      //! \param last_node iterator pointing at one beyond the last node.
-      //!
-      //! \param lhs the first rule.
-      //!
-      //! \param rhs the second rule.
-      //!
-      //! \return Whether or not the word graph view is compatible with the
-      //! given rules at each one of the given nodes.
-      //!
-      //! \note This function ignores out of bound targets in \p wg (if any).
-      //!
-      //! \warning This function does not check that its arguments are valid.
-      template <typename Node, typename Iterator1, typename Iterator2>
-      bool is_compatible_no_checks(WordGraphView<Node> const& wg,
-                                   Iterator1                  first_node,
-                                   Iterator2                  last_node,
-                                   word_type const&           lhs,
-                                   word_type const&           rhs);
-
-      //! \brief Check if a word graph is compatible with a pair of words for a
-      //! range of nodes.
-      //!
-      //! This function returns \c true if the word graph \p wg is compatible
-      //! with the words \p lhs and \p rhs at every node in the range from
-      //! \p first_node to \p last_node. This means that the paths with given
-      //! sources that are labelled by \p lhs leads to the same node as the path
-      //! labelled by \p rhs.
-      //!
-      //! \tparam Node the type of the nodes of the WordGraph \p wg.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \param first_node iterator pointing at the first node.
-      //!
-      //! \param last_node iterator pointing at one beyond the last node.
-      //!
-      //! \param lhs the first rule.
-      //!
-      //! \param rhs the second rule.
-      //!
-      //! \return Whether or not the word graph is compatible with the given
-      //! rules at each one of the given nodes.
-      //!
-      //! \note This function ignores out of bound targets in \p wg (if any).
-      //!
-      //! \warning This function does not check that its arguments are valid.
-      template <typename Node, typename Iterator1, typename Iterator2>
-      bool is_compatible_no_checks(WordGraph<Node> const& wg,
-                                   Iterator1              first_node,
-                                   Iterator2              last_node,
-                                   word_type const&       lhs,
-                                   word_type const&       rhs) {
-        return is_compatible_no_checks(
-            WordGraphView<Node>(wg), first_node, last_node, lhs, rhs);
-      }
-
-      //! \brief Check if a word graph view is compatible with a pair of words
-      //! for a range of nodes.
-      //!
-      //! This function returns \c true if the word graph view \p wg is
-      //! compatible with the words \p lhs and \p rhs at every node in the range
-      //! from
-      //! \p first_node to \p last_node. This means that the paths with given
-      //! sources that are labelled by \p lhs leads to the same node as the path
-      //! labelled by \p rhs.
-      //!
-      //! \tparam Node the type of the nodes of the WordGraphView \p wg.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \param wg the word graph view.
-      //!
-      //! \param first_node iterator pointing at the first node.
-      //!
-      //! \param last_node iterator pointing at one beyond the last node.
-      //!
-      //! \param lhs the first rule.
-      //!
-      //! \param rhs the second rule.
-      //!
-      //! \return Whether or not the word graph view is compatible with the
-      //! given rules at each one of the given nodes.
-      //!
-      //! \throws LibsemigroupsException if any of the nodes in the range
-      //! between
-      //! \p first_node and \p last_node does not belong to \p wg (i.e. is
-      //! greater than or equal to WordGraphView::number_of_nodes).
-      //!
-      //! \throws LibsemigroupsException if any of the rules in the range
-      //! between
-      //! \p first_rule and \p last_rule contains an invalid label (i.e. one
-      //! greater than or equal to WordGraphView::out_degree).
-      template <typename Node, typename Iterator1, typename Iterator2>
-      bool is_compatible(WordGraphView<Node> const& wg,
-                         Iterator1                  first_node,
-                         Iterator2                  last_node,
-                         word_type const&           lhs,
-                         word_type const&           rhs);
-
-      //! \brief Check if a word graph is compatible with a pair of words for a
-      //! range of nodes.
-      //!
-      //! This function returns \c true if the word graph \p wg is compatible
-      //! with the words \p lhs and \p rhs at every node in the range from
-      //! \p first_node to \p last_node. This means that the paths with given
-      //! sources that are labelled by \p lhs leads to the same node as the path
-      //! labelled by \p rhs.
-      //!
-      //! \tparam Node the type of the nodes of the WordGraph \p wg.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \param first_node iterator pointing at the first node.
-      //!
-      //! \param last_node iterator pointing at one beyond the last node.
-      //!
-      //! \param lhs the first rule.
-      //!
-      //! \param rhs the second rule.
-      //!
-      //! \return Whether or not the word graph is compatible with the given
-      //! rules at each one of the given nodes.
-      //!
-      //! \throws LibsemigroupsException if any of the nodes in the range
-      //! between
-      //! \p first_node and \p last_node does not belong to \p wg (i.e. is
-      //! greater than or equal to WordGraph::number_of_nodes).
-      //!
-      //! \throws LibsemigroupsException if any of the rules in the range
-      //! between
-      //! \p first_rule and \p last_rule contains an invalid label (i.e. one
-      //! greater than or equal to WordGraph::out_degree).
-      template <typename Node, typename Iterator1, typename Iterator2>
-      bool is_compatible(WordGraph<Node> const& wg,
-                         Iterator1              first_node,
-                         Iterator2              last_node,
-                         word_type const&       lhs,
-                         word_type const&       rhs) {
-        return is_compatible(
-            WordGraphView<Node>(wg), first_node, last_node, lhs, rhs);
-      }
-
-      /*
-      //! \brief Check if a word graph or word graph view is compatible with
-      //! some relations at a range of nodes.
-      //!
-      //! This function returns \c true if the word graph \p wg is compatible
-      //! with the relations in the range \p first_rule to \p last_rule at every
-      //! node in the range from \p first_node to \p last_node. This means that
-      //! the paths with given sources that are labelled by one side of a
-      //! relation leads to the same node as the path labelled by the other side
-      //! of the relation.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //! \p wg.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \param first_node iterator pointing at the first node.
-      //!
-      //! \param last_node iterator pointing at one beyond the last node.
-      //!
-      //! \param first_rule iterator pointing to the first rule.
-      //!
-      //! \param last_rule iterator pointing one beyond the last rule.
-      //!
-      //! \return Whether or not the word graph is compatible with the given
-      //! rules at each one of the given nodes.
-      //!
-      //! \throws LibsemigroupsException if any of the nodes in the range
-      //! between
-      //! \p first_node and \p last_node does not belong to \p wg (i.e. is
-      //! greater than or equal to WordGraph::number_of_nodes).
-      //!
-      //! \throws LibsemigroupsException if any of the rules in the range
-      //! between
-      //! \p first_rule and \p last_rule contains an invalid label (i.e. one
-      //! greater than or equal to WordGraph::out_degree).
-      //!
-      //! \note This function ignores out of bound targets in \p wg (if any).
-      TODO(0): Remove or delete
-      template <typename WordGraphType,
-                typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename = std::enable_if_t<
-                    std::is_same_v<WordGraphType,
-                                   WordGraph<typename
-                                   WordGraphType::node_type>>
-                    || std::is_same_v<
-                        WordGraphType,
-                        WordGraphView<typename WordGraphType::node_type>>>>
-      bool is_compatible(WordGraphType const& wg,
-                         Iterator1            first_node,
-                         Iterator2            last_node,
-                         Iterator3            first_rule,
-                         Iterator3            last_rule) {
-        if constexpr (std::is_same_v<
-                          WordGraphType,
-                          WordGraph<typename WordGraphType::node_type>>) {
-          return is_compatible(
-              static_cast<WordGraph<typename WordGraphType::node_type>
-              const&>(
-                  wg),
-              first_node,
-              last_node,
-              first_rule,
-              last_rule);
-        } else {
-          return is_compatible(
-              static_cast<
-                  WordGraphView<typename WordGraphType::node_type>
-                  const&>(wg),
-              first_node,
-              last_node,
-              first_rule,
-              last_rule);
-        }
-      }
-      */
-
-      //! \brief Check if every node in a range has exactly
-      //! WordGraphView::out_degree out-edges.
-      //!
-      //! This function returns \c true if every node in the range defined by
-      //! \p first_node and \p last_node is complete, meaning that every such
-      //! node is the source of an edge with every possible label.
-      //!
-      //! \tparam Node the type of the nodes in the word graph view.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \param wg the word graph view.
-      //!
-      //! \param first_node iterator pointing to the first node in the range.
-      //!
-      //! \param last_node iterator pointing one beyond the last node in the
-      //! range.
-      //!
-      //! \returns
-      //! Whether or not the word graph view is complete on the given range of
-      //! nodes.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
-      //! out_degree().
-      //!
-      //! \warning No checks are performed on the arguments.
-      template <typename Node, typename Iterator1, typename Iterator2>
-      [[nodiscard]] bool is_complete_no_checks(WordGraphView<Node> const& wg,
-                                               Iterator1 first_node,
-                                               Iterator2 last_node);
-
-      //! \brief Check if every node in a range has exactly
-      //! WordGraph::out_degree out-edges.
-      //!
-      //! This function returns \c true if every node in the range defined by
-      //! \p first_node and \p last_node is complete, meaning that every such
-      //! node is the source of an edge with every possible label.
-      //!
-      //! \tparam Node the type of the nodes in the word graph.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \param first_node iterator pointing to the first node in the range.
-      //!
-      //! \param last_node iterator pointing one beyond the last node in the
-      //! range.
-      //!
-      //! \returns
-      //! Whether or not the word graph is complete on the given range of nodes.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
-      //! out_degree().
-      //!
-      //! \warning No checks are performed on the arguments.
-      template <typename Node, typename Iterator1, typename Iterator2>
-      [[nodiscard]] bool is_complete_no_checks(WordGraph<Node> const& wg,
-                                               Iterator1 first_node,
-                                               Iterator2 last_node) {
-        return is_complete_no_checks(
-            WordGraphView<Node>(wg), first_node, last_node);
-      }
-
-      //! \brief Check if every node in a range has exactly
-      //! WordGraphView::out_degree out-edges.
-      //!
-      //! This function returns \c true if every node in the range defined by
-      //! \p first_node and \p last_node is complete, meaning that
-      //! every such node is the source of an edge with every possible label.
-      //!
-      //! \tparam Node the type of the nodes in the word graph view.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \param wg the word graph view.
-      //!
-      //! \param first_node iterator pointing to the first node in the range.
-      //!
-      //! \param last_node iterator pointing one beyond the last node in the
-      //! range.
-      //!
-      //! \returns Whether or not the word graph view is complete on the given
-      //! range of nodes.
-      //!
-      //! \throws LibsemigroupsException if any item in the range defined by
-      //! \p first_node and \p last_node is not a node of \p wg.
-      //!
-      //! \complexity
-      //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
-      //! out_degree().
-      template <typename Node, typename Iterator1, typename Iterator2>
-      [[nodiscard]] bool is_complete(WordGraphView<Node> const& wg,
-                                     Iterator1                  first_node,
-                                     Iterator2                  last_node);
-
-      //! \brief Check if every node in a range has exactly
-      //! WordGraph::out_degree out-edges.
-      //!
-      //! This function returns \c true if every node in the range defined by
-      //! \p first_node and \p last_node is complete, meaning that
-      //! every such node is the source of an edge with every possible label.
-      //!
-      //! \tparam Node the type of the nodes in the word graph.
-      //!
-      //! \tparam Iterator1 the type of \p first_node.
-      //!
-      //! \tparam Iterator2 the type of \p last_node.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \param first_node iterator pointing to the first node in the range.
-      //!
-      //! \param last_node iterator pointing one beyond the last node in the
-      //! range.
-      //!
-      //! \returns Whether or not the word graph is complete on the given
-      //! range of nodes.
-      //!
-      //! \throws LibsemigroupsException if any item in the range defined by
-      //! \p first_node and \p last_node is not a node of \p wg.
-      //!
-      //! \complexity
-      //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
-      //! out_degree().
-      template <typename Node, typename Iterator1, typename Iterator2>
-      [[nodiscard]] bool is_complete(WordGraph<Node> const& wg,
-                                     Iterator1              first_node,
-                                     Iterator2              last_node) {
-        return is_complete(WordGraphView<Node>(wg), first_node, last_node);
-      }
-
-      //! \brief Check if every node has exactly WordGraphView::out_degree
-      //! out-edges.
-      //!
-      //! This function returns \c true if a WordGraphView is complete, meaning
-      //! that every node is the source of an edge with every possible label.
-      //!
-      //! \tparam Node the type of the nodes in the word graph view.
-      //!
-      //! \param wg the word graph view.
-      //!
-      //! \returns
-      //! Whether or not the word graph view is complete.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
-      template <typename Node>
-      [[nodiscard]] bool
-      is_complete_no_checks(WordGraphView<Node> const& wg) noexcept {
-        return wg.number_of_edges_no_checks()
-               == wg.number_of_nodes_no_checks() * wg.out_degree_no_checks();
-      }
-
-      template <typename Node>
-      [[nodiscard]] bool is_complete(WordGraphView<Node> const& wg) {
-        wg.throw_if_invalid_view();
-        return is_complete_no_checks(wg);
-      }
-
-      //! \brief Check if every node has exactly WordGraph::out_degree
-      //! out-edges.
-      //!
-      //! This function returns \c true if a WordGraph is complete, meaning that
-      //! every node is the source of an edge with every possible label.
-      //!
-      //! \tparam Node the type of the nodes in the word graph.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \returns
-      //! Whether or not the word graph is complete.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
-      template <typename Node>
-      [[nodiscard]] bool is_complete(WordGraph<Node> const& wg) noexcept {
-        return is_complete(WordGraphView<Node>(wg));
-      }
-
-      //! \brief Check if a word graph view is connected.
-      //!
-      //! This function returns \c true if the word graph view \p wg is
-      //! connected and
-      //! \c false if it is not. A word graph view is *connected* if for every
-      //! pair of nodes \c s and \c t in the graph there exists a sequence
-      //! \f$u_0 = s,
-      //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
-      //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$
-      //! or
-      //! \f$(u_{i + 1}, a, u_i)\f$ is an edge in the graph.
-      //!
-      //! \tparam Node the type of the nodes in the word graph view.
-      //!
-      //! \param wg the word graph view.
-      //!
-      //! \returns
-      //! Whether or not the word graph view is connected.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \note If any target of any edge in the word graph view \p wg that is
-      //! out of bounds, then this is ignored by this function.
-      template <typename Node>
-      [[nodiscard]] bool is_connected(WordGraphView<Node> const& wg);
-
-      //! \brief Check if a word graph is connected.
-      //!
-      //! This function returns \c true if the word graph \p wg is connected and
-      //! \c false if it is not. A word graph is *connected* if for every pair
-      //! of nodes \c s and \c t in the graph there exists a sequence \f$u_0 =
-      //! s,
-      //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
-      //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$
-      //! or
-      //! \f$(u_{i + 1}, a, u_i)\f$ is an edge in the graph.
-      //!
-      //! \tparam Node the type of the nodes in the word graph.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \returns
-      //! Whether or not the word graph is connected.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      template <typename Node>
-      [[nodiscard]] bool is_connected(WordGraph<Node> const& wg) {
-        return is_connected(WordGraphView<Node>(wg));
-      }
-
-      //! \brief Check if there is a path from one node to another.
-      //!
-      //! This function returns \c true if there is a path from the node
-      //! \p source to the node \p target in the word graph view \p wg.
-      //!
-      //! \tparam Node1 the type of the nodes in the WordGraphView.
-      //!
-      //! \tparam Node 2 the types of \p source and \p target (must
-      //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg the WordGraphView object to check.
-      //! \param source the source node.
-      //! \param target the source node.
-      //!
-      //! \returns
-      //! Whether or not the node \p target is reachable from the node \p source
-      //! in the word graph view \p wg.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraphView \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraphView objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the WordGraphView::out_degree.
-      //!
-      //! \note
-      //! If \p source and \p target are equal, then, by convention, we consider
-      //! \p target to be reachable from \p source, via the empty path.
-      //!
-      //! \note This function ignores out of bound targets in \p wg (if any).
-      //!
-      //! \warning No checks are performed on the arguments.
-      //!
-      //! \par Example
-      //! \code
-      //! WordGraph<size_t> g;
-      //! g.add_nodes(4);
-      //! g.add_to_out_degree(1);
-      //! g.target(0, 1, 0);
-      //! g.target(1, 0, 0);
-      //! g.target(2, 3, 0);
-      //! WordGraphView<size_t> wg(g);
-      //! word_graph::is_reachable_no_checks(wg, 0, 1); // returns true
-      //! word_graph::is_reachable_no_checks(wg, 1, 0); // returns true
-      //! word_graph::is_reachable_no_checks(wg, 1, 2); // returns false
-      //! word_graph::is_reachable_no_checks(wg, 2, 3); // returns true
-      //! word_graph::is_reachable_no_checks(wg, 3, 2); // returns false
-      //! \endcode
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool is_reachable_no_checks(WordGraphView<Node1> const& wg,
-                                                Node2 source,
-                                                Node2 target);
-
-      //! \brief Check if there is a path from one node to another.
-      //!
-      //! This function returns \c true if there is a path from the nod
-      //! \p source to the node \p target in the word graph \p wg.
-      //!
-      //! \tparam Node1 the type of the nodes in the WordGraph.
-      //!
-      //! \tparam Node 2 the types of \p source and \p target (must
-      //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg the WordGraph object to check.
-      //! \param source the source node.
-      //! \param target the source node.
-      //!
-      //! \returns
-      //! Whether or not the node \p target is reachable from the node \p source
-      //! in the word graph \p wg.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraph objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the WordGraph::out_degree.
-      //!
-      //! \note
-      //! If \p source and \p target are equal, then, by convention, we consider
-      //! \p target to be reachable from \p source, via the empty path.
-      //!
-      //! \note This function ignores out of bound targets in \p wg (if any).
-      //!
-      //! \warning No checks are performed on the arguments.
-      //!
-      //! \par Example
-      //! \code
-      //! WordGraph<size_t> wg;
-      //! wg.add_nodes(4);
-      //! wg.add_to_out_degree(1);
-      //! wg.target(0, 1, 0);
-      //! wg.target(1, 0, 0);
-      //! wg.target(2, 3, 0);
-      //! word_graph::is_reachable_no_checks(wg, 0, 1); // returns true
-      //! word_graph::is_reachable_no_checks(wg, 1, 0); // returns true
-      //! word_graph::is_reachable_no_checks(wg, 1, 2); // returns false
-      //! word_graph::is_reachable_no_checks(wg, 2, 3); // returns true
-      //! word_graph::is_reachable_no_checks(wg, 3, 2); // returns false
-      //! \endcode
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool is_reachable_no_checks(WordGraph<Node1> const& wg,
-                                                Node2                   source,
-                                                Node2 target) {
-        return is_reachable_no_checks(WordGraphView<Node1>(wg), source, target);
-      }
-
-      //! \brief Check if there is a path from one node to another.
-      //!
-      //! This function returns \c true if there is a path from the node
-      //! \p source to the node \p target in the word graph view \p wg.
-      //!
-      //! \tparam Node1 the type of the nodes in the WordGraphView.
-      //!
-      //! \tparam Node 2 the types of \p source and \p target (must
-      //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg the WordGraphView object to check.
-      //! \param source the source node.
-      //! \param target the source node.
-      //!
-      //! \returns
-      //! Whether or not the node \p target is reachable from the node \p source
-      //! in the word graph view \p wg.
-      //!
-      //! \throws LibsemigroupsException if \p source or \p target is out of
-      //! bounds.
-      //! \throws LibsemigroupsException if any target in \p wg is out of
-      //! bounds.
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraphView \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraphView objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the WordGraphView::out_degree.
-      //!
-      //! \note
-      //! If \p source and \p target are equal, then, by convention, we consider
-      //! \p target to be reachable from \p source, via the empty path.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool is_reachable(WordGraphView<Node1> const& wg,
-                                      Node2                       source,
-                                      Node2                       target);
-
-      //! \brief Check if there is a path from one node to another.
-      //!
-      //! This function returns \c true if there is a path from the node
-      //! \p source to the node \p target in the word graph \p wg.
-      //!
-      //! \tparam Node1 the type of the nodes in the WordGraph.
-      //!
-      //! \tparam Node 2 the types of \p source and \p target (must
-      //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
-      //!
-      //! \param wg the WordGraph object to check.
-      //! \param source the source node.
-      //! \param target the source node.
-      //!
-      //! \returns
-      //! Whether or not the node \p target is reachable from the node \p source
-      //! in the word graph \p wg.
-      //!
-      //! \throws LibsemigroupsException if \p source or \p target is out of
-      //! bounds.
-      //! \throws LibsemigroupsException if any target in \p wg is out of
-      //! bounds.
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraph objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the WordGraph::out_degree.
-      //!
-      //! \note
-      //! If \p source and \p target are equal, then, by convention, we consider
-      //! \p target to be reachable from \p source, via the empty path.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool is_reachable(WordGraph<Node1> const& wg,
-                                      Node2                   source,
-                                      Node2                   target) {
-        return is_reachable(WordGraphView<Node1>(wg), source, target);
-      }
-
-      //! \brief Check if every node is reachable from some node.
-      //!
-      //! This function returns \c true if there exists a node in \p wg from
-      //! which every other node is reachable; and \c false otherwise.
-      //! A word graph view is *strictly cyclic* if there exists a node \f$v\f$
-      //! from which every node is reachable (including \f$v\f$). There must be
-      //! a path of length at least \f$1\f$ from the original node \f$v\f$ to
-      //! itself (i.e. \f$v\f$ is not considered to be reachable from itself by
-      //! default).
-      //!
-      //! \tparam Node the type of the nodes of the WordGraphView.
-      //!
-      //! \param wg the WordGraphView object to check.
-      //!
-      //! \returns
-      //! A value of type `bool`.
-      //!
-      //! \throws LibsemigroupsException if any target in \p wg is out of
-      //! bounds.
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraphView \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraphView objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the WordGraphView::out_degree.
-      //!
-      //! \par Example
-      //! \code
-      //! auto wg = make<WordGraph<uint8_t>>(
-      //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-      //! word_graph::is_strictly_cyclic(WordGraphView<uint8_t>(wg));  //
-      //! returns false \endcode
-      // TODO(1) should have a version that returns the node that everything is
-      // reachable from
-      template <typename Node>
-      [[nodiscard]] bool is_strictly_cyclic(WordGraphView<Node> const& wg);
-
-      //! \brief Check if every node is reachable from some node.
-      //!
-      //! This function returns \c true if there exists a node in \p wg from
-      //! which every other node is reachable; and \c false otherwise.
-      //! A word graph is *strictly cyclic* if there exists a node \f$v\f$ from
-      //! which every node is reachable (including \f$v\f$). There must be a
-      //! path of length at least \f$1\f$ from the original node \f$v\f$ to
-      //! itself (i.e. \f$v\f$ is not considered to be reachable from itself by
-      //! default).
-      //!
-      //! \tparam Node the type of the nodes of the WordGraph.
-      //!
-      //! \param wg the WordGraph object to check.
-      //!
-      //! \returns
-      //! A value of type `bool`.
-      //!
-      //! \throws LibsemigroupsException if any target in \p wg is out of
-      //! bounds.
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraph objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the WordGraph::out_degree.
-      //!
-      //! \par Example
-      //! \code
-      //! auto wg = make<WordGraph<uint8_t>>(
-      //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-      //! word_graph::is_strictly_cyclic(wg);  // returns false
-      //! \endcode
-      // TODO(1) should have a version that returns the node that everything is
-      // reachable from
-      template <typename Node>
-      [[nodiscard]] bool is_strictly_cyclic(WordGraph<Node> const& wg) {
-        return is_strictly_cyclic(WordGraphView<Node>(wg));
-      }
-
-      //! \brief Returns the last node on the path labelled by a word and an
-      //! iterator to the position in the word reached.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //! \tparam Iterator the type of the iterators into a word.
-      //!
-      //! \param wg a word graph view.
-      //! \param source the source node.
-      //! \param first iterator into a word.
-      //! \param last iterator into a word.
-      //!
-      //! \returns A pair consisting of the last node reached and an iterator
-      //! pointing at the last letter in the word labelling an edge.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! At worst the distance from \p first to \p last.
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed, it is
-      //! assumed that \p source is a node in the word graph view \p wg; and
-      //! that the letters in the word described by \p first and \p last belong
-      //! to the range \c 0 to WordGraphView::out_degree.
-      template <typename Node1, typename Node2, typename Iterator>
-      [[nodiscard]] std::pair<Node1, Iterator>
-      last_node_on_path_no_checks(WordGraphView<Node1> const& wg,
-                                  Node2                       source,
-                                  Iterator                    first,
-                                  Iterator                    last) noexcept;
-
-      //! \brief Returns the last node on the path labelled by a word and an
-      //! iterator to the position in the word reached.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //! \tparam Iterator the type of the iterators into a word.
-      //!
-      //! \param wg a word graph.
-      //! \param source the source node.
-      //! \param first iterator into a word.
-      //! \param last iterator into a word.
-      //!
-      //! \returns A pair consisting of the last node reached and an iterator
-      //! pointing at the last letter in the word labelling an edge.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! At worst the distance from \p first to \p last.
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed, it is
-      //! assumed that \p source is a node in the word graph \p wg; and that the
-      //! letters in the word described by \p first and \p last belong to the
-      //! range \c 0 to WordGraph::out_degree.
-      template <typename Node1, typename Node2, typename Iterator>
-      [[nodiscard]] std::pair<Node1, Iterator>
-      last_node_on_path_no_checks(WordGraph<Node1> const& wg,
-                                  Node2                   source,
-                                  Iterator                first,
-                                  Iterator                last) noexcept {
-        return last_node_on_path_no_checks(
-            WordGraphView<Node1>(wg), source, first, last);
-      }
-
-      //! \brief Returns the last node on the path labelled by a word and an
-      //! iterator to the position in the word reached.
-      //!
-      //! \tparam Node1 the node type of the word graph view.
-      //! \tparam Node2 the type of the node \p source.
-      //! \tparam Iterator the type of the iterators into a word.
-      //!
-      //! \param wg a word graph view.
-      //! \param source the source node.
-      //! \param first iterator into a word.
-      //! \param last iterator into a word.
-      //!
-      //! \returns A pair consisting of the last node reached and an iterator
-      //! pointing at the last letter in the word labelling an edge.
-      //!
-      //! \throws LibsemigroupsException if \p source is out of bounds.
-      //!
-      //! \complexity
-      //! At worst the distance from \p first to \p last.
-      //!
-      //! \note If any value in \p wg or in the word described by \p first and
-      //! \p last is out of bounds (greater than or equal to
-      //! WordGraphView::number_of_nodes), the path labelled by the word exits
-      //! the word graph view, which is reflected in the result value of this
-      //! function, but does not cause an exception to be thrown.
-      template <typename Node1, typename Node2, typename Iterator>
-      [[nodiscard]] std::pair<Node1, Iterator>
-      last_node_on_path(WordGraphView<Node1> const& wg,
-                        Node2                       source,
-                        Iterator                    first,
-                        Iterator                    last);
-
-      //! \brief Returns the last node on the path labelled by a word and an
-      //! iterator to the position in the word reached.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //! \tparam Iterator the type of the iterators into a word.
-      //!
-      //! \param wg a word graph.
-      //! \param source the source node.
-      //! \param first iterator into a word.
-      //! \param last iterator into a word.
-      //!
-      //! \returns A pair consisting of the last node reached and an iterator
-      //! pointing at the last letter in the word labelling an edge.
-      //!
-      //! \throws LibsemigroupsException if \p source is out of bounds.
-      //!
-      //! \complexity
-      //! At worst the distance from \p first to \p last.
-      //!
-      //! \note If any value in \p wg or in the word described by \p first and
-      //! \p last is out of bounds (greater than or equal to
-      //! WordGraph::number_of_nodes), the path labelled by the word exits the
-      //! word graph, which is reflected in the result value of this function,
-      //! but does not cause an exception to be thrown.
-      template <typename Node1, typename Node2, typename Iterator>
-      [[nodiscard]] std::pair<Node1, Iterator>
-      last_node_on_path(WordGraph<Node1> const& wg,
-                        Node2                   source,
-                        Iterator                first,
-                        Iterator                last) {
-        return last_node_on_path(WordGraphView<Node1>(wg), source, first, last);
-      }
-
-      //! \brief Returns the last node on the path labelled by a word and an
-      //! iterator to the position in the word reached.
-      //!
-      //! \tparam Node1 the node type of the word graph view.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg a word graph view.
-      //! \param source the source node.
-      //! \param w the word.
-      //!
-      //! \returns A pair consisting of the last node reached and an iterator
-      //! pointing at the last letter in the word labelling an edge.
-      //!
-      //! \complexity
-      //! At worst the distance from `w.size()`.
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed, it is
-      //! assumed that \p source is a node in the word graph view \p wg; and
-      //! that the letters in the word described by \p first and \p last belong
-      //! to the range \c 0 to WordGraphView::out_degree.
-      template <typename Node1, typename Node2>
-      std::pair<Node1, word_type::const_iterator>
-      last_node_on_path_no_checks(WordGraphView<Node1> const& wg,
-                                  Node2                       source,
-                                  word_type const&            w);
-
-      //! \brief Returns the last node on the path labelled by a word and an
-      //! iterator to the position in the word reached.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg a word graph.
-      //! \param source the source node.
-      //! \param w the word.
-      //!
-      //! \returns A pair consisting of the last node reached and an iterator
-      //! pointing at the last letter in the word labelling an edge.
-      //!
-      //! \complexity
-      //! At worst the distance from `w.size()`.
-      //!
-      //! \warning
-      //! No checks on the arguments of this function are performed, it is
-      //! assumed that \p source is a node in the word graph \p wg; and that the
-      //! letters in the word described by \p first and \p last belong to the
-      //! range \c 0 to WordGraph::out_degree.
-      template <typename Node1, typename Node2>
-      std::pair<Node1, word_type::const_iterator>
-      last_node_on_path_no_checks(WordGraph<Node1> const& wg,
-                                  Node2                   source,
-                                  word_type const&        w) {
-        return last_node_on_path_no_checks(WordGraphView<Node1>(wg), source, w);
-      }
-
-      //! \brief Returns the last node on the path labelled by a word and an
-      //! iterator to the position in the word reached.
-      //!
-      //! \tparam Node1 the node type of the word graph view.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg a word graph view.
-      //! \param source the source node.
-      //! \param w the word.
-      //!
-      //! \returns A pair consisting of the last node reached and an iterator
-      //! pointing at the last letter in the word labelling an edge.
-      //!
-      //! \complexity
-      //! At worst the distance from `w.size()`.
-      //!
-      //! \note If any value in \p wg or in the word described by \p first and
-      //! \p last is out of bounds (greater than or equal to
-      //! WordGraphView::number_of_nodes), the path labelled by the word exits
-      //! the word graph view, which is reflected in the result value of this
-      //! function, but does not cause an exception to be thrown.
-      template <typename Node1, typename Node2>
-      std::pair<Node1, word_type::const_iterator>
-      last_node_on_path(WordGraphView<Node1> const& wg,
-                        Node2                       source,
-                        word_type const&            w);
-
-      //! \brief Returns the last node on the path labelled by a word and an
-      //! iterator to the position in the word reached.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg a word graph.
-      //! \param source the source node.
-      //! \param w the word.
-      //!
-      //! \returns A pair consisting of the last node reached and an iterator
-      //! pointing at the last letter in the word labelling an edge.
-      //!
-      //! \complexity
-      //! At worst the distance from `w.size()`.
-      //!
-      //! \note If any value in \p wg or in the word described by \p first and
-      //! \p last is out of bounds (greater than or equal to
-      //! WordGraph::number_of_nodes), the path labelled by the word exits the
-      //! word graph, which is reflected in the result value of this function,
-      //! but does not cause an exception to be thrown.
-      template <typename Node1, typename Node2>
-      std::pair<Node1, word_type::const_iterator>
-      last_node_on_path(WordGraph<Node1> const& wg,
-                        Node2                   source,
-                        word_type const&        w) {
-        return last_node_on_path(WordGraphView<Node1>(wg), source, w);
-      }
-
-      //! \brief Returns the std::unordered_set of nodes reachable from a given
-      //! node in a word graph view.
-      //!
-      //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph view \p wg that are reachable from \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph view.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph view.
-      //! \param source the source node.
-      //!
-      //! \returns A std::unordered_set consisting of all the nodes in the word
-      //! graph view \p wg that are reachable from \p source.
-      //!
-      //! \throws LibsemigroupsException if \p source is out of bounds (greater
-      //! than or equal to WordGraphView::number_of_nodes).
-      //!
-      //! \note If any target of any edge in the word graph view \p wg that is
-      //! out of bounds, then this is ignored by this function.
-      // TODO(1) tests
-      // TODO(1) version where std::unordered_set is passed by reference, or
-      // make this a class that stores its stack and unordered_set, not clear
-      // why we'd single out the unordered_set to be passed by reference.
-      // TODO(2) version which is an iterator i.e. returns an iterator or range
-      // object that allows use to step through the nodes reachable from a given
-      // node
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::unordered_set<Node1>
-      nodes_reachable_from(WordGraphView<Node1> const& wg, Node2 source);
-
-      //! \brief Returns the std::unordered_set of nodes reachable from a given
-      //! node in a word graph.
-      //!
-      //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph \p wg that are reachable from \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns A std::unordered_set consisting of all the nodes in the word
-      //! graph \p wg that are reachable from \p source.
-      //!
-      //! \throws LibsemigroupsException if \p source is out of bounds (greater
-      //! than or equal to WordGraph::number_of_nodes).
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      // TODO(1) tests
-      // TODO(1) version where std::unordered_set is passed by reference, or
-      // make this a class that stores its stack and unordered_set, not clear
-      // why we'd single out the unordered_set to be passed by reference.
-      // TODO(2) version which is an iterator i.e. returns an iterator or range
-      // object that allows use to step through the nodes reachable from a given
-      // node
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::unordered_set<Node1>
-      nodes_reachable_from(WordGraph<Node1> const& wg, Node2 source) {
-        return nodes_reachable_from(WordGraphView<Node1>(wg), source);
-      }
-
-      //! \brief Returns the std::unordered_set of nodes that can reach a given
-      //! node in a word graph.
-      //!
-      //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph \p wg that can reach \p target. This function can be
-      //! thought of like an inverse of `nodes_reachable_from`, in the sense
-      //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
-      //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p target.
-      //!
-      //! \param wg the word graph.
-      //! \param target the target node.
-      //!
-      //! \returns A std::unordered_set consisting of all the nodes in the word
-      //! graph \p wg that can reach \p target.
-      //!
-      //! \throws LibsemigroupsException if \p target is out of bounds (greater
-      //! than or equal to WordGraphView::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::unordered_set<Node1>
-      ancestors_of(WordGraphView<Node1> const& wg, Node2 target);
-
-      //! \brief Returns the std::unordered_set of nodes that can reach a given
-      //! node in a word graph.
-      //!
-      //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph \p wg that can reach \p target. This function can be
-      //! thought of like an inverse of `nodes_reachable_from`, in the sense
-      //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
-      //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p target.
-      //!
-      //! \param wg the word graph.
-      //! \param target the target node.
-      //!
-      //! \returns A std::unordered_set consisting of all the nodes in the word
-      //! graph \p wg that can reach \p target.
-      //!
-      //! \throws LibsemigroupsException if \p target is out of bounds (greater
-      //! than or equal to WordGraph::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::unordered_set<Node1>
-      ancestors_of(WordGraph<Node1> const& wg, Node2 target) {
-        return ancestors_of(WordGraphView<Node1>(wg), target);
-      }
-
-      //! \brief Returns the std::unordered_set of nodes reachable from a given
-      //! node in a word graph.
-      //!
-      //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph \p wg that are reachable from \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns A std::unordered_set consisting of all the nodes in the word
-      //! graph \p wg that are reachable from \p source.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p source is a node of \p wg (i.e. less than
-      //! WordGraph::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::unordered_set<Node1>
-      nodes_reachable_from_no_checks(WordGraph<Node1> const& wg, Node2 source);
-
-      //! \brief Returns the std::unordered_set of nodes that can reach a given
-      //! node in a word graph.
-      //!
-      //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph \p wg that can reach \p target. This function can be
-      //! thought of like an inverse of `nodes_reachable_from`, in the sense
-      //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
-      //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p target.
-      //!
-      //! \param wg the word graph.
-      //! \param target the target node.
-      //!
-      //! \returns A std::unordered_set consisting of all the nodes in the word
-      //! graph \p wg that can reach \p target.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p target is a node of \p wg (i.e. less than
-      //! WordGraphView::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::unordered_set<Node1>
-      ancestors_of_no_checks(WordGraphView<Node1> const& wg, Node2 target);
-
-      //! \brief Returns the std::unordered_set of nodes that can reach a given
-      //! node in a word graph.
-      //!
-      //! This function returns a std::unordered_set consisting of all the nodes
-      //! in the word graph \p wg that can reach \p target. This function can be
-      //! thought of like an inverse of `nodes_reachable_from`, in the sense
-      //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
-      //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p target.
-      //!
-      //! \param wg the word graph.
-      //! \param target the target node.
-      //!
-      //! \returns A std::unordered_set consisting of all the nodes in the word
-      //! graph \p wg that can reach \p target.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p target is a node of \p wg (i.e. less than
-      //! WordGraph::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::unordered_set<Node1>
-      ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 target) {
-        return ancestors_of_no_checks(WordGraphView<Node1>(wg), target);
-      }
-
-      //! \brief Returns the number of nodes reachable from a given node in a
-      //! word graph view.
-      //!
-      //! This function returns the number of nodes in the word graph view \p wg
-      //! that are reachable from \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns The number of nodes in the word graph \p wg that are
-      //! reachable from \p source.
-      //!
-      //! \throws LibsemigroupsException if \p source is out of bounds (greater
-      //! than or equal to WordGraphView::number_of_nodes).
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] size_t
-      number_of_nodes_reachable_from(WordGraphView<Node1> const& wg,
-                                     Node2                       source) {
-        return nodes_reachable_from(wg, source).size();
-      }
-
-      //! \brief Returns the number of nodes reachable from a given node in a
-      //! word graph.
-      //!
-      //! This function returns the number of nodes in the word graph \p wg that
-      //! are reachable from \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns The number of nodes in the word graph \p wg that are
-      //! reachable from \p source.
-      //!
-      //! \throws LibsemigroupsException if \p source is out of bounds (greater
-      //! than or equal to WordGraph::number_of_nodes).
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] size_t
-      number_of_nodes_reachable_from(WordGraph<Node1> const& wg, Node2 source) {
-        return number_of_nodes_reachable_from(WordGraphView<Node1>(wg), source);
-      }
-
-      //! \brief Returns the number of nodes reachable from a given node in a
-      //! word graph.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns The number of nodes in the word graph \p wg that are
-      //! reachable from \p source.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p source is a node of \p wg (i.e. less than
-      //! WordGraphView::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] size_t
-      number_of_nodes_reachable_from_no_checks(WordGraphView<Node1> const& wg,
-                                               Node2 source) {
-        return nodes_reachable_from_no_checks(wg, source).size();
-      }
-
-      //! \brief Returns the number of nodes reachable from a given node in a
-      //! word graph.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the word graph.
-      //! \param source the source node.
-      //!
-      //! \returns The number of nodes in the word graph \p wg that are
-      //! reachable from \p source.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p source is a node of \p wg (i.e. less than
-      //! WordGraph::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] size_t
-      number_of_nodes_reachable_from_no_checks(WordGraph<Node1> const& wg,
-                                               Node2                   source) {
-        return number_of_nodes_reachable_from_no_checks(
-            WordGraphView<Node1>(wg), source);
-      }
-
-      //! \brief Construct a random connected acyclic word graph with given
-      //! number of nodes, and out-degree.
-      //!
-      //! This function constructs a random acyclic connected word graph with
-      //! \p number_of_nodes nodes, and out-degree \p out_degree. This function
-      //! implements the Markov chain algorithm given in \cite Carnino2011.
-      //!
-      //! \param number_of_nodes the number of nodes.
-      //! \param out_degree the out-degree of every node.
-      //! \param mt a std::mt19937 used as a random source (defaults to:
-      //! std::mt19937(std::random_device()())).
-      //!
-      //! \returns A random connected acyclic word graph.
-      //!
-      //! \throws LibsemigroupsException if any of the following hold:
-      //! * \p number_of_nodes is less than \c 2
-      //! * \p out_degree is less than \c 2
-      //!
-      //! \par Complexity
-      //! The complexity of the implementation is \f$O(n^2)\f$ where \p n is the
-      //! number of nodes.
-      template <typename Node>
-      WordGraph<Node> random_acyclic(size_t       number_of_nodes,
-                                     size_t       out_degree,
-                                     std::mt19937 mt
-                                     = std::mt19937(std::random_device()()));
-
-      //! \brief Replace the contents of a Forest by a spanning tree of the
-      //! nodes reachable from a given node in a word graph.
-      //!
-      //! This function replaces the content of the Forest \p f with a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p root.
-      //!
-      //! \param wg the word graph.
-      //! \param root the source node.
-      //! \param f the Forest object to hold the result.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p root is a node of \p wg (i.e. less than
-      //! WordGraphView::number_of_nodes).
-      template <typename Node1, typename Node2>
-      void spanning_tree_no_checks(WordGraphView<Node1> const& wg,
-                                   Node2                       root,
-                                   Forest&                     f);
-
-      //! \brief Replace the contents of a Forest by a spanning tree of the
-      //! nodes reachable from a given node in a word graph.
-      //!
-      //! This function replaces the content of the Forest \p f with a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p root.
-      //!
-      //! \param wg the word graph.
-      //! \param root the source node.
-      //! \param f the Forest object to hold the result.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p root is a node of \p wg (i.e. less than
-      //! WordGraph::number_of_nodes).
-      template <typename Node1, typename Node2>
-      void spanning_tree_no_checks(WordGraph<Node1> const& wg,
-                                   Node2                   root,
-                                   Forest&                 f) {
-        return spanning_tree_no_checks(WordGraphView<Node1>(wg), root, f);
-      }
-
-      //! \brief Replace the contents of a Forest by a spanning tree of the
-      //! nodes reachable from a given node in a word graph.
-      //!
-      //! This function replaces the content of the Forest \p f with a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p root.
-      //!
-      //! \param wg the word graph.
-      //! \param root the source node.
-      //! \param f the Forest object to hold the result.
-      //!
-      //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
-      //! greater than or equal to WordGraphView::number_of_nodes.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      template <typename Node1, typename Node2>
-      void spanning_tree(WordGraphView<Node1> const& wg, Node2 root, Forest& f);
-
-      //! \brief Replace the contents of a Forest by a spanning tree of the
-      //! nodes reachable from a given node in a word graph.
-      //!
-      //! This function replaces the content of the Forest \p f with a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p root.
-      //!
-      //! \param wg the word graph.
-      //! \param root the source node.
-      //! \param f the Forest object to hold the result.
-      //!
-      //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
-      //! greater than or equal to WordGraph::number_of_nodes.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      template <typename Node1, typename Node2>
-      void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f) {
-        spanning_tree(WordGraphView<Node1>(wg), root, f);
-      }
-
-      //! \brief Returns a Forest containing a spanning tree of the nodes
-      //! reachable from a given node in a word graph.
-      //!
-      //! This function returns a Forest containing a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p root.
-      //!
-      //! \param wg the word graph.
-      //! \param root the source node.
-      //!
-      //! \returns A Forest object containing a spanning tree.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p root is a node of \p wg (i.e. less than
-      //! WordGraphView::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] Forest
-      spanning_tree_no_checks(WordGraphView<Node1> const& wg, Node2 root);
-
-      //! \brief Returns a Forest containing a spanning tree of the nodes
-      //! reachable from a given node in a word graph.
-      //!
-      //! This function returns a Forest containing a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p root.
-      //!
-      //! \param wg the word graph.
-      //! \param root the source node.
-      //!
-      //! \returns A Forest object containing a spanning tree.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      //!
-      //! \warning The arguments are not checked, and in particular it is
-      //! assumed that \p root is a node of \p wg (i.e. less than
-      //! WordGraph::number_of_nodes).
-      template <typename Node1, typename Node2>
-      [[nodiscard]] Forest spanning_tree_no_checks(WordGraph<Node1> const& wg,
-                                                   Node2 root) {
-        return spanning_tree_no_checks(WordGraphView<Node1>(wg), root);
-      }
-
-      //! \brief Returns a Forest containing a spanning tree of the nodes
-      //! reachable from a given node in a word graph.
-      //!
-      //! This function returns a Forest containing a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p root.
-      //!
-      //! \param wg the word graph.
-      //! \param root the source node.
-      //!
-      //! \returns A Forest object containing a spanning tree.
-      //!
-      //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
-      //! greater than or equal to WordGraphView::number_of_nodes.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] Forest spanning_tree(WordGraphView<Node1> const& wg,
-                                         Node2                       root);
-
-      //! \brief Returns a Forest containing a spanning tree of the nodes
-      //! reachable from a given node in a word graph.
-      //!
-      //! This function returns a Forest containing a spanning
-      //! tree of the nodes reachable from \p root in the word graph \p wg.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p root.
-      //!
-      //! \param wg the word graph.
-      //! \param root the source node.
-      //!
-      //! \returns A Forest object containing a spanning tree.
-      //!
-      //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
-      //! greater than or equal to WordGraph::number_of_nodes.
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] Forest spanning_tree(WordGraph<Node1> const& wg,
-                                         Node2                   root) {
-        return spanning_tree(WordGraphView<Node1>(wg), root);
-      }
-
-      //! \brief Standardizes a word graph in-place.
-      //!
-      //! This function standardizes the word graph \p wg according to the
-      //! reduction order specified by \p val, and replaces the contents of the
-      //! Forest \p f with a spanning tree rooted at \c 0 for the node reachable
-      //! from \c 0. The spanning tree corresponds to the order \p val.
-      //!
-      //! \tparam Graph the type of the word graph \p wg.
-      //!
-      //! \param wg the word graph.
-      //! \param f the Forest object to store the spanning tree.
-      //! \param val the order to use for standardization.
-      //!
-      //! \returns
-      //! This function returns \c true if the word graph \p wg is modified by
-      //! this function (i.e. it was not standardized already), and \c false
-      //! otherwise.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      // Not nodiscard because sometimes we just don't want the output
-      template <typename Graph>
-      bool standardize(Graph& wg, Forest& f, Order val);
-
-      //! \brief Standardizes a word graph in-place.
-      //!
-      //! This function standardizes the word graph \p wg according to the
-      //! reduction order specified by \p val, and returns a Forest object
-      //! containing a spanning tree rooted at \c 0 for the node reachable from
-      //! \c 0. The spanning tree corresponds to the order \p val.
-      //!
-      //! \tparam Graph the type of the word graph \p wg.
-      //!
-      //! \param wg the word graph.
-      //! \param val the order to use for standardization.
-      //!
-      //! \returns
-      //! A std::pair the first entry of which is \c true if the word graph
-      //! \p wg is modified by this function (i.e. it was not standardized
-      //! already), and
-      //! \c false otherwise. The second entry is a Forest object containing a
-      //! spanning tree for \p wg.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \note If any target of any edge in the word graph \p wg that is out of
-      //! bounds, then this is ignored by this function.
-      // Not nodiscard because sometimes we just don't want the output
-      template <typename Graph>
-      std::pair<bool, Forest> standardize(Graph& wg, Order val = Order::lenlex);
-
-      //! \brief Check if a word graph is standardized.
-      //!
-      //! This function checks if the word graph \p wg is standardized according
-      //! to the reduction order specified by \p val.
-      //!
-      //! \tparam Node the type of the node in \p wg.
-      //!
-      //! \param wg the word graph to check.
-      //! \param val the order to use for standardization check (defaults to
-      //! Order::lenlex).
-      //!
-      //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-      //! Order::lenlex, Order::lex or Order::rpo.
-      //!
-      //! \sa
-      //! standardize.
-      template <typename Node>
-      bool is_standardized(WordGraphView<Node> const& wg,
-                           Order                      val = Order::lenlex);
-
-      //! \brief Check if a word graph is standardized.
-      //!
-      //! This function checks if the word graph \p wg is standardized according
-      //! to the reduction order specified by \p val.
-      //!
-      //! \tparam Node the type of the node in \p wg.
-      //!
-      //! \param wg the word graph to check.
-      //! \param val the order to use for standardization check (defaults to
-      //! Order::lenlex).
-      //!
-      //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-      //! Order::lenlex, Order::lex or Order::rpo.
-      //!
-      //! \sa
-      //! standardize.
-      template <typename Node>
-      bool is_standardized(WordGraph<Node> const& wg,
-                           Order                  val = Order::lenlex) {
-        return is_standardized(WordGraphView<Node>(wg), val);
-      }
-
-      //! \brief Returns the nodes of the word graph in topological order (see
-      //! below) if possible.
-      //!
-      //! If it is not empty, the returned vector has the property that if an
-      //! edge from a node \c n points to a node \c m, then \c m occurs before
-      //! \c n in the vector.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \returns
-      //! A std::vector of Node types that contains the nodes of
-      //! \p wg in topological order (if possible) and is otherwise empty.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraph objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the WordGraphView::out_degree.
-      template <typename Node>
-      [[nodiscard]] std::vector<Node>
-      topological_sort(WordGraphView<Node> const& wg);
-
-      //! \brief Returns the nodes of the word graph in topological order (see
-      //! below) if possible.
-      //!
-      //! If it is not empty, the returned vector has the property that if an
-      //! edge from a node \c n points to a node \c m, then \c m occurs before
-      //! \c n in the vector.
-      //!
-      //! \tparam Node  the type of the nodes of the WordGraph.
-      //!
-      //! \param wg the word graph.
-      //!
-      //! \returns
-      //! A std::vector of Node types that contains the nodes of
-      //! \p wg in topological order (if possible) and is otherwise empty.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-      //! WordGraph objects the number of edges is always at most \f$mk\f$
-      //! where \f$k\f$ is the WordGraph::out_degree.
-      template <typename Node>
-      [[nodiscard]] std::vector<Node>
-      topological_sort(WordGraph<Node> const& wg) {
-        return topological_sort(WordGraphView<Node>(wg));
-      }
-
-      //! Returns the nodes of the word graph reachable from a given node in
-      //! topological order (see below) if possible.
-      //!
-      //! If it is not empty, the returned vector has the property that
-      //! if an edge from a node \c n points to a node \c m, then \c m occurs
-      //! before \c n in the vector, and the last item in the vector is
-      //! \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the WordGraph object to check.
-      //! \param source the source node.
-      //!
-      //! \returns
-      //! A std::vector of Node types that contains the nodes reachable from
-      //! \p source in \p wg in topological order (if possible) and is otherwise
-      //! empty.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! At worst \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! subword graph of those nodes reachable from \p source
-      //! and \f$n\f$ is the number of edges.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::vector<Node1>
-      topological_sort(WordGraphView<Node1> const& wg, Node2 source);
-
-      //! Returns the nodes of the word graph reachable from a given node in
-      //! topological order (see below) if possible.
-      //!
-      //! If it is not empty, the returned vector has the property that
-      //! if an edge from a node \c n points to a node \c m, then \c m occurs
-      //! before \c n in the vector, and the last item in the vector is
-      //! \p source.
-      //!
-      //! \tparam Node1 the node type of the word graph.
-      //! \tparam Node2 the type of the node \p source.
-      //!
-      //! \param wg the WordGraph object to check.
-      //! \param source the source node.
-      //!
-      //! \returns
-      //! A std::vector of Node types that contains the nodes reachable from
-      //! \p source in \p wg in topological order (if possible) and is otherwise
-      //! empty.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \par Complexity
-      //! At worst \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-      //! subword graph of those nodes reachable from \p source
-      //! and \f$n\f$ is the number of edges.
-      template <typename Node1, typename Node2>
-      [[nodiscard]] std::vector<Node1>
-      topological_sort(WordGraph<Node1> const& wg, Node2 source) {
-        return topological_sort(WordGraphView<Node1>(wg), source);
-      }
-
-    }  // namespace word_graph
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Namespace containing helper functions for the \ref WordGraph
+  //! class.
+  //!
+  //! Defined in `word-graph-helpers.hpp`.
+  //!
+  //! \brief This namespace contains helper functions for the \ref WordGraph
+  //! class.
+  namespace word_graph {
 
     //////////////////////////////////////////////////////////////////////////
-    // WordGraph - non-member functions
+    // WordGraph - helper functions - in alphabetical order!!!
     //////////////////////////////////////////////////////////////////////////
-    // TODO(1) Add equivalents for WordGraphView
 
-    //! \ingroup word_graph_group
-    //! Output the edges of a wordGraph to a stream.
+    //! \brief Adds a cycle involving the specified range of nodes to a word
+    //! graph.
     //!
-    //! This function outputs the word graph \p wg to the stream \p os.
-    //! The word graph is represented by the out-neighbours of each node ordered
-    //! according to their labels. The symbol `-` is used to denote that an
-    //! edge is not defined. For example, the word graph with 1 node,
-    //! out-degree 2, and a single loop labelled 1 from node 0 to 0 is
-    //! represented as
-    //! `{{-, 0}}`.
+    //! This function adds a cycle involving the specified range of nodes.
     //!
-    //! \param os the ostream.
-    //! \param wg the word graph.
+    //! \tparam Node  the type of the nodes of the WordGraph.
+    //! \tparam Iterator the type of an iterator pointing to nodes of a word
+    //! graph.
     //!
-    //! \returns
-    //! The first parameter \p os.
+    //! \param wg the WordGraph object to add a cycle to.
+    //! \param first an iterator to nodes of \p wg.
+    //! \param last an iterator to nodes of \p wg.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m)\f$ where \f$m\f$ is the distance between \p first and \p last.
+    //!
+    //! \note
+    //! The edges added by this function are all labelled \c 0.
+    //!
+    //! \warning No checks are performed on the arguments.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    // TODO(1) add add_cycle with checks version.
+    template <typename Node, typename Iterator>
+    void add_cycle_no_checks(WordGraph<Node>& wg,
+                             Iterator         first,
+                             Iterator         last);
+
+    //! \brief Adds a cycle consisting of \p N new nodes.
+    //!
+    //! \tparam Node  the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the WordGraph object to add a cycle to.
+    //! \param N the length of the cycle and number of new nodes to add.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(N)\f$ where \f$N\f$ is the second parameter.
+    //!
+    //! \note
+    //! The edges added by this function are all labelled \c 0.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
     template <typename Node>
-    std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg);
+    void add_cycle(WordGraph<Node>& wg, size_t N) {
+      size_t M = wg.number_of_nodes();
+      wg.add_nodes(N);
+      add_cycle_no_checks(wg, wg.cbegin_nodes() + M, wg.cend_nodes());
+    }
 
-    //! \defgroup make_word_graph_group make<WordGraph>
-    //! \ingroup word_graph_group
+    //! \brief Returns the adjacency matrix of a word graph.
     //!
-    //! \brief Safely construct a \ref WordGraph instance.
+    //! This function returns the adjacency matrix of the word graph \p wg.
+    //! The type of the returned matrix depends on whether or not
+    //! `libsemigroups` is compiled with [eigen][] enabled. The returned
+    //! matrix has the number of edges with source \c s and target \c t in the
+    //! `(s, t)`-entry.
     //!
-    //! This page contains documentation related to safely constructing a
-    //! \ref WordGraph instance.
+    //! \tparam Node the type of the nodes of the WordGraph.
     //!
-    //! \sa \ref make_group for an overview of possible uses of the `make`
-    //! function.
+    //! \param wg the word graph.
+    //!
+    //! \returns The adjacency matrix.
+    //!
+    //! \warning No checks are performed on the argument.
+    //!
+    //! [eigen]: http://eigen.tuxfamily.org/
+    template <typename Node>
+    [[nodiscard]] typename WordGraph<Node>::adjacency_matrix_type
+    adjacency_matrix_no_checks(WordGraph<Node> const& wg) {
+      return adjacency_matrix_no_checks(WordGraphView(wg));
+    }
 
-    //! \ingroup make_word_graph_group
+    //! \brief Returns the adjacency matrix of a word graph.
     //!
-    //! \brief Constructs a word graph from a number of nodes and targets.
+    //! This function returns the adjacency matrix of the word graph \p wg.
+    //! The type of the returned matrix depends on whether or not
+    //! `libsemigroups` is compiled with [eigen][] enabled. The returned
+    //! matrix has the number of edges with source \c s and target \c t in the
+    //! `(s, t)`-entry.
     //!
-    //! This function constructs a word graph from its arguments whose
-    //! out-degree is specified by the length of the first item
-    //! in the second parameter, or 0 if the second parameter is empty.
+    //! \tparam Node the type of the nodes of the WordGraph.
     //!
-    //! \tparam Return the return type. Must satisfy
-    //! \ref is_specialization_of_v<Return, WordGraph>.
+    //! \param wg the word graph.
     //!
-    //! \param num_nodes the number of nodes in the word graph.
-    //! \param targets the targets of the word graph.
+    //! \returns The adjacency matrix.
     //!
-    //! \returns A value of type WordGraph.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
     //!
-    //! \throws LibsemigroupsException
-    //! if WordGraph<Node>::target throws when adding edges from \p targets.
+    //! [eigen]: http://eigen.tuxfamily.org/
+    template <typename Node>
+    [[nodiscard]] auto adjacency_matrix(WordGraph<Node> const& wg) {
+      return adjacency_matrix(WordGraphView(wg));
+    }
+
+    //! \brief Returns the std::unordered_set of nodes that can reach a given
+    //! node in a word graph.
+    //!
+    //! This function returns a std::unordered_set consisting of all the nodes
+    //! in the word graph \p wg that can reach \p target. This function can be
+    //! thought of like an inverse of `nodes_reachable_from`, in the sense
+    //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
+    //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
+    //!
+    //! \tparam Node the node type of the word graph and \p target.
+    //!
+    //! \param wg the word graph.
+    //! \param target the target node.
+    //!
+    //! \returns A std::unordered_set consisting of all the nodes in the word
+    //! graph \p wg that can reach \p target.
+    //!
+    //! \throws LibsemigroupsException if \p target or any target in \p wg is
+    //! out of bounds.
+    template <typename Node>
+    [[nodiscard]] std::unordered_set<Node>
+    ancestors_of(WordGraph<Node> const& wg, Node target) {
+      return ancestors_of(WordGraphView(wg), target);
+    }
+
+    //! \brief Returns the std::unordered_set of nodes that can reach a given
+    //! node in a word graph.
+    //!
+    //! This function returns a std::unordered_set consisting of all the nodes
+    //! in the word graph \p wg that can reach \p target. This function can be
+    //! thought of like an inverse of `nodes_reachable_from`, in the sense
+    //! that the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and
+    //! only if `b` \f$\in\f$ `nodes_reachable_from(a)`.
+    //!
+    //! \tparam Node the node type of the word graph and \p target.
+    //!
+    //! \param wg the word graph.
+    //! \param target the target node.
+    //!
+    //! \returns A std::unordered_set consisting of all the nodes in the word
+    //! graph \p wg that can reach \p target.
+    //!
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p target is a node of \p wg (i.e. less than
+    //! WordGraph::number_of_nodes).
+    template <typename Node>
+    [[nodiscard]] std::unordered_set<Node>
+    ancestors_of_no_checks(WordGraph<Node> const& wg, Node target) {
+      return ancestors_of_no_checks(WordGraphView(wg), target);
+    }
+
+    //! \brief Returns a \ref Dot object representing a word graph.
+    //!
+    //! This function returns a \ref Dot object representing the word graph
+    //! \p wg.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns A \ref Dot object.
+    //!
+    //! \warning No checks are performed on the argument.
+    template <typename Node>
+    [[nodiscard]] Dot dot_no_checks(WordGraph<Node> const& wg) {
+      return dot_no_checks(WordGraphView(wg));
+    }
+
+    //! \brief Returns a \ref Dot object representing a word graph.
+    //!
+    //! This function returns a \ref Dot object representing the word graph
+    //! \p wg.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns A \ref Dot object.
+    //!
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    template <typename Node>
+    [[nodiscard]] Dot dot(WordGraph<Node> const& wg) {
+      return dot(WordGraphView(wg));
+    }
+
+    //! \brief Returns a labelled \ref Dot object representing a word graph.
+    //!
+    //! This function returns a \ref Dot object representing the word graph
+    //! \p wg. The nodes of the returned graph are labelled using
+    //! \p node_labels, and the colours used for edges are shown in a legend
+    //! labelled by \p edge_labels.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the word graph.
+    //! \param node_labels the labels for the nodes of \p wg.
+    //! \param edge_labels the labels for the edge labels of \p wg.
+    //!
+    //! \returns A \ref Dot object representing \p wg.
+    //!
+    //! \note This function does not trigger an enumeration.
+    //!
+    //! \warning No checks are performed on the arguments.
+    template <typename Node>
+    [[nodiscard]] Dot
+    dot_no_checks(WordGraph<Node> const&          wg,
+                  std::vector<std::string> const& node_labels,
+                  std::vector<std::string> const& edge_labels) {
+      return dot_no_checks(WordGraphView(wg), node_labels, edge_labels);
+    }
+
+    //! \brief Returns a labelled \ref Dot object representing a word graph.
+    //!
+    //! This function returns a \ref Dot object representing the word graph
+    //! \p wg. The nodes of the returned graph are labelled using
+    //! \p node_labels, and the colours used for edges are shown in a legend
+    //! labelled by \p edge_labels.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the word graph.
+    //! \param node_labels the labels for the nodes of \p wg.
+    //! \param edge_labels the labels for the edge labels of \p wg.
+    //!
+    //! \returns A \ref Dot object representing \p wg.
+    //!
+    //! \throws LibsemigroupsException if \p node_labels has size different
+    //! from `wg.number_of_nodes()`.
+    //! \throws LibsemigroupsException if \p edge_labels has size different
+    //! from `wg.out_degree()`.
+    //! \throws LibsemigroupsException if the out-degree of \p wg is greater
+    //! than the number of colours in Dot::colors.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    //!
+    //! \note This function does not trigger an enumeration.
+    //!
+    //! \sa dot(WordGraphView<Node> const&,
+    //! std::vector<std::string> const&, std::vector<std::string> const&).
+    template <typename Node>
+    [[nodiscard]] Dot dot(WordGraph<Node> const&          wg,
+                          std::vector<std::string> const& node_labels,
+                          std::vector<std::string> const& edge_labels) {
+      return dot(WordGraphView(wg), node_labels, edge_labels);
+    }
+
+    //! \brief Compares two word graphs on a range of nodes.
+    //!
+    //! This function returns \c true if the word graphs \p x and \p y are
+    //! equal on the nodes specified by the iterator range from \p first to
+    //! \p last; and \c false otherwise. The word graphs \p x and \p y are
+    //! equal at a node \c s if:
+    //! * the out-degrees of \p x and \p y coincide;
+    //! * the edges with source \c s and label \c a have equal targets in \p x
+    //! and \p y for every label \c a.
+    //! The word graphs must also have the same number of nodes. The comparison
+    //! is performed by the corresponding WordGraphView overload.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //! \tparam Iterator the type of the iterators specifying the nodes to
+    //! compare.
+    //!
+    //! \param x the first word graph for comparison.
+    //! \param y the second word graph for comparison.
+    //! \param first an iterator pointing at the first node to compare.
+    //! \param last an iterator pointing one past the last node to compare.
+    //!
+    //! \returns Whether or not the word graphs are equal on the specified
+    //! nodes.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning No checks are performed to ensure that the arguments
+    //! are valid.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
+    template <typename Node, typename Iterator>
+    [[nodiscard]] bool equal_to_no_checks(WordGraph<Node> const& x,
+                                          WordGraph<Node> const& y,
+                                          Iterator               first,
+                                          Iterator               last) {
+      return equal_to_no_checks(
+          WordGraphView(x), WordGraphView(y), first, last);
+    }
+
+    //! \brief Compares two word graphs.
+    //!
+    //! This function returns \c true if the word graphs \p x and \p y have the
+    //! same number of nodes and out-degree, and every edge has the same target
+    //! in both graphs; and \c false otherwise. The comparison is performed by
+    //! the corresponding WordGraphView overload.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param x the first word graph for comparison.
+    //! \param y the second word graph for comparison.
+    //!
+    //! \returns Whether or not the word graphs are equal.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning No checks are performed to ensure that the arguments are
+    //! valid.
+    //!
+    //! \sa WordGraph::operator== for a comparison using the equality operator.
+    template <typename Node>
+    [[nodiscard]] bool equal_to_no_checks(WordGraph<Node> const& x,
+                                          WordGraph<Node> const& y) {
+      return equal_to_no_checks(WordGraphView(x), WordGraphView(y));
+    }
+
+    //! \brief Compares two word graphs on a range of nodes.
+    //!
+    //! This function returns \c true if the word graphs \p x and \p y are
+    //! equal on the nodes specified by the iterator range from \p first to
+    //! \p last; and \c false otherwise. The word graphs \p x and \p y are
+    //! equal at a node \c s if:
+    //! * the out-degrees of \p x and \p y coincide;
+    //! * the edges with source \c s and label \c a have equal targets in \p x
+    //! and \p y for every label \c a.
+    //! The word graphs must also have the same number of nodes. The comparison
+    //! is performed by the corresponding WordGraphView overload.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //! \tparam Iterator the type of the iterators specifying the nodes to
+    //! compare.
+    //!
+    //! \param x the first word graph for comparison.
+    //! \param y the second word graph for comparison.
+    //! \param first an iterator pointing at the first node to compare.
+    //! \param last an iterator pointing one past the last node to compare.
+    //!
+    //! \returns Whether or not the word graphs are equal on the specified
+    //! nodes.
+    //!
+    //! \throws LibsemigroupsException if any target in \p x or \p y is out
+    //! of bounds, or if any node in the range from \p first to \p last is not
+    //! a node of \p x.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
+    template <typename Node, typename Iterator>
+    [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
+                                WordGraph<Node> const& y,
+                                Iterator               first,
+                                Iterator               last) {
+      return equal_to(WordGraphView(x), WordGraphView(y), first, last);
+    }
+
+    //! \brief Compares two word graphs.
+    //!
+    //! This function returns \c true if the word graphs \p x and \p y have the
+    //! same number of nodes and out-degree, and every edge has the same target
+    //! in both graphs; and \c false otherwise. The comparison is performed by
+    //! the corresponding WordGraphView overload.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param x the first word graph for comparison.
+    //! \param y the second word graph for comparison.
+    //!
+    //! \returns Whether or not the word graphs are equal.
+    //!
+    //! \throws LibsemigroupsException if any target in \p x or \p y is out
+    //! of bounds.
+    //!
+    //! \sa WordGraph::operator== for a comparison using the equality operator.
+    template <typename Node>
+    [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
+                                WordGraph<Node> const& y) {
+      return equal_to(WordGraphView(x), WordGraphView(y));
+    }
+
+    //! \brief Find the node that a path starting at a given node leads to (if
+    //! any).
+    //!
+    //! This function attempts to follow the path in the word graph \p wg
+    //! starting at the node \p source labelled by the word defined by \p first
+    //! and \p last. If this path exists, then the last node on that path is
+    //! returned. If this path does not exist, then \ref UNDEFINED is
+    //! returned.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg and the node
+    //! \p source.
+    //! \tparam Iterator the type of \p first and \p last.
+    //!
+    //! \param wg a word graph.
+    //! \param source the starting node.
+    //! \param first an iterator point at the start of the word.
+    //! \param last an iterator point one beyond the last letter of the word.
+    //!
+    //! \returns
+    //! A value of type \p Node. If one or more edges in \p path are not
+    //! defined, then \ref UNDEFINED is returned.
+    //!
+    //! \throws LibsemigroupsException if \p source is not a node in the word
+    //! graph, if the word defined by \p first and \p last contains a value
+    //! that is not an edge-label, or if any target in \p wg is out of bounds.
+    //!
+    //! \par Complexity
+    //! Linear in the distance between \p first and \p last.
+    template <typename Node, typename Iterator>
+    [[nodiscard]] Node follow_path(WordGraph<Node> const& wg,
+                                   Node                   source,
+                                   Iterator               first,
+                                   Iterator               last) {
+      return follow_path(WordGraphView(wg), source, first, last);
+    }
+
+    //! \brief Follow the path from a specified node labelled by a word.
+    //!
+    //! This function returns the last node on the path in the word graph
+    //! \p wg starting at the node \p from labelled by the word defined by
+    //! \p first and \p last or \ref UNDEFINED.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg and the node
+    //! \p from.
+    //!
+    //! \param wg a word graph.
+    //! \param from the source node.
+    //! \param first iterator into a word.
+    //! \param last iterator into a word.
+    //!
+    //! \returns A value of type \p Node.
+    //!
+    //! \exceptions
+    //! \noexcept
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is the length of \p targets and \f$n\f$ is the
-    //! parameter \p num_nodes.
+    //! At worst the distance from \p first to \p last.
+    //!
+    //! \warning
+    //! No checks on the arguments of this function are performed.
+    template <typename Node, typename Iterator>
+    [[nodiscard]] Node follow_path_no_checks(WordGraph<Node> const& wg,
+                                             Node                   from,
+                                             Iterator               first,
+                                             Iterator last) noexcept {
+      return follow_path_no_checks(WordGraphView(wg), from, first, last);
+    }
+
+    //! \brief Check if a word graph is acyclic.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the WordGraph object to check.
+    //!
+    //! \returns Whether or not \p wg is acyclic.
+    //!
+    //! \warning No checks are performed on the argument.
+    template <typename Node>
+    [[nodiscard]] bool is_acyclic_no_checks(WordGraph<Node> const& wg) {
+      return is_acyclic_no_checks(WordGraphView(wg));
+    }
+
+    //! \brief Check if a word graph is acyclic.
+    //!
+    //! This function returns \c true if the word graph \p wg is acyclic and
+    //! \c false otherwise. A word graph is acyclic if every directed cycle in
+    //! the word graph is trivial.
+    //!
+    //! \tparam Node  the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the WordGraph object to check.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the \ref WordGraph::out_degree.
+    //!
     //!
     //! \par Example
     //! \code
-    //! // Construct a word graph with 5 nodes and 10 edges (7 specified)
-    //! make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    //! WordGraph<size_t> wg;
+    //! wg.add_nodes(2);
+    //! wg.add_to_out_degree(1);
+    //! wg.target(0, 0, 1);
+    //! wg.target(1, 0, 0);
+    //! word_graph::is_acyclic(wg); // returns false
     //! \endcode
-    // Passing the 2nd parameter "targets" by value disambiguates it from the
-    // other make<WordGraph>.
-    template <typename Return>
-    [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
-                                   Return>
-    make(
-        size_t num_nodes,
-        std::initializer_list<std::vector<typename Return::node_type>> targets);
+    // Not noexcept because detail::is_acyclic isn't
+    template <typename Node>
+    [[nodiscard]] bool is_acyclic(WordGraph<Node> const& wg) {
+      return is_acyclic(WordGraphView(wg));
+    }
 
-    //! \ingroup make_word_graph_group
+    //! \brief Check if the word graph induced by the nodes reachable from a
+    //! source node is acyclic.
     //!
-    // clang-format off
-    // NOLINTNEXTLINE(whitespace/line_length)
-    //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>)
-    // clang-format on
-    template <typename Return>
-    [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
-                                   Return>
-    make(size_t                                                      num_nodes,
-         std::vector<std::vector<typename Return::node_type>> const& targets);
-
-    namespace detail {
-      template <typename Subclass>
-      class JoinerMeeterCommon {
-       private:
-        template <typename Node1, typename Node2>
-        void throw_if_bad_args(WordGraph<Node1> const& x,
-                               Node2                   xroot,
-                               WordGraph<Node1> const& y,
-                               Node2                   yroot);
-
-       public:
-        template <typename Node>
-        void call_no_checks(WordGraph<Node>&       xy,
-                            WordGraph<Node> const& x,
-                            Node                   xroot,
-                            WordGraph<Node> const& y,
-                            Node                   yroot);
-
-        template <typename Node>
-        void call_no_checks(WordGraph<Node>&       xy,
-                            WordGraph<Node> const& x,
-                            WordGraph<Node> const& y) {
-          return call_no_checks(
-              xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
-        }
-
-        template <typename Node, typename... Args>
-        [[nodiscard]] auto call_no_checks(WordGraph<Node> const& x,
-                                          Args&&... args)
-            -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
-          // The versions of this function changing the 1st argument in-place
-          // always have an odd number of arguments, so we check that it's even
-          // here (the argument x and an odd number of further arguments).
-          WordGraph<Node> xy;
-          static_cast<Subclass&>(*this).call_no_checks(
-              xy, x, std::forward<Args>(args)...);
-          return xy;
-        }
-
-        // There's no operator() with the number of nodes reachable from the
-        // roots as arguments (7 args in total) because we'd have to check that
-        // they were valid, and the only way to do this is to recompute them.
-
-        template <typename Node>
-        void operator()(WordGraph<Node>&       xy,
-                        WordGraph<Node> const& x,
-                        Node                   xroot,
-                        WordGraph<Node> const& y,
-                        Node                   yroot) {
-          throw_if_bad_args(x, xroot, y, yroot);
-          call_no_checks(xy, x, xroot, y, yroot);
-        }
-
-        template <typename Node>
-        void operator()(WordGraph<Node>&       xy,
-                        WordGraph<Node> const& x,
-                        WordGraph<Node> const& y) {
-          return operator()(
-              xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
-        }
-
-        template <typename Node, typename... Args>
-        [[nodiscard]] auto operator()(WordGraph<Node> const& x, Args&&... args)
-            -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
-          // The versions of this function changing the 1st argument in-place
-          // always have an odd number of arguments, so we check that it's even
-          // here (the argument x and an odd number of further arguments).
-          WordGraph<Node> xy;
-                          operator()(xy, x, std::forward<Args>(args)...);
-          return xy;
-        }
-
-        template <typename Node1, typename Node2>
-        bool is_subrelation_no_checks(WordGraph<Node1> const& x,
-                                      Node2                   xroot,
-                                      WordGraph<Node1> const& y,
-                                      Node2                   yroot);
-
-        template <typename Node>
-        bool is_subrelation_no_checks(WordGraph<Node> const& x,
-                                      WordGraph<Node> const& y) {
-          return is_subrelation_no_checks(
-              x, static_cast<Node>(0), y, static_cast<Node>(0));
-        }
-
-        // There's no subrelation with the number of nodes reachable from the
-        // roots as arguments (6 args in total) because we'd have to check that
-        // they were valid, and the only way to do this is to recompute them.
-
-        template <typename Node1, typename Node2>
-        bool is_subrelation(WordGraph<Node1> const& x,
-                            Node2                   xroot,
-                            WordGraph<Node1> const& y,
-                            Node2                   yroot) {
-          throw_if_bad_args(x, xroot, y, yroot);
-          return is_subrelation_no_checks(x, xroot, y, yroot);
-        }
-
-        template <typename Node>
-        bool is_subrelation(WordGraph<Node> const& x,
-                            WordGraph<Node> const& y) {
-          return is_subrelation(
-              x, static_cast<Node>(0), y, static_cast<Node>(0));
-        }
-      };  // JoinerMeeterCommon
-    }     // namespace detail
-
-    //! \ingroup word_graph_group
-    //! \brief Class for taking joins of word graphs.
+    //! \tparam Node the type of the nodes of the WordGraph and \p source.
     //!
-    //! This class exists for its call operators which can be used to find the
-    //! join of two word graphs with the same WordGraph::out_degree. This class
-    //! implements the Hopcroft-Karp algorithm \cite Hop71 for computing a
-    //! finite state automata recognising the union of the languages accepted by
-    //! two given automata.
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
     //!
-    //! The input word graphs need not be complete, and the root nodes can also
-    //! be specified.
-    // This class is intentionally not a template so that we don't have to
-    // specify the types of the nodes when constructing one of these objects.
-    // Instead every member function has a template parameter Node, which is
-    // deduced from the argument.
-    class Joiner : public detail::JoinerMeeterCommon<Joiner> {
+    //! \returns Whether or not the relevant subgraph is acyclic.
+    //!
+    //! \warning No checks are performed on the arguments.
+    template <typename Node>
+    [[nodiscard]] bool is_acyclic_no_checks(WordGraph<Node> const& wg,
+                                            Node                   source) {
+      return is_acyclic_no_checks(WordGraphView(wg), source);
+    }
+
+    //! \brief Check if the word graph induced by the nodes reachable from a
+    //! source node is acyclic.
+    //!
+    //! This function returns \c true if the word graph consisting of the
+    //! nodes reachable from \p source in the word graph \p wg is acyclic and
+    //! \c false if not. A word graph is acyclic if every directed cycle in
+    //! the word graph is trivial.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg and the node
+    //! \p source.
+    //!
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \throws LibsemigroupsException if \p source or any target in \p wg is
+    //! out of bounds.
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the \ref WordGraph::out_degree.
+    //!
+    //!
+    //! \par Example
+    //! \code
+    //! WordGraph<size_t> wg;
+    //! wg.add_nodes(4);
+    //! wg.add_to_out_degree(1);
+    //! wg.target(0, 0, 1);
+    //! wg.target(1, 0, 0);
+    //! wg.target(2, 0, 3);
+    //! word_graph::is_acyclic(wg); // returns false
+    //! word_graph::is_acyclic(wg, size_t(0)); // returns false
+    //! word_graph::is_acyclic(wg, size_t(1)); // returns false
+    //! word_graph::is_acyclic(wg, size_t(2)); // returns true
+    //! word_graph::is_acyclic(wg, size_t(3)); // returns true
+    //! \endcode
+    // Not noexcept because detail::is_acyclic isn't
+    template <typename Node>
+    [[nodiscard]] bool is_acyclic(WordGraph<Node> const& wg, Node source) {
+      return is_acyclic(WordGraphView(wg), source);
+    }
+
+    //! \brief Check if the word graph induced by the nodes reachable from a
+    //! source node and from which a target node can be reached is acyclic.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph, \p source, and
+    //! \p target.
+    //!
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
+    //! \param target the target node.
+    //!
+    //! \returns Whether or not the relevant subgraph is acyclic.
+    //!
+    //! \warning No checks are performed on the arguments.
+    template <typename Node>
+    [[nodiscard]] bool is_acyclic_no_checks(WordGraph<Node> const& wg,
+                                            Node                   source,
+                                            Node                   target) {
+      return is_acyclic_no_checks(WordGraphView(wg), source, target);
+    }
+
+    //! \brief Check if the word graph induced by the nodes reachable from a
+    //! source node and from which a target node can be reached is acyclic.
+    //!
+    //! This function returns \c true if the word graph consisting of the
+    //! nodes reachable from \p source and from which \p target is reachable,
+    //! in the word graph \p wg, is acyclic; and \c false if not. A word graph
+    //! is acyclic if every directed cycle of the word graph is trivial.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg, \p source,
+    //! and \p target.
+    //!
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
+    //! \param target the target node.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \throws LibsemigroupsException if \p source, \p target, or any target
+    //! in \p wg is out of bounds.
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the \ref WordGraph::out_degree.
+    // Not noexcept because detail::is_acyclic isn't
+    template <typename Node>
+    [[nodiscard]] bool is_acyclic(WordGraph<Node> const& wg,
+                                  Node                   source,
+                                  Node                   target) {
+      return is_acyclic(WordGraphView(wg), source, target);
+    }
+
+    //! \brief Check if a word graph is compatible with some relations at a
+    //! range of nodes.
+    //!
+    //! This function returns \c true if the word graph \p wg is compatible
+    //! with the relations in the range \p first_rule to \p last_rule at every
+    //! node in the range from \p first_node to \p last_node. This means that
+    //! the paths with given sources that are labelled by one side of a
+    //! relation leads to the same node as the path labelled by the other side
+    //! of the relation.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg.
+    //! \tparam Iterator1 the type of \p first_node.
+    //! \tparam Iterator2 the type of \p last_node.
+    //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
+    //!
+    //! \param wg the word graph.
+    //! \param first_node iterator pointing at the first node.
+    //! \param last_node iterator pointing at one beyond the last node.
+    //! \param first_rule iterator pointing to the first rule.
+    //! \param last_rule iterator pointing one beyond the last rule.
+    //!
+    //! \return Whether or not the word graph is compatible with the given
+    //! rules at each one of the given nodes.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks on the arguments of this function are performed.
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3>
+    [[nodiscard]] bool is_compatible_no_checks(WordGraph<Node> const& wg,
+                                               Iterator1 first_node,
+                                               Iterator2 last_node,
+                                               Iterator3 first_rule,
+                                               Iterator3 last_rule) {
+      return is_compatible_no_checks(
+          WordGraphView(wg), first_node, last_node, first_rule, last_rule);
+    }
+
+    //! \brief Check if a word graph is compatible with some relations at a
+    //! range of nodes.
+    //!
+    //! This function returns \c true if the word graph \p wg is compatible
+    //! with the relations in the range \p first_rule to \p last_rule at every
+    //! node in the range from \p first_node to \p last_node. This means that
+    //! the paths with given sources that are labelled by one side of a
+    //! relation leads to the same node as the path labelled by the other side
+    //! of the relation.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg.
+    //! \tparam Iterator1 the type of \p first_node.
+    //! \tparam Iterator2 the type of \p last_node.
+    //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
+    //!
+    //! \param wg the word graph.
+    //! \param first_node iterator pointing at the first node.
+    //! \param last_node iterator pointing at one beyond the last node.
+    //! \param first_rule iterator pointing to the first rule.
+    //! \param last_rule iterator pointing one beyond the last rule.
+    //!
+    //! \return Whether or not the word graph is compatible with the given
+    //! rules at each one of the given nodes.
+    //!
+    //! \throws LibsemigroupsException if any node in the range from
+    //! \p first_node to \p last_node does not belong to \p wg.
+    //! \throws LibsemigroupsException if any rule in the range from
+    //! \p first_rule to \p last_rule contains an invalid label.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename = std::enable_if_t<
+                  !std::is_same_v<std::decay_t<Iterator3>, word_type>>>
+    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
+                                     Iterator1              first_node,
+                                     Iterator2              last_node,
+                                     Iterator3              first_rule,
+                                     Iterator3              last_rule) {
+      return is_compatible(
+          WordGraphView(wg), first_node, last_node, first_rule, last_rule);
+    }
+
+    //! \brief Check if a word graph is compatible with a pair of words for a
+    //! range of nodes.
+    //!
+    //! This function returns \c true if the word graph \p wg is compatible
+    //! with the words \p lhs and \p rhs at every node in the range from
+    //! \p first_node to \p last_node. This means that the paths with given
+    //! sources that are labelled by \p lhs leads to the same node as the path
+    //! labelled by \p rhs.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg.
+    //! \tparam Iterator1 the type of \p first_node.
+    //! \tparam Iterator2 the type of \p last_node.
+    //!
+    //! \param wg the word graph.
+    //! \param first_node iterator pointing at the first node.
+    //! \param last_node iterator pointing at one beyond the last node.
+    //! \param lhs the first rule.
+    //! \param rhs the second rule.
+    //!
+    //! \return Whether or not the word graph is compatible with the given
+    //! rules at each one of the given nodes.
+    //!
+    //! \warning This function does not check that its arguments are valid.
+    // TODO(v4) deprecate, requires implementing a 7-arg iterator version first
+    template <typename Node, typename Iterator1, typename Iterator2>
+    [[nodiscard]] bool is_compatible_no_checks(WordGraph<Node> const& wg,
+                                               Iterator1        first_node,
+                                               Iterator2        last_node,
+                                               word_type const& lhs,
+                                               word_type const& rhs) {
+      return is_compatible_no_checks(
+          WordGraphView(wg), first_node, last_node, lhs, rhs);
+    }
+
+    //! \brief Check if a word graph is compatible with a pair of words for a
+    //! range of nodes.
+    //!
+    //! This function returns \c true if the word graph \p wg is compatible
+    //! with the words \p lhs and \p rhs at every node in the range from
+    //! \p first_node to \p last_node. This means that the paths with given
+    //! sources that are labelled by \p lhs leads to the same node as the path
+    //! labelled by \p rhs.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph \p wg.
+    //! \tparam Iterator1 the type of \p first_node.
+    //! \tparam Iterator2 the type of \p last_node.
+    //!
+    //! \param wg the word graph.
+    //! \param first_node iterator pointing at the first node.
+    //! \param last_node iterator pointing at one beyond the last node.
+    //! \param lhs the first rule.
+    //! \param rhs the second rule.
+    //!
+    //! \return Whether or not the word graph is compatible with the given
+    //! rules at each one of the given nodes.
+    //!
+    //! \throws LibsemigroupsException if any node in the range from
+    //! \p first_node to \p last_node does not belong to \p wg.
+    //! \throws LibsemigroupsException if \p lhs or \p rhs contains an invalid
+    //! label.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    // TODO(v4) deprecate, requires implementing a 7-arg iterator version first
+    template <typename Node, typename Iterator1, typename Iterator2>
+    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
+                                     Iterator1              first_node,
+                                     Iterator2              last_node,
+                                     word_type const&       lhs,
+                                     word_type const&       rhs) {
+      return is_compatible(WordGraphView(wg), first_node, last_node, lhs, rhs);
+    }
+
+    //! \brief Check if every node in a range has exactly
+    //! WordGraph::out_degree out-edges.
+    //!
+    //! This function returns \c true if every node in the range defined by
+    //! \p first_node and \p last_node is complete, meaning that every such
+    //! node is the source of an edge with every possible label.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //! \tparam Iterator1 the type of \p first_node.
+    //! \tparam Iterator2 the type of \p last_node.
+    //!
+    //! \param wg the word graph.
+    //! \param first_node iterator pointing to the first node in the range.
+    //! \param last_node iterator pointing one beyond the last node in the
+    //! range.
+    //!
+    //! \returns
+    //! Whether or not the word graph is complete on the given range of nodes.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
+    //! out_degree().
+    //!
+    //! \warning No checks are performed on the arguments.
+    template <typename Node, typename Iterator1, typename Iterator2>
+    [[nodiscard]] bool is_complete_no_checks(WordGraph<Node> const& wg,
+                                             Iterator1              first_node,
+                                             Iterator2              last_node) {
+      return is_complete_no_checks(WordGraphView(wg), first_node, last_node);
+    }
+
+    //! \brief Check if every node has exactly WordGraph::out_degree
+    //! out-edges.
+    //!
+    //! This function returns \c true if the word graph \p wg is complete,
+    //! meaning that every node is the source of an edge with every possible
+    //! label; and \c false otherwise.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns Whether or not the word graph is complete.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
+    //!
+    //! \warning No checks are performed on the argument.
+    //!
+    //! \sa is_complete_no_checks(WordGraphView<Node> const&).
+    template <typename Node>
+    [[nodiscard]] bool
+    is_complete_no_checks(WordGraph<Node> const& wg) noexcept {
+      return is_complete_no_checks(WordGraphView(wg));
+    }
+
+    //! \brief Check if every node in a range has exactly
+    //! WordGraph::out_degree out-edges.
+    //!
+    //! This function returns \c true if every node in the range defined by
+    //! \p first_node and \p last_node is complete, meaning that
+    //! every such node is the source of an edge with every possible label.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //! \tparam Iterator1 the type of \p first_node.
+    //! \tparam Iterator2 the type of \p last_node.
+    //!
+    //! \param wg the word graph.
+    //! \param first_node iterator pointing to the first node in the range.
+    //! \param last_node iterator pointing one beyond the last node in the
+    //! range.
+    //!
+    //! \returns Whether or not the word graph is complete on the given
+    //! range of nodes.
+    //!
+    //! \throws LibsemigroupsException if any item in the range defined by
+    //! \p first_node and \p last_node is not a node of \p wg.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
+    //! out_degree().
+    template <typename Node, typename Iterator1, typename Iterator2>
+    [[nodiscard]] bool is_complete(WordGraph<Node> const& wg,
+                                   Iterator1              first_node,
+                                   Iterator2              last_node) {
+      return is_complete(WordGraphView(wg), first_node, last_node);
+    }
+
+    //! \brief Check if every node has exactly WordGraph::out_degree
+    //! out-edges.
+    //!
+    //! This function returns \c true if a WordGraph is complete, meaning that
+    //! every node is the source of an edge with every possible label.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns
+    //! Whether or not the word graph is complete.
+    //!
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
+    template <typename Node>
+    [[nodiscard]] bool is_complete(WordGraph<Node> const& wg) {
+      return is_complete(WordGraphView(wg));
+    }
+
+    //! \brief Check if a word graph is connected.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns Whether or not \p wg is connected.
+    //!
+    //! \warning No checks are performed on the argument.
+    template <typename Node>
+    [[nodiscard]] bool is_connected_no_checks(WordGraph<Node> const& wg) {
+      return is_connected_no_checks(WordGraphView(wg));
+    }
+
+    //! \brief Check if a word graph is connected.
+    //!
+    //! This function returns \c true if the word graph \p wg is connected and
+    //! \c false if it is not. A word graph is *connected* if for every pair
+    //! of nodes \c s and \c t in the graph there exists a sequence \f$u_0 =
+    //! s,
+    //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
+    //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$
+    //! or
+    //! \f$(u_{i + 1}, a, u_i)\f$ is an edge in the graph.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns
+    //! Whether or not the word graph is connected.
+    //!
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    template <typename Node>
+    [[nodiscard]] bool is_connected(WordGraph<Node> const& wg) {
+      return is_connected(WordGraphView(wg));
+    }
+
+    //! \brief Check if there is a path from one node to another.
+    //!
+    //! This function returns \c true if there is a path from the nod
+    //! \p source to the node \p target in the word graph \p wg.
+    //!
+    //! \tparam Node the type of the nodes in the WordGraph, \p source, and
+    //! \p target.
+    //!
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
+    //! \param target the target node.
+    //!
+    //! \returns
+    //! Whether or not the node \p target is reachable from the node \p source
+    //! in the word graph \p wg.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
+    //!
+    //! \note
+    //! If \p source and \p target are equal, then, by convention, we consider
+    //! \p target to be reachable from \p source, via the empty path.
+    //!
+    //! \warning No checks are performed on the arguments.
+    //!
+    //! \par Example
+    //! \code
+    //! WordGraph<size_t> wg;
+    //! wg.add_nodes(4);
+    //! wg.add_to_out_degree(1);
+    //! wg.target(0, 1, 0);
+    //! wg.target(1, 0, 0);
+    //! wg.target(2, 3, 0);
+    //! word_graph::is_reachable_no_checks(wg, size_t(0), size_t(1));
+    //! word_graph::is_reachable_no_checks(wg, size_t(1), size_t(0));
+    //! word_graph::is_reachable_no_checks(wg, size_t(1), size_t(2));
+    //! word_graph::is_reachable_no_checks(wg, size_t(2), size_t(3));
+    //! word_graph::is_reachable_no_checks(wg, size_t(3), size_t(2));
+    //! \endcode
+    template <typename Node>
+    [[nodiscard]] bool is_reachable_no_checks(WordGraph<Node> const& wg,
+                                              Node                   source,
+                                              Node                   target) {
+      return is_reachable_no_checks(WordGraphView(wg), source, target);
+    }
+
+    //! \brief Check if there is a path from one node to another.
+    //!
+    //! This function returns \c true if there is a path from the node
+    //! \p source to the node \p target in the word graph \p wg.
+    //!
+    //! \tparam Node the type of the nodes in the WordGraph, \p source, and
+    //! \p target.
+    //!
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
+    //! \param target the target node.
+    //!
+    //! \returns
+    //! Whether or not the node \p target is reachable from the node \p source
+    //! in the word graph \p wg.
+    //!
+    //! \throws LibsemigroupsException if \p source or \p target is out of
+    //! bounds.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
+    //!
+    //! \note
+    //! If \p source and \p target are equal, then, by convention, we consider
+    //! \p target to be reachable from \p source, via the empty path.
+    template <typename Node>
+    [[nodiscard]] bool is_reachable(WordGraph<Node> const& wg,
+                                    Node                   source,
+                                    Node                   target) {
+      return is_reachable(WordGraphView(wg), source, target);
+    }
+
+    //! \brief Check if a word graph is standardized.
+    //!
+    //! This function checks if the word graph \p wg is standardized according
+    //! to the reduction order specified by \p cmp.
+    //!
+    //! \tparam Node the type of the node in \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph to check.
+    //! \param cmp the order to use for the standardization check.
+    //!
+    //! \returns Whether or not \p wg is standardized according to \p cmp.
+    //!
+    //! \warning No checks are performed on the arguments.
+    //!
+    //! \sa standardize.
+    template <typename Node, typename Cmp>
+    [[nodiscard]] bool is_standardized_no_checks(WordGraph<Node> const& wg,
+                                                 Cmp&&                  cmp) {
+      return is_standardized_no_checks(WordGraphView<Node>(wg),
+                                       std::forward<Cmp>(cmp));
+    }
+
+    //! \brief Check if a word graph is standardized.
+    //!
+    //! This function checks if the word graph \p wg is standardized according
+    //! to the reduction order specified by \p cmp.
+    //!
+    //! \tparam Node the type of the node in \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph to check.
+    //! \param cmp the order to use for standardization check.
+    //!
+    //! \returns Whether or not \p wg is standardized according to \p cmp.
+    //!
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    //!
+    //! \sa
+    //! standardize.
+    template <typename Node, typename Cmp>
+    [[nodiscard]] bool is_standardized(WordGraph<Node> const& wg, Cmp&& cmp) {
+      return is_standardized(WordGraphView<Node>(wg), std::forward<Cmp>(cmp));
+    }
+
+    //! \brief Check if every node is reachable from some node.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the WordGraph object to check.
+    //!
+    //! \returns Whether or not \p wg is strictly cyclic.
+    //!
+    //! \warning No checks are performed on the argument.
+    template <typename Node>
+    [[nodiscard]] bool is_strictly_cyclic_no_checks(WordGraph<Node> const& wg) {
+      return is_strictly_cyclic_no_checks(WordGraphView(wg));
+    }
+
+    //! \brief Check if every node is reachable from some node.
+    //!
+    //! This function returns \c true if there exists a node in \p wg from
+    //! which every other node is reachable; and \c false otherwise.
+    //! A word graph is *strictly cyclic* if there exists a node \f$v\f$ from
+    //! which every node is reachable (including \f$v\f$). There must be a
+    //! path of length at least \f$1\f$ from the original node \f$v\f$ to
+    //! itself (i.e. \f$v\f$ is not considered to be reachable from itself by
+    //! default).
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the WordGraph object to check.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
+    //!
+    //! \par Example
+    //! \code
+    //! auto wg = make<WordGraph<uint8_t>>(
+    //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    //! word_graph::is_strictly_cyclic(wg);  // returns false
+    //! \endcode
+    // TODO(1) should have a version that returns the node that everything is
+    // reachable from
+    template <typename Node>
+    [[nodiscard]] bool is_strictly_cyclic(WordGraph<Node> const& wg) {
+      return is_strictly_cyclic(WordGraphView(wg));
+    }
+
+    //! \brief Returns the last node on the path labelled by a word and an
+    //! iterator to the position in the word reached.
+    //!
+    //! \tparam Node the node type of the word graph and \p source.
+    //! \tparam Iterator the type of the iterators into a word.
+    //!
+    //! \param wg a word graph.
+    //! \param source the source node.
+    //! \param first iterator into a word.
+    //! \param last iterator into a word.
+    //!
+    //! \returns A pair consisting of the last node reached and an iterator
+    //! pointing at the last letter in the word labelling an edge.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! At worst the distance from \p first to \p last.
+    //!
+    //! \warning
+    //! No checks on the arguments of this function are performed, it is
+    //! assumed that \p source is a node in the word graph \p wg; and that the
+    //! letters in the word described by \p first and \p last belong to the
+    //! range \c 0 to WordGraph::out_degree.
+    template <typename Node, typename Iterator>
+    [[nodiscard]] std::pair<Node, Iterator>
+    last_node_on_path_no_checks(WordGraph<Node> const& wg,
+                                Node                   source,
+                                Iterator               first,
+                                Iterator               last) noexcept {
+      return last_node_on_path_no_checks(
+          WordGraphView(wg), source, first, last);
+    }
+
+    //! \brief Returns the last node on the path labelled by a word and an
+    //! iterator to the position in the word reached.
+    //!
+    //! \tparam Node the node type of the word graph and \p source.
+    //! \tparam Iterator the type of the iterators into a word.
+    //!
+    //! \param wg a word graph.
+    //! \param source the source node.
+    //! \param first iterator into a word.
+    //! \param last iterator into a word.
+    //!
+    //! \returns A pair consisting of the last node reached and an iterator
+    //! pointing at the last letter in the word labelling an edge.
+    //!
+    //! \throws LibsemigroupsException if \p source, any value in the range
+    //! from \p first to \p last, or any target in \p wg is out of bounds.
+    //!
+    //! \complexity
+    //! At worst the distance from \p first to \p last.
+    //!
+    template <typename Node, typename Iterator>
+    [[nodiscard]] std::pair<Node, Iterator>
+    last_node_on_path(WordGraph<Node> const& wg,
+                      Node                   source,
+                      Iterator               first,
+                      Iterator               last) {
+      return last_node_on_path(WordGraphView(wg), source, first, last);
+    }
+
+    //! \brief Returns the std::unordered_set of nodes reachable from a given
+    //! node in a word graph.
+    //!
+    //! This function returns a std::unordered_set consisting of all the nodes
+    //! in the word graph \p wg that are reachable from \p source
+    //! via a path of length at most \p max_depth.
+    //!
+    //! \tparam Node the node type of the word graph and \p source.
+    //!
+    //! \param wg the word graph.
+    //! \param source the source node.
+    //! \param max_depth the maximum distance from source
+    //! (defaults to \ref POSITIVE_INFINITY).
+    //!
+    //! \returns A std::unordered_set consisting of all the nodes in the word
+    //! graph \p wg that are reachable from \p source.
+    //!
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p source is a node of \p wg (i.e. less than
+    //! WordGraph::number_of_nodes).
+    template <typename Node>
+    [[nodiscard]] std::unordered_set<Node>
+    nodes_reachable_from_no_checks(WordGraph<Node> const& wg,
+                                   Node                   source,
+                                   size_t max_depth = POSITIVE_INFINITY) {
+      return nodes_reachable_from_no_checks(
+          WordGraphView(wg), source, max_depth);
+    }
+
+    //! \brief Returns the std::unordered_set of nodes reachable from a given
+    //! node in a word graph.
+    //!
+    //! This function returns a std::unordered_set consisting of all the nodes
+    //! in the word graph \p wg that are reachable from \p source
+    //! via a path of length at most \p max_depth.
+    //!
+    //! \tparam Node the node type of the word graph and \p source.
+    //!
+    //! \param wg the word graph.
+    //! \param source the source node.
+    //! \param max_depth the maximum distance from source
+    //! (defaults to \ref POSITIVE_INFINITY).
+    //!
+    //! \returns A std::unordered_set consisting of all the nodes in the word
+    //! graph \p wg that are reachable from \p source.
+    //!
+    //! \throws LibsemigroupsException if \p source or any target in \p wg is
+    //! out of bounds.
+    // TODO(1) tests
+    // TODO(1) version where std::unordered_set is passed by reference, or
+    // make this a class that stores its stack and unordered_set, not clear
+    // why we'd single out the unordered_set to be passed by reference.
+    // TODO(2) version which is an iterator i.e. returns an iterator or range
+    // object that allows use to step through the nodes reachable from a given
+    // node
+    template <typename Node>
+    [[nodiscard]] std::unordered_set<Node>
+    nodes_reachable_from(WordGraph<Node> const& wg,
+                         Node                   source,
+                         size_t                 max_depth = POSITIVE_INFINITY) {
+      return nodes_reachable_from(WordGraphView(wg), source, max_depth);
+    }
+
+    //! \brief Returns the number of nodes reachable from a given node in a
+    //! word graph.
+    //!
+    //! This function returns the number of nodes in the word graph \p wg that
+    //! are reachable from \p source via a path of length at most
+    //! \p max_depth.
+    //!
+    //! \tparam Node the node type of the word graph and \p source.
+    //!
+    //! \param wg the word graph.
+    //! \param source the source node.
+    //! \param max_depth the maximum distance from source
+    //! (defaults to \ref POSITIVE_INFINITY).
+    //!
+    //! \returns The number of nodes in the word graph \p wg that are
+    //! reachable from \p source.
+    //!
+    //! \throws LibsemigroupsException if \p source or any target in \p wg is
+    //! out of bounds.
+    template <typename Node>
+    [[nodiscard]] size_t
+    number_of_nodes_reachable_from(WordGraph<Node> const& wg,
+                                   Node                   source,
+                                   size_t max_depth = POSITIVE_INFINITY) {
+      return number_of_nodes_reachable_from(
+          WordGraphView(wg), source, max_depth);
+    }
+
+    //! \brief Returns the number of nodes reachable from a given node in a
+    //! word graph.
+    //!
+    //! This function returns the number of nodes in the word graph \p wg that
+    //! are reachable from \p source via a path of length at most
+    //! \p max_depth.
+    //!
+    //! \tparam Node the node type of the word graph and \p source.
+    //!
+    //! \param wg the word graph.
+    //! \param source the source node.
+    //! \param max_depth the maximum distance from source
+    //! (defaults to \ref POSITIVE_INFINITY).
+    //!
+    //! \returns The number of nodes in the word graph \p wg that are
+    //! reachable from \p source.
+    //!
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p source is a node of \p wg (i.e. less than
+    //! WordGraph::number_of_nodes).
+    template <typename Node>
+    [[nodiscard]] size_t number_of_nodes_reachable_from_no_checks(
+        WordGraph<Node> const& wg,
+        Node                   source,
+        size_t                 max_depth = POSITIVE_INFINITY) {
+      return number_of_nodes_reachable_from_no_checks(
+          WordGraphView(wg), source, max_depth);
+    }
+
+    //! \brief Construct a random connected acyclic word graph with given
+    //! number of nodes, and out-degree.
+    //!
+    //! This function constructs a random acyclic connected word graph with
+    //! \p number_of_nodes nodes, and out-degree \p out_degree. This function
+    //! implements the Markov chain algorithm given in \cite Carnino2011.
+    //!
+    //! \param number_of_nodes the number of nodes.
+    //! \param out_degree the out-degree of every node.
+    //! \param mt a std::mt19937 used as a random source (defaults to:
+    //! std::mt19937(std::random_device()())).
+    //!
+    //! \returns A random connected acyclic word graph.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p number_of_nodes is less than \c 2
+    //! * \p out_degree is less than \c 2
+    //!
+    //! \par Complexity
+    //! The complexity of the implementation is \f$O(n^2)\f$ where \p n is the
+    //! number of nodes.
+    template <typename Node>
+    WordGraph<Node> random_acyclic(size_t       number_of_nodes,
+                                   size_t       out_degree,
+                                   std::mt19937 mt
+                                   = std::mt19937(std::random_device()()));
+
+    //! \brief Replace the contents of a Forest by a spanning tree of the
+    //! nodes reachable from a given node in a word graph.
+    //!
+    //! This function replaces the content of the Forest \p f with a spanning
+    //! tree of the nodes reachable from \p root in the word graph \p wg
+    //! by a path of length at most \p max_depth.
+    //!
+    //! \tparam Node the node type of the word graph and \p root.
+    //!
+    //! \param wg the word graph.
+    //! \param root the source node.
+    //! \param f the Forest object to hold the result.
+    //! \param max_depth the maximum depth of the tree (defaults to
+    //! \ref POSITIVE_INFINITY).
+    //!
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p root is a node of \p wg (i.e. less than
+    //! WordGraph::number_of_nodes).
+    template <typename Node>
+    void spanning_tree_no_checks(WordGraph<Node> const& wg,
+                                 Node                   root,
+                                 Forest&                f,
+                                 size_t max_depth = POSITIVE_INFINITY) {
+      return spanning_tree_no_checks(WordGraphView(wg), root, f, max_depth);
+    }
+
+    //! \brief Replace the contents of a Forest by a spanning tree of the
+    //! nodes reachable from a given node in a word graph.
+    //!
+    //! This function replaces the content of the Forest \p f with a spanning
+    //! tree of the nodes reachable from \p root in the word graph \p wg
+    //! by a path of length at most \p max_depth.
+    //!
+    //! \tparam Node the node type of the word graph and \p root.
+    //!
+    //! \param wg the word graph.
+    //! \param root the source node.
+    //! \param f the Forest object to hold the result.
+    //! \param max_depth the maximum depth of the tree (defaults to
+    //! \ref POSITIVE_INFINITY).
+    //!
+    //! \throws LibsemigroupsException if \p root or any target in \p wg is
+    //! out of bounds.
+    template <typename Node>
+    void spanning_tree(WordGraph<Node> const& wg,
+                       Node                   root,
+                       Forest&                f,
+                       size_t                 max_depth = POSITIVE_INFINITY) {
+      spanning_tree(WordGraphView(wg), root, f, max_depth);
+    }
+
+    //! \brief Returns a Forest containing a spanning tree of the nodes
+    //! reachable from a given node in a word graph.
+    //!
+    //! This function returns a Forest containing a spanning
+    //! tree of the nodes reachable from \p root in the word graph \p wg
+    //! by a path of length at most \p max_depth.
+    //!
+    //! \tparam Node the node type of the word graph and \p root.
+    //!
+    //! \param wg the word graph.
+    //! \param root the source node.
+    //! \param max_depth the maximum depth of the tree (defaults to
+    //! \ref POSITIVE_INFINITY).
+    //!
+    //! \returns A Forest object containing a spanning tree.
+    //!
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p root is a node of \p wg (i.e. less than
+    //! WordGraph::number_of_nodes).
+    template <typename Node>
+    [[nodiscard]] Forest spanning_tree_no_checks(WordGraph<Node> const& wg,
+                                                 Node                   root,
+                                                 size_t max_depth
+                                                 = POSITIVE_INFINITY) {
+      return spanning_tree_no_checks(WordGraphView(wg), root, max_depth);
+    }
+
+    //! \brief Returns a Forest containing a spanning tree of the nodes
+    //! reachable from a given node in a word graph.
+    //!
+    //! This function returns a Forest containing a spanning
+    //! tree of the nodes reachable from \p root in the word graph \p wg
+    //! by a path of length at most \p max_depth.
+    //!
+    //! \tparam Node the node type of the word graph and \p root.
+    //!
+    //! \param wg the word graph.
+    //! \param root the source node.
+    //! \param max_depth the maximum depth of the tree (defaults to
+    //! \ref POSITIVE_INFINITY).
+    //!
+    //! \returns A Forest object containing a spanning tree.
+    //!
+    //! \throws LibsemigroupsException if \p root or any target in \p wg is
+    //! out of bounds.
+    template <typename Node>
+    [[nodiscard]] Forest spanning_tree(WordGraph<Node> const& wg,
+                                       Node                   root,
+                                       size_t max_depth = POSITIVE_INFINITY) {
+      return spanning_tree(WordGraphView(wg), root, max_depth);
+    }
+
+    //! \brief Standardizes a word graph in-place.
+    //!
+    //! This function standardizes the word graph \p wg according to the
+    //! reduction order specified by \p cmp, and replaces the contents of the
+    //! Forest \p f with a spanning tree rooted at \c 0 for the node reachable
+    //! from \c 0. The spanning tree corresponds to the order \p cmp.
+    //!
+    //! \tparam Graph the type of the word graph \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph.
+    //! \param f the Forest object to store the spanning tree.
+    //! \param cmp the order to use for standardization.
+    //!
+    //! \returns
+    //! This function returns \c true if the word graph \p wg is modified by
+    //! this function (i.e. it was not standardized already), and \c false
+    //! otherwise.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning No checks are performed on the arguments.
+    //!
+    //! \warning If there are nodes in the \p wg that are not reachable from
+    //! the node \c 0, then this function may not preserve \p wg up to
+    //! isomorphism. However, the isomorphism type of the sub-word-graph
+    //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
+    // Not nodiscard because sometimes we just don't want the output
+    template <typename Graph, typename Cmp>
+    bool standardize_no_checks(Graph& wg, Forest& f, Cmp&& cmp);
+
+    //! \brief Standardizes a word graph in-place.
+    //!
+    //! This function standardizes the word graph \p wg according to the
+    //! reduction order specified by \p cmp, and replaces the contents of the
+    //! Forest \p f with a spanning tree rooted at \c 0 for the node reachable
+    //! from \c 0. The spanning tree corresponds to the order \p val.
+    //!
+    //! \tparam Graph the type of the word graph \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph.
+    //! \param f the Forest object to store the spanning tree.
+    //! \param cmp the order to use for standardization.
+    //!
+    //! \returns
+    //! This function returns \c true if the word graph \p wg is modified by
+    //! this function (i.e. it was not standardized already), and \c false
+    //! otherwise.
+    //!
+    //! \throws LibsemigroupsException if any target or any label of \p wg is
+    //! out of bounds.
+    //!
+    //! \warning If there are nodes in the \p wg that are not reachable from
+    //! the node \c 0, then this function may not preserve \p wg up to
+    //! isomorphism. However, the isomorphism type of the sub-word-graph
+    //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
+    // Not nodiscard because sometimes we just don't want the output
+    template <typename Graph, typename Cmp>
+    bool standardize(Graph& wg, Forest& f, Cmp&& cmp);
+
+    //! \brief Standardizes a word graph in-place.
+    //!
+    //! This function standardizes the word graph \p wg according to the
+    //! reduction order specified by \p cmp, and returns a Forest object
+    //! containing a spanning tree rooted at \c 0 for the node reachable from
+    //! \c 0. The spanning tree corresponds to the order \p val.
+    //!
+    //! \tparam Graph the type of the word graph \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph.
+    //! \param cmp the order to use for standardization.
+    //!
+    //! \returns
+    //! A std::pair the first entry of which is \c true if the word graph
+    //! \p wg is modified by this function (i.e. it was not standardized
+    //! already), and
+    //! \c false otherwise. The second entry is a Forest object containing a
+    //! spanning tree for \p wg.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning No checks are performed on the arguments.
+    //!
+    //! \warning If there are nodes in the \p wg that are not reachable from
+    //! the node \c 0, then this function may not preserve \p wg up to
+    //! isomorphism. However, the isomorphism type of the sub-word-graph
+    //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
+    // Not nodiscard because sometimes we just don't want the output
+    template <typename Graph, typename Cmp>
+    std::pair<bool, Forest> standardize_no_checks(Graph& wg, Cmp&& cmp) {
+      Forest f;
+      bool   result = standardize_no_checks(wg, f, std::forward<Cmp>(cmp));
+      return std::make_pair(result, f);
+    }
+
+    //! \brief Standardizes a word graph in-place.
+    //!
+    //! This function standardizes the word graph \p wg according to the
+    //! reduction order specified by \p cmp, and returns a Forest object
+    //! containing a spanning tree rooted at \c 0 for the node reachable from
+    //! \c 0. The spanning tree corresponds to the order \p val.
+    //!
+    //! \tparam Graph the type of the word graph \p wg.
+    //! \tparam Cmp the type of the comparator \p cmp.
+    //!
+    //! \param wg the word graph.
+    //! \param cmp the order to use for standardization.
+    //!
+    //! \returns
+    //! A std::pair the first entry of which is \c true if the word graph
+    //! \p wg is modified by this function (i.e. it was not standardized
+    //! already), and
+    //! \c false otherwise. The second entry is a Forest object containing a
+    //! spanning tree for \p wg.
+    //!
+    //! \throws LibsemigroupsException if any target or any label of \p wg is
+    //! out of bounds.
+    //!
+    //! \warning If there are nodes in the \p wg that are not reachable from
+    //! the node \c 0, then this function may not preserve \p wg up to
+    //! isomorphism. However, the isomorphism type of the sub-word-graph
+    //! consisting of those nodes reachable from the node \c 0 is preserved.
+    // NOTE: there's no WordGraphView version of this function because it
+    // modifies it's argument and WordGraphView is read-only.
+    //
+    // Not nodiscard because sometimes we just don't want the output
+    template <typename Graph, typename Cmp>
+    std::pair<bool, Forest> standardize(Graph& wg, Cmp&& cmp);
+
+    //! \brief Throws if the target of any edge with source in a given range is
+    //! out of bounds.
+    //!
+    //! This function throws if any target of any edge in \p wg whose source is
+    //! in the range defined by \p first and \p last is out of bounds (i.e. is
+    //! greater than or equal to WordGraph::number_of_nodes, and not equal to
+    //! \ref UNDEFINED).
+    //!
+    //! \tparam Node the type of the nodes in \p wg.
+    //! \tparam Iterator the type of the 2nd and 3rd arguments.
+    //!
+    //! \param wg the word graph to check.
+    //! \param first iterator pointing at the first node to check.
+    //! \param last iterator pointing one beyond the last node to check.
+    //!
+    //! \throws LibsemigroupsException if any target of any edge in \p wg with
+    //! source in the range \p first to \p last is greater than or equal to
+    //! WordGraph::number_of_nodes and not equal to \ref UNDEFINED.
+    //!
+    //! \throws LibsemigroupsException if any node in the range \p first to
+    //! \p last is out of bounds (i.e. not a node of \p wg).
+    // NOTE: this is genuinely required, do not remove.
+    template <typename Node, typename Iterator>
+    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg,
+                                           Iterator               first,
+                                           Iterator               last) {
+      // Strictly speaking it is probably bad to pass first and last here, but
+      // since they usually only represent integers we should be okay.
+      throw_if_any_target_out_of_bounds(WordGraphView(wg), first, last);
+    }
+
+    //! \brief Returns the nodes of the word graph in topological order (see
+    //! below) if possible.
+    //!
+    //! If it is not empty, the returned vector has the property that if an
+    //! edge from a node \c n points to a node \c m, then \c m occurs before
+    //! \c n in the vector.
+    //!
+    //! \tparam Node the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns The nodes of \p wg in topological order if possible, and an
+    //! empty vector otherwise.
+    //!
+    //! \warning No checks are performed on the argument.
+    template <typename Node>
+    [[nodiscard]] std::vector<Node>
+    topological_sort_no_checks(WordGraph<Node> const& wg) {
+      return topological_sort_no_checks(WordGraphView(wg));
+    }
+
+    //! \brief Returns the nodes of the word graph in topological order (see
+    //! below) if possible.
+    //!
+    //! If it is not empty, the returned vector has the property that if an
+    //! edge from a node \c n points to a node \c m, then \c m occurs before
+    //! \c n in the vector.
+    //!
+    //! \tparam Node  the type of the nodes of the WordGraph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns
+    //! A std::vector of Node types that contains the nodes of
+    //! \p wg in topological order (if possible) and is otherwise empty.
+    //!
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
+    template <typename Node>
+    [[nodiscard]] std::vector<Node>
+    topological_sort(WordGraph<Node> const& wg) {
+      return topological_sort(WordGraphView(wg));
+    }
+
+    //! Returns the nodes of the word graph reachable from a given node in
+    //! topological order (see below) if possible.
+    //!
+    //! If it is not empty, the returned vector has the property that if an
+    //! edge from a node \c n points to a node \c m, then \c m occurs before
+    //! \c n in the vector, and the last item in the vector is \p source.
+    //!
+    //! \tparam Node the node type of the word graph and \p source.
+    //!
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
+    //!
+    //! \returns The nodes reachable from \p source in topological order if
+    //! possible, and an empty vector otherwise.
+    //!
+    //! \warning No checks are performed on the arguments.
+    template <typename Node>
+    [[nodiscard]] std::vector<Node>
+    topological_sort_no_checks(WordGraph<Node> const& wg, Node source) {
+      return topological_sort_no_checks(WordGraphView(wg), source);
+    }
+
+    //! Returns the nodes of the word graph reachable from a given node in
+    //! topological order (see below) if possible.
+    //!
+    //! If it is not empty, the returned vector has the property that
+    //! if an edge from a node \c n points to a node \c m, then \c m occurs
+    //! before \c n in the vector, and the last item in the vector is
+    //! \p source.
+    //!
+    //! \tparam Node the node type of the word graph and \p source.
+    //!
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
+    //!
+    //! \returns
+    //! A std::vector of Node types that contains the nodes reachable from
+    //! \p source in \p wg in topological order (if possible) and is otherwise
+    //! empty.
+    //!
+    //! \throws LibsemigroupsException if \p source or any target in \p wg is
+    //! out of bounds.
+    //!
+    //! \par Complexity
+    //! At worst \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! subword graph of those nodes reachable from \p source
+    //! and \f$n\f$ is the number of edges.
+    template <typename Node>
+    [[nodiscard]] std::vector<Node> topological_sort(WordGraph<Node> const& wg,
+                                                     Node source) {
+      return topological_sort(WordGraphView(wg), source);
+    }
+
+  }  // namespace word_graph
+
+  namespace detail {
+    template <typename Subclass>
+    class JoinerMeeterCommon {
      private:
-      // TODO(v4) Remove the libsemigroups prefix
-      libsemigroups::detail::Duf<>              _uf;
-      std::stack<std::pair<uint64_t, uint64_t>> _stck;
-      std::vector<uint64_t>                     _lookup;
-
       template <typename Node>
-      [[nodiscard]] Node find(WordGraph<Node> const& x,
-                              size_t xnum_nodes_reachable_from_root,
-                              WordGraph<Node> const&               y,
-                              uint64_t                             n,
-                              typename WordGraph<Node>::label_type a) const;
-
-      template <typename Node>
-      void run(WordGraph<Node> const& x,
-               size_t                 xnum_nodes_reachable_from_root,
-               Node                   xroot,
-               WordGraph<Node> const& y,
-               size_t                 ynum_nodes_reachable_from_root,
-               Node                   yroot);
+      void throw_if_bad_args(WordGraph<Node> const& x,
+                             Node                   xroot,
+                             WordGraph<Node> const& y,
+                             Node                   yroot);
 
      public:
-      //! \brief Default constructor.
-      //!
-      //! Default constructor.
-      Joiner();
-
-      //! \brief Default copy constructor.
-      //!
-      //! Default copy constructor.
-      Joiner(Joiner const&);
-
-      //! \brief Default move constructor.
-      //!
-      //! Default move constructor.
-      Joiner(Joiner&&);
-
-      //! \brief Default copy assignment operator.
-      //!
-      //! Default copy assignment operator.
-      Joiner& operator=(Joiner const&);
-
-      //! \brief Default move assignment operator.
-      //!
-      //! Default move assignment operator.
-      Joiner& operator=(Joiner&&);
-
-      ~Joiner();
-
-      //! \brief Replace the contents of a word graph with the join/meet of two
-      //! given word graphs with respect to given root vertices.
-      //!
-      //! This function replaces the contents of the word graph \p xy with the
-      //! join/meet of the word graphs \p x and \p y.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \param xy the word graph to store the result.
-      //!
-      //! \param x the first word graph to join/meet.
-      //!
-      //! \param xnum_nodes_reachable_from_root the number of nodes reachable in
-      //! \p x from the node \p xroot (for the circumstance where this number is
-      //! known apriori, and does not have to be recomputed).
-      //!
-      //! \param xroot the node to use as a root in \p x.
-      //!
-      //! \param y the second word graph to join/meet.
-      //!
-      //! \param ynum_nodes_reachable_from_root the number of nodes reachable in
-      //! \p y from the node \p yroot.
-      //!
-      //! \param yroot the node to use as a root in \p y.
-      //!
-      //! \warning
-      //! No checks whatsoever on the validity of the arguments are performed.
-      template <typename Node>
-      void call_no_checks(WordGraph<Node>&       xy,
-                          WordGraph<Node> const& x,
-                          size_t                 xnum_nodes_reachable_from_root,
-                          Node                   xroot,
-                          WordGraph<Node> const& y,
-                          size_t                 ynum_nodes_reachable_from_root,
-                          Node                   yroot);
-
-      //! \brief Check if the language accepted by one word graph is contained
-      //! in that accepted by another word graph.
-      //!
-      //! This function returns \c true if the language accepted by \p x with
-      //! initial node \p xroot and accept state every node, is a subset of the
-      //! corresponding language in \p y.
-      //!
-      //! \tparam Node1 the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \tparam Node2 the type of the nodes to use as roots.
-      //!
-      //! \param x the word graph whose language we are checking might be a
-      //! subset.
-      //!
-      //! \param xnum_nodes_reachable_from_root the number of nodes reachable in
-      //! \p x from the node \p xroot (for the circumstance where this number is
-      //! known apriori, and does not have to be recomputed).
-      //!
-      //! \param xroot the node to use as the initial state in \p x.
-      //!
-      //! \param y the word graph whose language we are checking might be a
-      //! superset.
-      //!
-      //! \param ynum_nodes_reachable_from_root the number of nodes reachable in
-      //! \p y from the node \p yroot.
-      //!
-      //! \param yroot the node to use as an initial state in \p y.
-      //!
-      //! \returns Whether or not \p x is a subrelation of \p y.
-      //!
-      //! \warning
-      //! No checks whatsoever on the validity of the arguments are performed.
-      // Is x a subrelation of y?
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool
-      is_subrelation_no_checks(WordGraph<Node1> const& x,
-                               size_t xnum_nodes_reachable_from_root,
-                               Node2  xroot,
-                               WordGraph<Node1> const& y,
-                               size_t ynum_nodes_reachable_from_root,
-                               Node2  yroot);
-#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-      //! \brief Replace the contents of a word graph with the join/meet of two
-      //! given word graphs with respect to given root vertices.
-      //!
-      //! This function replaces the contents of the word graph \p xy with the
-      //! join/meet of the word graphs \p x and \p y. This function is the same
-      //! as the 7-argument variant but it computes the number of nodes
-      //! reachable from \p xroot and \p yroot.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \param xy the word graph to store the result.
-      //!
-      //! \param x the first word graph to join/meet.
-      //!
-      //! \param xroot the node to use as a root in \p x.
-      //!
-      //! \param y the second word graph to join/meet.
-      //!
-      //! \param yroot the node to use as a root in \p y.
-      //!
-      //! \warning
-      //! No checks whatsoever on the validity of the arguments are performed.
       template <typename Node>
       void call_no_checks(WordGraph<Node>&       xy,
                           WordGraph<Node> const& x,
@@ -3208,531 +1817,913 @@ namespace libsemigroups {
                           WordGraph<Node> const& y,
                           Node                   yroot);
 
-      //! \brief Replace the contents of a word graph with the join/meet of two
-      //! given word graphs with respect to given root vertices.
-      //!
-      //! This function replaces the contents of the word graph \p xy with the
-      //! join/meet of the word graphs \p x and \p y. This function is the same
-      //! as the 5-argument variant but it uses \c 0 as the root node in both
-      //! \p x and \p y.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \param xy the word graph to store the result.
-      //!
-      //! \param x the first word graph to join/meet.
-      //!
-      //! \param y the second word graph to join/meet.
-      //!
-      //! \warning
-      //! No checks whatsoever on the validity of the arguments are performed.
       template <typename Node>
       void call_no_checks(WordGraph<Node>&       xy,
                           WordGraph<Node> const& x,
-                          WordGraph<Node> const& y);
+                          WordGraph<Node> const& y) {
+        return call_no_checks(
+            xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
+      }
 
-      //! \brief Returns a word graph containing the join/meet of two given word
-      //! graphs.
-      //!
-      //! This function returns a word graph  containing the join/meet of the
-      //! word graphs \p x and \p y. If \c n is the number of arguments, then
-      //! this function constructs a word graph to contain the result, forwards
-      //! this and the other arguments to the overload of `call_no_checks` with
-      //! `n + 1` parameters, then returns the word graph containing the result.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \tparam Args parameter pack for the remaining arguments.
-      //!
-      //! \param x the first word graph to join/meet.
-      //! \param args the remaining arguments.
-      //!
-      //! \warning
-      //! No checks whatsoever on the validity of the arguments are performed.
       template <typename Node, typename... Args>
       [[nodiscard]] auto call_no_checks(WordGraph<Node> const& x,
-                                        Args&&... args);
+                                        Args&&... args)
+          -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
+        // The versions of this function changing the 1st argument in-place
+        // always have an odd number of arguments, so we check that it's even
+        // here (the argument x and an odd number of further arguments).
+        WordGraph<Node> xy;
+        static_cast<Subclass&>(*this).call_no_checks(
+            xy, x, std::forward<Args>(args)...);
+        return xy;
+      }
 
-      //! \brief Replace the contents of a word graph with the join/meet of two
-      //! given word graphs with respect to given root vertices.
-      //!
-      //! This function replaces the contents of the word graph \p xy with the
-      //! join/meet of the word graphs \p x and \p y. This function is the same
-      //! as the 5-argument overload of \c call_no_checks but it throws if its
-      //! arguments aren't valid.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \param xy the word graph to store the result.
-      //!
-      //! \param x the first word graph to join/meet.
-      //!
-      //! \param xroot the node to use as a root in \p x.
-      //!
-      //! \param y the second word graph to join/meet.
-      //!
-      //! \param yroot the node to use as a root in \p y.
-      //!
-      //! \throws LibsemigroupsException if any of the following hold:
-      //! * \p xroot isn't a node in \p x;
-      //! * \p yroot isn't a node in \p y;
-      //! * `x.out_degree() != y.out_degree()`.
+      // There's no operator() with the number of nodes reachable from the
+      // roots as arguments (7 args in total) because we'd have to check that
+      // they were valid, and the only way to do this is to recompute them.
+
       template <typename Node>
       void operator()(WordGraph<Node>&       xy,
                       WordGraph<Node> const& x,
                       Node                   xroot,
                       WordGraph<Node> const& y,
-                      Node                   yroot);
+                      Node                   yroot) {
+        throw_if_bad_args(x, xroot, y, yroot);
+        call_no_checks(xy, x, xroot, y, yroot);
+      }
 
-      //! \brief Replace the contents of a word graph with the join/meet of two
-      //! given word graphs with respect to given root vertices.
-      //!
-      //! This function replaces the contents of the word graph \p xy with the
-      //! join/meet of the word graphs \p x and \p y. This function is the same
-      //! as the 3-argument overload of \c call_no_checks but it throws if its
-      //! arguments aren't valid.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \param xy the word graph to store the result.
-      //!
-      //! \param x the first word graph to join/meet.
-      //!
-      //! \param y the second word graph to join/meet.
-      //!
-      //! \throws LibsemigroupsException if any of the following hold:
-      //! * \p x has no nodes;
-      //! * \p y has no nodes;
-      //! * `x.out_degree() != y.out_degree()`.
       template <typename Node>
       void operator()(WordGraph<Node>&       xy,
                       WordGraph<Node> const& x,
-                      WordGraph<Node> const& y);
+                      WordGraph<Node> const& y) {
+        return operator()(xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
+      }
 
-      //! \brief Returns a word graph containing the join/meet of two given word
-      //! graphs.
-      //!
-      //! This function is the same as the overload of \ref call_no_checks with
-      //! the same signature, the difference being that this function throws if
-      //! the arguments are invalid.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \tparam Args parameter pack for the remaining arguments.
-      //!
-      //! \param x the first word graph to join/meet.
-      //! \param args the remaining arguments.
-      //!
-      //! \throws LibsemigroupsException if the arguments aren't valid. See the
-      //! relevant `operator()` for more details.
       template <typename Node, typename... Args>
-      [[nodiscard]] auto operator()(WordGraph<Node> const& x, Args&&... args);
+      [[nodiscard]] auto operator()(WordGraph<Node> const& x, Args&&... args)
+          -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
+        // The versions of this function changing the 1st argument in-place
+        // always have an odd number of arguments, so we check that it's even
+        // here (the argument x and an odd number of further arguments).
+        WordGraph<Node> xy;
+                        operator()(xy, x, std::forward<Args>(args)...);
+        return xy;
+      }
 
-      //! \brief Check if the language accepted by one word graph is contained
-      //! in that defined by another word graph.
-      //!
-      //! This function returns \c true if the language accepted by \p x with
-      //! initial node \p xroot and accept state every node, is a subset of the
-      //! corresponding language in \p y. This version of the function is
-      //! similar to the 6-argument overload, except that here we must compute
-      //! the number of nodes in \p x and \p y reachable from \p xroot and
-      //! \p yroot, respectively.
-      //!
-      //! \tparam Node1 the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \tparam Node2 the type of the nodes to use as roots.
-      //!
-      //! \param x the word graph whose language we are checking might be a
-      //! subset.
-      //!
-      //! \param xroot the node to use as the initial state in \p x.
-      //!
-      //! \param y the word graph whose language we are checking might be a
-      //! superset.
-      //!
-      //! \param yroot the node to use as an initial state in \p y.
-      //!
-      //! \returns Whether or not \p x is a subrelation of \p y.
-      //!
-      //! \warning
-      //! No checks whatsoever on the validity of the arguments are performed.
-      // Is x a subrelation of y?
-      template <typename Node1, typename Node2>
-      bool is_subrelation_no_checks(WordGraph<Node1> const& x,
-                                    Node2                   xroot,
-                                    WordGraph<Node1> const& y,
-                                    Node2                   yroot);
-
-      //! \brief Check if the language accepted by one word graph is contained
-      //! in that defined by another word graph.
-      //!
-      //! This function returns \c true if the language accepted by \p x with
-      //! initial node \p xroot and accept state every node, is a subset of the
-      //! corresponding language in \p y. This version of the function is
-      //! similar to the 4-argument overload, except that \c 0 is used as the
-      //! root node in both \p x and \p y.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \param x the word graph whose language we are checking might be a
-      //! subset.
-      //!
-      //! \param y the word graph whose language we are checking might be a
-      //! superset.
-      //!
-      //! \returns Whether or not \p x is a subrelation of \p y.
-      //!
-      //! \warning
-      //! No checks whatsoever on the validity of the arguments are performed.
       template <typename Node>
       bool is_subrelation_no_checks(WordGraph<Node> const& x,
-                                    WordGraph<Node> const& y);
+                                    Node                   xroot,
+                                    WordGraph<Node> const& y,
+                                    Node                   yroot);
+
+      // Deprecated member declarations must remain inside the class
+      // definition. Implementations are in word-graph-helpers.tpp.
+      template <typename Node1,
+                typename Node2,
+                typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+      [[deprecated("Use is_subrelation_no_checks with matching node types "
+                   "instead.")]] bool
+      is_subrelation_no_checks(WordGraph<Node1> const& x,
+                               Node2                   xroot,
+                               WordGraph<Node1> const& y,
+                               Node2                   yroot);
+
+      template <typename Node>
+      bool is_subrelation_no_checks(WordGraph<Node> const& x,
+                                    WordGraph<Node> const& y) {
+        return is_subrelation_no_checks(
+            x, static_cast<Node>(0), y, static_cast<Node>(0));
+      }
 
       // There's no subrelation with the number of nodes reachable from the
       // roots as arguments (6 args in total) because we'd have to check that
       // they were valid, and the only way to do this is to recompute them.
 
-      //! \brief Check if the language accepted by one word graph is contained
-      //! in that defined by another word graph.
-      //!
-      //! This function returns \c true if the language accepted by \p x with
-      //! initial node \p xroot and accept state every node, is a subset of the
-      //! corresponding language in \p y. This version of the function is the
-      //! same as the 4-argument overload of \c is_subrelation_no_checks, except
-      //! that this function throws if its arguments are invalid.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \param x the word graph whose language we are checking might be a
-      //! subset.
-      //!
-      //! \param xroot the node to use as the initial state in \p x.
-      //!
-      //! \param y the word graph whose language we are checking might be a
-      //! superset.
-      //!
-      //! \param yroot the node to use as an initial state in \p y.
-      //!
-      //! \returns Whether or not \p x is a subrelation of \p y.
-      //!
-      //! \throws LibsemigroupsException if any of the following hold:
-      //! * \p xroot isn't a node in \p x;
-      //! * \p yroot isn't a node in \p y;
-      //! * `x.out_degree() != y.out_degree()`.
-      template <typename Node1, typename Node2>
-      bool is_subrelation(WordGraph<Node1> const& x,
-                          Node2                   xroot,
-                          WordGraph<Node1> const& y,
-                          Node2                   yroot);
-
-      //! \brief Check if the language accepted by one word graph is contained
-      //! in that defined by another word graph.
-      //!
-      //! This function returns \c true if the language accepted by \p x with
-      //! initial node \c 0 and accept state every node, is a subset of the
-      //! corresponding language in \p y. This version of the function is the
-      //! same as the 2-argument overload of \c is_subrelation_no_checks, except
-      //! that this function throws if its arguments are invalid.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \param x the word graph whose language we are checking might be a
-      //! subset.
-      //!
-      //! \param y the word graph whose language we are checking might be a
-      //! superset.
-      //!
-      //! \returns Whether or not \p x is a subrelation of \p y.
-      //!
-      //! \throws LibsemigroupsException if any of the following hold:
-      //! * \p x has no nodes;
-      //! * \p y has no nodes;
-      //! * `x.out_degree() != y.out_degree()`.
       template <typename Node>
-      bool is_subrelation(WordGraph<Node> const& x, WordGraph<Node> const& y);
-
-#else
-      using detail::JoinerMeeterCommon<Joiner>::call_no_checks;
-      using detail::JoinerMeeterCommon<Joiner>::operator();
-      using detail::JoinerMeeterCommon<Joiner>::is_subrelation_no_checks;
-      using detail::JoinerMeeterCommon<Joiner>::is_subrelation;
-#endif
-    };  // Joiner
-
-    //! \ingroup word_graph_group
-    //!
-    //! \brief Class for taking meets of word graphs.
-    //!
-    //! This class exists for its call operators which can be used to find the
-    //! meet of two word graphs with the same WordGraph::out_degree. This class
-    //! implements the same algorithm as that used for computing a
-    //! finite state automata recognising the intersection of the languages
-    //! accepted by two given automata.
-    //!
-    //! The input word graphs need not be complete, and the root nodes can also
-    //! be specified.
-    // Class for forming the meet of two word graphs
-    class Meeter : public detail::JoinerMeeterCommon<Meeter> {
-     private:
-      using node_type = std::pair<uint64_t, uint64_t>;
-
-      std::unordered_map<node_type, uint64_t, Hash<node_type>> _lookup;
-      std::vector<node_type>                                   _todo;
-      std::vector<node_type>                                   _todo_new;
-
-     public:
-      //! \brief Default constructor.
-      //!
-      //! Default constructor.
-      Meeter();
-
-      //! \brief Default copy constructor.
-      //!
-      //! Default copy constructor.
-      Meeter(Meeter const&);
-
-      //! \brief Default move constructor.
-      //!
-      //! Default move constructor.
-      Meeter(Meeter&&);
-
-      //! \brief Default copy assignment operator.
-      //!
-      //! Default copy assignment operator.
-      Meeter& operator=(Meeter const&);
-
-      //! \brief Default move assignment operator.
-      //!
-      //! Default move assignment operator.
-      Meeter& operator=(Meeter&&);
-
-      ~Meeter();
-
-      //! \copydoc Joiner::call_no_checks(WordGraph<Node>&, WordGraph<Node>
-      //! const&, size_t, Node, WordGraph<Node> const&, size_t, Node)
-      template <typename Node>
-      void call_no_checks(WordGraph<Node>&       xy,
-                          WordGraph<Node> const& x,
-                          size_t                 xnum_nodes_reachable_from_root,
+      bool is_subrelation(WordGraph<Node> const& x,
                           Node                   xroot,
                           WordGraph<Node> const& y,
-                          size_t                 ynum_nodes_reachable_from_root,
-                          Node                   yroot);
+                          Node                   yroot) {
+        throw_if_bad_args(x, xroot, y, yroot);
+        return is_subrelation_no_checks(x, xroot, y, yroot);
+      }
 
-      //! \copydoc Joiner::is_subrelation_no_checks(WordGraph<Node1> const&,
-      //! size_t, Node2, WordGraph<Node1> const&, size_t, Node2)
-      // is x a subrelation of y
-      template <typename Node1, typename Node2>
-      [[nodiscard]] bool
-      is_subrelation_no_checks(WordGraph<Node1> const& x,
-                               size_t xnum_nodes_reachable_from_root,
-                               Node2  xroot,
-                               WordGraph<Node1> const& y,
-                               size_t ynum_nodes_reachable_from_root,
-                               Node2  yroot);
+      template <typename Node1,
+                typename Node2,
+                typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+      [[deprecated(
+          "Use is_subrelation with matching node types instead.")]] bool
+      is_subrelation(WordGraph<Node1> const& x,
+                     Node2                   xroot,
+                     WordGraph<Node1> const& y,
+                     Node2                   yroot);
+
+      template <typename Node>
+      bool is_subrelation(WordGraph<Node> const& x, WordGraph<Node> const& y) {
+        return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
+      }
+    };  // JoinerMeeterCommon
+  }     // namespace detail
+
+  //! \ingroup word_graph_group
+  //! \brief Class for taking joins of word graphs.
+  //!
+  //! This class exists for its call operators which can be used to find the
+  //! join of two word graphs with the same WordGraph::out_degree. This class
+  //! implements the Hopcroft-Karp algorithm \cite Hop71 for computing a
+  //! finite state automata recognising the union of the languages accepted by
+  //! two given automata.
+  //!
+  //! The input word graphs need not be complete, and the root nodes can also
+  //! be specified.
+  // This class is intentionally not a template so that we don't have to
+  // specify the types of the nodes when constructing one of these objects.
+  // Instead every member function has a template parameter Node, which is
+  // deduced from the argument.
+  class Joiner : public detail::JoinerMeeterCommon<Joiner> {
+   private:
+    detail::Duf<>                             _uf;
+    std::stack<std::pair<uint64_t, uint64_t>> _stck;
+    std::vector<uint64_t>                     _lookup;
+
+    template <typename Node>
+    [[nodiscard]] Node find(WordGraph<Node> const& x,
+                            size_t xnum_nodes_reachable_from_root,
+                            WordGraph<Node> const&               y,
+                            uint64_t                             n,
+                            typename WordGraph<Node>::label_type a) const;
+
+    template <typename Node>
+    void run(WordGraph<Node> const& x,
+             size_t                 xnum_nodes_reachable_from_root,
+             Node                   xroot,
+             WordGraph<Node> const& y,
+             size_t                 ynum_nodes_reachable_from_root,
+             Node                   yroot);
+
+   public:
+    //! \brief Default constructor.
+    //!
+    //! Default constructor.
+    Joiner();
+
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    Joiner(Joiner const&);
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    Joiner(Joiner&&);
+
+    //! \brief Default copy assignment operator.
+    //!
+    //! Default copy assignment operator.
+    Joiner& operator=(Joiner const&);
+
+    //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
+    Joiner& operator=(Joiner&&);
+
+    ~Joiner();
+
+    //! \brief Replace the contents of a word graph with the join/meet of two
+    //! given word graphs with respect to given root vertices.
+    //!
+    //! This function replaces the contents of the word graph \p xy with the
+    //! join/meet of the word graphs \p x and \p y.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //!
+    //! \param xy the word graph to store the result.
+    //! \param x the first word graph to join/meet.
+    //! \param xnum_nodes_reachable_from_root the number of nodes reachable in
+    //!   \p x from the node \p xroot (for the circumstance where this number is
+    //!   known apriori, and does not have to be recomputed).
+    //! \param xroot the node to use as a root in \p x.
+    //! \param y the second word graph to join/meet.
+    //! \param ynum_nodes_reachable_from_root the number of nodes reachable in
+    //!   \p y from the node \p yroot.
+    //! \param yroot the node to use as a root in \p y.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    template <typename Node>
+    void call_no_checks(WordGraph<Node>&       xy,
+                        WordGraph<Node> const& x,
+                        size_t                 xnum_nodes_reachable_from_root,
+                        Node                   xroot,
+                        WordGraph<Node> const& y,
+                        size_t                 ynum_nodes_reachable_from_root,
+                        Node                   yroot);
+
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that accepted by another word graph.
+    //!
+    //! This function returns \c true if the language accepted by \p x with
+    //! initial node \p xroot and accept state every node, is a subset of the
+    //! corresponding language in \p y.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs and the roots.
+    //!
+    //! \param x the word graph whose language we are checking might be a
+    //! subset.
+    //! \param xnum_nodes_reachable_from_root the number of nodes reachable in
+    //!   \p x from the node \p xroot (for the circumstance where this number is
+    //!   known apriori, and does not have to be recomputed).
+    //! \param xroot the node to use as the initial state in \p x.
+    //! \param y the word graph whose language we are checking might be a
+    //!   superset.
+    //! \param ynum_nodes_reachable_from_root the number of nodes reachable in
+    //!   \p y from the node \p yroot.
+    //! \param yroot the node to use as an initial state in \p y.
+    //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    // Is x a subrelation of y?
+    template <typename Node>
+    [[nodiscard]] bool
+    is_subrelation_no_checks(WordGraph<Node> const& x,
+                             size_t xnum_nodes_reachable_from_root,
+                             Node   xroot,
+                             WordGraph<Node> const& y,
+                             size_t ynum_nodes_reachable_from_root,
+                             Node   yroot);
+
+    // Deprecated member declarations must remain inside the class definition.
+    // Implementations are in word-graph-helpers.tpp.
+    //! \copydoc is_subrelation_no_checks(WordGraph<Node> const&, size_t,
+    //! Node, WordGraph<Node> const&, size_t, Node)
+    //! \deprecated_warning{function} Use the \ref is_subrelation_no_checks
+    //! overload with matching node types instead.
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated("Use is_subrelation_no_checks with matching node types "
+                 "instead.")]] [[nodiscard]] bool
+    is_subrelation_no_checks(WordGraph<Node1> const& x,
+                             size_t xnum_nodes_reachable_from_root,
+                             Node2  xroot,
+                             WordGraph<Node1> const& y,
+                             size_t ynum_nodes_reachable_from_root,
+                             Node2  yroot);
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+    //! \brief Replace the contents of a word graph with the join/meet of two
+    //! given word graphs with respect to given root vertices.
+    //!
+    //! This function replaces the contents of the word graph \p xy with the
+    //! join/meet of the word graphs \p x and \p y. This function is the same
+    //! as the 7-argument variant but it computes the number of nodes
+    //! reachable from \p xroot and \p yroot.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //!
+    //! \param xy the word graph to store the result.
+    //! \param x the first word graph to join/meet.
+    //! \param xroot the node to use as a root in \p x.
+    //! \param y the second word graph to join/meet.
+    //! \param yroot the node to use as a root in \p y.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    template <typename Node>
+    void call_no_checks(WordGraph<Node>&       xy,
+                        WordGraph<Node> const& x,
+                        Node                   xroot,
+                        WordGraph<Node> const& y,
+                        Node                   yroot);
+
+    //! \brief Replace the contents of a word graph with the join/meet of two
+    //! given word graphs with respect to given root vertices.
+    //!
+    //! This function replaces the contents of the word graph \p xy with the
+    //! join/meet of the word graphs \p x and \p y. This function is the same
+    //! as the 5-argument variant but it uses \c 0 as the root node in both
+    //! \p x and \p y.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //!
+    //! \param xy the word graph to store the result.
+    //! \param x the first word graph to join/meet.
+    //! \param y the second word graph to join/meet.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    template <typename Node>
+    void call_no_checks(WordGraph<Node>&       xy,
+                        WordGraph<Node> const& x,
+                        WordGraph<Node> const& y);
+
+    //! \brief Returns a word graph containing the join/meet of two given word
+    //! graphs.
+    //!
+    //! This function returns a word graph  containing the join/meet of the
+    //! word graphs \p x and \p y. If \c n is the number of arguments, then
+    //! this function constructs a word graph to contain the result, forwards
+    //! this and the other arguments to the overload of `call_no_checks` with
+    //! `n + 1` parameters, then returns the word graph containing the result.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //! \tparam Args parameter pack for the remaining arguments.
+    //!
+    //! \param x the first word graph to join/meet.
+    //! \param args the remaining arguments.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    template <typename Node, typename... Args>
+    [[nodiscard]] auto call_no_checks(WordGraph<Node> const& x, Args&&... args);
+
+    //! \brief Replace the contents of a word graph with the join/meet of two
+    //! given word graphs with respect to given root vertices.
+    //!
+    //! This function replaces the contents of the word graph \p xy with the
+    //! join/meet of the word graphs \p x and \p y. This function is the same
+    //! as the 5-argument overload of \c call_no_checks but it throws if its
+    //! arguments aren't valid.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //!
+    //! \param xy the word graph to store the result.
+    //! \param x the first word graph to join/meet.
+    //! \param xroot the node to use as a root in \p x.
+    //! \param y the second word graph to join/meet.
+    //! \param yroot the node to use as a root in \p y.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p xroot isn't a node in \p x;
+    //! * \p yroot isn't a node in \p y;
+    //! * `x.out_degree() != y.out_degree()`.
+    template <typename Node>
+    void operator()(WordGraph<Node>&       xy,
+                    WordGraph<Node> const& x,
+                    Node                   xroot,
+                    WordGraph<Node> const& y,
+                    Node                   yroot);
+
+    //! \brief Replace the contents of a word graph with the join/meet of two
+    //! given word graphs with respect to given root vertices.
+    //!
+    //! This function replaces the contents of the word graph \p xy with the
+    //! join/meet of the word graphs \p x and \p y. This function is the same
+    //! as the 3-argument overload of \c call_no_checks but it throws if its
+    //! arguments aren't valid.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //!
+    //! \param xy the word graph to store the result.
+    //! \param x the first word graph to join/meet.
+    //! \param y the second word graph to join/meet.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p x has no nodes;
+    //! * \p y has no nodes;
+    //! * `x.out_degree() != y.out_degree()`.
+    template <typename Node>
+    void operator()(WordGraph<Node>&       xy,
+                    WordGraph<Node> const& x,
+                    WordGraph<Node> const& y);
+
+    //! \brief Returns a word graph containing the join/meet of two given word
+    //! graphs.
+    //!
+    //! This function is the same as the overload of \ref call_no_checks with
+    //! the same signature, the difference being that this function throws if
+    //! the arguments are invalid.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //! \tparam Args parameter pack for the remaining arguments.
+    //!
+    //! \param x the first word graph to join/meet.
+    //! \param args the remaining arguments.
+    //!
+    //! \throws LibsemigroupsException if the arguments aren't valid. See the
+    //! relevant `operator()` for more details.
+    template <typename Node, typename... Args>
+    [[nodiscard]] auto operator()(WordGraph<Node> const& x, Args&&... args);
+
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that defined by another word graph.
+    //!
+    //! This function returns \c true if the language accepted by \p x with
+    //! initial node \p xroot and accept state every node, is a subset of the
+    //! corresponding language in \p y. This version of the function is
+    //! similar to the 6-argument overload, except that here we must compute
+    //! the number of nodes in \p x and \p y reachable from \p xroot and
+    //! \p yroot, respectively.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs and the roots.
+    //!
+    //! \param x the word graph whose language we are checking might be a
+    //!   subset.
+    //! \param xroot the node to use as the initial state in \p x.
+    //! \param y the word graph whose language we are checking might be a
+    //!   superset.
+    //! \param yroot the node to use as an initial state in \p y.
+    //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    // Is x a subrelation of y?
+    template <typename Node>
+    bool is_subrelation_no_checks(WordGraph<Node> const& x,
+                                  Node                   xroot,
+                                  WordGraph<Node> const& y,
+                                  Node                   yroot);
+
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that defined by another word graph.
+    //!
+    //! This function returns \c true if the language accepted by \p x with
+    //! initial node \p xroot and accept state every node, is a subset of the
+    //! corresponding language in \p y. This version of the function is
+    //! similar to the 4-argument overload, except that \c 0 is used as the
+    //! root node in both \p x and \p y.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //!
+    //! \param x the word graph whose language we are checking might be a
+    //! subset.
+    //! \param y the word graph whose language we are checking might be a
+    //! superset.
+    //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    template <typename Node>
+    bool is_subrelation_no_checks(WordGraph<Node> const& x,
+                                  WordGraph<Node> const& y);
+
+    // There's no subrelation with the number of nodes reachable from the
+    // roots as arguments (6 args in total) because we'd have to check that
+    // they were valid, and the only way to do this is to recompute them.
+
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that defined by another word graph.
+    //!
+    //! This function returns \c true if the language accepted by \p x with
+    //! initial node \p xroot and accept state every node, is a subset of the
+    //! corresponding language in \p y. This version of the function is the
+    //! same as the 4-argument overload of \c is_subrelation_no_checks, except
+    //! that this function throws if its arguments are invalid.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //!
+    //! \param x the word graph whose language we are checking might be a
+    //!   subset.
+    //! \param xroot the node to use as the initial state in \p x.
+    //! \param y the word graph whose language we are checking might be a
+    //!   superset.
+    //! \param yroot the node to use as an initial state in \p y.
+    //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p xroot isn't a node in \p x;
+    //! * \p yroot isn't a node in \p y;
+    //! * `x.out_degree() != y.out_degree()`.
+    template <typename Node>
+    bool is_subrelation(WordGraph<Node> const& x,
+                        Node                   xroot,
+                        WordGraph<Node> const& y,
+                        Node                   yroot);
+
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that defined by another word graph.
+    //!
+    //! This function returns \c true if the language accepted by \p x with
+    //! initial node \c 0 and accept state every node, is a subset of the
+    //! corresponding language in \p y. This version of the function is the
+    //! same as the 2-argument overload of \c is_subrelation_no_checks, except
+    //! that this function throws if its arguments are invalid.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //!   parameters to this function.
+    //!
+    //! \param x the word graph whose language we are checking might be a
+    //!   subset.
+    //! \param y the word graph whose language we are checking might be a
+    //!   superset.
+    //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p x has no nodes;
+    //! * \p y has no nodes;
+    //! * `x.out_degree() != y.out_degree()`.
+    template <typename Node>
+    bool is_subrelation(WordGraph<Node> const& x, WordGraph<Node> const& y);
+
+#else
+    using detail::JoinerMeeterCommon<Joiner>::call_no_checks;
+    using detail::JoinerMeeterCommon<Joiner>::operator();
+    using detail::JoinerMeeterCommon<Joiner>::is_subrelation_no_checks;
+    using detail::JoinerMeeterCommon<Joiner>::is_subrelation;
+#endif
+  };  // Joiner
+
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Class for taking meets of word graphs.
+  //!
+  //! This class exists for its call operators which can be used to find the
+  //! meet of two word graphs with the same WordGraph::out_degree. This class
+  //! implements the same algorithm as that used for computing a
+  //! finite state automata recognising the intersection of the languages
+  //! accepted by two given automata.
+  //!
+  //! The input word graphs need not be complete, and the root nodes can also
+  //! be specified.
+  // Class for forming the meet of two word graphs
+  class Meeter : public detail::JoinerMeeterCommon<Meeter> {
+   private:
+    using node_type = std::pair<uint64_t, uint64_t>;
+
+    std::unordered_map<node_type, uint64_t, Hash<node_type>> _lookup;
+    std::vector<node_type>                                   _todo;
+    std::vector<node_type>                                   _todo_new;
+
+   public:
+    //! \brief Default constructor.
+    //!
+    //! Default constructor.
+    Meeter();
+
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    Meeter(Meeter const&);
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    Meeter(Meeter&&);
+
+    //! \brief Default copy assignment operator.
+    //!
+    //! Default copy assignment operator.
+    Meeter& operator=(Meeter const&);
+
+    //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
+    Meeter& operator=(Meeter&&);
+
+    ~Meeter();
+
+    //! \copydoc Joiner::call_no_checks(WordGraph<Node>&, WordGraph<Node>
+    //! const&, size_t, Node, WordGraph<Node> const&, size_t, Node)
+    template <typename Node>
+    void call_no_checks(WordGraph<Node>&       xy,
+                        WordGraph<Node> const& x,
+                        size_t                 xnum_nodes_reachable_from_root,
+                        Node                   xroot,
+                        WordGraph<Node> const& y,
+                        size_t                 ynum_nodes_reachable_from_root,
+                        Node                   yroot);
+
+    //! \copydoc Joiner::is_subrelation_no_checks(WordGraph<Node> const&,
+    //! size_t, Node, WordGraph<Node> const&, size_t, Node)
+    // is x a subrelation of y
+    template <typename Node>
+    [[nodiscard]] bool
+    is_subrelation_no_checks(WordGraph<Node> const& x,
+                             size_t xnum_nodes_reachable_from_root,
+                             Node   xroot,
+                             WordGraph<Node> const& y,
+                             size_t ynum_nodes_reachable_from_root,
+                             Node   yroot);
+
+    // Deprecated member declarations must remain inside the class definition.
+    // Implementations are in word-graph-helpers.tpp.
+    //! \copydoc Joiner::is_subrelation_no_checks(WordGraph<Node> const&,
+    //! size_t, Node, WordGraph<Node> const&, size_t, Node)
+    //! \deprecated_warning{function} Use the \ref is_subrelation_no_checks
+    //! overload with matching node types instead.
+    template <typename Node1,
+              typename Node2,
+              typename = std::enable_if_t<!std::is_same_v<Node1, Node2>>>
+    [[deprecated("Use is_subrelation_no_checks with matching node types "
+                 "instead.")]] [[nodiscard]] bool
+    is_subrelation_no_checks(WordGraph<Node1> const& x,
+                             size_t xnum_nodes_reachable_from_root,
+                             Node2  xroot,
+                             WordGraph<Node1> const& y,
+                             size_t ynum_nodes_reachable_from_root,
+                             Node2  yroot);
 
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-      //! \copydoc Joiner::call_no_checks(WordGraph<Node>&, WordGraph<Node>
-      //! const&, Node, WordGraph<Node> const&, Node)
-      template <typename Node>
-      void call_no_checks(WordGraph<Node>&       xy,
-                          WordGraph<Node> const& x,
-                          Node                   xroot,
-                          WordGraph<Node> const& y,
-                          Node                   yroot);
+    //! \copydoc Joiner::call_no_checks(WordGraph<Node>&, WordGraph<Node>
+    //! const&, Node, WordGraph<Node> const&, Node)
+    template <typename Node>
+    void call_no_checks(WordGraph<Node>&       xy,
+                        WordGraph<Node> const& x,
+                        Node                   xroot,
+                        WordGraph<Node> const& y,
+                        Node                   yroot);
 
-      //! \copydoc Joiner::call_no_checks(WordGraph<Node>&, WordGraph<Node>
-      //! const&, WordGraph<Node> const&)
-      template <typename Node>
-      void call_no_checks(WordGraph<Node>&       xy,
-                          WordGraph<Node> const& x,
-                          WordGraph<Node> const& y);
+    //! \copydoc Joiner::call_no_checks(WordGraph<Node>&, WordGraph<Node>
+    //! const&, WordGraph<Node> const&)
+    template <typename Node>
+    void call_no_checks(WordGraph<Node>&       xy,
+                        WordGraph<Node> const& x,
+                        WordGraph<Node> const& y);
 
-      //! \brief Returns a word graph containing the join/meet of two given word
-      //! graphs.
-      //!
-      //! This function returns a word graph containing the join/meet of the
-      //! word graphs \p x and \p y. If \c n is the number of arguments, then
-      //! this function constructs a word graph to contain the result, forwards
-      //! this and the other arguments to the overload of `call_no_checks` with
-      //! `n + 1` parameters, then returns the word graph containing the result.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \tparam Args parameter pack for the remaining arguments.
-      //!
-      //! \param x the first word graph to join/meet.
-      //! \param args the remaining parameters.
-      //!
-      //! \warning
-      //! No checks whatsoever on the validity of the arguments are performed.
-      template <typename Node, typename... Args>
-      [[nodiscard]] auto call_no_checks(WordGraph<Node> const& x,
-                                        Args&&... args);
+    //! \brief Returns a word graph containing the join/meet of two given word
+    //! graphs.
+    //!
+    //! This function returns a word graph containing the join/meet of the
+    //! word graphs \p x and \p y. If \c n is the number of arguments, then
+    //! this function constructs a word graph to contain the result, forwards
+    //! this and the other arguments to the overload of `call_no_checks` with
+    //! `n + 1` parameters, then returns the word graph containing the result.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //! \tparam Args parameter pack for the remaining arguments.
+    //!
+    //! \param x the first word graph to join/meet.
+    //! \param args the remaining parameters.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    template <typename Node, typename... Args>
+    [[nodiscard]] auto call_no_checks(WordGraph<Node> const& x, Args&&... args);
 
-      //! \copydoc Joiner::operator()(WordGraph<Node>&, WordGraph<Node>
-      //! const&, Node, WordGraph<Node> const&, Node)
-      template <typename Node>
-      void operator()(WordGraph<Node>&       xy,
-                      WordGraph<Node> const& x,
-                      Node                   xroot,
-                      WordGraph<Node> const& y,
-                      Node                   yroot);
+    //! \copydoc Joiner::operator()(WordGraph<Node>&, WordGraph<Node>
+    //! const&, Node, WordGraph<Node> const&, Node)
+    template <typename Node>
+    void operator()(WordGraph<Node>&       xy,
+                    WordGraph<Node> const& x,
+                    Node                   xroot,
+                    WordGraph<Node> const& y,
+                    Node                   yroot);
 
-      //! \copydoc Joiner::operator()(WordGraph<Node>&, WordGraph<Node>
-      //! const&, WordGraph<Node> const&)
-      template <typename Node>
-      void operator()(WordGraph<Node>&       xy,
-                      WordGraph<Node> const& x,
-                      WordGraph<Node> const& y);
+    //! \copydoc Joiner::operator()(WordGraph<Node>&, WordGraph<Node>
+    //! const&, WordGraph<Node> const&)
+    template <typename Node>
+    void operator()(WordGraph<Node>&       xy,
+                    WordGraph<Node> const& x,
+                    WordGraph<Node> const& y);
 
-      //! \brief Returns a word graph containing the join/meet of two given word
-      //! graphs.
-      //!
-      //! This function is the same as the overload of \ref call_no_checks with
-      //! the same signature, the difference being that this function throws if
-      //! the arguments are invalid.
-      //!
-      //! \tparam Node the type of the nodes in the word graphs which are
-      //! parameters to this function.
-      //!
-      //! \tparam Args parameter pack for the remaining arguments.
-      //!
-      //! \param x the first word graph to join/meet.
-      //! \param args the remaining arguments.
-      //!
-      //! \throws LibsemigroupsException if the arguments aren't valid. See the
-      //! relevant `operator()` for more details.
-      template <typename Node, typename... Args>
-      [[nodiscard]] auto operator()(WordGraph<Node> const& x, Args&&... args);
+    //! \brief Returns a word graph containing the join/meet of two given word
+    //! graphs.
+    //!
+    //! This function is the same as the overload of \ref call_no_checks with
+    //! the same signature, the difference being that this function throws if
+    //! the arguments are invalid.
+    //!
+    //! \tparam Node the type of the nodes in the word graphs which are
+    //! parameters to this function.
+    //! \tparam Args parameter pack for the remaining arguments.
+    //!
+    //! \param x the first word graph to join/meet.
+    //! \param args the remaining arguments.
+    //!
+    //! \throws LibsemigroupsException if the arguments aren't valid. See the
+    //! relevant `operator()` for more details.
+    template <typename Node, typename... Args>
+    [[nodiscard]] auto operator()(WordGraph<Node> const& x, Args&&... args);
 
-      //! \copydoc Joiner::is_subrelation_no_checks(WordGraph<Node1> const&,
-      //! Node2, WordGraph<Node1> const&, Node2)
-      template <typename Node1, typename Node2>
-      bool is_subrelation_no_checks(WordGraph<Node1> const& x,
-                                    Node2                   xroot,
-                                    WordGraph<Node1> const& y,
-                                    Node2                   yroot);
+    //! \copydoc Joiner::is_subrelation_no_checks(WordGraph<Node> const&,
+    //! Node, WordGraph<Node> const&, Node)
+    template <typename Node>
+    bool is_subrelation_no_checks(WordGraph<Node> const& x,
+                                  Node                   xroot,
+                                  WordGraph<Node> const& y,
+                                  Node                   yroot);
 
-      //! \copydoc Joiner::is_subrelation_no_checks(WordGraph<Node> const&,
-      //! WordGraph<Node> const&)
-      template <typename Node>
-      bool is_subrelation_no_checks(WordGraph<Node> const& x,
-                                    WordGraph<Node> const& y);
+    //! \copydoc Joiner::is_subrelation_no_checks(WordGraph<Node> const&,
+    //! WordGraph<Node> const&)
+    template <typename Node>
+    bool is_subrelation_no_checks(WordGraph<Node> const& x,
+                                  WordGraph<Node> const& y);
 
-      //! \copydoc Joiner::is_subrelation(WordGraph<Node1> const&,
-      //! Node2, WordGraph<Node1> const&, Node2)
-      template <typename Node1, typename Node2>
-      bool is_subrelation(WordGraph<Node1> const& x,
-                          Node2                   xroot,
-                          WordGraph<Node1> const& y,
-                          Node2                   yroot);
+    //! \copydoc Joiner::is_subrelation(WordGraph<Node> const&,
+    //! Node, WordGraph<Node> const&, Node)
+    template <typename Node>
+    bool is_subrelation(WordGraph<Node> const& x,
+                        Node                   xroot,
+                        WordGraph<Node> const& y,
+                        Node                   yroot);
 
-      //! \copydoc Joiner::is_subrelation(WordGraph<Node> const&,
-      //! WordGraph<Node> const&)
-      template <typename Node>
-      bool is_subrelation(WordGraph<Node> const& x, WordGraph<Node> const& y);
+    //! \copydoc Joiner::is_subrelation(WordGraph<Node> const&,
+    //! WordGraph<Node> const&)
+    template <typename Node>
+    bool is_subrelation(WordGraph<Node> const& x, WordGraph<Node> const& y);
 #else
-      using detail::JoinerMeeterCommon<Meeter>::call_no_checks;
-      using detail::JoinerMeeterCommon<Meeter>::operator();
-      using detail::JoinerMeeterCommon<Meeter>::is_subrelation_no_checks;
-      using detail::JoinerMeeterCommon<Meeter>::is_subrelation;
+    using detail::JoinerMeeterCommon<Meeter>::call_no_checks;
+    using detail::JoinerMeeterCommon<Meeter>::operator();
+    using detail::JoinerMeeterCommon<Meeter>::is_subrelation_no_checks;
+    using detail::JoinerMeeterCommon<Meeter>::is_subrelation;
 #endif
-    };  // class Meeter
+  };  // class Meeter
 
-    //! \ingroup word_graph_group
-    //!
-    //! \brief Return a human readable representation of a WordGraph object.
-    //!
-    //! Return a human readable representation of a WordGraph object.
-    //!
-    //! \tparam Node the type of the nodes in the underlying WordGraph.
-    //!
-    //! \param wg the WordGraph object.
-    //!
-    //! \returns A string containing the representation.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    template <typename Node>
-    [[nodiscard]] std::string to_human_readable_repr(WordGraph<Node> const& wg);
+  //////////////////////////////////////////////////////////////////////////
+  // WordGraph - non-member functions
+  //////////////////////////////////////////////////////////////////////////
+  // TODO(1) Add equivalents for WordGraphView
 
-    //! \ingroup word_graph_group
-    //!
-    //! \brief Return a human readable representation of a Meeter object.
-    //!
-    //! Return a human readable representation of a Meeter object.
-    //!
-    //! \param meet the Meeter object.
-    //!
-    //! \returns A string containing the representation.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] static inline std::string
-    to_human_readable_repr(Meeter const& meet) {
-      (void) meet;
-      return "<Meeter of word graphs>";
-    }
+  //! \ingroup word_graph_group
+  //! Output the edges of a wordGraph to a stream.
+  //!
+  //! This function outputs the word graph \p wg to the stream \p os.
+  //! The word graph is represented by the out-neighbours of each node ordered
+  //! according to their labels. The symbol `-` is used to denote that an
+  //! edge is not defined. For example, the word graph with 1 node,
+  //! out-degree 2, and a single loop labelled 1 from node 0 to 0 is
+  //! represented as `{{-, 0}}`.
+  //!
+  //! \param os the ostream.
+  //! \param wg the word graph.
+  //!
+  //! \returns
+  //! The first parameter \p os.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Node>
+  std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg) {
+    return os << WordGraphView(wg);
+  }
 
-    //! \ingroup word_graph_group
-    //!
-    //! \brief Return a human readable representation of a Joiner object.
-    //!
-    //! Return a human readable representation of a Joiner object.
-    //!
-    //! \param join the Joiner object.
-    //!
-    //! \returns A string containing the representation.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] static inline std::string
-    to_human_readable_repr(Joiner const& join) {
-      (void) join;
-      return "<Joiner of word graphs>";
-    }
+  //! \defgroup make_word_graph_group make<WordGraph>
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Safely construct a \ref WordGraph instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref WordGraph instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
 
-    //! \ingroup word_graph_group
-    //!
-    //! \brief Return a string that can be used to recreate a word graph.
-    //!
-    //! This function returns a std::string containing the input required to
-    //! construct a copy of the argument \p wg.
-    //!
-    //! \tparam Node the type of the nodes of \p wg.
-    //! \param wg the word graph.
-    //! \param prefix a prefix for the returned string (defaults to an empty
-    //! string).
-    //! \param braces the braces to use in the string (defaults to `"{}"`).
-    //! \param suffix a suffix for the returned string (defaults to an empty
-    //! string).
-    //!
-    //! \returns A string containing the input required to recreate \p wg.
-    //!
-    //! \throws LibsemigroupsException if the argument \p braces is not of
-    //! length
-    //! \c 2.
-    template <typename Node>
-    [[nodiscard]] std::string to_input_string(WordGraph<Node> const& wg,
-                                              std::string const& prefix = "",
-                                              std::string const& braces = "{}",
-                                              std::string const& suffix = "");
+  //! \ingroup make_word_graph_group
+  //!
+  //! \brief Constructs a word graph from a number of nodes and targets.
+  //!
+  //! This function constructs a word graph from its arguments whose
+  //! out-degree is specified by the length of the first item
+  //! in the second parameter, or 0 if the second parameter is empty.
+  //!
+  //! \tparam Return the return type. Must satisfy
+  //! \ref is_specialization_of_v<Return, WordGraph>.
+  //!
+  //! \param num_nodes the number of nodes in the word graph.
+  //! \param targets the targets of the word graph.
+  //!
+  //! \returns A value of type WordGraph.
+  //!
+  //! \throws LibsemigroupsException
+  //! if WordGraph<Node>::target throws when adding edges from \p targets.
+  //!
+  //! \complexity
+  //! \f$O(mn)\f$ where \f$m\f$ is the length of \p targets and \f$n\f$ is the
+  //! parameter \p num_nodes.
+  //!
+  //! \par Example
+  //! \code
+  //! // Construct a word graph with 5 nodes and 10 edges (7 specified)
+  //! make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+  //! \endcode
+  // Passing the 2nd parameter "targets" by value disambiguates it from the
+  // other make<WordGraph>.
+  // TODO(v4) deprecate
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
+                                 Return>
+  make(size_t                                                         num_nodes,
+       std::initializer_list<std::vector<typename Return::node_type>> targets);
 
-  }  // namespace v4
+  //! \ingroup make_word_graph_group
+  //!
+  // clang-format off
+  // NOLINTNEXTLINE(whitespace/line_length)
+  //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>)
+  // clang-format on
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
+                                 Return>
+  make(size_t                                                      num_nodes,
+       std::vector<std::vector<typename Return::node_type>> const& targets);
+
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Return a human readable representation of a WordGraph object.
+  //!
+  //! Return a human readable representation of a WordGraph object.
+  //!
+  //! \tparam Node the type of the nodes in the underlying WordGraph.
+  //!
+  //! \param wg the WordGraph object.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Node>
+  [[nodiscard]] std::string to_human_readable_repr(WordGraph<Node> const& wg);
+
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Return a human readable representation of a Meeter object.
+  //!
+  //! Return a human readable representation of a Meeter object.
+  //!
+  //! \param meet the Meeter object.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] static inline std::string
+  to_human_readable_repr(Meeter const& meet) {
+    (void) meet;
+    return "<Meeter of word graphs>";
+  }
+
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Return a human readable representation of a Joiner object.
+  //!
+  //! Return a human readable representation of a Joiner object.
+  //!
+  //! \param join the Joiner object.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] static inline std::string
+  to_human_readable_repr(Joiner const& join) {
+    (void) join;
+    return "<Joiner of word graphs>";
+  }
+
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Return a string that can be used to recreate a word graph.
+  //!
+  //! This function returns a std::string containing the input required to
+  //! construct a copy of the argument \p wg.
+  //!
+  //! \tparam Node the type of the nodes of \p wg.
+  //! \param wg the word graph.
+  //! \param prefix a prefix for the returned string (defaults to an empty
+  //! string).
+  //! \param braces the braces to use in the string (defaults to `"{}"`).
+  //! \param suffix a suffix for the returned string (defaults to an empty
+  //! string).
+  //!
+  //! \returns A string containing the input required to recreate \p wg.
+  //!
+  //! \throws LibsemigroupsException if the argument \p braces is not of
+  //! length \c 2.
+  template <typename Node>
+  [[nodiscard]] std::string to_input_string(WordGraph<Node> const& wg,
+                                            std::string const&     prefix = "",
+                                            std::string const& braces = "{}",
+                                            std::string const& suffix = "") {
+    return to_input_string(WordGraphView(wg), prefix, braces, suffix);
+  }
+
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Check if a WordGraph is valid.
+  //!
+  //! This function checks whether \p wg is valid.
+  //!
+  //! \tparam Node the type of the nodes in \p wg.
+  //!
+  //! \param wg the word graph to validate.
+  //!
+  //! \throws LibsemigroupsException if any target in the
+  //! WordGraph is greater than or equal to \ref WordGraph::number_of_nodes.
+  template <typename Node>
+  void validate(WordGraph<Node> const& wg) {
+    word_graph::throw_if_any_target_out_of_bounds(
+        wg, wg.cbegin_nodes(), wg.cend_nodes());
+  }
 
   namespace word_graph {
 
+    //! \ingroup word_graph_group
+    //!
     //! \brief Constructs a word graph from a disparse6 string.
     //!
     //! This function decodes the directed, unlabelled graph represented by
@@ -3744,6 +2735,18 @@ namespace libsemigroups {
     //! support multiple unlabelled edges with the same source and target;
     //! disparse6 strings containing such edges are rejected.
     //!
+    //! The decoder reads the node-count header and the two edge streams
+    //! described in to_disparse6_string(). It resets the current node to zero
+    //! at the separator, then sorts the decoded edges by source and target.
+    //! This detects repeated edges and determines the maximum out-degree
+    //! before allocating the result and assigning consecutive labels.
+    //! A single trailing LF, CR, or CRLF line ending is accepted.
+    //!
+    //! Error messages identify the invalid value or missing field. Byte
+    //! offsets are zero-based positions in \p input; payload bit offsets are
+    //! zero-based positions after the node-count header, reading each six-bit
+    //! block from its most significant bit.
+    //!
     //! \tparam Node the type of the nodes of the returned WordGraph.
     //!
     //! \param input the disparse6 string to decode.
@@ -3754,12 +2757,11 @@ namespace libsemigroups {
     //! string, contains multiple edges, or represents more nodes than can be
     //! represented by \p Node.
     //!
-    //! \par Complexity
-    // codespell:begin-ignore
-    //! \f$O(m \log m + nd)\f$ time and \f$O(m)\f$ additional space, where
+    //! \complexity
+    //! \f$O(L + m \log(m+1) + n(d+1))\f$ time and \f$O(m)\f$ additional
+    //! space, where \f$L\f$ is the length of \p input,
     //! \f$n\f$ is the number of nodes, \f$m\f$ is the number of edges, and
     //! \f$d\f$ is the maximum out-degree of a node.
-    // codespell:end-ignore
     //!
     //! \sa
     //! to_disparse6_string.
@@ -3767,12 +2769,48 @@ namespace libsemigroups {
     [[nodiscard]] WordGraph<Node>
     from_disparse6_string(std::string const& input);
 
+    //! \ingroup word_graph_group
+    //!
     //! \brief Returns a disparse6 representation of a word graph.
     //!
     //! This function returns a string containing the directed, unlabelled
     //! graph underlying \p wg in disparse6 format. Undefined transitions are
     //! omitted. Directed edges and loops are preserved; edge labels are not
     //! represented by the disparse6 format.
+    //!
+    //! \par Algorithm
+    //! The encoding follows the GAP Digraphs disparse6 format:
+    //! - Write `.` followed by the graph6 node count \f$n\f$: one byte for
+    //!   \f$0 \leq n \leq 62\f$, `~` and three bytes for
+    //!   \f$63 \leq n \leq 258047\f$, or `~~` and six bytes otherwise.
+    //!   Each numeric byte stores six bits, most significant first, plus 63.
+    //! - Partition the edges into decreasing edges (source greater than
+    //!   target) and increasing edges (source less than or equal to target,
+    //!   including loops). Sort the former by (source, target) and the latter
+    //!   by (target, source).
+    //! - Encode each stream as records \f$(b,x)\f$, with one bit for \f$b\f$
+    //!   and \f$k\f$ bits for \f$x\f$. Here \f$k\f$ is the number of bits
+    //!   needed to represent \f$n\f$ itself, with a minimum of one bit.
+    //!   Start each stream with current node \f$v=0\f$. On reading a record,
+    //!   first increment \f$v\f$ if \f$b=1\f$. If \f$x>v\f$, set
+    //!   \f$v=x\f$ without adding an edge; otherwise add \f$v\to x\f$ in
+    //!   the decreasing stream or \f$x\to v\f$ in the increasing stream.
+    //!   The encoder uses these jumps to skip nodes without edges.
+    //! - Separate the streams with the special record \f$(1,n)\f$, which
+    //!   adds no edge. Pack all records into six-bit bytes, add 63, and pad
+    //!   the final byte with at most five 1-bits. No line ending is emitted.
+    //!
+    //! For example, `.Bc{f` encodes three nodes and the edges
+    //! \f$1\to0, 2\to0, 0\to1, 0\to2\f$. The payload records are
+    //! \f$(1,0), (1,0), (1,3), (1,0), (1,0)\f$, followed by three padding
+    //! bits. The middle record is the separator, after which \f$v\f$ is
+    //! reset to zero.
+    //!
+    //! Multiple edges with the same source and target are preserved in the
+    //! encoding, but from_disparse6_string() rejects such strings. For graphs
+    //! without multiple edges, decoding preserves the unlabelled graph and
+    //! reassigns labels in increasing target order; it need not reproduce
+    //! the original labels or out-degree.
     //!
     //! \tparam Node the type of the nodes of the WordGraph.
     //!
@@ -3783,16 +2821,18 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `wg.number_of_nodes()` is greater
     //! than \f$2^{36} - 1\f$, the largest order supported by disparse6.
     //!
-    //! \par Complexity
-    // codespell:begin-ignore
-    //! \f$O(nd + m \log m)\f$ time and \f$O(m)\f$ additional space, where
+    //! \complexity
+    //! \f$O(L + m \log(m+1) + n(d+1))\f$ time and \f$O(m)\f$ additional
+    //! space, excluding the returned string, where \f$L\f$ is its length,
     //! \f$n\f$ is the number of nodes, \f$d\f$ is the out-degree, and
     //! \f$m\f$ is the number of defined transitions in \p wg.
-    // codespell:end-ignore
     //!
     //! \sa
-    //! [The GAP Digraphs package documentation for graph6 formats]
-    //! (https://docs.gap-system.org/pkg/digraphs/doc/chap9.html#X7B997A237BFA20AE).
+    //! <a
+    //! href="https://digraphs.github.io/Digraphs/doc/chap9.html#X7B997A237BFA20AE">
+    //! The GAP Digraphs package documentation for graph6 formats</a> and the
+    //! <a href="https://users.cecs.anu.edu.au/~bdm/data/formats.txt">
+    //! graph6 node-count specification</a>.
     template <typename Node>
     [[nodiscard]] std::string to_disparse6_string(WordGraph<Node> const& wg);
 
@@ -3800,4 +2840,5 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 #include "libsemigroups/word-graph-helpers.tpp"
+
 #endif  // LIBSEMIGROUPS_WORD_GRAPH_HELPERS_HPP_

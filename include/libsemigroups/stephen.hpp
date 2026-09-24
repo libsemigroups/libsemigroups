@@ -16,30 +16,37 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO iwyu
+
 #ifndef LIBSEMIGROUPS_STEPHEN_HPP_
 #define LIBSEMIGROUPS_STEPHEN_HPP_
 
-#include <cstddef>      // for size_t
-#include <cstdint>      // for uint32_t
+#include <cstddef>  // for size_t
+#include <cstdint>  // for uint32_t
+#include <iterator>
 #include <memory>       // for shared_ptr
 #include <string>       // for string
 #include <type_traits>  // for is_same_v
 #include <utility>      // for move
 
 #include "constants.hpp"             // for Max, UNDEFINED
+#include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
 #include "dot.hpp"                   // for Dot
 #include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
+#include "forest.hpp"                // for Forest
+#include "is-transf.hpp"             // for throw_if_duplicates
 #include "is_specialization_of.hpp"  // for is_specialization_of
 #include "paths-count.hpp"           // for count
 #include "presentation.hpp"          // for Presentation
 #include "ranges.hpp"                // for rx
 #include "runner.hpp"                // for Runner
+#include "to-word.hpp"               // for ToString
 #include "types.hpp"                 // for word_type
 #include "word-graph.hpp"            // for WordGraph
-#include "word-range.hpp"            // for ToString
 
 #include "detail/citow.hpp"         // for citow
 #include "detail/fmt.hpp"           // for format
+#include "detail/print.hpp"         // for to_print
 #include "detail/stephen-impl.hpp"  // for StephenImpl, left_...
 #include "detail/string.hpp"        // for group_digits
 
@@ -110,7 +117,7 @@ namespace libsemigroups {
     using node_type = word_graph_type::node_type;
 
     //! The word type of \ref presentation_type.
-    using native_word_type = typename PresentationType::word_type;
+    using native_word_type = typename PresentationType::native_word_type;
 
    private:
     class StephenGraph;  // forward decl
@@ -396,7 +403,8 @@ namespace libsemigroups {
     //! \sa stephen::set_word
     template <typename Iterator1, typename Iterator2>
     Stephen& set_word(Iterator1 first, Iterator2 last) {
-      presentation().throw_if_letter_not_in_alphabet(first, last);
+      presentation().throw_if_empty_word_not_allowed(first, last);
+      presentation().alphabet_v4().throw_if_letter_not_in_alphabet(first, last);
       return set_word_no_checks(first, last);
     }
 
@@ -505,8 +513,8 @@ namespace libsemigroups {
     //! alphabet of `s.presentation()`, then bad things will happen.
     template <typename PresentationType>
     [[nodiscard]] bool
-    accepts_no_checks(Stephen<PresentationType>&                  s,
-                      typename PresentationType::word_type const& w);
+    accepts_no_checks(Stephen<PresentationType>&                         s,
+                      typename PresentationType::native_word_type const& w);
 
     //! \brief Check if a word is accepted by a Stephen instance.
     //!
@@ -545,8 +553,9 @@ namespace libsemigroups {
     //!
     //! \cong_common_warn_undecidable{Stephen}.
     template <typename PresentationType>
-    [[nodiscard]] bool accepts(Stephen<PresentationType>&                  s,
-                               typename PresentationType::word_type const& w);
+    [[nodiscard]] bool
+    accepts(Stephen<PresentationType>&                         s,
+            typename PresentationType::native_word_type const& w);
 
     //! \brief Check if a word is a left factor of Stephen::word.
     //!
@@ -578,9 +587,9 @@ namespace libsemigroups {
     //! `s.presentation()`. If the letters of \p w do not belong to the
     //! alphabet of `s.presentation()`, then bad things will happen.
     template <typename PresentationType>
-    [[nodiscard]] bool
-    is_left_factor_no_checks(Stephen<PresentationType>&                  s,
-                             typename PresentationType::word_type const& w);
+    [[nodiscard]] bool is_left_factor_no_checks(
+        Stephen<PresentationType>&                         s,
+        typename PresentationType::native_word_type const& w);
 
     //! \brief Check if a word is a left factor of Stephen::word.
     //!
@@ -611,15 +620,15 @@ namespace libsemigroups {
     //! \cong_common_warn_undecidable{Stephen}.
     template <typename PresentationType>
     [[nodiscard]] bool
-    is_left_factor(Stephen<PresentationType>&                  s,
-                   typename PresentationType::word_type const& w);
+    is_left_factor(Stephen<PresentationType>&                         s,
+                   typename PresentationType::native_word_type const& w);
 
     //! \brief Returns a range object containing all words accepted by a
-    //! Stephen instance in short-lex order.
+    //! Stephen instance in lenlex order.
     //!
     //! This function triggers the algorithm implemented in this class (if it
     //! hasn't been triggered already) and then returns a range object
-    //! containing all words accepted by a Stephen instance in short-lex order.
+    //! containing all words accepted by a Stephen instance in lenlex order.
     //!
     //! \tparam PresentationType must be a specialisation of \ref Presentation
     //! or \ref InversePresentation where `PresentationType::word_type` is
@@ -628,7 +637,7 @@ namespace libsemigroups {
     //! \param s the Stephen instance.
     //!
     //! \returns A range object containing all words accepted by \p s
-    //! in short-lex order.
+    //! in lenlex order.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
     //! the construction of \p s or with Stephen::init or if no word was set
@@ -644,7 +653,7 @@ namespace libsemigroups {
     template <typename PresentationType>
     [[nodiscard]] auto words_accepted(Stephen<PresentationType>& s) {
       using rx::operator|;
-      using native_word_type = typename PresentationType::word_type;
+      using native_word_type = typename PresentationType::native_word_type;
       auto result            = detail::stephen::words_accepted(s);
       if constexpr (std::is_same_v<native_word_type, word_type>) {
         // NOTE: piping "result" into rx::transform below isn't necessary if
@@ -681,12 +690,12 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Returns a range object containing all the words (in short-lex
+    //! \brief Returns a range object containing all the words (in lenlex
     //! order) that are left factors of Stephen::word.
     //!
     //! This function triggers the algorithm implemented in this class (if it
     //! hasn't been triggered already) and then returns a range object
-    //! containing all the words (in short-lex order) that are left factors of
+    //! containing all the words (in lenlex order) that are left factors of
     //! Stephen::word.
     //!
     //! \tparam PresentationType must be a specialisation of \ref Presentation
@@ -695,7 +704,7 @@ namespace libsemigroups {
     //!
     //! \param s the Stephen instance.
     //!
-    //! \returns A range object containing all the words (in short-lex
+    //! \returns A range object containing all the words (in lenlex
     //! order) that are left factors of Stephen::word.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
@@ -708,7 +717,7 @@ namespace libsemigroups {
     template <typename PresentationType>
     [[nodiscard]] auto left_factors(Stephen<PresentationType>& s) {
       using rx::operator|;
-      using native_word_type = typename PresentationType::word_type;
+      using native_word_type = typename PresentationType::native_word_type;
       auto result            = detail::stephen::left_factors(s);
       if constexpr (std::is_same_v<native_word_type, word_type>) {
         // See the comments above in words_accepted about why we don't use
@@ -812,19 +821,140 @@ namespace libsemigroups {
       return v4::paths::count(s.word_graph_no_run(), 0, min, max);
     }
 
-    //! \brief Returns a \ref Dot object representing the Stephen word graph.
+    //! \brief Returns a \ref Dot object representing a Stephen word graph.
     //!
-    //! This function returns a \ref Dot object representing the underlying
-    //! word graph of the Stephen instance \p s.
+    //! This function returns a \ref Dot object representing the word graph of
+    //! the Stephen instance \p s in its current state. The returned graph
+    //! contains the nodes reachable from the initial state by a path of length
+    //! at most \p radius, and edges labelled by every letter in the alphabet of
+    //! the presentation.
     //!
-    //! \tparam PresentationType must be a specialisation of \ref Presentation
-    //! or \ref InversePresentation.
+    //! \tparam Word the word type of the presentation.
     //!
     //! \param s the Stephen instance.
+    //! \param radius the maximum distance from the initial state of a node in
+    //! the returned graph (default: \ref POSITIVE_INFINITY).
     //!
-    //! \returns A \ref Dot object.
-    template <typename PresentationType>
-    [[nodiscard]] Dot dot(Stephen<PresentationType>& s);
+    //! \returns A \ref Dot object representing the word graph of \p s.
+    //!
+    //! \throws LibsemigroupsException if no presentation or word has been set
+    //! in \p s.
+    //! \throws LibsemigroupsException if a letter in the alphabet cannot be
+    //! rendered unambiguously as a single character.
+    //! \throws LibsemigroupsException if the alphabet has more letters than
+    //! the number of colours in Dot::colors.
+    //!
+    //! \note This function does not run \p s.
+    template <typename Word>
+    [[nodiscard]] Dot dot(Stephen<Presentation<Word>>& s,
+                          size_t radius = POSITIVE_INFINITY);
+
+    //! \brief Returns a \ref Dot object representing a Stephen word graph.
+    //!
+    //! This function returns a \ref Dot object representing the word graph of
+    //! the Stephen instance \p s in its current state. The returned graph
+    //! contains the nodes reachable from the initial state by a path of length
+    //! at most \p radius. Only edges labelled by letters in \p alphabet are
+    //! included.
+    //!
+    //! \tparam Word the word type of the presentation.
+    //!
+    //! \param s the Stephen instance.
+    //! \param alphabet the letters labelling edges in the returned graph.
+    //! \param radius the maximum distance from the initial state of a node in
+    //! the returned graph (default: \ref POSITIVE_INFINITY).
+    //!
+    //! \returns A \ref Dot object representing the word graph of \p s.
+    //!
+    //! \throws LibsemigroupsException if no presentation or word has been set
+    //! in \p s.
+    //! \throws LibsemigroupsException if \p alphabet contains duplicate or
+    //! invalid letters.
+    //! \throws LibsemigroupsException if a letter in \p alphabet cannot be
+    //! rendered unambiguously as a single character.
+    //! \throws LibsemigroupsException if \p alphabet has more letters than the
+    //! number of colours in Dot::colors.
+    //!
+    //! \note This function does not run \p s.
+    template <typename Word>
+    [[nodiscard]] Dot dot(Stephen<Presentation<Word>>& s,
+                          Word const&                  alphabet,
+                          size_t radius = POSITIVE_INFINITY);
+
+    //! \brief Returns a \ref Dot object representing a Stephen word graph for
+    //! an inverse presentation.
+    //!
+    //! This function returns a \ref Dot object representing the word graph of
+    //! the Stephen instance \p s in its current state. The returned graph
+    //! contains the nodes reachable from the initial state by a path of length
+    //! at most \p radius. Edges are labelled by the inverse semigroup
+    //! generating set returned by
+    //! \ref presentation::inverse_alphabet_no_checks.
+    //! If \p use_inverse_literals is \c true, a letter outside this generating
+    //! set in a node label is rendered as its inverse followed by a superscript
+    //! `-1`. Otherwise, every letter in a node label is rendered directly.
+    //!
+    //! \tparam Word the word type of the presentation.
+    //!
+    //! \param s the Stephen instance.
+    //! \param radius the maximum distance from the initial state of a node in
+    //! the returned graph (default: \ref POSITIVE_INFINITY).
+    //! \param use_inverse_literals whether to use inverse literals in node
+    //! labels (default: \c true).
+    //!
+    //! \returns A \ref Dot object representing the word graph of \p s.
+    //!
+    //! \throws LibsemigroupsException if no presentation or word has been set
+    //! in \p s.
+    //! \throws LibsemigroupsException if a letter in the inverse semigroup
+    //! generating set cannot be rendered unambiguously as a single character.
+    //! \throws LibsemigroupsException if the inverse semigroup generating set
+    //! has more letters than the number of colours in Dot::colors.
+    //!
+    //! \note This function does not run \p s.
+    template <typename Word>
+    [[nodiscard]] Dot dot(Stephen<InversePresentation<Word>>& s,
+                          size_t radius               = POSITIVE_INFINITY,
+                          bool   use_inverse_literals = true);
+
+    //! \brief Returns a \ref Dot object representing a Stephen word graph for
+    //! an inverse presentation.
+    //!
+    //! This function returns a \ref Dot object representing the word graph of
+    //! the Stephen instance \p s in its current state. The returned graph
+    //! contains the nodes reachable from the initial state by a path of length
+    //! at most \p radius. Only edges labelled by letters in \p alphabet are
+    //! included. If \p use_inverse_literals is \c true, a letter outside
+    //! \p alphabet in a node label is rendered as its inverse followed by a
+    //! superscript `-1`. Otherwise, every letter in a node label is rendered
+    //! directly.
+    //!
+    //! \tparam Word the word type of the presentation.
+    //!
+    //! \param s the Stephen instance.
+    //! \param alphabet the letters labelling edges in the returned graph.
+    //! \param radius the maximum distance from the initial state of a node in
+    //! the returned graph (default: \ref POSITIVE_INFINITY).
+    //! \param use_inverse_literals whether to use inverse literals in node
+    //! labels (default: \c true).
+    //!
+    //! \returns A \ref Dot object representing the word graph of \p s.
+    //!
+    //! \throws LibsemigroupsException if no presentation or word has been set
+    //! in \p s.
+    //! \throws LibsemigroupsException if \p alphabet contains duplicate or
+    //! invalid letters.
+    //! \throws LibsemigroupsException if a letter in \p alphabet cannot be
+    //! rendered unambiguously as a single character.
+    //! \throws LibsemigroupsException if \p alphabet has more letters than the
+    //! number of colours in Dot::colors.
+    //!
+    //! \note This function does not run \p s.
+    template <typename Word>
+    [[nodiscard]] Dot dot(Stephen<InversePresentation<Word>>& s,
+                          Word const&                         alphabet,
+                          size_t radius               = POSITIVE_INFINITY,
+                          bool   use_inverse_literals = true);
 
     //! \brief Set the initial word.
     //!
@@ -844,8 +974,8 @@ namespace libsemigroups {
     // TODO(v4) should have return type void for consistency
     template <typename PresentationType>
     Stephen<PresentationType>&
-    set_word(Stephen<PresentationType>&                  s,
-             typename PresentationType::word_type const& w) {
+    set_word(Stephen<PresentationType>&                         s,
+             typename PresentationType::native_word_type const& w) {
       return s.set_word(w.cbegin(), w.cend());
     }
 

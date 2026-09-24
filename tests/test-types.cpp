@@ -24,7 +24,6 @@
 
 namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SmallestInteger", "000", "", "[quick]") {
-    auto rg = ReportGuard(false);
     REQUIRE(sizeof(SmallestInteger<0>::type) == 1);
     REQUIRE(sizeof(SmallestInteger<255>::type) == 1);
     REQUIRE(sizeof(SmallestInteger<256>::type) == 2);

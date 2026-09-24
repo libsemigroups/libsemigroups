@@ -19,20 +19,26 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/du-narendran-rusinowitch.hpp"  // for du_...
+#include "libsemigroups/presentation.hpp"              // for Presentation, p...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using std::literals::operator""s;
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
                           "000",
                           "Simple test 1",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcde");
-    p.rules = {"dbcbace", "cbbaec", "bcbad", "badbc"};
+    p.alphabet("abcde"s);
+    p.rules              = {"dbcbace", "cbbaec", "bcbad", "badbc"};
+    std::string alphabet = du_narendran_rusinowitch(p);
 
-    REQUIRE(du_narendran_rusinowitch(p) == "edcab");
+    REQUIRE(du_narendran_rusinowitch(p) == alphabet);
+    Presentation copy(p);
+    presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
+    REQUIRE(copy == p);
   }
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
@@ -40,10 +46,15 @@ namespace libsemigroups {
                           "Simple test 2",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.rules = {"a", "cc", "d", "bcc", "bccb", "c", "cccb", "bccc"};
 
-    REQUIRE(du_narendran_rusinowitch(p) == "bcda");
+    std::string alphabet = du_narendran_rusinowitch(p);
+
+    REQUIRE(du_narendran_rusinowitch(p) == alphabet);
+    Presentation copy(p);
+    presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
+    REQUIRE(copy == p);
   }
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
@@ -51,13 +62,18 @@ namespace libsemigroups {
                           "Simple test 3",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("aAbBc");
+    p.alphabet("aAbBc"s);
     p.contains_empty_word(true);
     p.rules = {"AA", "bc",     "bB",  "",     "Bb", "",    "Abc", "bcA",
                "a",  "cbA",    "AB",  "bbAb", "cc", "BB",  "cbb", "bbc",
                "Ac", "bbcbAb", "Abb", "BBA",  "cB", "BBcb"};
 
-    REQUIRE(du_narendran_rusinowitch(p) == "bBcAa");
+    std::string alphabet = du_narendran_rusinowitch(p);
+
+    REQUIRE(du_narendran_rusinowitch(p) == alphabet);
+    Presentation copy(p);
+    presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
+    REQUIRE(copy == p);
   }
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
@@ -65,7 +81,7 @@ namespace libsemigroups {
                           "Simple test 4",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     p.rules = {"bbba",
                "d",
@@ -166,7 +182,12 @@ namespace libsemigroups {
                "cadaadadddaadadadad",
                "cadaadadddaadadddaa"};
 
-    REQUIRE(du_narendran_rusinowitch(p) == "dcab");
+    std::string alphabet = du_narendran_rusinowitch(p);
+
+    REQUIRE(du_narendran_rusinowitch(p) == alphabet);
+    Presentation copy(p);
+    presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
+    REQUIRE(copy == p);
   }
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
@@ -174,12 +195,17 @@ namespace libsemigroups {
                           "Simple test 5",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     p.rules = {
         "c", "bdad", "ab", "d", "ddad", "a", "adad", "ddaa", "aad", "ddddaa"};
 
-    REQUIRE(du_narendran_rusinowitch(p) == "dbac");
+    std::string alphabet = du_narendran_rusinowitch(p);
+
+    REQUIRE(du_narendran_rusinowitch(p) == alphabet);
+    Presentation copy(p);
+    presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
+    REQUIRE(copy == p);
   }
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
@@ -187,7 +213,7 @@ namespace libsemigroups {
                           "Simple test 6",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     // codespell:begin-ignore
     p.rules
@@ -195,7 +221,12 @@ namespace libsemigroups {
            "a",     "ddaabb", "d",    "dddad",    "a",   "aaabb",      "ddda",
            "addad", "dddaa",  "adad", "ddddddaa", "aad", "dddddddddaa"};
     // codespell:end-ignore
-    REQUIRE(du_narendran_rusinowitch(p) == "dabc");
+    std::string alphabet = du_narendran_rusinowitch(p);
+
+    REQUIRE(du_narendran_rusinowitch(p) == alphabet);
+    Presentation copy(p);
+    presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
+    REQUIRE(copy == p);
   }
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
@@ -203,58 +234,63 @@ namespace libsemigroups {
                           "Simple test 7",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
-    p.rules = {"ac",       "a",
-               "dc",       "d",
-               "bad",      "dba",
-               "baba",     "ddab",
-               "cadabd",   "caddab",
-               "dadabb",   "d",
-               "cadabb",   "c",
-               "aadabb",   "a",
-               "ddabba",   "d",
-               "ddabc",    "ddab",
-               "ddabd",    "dddab",
-               "cadabc",   "cadab",
-               "aadabd",   "aaddab",
-               "dadabd",   "daddab",
-               "dddabab",  "ba",
-               "caddabab", "ddddaba",
-               "ddddad",   "ca",
-               "aadabc",   "aadab",
-               "dadabc",   "dadab",
-               "caabb",    "dddd",
-               "aaddabab", "addddaba",
-               "daddabab", "dddddaba",
-               "baa",      "dddaddab",
-               "caabd",    "cadab",
-               "cadddad",  "ddddaa",
-               "aaabb",    "adddd",
-               "daabb",    "ddddd",
-               "cadabab",  "ddddddddaba",
-               "aaabd",    "aadab",
-               "daabd",    "dadab",
-               "aadddad",  "addddaa",
-               "dadddad",  "dddddaa",
-               "caabc",    "caab",
-               "aadabab",  "addddddddaba",
-               "dadabab",  "dddddddddaba",
-               "cadad",    "ddddddddddddaa",
-               "caabab",   "ddddddddddddaba",
-               "aadad",    "addddddddddddaa",
-               "caddad",   "ddddddddaa",
-               "aaabc",    "aaab",
-               "daabc",    "daab",
-               "dadad",    "dddddddddddddaa",
-               "aaabab",   "addddddddddddaba",
-               "daabab",   "dddddddddddddaba",
-               "caad",     "ddddddddddddddddaa",
-               "aaddad",   "addddddddaa",
-               "daddad",   "dddddddddaa",
-               "aaad",     "addddddddddddddddaa",
-               "daad",     "dddddddddddddddddaa"};
-    REQUIRE(du_narendran_rusinowitch(p) == "dcab");
+    p.rules              = {"ac",       "a",
+                            "dc",       "d",
+                            "bad",      "dba",
+                            "baba",     "ddab",
+                            "cadabd",   "caddab",
+                            "dadabb",   "d",
+                            "cadabb",   "c",
+                            "aadabb",   "a",
+                            "ddabba",   "d",
+                            "ddabc",    "ddab",
+                            "ddabd",    "dddab",
+                            "cadabc",   "cadab",
+                            "aadabd",   "aaddab",
+                            "dadabd",   "daddab",
+                            "dddabab",  "ba",
+                            "caddabab", "ddddaba",
+                            "ddddad",   "ca",
+                            "aadabc",   "aadab",
+                            "dadabc",   "dadab",
+                            "caabb",    "dddd",
+                            "aaddabab", "addddaba",
+                            "daddabab", "dddddaba",
+                            "baa",      "dddaddab",
+                            "caabd",    "cadab",
+                            "cadddad",  "ddddaa",
+                            "aaabb",    "adddd",
+                            "daabb",    "ddddd",
+                            "cadabab",  "ddddddddaba",
+                            "aaabd",    "aadab",
+                            "daabd",    "dadab",
+                            "aadddad",  "addddaa",
+                            "dadddad",  "dddddaa",
+                            "caabc",    "caab",
+                            "aadabab",  "addddddddaba",
+                            "dadabab",  "dddddddddaba",
+                            "cadad",    "ddddddddddddaa",
+                            "caabab",   "ddddddddddddaba",
+                            "aadad",    "addddddddddddaa",
+                            "caddad",   "ddddddddaa",
+                            "aaabc",    "aaab",
+                            "daabc",    "daab",
+                            "dadad",    "dddddddddddddaa",
+                            "aaabab",   "addddddddddddaba",
+                            "daabab",   "dddddddddddddaba",
+                            "caad",     "ddddddddddddddddaa",
+                            "aaddad",   "addddddddaa",
+                            "daddad",   "dddddddddaa",
+                            "aaad",     "addddddddddddddddaa",
+                            "daad",     "dddddddddddddddddaa"};
+    std::string alphabet = du_narendran_rusinowitch(p);
+
+    REQUIRE(du_narendran_rusinowitch(p) == alphabet);
+    Presentation copy(p);
+    presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
+    REQUIRE(copy == p);
   }
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
@@ -262,7 +298,7 @@ namespace libsemigroups {
                           "Simple test 8",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     p.rules = {"ddabd",
                "dddab",
@@ -347,7 +383,12 @@ namespace libsemigroups {
                "daad",
                "ddddddddddddddddddddddddddaa"};
 
-    REQUIRE(du_narendran_rusinowitch(p) == "dabc");
+    std::string alphabet = du_narendran_rusinowitch(p);
+
+    REQUIRE(du_narendran_rusinowitch(p) == alphabet);
+    Presentation copy(p);
+    presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
+    REQUIRE(copy == p);
   }
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
@@ -355,7 +396,7 @@ namespace libsemigroups {
                           "Simple test 9",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     p.rules = {"ddabd",
                "dddab",
@@ -462,7 +503,12 @@ namespace libsemigroups {
                "daad",
                "dddddddddddddddddddddddddddddddddddddaa"};
 
-    REQUIRE(du_narendran_rusinowitch(p) == "dabc");
+    std::string alphabet = du_narendran_rusinowitch(p);
+
+    REQUIRE(du_narendran_rusinowitch(p) == alphabet);
+    Presentation copy(p);
+    presentation::sort_each_rule(copy, RPOCmp(Alphabet(alphabet)));
+    REQUIRE(copy == p);
   }
 
   LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
@@ -470,7 +516,7 @@ namespace libsemigroups {
                           "Empty rules + alphabet",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("");
+    p.alphabet(""s);
     p.contains_empty_word(true);
     REQUIRE(du_narendran_rusinowitch(p) == "");
   }
@@ -480,7 +526,7 @@ namespace libsemigroups {
                           "Empty rules",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.contains_empty_word(true);
     REQUIRE(du_narendran_rusinowitch(p) == "abcd");
   }
@@ -490,7 +536,7 @@ namespace libsemigroups {
                           "Unused letters",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcdefghij");
+    p.alphabet("abcdefghij"s);
     p.contains_empty_word(true);
     p.rules = {"j", ""};
     REQUIRE(du_narendran_rusinowitch(p) == "jihgfedcba");
@@ -501,7 +547,7 @@ namespace libsemigroups {
                           "Cyclic rules",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     p.rules = {"a", "b", "b", "c", "c", "d", "d", "a"};
     REQUIRE(du_narendran_rusinowitch(p) == "");
   }
@@ -511,7 +557,7 @@ namespace libsemigroups {
                           "Common suffixes",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     p.rules = {"abac", "acac", "acac", "abac"};
     REQUIRE(du_narendran_rusinowitch(p) == "");
   }
@@ -521,7 +567,7 @@ namespace libsemigroups {
                           "Equal rules",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     p.rules = {"abac", "abac"};
     REQUIRE(du_narendran_rusinowitch(p) == "cba");
   }
@@ -531,7 +577,7 @@ namespace libsemigroups {
                           "Common suffix and prefix",
                           "[quick]") {
     Presentation<std::string> p;
-    p.alphabet("abc");
+    p.alphabet("abc"s);
     // p.rules = {"aaaaaababaaaaaa", "a"};
     // REQUIRE(du_narendran_rusinowitch(p) == "cba");
     p.rules = {"a", "aaaaaababaaaaaa"};

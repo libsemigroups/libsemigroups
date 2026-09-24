@@ -34,7 +34,6 @@ namespace libsemigroups {
                           "035",
                           "example 1",
                           "[quick][froidure-pin][pbr]") {
-    auto             rg   = ReportGuard(false);
     std::vector<PBR> gens = {make<PBR>({{3, 5},
                                         {0, 1, 2, 3, 4, 5},
                                         {0, 2, 3, 4, 5},
@@ -127,8 +126,6 @@ namespace libsemigroups {
                           "036",
                           "example 2",
                           "[quick][froidure-pin][pbr]") {
-    auto rg = ReportGuard(false);
-
     FroidurePin<PBR> S;
     S.add_generator(make<PBR>({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}));
     S.add_generator(

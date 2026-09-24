@@ -33,7 +33,6 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][projmaxplus]",
                                    ProjMaxPlusMat<3>,
                                    ProjMaxPlusMat<>) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>({{0, 1, 2}, {3, 4, 1}, {2, 1, 1}}));
     S.add_generator(make<TestType>({{0, 1, 1}, {1, 1, 1}, {0, 0, 0}}));
@@ -80,7 +79,6 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][element]",
                                    ProjMaxPlusMat<3>,
                                    ProjMaxPlusMat<>) {
-    auto                  rg = ReportGuard(false);
     auto                  id = TestType::one(3);
     FroidurePin<TestType> S;
     S.add_generator(id);

@@ -45,9 +45,9 @@
 #include "paths-count.hpp"         // for algorithm
 #include "ranges.hpp"              // for is_input_range
 #include "types.hpp"               // for word_type
+#include "word-graph-class.hpp"    // for WordGraph
 #include "word-graph-helpers.hpp"  // for word_graph
-#include "word-graph.hpp"          // for WordGraph
-#include "word-range.hpp"          // for number_of_words
+#include "words-helpers.hpp"       // for number_of_words
 
 #include "detail/containers.hpp"      // for DynamicArray2
 #include "detail/path-iterators.hpp"  // for default_postfix_increment
@@ -114,7 +114,7 @@ namespace libsemigroups {
                                  Node2                   source,
                                  size_t                  min = 0,
                                  size_t max = POSITIVE_INFINITY) {
-    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+    detail::throw_if_not_less(source, wg.number_of_nodes(), "node ");
     return detail::const_pilo_iterator<Node1>(&wg, source, min, max);
   }
 
@@ -146,12 +146,12 @@ namespace libsemigroups {
   //! Returns an iterator for pislo (Path And Node In Short Lex Order).
   //!
   //! Returns a forward iterator pointing to a pair consisting of the edge
-  //! labels of the first path (in short-lex order) starting at \p source
+  //! labels of the first path (in lenlex order) starting at \p source
   //! with length in the range \f$[min, max)\f$ and the last node of that
   //! path.
   //!
   //! If incremented, the iterator will point to the next least edge
-  //! labelling of a path (in short-lex order), and its last node, with
+  //! labelling of a path (in lenlex order), and its last node, with
   //! length in the range \f$[min, max)\f$.  Iterators of the type returned
   //! by this function are equal whenever they point to equal objects.
   //!
@@ -165,7 +165,7 @@ namespace libsemigroups {
   //! An iterator \c it of type \c detail::const_pislo_iterator pointing to a
   //! `std::pair` where:
   //! * \c it->first is a \ref word_type consisting of the edge
-  //! labels of the first path (in short-lex order) from \p source of
+  //! labels of the first path (in lenlex order) from \p source of
   //! length in the range \f$[min, max)\f$; and
   //! * \c it->second is the last node on the path from \p source labelled by
   //! \c it->first, a value of \ref WordGraph::node_type.
@@ -192,7 +192,7 @@ namespace libsemigroups {
                                   Node2                   source,
                                   size_t                  min = 0,
                                   size_t max = POSITIVE_INFINITY) {
-    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+    detail::throw_if_not_less(source, wg.number_of_nodes(), "node ");
     return detail::const_pislo_iterator<Node1>(&wg, source, min, max);
   }
 
@@ -267,8 +267,10 @@ namespace libsemigroups {
                                    Node2                   target,
                                    size_t                  min = 0,
                                    size_t max = POSITIVE_INFINITY) {
+    static_assert(sizeof(Node1) >= sizeof(Node2));
     // source & target are validated in is_reachable.
-    if (!v4::word_graph::is_reachable(wg, source, target)) {
+    if (!word_graph::is_reachable(
+            wg, static_cast<Node1>(source), static_cast<Node1>(target))) {
       return cend_pstilo(wg);
     }
     return detail::const_pstilo_iterator<Node1>(&wg, source, target, min, max);
@@ -303,11 +305,11 @@ namespace libsemigroups {
   //! Order).
   //!
   //! Returns a forward iterator pointing to the edge labels of the first
-  //! path (in short-lex order) starting at the node \p source and ending
+  //! path (in lenlex order) starting at the node \p source and ending
   //! at the node \p target with length in the range \f$[min, max)\f$.
   //!
   //! If incremented, the iterator will point to the next least edge
-  //! labelling of a path (in short-lex order).  Iterators of the type
+  //! labelling of a path (in lenlex order).  Iterators of the type
   //! returned by this function are equal whenever they point to equal
   //! objects.
   //!
@@ -321,7 +323,7 @@ namespace libsemigroups {
   //! \returns
   //! An iterator \c it of type \c detail::const_pstislo_iterator pointing to a
   //! \ref word_type consisting of the edge labels of the first
-  //! path (in short-lex order) from the node \p source to the node \p target
+  //! path (in lenlex order) from the node \p source to the node \p target
   //! with length in the range \f$[min, max)\f$ (if any).
   //!
   //! \throws LibsemigroupsException if \p target or \p source is not a node
@@ -346,8 +348,10 @@ namespace libsemigroups {
                                     Node2                   target,
                                     size_t                  min = 0,
                                     size_t max = POSITIVE_INFINITY) {
+    static_assert(sizeof(Node1) >= sizeof(Node2));
     // source & target are validated in is_reachable.
-    if (!v4::word_graph::is_reachable(wg, source, target)) {
+    if (!word_graph::is_reachable(
+            wg, static_cast<Node1>(source), static_cast<Node1>(target))) {
       return cend_pstislo(wg);
     }
     return detail::const_pstislo_iterator<Node1>(&wg, source, target, min, max);
@@ -454,7 +458,7 @@ namespace libsemigroups {
   //!
   //! \deprecated This function is deprecated, it will be moved into the `paths`
   //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
-  // Not noexcept because v4::word_graph::topological_sort is not.
+  // Not noexcept because word_graph::topological_sort is not.
   template <typename Node1, typename Node2>
   [[deprecated]] [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& wg,
@@ -546,7 +550,7 @@ namespace libsemigroups {
   //!
   //! \deprecated This function is deprecated, it will be moved into the `paths`
   //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
-  // Not noexcept because v4::word_graph::topological_sort isn't
+  // Not noexcept because word_graph::topological_sort isn't
   template <typename Node1, typename Node2>
   [[deprecated]] [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& wg,
@@ -907,7 +911,7 @@ namespace libsemigroups {
     //! \warning It is necessary to set the source node using \ref source
     //! before a Paths object is valid.
     Paths& source(node_type n) {
-      word_graph::throw_if_node_out_of_bounds(word_graph(), n);
+      detail::throw_if_not_less(n, word_graph().number_of_nodes(), "node ");
       return source_no_checks(n);
     }
 
@@ -967,7 +971,7 @@ namespace libsemigroups {
     //! point at the first word in the specified range.
     Paths& target(node_type n) {
       if (n != UNDEFINED) {
-        word_graph::throw_if_node_out_of_bounds(word_graph(), n);
+        detail::throw_if_not_less(n, word_graph().number_of_nodes(), "node ");
       }
       return target_no_checks(n);
     }

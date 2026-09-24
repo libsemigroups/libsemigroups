@@ -61,6 +61,7 @@ namespace libsemigroups {
     Presentation<word_type> not_renner_type_B_monoid(size_t l, int q);
     Presentation<word_type> not_renner_type_D_monoid(size_t l, int q);
     Presentation<word_type> not_symmetric_group(size_t n);
+    Presentation<word_type> okada_monoid(size_t n);
     Presentation<word_type> order_preserving_cyclic_inverse_monoid(size_t n);
     Presentation<word_type> order_preserving_monoid(size_t n);
     Presentation<word_type> orientation_preserving_monoid(size_t n);
@@ -415,6 +416,25 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type> not_symmetric_group_GKKL08(size_t n);
+
+    //! \brief A presentation for the Okada monoid.
+    //!
+    //! This function returns a monoid presentation defining the Okada monoid
+    //! of degree \p n, as in Definition 3.2 of \cite Hivert2026aa.
+    //! The monoid has \f$n!\f$ elements and \f$n - 1\f$ generators, indexed
+    //! from \c 0 to \f$n - 2\f$. Its defining relations are
+    //! \f$e_i^2 = e_i\f$, \f$e_i e_j = e_j e_i\f$ for
+    //! \f$|i - j| \geq 2\f$, and
+    //! \f$e_{i+1} e_i e_{i+1} = e_{i+1}\f$.
+    //!
+    //! \param n the degree, or equivalently the number of generators plus \c 1.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 1`.
+    //!
+    //! \sa temperley_lieb_monoid_Eas21.
+    [[nodiscard]] Presentation<word_type> okada_monoid_HS26(size_t n);
 
     //! \brief A presentation for the order preserving part of the cyclic
     //! inverse monoid.
@@ -811,10 +831,10 @@ namespace libsemigroups {
     //! \brief A presentation for the Temperley-Lieb monoid.
     //!
     //! This function returns a monoid presentation defining the
-    //! Temperley-Lieb monoid with \p n generators, as described in
-    //! Theorem 2.2 of \cite East2022aa.
+    //! Temperley-Lieb monoid of degree \p n with \f$n - 1\f$ generators, as
+    //! described in Theorem 2.2 of \cite East2022aa.
     //!
-    //! \param n the number of generators.
+    //! \param n the degree, or equivalently the number of generators plus \c 1.
     //!
     //! \returns A value of type `Presentation<word_type>`.
     //!
@@ -834,7 +854,6 @@ namespace libsemigroups {
     [[nodiscard]] Presentation<word_type>
     uniform_block_bijection_monoid_Fit03(size_t n);
 
-    // TODO(1) add okada_monoid
     // TODO(1) add free_semilattice
 
     //! \brief A presentation for the \f$0\f$-rook monoid.
@@ -1105,6 +1124,20 @@ namespace libsemigroups {
     //! `not_symmetric_group_GKKL08`.
     [[nodiscard]] inline Presentation<word_type> not_symmetric_group(size_t n) {
       return not_symmetric_group_GKKL08(n);
+    }
+
+    //! \copydoc okada_monoid_HS26
+    //!
+    //! \note
+    //! This function performs exactly the same as `okada_monoid_HS26`, and
+    //! exists as a convenience function for when a presentation for the
+    //! Okada monoid is required, but the relations of the presentation are
+    //! not important.
+    //!
+    //! \sa
+    //! `okada_monoid_HS26`.
+    [[nodiscard]] inline Presentation<word_type> okada_monoid(size_t n) {
+      return okada_monoid_HS26(n);
     }
 
     //! \copydoc order_preserving_cyclic_inverse_monoid_Fer22

@@ -74,17 +74,6 @@ namespace libsemigroups {
       CongruenceCommon& operator=(CongruenceCommon const&);
       CongruenceCommon& operator=(CongruenceCommon&&);
 
-      ////////////////////////////////////////////////////////////////////////////
-      // CongruenceCommon - validation - protected
-      ////////////////////////////////////////////////////////////////////////////
-
-      template <typename Subclass, typename Iterator1, typename Iterator2>
-      void throw_if_letter_not_in_alphabet(Iterator1 first,
-                                           Iterator2 last) const {
-        static_cast<Subclass const*>(this)->throw_if_letter_not_in_alphabet(
-            first, last);
-      }
-
      public:
       ~CongruenceCommon();
 
@@ -117,7 +106,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // CongruenceCommon - add_internal_generating_pair
+      // CongruenceCommon - add generating pairs
       ////////////////////////////////////////////////////////////////////////
 
       // The functions in this section are used as aliases in the derived
@@ -175,11 +164,7 @@ namespace libsemigroups {
       [[nodiscard]] bool contains(Iterator1 first1,
                                   Iterator2 last1,
                                   Iterator3 first2,
-                                  Iterator4 last2) {
-        throw_if_letter_not_in_alphabet<Subclass>(first1, last1);
-        throw_if_letter_not_in_alphabet<Subclass>(first2, last2);
-        return contains_no_checks<Subclass>(first1, last1, first2, last2);
-      }
+                                  Iterator4 last2);
 
       ////////////////////////////////////////////////////////////////////////
       // CongruenceCommon - reduce

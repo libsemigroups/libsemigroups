@@ -34,8 +34,9 @@
 #include "libsemigroups/kambites-class.hpp"  // for Kambites
 #include "libsemigroups/order.hpp"           // for lenlex_cmp
 #include "libsemigroups/presentation.hpp"    // for to_word
+#include "libsemigroups/to-word.hpp"         // for ToWord, ToString
 #include "libsemigroups/types.hpp"           // for word_type, tril
-#include "libsemigroups/word-range.hpp"      // for ToWord, ToString
+#include "libsemigroups/words-helpers.hpp"   // for operator+=
 
 namespace libsemigroups {
   namespace detail {

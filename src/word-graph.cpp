@@ -16,29 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the implementations of some things from word-graph.hpp.
-
-#include "libsemigroups/word-graph.hpp"
-
-namespace libsemigroups {
-
-  // TODO(v4) delete this file
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  Meeter::Meeter()                         = default;
-  Meeter::Meeter(Meeter const&)            = default;
-  Meeter::Meeter(Meeter&&)                 = default;
-  Meeter& Meeter::operator=(Meeter const&) = default;
-  Meeter& Meeter::operator=(Meeter&&)      = default;
-
-  Meeter::~Meeter() = default;
-
-  Joiner::Joiner()                         = default;
-  Joiner::Joiner(Joiner const&)            = default;
-  Joiner::Joiner(Joiner&&)                 = default;
-  Joiner& Joiner::operator=(Joiner const&) = default;
-  Joiner& Joiner::operator=(Joiner&&)      = default;
-
-  Joiner::~Joiner() = default;
-#pragma GCC diagnostic pop
-}  // namespace libsemigroups
+// This file is retained for backwards compatibility and will be deleted in v4.
+//
+// TODO(v4) delete this file.

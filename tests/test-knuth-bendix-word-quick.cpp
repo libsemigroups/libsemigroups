@@ -30,6 +30,7 @@
 #include "libsemigroups/to-froidure-pin.hpp"        // for to<FroidurePin>
 #include "libsemigroups/types.hpp"                  // for word_type
 #include "libsemigroups/word-range.hpp"             // for operator""_w
+#include "libsemigroups/words-helpers.hpp"          // for WordRange
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -63,8 +64,9 @@ namespace libsemigroups {
 
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
-  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
-  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
+  using RPOTrie    = detail::RewritingSystemTrie<RPOCmp>;
+  using RPOSet     = detail::RewritingSystemSet<RPOCmp>;
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
 
 // TODO update to use RPO also
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
@@ -76,7 +78,6 @@ namespace libsemigroups {
                                    REWRITING_SYSTEM_TYPES) {
     using literals::operator""_w;
 
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
     presentation::add_rule(p, 0_w, 011_w);
@@ -98,10 +99,9 @@ namespace libsemigroups {
                                    "non-trivial classes x 4",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES,
-                                   RPOTrie) {
+                                   RevRPOTrie) {
     using order = typename TestType::reduction_order;
 
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule_no_checks(p, 01_w, 10_w);
@@ -141,7 +141,6 @@ namespace libsemigroups {
                                    "non-triv. cong. on infinite fp semigp",
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(5);
     presentation::add_rule_no_checks(p, 01_w, 0_w);
@@ -171,7 +170,7 @@ namespace libsemigroups {
 
     KnuthBendix<word_type, TestType> kb1(twosided, p);
 
-    WordGraph test_wg1 = v4::make<WordGraph<size_t>>(
+    WordGraph test_wg1 = make<WordGraph<size_t>>(
         6,
         {{1, 2, 3, 4, 5},
          {},
@@ -188,7 +187,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 1_w, 2_w);
     KnuthBendix<word_type, TestType> kb2(twosided, p);
 
-    WordGraph test_wg2 = v4::make<WordGraph<size_t>>(
+    WordGraph test_wg2 = make<WordGraph<size_t>>(
         5,
         {{1, 2, UNDEFINED, 3, 4},
          {},
@@ -214,7 +213,6 @@ namespace libsemigroups {
                                    "non-triv. cong. on infinite fp semigroup",
                                    "[quick][kbp]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(5);
     presentation::add_rule_no_checks(p, 01_w, 0_w);
@@ -258,7 +256,6 @@ namespace libsemigroups {
                                    "triv. cong. on finite fp semigp",
                                    "[quick][kbp]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule_no_checks(p, 001_w, 00_w);
@@ -287,7 +284,6 @@ namespace libsemigroups {
                                    "[quick][kbp]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);
@@ -340,110 +336,108 @@ namespace libsemigroups {
                                    "finite fp semigroup, size 16",
                                    "[quick][kbp]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
-
     Presentation<word_type> p;
     p.alphabet(11);
-    presentation::add_rule_no_checks(p, {2}, {1});
-    presentation::add_rule_no_checks(p, {4}, {3});
-    presentation::add_rule_no_checks(p, {5}, {0});
-    presentation::add_rule_no_checks(p, {6}, {3});
-    presentation::add_rule_no_checks(p, {7}, {1});
-    presentation::add_rule_no_checks(p, {8}, {3});
-    presentation::add_rule_no_checks(p, {9}, {3});
-    presentation::add_rule_no_checks(p, {10}, {0});
-    presentation::add_rule_no_checks(p, {0, 2}, {0, 1});
-    presentation::add_rule_no_checks(p, {0, 4}, {0, 3});
-    presentation::add_rule_no_checks(p, {0, 5}, {0, 0});
-    presentation::add_rule_no_checks(p, {0, 6}, {0, 3});
-    presentation::add_rule_no_checks(p, {0, 7}, {0, 1});
-    presentation::add_rule_no_checks(p, {0, 8}, {0, 3});
-    presentation::add_rule_no_checks(p, {0, 9}, {0, 3});
+    presentation::add_rule_no_checks(p, 2_w, 1_w);
+    presentation::add_rule_no_checks(p, 4_w, 3_w);
+    presentation::add_rule_no_checks(p, 5_w, 0_w);
+    presentation::add_rule_no_checks(p, 6_w, 3_w);
+    presentation::add_rule_no_checks(p, 7_w, 1_w);
+    presentation::add_rule_no_checks(p, 8_w, 3_w);
+    presentation::add_rule_no_checks(p, 9_w, 3_w);
+    presentation::add_rule_no_checks(p, word_type({10}), 0_w);
+    presentation::add_rule_no_checks(p, 02_w, 01_w);
+    presentation::add_rule_no_checks(p, 04_w, 03_w);
+    presentation::add_rule_no_checks(p, 05_w, 00_w);
+    presentation::add_rule_no_checks(p, 06_w, 03_w);
+    presentation::add_rule_no_checks(p, 07_w, 01_w);
+    presentation::add_rule_no_checks(p, "08"_w, 03_w);
+    presentation::add_rule_no_checks(p, "09"_w, 03_w);
 
-    presentation::add_rule_no_checks(p, {0, 10}, {0, 0});
-    presentation::add_rule_no_checks(p, {1, 1}, {1});
-    presentation::add_rule_no_checks(p, {1, 2}, {1});
-    presentation::add_rule_no_checks(p, {1, 4}, {1, 3});
-    presentation::add_rule_no_checks(p, {1, 5}, {1, 0});
-    presentation::add_rule_no_checks(p, {1, 6}, {1, 3});
-    presentation::add_rule_no_checks(p, {1, 7}, {1});
-    presentation::add_rule_no_checks(p, {1, 8}, {1, 3});
-    presentation::add_rule_no_checks(p, {1, 9}, {1, 3});
-    presentation::add_rule_no_checks(p, {1, 10}, {1, 0});
-    presentation::add_rule_no_checks(p, {3, 1}, {3});
-    presentation::add_rule_no_checks(p, {3, 2}, {3});
-    presentation::add_rule_no_checks(p, {3, 3}, {3});
-    presentation::add_rule_no_checks(p, {3, 4}, {3});
-    presentation::add_rule_no_checks(p, {3, 5}, {3, 0});
-    presentation::add_rule_no_checks(p, {3, 6}, {3});
-    presentation::add_rule_no_checks(p, {3, 7}, {3});
-    presentation::add_rule_no_checks(p, {3, 8}, {3});
-    presentation::add_rule_no_checks(p, {3, 9}, {3});
-    presentation::add_rule_no_checks(p, {3, 10}, {3, 0});
-    presentation::add_rule_no_checks(p, {0, 0, 0}, {0});
-    presentation::add_rule_no_checks(p, {0, 0, 1}, {1});
-    presentation::add_rule_no_checks(p, {0, 0, 3}, {3});
-    presentation::add_rule_no_checks(p, {0, 1, 3}, {1, 3});
-    presentation::add_rule_no_checks(p, {1, 0, 0}, {1});
-    presentation::add_rule_no_checks(p, {1, 0, 3}, {0, 3});
-    presentation::add_rule_no_checks(p, {3, 0, 0}, {3});
-    presentation::add_rule_no_checks(p, {0, 1, 0, 1}, {1, 0, 1});
-    presentation::add_rule_no_checks(p, {0, 3, 0, 3}, {3, 0, 3});
-    presentation::add_rule_no_checks(p, {1, 0, 1, 0}, {1, 0, 1});
-    presentation::add_rule_no_checks(p, {1, 3, 0, 1}, {1, 0, 1});
-    presentation::add_rule_no_checks(p, {1, 3, 0, 3}, {3, 0, 3});
-    presentation::add_rule_no_checks(p, {3, 0, 1, 0}, {3, 0, 1});
-    presentation::add_rule_no_checks(p, {3, 0, 3, 0}, {3, 0, 3});
+    presentation::add_rule_no_checks(p, word_type({0, 10}), 00_w);
+    presentation::add_rule_no_checks(p, 11_w, 1_w);
+    presentation::add_rule_no_checks(p, 12_w, 1_w);
+    presentation::add_rule_no_checks(p, 14_w, 13_w);
+    presentation::add_rule_no_checks(p, 15_w, 10_w);
+    presentation::add_rule_no_checks(p, 16_w, 13_w);
+    presentation::add_rule_no_checks(p, 17_w, 1_w);
+    presentation::add_rule_no_checks(p, 18_w, 13_w);
+    presentation::add_rule_no_checks(p, 19_w, 13_w);
+    presentation::add_rule_no_checks(p, word_type({1, 10}), 10_w);
+    presentation::add_rule_no_checks(p, 31_w, 3_w);
+    presentation::add_rule_no_checks(p, 32_w, 3_w);
+    presentation::add_rule_no_checks(p, 33_w, 3_w);
+    presentation::add_rule_no_checks(p, 34_w, 3_w);
+    presentation::add_rule_no_checks(p, 35_w, 30_w);
+    presentation::add_rule_no_checks(p, 36_w, 3_w);
+    presentation::add_rule_no_checks(p, 37_w, 3_w);
+    presentation::add_rule_no_checks(p, 38_w, 3_w);
+    presentation::add_rule_no_checks(p, 39_w, 3_w);
+    presentation::add_rule_no_checks(p, word_type({3, 10}), 30_w);
+    presentation::add_rule_no_checks(p, 000_w, 0_w);
+    presentation::add_rule_no_checks(p, 001_w, 1_w);
+    presentation::add_rule_no_checks(p, 003_w, 3_w);
+    presentation::add_rule_no_checks(p, 013_w, 13_w);
+    presentation::add_rule_no_checks(p, 100_w, 1_w);
+    presentation::add_rule_no_checks(p, 103_w, 03_w);
+    presentation::add_rule_no_checks(p, 300_w, 3_w);
+    presentation::add_rule_no_checks(p, 0101_w, 101_w);
+    presentation::add_rule_no_checks(p, 0303_w, 303_w);
+    presentation::add_rule_no_checks(p, 1010_w, 101_w);
+    presentation::add_rule_no_checks(p, 1301_w, 101_w);
+    presentation::add_rule_no_checks(p, 1303_w, 303_w);
+    presentation::add_rule_no_checks(p, 3010_w, 301_w);
+    presentation::add_rule_no_checks(p, 3030_w, 303_w);
 
     KnuthBendix<word_type, TestType> kb1(twosided, p);
     REQUIRE(kb1.gilman_graph().number_of_nodes() == 16);
 
     WordGraph test_wg1
-        = v4::make<WordGraph<size_t>>(16,
-                                      {{3,
-                                        1,
-                                        UNDEFINED,
-                                        2,
-                                        UNDEFINED,
-                                        UNDEFINED,
-                                        UNDEFINED,
-                                        UNDEFINED,
-                                        UNDEFINED,
-                                        UNDEFINED,
-                                        UNDEFINED},
-                                       {6, UNDEFINED, UNDEFINED, 12},
-                                       {7, UNDEFINED},
-                                       {4, 5, UNDEFINED, 9},
-                                       {},
-                                       {8},
-                                       {UNDEFINED, 11},
-                                       {UNDEFINED, 14, UNDEFINED, 15},
-                                       {},
-                                       {10},
-                                       {UNDEFINED, 14},
-                                       {},
-                                       {13},
-                                       {UNDEFINED}});
+        = make<WordGraph<size_t>>(16,
+                                  {{3,
+                                    1,
+                                    UNDEFINED,
+                                    2,
+                                    UNDEFINED,
+                                    UNDEFINED,
+                                    UNDEFINED,
+                                    UNDEFINED,
+                                    UNDEFINED,
+                                    UNDEFINED,
+                                    UNDEFINED},
+                                   {6, UNDEFINED, UNDEFINED, 12},
+                                   {7, UNDEFINED},
+                                   {4, 5, UNDEFINED, 9},
+                                   {},
+                                   {8},
+                                   {UNDEFINED, 11},
+                                   {UNDEFINED, 14, UNDEFINED, 15},
+                                   {},
+                                   {10},
+                                   {UNDEFINED, 14},
+                                   {},
+                                   {13},
+                                   {UNDEFINED}});
     REQUIRE(equal(knuth_bendix::normal_forms(kb1),
                   normal_forms_from_word_graph(kb1, test_wg1)));
 
-    presentation::add_rule_no_checks(p, {1}, {3});
+    presentation::add_rule_no_checks(p, 1_w, 3_w);
     KnuthBendix<word_type, TestType> kb2(twosided, p);
 
-    WordGraph test_wg2 = v4::make<WordGraph<size_t>>(4,
-                                                     {{2,
-                                                       1,
-                                                       UNDEFINED,
-                                                       UNDEFINED,
-                                                       UNDEFINED,
-                                                       UNDEFINED,
-                                                       UNDEFINED,
-                                                       UNDEFINED,
-                                                       UNDEFINED,
-                                                       UNDEFINED,
-                                                       UNDEFINED},
-                                                      {},
-                                                      {3}});
+    WordGraph test_wg2 = make<WordGraph<size_t>>(4,
+                                                 {{2,
+                                                   1,
+                                                   UNDEFINED,
+                                                   UNDEFINED,
+                                                   UNDEFINED,
+                                                   UNDEFINED,
+                                                   UNDEFINED,
+                                                   UNDEFINED,
+                                                   UNDEFINED,
+                                                   UNDEFINED,
+                                                   UNDEFINED},
+                                                  {},
+                                                  {3}});
 
     REQUIRE(equal(knuth_bendix::normal_forms(kb2),
                   normal_forms_from_word_graph(kb2, test_wg2)));
@@ -474,7 +468,6 @@ namespace libsemigroups {
                                    "non_trivial_classes exceptions",
                                    "[quick][kbp]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(1);
     KnuthBendix<word_type, TestType> kbp(twosided, p);
@@ -508,7 +501,6 @@ namespace libsemigroups {
                                    "Chinese monoid",
                                    "[knuth-bendix][quick][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
     // fmt::print(bg(fmt::color::white) | fg(fmt::color::black),
     //            "062",": Chinese monoid STARTING . . .\n");
 
@@ -531,7 +523,6 @@ namespace libsemigroups {
                                    "[knuth-bendix][quick][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
     using namespace literals;
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(4);
     p.contains_empty_word(true);
@@ -667,7 +658,6 @@ namespace libsemigroups {
                                    "Reinis MFE",
                                    "[knuth-bendix][quick]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto            rg = ReportGuard(false);
     using literals::operator""_w;
 
     Presentation<word_type> p;
@@ -687,9 +677,8 @@ namespace libsemigroups {
     using namespace literals;
     using words::operator+;
 
-    auto   rg = ReportGuard(false);
-    size_t n  = 2;
-    auto   p  = presentation::examples::hypo_plactic_monoid(n);
+    size_t n = 2;
+    auto   p = presentation::examples::hypo_plactic_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(
         p, (rx::seq<size_t>() | rx::take(n) | rx::to_vector()));
@@ -724,8 +713,6 @@ namespace libsemigroups {
                                    "Presentation<word_type>",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
-
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
@@ -749,7 +736,6 @@ namespace libsemigroups {
                                    "free semigroup congruence (6 classes)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(5);
     presentation::add_rule(p, 00_w, 0_w);
@@ -782,8 +768,6 @@ namespace libsemigroups {
                                    "free semigroup congruence (16 classes)",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
-
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(p, 3_w, 2_w);
@@ -820,7 +804,6 @@ namespace libsemigroups {
                                    "free semigroup congruence x 2",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(11);
     p.rules
@@ -863,7 +846,6 @@ namespace libsemigroups {
                                    "free semigroup congruence (240 classes)",
                                    "[no-valgrind][quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
@@ -881,7 +863,6 @@ namespace libsemigroups {
                                    "free semigroup congruence x 2",
                                    "[no-valgrind][quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
@@ -899,7 +880,6 @@ namespace libsemigroups {
                                    "constructors",
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
@@ -922,7 +902,6 @@ namespace libsemigroups {
                                    "number of classes when obv-inf",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
     presentation::add_rule(p, 01_w, 10_w);
@@ -947,8 +926,7 @@ namespace libsemigroups {
                                    "Chinese monoid x 2",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = presentation::examples::chinese_monoid(3);
+    Presentation<word_type> p = presentation::examples::chinese_monoid(3);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
     REQUIRE(is_obviously_infinite(kb));
@@ -963,8 +941,6 @@ namespace libsemigroups {
                                    "partial_transformation_monoid(4)",
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto rg = ReportGuard(false);
-
     size_t n = 4;
     auto   p = presentation::examples::partial_transformation_monoid_Shu60(n);
 
@@ -983,7 +959,6 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p1;
     p1.contains_empty_word(true);
@@ -1062,7 +1037,6 @@ namespace libsemigroups {
                                    "close to or greater than 255 letters",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(257);
 
@@ -1074,13 +1048,14 @@ namespace libsemigroups {
                                    "process pending rules x2",
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
 
-    WordRange wr;
-    wr.alphabet_size(2).min(0).max(19);
+    v4::WordRange wr;
+    wr.order(LenLexCmp(Alphabet<word_type>(2)))
+        .first({})
+        .last(word_type(19, 0));
     for (auto const& word : wr) {
       presentation::add_rule_no_checks(p, word, ""_w);
     }

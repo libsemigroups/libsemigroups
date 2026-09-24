@@ -20,6 +20,8 @@
 #include "libsemigroups/order.hpp"       // for lenlex_cmp
 #include "libsemigroups/word-range.hpp"  // for number_of_words
 
+#include "libsemigroups/detail/word-iterators.hpp"
+
 #include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 namespace libsemigroups {
@@ -64,6 +66,67 @@ namespace libsemigroups {
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
       REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LenLexCmp()));
+    };
+  }
+
+  TEST_CASE("wislo vs wio", "[quick]") {
+    using literals:: operator""_w;
+    size_t           upper_bound   = 7;
+    size_t           alphabet_size = 5;
+    word_type const& last          = words::pow("0"_w, upper_bound + 1);
+
+    BENCHMARK("wio + LenLexCmp for length 0 to 7") {
+      size_t              count = 0;
+      Alphabet<word_type> alphabet(alphabet_size);
+      LenLexCmp           cmp(alphabet);
+      auto const          wio_end = detail::const_wio_iterator(
+          upper_bound, word_type(last), word_type(last), cmp);
+
+      for (auto it = detail::const_wio_iterator(
+               upper_bound, ""_w, word_type(last), cmp);
+           it != wio_end;
+           ++it) {
+        count++;
+      }
+      REQUIRE(count == 97656);
+    };
+
+    BENCHMARK("wislo for length 0 to 7") {
+      size_t     count     = 0;
+      auto const wislo_end = cend_wislo(alphabet_size, ""_w, last);
+      for (auto it = cbegin_wislo(alphabet_size, ""_w, last); it != wislo_end;
+           ++it) {
+        count++;
+      }
+      REQUIRE(count == 97656);
+    };
+  }
+
+  TEST_CASE("new WordRange vs old WordRange", "[quick]") {
+    using literals::operator""_w;
+    size_t          alphabet_size = 5;
+    size_t          max_length    = 10;
+
+    BENCHMARK("new WordRange LenLexCmp for length 0 to 10") {
+      size_t        count = 0;
+      v4::WordRange new_wr;
+      new_wr.order(LenLexCmp(Alphabet<word_type>(alphabet_size)))
+          .last(word_type(max_length, 0));
+
+      for (auto const& word : new_wr) {
+        count++;
+      }
+      REQUIRE(count == 2441406);
+    };
+    BENCHMARK("old WordRange LenLexCmp for length 0 to 10") {
+      size_t    count = 0;
+      WordRange old_wr;
+      old_wr.order(Order::lenlex).alphabet_size(alphabet_size).max(max_length);
+
+      for (auto const& word : old_wr) {
+        count++;
+      }
+      REQUIRE(count == 2441406);
     };
   }
 }  // namespace libsemigroups

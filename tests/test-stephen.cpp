@@ -33,6 +33,8 @@
 #include <utility>        // for forward
 #include <vector>         // for vector
 
+#include <fstream>
+
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"              // for UNDEFINED
@@ -43,12 +45,14 @@
 #include "libsemigroups/presentation.hpp"           // for InverseP...
 #include "libsemigroups/ranges.hpp"                 // for operator|
 #include "libsemigroups/stephen.hpp"                // for Stephen
+#include "libsemigroups/to-word.hpp"                // for ToWord
 #include "libsemigroups/todd-coxeter-class.hpp"     // for ToddCoxeter
 #include "libsemigroups/todd-coxeter-helpers.hpp"   // for index_of
 #include "libsemigroups/types.hpp"                  // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
-#include "libsemigroups/word-range.hpp"             // for ToWord
+#include "libsemigroups/word-range.hpp"             // for StringRange
+#include "libsemigroups/words-helpers.hpp"          // for operator+, pow
 
 #include "libsemigroups/detail/fmt.hpp"       // for format
 #include "libsemigroups/detail/iterator.hpp"  // for operator+
@@ -56,8 +60,8 @@
 
 namespace libsemigroups {
   using namespace literals;
-  using rx::operator|;
-  using namespace std::string_literals;
+  using rx::           operator|;
+  using std::literals::operator""s;
 
   namespace {
     template <typename Word>
@@ -108,7 +112,6 @@ namespace libsemigroups {
                                    "[quick][stephen]",
                                    word_type,
                                    std::string) {
-    auto                   rg = ReportGuard(false);
     Presentation<TestType> p;
     p.alphabet(TestType({0, 1}));
     presentation::add_rule(p, TestType({0}), TestType({0, 1}));
@@ -117,9 +120,9 @@ namespace libsemigroups {
       s.init(p);
       stephen::set_word(s, TestType({0})).run();
       REQUIRE(s.word_graph_no_run().number_of_nodes() == 2);
-      REQUIRE(s.word_graph_no_run()
-              == v4::make<WordGraph<uint32_t>>(
-                  2, {{1, UNDEFINED}, {UNDEFINED, 1}}));
+      REQUIRE(
+          s.word_graph_no_run()
+          == make<WordGraph<uint32_t>>(2, {{1, UNDEFINED}, {UNDEFINED, 1}}));
       REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
       {
         REQUIRE((stephen::words_accepted(s) | rx::take(10) | rx::to_vector())
@@ -156,7 +159,6 @@ namespace libsemigroups {
                                    "[quick][stephen]",
                                    word_type,
                                    std::string) {
-    auto                   rg = ReportGuard(false);
     Presentation<TestType> p;
     p.alphabet(TestType({0, 1}));
     presentation::add_rule(p, TestType({0, 0, 0}), TestType({0}));
@@ -166,27 +168,29 @@ namespace libsemigroups {
     stephen::set_word(s, TestType({1, 1, 0, 1})).run();
     REQUIRE(s.word_graph_no_run().number_of_nodes() == 7);
     REQUIRE(s.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(7,
-                                             {{UNDEFINED, 1},
-                                              {UNDEFINED, 2},
-                                              {3, 1},
-                                              {4, 5},
-                                              {3, 6},
-                                              {6, 3},
-                                              {5, 4}}));
+            == make<WordGraph<uint32_t>>(7,
+                                         {{UNDEFINED, 1},
+                                          {UNDEFINED, 2},
+                                          {3, 1},
+                                          {4, 5},
+                                          {3, 6},
+                                          {6, 3},
+                                          {5, 4}}));
     REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
 
     TestType w = {1, 1, 0, 1};
 
-    REQUIRE(v4::word_graph::last_node_on_path_no_checks(
-                s.word_graph_no_run(), 0, w.begin(), w.end())
-                .first
-            == 5);
+    REQUIRE(
+        word_graph::last_node_on_path_no_checks(
+            s.word_graph_no_run(), static_cast<uint32_t>(0), w.begin(), w.end())
+            .first
+        == 5);
     w = {1, 1, 0, 0, 1, 0};
-    REQUIRE(v4::word_graph::last_node_on_path_no_checks(
-                s.word_graph_no_run(), 0, w.begin(), w.end())
-                .first
-            == 5);
+    REQUIRE(
+        word_graph::last_node_on_path_no_checks(
+            s.word_graph_no_run(), static_cast<uint32_t>(0), w.begin(), w.end())
+            .first
+        == 5);
 
     REQUIRE(stephen::accepts(s, TestType({1, 1, 0, 0, 1, 0})));
     // The exception message depends on the TestType so not checking that here
@@ -228,7 +232,7 @@ namespace libsemigroups {
     stephen::set_word(s, TestType({0, 0})).run();
     REQUIRE(s.word_graph_no_run().number_of_nodes() == 5);
     REQUIRE(s.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 5, {{1, UNDEFINED}, {2, 3}, {1, 4}, {4, 1}, {3, 2}}));
 
     p.rules.clear();
@@ -237,7 +241,7 @@ namespace libsemigroups {
     stephen::set_word(s.init(p), TestType({0, 0})).run();
     REQUIRE(s.word_graph_no_run().number_of_nodes() == 3);
     REQUIRE(s.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 3, {{1, UNDEFINED}, {2, UNDEFINED}, {1, UNDEFINED}}));
   }
 
@@ -245,9 +249,8 @@ namespace libsemigroups {
                           "002",
                           "full transf monoid",
                           "[quick][stephen][no-valgrind]") {
-    auto   rg = ReportGuard(false);
-    size_t n  = 5;
-    auto   p  = presentation::examples::full_transformation_monoid_II74(n);
+    size_t n = 5;
+    auto   p = presentation::examples::full_transformation_monoid_II74(n);
     p.throw_if_bad_alphabet_or_rules();
 
     Stephen s(std::move(p));
@@ -255,7 +258,7 @@ namespace libsemigroups {
     REQUIRE(s.word_graph_no_run().number_of_nodes() == 120);
     REQUIRE(
         s.word_graph_no_run()
-        == v4::make<WordGraph<uint32_t>>(
+        == make<WordGraph<uint32_t>>(
             120,
             {{1, 2, 3, 4, UNDEFINED},        {0, 5, 6, 7, UNDEFINED},
              {8, 0, 9, 10, UNDEFINED},       {11, 12, 0, 13, UNDEFINED},
@@ -323,7 +326,6 @@ namespace libsemigroups {
                           "003",
                           "step_hen 002 (word_type)",
                           "[quick][stephen]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("ab");
     Presentation<word_type> p;
     p.alphabet(to_word("ab"));
@@ -354,12 +356,11 @@ namespace libsemigroups {
                           "055",
                           "step_hen 002 (std::string)",
                           "[quick][stephen]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
-    presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "bbb", "b");
-    presentation::add_rule(p, "abab", "aa");
+    p.alphabet("ab"s);
+    presentation::add_rule(p, "aaa"s, "a"s);
+    presentation::add_rule(p, "bbb"s, "b"s);
+    presentation::add_rule(p, "abab"s, "aa"s);
 
     Stephen S(p);
     stephen::set_word(S, "bbab");
@@ -384,7 +385,6 @@ namespace libsemigroups {
                           "004",
                           "step_hen 003 (word_type)",
                           "[quick][stephen]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcdefg");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefg"));
@@ -396,7 +396,7 @@ namespace libsemigroups {
     stephen::set_word(S, to_word("abcef")).run();
     REQUIRE(to_word("abcef") == 01245_w);
     REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 11,
                 {{1,
                   UNDEFINED,
@@ -422,12 +422,16 @@ namespace libsemigroups {
                  {7}}));
 
     auto rule = p.rules[0];
-    auto m    = v4::word_graph::last_node_on_path(
-                 S.word_graph_no_run(), 0, rule.cbegin(), rule.cend())
+    auto m    = word_graph::last_node_on_path(S.word_graph_no_run(),
+                                           static_cast<uint32_t>(0),
+                                           rule.cbegin(),
+                                           rule.cend())
                  .first;
     rule   = p.rules[1];
-    auto n = v4::word_graph::last_node_on_path(
-                 S.word_graph_no_run(), 0, rule.cbegin(), rule.cend())
+    auto n = word_graph::last_node_on_path(S.word_graph_no_run(),
+                                           static_cast<uint32_t>(0),
+                                           rule.cbegin(),
+                                           rule.cend())
                  .first;
     REQUIRE(m != UNDEFINED);
     REQUIRE(n != UNDEFINED);
@@ -457,17 +461,16 @@ namespace libsemigroups {
                           "056",
                           "step_hen 003 (std::string)",
                           "[quick][stephen]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefg");
-    presentation::add_rule(p, "aaaeaa", "abcd");
-    presentation::add_rule(p, "ef", "dg");
+    p.alphabet("abcdefg"s);
+    presentation::add_rule(p, "aaaeaa"s, "abcd"s);
+    presentation::add_rule(p, "ef"s, "dg"s);
 
     Stephen S(p);
 
     stephen::set_word(S, "abcef").run();
     REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 11,
                 {{1,
                   UNDEFINED,
@@ -517,7 +520,6 @@ namespace libsemigroups {
                           "005",
                           "from step_hen 004 (word_type)",
                           "[quick][stephen]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abc");
     Presentation<word_type> p;
     p.alphabet(to_word("abc"));
@@ -553,18 +555,17 @@ namespace libsemigroups {
                           "057",
                           "from step_hen 004 (std::string)",
                           "[quick][stephen]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "ac", "cc");
-    presentation::add_rule(p, "ac", "a");
-    presentation::add_rule(p, "cc", "a");
-    presentation::add_rule(p, "bc", "cc");
-    presentation::add_rule(p, "bcc", "b");
-    presentation::add_rule(p, "bc", "b");
-    presentation::add_rule(p, "cc", "b");
-    presentation::add_rule(p, "a", "b");
+    p.alphabet("abc"s);
+    presentation::add_rule(p, "ab"s, "ba"s);
+    presentation::add_rule(p, "ac"s, "cc"s);
+    presentation::add_rule(p, "ac"s, "a"s);
+    presentation::add_rule(p, "cc"s, "a"s);
+    presentation::add_rule(p, "bc"s, "cc"s);
+    presentation::add_rule(p, "bcc"s, "b"s);
+    presentation::add_rule(p, "bc"s, "b"s);
+    presentation::add_rule(p, "cc"s, "b"s);
+    presentation::add_rule(p, "a"s, "b"s);
 
     Stephen S(p);
     stephen::set_word(S, "abcc").run();
@@ -588,7 +589,6 @@ namespace libsemigroups {
                           "006",
                           "from step_hen 005 (word_type)",
                           "[quick][stephen]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -615,20 +615,19 @@ namespace libsemigroups {
                           "058",
                           "from step_hen 005 (std::string)",
                           "[quick][stephen]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "bb", "c");
-    presentation::add_rule(p, "caca", "abab");
-    presentation::add_rule(p, "bc", "d");
-    presentation::add_rule(p, "cb", "d");
-    presentation::add_rule(p, "aa", "d");
-    presentation::add_rule(p, "ad", "a");
-    presentation::add_rule(p, "da", "a");
-    presentation::add_rule(p, "bd", "b");
-    presentation::add_rule(p, "db", "b");
-    presentation::add_rule(p, "cd", "c");
-    presentation::add_rule(p, "dc", "c");
+    p.alphabet("abcd"s);
+    presentation::add_rule(p, "bb"s, "c"s);
+    presentation::add_rule(p, "caca"s, "abab"s);
+    presentation::add_rule(p, "bc"s, "d"s);
+    presentation::add_rule(p, "cb"s, "d"s);
+    presentation::add_rule(p, "aa"s, "d"s);
+    presentation::add_rule(p, "ad"s, "a"s);
+    presentation::add_rule(p, "da"s, "a"s);
+    presentation::add_rule(p, "bd"s, "b"s);
+    presentation::add_rule(p, "db"s, "b"s);
+    presentation::add_rule(p, "cd"s, "c"s);
+    presentation::add_rule(p, "dc"s, "c"s);
 
     Stephen S(p);
     stephen::set_word(S, "dabdaaadabab").run();
@@ -652,7 +651,6 @@ namespace libsemigroups {
       "008",
       "C(4) monoid normal form (test_case_knuth_bendix_055)",
       "[stephen][quick]") {
-    auto                    rg = ReportGuard(false);
     v4::ToWord              to_word("abcdefg");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefg"));
@@ -717,7 +715,6 @@ namespace libsemigroups {
       "009",
       "test_case_gap_smalloverlap_85 (non-normal word_type)",
       "[stephen][quick]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(201_w);
     REQUIRE(p.alphabet() == 201_w);
@@ -751,7 +748,6 @@ namespace libsemigroups {
       "054",
       "test_case_gap_smalloverlap_85 (non-normal word_type)",
       "[stephen][quick]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(271_w);
     REQUIRE(p.alphabet() == 271_w);
@@ -782,10 +778,9 @@ namespace libsemigroups {
                           "053",
                           "test_case_gap_smalloverlap_85 (std::string)",
                           "[stephen][quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("cab");
-    presentation::add_rule(p, "aabc", "acba");
+    p.alphabet("cab"s);
+    presentation::add_rule(p, "aabc"s, "acba"s);
 
     Stephen S(p);
     stephen::set_word(S, "a").run();
@@ -807,7 +802,6 @@ namespace libsemigroups {
                           "010",
                           "code coverage",
                           "[stephen][quick]") {
-    auto                    rg = ReportGuard(false);
     v4::ToWord              to_word("abcdefg");
     Presentation<word_type> p;
     // TODO(2): Once we have make<Stephen> check that this error is thrown
@@ -864,8 +858,6 @@ namespace libsemigroups {
                           "060",
                           "facade and impl code coverage",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
-
     Presentation<word_type> p;
     p.alphabet(01_w);
     presentation::add_rule(p, 01_w, 10_w);
@@ -962,12 +954,11 @@ namespace libsemigroups {
       "011",
       "C(4) monoid normal form (test_case_gap_smalloverlap_49)",
       "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefgh");
+    p.alphabet("abcdefgh"s);
 
-    presentation::add_rule(p, "abcd", "ce");
-    presentation::add_rule(p, "df", "hd");
+    presentation::add_rule(p, "abcd"s, "ce"s);
+    presentation::add_rule(p, "df"s, "hd"s);
     check_equal_to(p, "abchd"s, "abcdf"s);
     check_equal_to(p, "abchd"s, "abchd"s);
     check_equal_to(p, "abchdf"s, "abchhd"s);
@@ -985,7 +976,6 @@ namespace libsemigroups {
       "012",
       "C(4) monoid normal form (test_case_gap_smalloverlap_63)",
       "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcdefgh");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefgh"));
@@ -1002,13 +992,12 @@ namespace libsemigroups {
       "013",
       "C(4) monoid equal to (test_case_gap_smalloverlap_70)",
       "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefghij");
+    p.alphabet("abcdefghij"s);
 
-    presentation::add_rule(p, "afh", "bgh");
-    presentation::add_rule(p, "hc", "de");
-    presentation::add_rule(p, "ei", "j");
+    presentation::add_rule(p, "afh"s, "bgh"s);
+    presentation::add_rule(p, "hc"s, "de"s);
+    presentation::add_rule(p, "ei"s, "j"s);
 
     check_equal_to(p, "afdj"s, "bgdj"s);
     check_not_equal_to(p, "jjjjjjjjjjjjjjjjjjjjjjj"s, "b"s);
@@ -1018,7 +1007,6 @@ namespace libsemigroups {
                           "014",
                           "C(4) monoid normal form (test_case_ex_3_13_14)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1037,11 +1025,10 @@ namespace libsemigroups {
                           "015",
                           "C(4) monoid normal form (test_case_ex_3_15)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     v4::ToWord                to_word("abcd");
     Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "aabc", "acba");
+    p.alphabet("abcd"s);
+    presentation::add_rule(p, "aabc"s, "acba"s);
     std::string original = "cbacbaabcaabcacbacba";
     std::string expected = "cbaabcabcaabcaabcabc";
 
@@ -1060,7 +1047,6 @@ namespace libsemigroups {
                           "016",
                           "C(4) monoid normal form (test_case_ex_3_16)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1079,10 +1065,9 @@ namespace libsemigroups {
                           "017",
                           "C(4) monoid normal form (test_case_mt_3)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "abcd", "accca");
+    p.alphabet("abcd"s);
+    presentation::add_rule(p, "abcd"s, "accca"s);
 
     check_words_accepted(p, "bbcabcdaccaccabcddd"s, "bbcabcdaccaccabcddd"s);
     check_equal_to(p, "bbcabcdaccaccabcddd"s, "bbcabcdaccaccabcddd"s);
@@ -1092,7 +1077,6 @@ namespace libsemigroups {
                           "018",
                           "C(4) monoid normal form (test_case_mt_5)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abc");
     Presentation<word_type> p;
     p.alphabet(to_word("abc"));
@@ -1106,10 +1090,9 @@ namespace libsemigroups {
                           "019",
                           "C(4) monoid normal form (test_case_mt_6)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
-    presentation::add_rule(p, "ccab", "cbac");
+    p.alphabet("abc"s);
+    presentation::add_rule(p, "ccab"s, "cbac"s);
 
     check_words_accepted(p, "bacbaccabccabcbacbac"s, "bacbacbaccbaccbacbac"s);
     check_equal_to(p, "bacbaccabccabcbacbac"s, "bacbacbaccbaccbacbac"s);
@@ -1121,7 +1104,6 @@ namespace libsemigroups {
                           "020",
                           "C(4) monoid normal form (test_case_mt_10)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcdefghij");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefghij"));
@@ -1137,10 +1119,9 @@ namespace libsemigroups {
                           "021",
                           "C(4) monoid normal form (test_case_mt_13)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "abcd", "dcba");
+    p.alphabet("abcd"s);
+    presentation::add_rule(p, "abcd"s, "dcba"s);
 
     check_words_accepted(p, "dcbdcba"s, "abcdbcd"s);
     check_equal_to(p, "dcbdcba"s, "abcdbcd"s);
@@ -1150,7 +1131,6 @@ namespace libsemigroups {
                           "022",
                           "C(4) monoid normal form (test_case_mt_14)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1164,11 +1144,10 @@ namespace libsemigroups {
                           "023",
                           "C(4) monoid normal form (test_case_mt_15)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "abcd", "dcba");
-    presentation::add_rule(p, "adda", "dbbd");
+    p.alphabet("abcd"s);
+    presentation::add_rule(p, "abcd"s, "dcba"s);
+    presentation::add_rule(p, "adda"s, "dbbd"s);
 
     check_words_accepted(p, "dbbabcd"s, "addacba"s);
     check_equal_to(p, "dbbabcd"s, "addacba"s);
@@ -1178,7 +1157,6 @@ namespace libsemigroups {
                           "024",
                           "C(4) monoid normal form (test_case_mt_16)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcdefg");
     Presentation<word_type> p;
     p.alphabet(to_word("abcdefg"));
@@ -1193,9 +1171,8 @@ namespace libsemigroups {
                           "025",
                           "C(4) monoid normal form (test_case_mt_17)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(
         p, "ababbabbbabbbb"s, "abbbbbabbbbbbabbbbbbbabbbbbbbb"s);
     presentation::add_rule(
@@ -1211,7 +1188,6 @@ namespace libsemigroups {
                           "026",
                           "C(4) monoid normal form (test_case_weak_1)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1232,11 +1208,10 @@ namespace libsemigroups {
                           "027",
                           "C(4) monoid normal form (test_case_weak_2)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "adbd");
+    p.alphabet("abcd"s);
+    presentation::add_rule(p, "acba"s, "aabc"s);
+    presentation::add_rule(p, "acba"s, "adbd"s);
     check_equal_to(p, "acbacba"s, "aabcabc"s);
     check_words_accepted(p, "acbacba"s, "aabcabc"s);
     check_equal_to(p, "aabcabc"s, "acbacba"s);
@@ -1247,7 +1222,6 @@ namespace libsemigroups {
                           "028",
                           "C(4) monoid normal form (test_case_weak_3)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcde");
     Presentation<word_type> p;
     p.alphabet(to_word("abcde"));
@@ -1261,10 +1235,9 @@ namespace libsemigroups {
                           "029",
                           "C(4) monoid normal form (test_case_weak_4)",
                           "[stephen][quick]") {
-    ReportGuard               rg(false);
     v4::ToWord                to_word("abcd");
     Presentation<std::string> p;
-    p.alphabet("abcd");
+    p.alphabet("abcd"s);
     presentation::add_rule(p, "acba"s, "aabc"s);
     presentation::add_rule(p, "acba"s, "dbbd"s);
     check_words_accepted(p, "bbacbcaaabcbbd"s, "bbacbcaaabcbbd"s);
@@ -1276,7 +1249,6 @@ namespace libsemigroups {
                           "030",
                           "C(4) monoid normal form (test_case_weak_5)",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     v4::ToWord              to_word("abcd");
     Presentation<word_type> p;
     p.alphabet(to_word("abcd"));
@@ -1290,7 +1262,6 @@ namespace libsemigroups {
                           "031",
                           "Test behaviour when uninitialised",
                           "[stephen][quick]") {
-    ReportGuard                      rg(false);
     Stephen<Presentation<word_type>> S;
 
     REQUIRE_THROWS_AS(S.accept_state(), LibsemigroupsException);
@@ -1341,11 +1312,10 @@ namespace libsemigroups {
                           "step_hen test_schutzenbergergraph 001 "
                           "(string)",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
-    v4::ToWord  to_word("abcABC");
+    v4::ToWord to_word("abcABC");
 
     InversePresentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.inverses_no_checks("ABCabc");
 
     auto S = Stephen(std::move(p));
@@ -1369,7 +1339,6 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 001",
                           "[stephen][quick]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1397,18 +1366,19 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 002",
                           "[stephen][quick]") {
-    ReportGuard                      rg(false);
     v4::ToWord                       to_word("abcABC");
     InversePresentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.inverses_no_checks("ABCabc");
 
     auto S = Stephen(p);
     stephen::set_word(S, "aBbcABAabCc").run();
 
     REQUIRE(S.accept_state() == 4);
+    auto w = to_word(S.word());
     REQUIRE(
-        v4::word_graph::follow_path(S.word_graph_no_run(), 0, to_word(S.word()))
+        word_graph::follow_path(
+            S.word_graph_no_run(), static_cast<uint32_t>(0), w.begin(), w.end())
         == 4);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
   }
@@ -1418,7 +1388,6 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 003",
                           "[stephen][quick]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
@@ -1438,12 +1407,11 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 004",
                           "[stephen][quick]") {
-    ReportGuard                      rg(false);
     v4::ToWord                       to_word("xyXY");
     InversePresentation<std::string> p;
-    p.alphabet("xyXY");
+    p.alphabet("xyXY"s);
     p.inverses_no_checks("XYxy");
-    presentation::add_rule(p, "xyXxyX", "xyX");
+    presentation::add_rule(p, "xyXxyX"s, "xyX"s);
 
     auto S = Stephen(p);
     stephen::set_word(S, "xyXyy");
@@ -1463,13 +1431,13 @@ namespace libsemigroups {
     REQUIRE(S.word_graph_no_run().number_of_nodes() == 4);
     REQUIRE(S.word_graph_no_run().number_of_edges() == 8);
 
-    REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
-                4,
-                {{1, 2, UNDEFINED, UNDEFINED},
-                 {UNDEFINED, 1, 0, 1},
-                 {UNDEFINED, 3, UNDEFINED, 0},
-                 {UNDEFINED, UNDEFINED, UNDEFINED, 2}}));
+    REQUIRE(
+        S.word_graph_no_run()
+        == make<WordGraph<uint32_t>>(4,
+                                     {{1, 2, UNDEFINED, UNDEFINED},
+                                      {UNDEFINED, 1, 0, 1},
+                                      {UNDEFINED, 3, UNDEFINED, 0},
+                                      {UNDEFINED, UNDEFINED, UNDEFINED, 2}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -1477,7 +1445,6 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 005",
                           "[stephen][quick]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
@@ -1498,21 +1465,20 @@ namespace libsemigroups {
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 006",
                           "[stephen][quick]") {
-    ReportGuard                      rg(false);
     v4::ToWord                       to_word("abcABC");
     InversePresentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.inverses_no_checks("ABCabc");
-    presentation::add_rule(p, "ac", "ca");
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "bc", "cb");
+    presentation::add_rule(p, "ac"s, "ca"s);
+    presentation::add_rule(p, "ab"s, "ba"s);
+    presentation::add_rule(p, "bc"s, "cb"s);
 
     auto S = Stephen(p);
     stephen::set_word(S, "BaAbaBcAbC");
     S.run();
     REQUIRE(S.word_graph_no_run().number_of_nodes() == 7);
     REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 7,
                 {{1, UNDEFINED, 2, UNDEFINED, 3, UNDEFINED},
                  {UNDEFINED, UNDEFINED, UNDEFINED, 0, 4, UNDEFINED},
@@ -1524,8 +1490,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "039", "corner case", "[stephen][quick]") {
-    ReportGuard rg(false);
-    v4::ToWord  to_word("x");
+    v4::ToWord to_word("x");
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -1542,8 +1507,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "040", "empty word", "[stephen][quick]") {
-    ReportGuard rg(false);
-    auto        p = presentation::examples::symmetric_inverse_monoid(4);
+    auto p = presentation::examples::symmetric_inverse_monoid(4);
     REQUIRE(p.contains_empty_word());
     REQUIRE(p.alphabet().size() == 4);
 
@@ -1561,7 +1525,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "041", "shared_ptr", "[stephen][quick]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1579,7 +1542,7 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.word_graph_no_run().number_of_nodes() == 7);
     REQUIRE(S.word_graph_no_run()
-            == v4::make<WordGraph<uint32_t>>(
+            == make<WordGraph<uint32_t>>(
                 7,
                 {{1, UNDEFINED, 2, UNDEFINED, 3, UNDEFINED},
                  {UNDEFINED, UNDEFINED, UNDEFINED, 0, 4, UNDEFINED},
@@ -1594,7 +1557,6 @@ namespace libsemigroups {
                           "042",
                           "inverse presentation -- operator==",
                           "[stephen][quick][no-valgrind]") {
-    ReportGuard            rg(false);
     ToddCoxeter<word_type> tc;
     using presentation::examples::symmetric_inverse_monoid;
     {
@@ -1660,8 +1622,8 @@ namespace libsemigroups {
     auto S = Stephen(p);
     auto T = Stephen(p);
 
-    StringRange strings;
-    strings.alphabet("abcABC").first("aaa").last("aaaaa");
+    v4::WordRange<std::string> strings;
+    strings.order(LenLexCmp(Alphabet("abcABC"s))).first("aaa").last("aaaaa");
 
     for (auto const& w : strings) {
       stephen::set_word(S, to_word(w));
@@ -1680,8 +1642,7 @@ namespace libsemigroups {
                           "044",
                           "non-inverse presentation -- operator==",
                           "[stephen][quick][no-valgrind]") {
-    ReportGuard rg(false);
-    auto        p = presentation::examples::symmetric_inverse_monoid(4);
+    auto p = presentation::examples::symmetric_inverse_monoid(4);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
 
@@ -1708,8 +1669,7 @@ namespace libsemigroups {
                           "045",
                           "Plactic monoid",
                           "[stephen][quick]") {
-    auto rg = ReportGuard(false);
-    auto p  = presentation::examples::plactic_monoid(4);
+    auto p = presentation::examples::plactic_monoid(4);
     p.contains_empty_word(true);
     Stephen s(p);
     stephen::set_word(s, 0013122_w).run();
@@ -1751,11 +1711,18 @@ namespace libsemigroups {
     stephen::set_word(s, 1217_w);
     s.run();
 
-    REQUIRE(
-        v4::word_graph::last_node_on_path(s.word_graph_no_run(), 0, 1217_w)
-            .first
-        == v4::word_graph::last_node_on_path(s.word_graph_no_run(), 0, 7121_w)
-               .first);
+    auto w1 = 1217_w;
+    auto w2 = 7121_w;
+    REQUIRE(word_graph::last_node_on_path(s.word_graph_no_run(),
+                                          static_cast<uint32_t>(0),
+                                          w1.begin(),
+                                          w1.end())
+                .first
+            == word_graph::last_node_on_path(s.word_graph_no_run(),
+                                             static_cast<uint32_t>(0),
+                                             w2.begin(),
+                                             w2.end())
+                   .first);
     REQUIRE(stephen::accepts(s, 7121_w));
   }
 
@@ -1763,7 +1730,6 @@ namespace libsemigroups {
                           "047",
                           "Munn tree products",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
     using words::pow;
     v4::ToWord to_word("abcABC");
 
@@ -1783,7 +1749,7 @@ namespace libsemigroups {
     REQUIRE(T.word_graph_no_run().number_of_nodes() == 7);
     S *= T;
     REQUIRE(S.word_graph_no_run().number_of_nodes() == 14);
-    // fmt::print("{}", v4::word_graph::dot(S.word_graph_no_run()));
+    // fmt::print("{}", word_graph::dot(S.word_graph_no_run()));
     REQUIRE(!S.finished());
     S.run();
     REQUIRE(S.finished());
@@ -1847,8 +1813,7 @@ namespace libsemigroups {
                           "049",
                           "chinese monoid",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
-    auto        p = presentation::examples::chinese_monoid(3);
+    auto p = presentation::examples::chinese_monoid(3);
 
     Stephen S(p);
     stephen::set_word(S, 0110_w).run();
@@ -1861,7 +1826,6 @@ namespace libsemigroups {
                           "050",
                           "to_human_readable_repr",
                           "[stephen][quick]") {
-    ReportGuard             rg(false);
     Presentation<word_type> p;
     p.alphabet(01_w);
     p.contains_empty_word(true);
@@ -1955,7 +1919,6 @@ namespace libsemigroups {
                           "051",
                           "shared_ptr memory check",
                           "[stephen][standard]") {
-    ReportGuard                    rg(false);
     v4::ToWord                     to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1983,7 +1946,7 @@ namespace libsemigroups {
       stephens[i].run();
       REQUIRE(stephens[i].word_graph_no_run().number_of_nodes() == 2);
       REQUIRE(stephens[i].word_graph_no_run()
-              == v4::make<WordGraph<uint32_t>>(
+              == make<WordGraph<uint32_t>>(
                   2,
                   {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
                    {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));
@@ -2004,7 +1967,7 @@ namespace libsemigroups {
       bad_stephens[i].run();
       REQUIRE(bad_stephens[i].word_graph_no_run().number_of_nodes() == 2);
       REQUIRE(bad_stephens[i].word_graph_no_run()
-              == v4::make<WordGraph<uint32_t>>(
+              == make<WordGraph<uint32_t>>(
                   2,
                   {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
                    {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));
@@ -2015,7 +1978,6 @@ namespace libsemigroups {
                           "052",
                           "Incomplete Munn tree products (word_type)",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
     using words::pow;
     v4::ToWord to_word("abcABC");
 
@@ -2054,11 +2016,10 @@ namespace libsemigroups {
                           "059",
                           "Incomplete Munn tree products (std::string)",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
     using words::pow;
 
     InversePresentation<std::string> p;
-    p.alphabet("abcABC");
+    p.alphabet("abcABC"s);
     p.inverses_no_checks("ABCabc");
 
     auto S  = Stephen(p);
@@ -2089,14 +2050,12 @@ namespace libsemigroups {
                           "061",
                           "exceptions x1",
                           "[stephen][quick]") {
-    ReportGuard rg(false);
-
     InversePresentation<std::string> p;
-    p.alphabet("aA");
+    p.alphabet("aA"s);
     p.inverses("Aa");
     Stephen S(p);
 
-    p.alphabet("bB");
+    p.alphabet("bB"s);
     p.inverses("Bb");
     Stephen T(p);
 
@@ -2112,10 +2071,446 @@ namespace libsemigroups {
                           "062",
                           "exceptions x2",
                           "[stephen][quick]") {
-    auto                           rg = ReportGuard(false);
     InversePresentation<word_type> p;
     REQUIRE_EXCEPTION_MSG(detail::StephenImpl{p},
                           "the presentation must not have 0 generators");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "063",
+                          "dot - partially run (std::string)",
+                          "[stephen][quick]") {
+    using std::literals::operator""s;
+
+    InversePresentation<std::string> p;
+    p.alphabet("AabBCc");  // TODO(later) can't chain with .inverses because
+                           // p.alphabet() returns Presentation const&)
+    p.inverses("aABbcC");
+    p.contains_empty_word(true);
+    p.rules = {"acb", "", "aCb", ""};
+
+    Stephen s(p);
+    stephen::set_word(s, ""s);
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+    REQUIRE(stephen::dot(s, "ac"s, 0).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+})vogon");
+    REQUIRE(stephen::dot(s, "ac"s, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="a", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="b⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="b⁻¹a", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="b⁻¹b⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  1 -> 2  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  2 -> 1  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  5 -> 6  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  6 -> 5  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+})vogon");
+    REQUIRE(stephen::dot(s, "ABC"s, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="A⁻¹", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="B", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="BA⁻¹", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="BB", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 2  [color="#ff7f00", fontname="STIX Two Text Italic", label="B"]
+  1 -> 0  [color="#00ff00", fontname="STIX Two Text Italic", label="A"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text Italic", label="C"]
+  2 -> 6  [color="#ff7f00", fontname="STIX Two Text Italic", label="B"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text Italic", label="C"]
+  5 -> 2  [color="#00ff00", fontname="STIX Two Text Italic", label="A"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text Italic", label="C"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text Italic", label="C"]
+})vogon");
+    REQUIRE(stephen::dot(s, "abc"s, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="a", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="b⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="b⁻¹a", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="b⁻¹b⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  1 -> 2  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text Italic", label="b"]
+  2 -> 1  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  5 -> 6  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text Italic", label="b"]
+  6 -> 5  [color="#4604ac", fontname="STIX Two Text Italic", label="c"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "064",
+                          "dot - partially run (word_type)",
+                          "[stephen][quick]") {
+    using std::literals::operator""s;
+
+    InversePresentation<word_type> p;
+    //         "AabBCc"
+    p.alphabet("102345"_w);
+    p.inverses("013254"_w);
+    p.contains_empty_word(true);
+    p.rules = {"052"_w, ""_w, "042"_w, ""_w};
+
+    Stephen s(p);
+    stephen::set_word(s, ""_w);
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+
+    REQUIRE(stephen::dot(s, "05"_w, 0).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+})vogon");
+    REQUIRE(stephen::dot(s, "05"_w, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text", label="0", shape="box"]
+  2  [fontname="STIX Two Text", label="2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text", label="2⁻¹0", shape="box"]
+  6  [fontname="STIX Two Text", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text", label="0"]
+  1 -> 2  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text", label="0"]
+  2 -> 1  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  5 -> 6  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  6 -> 5  [color="#4604ac", fontname="STIX Two Text", label="5"]
+})vogon");
+    REQUIRE(stephen::dot(s, "134"_w, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text", label="1⁻¹", shape="box"]
+  2  [fontname="STIX Two Text", label="3", shape="box"]
+  5  [fontname="STIX Two Text", label="31⁻¹", shape="box"]
+  6  [fontname="STIX Two Text", label="33", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 2  [color="#ff7f00", fontname="STIX Two Text", label="3"]
+  1 -> 0  [color="#00ff00", fontname="STIX Two Text", label="1"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text", label="4"]
+  2 -> 6  [color="#ff7f00", fontname="STIX Two Text", label="3"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text", label="4"]
+  5 -> 2  [color="#00ff00", fontname="STIX Two Text", label="1"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text", label="4"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text", label="4"]
+})vogon");
+    REQUIRE(stephen::dot(s, "025"_w, 2).to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text", label="0", shape="box"]
+  2  [fontname="STIX Two Text", label="2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text", label="2⁻¹0", shape="box"]
+  6  [fontname="STIX Two Text", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text", label="0"]
+  1 -> 2  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text", label="0"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text", label="2"]
+  2 -> 1  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  5 -> 6  [color="#4604ac", fontname="STIX Two Text", label="5"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text", label="2"]
+  6 -> 5  [color="#4604ac", fontname="STIX Two Text", label="5"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "065",
+                          "dot exceptions",
+                          "[stephen][quick]") {
+    InversePresentation<word_type> p;
+    p.alphabet({0, 10, 1});
+    p.inverses({0, 10, 1});
+    Stephen s(p);
+    stephen::set_word(s, 0_w).run();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s),
+        "the alphabet [0, 10, 1] contains letters that may render "
+        "ambiguously, expected a printable char or a value <= 9 but found 10 "
+        "in position 1");
+
+    p.alphabet({12, 1});
+    p.inverses({12, 1});
+    Stephen t(p);
+    stephen::set_word(t, 1_w).run();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(t),
+        "the alphabet [12, 1] contains letters that may render ambiguously, "
+        "expected a printable char or a value <= 9 but found 12 in position "
+        "0");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "066",
+                          "dot optional alphabet exceptions",
+                          "[stephen][quick]") {
+    InversePresentation<word_type> p;
+    p.alphabet({0, 1, 2});
+    p.inverses({0, 1, 2});
+    Stephen s(p);
+    stephen::set_word(s, 0_w).run();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s, word_type({0, 3, 1}), 1),
+        "the alphabet [0, 3, 1] contains invalid letters, expected values in "
+        "[0, 1, 2] but found 3 in position 1");
+
+    InversePresentation<std::string> q;
+    q.alphabet("aA");
+    q.inverses("Aa");
+    Stephen t(q);
+    stephen::set_word(t, "a"s).run();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(t, "aZ"s, 1),
+        "the alphabet \"aZ\" contains invalid letters, expected values in "
+        "\"aA\" but found Z in position 1");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "067",
+                          "dot - duplicate optional alphabet (std::string)",
+                          "[stephen][quick]") {
+    InversePresentation<std::string> p;
+    p.alphabet("aA");
+    p.inverses("Aa");
+    Stephen s(p);
+    stephen::set_word(s, "a"s).run();
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s, "aa"s),
+        "duplicate letter in alphabet, found 'a' in position 1, first "
+        "occurrence in position 0");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "068",
+                          "dot - duplicate optional alphabet (word_type)",
+                          "[stephen][quick]") {
+    InversePresentation<word_type> p;
+    p.alphabet({0, 1});
+    p.inverses({1, 0});
+    Stephen s(p);
+    stephen::set_word(s, 0_w).run();
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s, "00"_w),
+        "duplicate letter in alphabet, found 0 in position 1, first occurrence "
+        "in position 0");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "069",
+                          "dot - non-printable alphabet (std::string)",
+                          "[stephen][quick]") {
+    InversePresentation<std::string> p;
+    p.alphabet({1, 0, 2, 3, 4, 5});
+    p.inverses({0, 1, 3, 2, 5, 4});
+    p.contains_empty_word(true);
+    p.rules = {{0, 5, 2}, {}, {0, 4, 2}, {}};
+
+    Stephen s(p);
+    stephen::set_word(s, {});
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+
+    Dot d = stephen::dot(s, 3);
+    REQUIRE(d.to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="1⁻¹", shape="box"]
+  13  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹1⁻¹", shape="box"]
+  14  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹2⁻¹", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="2⁻¹", shape="box"]
+  3  [fontname="STIX Two Text Italic", label="1⁻¹1⁻¹", shape="box"]
+  4  [fontname="STIX Two Text Italic", label="1⁻¹2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="2⁻¹1⁻¹", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  1 -> 0  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  3 -> 1  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  3 -> 4  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  4 -> 1  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  4 -> 3  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  5 -> 2  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  13 -> 6  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  13 -> 14  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  14 -> 6  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  14 -> 13  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "070",
+                          "dot - mixed non-/printable alphabet (std::string)",
+                          "[stephen][quick]") {
+    InversePresentation<std::string> p;
+    p.alphabet({1, 97, 2, 3, 4, 5});
+    p.inverses({97, 1, 3, 2, 5, 4});
+    p.contains_empty_word(true);
+    p.rules = {{97, 5, 2}, {}, {97, 4, 2}, {}};
+
+    Stephen s(p);
+    stephen::set_word(s, {});
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+
+    Dot d = stephen::dot(s, std::string({97, 2, 4}), 3);
+    REQUIRE(d.to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="a", shape="box"]
+  13  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹a", shape="box"]
+  14  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹2⁻¹", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="2⁻¹", shape="box"]
+  3  [fontname="STIX Two Text Italic", label="aa", shape="box"]
+  4  [fontname="STIX Two Text Italic", label="a2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="2⁻¹a", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  0 -> 1  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  1 -> 3  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  2 -> 5  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  3 -> 4  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  4 -> 1  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  4 -> 3  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  6 -> 13  [color="#ff00ff", fontname="STIX Two Text Italic", label="a"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  13 -> 14  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  14 -> 6  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  14 -> 13  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "071",
+                          "dot - non-printable alphabet (std::string)",
+                          "[stephen][quick]") {
+    InversePresentation<std::string> p;
+    p.alphabet({1, 127, 2, 3, 4, 5});
+    p.inverses({127, 1, 3, 2, 5, 4});
+    p.contains_empty_word(true);
+    p.rules = {{127, 5, 2}, {}, {127, 4, 2}, {}};
+    Stephen s(p);
+    stephen::set_word(s, {});
+    s.run_until(
+        [&s]() { return s.word_graph_no_run().number_of_nodes() >= 512; });
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s, std::string({127, 2, 4}), 3),
+        "the alphabet (char values) [127, 2, 4] contains letters that may "
+        "render ambiguously, expected a printable char or a value <= 9 but "
+        "found (char with value) 127 in position 0");
+
+    Dot d = stephen::dot(s, 3);
+    REQUIRE(d.to_string() == R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text Italic", label="1⁻¹", shape="box"]
+  13  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹1⁻¹", shape="box"]
+  14  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹2⁻¹", shape="box"]
+  2  [fontname="STIX Two Text Italic", label="2⁻¹", shape="box"]
+  3  [fontname="STIX Two Text Italic", label="1⁻¹1⁻¹", shape="box"]
+  4  [fontname="STIX Two Text Italic", label="1⁻¹2⁻¹", shape="box"]
+  5  [fontname="STIX Two Text Italic", label="2⁻¹1⁻¹", shape="box"]
+  6  [fontname="STIX Two Text Italic", label="2⁻¹2⁻¹", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  1 -> 0  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  1 -> 2  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  2 -> 0  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  2 -> 1  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  3 -> 1  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  3 -> 4  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  4 -> 1  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  4 -> 3  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  5 -> 2  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  5 -> 6  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  6 -> 2  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  6 -> 5  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  13 -> 6  [color="#00ff00", fontname="STIX Two Text Italic", label="1"]
+  13 -> 14  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+  14 -> 6  [color="#007fff", fontname="STIX Two Text Italic", label="2"]
+  14 -> 13  [color="#7fbf7f", fontname="STIX Two Text Italic", label="4"]
+})vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "072",
+                          "dot - too many colors",
+                          "[stephen][quick]") {
+    std::string const                alphabet = "abcdefghijklmnopqrstuvwxy";
+    InversePresentation<std::string> p;
+    p.alphabet(alphabet);
+    p.inverses(alphabet);
+    Stephen s(p);
+    stephen::set_word(s, "a"s).run();
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = stephen::dot(s),
+        "the alphabet contains too many letters, expected at most 24 (= "
+        "Dot::colors.size()), found 25");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "073",
+                          "dot - Presentation overloads",
+                          "[stephen][quick]") {
+    Presentation<word_type> p;
+    p.alphabet(0_w);
+    Stephen s(p);
+    stephen::set_word(s, 0_w).run();
+
+    std::string const expected = R"vogon(digraph {
+
+  0  [fontname="STIX Two Text Italic", label="ε", shape="box"]
+  1  [fontname="STIX Two Text", label="0", shape="box"]
+  accept  [style="invis"]
+  initial  [style="invis"]
+  initial -> 0
+  1 -> accept
+  0 -> 1  [color="#00ff00", fontname="STIX Two Text", label="0"]
+})vogon";
+    REQUIRE(stephen::dot(s).to_string() == expected);
+    REQUIRE(stephen::dot(s, 0_w).to_string() == expected);
   }
 
   // TODO(2): the examples from Stephen's paper/thesis?

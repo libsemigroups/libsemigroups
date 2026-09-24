@@ -31,11 +31,12 @@
 #include <type_traits>    // for enable_if_t, is_same_v
 #include <unordered_map>  // for unordered_map
 
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/order.hpp"   // for lenlex_cmp
-#include "libsemigroups/runner.hpp"  // for delta
-#include "libsemigroups/types.hpp"   // for u8string
+#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGRUOPS_EXCEPTION
+#include "libsemigroups/order.hpp"      // for lenlex_cmp
+#include "libsemigroups/runner.hpp"     // for delta
+#include "libsemigroups/types.hpp"      // for u8string
 
 #include "aho-corasick-impl.hpp"  // for AhoCorasickImpl
 #include "multi-view.hpp"         // for MultiView
@@ -58,13 +59,31 @@ namespace libsemigroups {
 
      private:
       struct Settings {
-        size_t reduction_threshold = 128;
+        size_t reduction_threshold;
+        size_t max_rewriting_depth;
+
+        Settings() : reduction_threshold(), max_rewriting_depth() {
+          init();
+        }
+
+        Settings(Settings const&)            = default;
+        Settings& operator=(Settings const&) = default;
+        Settings(Settings&&)                 = default;
+        Settings& operator=(Settings&&)      = default;
+
+        Settings& init() noexcept {
+          reduction_threshold = 128;
+          max_rewriting_depth = POSITIVE_INFINITY;
+          return *this;
+        }
       };
 
       mutable std::atomic<bool>                     _cached_confluent;
+      mutable bool                                  _cached_terminating;
       mutable std::atomic<bool>                     _confluence_known;
       Settings                                      _settings;
       std::function<bool(Rule const*, Rule const*)> _pending_rules_comparator;
+      mutable bool                                  _terminating_known;
 
      protected:
       enum class State : uint8_t {
@@ -155,6 +174,10 @@ namespace libsemigroups {
         return _settings;
       }
 
+      [[nodiscard]] bool terminating_known() const {
+        return _terminating_known;
+      }
+
      protected:
       void sort_pending_rules();
 
@@ -165,7 +188,13 @@ namespace libsemigroups {
         return _cached_confluent;
       }
 
+      bool cached_terminating() const noexcept {
+        return _cached_terminating;
+      }
+
       void set_cached_confluent(tril val) const;
+
+      void set_cached_terminating(tril val) const;
 
       ////////////////////////////////////////////////////////////////////////
       // Member functions - protected
@@ -179,6 +208,8 @@ namespace libsemigroups {
           std::chrono::high_resolution_clock::time_point const& start_time) {
         report_progress_from_thread(0, start_time);
       }
+
+      void throw_if_rewiting_depth_exceeded(size_t num_rewrites) const;
 
      private:
       [[nodiscard]] virtual bool confluent_impl(std::atomic_uint64_t& seen) = 0;
@@ -245,6 +276,10 @@ namespace libsemigroups {
           std::swap(rule->lhs(), rule->rhs());
         }
       }
+
+      [[nodiscard]] tril is_length_non_increasing_no_reduce() const noexcept;
+
+      [[nodiscard]] tril is_terminating_no_reduce() const noexcept;
     };  // class RewritingSystemBaseWithOrder
 
     ////////////////////////////////////////////////////////////////////////
@@ -354,6 +389,11 @@ namespace libsemigroups {
                                    Iterator last2);
 
       [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
+
+      // Might never terminate if rws.reduce() doesn't terminate
+      [[nodiscard]] bool is_length_non_increasing() noexcept;
+
+      [[nodiscard]] tril is_terminating() noexcept;
 
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
@@ -468,6 +508,11 @@ namespace libsemigroups {
         return *this;
       }
 
+      // Might never terminate if rws.reduce() doesn't terminate
+      [[nodiscard]] bool is_length_non_increasing() noexcept;
+
+      [[nodiscard]] tril is_terminating() noexcept;
+
       [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
 
       // Returns true if the system changes as a result of this call (i.e. it
@@ -499,7 +544,8 @@ namespace libsemigroups {
       // Private member functions
       ////////////////////////////////////////////////////////////////////////
 
-      void     add_active_rule(Rule* new_rule);
+      void add_active_rule(Rule* new_rule);
+
       iterator make_active_rule_pending(iterator it);
 
       void rewrite_no_reduce(native_word_type& u) const;
@@ -549,26 +595,20 @@ namespace libsemigroups {
         rs.add_rule(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
       }
 
-      // Might never terminate if rws.reduce() doesn't terminate
-      template <typename RewritingSystem>
-      [[nodiscard]] bool
-      is_length_non_increasing(RewritingSystem& rws) noexcept;
-
-      template <typename RewritingSystem>
-      [[nodiscard]] tril
-      is_length_non_increasing_no_reduce(RewritingSystem const& rws) noexcept;
-
-      template <typename RewritingSystem>
-      [[nodiscard]] tril is_terminating(RewritingSystem& rws) noexcept;
-
-      template <typename RewritingSystem>
-      [[nodiscard]] tril
-      is_terminating_no_reduce(RewritingSystem const& rws) noexcept;
-
     }  // namespace rewriting_system
 
     using RewriteTrie [[deprecated]]     = RewritingSystemTrie<LenLexCmp>;
     using RewriteFromLeft [[deprecated]] = RewritingSystemSet<LenLexCmp>;
+
+    // Variable template that checks if a type has a trie member functions
+    // TODO (0): Remove this when there is a better way to determine which type
+    // of rewriter we are using.
+    template <typename, typename = void>
+    constexpr bool has_trie = false;
+
+    template <typename T>
+    constexpr bool has_trie<T, std::void_t<decltype(std::declval<T>().trie())>>
+        = true;
 
   }  // namespace detail
 }  // namespace libsemigroups

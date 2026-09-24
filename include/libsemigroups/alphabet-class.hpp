@@ -29,9 +29,9 @@
 #include <utility>        // for move
 #include <vector>         // for vector
 
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION, Libs...
-#include "word-range.hpp"  // for human_readable_letter
+#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION, Libs...
+#include "words-helpers.hpp"  // for human_readable_letter
 
 #include "detail/fmt.hpp"    // for format
 #include "detail/print.hpp"  // for to_printable, isprint
@@ -448,6 +448,16 @@ namespace libsemigroups {
                          native_word_type&       old_letters);
     void throw_if_duplicate_letters(decltype(_letters_map)& letters_map) const;
   };  // class Alphabet
+
+  //! \relates Alphabet
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `alphabet-class.hpp`.
+  //!
+  //! Deduction guide to construct a `Alphabet<Word>` from a \c Word reference.
+  template <typename Word>
+  Alphabet(Word&) -> Alphabet<Word>;
 
   ////////////////////////////////////////////////////////////////////////
   // Validation

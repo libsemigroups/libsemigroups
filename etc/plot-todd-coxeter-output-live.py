@@ -5,10 +5,9 @@ import re
 import sys
 import threading
 
-
-import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib import animation
 
 TIME_PATTERN = re.compile(
     r"""(?:(\d+)y)?
@@ -27,10 +26,18 @@ RUNTIME_PATTERN = re.compile(r"\|\s+all runs = (.*?)\s+\|")
 NODE_PATTERN = re.compile(r"nodes\s+\|\s+(\d+(,\d\d\d)*)\s+\|")
 EDGE_PATTERN = re.compile(r"edges.*\|\s+(\d+(?:\.\d+)?)%")
 TITLE_PATTERN = re.compile(r"(\[\d\d\d\]:.*?) - START")
+PHASE_START_PATTERN = re.compile(r"(?:ToddCoxeter: )(.*)(?: \d+\.\d+ START)")
+COLOUR_CODE_PATTERN = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+PHASE_PALETTE = sns.color_palette("muted")
+
+###########################################################################
+# Input processing
+###########################################################################
 
 plot_data = queue.SimpleQueue()
 latest_nodes = None
 latest_edge_percentage = None
+latest_phase = None
 title = ""
 title_ready = threading.Event()
 
@@ -52,7 +59,7 @@ def parse_time(time_string: str) -> float:
         milliseconds,
         microseconds,
         nanoseconds,
-    ) = map(lambda x: float(x) if x is not None else 0, m.groups())
+    ) = (float(x) if x is not None else 0 for x in m.groups())
     return (
         31556952 * years
         + 2629746 * months
@@ -77,9 +84,13 @@ def parse_edge_percentage(edge_string: str) -> float:
     return float(edge_string)
 
 
+def parse_phase(phase_str: str) -> str:
+    return COLOUR_CODE_PATTERN.sub("", phase_str)
+
+
 def extract_line_info(line: str) -> None:
     """Extract plot data from a line in the documentation"""
-    global latest_nodes, latest_edge_percentage, title
+    global latest_nodes, latest_edge_percentage, latest_phase, title
 
     if not title_ready.is_set():
         m = re.search(TITLE_PATTERN, line)
@@ -88,13 +99,6 @@ def extract_line_info(line: str) -> None:
             print(title)
             title_ready.set()
             return
-
-    m = re.search(RUNTIME_PATTERN, line)
-    if m:
-        time = parse_time(m.group(1))
-        if latest_nodes is not None and latest_edge_percentage is not None:
-            plot_data.put((time, latest_nodes, latest_edge_percentage))
-        return
 
     m = re.search(NODE_PATTERN, line)
     if m:
@@ -106,6 +110,18 @@ def extract_line_info(line: str) -> None:
         latest_edge_percentage = parse_edge_percentage(m.group(1))
         return
 
+    m = re.search(PHASE_START_PATTERN, line)
+    if m:
+        latest_phase = parse_phase(m.group(1))
+        return
+
+    m = re.search(RUNTIME_PATTERN, line)
+    if m:
+        time = parse_time(m.group(1))
+        if latest_nodes is not None and latest_edge_percentage is not None:
+            plot_data.put((time, latest_nodes, latest_edge_percentage, latest_phase))
+        return
+
 
 def read_stdin():
     for line in sys.stdin:
@@ -114,27 +130,76 @@ def read_stdin():
         print(line, flush=True)
 
 
+###########################################################################
+# Plotting
+###########################################################################
+
+
+class PhaseSpans:
+    "A class for managing vertical axis spans for phases of ToddCoxeter"
+
+    def __init__(self, axes):
+        self._spans = []
+        self._colours = {}
+        self._axes = axes
+
+    def __bool__(self):
+        return len(self._spans) != 0
+
+    def _get_colour(self, phase):
+        if phase not in self._colours:
+            self._colours[phase] = PHASE_PALETTE[
+                len(self._colours) % len(PHASE_PALETTE)
+            ]
+        return self._colours[phase]
+
+    def add(self, start, phase):
+        """Add a new phase span to the axes. If a phase of this type already
+        exists, the plot is not added to the legend"""
+        if phase is None:
+            return
+        label = phase if phase not in self._colours else "_nolegend_"
+        kwargs = {
+            "alpha": 0.15,
+            "color": self._get_colour(phase),
+            "label": label,
+        }
+        self._spans.append(
+            (
+                start,
+                [ax.axvspan(start, start, **kwargs) for ax in self._axes],
+            )
+        )
+
+    def update_end(self, end_time):
+        start, spans = self._spans[-1]
+        for span in spans:
+            span.set_width(end_time - start)
+
+
 def main():
     reader = threading.Thread(target=read_stdin, daemon=True)
     reader.start()
 
     # Setup plot
-
     sns.set_theme()
     fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(12, 12))
     times = []
     nodes = []
     edge_percentages = []
+    phases = [(0, None)]
+    phase_spans = PhaseSpans((ax1, ax2))
+    current_line_col = "darkorange"
 
     node_plot = ax1.plot(times, nodes)[0]
     current_node_line = ax1.axhline(
-        y=0, xmin=0, xmax=0, label="0", linestyle="--", color="darkorange"
+        y=0, xmin=0, xmax=0, label="0", linestyle="--", color=current_line_col
     )
     ax1.set(ylabel="Number of active nodes")
 
     edge_plot = ax2.plot(times, nodes)[0]
     current_edge_line = ax2.axhline(
-        y=0, xmin=0, xmax=0, label="0", linestyle="--", color="darkorange"
+        y=0, xmin=0, xmax=0, label="0", linestyle="--", color=current_line_col
     )
     ax2.set(ylabel="Edge completion (%)", xlabel="Time (s)")
     ax2.set_ylim(-5, 105)
@@ -147,18 +212,30 @@ def main():
 
     def update(frame):
         changed = False
+        phase_changed = False
         while True:
             try:
-                time, num_nodes, edge_percentage = plot_data.get_nowait()
+                time, num_nodes, edge_percentage, phase = plot_data.get_nowait()
             except queue.Empty:
                 break
             times.append(time)
             nodes.append(num_nodes)
             edge_percentages.append(edge_percentage)
+            if phase != phases[-1][1]:
+                phase_changed = True
+                phases.append((time, phase))
             changed = True
 
         if not changed:
             return (node_plot, edge_plot, current_edge_line, current_edge_line)
+
+        # Update the endpoint of the final span
+        if phase_spans:
+            phase_spans.update_end(times[-1])
+
+        # Add a new span if the the phase changes
+        if phase_changed:
+            phase_spans.add(*phases[-1])
 
         node_plot.set_xdata(times)
         node_plot.set_ydata(nodes)

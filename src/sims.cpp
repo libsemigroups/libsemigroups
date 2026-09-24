@@ -28,8 +28,9 @@
 
 #include "libsemigroups/sims.hpp"
 
-#include <algorithm>   // for fill, reverse
-#include <functional>  // for function, ref
+#include <algorithm>  // for fill, reverse
+#include <exception>  // for exception_ptr, current_exception, rethrow_exception
+#include <functional>  // for function
 #include <memory>      // for unique_ptr, make_unique, swap
 #include <string>      // for basic_string, string, operator+
 #include <thread>      // for thread, yield
@@ -198,9 +199,11 @@ namespace libsemigroups {
       node_type root  = 0;
 
       for (auto it = first; it != last; it += 2) {
-        auto l = v4::word_graph::follow_path_no_checks(wg, root, *it);
+        auto l = word_graph::follow_path_no_checks(
+            wg, root, it->begin(), it->end());
         if (l != UNDEFINED) {
-          auto r = v4::word_graph::follow_path_no_checks(wg, root, *(it + 1));
+          auto r = word_graph::follow_path_no_checks(
+              wg, root, (it + 1)->begin(), (it + 1)->end());
           if (l == r) {
             return false;
           }
@@ -661,7 +664,7 @@ namespace libsemigroups {
       auto first = _sims1or2->cbegin_long_rules();
       auto last  = _sims1or2->presentation().rules.cend();
 
-      bool result = v4::word_graph::is_compatible_no_checks(
+      bool result = word_graph::is_compatible_no_checks(
           _felsch_graph,
           _felsch_graph.cbegin_nodes(),
           _felsch_graph.cbegin_nodes() + M,
@@ -949,10 +952,10 @@ namespace libsemigroups {
         std::function<bool(word_graph_type const&)> hook) {
       PendingDef pd;
       auto const restarts = _sims1or2->idle_thread_restarts();
-      for (size_t i = 0; i < restarts; ++i) {
-        while ((pop_from_local_queue(pd, my_index)
-                || pop_from_other_thread_queue(pd, my_index))
-               && !_done) {
+      for (size_t i = 0; i < restarts && !_done; ++i) {
+        while (!_done
+               && (pop_from_local_queue(pd, my_index)
+                   || pop_from_other_thread_queue(pd, my_index))) {
           if (_theives[my_index]->try_define(pd)
               && _theives[my_index]->install_descendents(pd)) {
             if (hook(**_theives[my_index])) {
@@ -1018,15 +1021,37 @@ namespace libsemigroups {
     template <typename Sims1or2>
     void SimsBase<Sims1or2>::thread_runner::run(
         std::function<bool(word_graph_type const&)> hook) {
-      try {
+      std::exception_ptr exception;
+      // Avoid allocating storage after starting a thread that must be joined.
+      _threads.reserve(_num_threads);
+      {
         detail::JoinThreads joiner(_threads);
-        for (size_t i = 0; i < _num_threads; ++i) {
-          _threads.push_back(std::thread(
-              &thread_runner::worker_thread, this, i, std::ref(hook)));
+        try {
+          for (size_t i = 0; i < _num_threads; ++i) {
+            _threads.emplace_back([this, i, &hook, &exception]() {
+              try {
+                // Copying hook into worker_thread can also throw, so do it
+                // inside the handler on the worker thread.
+                worker_thread(i, hook);
+              } catch (...) {
+                std::lock_guard<std::mutex> lock(_mtx);
+                if (!exception) {
+                  exception = std::current_exception();
+                }
+                _done = true;
+              }
+            });
+          }
+        } catch (...) {
+          // Cancel existing workers before the joiner waits for them when
+          // starting a later thread fails.
+          _done = true;
+          throw;
         }
-      } catch (...) {
-        _done = true;
-        throw;
+      }
+      // All workers have been joined, so no thread can still write exception.
+      if (exception) {
+        std::rethrow_exception(exception);
       }
     }
 
@@ -1376,7 +1401,7 @@ namespace libsemigroups {
           _relation({}, {}),
           _tree(ptr->number_of_active_nodes()),
           _word_graph(ptr) {
-      // if (!v4::word_graph::is_complete(*ptr,
+      // if (!word_graph::is_complete(*ptr,
       //                              ptr->cbegin_nodes(),
       //                              ptr->cbegin_nodes()
       //                                  + ptr->number_of_active_nodes())) {
@@ -1547,8 +1572,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(knuth_bendix::currently_contains_no_checks(kb, u, v)
                            != tril::unknown);
       if (knuth_bendix::currently_contains_no_checks(kb, u, v) == tril::FALSE) {
-        auto beta = v4::word_graph::follow_path_no_checks(
-            wg, 0, u.cbegin(), u.cend());
+        auto beta = word_graph::follow_path_no_checks(
+            wg, node_type(0), u.cbegin(), u.cend());
         if (sink == UNDEFINED) {
           sink = beta;
         } else if (sink != beta) {
@@ -1566,7 +1591,7 @@ namespace libsemigroups {
       auto const N     = wg.number_of_active_nodes();
       auto       first = wg.cbegin_nodes();
       auto       last  = wg.cbegin_nodes() + N;
-      if (v4::word_graph::is_complete(wg, first, last)) {
+      if (word_graph::is_complete(wg, first, last)) {
         return false;
       }
     }
@@ -1604,9 +1629,11 @@ namespace libsemigroups {
     for (auto it = first; it != last; it += 2) {
       bool this_rule_compatible = true;
       for (uint32_t n = 0; n < wg.number_of_active_nodes(); ++n) {
-        auto l = v4::word_graph::follow_path_no_checks(wg, n, *it);
+        auto l
+            = word_graph::follow_path_no_checks(wg, n, it->begin(), it->end());
         if (l != UNDEFINED) {
-          auto r = v4::word_graph::follow_path_no_checks(wg, n, *(it + 1));
+          auto r = word_graph::follow_path_no_checks(
+              wg, n, (it + 1)->begin(), (it + 1)->end());
           if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
             this_rule_compatible = false;
             break;

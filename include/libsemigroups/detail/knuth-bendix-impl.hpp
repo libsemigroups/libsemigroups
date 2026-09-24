@@ -55,7 +55,6 @@
 #include "libsemigroups/types.hpp"                 // for congruence_kind
 #include "libsemigroups/word-graph-helpers.hpp"    // for word_graph
 #include "libsemigroups/word-graph.hpp"            // for WordGraph, to_...
-#include "libsemigroups/word-range.hpp"            // for to_human_reada...
 
 #include "cong-common-class.hpp"  // for CongruenceInte...
 #include "fmt.hpp"                // for format, print
@@ -264,6 +263,9 @@ namespace libsemigroups {
       // generating pairs contained in CongruenceCommon are word_types, and
       // so we don't require any conversion here (since chars can be converted
       // implicitly to letter_types)
+
+      // NOTE: there are no "checks" versions of the functions below because
+      // this isn't a user-facing class and they are redundant.
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -275,19 +277,6 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(!started());
         return CongruenceCommon::add_internal_generating_pair_no_checks<
             KnuthBendixImpl>(first1, last1, first2, last2);
-      }
-
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      KnuthBendixImpl& add_generating_pair(Iterator1 first1,
-                                           Iterator2 last1,
-                                           Iterator3 first2,
-                                           Iterator4 last2) {
-        LIBSEMIGROUPS_ASSERT(!started());
-        return CongruenceCommon::add_generating_pair<KnuthBendixImpl>(
-            first1, last1, first2, last2);
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -318,6 +307,9 @@ namespace libsemigroups {
       // KnuthBendixImpl - interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
+      // NOTE: there are no "checks" versions of the functions below because
+      // this isn't a user-facing class and they are redundant.
+
       //! \ingroup knuth_bendix_class_intf_group
       //! \brief Check containment of a pair of words via iterators.
       //!
@@ -344,21 +336,6 @@ namespace libsemigroups {
                                                       Iterator2 last1,
                                                       Iterator3 first2,
                                                       Iterator4 last2) const;
-
-      // Documented in KnuthBendix (because it appears there because we call
-      // CongruenceCommon::currently_contains directly so that bounds checks are
-      // done in KnuthBendix)
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      [[nodiscard]] tril currently_contains(Iterator1 first1,
-                                            Iterator2 last1,
-                                            Iterator3 first2,
-                                            Iterator4 last2) const {
-        return CongruenceCommon::currently_contains<KnuthBendixImpl>(
-            first1, last1, first2, last2);
-      }
 
       //! \ingroup knuth_bendix_class_intf_group
       //!
@@ -388,24 +365,12 @@ namespace libsemigroups {
             first1, last1, first2, last2);
       }
 
-      // Documented in KnuthBendix (because it appears there because we call
-      // CongruenceCommon::contains directly so that bounds checks are
-      // done in KnuthBendix)
-      template <typename Iterator1,
-                typename Iterator2,
-                typename Iterator3,
-                typename Iterator4>
-      [[nodiscard]] bool contains(Iterator1 first1,
-                                  Iterator2 last1,
-                                  Iterator3 first2,
-                                  Iterator4 last2) {
-        return CongruenceCommon::contains<KnuthBendixImpl>(
-            first1, last1, first2, last2);
-      }
-
       ////////////////////////////////////////////////////////////////////////
       // KnuthBendixImpl - interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
+
+      // NOTE: there are no "checks" versions of the functions below because
+      // this isn't a user-facing class and they are redundant.
 
       template <typename OutputIterator,
                 typename InputIterator1,
@@ -413,19 +378,6 @@ namespace libsemigroups {
       OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                              InputIterator1 first,
                                              InputIterator2 last) const;
-
-      // Documented in KnuthBendix (because it appears there because we call
-      // CongruenceCommon::reduce_no_run directly so that bounds checks are
-      // done in KnuthBendix)
-      template <typename OutputIterator,
-                typename InputIterator1,
-                typename InputIterator2>
-      OutputIterator reduce_no_run(OutputIterator d_first,
-                                   InputIterator1 first,
-                                   InputIterator2 last) const {
-        return CongruenceCommon::reduce_no_run<KnuthBendixImpl>(
-            d_first, first, last);
-      }
 
       template <typename OutputIterator,
                 typename InputIterator1,
@@ -435,18 +387,6 @@ namespace libsemigroups {
                                       InputIterator2 last) {
         return CongruenceCommon::reduce_no_checks<KnuthBendixImpl>(
             d_first, first, last);
-      }
-
-      // Documented in KnuthBendix (because it appears there because we call
-      // CongruenceCommon::reduce directly so that bounds checks are
-      // done in KnuthBendix)
-      template <typename OutputIterator,
-                typename InputIterator1,
-                typename InputIterator2>
-      OutputIterator reduce(OutputIterator d_first,
-                            InputIterator1 first,
-                            InputIterator2 last) {
-        return CongruenceCommon::reduce<KnuthBendixImpl>(d_first, first, last);
       }
 
       // TODO(1) implement reduce_inplace x4 if possible.
@@ -706,13 +646,6 @@ namespace libsemigroups {
       // KnuthBendixImpl - member functions for rules and rewriting - public
       //////////////////////////////////////////////////////////////////////////
 
-      // TODO(1) remove
-      template <typename Iterator1, typename Iterator2>
-      void throw_if_letter_not_in_alphabet(Iterator1 first,
-                                           Iterator2 last) const {
-        internal_presentation().throw_if_letter_not_in_alphabet(first, last);
-      }
-
       [[nodiscard]] Presentation<native_word_type> const&
       internal_presentation() const noexcept {
         return _presentation;
@@ -808,7 +741,8 @@ namespace libsemigroups {
       //!
       //! The Gilman WordGraph is a digraph where the labels of the paths from
       //! the initial node (corresponding to the empty word) correspond to the
-      //! shortlex normal forms of the semigroup elements.
+      //! normal forms of the semigroup elements with respect to the reduction
+      //! ordering of the \ref_knuth_bendix instance.
       //!
       //! The semigroup is finite if the graph is acyclic, and infinite
       //! otherwise.
@@ -822,14 +756,24 @@ namespace libsemigroups {
       //! reduced and confluent, which might be never.
       //!
       //! \sa \ref number_of_classes, and \ref knuth_bendix::normal_forms.
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       WordGraph<uint32_t> const& gilman_graph();
+#else
+      // The fact that there are two different implementations based on whether
+      // a trie was used or not is an implementational detail that we hide from
+      // the doc.
+      template <typename SFINAE = WordGraph<uint32_t> const&>
+      auto gilman_graph()
+          -> std::enable_if_t<has_trie<RewritingSystem>, SFINAE>;
+
+      template <typename SFINAE = WordGraph<uint32_t> const&>
+      auto gilman_graph()
+          -> std::enable_if_t<!has_trie<RewritingSystem>, SFINAE>;
+#endif
 
       // Documented in KnuthBendix
       [[nodiscard]] std::vector<native_word_type> const&
-      gilman_graph_node_labels() {
-        gilman_graph();  // to ensure that gilman_graph is initialised
-        return _gilman_graph_node_labels;
-      }
+      gilman_graph_node_labels();
 
      protected:
       // run_impl is called by KnuthBendix
@@ -894,7 +838,7 @@ namespace libsemigroups {
              KnuthBendix<Word, RewritingSystem, ReductionOrder> const& kb);
 #else
   template <typename RewritingSystem>
-  std::ostream& operator<<(std::ostream&                                   os,
+  std::ostream& operator<<(std::ostream& os,
                            detail::KnuthBendixImpl<RewritingSystem> const& kb);
 #endif
 

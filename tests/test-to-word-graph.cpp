@@ -25,11 +25,10 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("to<WordGraph>", "000", "from a Forest", "[quick]") {
-    auto rg         = ReportGuard(false);
     using node_type = Forest::node_type;
 
     WordGraph wg = binary_tree<node_type>(5);
-    Forest    f  = v4::word_graph::spanning_tree(wg, 0);
+    Forest    f  = word_graph::spanning_tree(wg, node_type(0));
     REQUIRE(to<WordGraph>(f) == wg);
   }
 }  // namespace libsemigroups

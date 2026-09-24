@@ -38,21 +38,15 @@
 #include "libsemigroups/to-presentation.hpp"  // for v4::to<Presentation>
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for word_type, congruence_kind
+#include "libsemigroups/words-helpers.hpp"    // for operator""_w
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
 #include "libsemigroups/detail/string.hpp"      // for operator<<
 
 namespace libsemigroups {
-
-  namespace {
-
-    template <typename W1, typename W2>
-    void check_to_inverse_presentation() {}
-
-    template <typename Word>
-    void check_to_inverse_presentation_from_presentation() {}
-  }  // namespace
+  using literals::     operator""_w;
+  using std::literals::operator""s;
 
   using detail::StaticVector1;
 
@@ -63,7 +57,6 @@ namespace libsemigroups {
                                    word_type,
                                    (StaticVector1<uint16_t, 8>),
                                    std::string) {
-    auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
     S.add_generator(make<Bipartition>({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
     S.add_generator(make<Bipartition>({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
@@ -89,7 +82,6 @@ namespace libsemigroups {
                           "014",
                           "from FroidurePin and alphabet",
                           "[quick][to_presentation]") {
-    auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
     S.add_generator(make<Bipartition>({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
     S.add_generator(make<Bipartition>({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
@@ -99,15 +91,15 @@ namespace libsemigroups {
 
     auto p = to<Presentation<std::string>>(S);
     // Alphabet too small
-    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abc"),
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abc"s),
                       LibsemigroupsException);
     // Alphabet contains repeats
-    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abca"),
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abca"s),
                       LibsemigroupsException);
     // Alphabet too long
-    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abcde"),
+    REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abcde"s),
                       LibsemigroupsException);
-    presentation::change_alphabet(p, "abcd");
+    presentation::change_alphabet(p, "abcd"s);
 
     REQUIRE(p.alphabet().size() == 4);
     REQUIRE(p.rules[8] == "ba");
@@ -141,7 +133,6 @@ namespace libsemigroups {
                                    static_vec_string,
                                    static_vec_word,
                                    static_vec_static_vec) {
-    auto rg  = ReportGuard(false);
     using W1 = typename TestType::first_type;
     using W2 = typename TestType::second_type;
 
@@ -149,11 +140,11 @@ namespace libsemigroups {
     p.alphabet(3);
     p.contains_empty_word(true);
     if constexpr (std::is_same_v<W1, std::string>) {
-      presentation::add_rule_no_checks(p, "abc", "ab");
-      presentation::add_rule_no_checks(p, "abc", "");
+      presentation::add_rule_no_checks(p, "abc"s, "ab"s);
+      presentation::add_rule_no_checks(p, "abc"s, ""s);
     } else {
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {});
+      presentation::add_rule_no_checks(p, W1({0, 1, 2}), W1({0, 1}));
+      presentation::add_rule_no_checks(p, W1({0, 1, 2}), W1({}));
     }
     p.throw_if_bad_alphabet_or_rules();
 
@@ -197,18 +188,17 @@ namespace libsemigroups {
                                    static_vec_string,
                                    static_vec_word,
                                    static_vec_static_vec) {
-    auto rg  = ReportGuard(false);
     using W1 = typename TestType::first_type;
     using W2 = typename TestType::second_type;
     Presentation<W1> p;
     p.alphabet(3);
     p.contains_empty_word(true);
     if constexpr (std::is_same_v<W1, std::string>) {
-      presentation::add_rule_no_checks(p, "abc", "ab");
-      presentation::add_rule_no_checks(p, "abc", "");
+      presentation::add_rule_no_checks(p, "abc"s, "ab"s);
+      presentation::add_rule_no_checks(p, "abc"s, ""s);
     } else {
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {});
+      presentation::add_rule_no_checks(p, W1({0, 1, 2}), W1({0, 1}));
+      presentation::add_rule_no_checks(p, W1({0, 1, 2}), W1({}));
     }
 
     auto f1 = [&p](auto val) {
@@ -238,12 +228,11 @@ namespace libsemigroups {
                           "017",
                           "from present. and alphabet",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(false);
-    presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
-    presentation::add_rule_no_checks(p, {0, 1, 2}, {});
+    presentation::add_rule_no_checks(p, 012_w, 01_w);
+    presentation::add_rule_no_checks(p, 012_w, ""_w);
     // intentionally bad
     REQUIRE_THROWS_AS(p.throw_if_bad_alphabet_or_rules(),
                       LibsemigroupsException);
@@ -255,7 +244,7 @@ namespace libsemigroups {
     p.throw_if_bad_alphabet_or_rules();
     REQUIRE(p.contains_empty_word());
     auto q = v4::to<Presentation<std::string>>(p);
-    presentation::change_alphabet(q, "abc");
+    presentation::change_alphabet(q, "abc"s);
     REQUIRE(q.alphabet() == "abc");
     REQUIRE(q.contains_empty_word());
     REQUIRE(q.rules == std::vector<std::string>({"abc", "ab", "abc", ""}));
@@ -267,17 +256,16 @@ namespace libsemigroups {
       "018",
       "use human readable alphabet for v4::to<Presentation>",
       "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
-    presentation::add_rule(p, {0, 1}, {});
+    presentation::add_rule(p, 01_w, ""_w);
 
     auto q = v4::to<Presentation<std::string>>(p);
     REQUIRE(q.alphabet() == "ab");
     REQUIRE(q.rules == std::vector<std::string>({"ab", ""}));
     q = v4::to<Presentation<std::string>>(p);
-    presentation::change_alphabet(q, "xy");
+    presentation::change_alphabet(q, "xy"s);
     REQUIRE(q.alphabet() == "xy");
     REQUIRE(q.rules == std::vector<std::string>({"xy", ""}));
   }
@@ -295,19 +283,18 @@ namespace libsemigroups {
                                    static_vec_string,
                                    static_vec_word,
                                    static_vec_static_vec) {
-    auto rg  = ReportGuard(false);
     using W1 = typename TestType::first_type;
     using W2 = typename TestType::second_type;
     InversePresentation<W1> ip;
     ip.alphabet(3);
     ip.contains_empty_word(true);
     if constexpr (std::is_same_v<W1, std::string>) {
-      presentation::add_rule_no_checks(ip, "abc", "ab");
-      presentation::add_rule_no_checks(ip, "abc", "");
+      presentation::add_rule_no_checks(ip, "abc"s, "ab"s);
+      presentation::add_rule_no_checks(ip, "abc"s, ""s);
       ip.inverses_no_checks("cba");
     } else {
-      presentation::add_rule_no_checks(ip, {0, 1, 2}, {0, 1});
-      presentation::add_rule_no_checks(ip, {0, 1, 2}, {});
+      presentation::add_rule_no_checks(ip, W1({0, 1, 2}), W1({0, 1}));
+      presentation::add_rule_no_checks(ip, W1({0, 1, 2}), W1({}));
       ip.inverses_no_checks({2, 1, 0});
     }
     ip.throw_if_bad_alphabet_or_rules();
@@ -360,15 +347,15 @@ namespace libsemigroups {
                                    std::string,
                                    word_type,
                                    (StaticVector1<uint8_t, 6>) ) {
-    auto                   rg = ReportGuard(false);
     Presentation<TestType> p;
     p.alphabet(3);
     if constexpr (std::is_same_v<TestType, std::string>) {
-      presentation::add_rule_no_checks(p, "abc", "ab");
-      presentation::add_rule_no_checks(p, "acb", "c");
+      presentation::add_rule_no_checks(p, "abc"s, "ab"s);
+      presentation::add_rule_no_checks(p, "acb"s, "c"s);
     } else {
-      presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
-      presentation::add_rule_no_checks(p, {0, 2, 1}, {2});
+      presentation::add_rule_no_checks(
+          p, TestType({0, 1, 2}), TestType({0, 1}));
+      presentation::add_rule_no_checks(p, TestType({0, 2, 1}), TestType({2}));
     }
     p.throw_if_bad_alphabet_or_rules();
 
@@ -398,15 +385,13 @@ namespace libsemigroups {
                           "021",
                           "from KnuthBendix<std::string>",
                           "[quick][to_presentation]") {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
-    p.alphabet("hijkl");
-    presentation::add_rule(p, "hi", "j");
-    presentation::add_rule(p, "ij", "k");
-    presentation::add_rule(p, "jk", "l");
-    presentation::add_rule(p, "kl", "h");
-    presentation::add_rule(p, "lh", "i");
+    p.alphabet("hijkl"s);
+    presentation::add_rule(p, "hi"s, "j"s);
+    presentation::add_rule(p, "ij"s, "k"s);
+    presentation::add_rule(p, "jk"s, "l"s);
+    presentation::add_rule(p, "kl"s, "h"s);
+    presentation::add_rule(p, "lh"s, "i"s);
 
     KnuthBendix<std::string> kb(congruence_kind::twosided, p);
     kb.run();
@@ -433,7 +418,6 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -467,15 +451,14 @@ namespace libsemigroups {
                           "from KnuthBendix<std::string>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<std::string> p;
-    p.alphabet("hijkl");
-    presentation::add_rule(p, "hi", "j");
-    presentation::add_rule(p, "ij", "k");
-    presentation::add_rule(p, "jk", "l");
-    presentation::add_rule(p, "kl", "h");
-    presentation::add_rule(p, "lh", "i");
+    p.alphabet("hijkl"s);
+    presentation::add_rule(p, "hi"s, "j"s);
+    presentation::add_rule(p, "ij"s, "k"s);
+    presentation::add_rule(p, "jk"s, "l"s);
+    presentation::add_rule(p, "kl"s, "h"s);
+    presentation::add_rule(p, "lh"s, "i"s);
 
     KnuthBendix<std::string> kb(congruence_kind::twosided, p);
     kb.run();
@@ -503,7 +486,6 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -539,7 +521,6 @@ namespace libsemigroups {
                           "025",
                           "from Kambites<Word>",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -556,10 +537,10 @@ namespace libsemigroups {
                 {"ab", "c", "bc", "d", "cd", "e", "de", "a", "ea", "b"}));
 
     Presentation<std::string> p_str;
-    p_str.alphabet("abc");
-    presentation::add_rule(p_str, "aa", "b");
-    presentation::add_rule(p_str, "bb", "c");
-    presentation::add_rule(p_str, "cc", "a");
+    p_str.alphabet("abc"s);
+    presentation::add_rule(p_str, "aa"s, "b"s);
+    presentation::add_rule(p_str, "bb"s, "c"s);
+    presentation::add_rule(p_str, "cc"s, "a"s);
 
     Kambites k_str(congruence_kind::twosided, p_str);
     REQUIRE(to<Presentation<std::string>>(k_str) == p_str);
@@ -571,7 +552,6 @@ namespace libsemigroups {
                           "026",
                           "from ToddCoxeter<Word>",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -588,10 +568,10 @@ namespace libsemigroups {
                 {"ab", "c", "bc", "d", "cd", "e", "de", "a", "ea", "b"}));
 
     Presentation<std::string> p_str;
-    p_str.alphabet("abc");
-    presentation::add_rule(p_str, "aa", "b");
-    presentation::add_rule(p_str, "bb", "c");
-    presentation::add_rule(p_str, "cc", "a");
+    p_str.alphabet("abc"s);
+    presentation::add_rule(p_str, "aa"s, "b"s);
+    presentation::add_rule(p_str, "bb"s, "c"s);
+    presentation::add_rule(p_str, "cc"s, "a"s);
 
     ToddCoxeter tc_str(congruence_kind::twosided, p_str);
     REQUIRE(to<Presentation<std::string>>(tc_str) == p_str);
@@ -603,7 +583,6 @@ namespace libsemigroups {
                           "027",
                           "from Stephen<Presentation<Word>>",
                           "[quick][to_presentation]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -625,7 +604,6 @@ namespace libsemigroups {
                           "from Congruence<word_type> (twosided)",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     // Test 1: Congruence<word_type> -> Presentation<word_type> (same type)
     Presentation<word_type> p;
@@ -654,14 +632,12 @@ namespace libsemigroups {
                           "029",
                           "from Congruence<std::string> (twosided)",
                           "[quick][to_presentation]") {
-    auto rg = ReportGuard(false);
-
     // Test 1: Congruence<std::string> -> Presentation<std::string> (same type)
     Presentation<std::string> p_str;
-    p_str.alphabet("abc");
-    presentation::add_rule(p_str, "aa", "b");
-    presentation::add_rule(p_str, "bb", "c");
-    presentation::add_rule(p_str, "cc", "a");
+    p_str.alphabet("abc"s);
+    presentation::add_rule(p_str, "aa"s, "b"s);
+    presentation::add_rule(p_str, "bb"s, "c"s);
+    presentation::add_rule(p_str, "cc"s, "a"s);
 
     Congruence c_str(congruence_kind::twosided, p_str);
 
@@ -683,7 +659,6 @@ namespace libsemigroups {
                           "from Congruence<word_type> (onesided)",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);
@@ -708,7 +683,6 @@ namespace libsemigroups {
                           "from Congruence with generating pairs",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);

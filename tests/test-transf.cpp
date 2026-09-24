@@ -56,9 +56,8 @@ namespace libsemigroups {
                           "000",
                           "comparison operators",
                           "[quick][transf]") {
-    auto rg = ReportGuard(false);
-    auto x  = make<Transf<>>({0, 1, 0});
-    auto y  = make<Transf<>>({0, 1});
+    auto x = make<Transf<>>({0, 1, 0});
+    auto y = make<Transf<>>({0, 1});
     REQUIRE(x > y);
     // Can't compare static transf of different degrees
     // REQUIRE(to_string(x, "{}") == "Transf<0, uint32_t>({0, 1, 0})");
@@ -70,7 +69,6 @@ namespace libsemigroups {
                                    "[quick][transf]",
                                    Transf<>,
                                    Transf<4>) {
-    auto rg = ReportGuard(false);
     static_assert(IsTransf<TestType>, "IsTransf<TestType> must be true!");
     auto x = make<TestType>({0, 1, 0, 0});
     auto y = make<TestType>({0, 1, 0, 0});
@@ -129,7 +127,6 @@ namespace libsemigroups {
                           "002",
                           "exceptions (dynamic)",
                           "[quick][transf]") {
-    auto rg          = ReportGuard(false);
     using point_type = typename Transf<>::point_type;
     REQUIRE_NOTHROW(Transf());
     REQUIRE_NOTHROW(make<Transf<>>({0}));
@@ -154,7 +151,6 @@ namespace libsemigroups {
                           "003",
                           "exceptions (static)",
                           "[quick][transf]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(make<Transf<1>>({1}), LibsemigroupsException);
     REQUIRE_THROWS_AS(make<Transf<1>>({1}), LibsemigroupsException);
 
@@ -172,7 +168,6 @@ namespace libsemigroups {
                                    "[quick][pperm]",
                                    PPerm<>,
                                    PPerm<10>) {
-    auto rg = ReportGuard(false);
     static_assert(IsPPerm<TestType>, "IsPPerm<TestType> must be true!");
     auto x = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
     auto y = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
@@ -254,7 +249,6 @@ namespace libsemigroups {
                           "005",
                           "exceptions (dynamic)",
                           "[quick][pperm]") {
-    auto rg          = ReportGuard(false);
     using point_type = typename Transf<>::point_type;
 
     REQUIRE_THROWS_AS((make<PPerm<0, uint8_t>>({}, {}, 257)),
@@ -312,7 +306,6 @@ namespace libsemigroups {
                           "006",
                           "exceptions (static)",
                           "[quick][pperm]") {
-    auto rg          = ReportGuard(false);
     using point_type = typename PPerm<6>::point_type;
     REQUIRE_NOTHROW(make<PPerm<1>>({0}));
     REQUIRE_NOTHROW(make<PPerm<1>>({UNDEFINED}));
@@ -355,7 +348,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Perm", "007", "inverse", "[quick][perm]") {
-    auto rg = ReportGuard(false);
     REQUIRE(test_inverse(Perm<>({})));
     REQUIRE(test_inverse(Perm<>({0})));
     REQUIRE(test_inverse(Perm<>({1, 0})));
@@ -375,7 +367,6 @@ namespace libsemigroups {
                           "008",
                           "exceptions (dynamic)",
                           "[quick][perm]") {
-    auto rg = ReportGuard(false);
     REQUIRE_NOTHROW(make<Perm<>>({}));
     REQUIRE_NOTHROW(make<Perm<>>({0}));
     REQUIRE_NOTHROW(make<Perm<>>({0, 1}));
@@ -393,7 +384,6 @@ namespace libsemigroups {
                           "009",
                           "exceptions (static)",
                           "[quick][perm]") {
-    auto rg = ReportGuard(false);
     REQUIRE_NOTHROW(make<Perm<1>>({0}));
     REQUIRE_NOTHROW(make<Perm<2>>({0, 1}));
     REQUIRE_NOTHROW(make<Perm<2>>({1, 0}));
@@ -413,7 +403,6 @@ namespace libsemigroups {
                           "010",
                           "No throw",
                           "[quick][transf][pperm][perm]") {
-    auto rg = ReportGuard(false);
     REQUIRE_NOTHROW(LeastTransf<3>({0, 1, 2}));
     REQUIRE_NOTHROW(LeastPPerm<3>({0, 1, 2}));
     REQUIRE_NOTHROW(LeastPerm<3>({0, 1, 2}));
@@ -423,8 +412,7 @@ namespace libsemigroups {
                           "011",
                           "to_human_readable_repr",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-    auto x  = make<Transf<3>>({0, 1, 2});
+    auto x = make<Transf<3>>({0, 1, 2});
     REQUIRE(to_human_readable_repr(x) == "Transf<3, uint8_t>({0, 1, 2})");
     REQUIRE(to_human_readable_repr(x, "", "[]")
             == "Transf<3, uint8_t>([0, 1, 2])");
@@ -466,7 +454,6 @@ namespace libsemigroups {
                                    "[quick][perm]",
                                    Perm<>,
                                    Perm<4>) {
-    auto rg = ReportGuard(false);
     static_assert(IsPerm<TestType>, "IsPerm<TestType> must be true!");
     TestType x  = make<TestType>({1, 0, 3, 2});
     TestType y  = make<TestType>({1, 0, 3, 2});
@@ -508,7 +495,6 @@ namespace libsemigroups {
                                    "[quick][transf]",
                                    Transf<>,
                                    Transf<4>) {
-    auto rg = ReportGuard(false);
     static_assert(IsTransf<TestType>, "IsTransf<TestType> must be true!");
     TestType const x = make<TestType>({0, 1, 0, 0});
     TestType const y = make<TestType>({0, 1, 0, 0});
@@ -554,7 +540,6 @@ namespace libsemigroups {
                                    "[quick][pperm]",
                                    PPerm<>,
                                    PPerm<10>) {
-    auto rg = ReportGuard(false);
     static_assert(IsPPerm<TestType>, "IsPPerm<TestType> must be true!");
     TestType const x = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
     TestType const y = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
@@ -623,7 +608,6 @@ namespace libsemigroups {
                                    "[quick][perm]",
                                    Perm<>,
                                    Perm<4>) {
-    auto rg = ReportGuard(false);
     static_assert(IsPerm<TestType>, "IsPerm<TestType> must be true!");
     TestType const x  = make<TestType>({1, 0, 3, 2});
     TestType const y  = make<TestType>({1, 0, 3, 2});
@@ -673,8 +657,7 @@ namespace libsemigroups {
                                    (Transf<0, uint8_t>),
                                    (Perm<0, uint8_t>),
                                    (PPerm<0, uint8_t>) ) {
-    auto     rg = ReportGuard(false);
-    TestType x  = make<TestType>(std::vector<uint8_t>());
+    TestType x = make<TestType>(std::vector<uint8_t>());
     REQUIRE_NOTHROW(x.increase_degree_by(0));
     REQUIRE_EXCEPTION_MSG(x.increase_degree_by(257),
                           "the 1st argument (value to increase degree by) is "
@@ -692,7 +675,6 @@ namespace libsemigroups {
                                    (Transf<0, uint8_t>),
                                    (Perm<0, uint8_t>),
                                    (PPerm<0, uint8_t>) ) {
-    auto                 rg = ReportGuard(false);
     std::vector<uint8_t> small_sequence(std::numeric_limits<uint8_t>::max()
                                         + 1);
     std::iota(small_sequence.begin(), small_sequence.end(), 0);
@@ -712,7 +694,6 @@ namespace libsemigroups {
                                    (Transf<0, uint8_t>),
                                    (Perm<0, uint8_t>),
                                    (PPerm<0, uint8_t>) ) {
-    auto rg = ReportGuard(false);
     REQUIRE_NOTHROW(
         std::ignore = make<TestType>(
             {0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,

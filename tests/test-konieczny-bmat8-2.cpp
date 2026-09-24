@@ -37,7 +37,6 @@ namespace libsemigroups {
                           "full bmat monoid 5",
                           "[standard][bmat8]") {
     using BMat = BMatFastest<5>;
-    auto rg    = ReportGuard(false);
 
     Konieczny T = make<Konieczny>({BMat({{1, 0, 0, 0, 0},
                                          {0, 1, 0, 0, 0},
@@ -116,8 +115,6 @@ namespace libsemigroups {
                           "013",
                           "regular generated bmat monoid 4 idempotents",
                           "[quick][no-valgrind][bmat8]") {
-    auto rg = ReportGuard(false);
-
     Konieczny S = make<Konieczny>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -163,7 +160,6 @@ namespace libsemigroups {
                           "regular generated bmat monoid 5",
                           "[standard][bmat8]") {
     using BMat = BMatFastest<5>;
-    auto rg    = ReportGuard(false);
 
     Konieczny T = make<Konieczny>({BMat({{0, 1, 0, 0, 0},
                                          {1, 0, 0, 0, 0},
@@ -214,8 +210,6 @@ namespace libsemigroups {
                           "015",
                           "my favourite example",
                           "[quick][finite][no-valgrind][bmat8]") {
-    auto rg = ReportGuard(false);
-
     Konieczny S = make<Konieczny>({BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 0, 0, 1},
                                           {0, 0, 1, 0, 0, 0, 0, 0},
@@ -288,7 +282,6 @@ namespace libsemigroups {
                           "another large example",
                           "[quick][no-valgrind][bmat8]") {
     using BMat = BMatFastest<8>;
-    auto rg    = ReportGuard(false);
 
     Konieczny S = make<Konieczny>({BMat({{0, 1, 0, 0, 0, 0, 0, 0},
                                          {0, 0, 0, 0, 0, 1, 0, 0},
@@ -361,8 +354,6 @@ namespace libsemigroups {
                           "017",
                           "my favourite example transposed",
                           "[quick][no-valgrind][bmat8]") {
-    auto rg = ReportGuard(false);
-
     Konieczny S = make<Konieczny>({BMat8({{0, 0, 0, 0, 1, 0, 0, 0},
                                           {1, 0, 0, 0, 0, 0, 1, 0},
                                           {0, 0, 1, 0, 0, 0, 0, 0},
@@ -435,7 +426,6 @@ namespace libsemigroups {
                           "full bmat monoid 5 with stop in Action",
                           "[standard][bmat8]") {
     using BMat = BMatFastest<5>;
-    auto rg    = ReportGuard(false);
 
     Konieczny T = make<Konieczny>({BMat({{1, 0, 0, 0, 0},
                                          {0, 1, 0, 0, 0},
@@ -522,8 +512,6 @@ namespace libsemigroups {
                           "019",
                           "regular generated bmat monoid 5 with stops",
                           "[standard][bmat8]") {
-    auto rg = ReportGuard(false);
-
     Konieczny T = make<Konieczny>({BMat8({{0, 1, 0, 0, 0},
                                           {1, 0, 0, 0, 0},
                                           {0, 0, 1, 0, 0},
@@ -555,7 +543,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny", "020", "exceptions", "[quick][bmat8]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(make<Konieczny>(std::vector<BMat8>()),
                       LibsemigroupsException);
 
@@ -581,7 +568,6 @@ namespace libsemigroups {
                           "021",
                           "0-parameter constructor",
                           "[quick][no-valgrind][bmat8]") {
-    auto              rg   = ReportGuard(false);
     std::vector const gens = {BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
                                      {0, 0, 0, 0, 0, 1, 0, 0},
                                      {0, 0, 0, 0, 0, 1, 0, 0},

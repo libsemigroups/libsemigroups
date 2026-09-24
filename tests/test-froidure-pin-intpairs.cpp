@@ -111,7 +111,6 @@ namespace libsemigroups {
                           "027",
                           "(pairs of integers) non-trivial user type",
                           "[quick][froidure-pin][intpairs][108]") {
-    auto                 rg = ReportGuard(false);
     FroidurePin<IntPair> S;
     S.add_generator(IntPair(1, 1));
     REQUIRE(S.size() == 1);

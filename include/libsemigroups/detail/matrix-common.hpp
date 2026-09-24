@@ -38,6 +38,7 @@
 #include "libsemigroups/is-matrix.hpp"  // for IsMatrix, Matr...
 
 #include "fmt.hpp"                // for format
+#include "formatters.hpp"         // for formatting POSITIVE_INFINITY
 #include "matrix-exceptions.hpp"  // for throw_if_bad_dim
 #include "string.hpp"             // for to_string
 

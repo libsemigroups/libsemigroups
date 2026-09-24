@@ -39,7 +39,6 @@
 #include "libsemigroups/types.hpp"               // for word_type, letter_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for follow_p...
 #include "libsemigroups/word-graph-view.hpp"     // for WordGrap...
-#include "libsemigroups/word-range.hpp"          // for human_re...
 
 #include "libsemigroups/detail/cong-common-class.hpp"        // for Congruen...
 #include "libsemigroups/detail/containers.hpp"               // for apply_ro...
@@ -233,8 +232,15 @@ namespace libsemigroups::detail {
       // NodeManager but the RuleIterators returned by them are invalidated
       // by any changes to the graph, such as those made by
       // felsch_graph::make_compatible.
+      // This pass only adds edges and queues coincidences; compare before
+      // process_coincidences merges nodes and invalidates the caches below.
+      auto const old_number_of_edges = number_of_edges_active();
       felsch_graph::make_compatible<do_not_register_defs>(
           *this, current, current + 1, first, last, incompat, prefdefs);
+      if (number_of_edges_active() != old_number_of_edges) {
+        _forest_valid          = false;
+        _standardization_order = Order::none;
+      }
       // Using NoPreferredDefs is just a (more or less) arbitrary
       // choice, could allow the other choices here too (which works,
       // but didn't seem to be very useful).
@@ -268,11 +274,18 @@ namespace libsemigroups::detail {
     auto&      defs = FelschGraph_::definitions();
     Definition d;
     while (!defs.empty()) {
+      auto const old_number_of_edges = number_of_edges_active();
       while (!defs.empty()) {
         defs.pop(d);
         if (NodeManager<node_type>::is_active_node(d.first)) {
           FelschGraph_::process_definition(d, incompat, pref_defs);
         }
+      }
+      // Check additions before merging nodes, which can remove edges.
+      // process_coincidences invalidates the caches if any nodes merge.
+      if (number_of_edges_active() != old_number_of_edges) {
+        _forest_valid          = false;
+        _standardization_order = Order::none;
       }
       process_coincidences(DoRegisterDefs(this));
     }
@@ -283,6 +296,9 @@ namespace libsemigroups::detail {
                                                    word_type const& u,
                                                    word_type const& v) {
     LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
+
+    // Paths and preferred definitions only add edges; coincidences are queued.
+    auto const old_number_of_edges = number_of_edges_active();
 
     node_type   x, y;
     letter_type a, b;
@@ -315,6 +331,10 @@ namespace libsemigroups::detail {
 
     FelschGraph_::merge_targets_of_nodes_if_possible<RegDefs>(
         x, a, y, b, incompat, pref_defs);
+    if (number_of_edges_active() != old_number_of_edges) {
+      _forest_valid          = false;
+      _standardization_order = Order::none;
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -325,7 +345,7 @@ namespace libsemigroups::detail {
     if (!_forest_valid) {
       _standardization_order = Order::none;
       _forest.init();
-      v4::word_graph::spanning_tree_no_checks(*this, initial_node(), _forest);
+      word_graph::spanning_tree_no_checks(*this, initial_node(), _forest);
       _forest_valid = true;
     }
     LIBSEMIGROUPS_ASSERT(_forest.number_of_nodes() == max_active_node() + 1);
@@ -355,9 +375,37 @@ namespace libsemigroups::detail {
     }
     _forest.init();
     _forest.add_nodes(number_of_nodes_active());
-    // NOTE: the cursor() does not survive the next line
+
+    // NOTE: the cursor() does not survive the next block of code,
     // but lookahead_cursor() should
-    bool result            = v4::word_graph::standardize(*this, _forest, val);
+
+    bool result = false;
+
+    // TODO(1): The following is basically the old implementation of
+    // stadardize(Graph& wg, Forest& f, Order val). We should make <val> a
+    // functor that can be used for comparison, and replace this switch
+    // statement with a single call to standardize.
+    switch (val) {
+      case Order::none:
+        result = false;
+        break;
+      case Order::lenlex:
+        result = word_graph::standardize(*this, _forest, LenLexCmp());
+        break;
+      case Order::lex:
+        result = word_graph::standardize(*this, _forest, LexCmp());
+        break;
+      case Order::rpo:
+        result = word_graph::standardize(*this, _forest, RPOCmp());
+        break;
+      case Order::rev_rpo:
+        result = word_graph::standardize(*this, _forest, RevRPOCmp());
+        break;
+      // Intentional fall-through
+      default:
+        result = false;
+    }
+
     _forest_valid          = true;
     _standardization_order = val;
     report_default("ToddCoxeter: the word graph was {} standardized in {}\n",
@@ -949,7 +997,7 @@ namespace libsemigroups::detail {
       if (_word_graph.definitions().any_skipped()) {
         auto const& d = current_word_graph();
         if (d.number_of_nodes_active() != lower_bound()
-            || !v4::word_graph::is_complete(
+            || !word_graph::is_complete(
                 d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
           SettingsGuard guard(this);
           lookahead_extent(options::lookahead_extent::full);
@@ -1349,7 +1397,7 @@ namespace libsemigroups::detail {
           std::back_inserter(w1), current);
       _lookbehind_collapser(std::back_inserter(w2), w1.begin(), w1.end());
       if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
-        node_type other = v4::word_graph::follow_path_no_checks(
+        node_type other = word_graph::follow_path_no_checks(
             _word_graph, _word_graph.initial_node(), w2.begin(), w2.end());
         if (other != UNDEFINED && other != current) {
           _word_graph.merge_nodes_no_checks(current, other);

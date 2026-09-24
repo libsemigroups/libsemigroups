@@ -108,7 +108,6 @@ namespace libsemigroups {
                           "034",
                           "(tropical max-plus semiring matrices)",
                           "[quick][froidure-pin][tropmaxplus]") {
-    auto rg = ReportGuard(false);
     // threshold 9, 2 x 2
     using Mat = MaxPlusTruncMat<9, 2>;
     using Row = typename Mat::Row;

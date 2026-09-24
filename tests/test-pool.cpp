@@ -30,7 +30,6 @@ namespace libsemigroups {
                             "000",
                             "initial",
                             "[quick][transformation]") {
-      auto            rg = ReportGuard(false);
       Pool<Transf<>*> cache;
       REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
       Transf<> t({0, 1, 3, 2});
@@ -45,7 +44,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Pool", "001", "bmat", "[quick][bmat]") {
-      auto          rg = ReportGuard(false);
       Pool<BMat<>*> cache;
       REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
       BMat<>* b = new BMat<>({{0, 1, 0}, {1, 1, 1}, {0, 0, 1}});
@@ -60,7 +58,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Pool", "002", "PoolGuard", "[quick][bmat]") {
-      auto          rg = ReportGuard(false);
       Pool<BMat<>*> cache;
       REQUIRE_THROWS_AS(cache.acquire(), LibsemigroupsException);
       BMat<>* b = new BMat<>({{0, 1, 0}, {1, 1, 1}, {0, 0, 1}});
@@ -83,7 +80,6 @@ namespace libsemigroups {
                             "003",
                             "transformation products",
                             "[quick][transformation]") {
-      auto            rg = ReportGuard(false);
       Pool<Transf<>*> cache;
       Transf<>        t({0, 1, 3, 2, 5, 7, 3, 4});
       cache.init(&t);

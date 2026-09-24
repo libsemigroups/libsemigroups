@@ -392,7 +392,7 @@ namespace libsemigroups {
             side LeftOrRight>
   void Action<Element, Point, Func, Traits, LeftOrRight>::
       throw_if_index_out_of_range(index_type i) const {
-    if (i > _orb.size()) {
+    if (i >= _orb.size()) {
       LIBSEMIGROUPS_EXCEPTION(
           "index out of range, expected value in [0, {}) but found {}",
           current_size(),

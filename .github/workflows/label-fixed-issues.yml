@@ -1,0 +1,57 @@
+name: Label issues after merge
+
+on:
+  pull_request_target:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  pull-requests: read
+  issues: write
+
+jobs:
+  label:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const label = "resolved-pending-release";
+            const { owner, repo } = context.repo;
+            let cursor = null;
+
+            do {
+              const result = await github.graphql(`
+                query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
+                  repository(owner: $owner, name: $repo) {
+                    pullRequest(number: $number) {
+                      closingIssuesReferences(first: 100, after: $cursor) {
+                        nodes {
+                          number
+                          repository { nameWithOwner }
+                        }
+                        pageInfo { hasNextPage endCursor }
+                      }
+                    }
+                  }
+                }
+              `, {
+                owner, repo,
+                number: context.payload.pull_request.number,
+                cursor,
+              });
+
+              const issues = result.repository.pullRequest.closingIssuesReferences;
+              for (const issue of issues.nodes) {
+                if (issue.repository.nameWithOwner !== `${owner}/${repo}`) continue;
+                await github.rest.issues.addLabels({
+                  owner, repo,
+                  issue_number: issue.number,
+                  labels: [label],
+                });
+                core.info(`Added "${label}" to #${issue.number}`);
+              }
+
+              cursor = issues.pageInfo.hasNextPage ? issues.pageInfo.endCursor : null;
+            } while (cursor);

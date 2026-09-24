@@ -125,8 +125,8 @@ namespace libsemigroups {
           LIBSEMIGROUPS_EXCEPTION("the matrix in position {} has threshold {} "
                                   "but should have threshold {}",
                                   std::distance(first, it),
-                                  t,
-                                  matrix::threshold(*it));
+                                  matrix::threshold(*it),
+                                  t);
         }
       }
     } else {

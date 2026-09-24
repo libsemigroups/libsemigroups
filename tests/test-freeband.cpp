@@ -24,7 +24,7 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/freeband.hpp"       // for freeband_equal_to
 #include "libsemigroups/types.hpp"          // for word_type
-#include "libsemigroups/word-range.hpp"     // for literals
+#include "libsemigroups/words-helpers.hpp"  // for literals
 
 namespace libsemigroups {
   using literals::operator""_w;
@@ -120,7 +120,6 @@ namespace libsemigroups {
   */
 
   LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "002", "", "[freeband][quick]") {
-    auto         rg = ReportGuard(false);
     using words::operator+;
     REQUIRE(freeband_equal_to({}, {}));
     REQUIRE(!freeband_equal_to(00_w, {}));

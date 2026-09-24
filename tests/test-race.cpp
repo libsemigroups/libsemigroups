@@ -65,7 +65,6 @@ namespace libsemigroups {
     };
 
     LIBSEMIGROUPS_TEST_CASE("Race", "000", "run_for", "[quick]") {
-      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(1);
       REQUIRE(rc.max_threads() == 1);
@@ -76,7 +75,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Race", "001", "run_until", "[quick]") {
-      auto rg = ReportGuard(false);
       Race rc;
       rc.add_runner(std::make_shared<TestRunner1>());
       size_t nr  = 0;
@@ -86,7 +84,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Race", "002", "exceptions", "[quick]") {
-      auto rg = ReportGuard(false);
       Race rc;
       REQUIRE_THROWS_AS(rc.run_for(std::chrono::milliseconds(10)),
                         LibsemigroupsException);
@@ -102,7 +99,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Race", "003", "iterators", "[quick]") {
-      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
       rc.add_runner(std::make_shared<TestRunner1>());
@@ -113,7 +109,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Race", "004", "find_runner", "[quick]") {
-      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
       rc.add_runner(std::make_shared<TestRunner1>());
@@ -123,7 +118,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Race", "005", "run_func", "[quick]") {
-      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
       rc.add_runner(std::make_shared<TestRunner1>());
@@ -133,7 +127,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Race", "006", "run_func", "[quick]") {
-      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
       TestRunner1* tr = new TestRunner1();
@@ -145,7 +138,6 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Race", "007", "run_func", "[quick]") {
-      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(4);
       rc.add_runner(std::make_shared<TestRunner1>());

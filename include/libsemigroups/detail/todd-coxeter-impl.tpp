@@ -190,7 +190,7 @@ namespace libsemigroups {
                                                 Iterator2 last) const {
       node_type c = current_word_graph().initial_node();
 
-      c = v4::word_graph::follow_path_no_checks(
+      c = word_graph::follow_path_no_checks(
           current_word_graph(), c, first, last);
       // c is in the range 1, ..., number_of_cosets_active() because 0
       // represents the identity coset, and does not correspond to an element,
@@ -306,24 +306,6 @@ namespace libsemigroups {
           first1, last1, first2, last2);
     }
 
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    bool ToddCoxeterImpl::contains(Iterator1 first1,
-                                   Iterator2 last1,
-                                   Iterator3 first2,
-                                   Iterator4 last2) {
-      // TODO(1) should be
-      // return detail::CongruenceCommon::contains<ToddCoxeterImpl>(
-      //     first1, last1, first2, last2);
-      // when is_free is implemented. Not currently so that the analogue of
-      // is_free is called.
-      internal_presentation().throw_if_letter_not_in_alphabet(first1, last1);
-      internal_presentation().throw_if_letter_not_in_alphabet(first2, last2);
-      return contains_no_checks(first1, last1, first2, last2);
-    }
-
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -351,7 +333,7 @@ namespace libsemigroups {
       auto      v_begin = u.begin();
 
       while (v_begin != u.end()) {
-        auto [t, old_end] = v4::word_graph::last_node_on_path_no_checks(
+        auto [t, old_end] = word_graph::last_node_on_path_no_checks(
             current_word_graph(), s, v_begin, u.end());
 
         if (!std::equal(std::reverse_iterator(old_end),

@@ -581,10 +581,10 @@ namespace libsemigroups {
     //! node.
     //!
     //! \returns A \c bool.
-    template <typename Thing,
-              typename std::enable_if_t<
-                  !std::is_same_v<std::decay_t<Thing>, std::string>>>
-    [[nodiscard]] bool is_node(Thing&& thing) const {
+    template <typename Thing, typename SFINAE = bool>
+    [[nodiscard]] auto is_node(Thing&& thing) const
+        -> std::enable_if_t<!std::is_same_v<std::decay_t<Thing>, std::string>,
+                            SFINAE> {
       return is_node(detail::dot_to_string(std::forward<Thing>(thing)));
     }
 
@@ -611,6 +611,29 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("there is already a node named {}!", name_str);
       }
       return it->second;
+    }
+
+    //! \brief Remove a node from the represented graph.
+    //!
+    //! This function removes a node with name obtained from \p thing by
+    //! converting it to a std::string (unless they are std::string,
+    //! std::string_view, or `char const*` already) using std::to_string.
+    //!
+    //! \tparam Thing the type of the argument.
+    //!
+    //! \param thing the object to use as the name of a node.
+    //!
+    //! \throws LibsemigroupsException if there is no node with name
+    //! `std::to_string(thing)`.
+    template <typename Thing>
+    void rm_node(Thing&& thing) {
+      auto name_str = detail::dot_to_string(std::forward<Thing>(thing));
+      auto it       = _nodes.find(name_str);
+      if (it == _nodes.end()) {
+        LIBSEMIGROUPS_EXCEPTION("there is no node named {} to remove!",
+                                name_str);
+      }
+      _nodes.erase(it);
     }
 
     //! \brief Return a node from the represented graph.

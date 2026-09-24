@@ -18,8 +18,9 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/presentation.hpp"  // for Presentation
-#include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/presentation.hpp"   // for Presentation
+#include "libsemigroups/types.hpp"          // for word_type
+#include "libsemigroups/words-helpers.hpp"  // for operator""_w
 
 #include "libsemigroups/detail/felsch-tree.hpp"  // for FelschTree
 #include "libsemigroups/detail/report.hpp"       // for ReportGuard
@@ -32,7 +33,6 @@ namespace libsemigroups {
                             "000",
                             "previously failing example",
                             "[quick][low-index]") {
-      auto                    rg = ReportGuard(false);
       Presentation<word_type> p;
       presentation::add_rule_no_checks(p, 121_w, 11_w);
       presentation::add_rule_no_checks(p, 33_w, 11_w);

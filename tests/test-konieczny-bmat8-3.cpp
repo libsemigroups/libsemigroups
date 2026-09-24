@@ -42,7 +42,6 @@ namespace libsemigroups {
                           "022",
                           "non-regular D-classes 02",
                           "[quick][bmat8][no-valgrind]") {
-    auto              rg = ReportGuard(false);
     std::vector const gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
            BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),
@@ -233,7 +232,6 @@ namespace libsemigroups {
                           "024",
                           "copy constructors",
                           "[quick][bmat8]") {
-    auto              rg = ReportGuard(false);
     std::vector const gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
            BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),
@@ -274,7 +272,6 @@ namespace libsemigroups {
                           "025",
                           "move constructors",
                           "[quick][bmat8]") {
-    auto              rg = ReportGuard(false);
     std::vector const gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
            BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),

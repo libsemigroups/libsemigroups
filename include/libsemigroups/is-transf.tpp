@@ -23,41 +23,6 @@
 namespace libsemigroups {
 
   namespace detail {
-    template <typename Iterator>
-    std::pair<Iterator, size_t> find_duplicates(
-        Iterator                                                    first,
-        Iterator                                                    last,
-        std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen) {
-      seen.clear();
-      for (auto it = first; it != last; ++it) {
-        if (*it != UNDEFINED) {
-          auto [prev_it, inserted] = seen.emplace(*it, seen.size());
-          if (!inserted) {
-            return std::pair(it, prev_it->second);
-          }
-        }
-      }
-      return std::pair(last, seen.size());
-    }
-
-    template <typename Iterator>
-    void throw_if_duplicates(
-        Iterator                                                    first,
-        Iterator                                                    last,
-        std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen,
-        std::string_view                                            where) {
-      auto [it, pos] = find_duplicates(first, last, seen);
-      if (it != last) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "duplicate {} value, found {} in position {}, first "
-            "occurrence in position {}",
-            where,
-            to_printable(*it),
-            std::distance(first, it),
-            pos);
-      }
-    }
-
     template <typename Point>
     size_t max_degree() {
       // There are std::numeric_limits<Point>::max() + 1 unique values of type
@@ -88,17 +53,17 @@ namespace libsemigroups {
     template <typename Iterator, typename Func>
     void throw_if_value_out_of_range(Iterator         first,
                                      Iterator         last,
+                                     size_t           upper_bound,
                                      Func&&           func,
                                      std::string_view where) {
       static_assert(std::is_unsigned_v<
                     std::decay_t<decltype(*std::declval<Iterator>())>>);
-      auto const M  = std::distance(first, last);
       auto const it = std::find_if(first, last, std::forward<Func>(func));
       if (it != last) {
         LIBSEMIGROUPS_EXCEPTION("{} value out of bounds, expected value in "
                                 "[0, {}), found {} in position {}",
                                 where,
-                                M,
+                                upper_bound,
                                 *it,
                                 std::distance(first, it));
       }
@@ -112,6 +77,7 @@ namespace libsemigroups {
       throw_if_value_out_of_range(
           first,
           last,
+          deg,
           [&deg](auto val) { return val >= deg && val != UNDEFINED; },
           std::string_view("image"));
     }
@@ -146,15 +112,17 @@ namespace libsemigroups {
       throw_if_value_out_of_range(
           dom_first,
           dom_last,
+          deg,
           [&deg](auto val) { return val >= deg && val != UNDEFINED; },
           "domain");
       throw_if_value_out_of_range(
           img_first,
           img_last,
+          deg,
           [&deg](auto val) { return val >= deg && val != UNDEFINED; },
-          "domain");
+          "image");
 
-      throw_if_duplicates(dom_first, dom_last, "domain");
+      throw_if_duplicates(dom_first, dom_last, "domain value");
 
       auto it = std::find(dom_first, dom_last, UNDEFINED);
       if (it != dom_last) {
@@ -182,6 +150,7 @@ namespace libsemigroups {
       throw_if_value_out_of_range(
           first,
           last,
+          deg,
           [&deg](auto val) { return val >= deg; },
           std::string_view("image"));
     }

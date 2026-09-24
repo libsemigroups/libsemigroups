@@ -43,12 +43,15 @@
 #include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
 #include "libsemigroups/word-range.hpp"             // for Inner, StringRange...
+#include "libsemigroups/words-helpers.hpp"          // for literals
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for apply_permutation
 #include "libsemigroups/detail/string.hpp"  // for random_string, operator<<
 
 namespace libsemigroups {
+  using std::literals::operator""s;
+
   using literals::operator""_w;
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
@@ -57,10 +60,14 @@ namespace libsemigroups {
 
   using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
-  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
-  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
 
-#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
+  using RPOTrie = detail::RewritingSystemTrie<RPOCmp>;
+  using RPOSet  = detail::RewritingSystemSet<RPOCmp>;
+
+  using RevRPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RevRPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
+
+#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RevRPOTrie, RevRPOSet
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "065",
@@ -68,13 +75,14 @@ namespace libsemigroups {
                                    "[knuth-bendix][standard]",
                                    REWRITING_SYSTEM_TYPES) {
     using namespace literals;
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
-    using words::operator+;
-    WordRange    words;
-    words.alphabet_size(2).min(0).max(6);
+    using words:: operator+;
+    v4::WordRange words;
+    words.order(LenLexCmp(Alphabet<word_type>(2)))
+        .first({})
+        .last(word_type(6, 0));
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {
       for (size_t b = a; b < n - 1; ++b) {
@@ -106,24 +114,22 @@ namespace libsemigroups {
   }
 
   // Takes approx. 2s
-  // RPOTrie + RPOSet return different numbers of rules at the end.
+  // RevRPOTrie + RevRPOSet return different numbers of rules at the end.
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "100",
                                    "Sims Ex. 6.6 (limited overlap lengths)",
                                    "[standard][knuth-bendix]",
-                                   RPOTrie,
+                                   RevRPOTrie,
                                    LenLexTrie) {
-    auto rg = ReportGuard(false);
-
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("abc");
+    p.alphabet("abc"s);
 
-    presentation::add_rule(p, "aa", "");
-    presentation::add_rule(p, "bc", "");
-    presentation::add_rule(p, "bbb", "");
-    presentation::add_rule(p, "ababababababab", "");
-    presentation::add_rule(p, "abacabacabacabacabacabacabacabac", "");
+    presentation::add_rule(p, "aa"s, ""s);
+    presentation::add_rule(p, "bc"s, ""s);
+    presentation::add_rule(p, "bbb"s, ""s);
+    presentation::add_rule(p, "ababababababab"s, ""s);
+    presentation::add_rule(p, "abacabacabacabacabacabacabacabac"s, ""s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(kb.overlap_policy() == decltype(kb)::options::overlap::ABC);
@@ -143,29 +149,28 @@ namespace libsemigroups {
     }
   }
 
-  // Takes approx. 2s, is very slow with RPO
+  // Takes approx. 2s, is very slow with RevRPO
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "101",
                                    "kbmag/standalone/kb_data/funny3",
                                    "[standard][knuth-bendix][kbmag]",
                                    LenLexSet,
                                    LenLexTrie) {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("aAbBcC");
+    p.alphabet("aAbBcC"s);
 
-    presentation::add_inverse_rules(p, "AaBbCc");
+    presentation::add_inverse_rules(p, "AaBbCc"s);
 
-    presentation::add_rule(p, "aaa", "");
-    presentation::add_rule(p, "bbb", "");
-    presentation::add_rule(p, "ccc", "");
-    presentation::add_rule(p, "ABa", "BaB");
-    presentation::add_rule(p, "bcB", "cBc");
-    presentation::add_rule(p, "caC", "aCa");
-    presentation::add_rule(p, "abcABCabcABCabcABC", "");
-    presentation::add_rule(p, "BcabCABcabCABcabCA", "");
-    presentation::add_rule(p, "cbACBacbACBacbACBa", "");
+    presentation::add_rule(p, "aaa"s, ""s);
+    presentation::add_rule(p, "bbb"s, ""s);
+    presentation::add_rule(p, "ccc"s, ""s);
+    presentation::add_rule(p, "ABa"s, "BaB"s);
+    presentation::add_rule(p, "bcB"s, "cBc"s);
+    presentation::add_rule(p, "caC"s, "aCa"s);
+    presentation::add_rule(p, "abcABCabcABCabcABC"s, ""s);
+    presentation::add_rule(p, "BcabCABcabCABcabCA"s, ""s);
+    presentation::add_rule(p, "cbACBacbACBacbACBa"s, ""s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -188,42 +193,40 @@ namespace libsemigroups {
                                    "kbmag/standalone/kb_data/e8",
                                    "[standard][knuth-bendix][kbmag]",
                                    LenLexTrie,
-                                   RPOTrie) {
-    auto rg = ReportGuard(false);
-
+                                   RevRPOTrie) {
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("abcdefgh");
+    p.alphabet("abcdefgh"s);
 
-    presentation::add_inverse_rules(p, "abcdefgh");
-    presentation::add_rule(p, "bab", "aba");
-    presentation::add_rule(p, "ca", "ac");
-    presentation::add_rule(p, "da", "ad");
-    presentation::add_rule(p, "ea", "ae");
-    presentation::add_rule(p, "fa", "af");
-    presentation::add_rule(p, "ga", "ag");
-    presentation::add_rule(p, "ha", "ah");
-    presentation::add_rule(p, "cbc", "bcb");
-    presentation::add_rule(p, "db", "bd");
-    presentation::add_rule(p, "eb", "be");
-    presentation::add_rule(p, "fb", "bf");
-    presentation::add_rule(p, "gb", "bg");
-    presentation::add_rule(p, "hb", "bh");
-    presentation::add_rule(p, "dcd", "cdc");
-    presentation::add_rule(p, "ece", "cec");
-    presentation::add_rule(p, "fc", "cf");
-    presentation::add_rule(p, "gc", "cg");
-    presentation::add_rule(p, "hc", "ch");
-    presentation::add_rule(p, "ed", "de");
-    presentation::add_rule(p, "fd", "df");
-    presentation::add_rule(p, "gd", "dg");
-    presentation::add_rule(p, "hd", "dh");
-    presentation::add_rule(p, "fef", "efe");
-    presentation::add_rule(p, "ge", "eg");
-    presentation::add_rule(p, "he", "eh");
-    presentation::add_rule(p, "gfg", "fgf");
-    presentation::add_rule(p, "hf", "fh");
-    presentation::add_rule(p, "hgh", "ghg");
+    presentation::add_inverse_rules(p, "abcdefgh"s);
+    presentation::add_rule(p, "bab"s, "aba"s);
+    presentation::add_rule(p, "ca"s, "ac"s);
+    presentation::add_rule(p, "da"s, "ad"s);
+    presentation::add_rule(p, "ea"s, "ae"s);
+    presentation::add_rule(p, "fa"s, "af"s);
+    presentation::add_rule(p, "ga"s, "ag"s);
+    presentation::add_rule(p, "ha"s, "ah"s);
+    presentation::add_rule(p, "cbc"s, "bcb"s);
+    presentation::add_rule(p, "db"s, "bd"s);
+    presentation::add_rule(p, "eb"s, "be"s);
+    presentation::add_rule(p, "fb"s, "bf"s);
+    presentation::add_rule(p, "gb"s, "bg"s);
+    presentation::add_rule(p, "hb"s, "bh"s);
+    presentation::add_rule(p, "dcd"s, "cdc"s);
+    presentation::add_rule(p, "ece"s, "cec"s);
+    presentation::add_rule(p, "fc"s, "cf"s);
+    presentation::add_rule(p, "gc"s, "cg"s);
+    presentation::add_rule(p, "hc"s, "ch"s);
+    presentation::add_rule(p, "ed"s, "de"s);
+    presentation::add_rule(p, "fd"s, "df"s);
+    presentation::add_rule(p, "gd"s, "dg"s);
+    presentation::add_rule(p, "hd"s, "dh"s);
+    presentation::add_rule(p, "fef"s, "efe"s);
+    presentation::add_rule(p, "ge"s, "eg"s);
+    presentation::add_rule(p, "he"s, "eh"s);
+    presentation::add_rule(p, "gfg"s, "fgf"s);
+    presentation::add_rule(p, "hf"s, "fh"s);
+    presentation::add_rule(p, "hgh"s, "ghg"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -238,15 +241,13 @@ namespace libsemigroups {
                                    "full_transformation_monoid Iwahori",
                                    "[standard][knuth-bendix]",
                                    LenLexTrie,
-                                   RPOTrie) {
-    auto rg = ReportGuard(false);
-
+                                   RevRPOTrie) {
     size_t n = 5;
     auto   p = presentation::examples::full_transformation_monoid_II74(n);
     KnuthBendix<word_type, TestType> kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
-    if constexpr (std::is_same_v<TestType, RPOTrie>) {
+    if constexpr (std::is_same_v<TestType, RevRPOTrie>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 230);
     } else {
       REQUIRE(kb.rewriting_system().number_of_rules() == 1'162);
@@ -260,10 +261,9 @@ namespace libsemigroups {
                           "[knuth-bendix][standard][tietze-explorer]") {
     using namespace knuth_bendix;
     fmt::print("\n");
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.rules = {"bababbbabba", "a"};
 
     KnuthBendix kb(congruence_kind::twosided, p);
@@ -313,13 +313,12 @@ namespace libsemigroups {
                                    "150",
                                    "baabbbaba=a",
                                    "[standard][tietze-explorer]",
-                                   RPOTrie) {
-    auto rg = ReportGuard(false);
+                                   RevRPOTrie) {
     fmt::print("\n");
     Presentation<std::string> p;
-    p.alphabet("ab");
+    p.alphabet("ab"s);
     p.contains_empty_word(true);
-    presentation::add_rule(p, "baabbbaba", "a");
+    presentation::add_rule(p, "baabbbaba"s, "a"s);
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     knuth_bendix::TietzeExplorer       dora(kb);
@@ -354,8 +353,6 @@ namespace libsemigroups {
                           "TietzeExplorer::run_for",
                           "[standard][tietze-explorer]") {
     using literals::operator""_w;
-
-    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(2);

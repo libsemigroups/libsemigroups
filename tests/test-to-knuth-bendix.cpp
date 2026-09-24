@@ -28,12 +28,13 @@
 #include "libsemigroups/todd-coxeter-class.hpp"  // for ToddCoxeter
 #include "libsemigroups/transf.hpp"              // for Transf
 #include "libsemigroups/types.hpp"               // for word_type
-#include "libsemigroups/word-range.hpp"
+#include "libsemigroups/words-helpers.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"            // for ReportGuard
 #include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemSet, Rewri...
 
 namespace libsemigroups {
+  using std::literals::operator""s;
 
   using literals::operator""_w;
 
@@ -56,7 +57,6 @@ namespace libsemigroups {
                                    RewritingSystemSet_word,
                                    RewritingSystemTrie_string,
                                    RewritingSystemTrie_word) {
-    auto rg               = ReportGuard(false);
     using RewritingSystem = typename TestType::first_type;
     using Word            = typename TestType::second_type;
 
@@ -75,15 +75,13 @@ namespace libsemigroups {
                                    "[quick][to_knuth_bendix]",
                                    std::string,
                                    word_type) {
-    auto rg = ReportGuard(false);
-
     Presentation<TestType> p;
     if constexpr (std::is_same_v<TestType, std::string>) {
-      p.alphabet("abB");
-      presentation::add_rule_no_checks(p, "bb", "B");
-      presentation::add_rule_no_checks(p, "BaB", "aba");
-      presentation::add_rule_no_checks(p, "a", "b");
-      presentation::add_rule_no_checks(p, "b", "B");
+      p.alphabet("abB"s);
+      presentation::add_rule_no_checks(p, "bb"s, "B"s);
+      presentation::add_rule_no_checks(p, "BaB"s, "aba"s);
+      presentation::add_rule_no_checks(p, "a"s, "b"s);
+      presentation::add_rule_no_checks(p, "b"s, "B"s);
     } else if constexpr (std::is_same_v<TestType, word_type>) {
       p.alphabet(012_w);
       presentation::add_rule_no_checks(p, 11_w, 2_w);
@@ -119,17 +117,16 @@ namespace libsemigroups {
                                    RewritingSystemSet_word,
                                    RewritingSystemTrie_string,
                                    RewritingSystemTrie_word) {
-    auto rg               = ReportGuard(false);
     using RewritingSystem = typename TestType::first_type;
     using Word            = typename TestType::second_type;
 
     Presentation<Word> p;
     if constexpr (std::is_same_v<Word, std::string>) {
-      p.alphabet("abB");
-      presentation::add_rule_no_checks(p, "bb", "B");
-      presentation::add_rule_no_checks(p, "BaB", "aba");
-      presentation::add_rule_no_checks(p, "a", "b");
-      presentation::add_rule_no_checks(p, "b", "B");
+      p.alphabet("abB"s);
+      presentation::add_rule_no_checks(p, "bb"s, "B"s);
+      presentation::add_rule_no_checks(p, "BaB"s, "aba"s);
+      presentation::add_rule_no_checks(p, "a"s, "b"s);
+      presentation::add_rule_no_checks(p, "b"s, "B"s);
     } else if constexpr (std::is_same_v<Word, word_type>) {
       p.alphabet(012_w);
       presentation::add_rule_no_checks(p, 11_w, 2_w);

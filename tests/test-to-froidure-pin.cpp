@@ -34,10 +34,12 @@
 #include "libsemigroups/transf.hpp"              // for Transf
 #include "libsemigroups/types.hpp"               // for congruence_kind
 #include "libsemigroups/word-graph.hpp"          // for WordGraph
+#include "libsemigroups/words-helpers.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using std::literals::operator""s;
 
   using RewritingSystemTrie = detail::RewritingSystemTrie<LenLexCmp>;
   using RewritingSystemSet  = detail::RewritingSystemSet<LenLexCmp>;
@@ -50,8 +52,7 @@ namespace libsemigroups {
                           "000",
                           "from WordGraph",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-    auto wg = v4::make<WordGraph<uint8_t>>(
+    auto wg = make<WordGraph<uint8_t>>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
     auto T = to<FroidurePin<Transf<5>>>(wg);
@@ -68,8 +69,7 @@ namespace libsemigroups {
                           "001",
                           "from WordGraph (exceptions)",
                           "[quick]") {
-    auto rg = ReportGuard(false);
-    auto wg = v4::make<WordGraph<uint8_t>>(
+    auto wg = make<WordGraph<uint8_t>>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
     REQUIRE_THROWS_AS((to<FroidurePin<Transf<0, uint8_t>>>(wg, 10, 0)),
@@ -145,11 +145,10 @@ namespace libsemigroups {
                           "002",
                           "from Kambites (code cov)",
                           "[quick][no-valgrind]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abcdefg");
-    presentation::add_rule(p, "abcd", "aaaeaa");
-    presentation::add_rule(p, "ef", "dg");
+    p.alphabet("abcdefg"s);
+    presentation::add_rule(p, "abcd"s, "aaaeaa"s);
+    presentation::add_rule(p, "ef"s, "dg"s);
     check_from_ke(p);
     check_from_ke<std::string, detail::MultiView<std::string>>(p);
     check_from_ke<word_type>(v4::to<Presentation<word_type>>(p));
@@ -159,10 +158,9 @@ namespace libsemigroups {
                           "003",
                           "from Kambites (exceptions)",
                           "[quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
-    presentation::add_rule(p, "bababa", "aba");
+    p.alphabet("ab"s);
+    presentation::add_rule(p, "bababa"s, "aba"s);
     REQUIRE_THROWS_AS(check_from_ke(p), LibsemigroupsException);
     REQUIRE_THROWS_AS(
         (check_from_ke<std::string, detail::MultiView<std::string>>(p)),
@@ -176,7 +174,6 @@ namespace libsemigroups {
                           "004",
                           "from KnuthBendix",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 0}));
     S.add_generator(make<Transf<>>({0, 0}));
@@ -192,7 +189,6 @@ namespace libsemigroups {
                           "from Todd-Coxeter",
                           "[quick][no-valgrind]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(4);
@@ -231,14 +227,13 @@ namespace libsemigroups {
                           "006",
                           "from Congruence",
                           "[quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("abBe");
+    p.alphabet("abBe"s);
     presentation::add_identity_rules(p, 'e');
-    presentation::add_rule(p, "aa", "e");
-    presentation::add_rule(p, "BB", "b");
-    presentation::add_rule(p, "BaBaBaB", "abababa");
-    presentation::add_rule(p, "aBabaBabaBabaBab", "BabaBabaBabaBaba");
+    presentation::add_rule(p, "aa"s, "e"s);
+    presentation::add_rule(p, "BB"s, "b"s);
+    presentation::add_rule(p, "BaBaBaB"s, "abababa"s);
+    presentation::add_rule(p, "aBabaBabaBabaBab"s, "BabaBabaBabaBaba"s);
 
     Congruence cong(twosided, p);
     congruence::add_generating_pair(cong, "a", "b");
@@ -253,7 +248,6 @@ namespace libsemigroups {
                                    "[quick]",
                                    REWRITER_TYPES) {
     using literals::        operator""_w;
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
@@ -276,7 +270,6 @@ namespace libsemigroups {
                           "008",
                           "from ToddCoxeter",
                           "[quick][no-valgrind]") {
-    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
@@ -314,19 +307,17 @@ namespace libsemigroups {
                           "009",
                           "from default constructed Kambites",
                           "[quick]") {
-    auto                  rg = ReportGuard(false);
     Kambites<std::string> k;
     auto                  fp = to<FroidurePin>(k);
     REQUIRE(fp.size() == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>", "010", "exceptions", "[quick]") {
-    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet("ab");
-    presentation::add_rule(p, "aaaaaa", "aaa");
-    presentation::add_rule(p, "bbbbbbbb", "bb");
-    presentation::add_rule(p, "ab", "ba");
+    p.alphabet("ab"s);
+    presentation::add_rule(p, "aaaaaa"s, "aaa"s);
+    presentation::add_rule(p, "bbbbbbbb"s, "bb"s);
+    presentation::add_rule(p, "ab"s, "ba"s);
     KnuthBendix kb(congruence_kind::twosided, p);
     auto        S = to<FroidurePin>(kb);
 
@@ -338,7 +329,6 @@ namespace libsemigroups {
                           "011",
                           "from ToddCoxeter",
                           "[quick]") {
-    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);

@@ -69,8 +69,6 @@ namespace libsemigroups {
       "JDM favourite",
       "[standard][froidure-pin][transformation][transf]",
       TRANSF_TYPES) {
-    auto rg = ReportGuard(false);
-
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>({1, 7, 2, 6, 0, 4, 1, 5}));
     S.add_generator(make<TestType>({2, 4, 6, 1, 4, 5, 2, 7}));
@@ -122,7 +120,6 @@ namespace libsemigroups {
       "[quick][froidure-pin][transformation][transf]",
       Transf<>,
       Transf<8>) {
-    auto rg = ReportGuard(false);
     REQUIRE_NOTHROW(make<FroidurePin>(std::vector<TestType>()));
   }
 
@@ -133,7 +130,6 @@ namespace libsemigroups {
       "[quick][froidure-pin][transformation][transf]",
       Transf<>,
       Transf<9>) {
-    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>({2, 4, 6, 1, 4, 5, 2, 7, 3}));
     // For dynamic Transf exception is thrown by FroidurePin because degree
@@ -147,12 +143,11 @@ namespace libsemigroups {
                           "045",
                           "exception current_position",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto U  = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({1, 0, 2, 3, 4, 5}),
-                                 make<Transf<>>({4, 0, 1, 2, 3, 5}),
-                                 make<Transf<>>({5, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({1, 1, 2, 3, 4, 5})});
+    auto U = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({1, 0, 2, 3, 4, 5}),
+                                make<Transf<>>({4, 0, 1, 2, 3, 5}),
+                                make<Transf<>>({5, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({1, 1, 2, 3, 4, 5})});
 
     REQUIRE(froidure_pin::current_position(U, {}) == 0);
     REQUIRE_NOTHROW(froidure_pin::current_position(U, {0, 0, 1, 2}));
@@ -164,12 +159,11 @@ namespace libsemigroups {
                           "046",
                           "exception to_element",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto U  = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({1, 0, 2, 3, 4, 5}),
-                                 make<Transf<>>({4, 0, 1, 2, 3, 5}),
-                                 make<Transf<>>({5, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({1, 1, 2, 3, 4, 5})});
+    auto U = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({1, 0, 2, 3, 4, 5}),
+                                make<Transf<>>({4, 0, 1, 2, 3, 5}),
+                                make<Transf<>>({5, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({1, 1, 2, 3, 4, 5})});
 
     REQUIRE(froidure_pin::to_element(U, {}) == U.generator(0));
     REQUIRE_THROWS_AS(froidure_pin::to_element(U, {5}), LibsemigroupsException);
@@ -186,7 +180,6 @@ namespace libsemigroups {
                           "047",
                           "exception gens",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
     for (size_t i = 1; i < 20; ++i) {
       std::vector<Transf<>> gens;
       using point_type = typename Transf<>::point_type;
@@ -211,10 +204,9 @@ namespace libsemigroups {
                           "048",
                           "exception prefix",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto U  = make<FroidurePin>({make<Transf<>>({1, 0, 2, 3, 4, 5}),
-                                 make<Transf<>>({4, 0, 1, 2, 3, 5}),
-                                 make<Transf<>>({1, 1, 2, 3, 4, 5})});
+    auto U = make<FroidurePin>({make<Transf<>>({1, 0, 2, 3, 4, 5}),
+                                make<Transf<>>({4, 0, 1, 2, 3, 5}),
+                                make<Transf<>>({1, 1, 2, 3, 4, 5})});
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.prefix(i));
@@ -226,12 +218,11 @@ namespace libsemigroups {
                           "049",
                           "exception suffix",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto U  = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({1, 0, 2, 3, 4, 5}),
-                                 make<Transf<>>({4, 0, 1, 2, 3, 5}),
-                                 make<Transf<>>({5, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({1, 1, 2, 3, 4, 5})});
+    auto U = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({1, 0, 2, 3, 4, 5}),
+                                make<Transf<>>({4, 0, 1, 2, 3, 5}),
+                                make<Transf<>>({5, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({1, 1, 2, 3, 4, 5})});
     REQUIRE(U.size() == 7'776);
 
     for (size_t i = 0; i < U.size(); ++i) {
@@ -244,10 +235,9 @@ namespace libsemigroups {
                           "050",
                           "exception first_letter",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto U  = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({5, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({1, 1, 2, 3, 4, 5})});
+    auto U = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({5, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({1, 1, 2, 3, 4, 5})});
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.first_letter(i));
@@ -259,10 +249,9 @@ namespace libsemigroups {
                           "051",
                           "exception final_letter",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto U  = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({5, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({1, 1, 2, 3, 4, 5})});
+    auto U = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({5, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({1, 1, 2, 3, 4, 5})});
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.final_letter(i));
@@ -274,10 +263,9 @@ namespace libsemigroups {
                           "052",
                           "exception current_length",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto U  = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({5, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({1, 1, 2, 3, 4, 5})});
+    auto U = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({5, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({1, 1, 2, 3, 4, 5})});
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.current_length(i));
@@ -289,8 +277,7 @@ namespace libsemigroups {
                           "053",
                           "exception product_by_reduction",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto U  = make<FroidurePin>(
+    auto U = make<FroidurePin>(
         {make<Transf<>>({0, 1, 2, 3}), make<Transf<>>({3, 1, 1, 2})});
 
     for (size_t i = 0; i < U.size(); ++i) {
@@ -313,8 +300,7 @@ namespace libsemigroups {
                           "054",
                           "exception fast_product",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto U  = make<FroidurePin>(
+    auto U = make<FroidurePin>(
         {make<Transf<>>({0, 1, 2, 3}), make<Transf<>>({3, 1, 1, 2})});
 
     for (size_t i = 0; i < U.size(); ++i) {
@@ -334,7 +320,6 @@ namespace libsemigroups {
                           "055",
                           "exception current_position",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
     for (size_t i = 1; i < 20; ++i) {
       std::vector<Transf<>> gens;
       using point_type = typename Transf<>::point_type;
@@ -359,11 +344,10 @@ namespace libsemigroups {
                           "056",
                           "exception is_idempotent",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
-                                 make<Transf<>>({5, 1, 3, 3, 2, 5}),
-                                 make<Transf<>>({2, 1, 2, 3, 4, 4}),
-                                 make<Transf<>>({5, 5, 2, 1, 1, 2})});
+    auto S = make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
+                                make<Transf<>>({5, 1, 3, 3, 2, 5}),
+                                make<Transf<>>({2, 1, 2, 3, 4, 4}),
+                                make<Transf<>>({5, 5, 2, 1, 1, 2})});
 
     // S has size 441
     for (size_t i = 0; i < 441; ++i) {
@@ -378,9 +362,8 @@ namespace libsemigroups {
                           "057",
                           "exception add_generators",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto rg = ReportGuard(false);
-    auto T  = make<FroidurePin>({make<Transf<>>({1, 7, 2, 6, 0, 0, 1, 2}),
-                                 make<Transf<>>({2, 4, 6, 1, 4, 5, 2, 7})});
+    auto T = make<FroidurePin>({make<Transf<>>({1, 7, 2, 6, 0, 0, 1, 2}),
+                                make<Transf<>>({2, 4, 6, 1, 4, 5, 2, 7})});
 
     REQUIRE_NOTHROW(froidure_pin::add_generators(
         T,
@@ -398,7 +381,6 @@ namespace libsemigroups {
                           "058",
                           "number_of_idempotents",
                           "[quick][froidure-pin][transformation][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S
         = make<FroidurePin>({make<Transf<>>({1, 7, 2, 6, 0, 0, 1, 2}),
                              make<Transf<>>({2, 4, 6, 1, 4, 5, 2, 7})});
@@ -409,7 +391,6 @@ namespace libsemigroups {
                           "059",
                           "small semigroup",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 0}));
     S.add_generator(make<Transf<>>({0, 1, 2}));
@@ -437,8 +418,6 @@ namespace libsemigroups {
                           "060",
                           "large semigroup",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto rg = ReportGuard(false);
-
     FroidurePin<Transf<>> S;
 
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
@@ -458,8 +437,6 @@ namespace libsemigroups {
                           "061",
                           "at, position, current_*",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto rg = ReportGuard(false);
-
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -501,7 +478,6 @@ namespace libsemigroups {
                           "062",
                           "run",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -537,8 +513,6 @@ namespace libsemigroups {
                           "063",
                           "run [many stops and starts]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto rg = ReportGuard(false);
-
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -563,7 +537,6 @@ namespace libsemigroups {
                           "064",
                           "factorisation, length [1 element]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -593,7 +566,6 @@ namespace libsemigroups {
                           "065",
                           "factorisation, products [all elements]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -615,7 +587,6 @@ namespace libsemigroups {
                           "066",
                           "first/final letter, prefix, suffix, products",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -713,7 +684,6 @@ namespace libsemigroups {
                           "067",
                           "current_position [standard]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -732,7 +702,6 @@ namespace libsemigroups {
                           "068",
                           "current_position [duplicate gens]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -786,7 +755,6 @@ namespace libsemigroups {
                           "069",
                           "current_position [after add_generators]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
 
@@ -835,7 +803,6 @@ namespace libsemigroups {
                           "070",
                           "cbegin_idempotents/cend",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -855,7 +822,6 @@ namespace libsemigroups {
                           "071",
                           "idempotent_cend/cbegin",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -876,7 +842,6 @@ namespace libsemigroups {
                           "072",
                           "is_idempotent",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -897,7 +862,6 @@ namespace libsemigroups {
                           "073",
                           "cbegin_idempotents/cend, is_idempotent",
                           "[standard][froidure-pin][transf][multithread]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 2, 3, 4, 5, 6, 0}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5, 6}));
@@ -925,7 +889,6 @@ namespace libsemigroups {
                           "074",
                           "finished, started",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -950,7 +913,6 @@ namespace libsemigroups {
                           "075",
                           "current_position",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -995,7 +957,6 @@ namespace libsemigroups {
                           "076",
                           "sorted_position, sorted_at",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1050,7 +1011,6 @@ namespace libsemigroups {
                           "077",
                           "right/left Cayley graph",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1079,7 +1039,6 @@ namespace libsemigroups {
                           "078",
                           "iterator",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1139,7 +1098,6 @@ namespace libsemigroups {
                           "079",
                           "reverse iterator",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1207,7 +1165,6 @@ namespace libsemigroups {
                           "080",
                           "iterator arithmetic",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1260,7 +1217,6 @@ namespace libsemigroups {
                           "081",
                           "iterator sorted",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1311,7 +1267,6 @@ namespace libsemigroups {
                           "082",
                           "iterator sorted arithmetic",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1364,7 +1319,6 @@ namespace libsemigroups {
                           "083",
                           "copy [not enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1405,7 +1359,6 @@ namespace libsemigroups {
                           "084",
                           "copy_closure [not enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1467,7 +1420,6 @@ namespace libsemigroups {
                           "085",
                           "copy_add_generators [not enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1528,7 +1480,6 @@ namespace libsemigroups {
                           "086",
                           "copy [partly enum.]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1569,7 +1520,6 @@ namespace libsemigroups {
                           "087",
                           "copy_closure [partly enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1609,7 +1559,6 @@ namespace libsemigroups {
                           "088",
                           "copy_add_generators [partly enum.]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1650,7 +1599,6 @@ namespace libsemigroups {
                           "089",
                           "copy [fully enum.]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1680,7 +1628,6 @@ namespace libsemigroups {
                           "090",
                           "copy_closure [fully enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1721,7 +1668,6 @@ namespace libsemigroups {
                           "091",
                           "copy_add_generators [fully enum.]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1761,7 +1707,6 @@ namespace libsemigroups {
                           "092",
                           "rules [duplicate gens]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
@@ -1791,7 +1736,6 @@ namespace libsemigroups {
                           "093",
                           "rules",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1830,7 +1774,6 @@ namespace libsemigroups {
                           "094",
                           "rules [copy_closure, duplicate gens]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
@@ -1865,7 +1808,6 @@ namespace libsemigroups {
                           "095",
                           "rules [copy_add_generators, duplicate gens]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
@@ -1900,7 +1842,6 @@ namespace libsemigroups {
                           "096",
                           "rules [from copy, not enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1923,7 +1864,6 @@ namespace libsemigroups {
                           "097",
                           "rules [from copy, partly enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1950,7 +1890,6 @@ namespace libsemigroups {
                           "098",
                           "rules [from copy, fully enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -1978,7 +1917,6 @@ namespace libsemigroups {
                           "099",
                           "rules [from copy_closure, not enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2008,7 +1946,6 @@ namespace libsemigroups {
                           "100",
                           "rules [from copy_add_generators, not enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2033,7 +1970,6 @@ namespace libsemigroups {
                           "101",
                           "rules [from copy_closure, partly enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2056,7 +1992,6 @@ namespace libsemigroups {
                           "102",
                           "rules [from copy_add_generators, partly enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2083,7 +2018,6 @@ namespace libsemigroups {
                           "103",
                           "rules [from copy_closure, fully enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2108,7 +2042,6 @@ namespace libsemigroups {
                           "104",
                           "rules [from copy_add_generators, fully enum.]",
                           "[quick][froidure-pin][transf][no-valgrind]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2133,7 +2066,6 @@ namespace libsemigroups {
                           "105",
                           "add_generators [duplicate generators]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 0, 3, 4, 5}));
     S.add_generator(make<Transf<>>({0, 1, 0, 3, 4, 5}));
@@ -2197,7 +2129,6 @@ namespace libsemigroups {
                           "106",
                           "add_generators [incremental 1]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
 
     froidure_pin::add_generators(S, {});
@@ -2229,7 +2160,6 @@ namespace libsemigroups {
                           "107",
                           "add_generators [incremental 2]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> T;
     T.add_generator(make<Transf<>>({0, 1, 0, 3, 4, 5}));
     T.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
@@ -2278,7 +2208,6 @@ namespace libsemigroups {
                           "108",
                           "closure [duplicate generators]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 0, 3, 4, 5}));
     S.add_generator(make<Transf<>>({0, 1, 0, 3, 4, 5}));
@@ -2323,7 +2252,6 @@ namespace libsemigroups {
                           "109",
                           "closure ",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     std::vector gens = {make<Transf<>>({0, 0, 0}), make<Transf<>>({0, 0, 1}),
                         make<Transf<>>({0, 0, 2}), make<Transf<>>({0, 1, 0}),
@@ -2351,7 +2279,6 @@ namespace libsemigroups {
                           "110",
                           "factorisation ",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 1, 4, 5, 4, 5}));
     S.add_generator(make<Transf<>>({2, 3, 2, 3, 5, 5}));
@@ -2363,7 +2290,6 @@ namespace libsemigroups {
                           "111",
                           "my favourite example with reserve",
                           "[standard][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 7, 2, 6, 0, 4, 1, 5}));
     S.add_generator(make<Transf<>>({2, 4, 6, 1, 4, 5, 2, 7}));
@@ -2382,7 +2308,6 @@ namespace libsemigroups {
                           "112",
                           "minimal_factorisation ",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 1, 4, 5, 4, 5}));
 
@@ -2403,7 +2328,6 @@ namespace libsemigroups {
                           "113",
                           "batch_size (for an extremely large value)",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 1, 4, 5, 4, 5}));
     S.add_generator(make<Transf<>>({2, 3, 2, 3, 5, 5}));
@@ -2418,7 +2342,6 @@ namespace libsemigroups {
                           "114",
                           "my favourite example without reserve",
                           "[standard][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 7, 2, 6, 0, 4, 1, 5}));
     S.add_generator(make<Transf<>>({2, 4, 6, 1, 4, 5, 2, 7}));
@@ -2436,7 +2359,6 @@ namespace libsemigroups {
                           "115",
                           "exception: generators of different degrees",
                           "[quick][froidure-pin][transf]") {
-    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(
         make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
                            make<Transf<>>({0, 1, 2, 3, 4, 5, 5})}),
@@ -2447,7 +2369,6 @@ namespace libsemigroups {
                           "116",
                           "exception: current_position",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> U;
     U.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     U.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2465,7 +2386,6 @@ namespace libsemigroups {
                           "117",
                           "exception: to_element",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> U;
     U.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     U.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2485,7 +2405,6 @@ namespace libsemigroups {
                           "118",
                           "exception: gens, current_position",
                           "[quick][froidure-pin][transf]") {
-    auto rg          = ReportGuard(false);
     using point_type = typename Transf<>::point_type;
     for (size_t i = 1; i < 20; ++i) {
       std::vector<Transf<>> gens;
@@ -2511,7 +2430,6 @@ namespace libsemigroups {
                           "119",
                           "exception: add_generators",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 2, 3, 2, 2, 3}));
@@ -2525,7 +2443,6 @@ namespace libsemigroups {
                           "120",
                           "dot_cayley_graph",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 0, 2}));
     S.add_generator(make<Transf<>>({0, 1, 1}));
@@ -2575,7 +2492,6 @@ namespace libsemigroups {
                           "121",
                           "exception: dot_cayley_graph",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 0, 2}));
     S.add_generator(make<Transf<>>({0, 1, 1}));
@@ -2593,7 +2509,6 @@ namespace libsemigroups {
                           "122",
                           "dot_cayley_graph [default labels]",
                           "[quick][froidure-pin][transf]") {
-    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 0, 2}));
     S.add_generator(make<Transf<>>({0, 1, 1}));
@@ -2637,8 +2552,6 @@ namespace libsemigroups {
                           "123",
                           "dot_cayley_graph",
                           "[quick][froidure-pin][transf]") {
-    auto rg = ReportGuard(false);
-
     auto make_example = []() {
       FroidurePin<Transf<>> S;
       S.add_generator(make<Transf<>>({0, 0, 2}));
