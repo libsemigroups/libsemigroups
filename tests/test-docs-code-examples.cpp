@@ -577,10 +577,23 @@ namespace libsemigroups {
     //  0121212121_w};
   }
 
+  // word-graph-io.hpp: Line 93
+  LIBSEMIGROUPS_TEST_CASE("docs",
+                          "033",
+                          "./include/libsemigroups/word-graph-io.hpp:93",
+                          "[docs][quick][no-valgrind]") {
+    WordGraph<uint32_t> graph(2, 2);
+    graph.target(0, 0, 1);
+    graph.target(0, 1, 1);
+    auto text = word_graph::to_kbmag_string(graph);
+    auto copy = make<WordGraph<uint32_t>>(text);
+    copy == graph;  // returns true
+  }
+
   // word-graph-view-helpers.hpp: Line 458
   LIBSEMIGROUPS_TEST_CASE(
       "docs",
-      "033",
+      "034",
       "./include/libsemigroups/word-graph-view-helpers.hpp:458",
       "[docs][quick][no-valgrind]") {
     WordGraph<size_t> wgv;
@@ -594,7 +607,7 @@ namespace libsemigroups {
   // word-graph-view-helpers.hpp: Line 518
   LIBSEMIGROUPS_TEST_CASE(
       "docs",
-      "034",
+      "035",
       "./include/libsemigroups/word-graph-view-helpers.hpp:518",
       "[docs][quick][no-valgrind]") {
     WordGraph<size_t> wg;
@@ -614,7 +627,7 @@ namespace libsemigroups {
   // word-graph-view-helpers.hpp: Line 960
   LIBSEMIGROUPS_TEST_CASE(
       "docs",
-      "035",
+      "036",
       "./include/libsemigroups/word-graph-view-helpers.hpp:960",
       "[docs][quick][no-valgrind]") {
     WordGraph<size_t> wg;
@@ -634,7 +647,7 @@ namespace libsemigroups {
   // word-graph-view-helpers.hpp: Line 1079
   LIBSEMIGROUPS_TEST_CASE(
       "docs",
-      "036",
+      "037",
       "./include/libsemigroups/word-graph-view-helpers.hpp:1079",
       "[docs][quick][no-valgrind]") {
     auto wgv = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
@@ -643,7 +656,7 @@ namespace libsemigroups {
 
   // word-range-class.hpp: Line 214
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "037",
+                          "038",
                           "./include/libsemigroups/word-range-class.hpp:214",
                           "[docs][quick][no-valgrind]") {
     std::vector<word_type>(
@@ -654,7 +667,7 @@ namespace libsemigroups {
 
   // word-range-class.hpp: Line 342
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "038",
+                          "039",
                           "./include/libsemigroups/word-range-class.hpp:342",
                           "[docs][quick][no-valgrind]") {
     std::vector<word_type>(cbegin_wislo(Alphabet<word_type>(2), {0}, {0, 0, 0}),
@@ -664,7 +677,7 @@ namespace libsemigroups {
 
   // word-range-class.hpp: Line 792
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "039",
+                          "040",
                           "./include/libsemigroups/word-range-class.hpp:792",
                           "[docs][quick][no-valgrind]") {
     WordRange words;
@@ -677,7 +690,7 @@ namespace libsemigroups {
 
   // word-range-class.hpp: Line 1249
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "040",
+                          "041",
                           "./include/libsemigroups/word-range-class.hpp:1249",
                           "[docs][quick][no-valgrind]") {
     StringRange strings;
@@ -690,7 +703,7 @@ namespace libsemigroups {
 
   // words-helpers.hpp: Line 440
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "041",
+                          "042",
                           "./include/libsemigroups/words-helpers.hpp:440",
                           "[docs][quick][no-valgrind]") {
     using namespace words;
