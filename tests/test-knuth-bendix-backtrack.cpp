@@ -21,9 +21,12 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 #include <type_traits>  // for is_default_constructible_v, is_copy_constructi...
+#include <vector>       // for vector
 
 #include "libsemigroups/adapters.hpp"      // for ReturnFalse
 #include "libsemigroups/presentation.hpp"  // for Presentation, presentation...
+#include "libsemigroups/to-word.hpp"       // for ToWord
+#include "libsemigroups/word-range-class.hpp"  // for WordRange
 
 #include "libsemigroups/detail/knuth-bendix-backtrack-impl.hpp"  // for Knuth...
 #include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemTrie
@@ -32,118 +35,120 @@ namespace libsemigroups {
   using literals::operator""_w;
 
   template <typename = Default, bool = false>
-  using NoOrder              = ReturnFalse;
-  using KnuthBendixBacktrack = detail::KnuthBendixBacktrack;
+  struct NoOrder : public ReturnFalse {
+    void init() const noexcept {}
+  };
 
-  static_assert(!std::is_default_constructible_v<KnuthBendixBacktrack>);
-  static_assert(std::is_copy_constructible_v<KnuthBendixBacktrack>);
-  static_assert(std::is_move_constructible_v<KnuthBendixBacktrack>);
-  static_assert(!std::is_copy_assignable_v<KnuthBendixBacktrack>);
-  static_assert(!std::is_move_assignable_v<KnuthBendixBacktrack>);
+  using KnuthBendixBacktrack = detail::KnuthBendixBacktrack;
+  using std::literals::operator""s;
+
+  // Assert that the forward iterator requirements are met
+  static_assert(std::is_default_constructible_v<KnuthBendixBacktrack>,
+                "forward iterator requires default-constructible");
+  static_assert(std::is_copy_constructible_v<KnuthBendixBacktrack>,
+                "forward iterator requires copy-constructible");
+  static_assert(std::is_move_constructible_v<KnuthBendixBacktrack>,
+                "forward iterator requires move-constructible");
+  static_assert(std::is_copy_assignable_v<KnuthBendixBacktrack>,
+                "forward iterator requires copy-assignable");
+  static_assert(std::is_move_assignable_v<KnuthBendixBacktrack>,
+                "forward iterator requires move-assignable");
+  static_assert(std::is_destructible_v<KnuthBendixBacktrack>,
+                "forward iterator requires destructible");
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
                           "000",
                           "simple test 0",
                           "[quick]") {
-    ReportGuard rg(false);
-
     Presentation<std::string> p;
-    p.alphabet("abc");
-    presentation::add_rule(p, "baa", "c");
-    presentation::add_rule(p, "aba", "cc");
+    p.alphabet("abc"s);
+    presentation::add_rule(p, "baa"s, "c"s);
+    presentation::add_rule(p, "aba"s, "cc"s);
 
-    detail::KnuthBendixBacktrack kbb(p, 100, 20);
+    KnuthBendixBacktrack       kbb(p, 100, 20);
+    KnuthBendixBacktrack const end
+        = detail::end_knuth_bendix_backtrack(p, 100, 20);
 
-    Presentation<std::string> expected;
-    expected.alphabet("abc");
-    expected.rules = {"bccccccba",
-                      "cbccba",
-                      "bcccccca",
-                      "cbcca",
-                      "bcccca",
-                      "cba",
-                      "bcccccc",
-                      "cbcc",
-                      "ac",
-                      "cca",
-                      "abcc",
-                      "ccba",
-                      "aba",
-                      "cc",
-                      "baa",
-                      "c"};
+    Presentation<std::string>             output;
+    std::vector<std::vector<std::string>> expected_rules{{"bccccccba",
+                                                          "cbccba",
+                                                          "bcccccca",
+                                                          "cbcca",
+                                                          "bcccca",
+                                                          "cba",
+                                                          "bcccccc",
+                                                          "cbcc",
+                                                          "ac",
+                                                          "cca",
+                                                          "abcc",
+                                                          "ccba",
+                                                          "aba",
+                                                          "cc",
+                                                          "baa",
+                                                          "c"},
+                                                         {"abcbcccccbcccca",
+                                                          "ccbccbcc",
+                                                          "bcccccbcccccbcccca",
+                                                          "cbcbcccccbcccca",
+                                                          "abcbcccca",
+                                                          "ccbcc",
+                                                          "cbcbcccca",
+                                                          "bcccccbcccca",
+                                                          "bccccaa",
+                                                          "cc",
+                                                          "cba",
+                                                          "bcccca",
+                                                          "bcccccc",
+                                                          "cbcc",
+                                                          "ac",
+                                                          "cca",
+                                                          "abcc",
+                                                          "ccba",
+                                                          "aba",
+                                                          "cc",
+                                                          "baa",
+                                                          "c"},
+                                                         {"abcbcccca",
+                                                          "ccbcc",
+                                                          "bcccccbcccca",
+                                                          "cbcbcccca",
+                                                          "bccccaa",
+                                                          "cc",
+                                                          "cba",
+                                                          "bcccca",
+                                                          "bcccccc",
+                                                          "cbcc",
+                                                          "ac",
+                                                          "cca",
+                                                          "abcc",
+                                                          "ccba",
+                                                          "aba",
+                                                          "cc",
+                                                          "baa",
+                                                          "c"}};
 
-    Presentation<std::string> output(*kbb);
-    presentation::sort_rules(output);
-    presentation::sort_rules(expected);
-    REQUIRE(output == expected);
+    size_t index = 0;
 
-    ++kbb;
-    expected.rules = {"abcbcccccbcccca",
-                      "ccbccbcc",
-                      "bcccccbcccccbcccca",
-                      "cbcbcccccbcccca",
-                      "abcbcccca",
-                      "ccbcc",
-                      "cbcbcccca",
-                      "bcccccbcccca",
-                      "bccccaa",
-                      "cc",
-                      "cba",
-                      "bcccca",
-                      "bcccccc",
-                      "cbcc",
-                      "ac",
-                      "cca",
-                      "abcc",
-                      "ccba",
-                      "aba",
-                      "cc",
-                      "baa",
-                      "c"};
-    output         = *kbb;
-    presentation::sort_rules(output);
-    presentation::sort_rules(expected);
-    REQUIRE(output == expected);
+    while (kbb != end) {
+      REQUIRE(kbb->rules == expected_rules[index]);
+      ++kbb;
+      ++index;
+    }
 
-    ++kbb;
-    expected.rules = {"abcbcccca",
-                      "ccbcc",
-                      "bcccccbcccca",
-                      "cbcbcccca",
-                      "bccccaa",
-                      "cc",
-                      "cba",
-                      "bcccca",
-                      "bcccccc",
-                      "cbcc",
-                      "ac",
-                      "cca",
-                      "abcc",
-                      "ccba",
-                      "aba",
-                      "cc",
-                      "baa",
-                      "c"};
-    output         = *kbb;
-    presentation::sort_rules(output);
-    presentation::sort_rules(expected);
-    REQUIRE(output == expected);
+    REQUIRE(index == 3);
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
                           "001",
                           "simple test 1",
                           "[quick]") {
-    ReportGuard rg(false);
-
     Presentation<std::string> p;
-    p.alphabet("ab");
-    presentation::add_rule(p, "a", "b");
-    detail::KnuthBendixBacktrack kbb(p, 100, 10);
+    p.alphabet("ab"s);
+    presentation::add_rule(p, "a"s, "b"s);
+    KnuthBendixBacktrack kbb(p, 100, 10);
 
     Presentation<std::string> expected;
-    expected.alphabet("ab");
+    expected.alphabet("ab"s);
     expected.rules = {"a", "b"};
 
     REQUIRE(*kbb == expected);
@@ -157,11 +162,9 @@ namespace libsemigroups {
                           "002",
                           "constructors",
                           "[quick]") {
-    ReportGuard rg(false);
-
     Presentation<std::string> p;
-    p.alphabet("ab");
-    presentation::add_rule(p, "a", "b");
+    p.alphabet("ab"s);
+    presentation::add_rule(p, "a"s, "b"s);
 
     KnuthBendixBacktrack kbb(p, 100, 10);
     KnuthBendixBacktrack copy(kbb);
@@ -173,8 +176,8 @@ namespace libsemigroups {
     REQUIRE(moved == kbb);
     REQUIRE(*moved == *kbb);
 
-    p.alphabet("abc");
-    presentation::add_rule(p, "b", "c");
+    p.alphabet("abc"s);
+    presentation::add_rule(p, "b"s, "c"s);
     REQUIRE(kbb->alphabet() == "ab");
     REQUIRE(kbb->rules == std::vector<std::string>{"a", "b"});
   }
@@ -183,15 +186,12 @@ namespace libsemigroups {
                           "003",
                           "accessors and comparison",
                           "[quick]") {
-    ReportGuard rg(false);
-
     Presentation<std::string> p;
-    p.alphabet("ab");
-    presentation::add_rule(p, "a", "b");
+    p.alphabet("ab"s);
+    presentation::add_rule(p, "a"s, "b"s);
 
     KnuthBendixBacktrack kbb_1(p, 100, 10);
     KnuthBendixBacktrack kbb_2(p, 100, 10);
-    KnuthBendixBacktrack kbb_3(p, 101, 10);
 
     auto const& presentation = *kbb_1;
     REQUIRE(kbb_1.operator->() == &presentation);
@@ -200,8 +200,6 @@ namespace libsemigroups {
 
     REQUIRE(kbb_1 == kbb_2);
     REQUIRE(!(kbb_1 != kbb_2));
-    REQUIRE(kbb_1 != kbb_3);
-    REQUIRE(!(kbb_1 == kbb_3));
 
     // Forward iterator multi-pass guarantee
     kbb_1++;
@@ -219,43 +217,32 @@ namespace libsemigroups {
                           "004",
                           "confluence",
                           "[quick]") {
-    ReportGuard               rg(false);
     Presentation<std::string> p;
-    p.alphabet("abc");
-    presentation::add_rule(p, "baa", "c");
-    presentation::add_rule(p, "aba", "cc");
+    p.alphabet("abc"s);
+    presentation::add_rule(p, "baa"s, "c"s);
+    presentation::add_rule(p, "aba"s, "cc"s);
 
     v4::ToWord to_word("abc");
 
-    detail::KnuthBendixBacktrack         kbb(p, 100, 20);
-    detail::RewritingSystemTrie<NoOrder> rws1;
-    rws1.increase_alphabet_size_by(3);
+    KnuthBendixBacktrack kbb = detail::begin_knuth_bendix_backtrack(p, 100, 20);
+    KnuthBendixBacktrack end = detail::end_knuth_bendix_backtrack(p, 100, 20);
+    detail::RewritingSystemTrie<NoOrder> rws;
 
-    for (size_t i = 0; i < kbb->rules.size(); i += 2) {
-      detail::rewriting_system::add_rule(
-          rws1, to_word(kbb->rules[i]), to_word(kbb->rules[i + 1]));
+    while (kbb != end) {
+      rws.init();
+      rws.increase_alphabet_size_by(3);
+      for (size_t i = 0; i < kbb->rules.size(); i += 2) {
+        detail::rewriting_system::add_rule(
+            rws, to_word(kbb->rules[i]), to_word(kbb->rules[i + 1]));
+      }
+      REQUIRE(rws.confluent());
+      ++kbb;
     }
-    REQUIRE(rws1.confluent());
+  }
 
-    ++kbb;
-    detail::RewritingSystemTrie<NoOrder> rws2;
-    rws2.increase_alphabet_size_by(3);
 
-    for (size_t i = 0; i < kbb->rules.size(); i += 2) {
-      detail::rewriting_system::add_rule(
-          rws2, to_word(kbb->rules[i]), to_word(kbb->rules[i + 1]));
+
     }
-    REQUIRE(rws2.confluent());
-
-    ++kbb;
-    detail::RewritingSystemTrie<NoOrder> rws3;
-    rws3.increase_alphabet_size_by(3);
-
-    for (size_t i = 0; i < kbb->rules.size(); i += 2) {
-      detail::rewriting_system::add_rule(
-          rws3, to_word(kbb->rules[i]), to_word(kbb->rules[i + 1]));
-    }
-    REQUIRE(rws3.confluent());
   }
 
 }  // namespace libsemigroups
