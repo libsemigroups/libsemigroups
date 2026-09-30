@@ -143,13 +143,10 @@ namespace libsemigroups::detail {
           _should_backtrack(),
           _state_history(){};
 
-    KnuthBendixBacktrack(KnuthBendixBacktrack const&) = default;
-    KnuthBendixBacktrack(KnuthBendixBacktrack&&)      = default;
-
-    // delete the assignment operators, because we have const members
-    // TODO(0): remove const-ness from members and un-delete these functions?
-    KnuthBendixBacktrack& operator=(KnuthBendixBacktrack const&) = delete;
-    KnuthBendixBacktrack& operator=(KnuthBendixBacktrack&&)      = delete;
+    KnuthBendixBacktrack(KnuthBendixBacktrack const&)            = default;
+    KnuthBendixBacktrack(KnuthBendixBacktrack&&)                 = default;
+    KnuthBendixBacktrack& operator=(KnuthBendixBacktrack const&) = default;
+    KnuthBendixBacktrack& operator=(KnuthBendixBacktrack&&)      = default;
 
     ~KnuthBendixBacktrack() = default;
 
@@ -443,8 +440,8 @@ namespace libsemigroups::detail {
       }
     }
 
-    size_t const                   _max_queue_size;
-    size_t const                   _max_rewriting_depth;
+    size_t                         _max_queue_size;
+    size_t                         _max_rewriting_depth;
     std::vector<Orientation>       _orientations;
     Presentation<native_word_type> _output_presentation;
     size_t                         _rule_index;
