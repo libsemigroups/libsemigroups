@@ -42,28 +42,28 @@ namespace libsemigroups::detail {
         typename std::unordered_map<native_word_type, native_word_type>;
 
     // TODO(0): Change this to use a stack, so rules can be popped easier?
-    explicit RewritingSystemBacktrack(size_t const max_num_rules)
+    explicit RewritingSystemBacktrack(size_t max_num_rules)
         : _lookup{max_num_rules}, _rules{} {
       _rules.reserve(max_num_rules);
     }
 
     void add_rule(native_word_type const& lhs,
                   native_word_type const& rhs,
-                  size_t const            index) {
+                  size_t                  index) {
       LIBSEMIGROUPS_ASSERT(index < _lookup.size());
       LIBSEMIGROUPS_ASSERT(_rules.find(lhs) == _rules.end());
       _rules.emplace(lhs, rhs);
       _lookup[index] = lhs;
     }
 
-    void pop_rule(size_t const index) {
+    void pop_rule(size_t index) {
       LIBSEMIGROUPS_ASSERT(index < _lookup.size());
       native_word_type const& lhs = _lookup[index];
       LIBSEMIGROUPS_ASSERT(_rules.find(lhs) != _rules.end());
       _rules.erase(lhs);
     }
 
-    bool rewrite(native_word_type& word, size_t const max_rewrite_depth) const {
+    bool rewrite(native_word_type& word, size_t max_rewrite_depth) const {
       if (word.size() == 0) {
         return true;
       }
@@ -151,8 +151,8 @@ namespace libsemigroups::detail {
     ~KnuthBendixBacktrack() = default;
 
     KnuthBendixBacktrack(Presentation<native_word_type> const& p,
-                         size_t const                          max_depth,
-                         size_t const                          max_queue_size)
+                         size_t                                max_depth,
+                         size_t                                max_queue_size)
         : _max_queue_size{max_queue_size},
           _max_rewriting_depth{max_depth},
           _orientations{p.rules.size() / 2, Orientation::original},
@@ -453,15 +453,15 @@ namespace libsemigroups::detail {
 
   inline KnuthBendixBacktrack begin_knuth_bendix_backtrack(
       Presentation<KnuthBendixBacktrack::native_word_type> const& p,
-      size_t const                                                max_depth,
-      size_t const max_queue_size) {
+      size_t                                                      max_depth,
+      size_t max_queue_size) {
     return KnuthBendixBacktrack(p, max_depth, max_queue_size);
   }
 
   inline KnuthBendixBacktrack end_knuth_bendix_backtrack(
       Presentation<KnuthBendixBacktrack::native_word_type> const&,
-      size_t const,
-      size_t const) {
+      size_t,
+      size_t) {
     return KnuthBendixBacktrack();
   }
 }  // namespace libsemigroups::detail
