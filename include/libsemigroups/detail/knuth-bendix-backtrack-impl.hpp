@@ -131,7 +131,18 @@ namespace libsemigroups::detail {
     // Constructors
     //////////////////////////////////////////////////////////////////////
 
-    KnuthBendixBacktrack()                            = delete;
+    // Default constructed KnuthBendixBacktrack represents the end iterator
+    KnuthBendixBacktrack()
+        : _max_queue_size(),
+          _max_rewriting_depth(),
+          _orientations(),
+          _output_presentation(),
+          _rule_index(UNDEFINED),
+          _rules(),
+          _rws(0),
+          _should_backtrack(),
+          _state_history(){};
+
     KnuthBendixBacktrack(KnuthBendixBacktrack const&) = default;
     KnuthBendixBacktrack(KnuthBendixBacktrack&&)      = default;
 
@@ -168,13 +179,11 @@ namespace libsemigroups::detail {
     // Public member functions
     //////////////////////////////////////////////////////////////////////
 
+    // This is a weak comparison that is mainly intended to check if an iterator
+    // is at the end
     [[nodiscard]] bool
     operator==(KnuthBendixBacktrack const& that) const noexcept {
-      return _max_queue_size == that._max_queue_size
-             && _max_rewriting_depth == that._max_rewriting_depth
-             && _orientations == that._orientations
-             && _rule_index == that._rule_index && _rules == that._rules
-             && _state_history == that._state_history;
+      return _rule_index == that._rule_index;
     }
 
     [[nodiscard]] bool
@@ -190,8 +199,7 @@ namespace libsemigroups::detail {
       return &(_output_presentation);
     }
 
-    // TODO(0): Deal with return type on failure
-    // prefix
+    // prefix increment
     KnuthBendixBacktrack const& operator++() {
       if (_should_backtrack) {
         _should_backtrack = false;
@@ -242,16 +250,15 @@ namespace libsemigroups::detail {
       return *this;
     }
 
-    // postfix - not noexcept because the prefix ++ isn't
+    // postfix - not noexcept because the prefix increment isn't
     KnuthBendixBacktrack operator++(int) {
       return detail::default_postfix_increment<KnuthBendixBacktrack>(*this);
     }
 
-    // TODO(0) add some sort of stopping condition.
-
    private:
     bool backtrack() {
       if (_state_history.empty()) {
+        _rule_index = UNDEFINED;
         return false;
       }
       std::pair<size_t, size_t> last_unflipped_rule_state;
@@ -271,6 +278,7 @@ namespace libsemigroups::detail {
 
       // All rules have been tried both ways round
       if (!found_unflipped_rule) {
+        _rule_index = UNDEFINED;
         return false;
       }
 
@@ -445,6 +453,20 @@ namespace libsemigroups::detail {
     bool                                   _should_backtrack;
     std::vector<std::pair<size_t, size_t>> _state_history;
   };
+
+  inline KnuthBendixBacktrack begin_knuth_bendix_backtrack(
+      Presentation<KnuthBendixBacktrack::native_word_type> const& p,
+      size_t const                                                max_depth,
+      size_t const max_queue_size) {
+    return KnuthBendixBacktrack(p, max_depth, max_queue_size);
+  }
+
+  inline KnuthBendixBacktrack end_knuth_bendix_backtrack(
+      Presentation<KnuthBendixBacktrack::native_word_type> const&,
+      size_t const,
+      size_t const) {
+    return KnuthBendixBacktrack();
+  }
 }  // namespace libsemigroups::detail
 
 #endif  // LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
