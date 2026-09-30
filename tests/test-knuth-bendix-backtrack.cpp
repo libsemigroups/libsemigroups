@@ -240,9 +240,41 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+                          "005",
+                          "one relation monoids",
+                          "[extreme]") {
+    std::string const first_word("a");
+    std::string const last_word("aaaaaaaa");
 
+    v4::WordRange<std::string> lhss;
+    lhss.order(LenLexCmp(Alphabet("ab"s))).first(first_word).last(last_word);
+    v4::WordRange<std::string> rhss;
 
+    Presentation<std::string> p;
+    p.alphabet("ab"s);
+    p.contains_empty_word(true);
+
+    KnuthBendixBacktrack       kbb;
+    KnuthBendixBacktrack const end
+        = detail::end_knuth_bendix_backtrack(p, 100, 10);
+
+    size_t total   = 0;
+    size_t success = 0;
+
+    for (auto const& lhs : lhss) {
+      rhss.order(LenLexCmp(Alphabet("ab"s))).first(lhs).last(last_word);
+      for (auto const& rhs : rhss) {
+        ++total;
+        p.rules = {rhs, lhs};
+        kbb     = KnuthBendixBacktrack(p, 20, 10);
+        if (kbb != end) {
+          ++success;
+        }
+      }
     }
+    REQUIRE(total == 32385);
+    REQUIRE(success == 27385);
   }
 
 }  // namespace libsemigroups
