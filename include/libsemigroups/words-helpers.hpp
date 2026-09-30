@@ -230,6 +230,8 @@ namespace libsemigroups {
     //! \returns the parsed string.
     std::string parse(std::string const& w);
 
+    std::string compress(std::string const& w);
+
     //! \brief Returns the index of a character in human readable order.
     //!
     //! Defined in `word-range.hpp`.
@@ -637,6 +639,10 @@ namespace libsemigroups {
     //!
     //! See \ref literal_operator_p "operator\"\"_p" for details.
     std::string operator""_p(const char* w);
+    
+    // ADD DOCUMENTATION
+    std::string operator""_c(const char* w, size_t n);
+    std::string operator""_c(const char* w);
 
   }  // namespace literals
 

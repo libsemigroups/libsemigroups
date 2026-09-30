@@ -29,6 +29,7 @@
 #include <stack>          // for stack
 #include <unordered_map>  // for unordered_map, operator==
 #include <utility>        // for move
+#include <vector> 
 
 #include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/presentation.hpp"  // for index
@@ -245,6 +246,29 @@ namespace libsemigroups {
       }
       return result;
     }
+
+    // s-factorize
+    std::vector<std::pair<int, int>> sfactorize(std::string const& s) {
+      // factor: (start index, length)
+      std::vector<std::pair<int, int>> factors;   
+      libsemigroups::Ukkonen suffix_tree;
+
+      const int n = s.length();
+      int i = 0;
+
+      while (i < n) {
+        int len = 0;
+        while (i + len + 1 <= n &&
+               ukkonen::is_subword(suffix_tree, s.begin() + i, s.begin() + i + len + 1)) {
+          len++;
+        }
+        len = std::max(1, len);
+        factors.push_back({i, len});
+        ukkonen::add_word(suffix_tree, s.begin() + i, s.begin() + i + len);
+        i += len;
+      }
+      return factors;
+    }
   }  // namespace
 
   namespace detail {
@@ -354,6 +378,10 @@ namespace libsemigroups {
       return literals::operator""_p(w.c_str(), w.size());
     }
 
+    std::string compress(std::string const& w) {
+      return literals::operator""_c(w.c_str(), w.size());
+    }
+
     word_type operator+(word_type const& u, word_type const& w) {
       word_type result(u);
       result.insert(result.end(), w.cbegin(), w.cend());
@@ -456,6 +484,15 @@ namespace libsemigroups {
 
     std::string operator""_p(char const* w) {
       return operator""_p(w, std::strlen(w));
+    }
+
+    std::string operator""_c(char const* w, size_t n) {
+      // TODO
+      return "";
+    }
+
+    std::string operator""_c(char const* w) {
+      return operator""_c(w, std::strlen(w));
     }
   }  // namespace literals
 }  // namespace libsemigroups
