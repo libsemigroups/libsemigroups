@@ -18,18 +18,23 @@
 
 // This file contains the declaration of the KnuthBendixBacktrack class
 
+// TODO:
+// * Reporting
+// * Replace RewritingSystemBacktrack with something that derives from
+//   RewritingSystemBase
+
 #ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
 #define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
 
-#include <algorithm>
-#include <functional>
-#include <iterator>
-#include <unordered_map>
+#include <cstddef>        // for ptrdiff_t
+#include <iterator>       // for forward_iterator_tag, distance
+#include <unordered_map>  // for unordered map
+#include <utility>        // for pair, move
+#include <vector>         // for vector
 
-#include "libsemigroups/exception.hpp"
-#include "libsemigroups/presentation.hpp"
+#include "libsemigroups/presentation.hpp"  // for Presentaiton
 
-#include "rules.hpp"
+#include "rules.hpp"  // for Rule::native_word_type
 
 namespace libsemigroups::detail {
 
@@ -49,56 +54,11 @@ namespace libsemigroups::detail {
 
     void add_rule(native_word_type const& lhs,
                   native_word_type const& rhs,
-                  size_t                  index) {
-      LIBSEMIGROUPS_ASSERT(index < _lookup.size());
-      LIBSEMIGROUPS_ASSERT(_rules.find(lhs) == _rules.end());
-      _rules.emplace(lhs, rhs);
-      _lookup[index] = lhs;
-    }
+                  size_t                  index);
 
-    void pop_rule(size_t index) {
-      LIBSEMIGROUPS_ASSERT(index < _lookup.size());
-      native_word_type const& lhs = _lookup[index];
-      LIBSEMIGROUPS_ASSERT(_rules.find(lhs) != _rules.end());
-      _rules.erase(lhs);
-    }
+    void pop_rule(size_t index);
 
-    bool rewrite(native_word_type& word, size_t max_rewrite_depth) const {
-      if (word.size() == 0) {
-        return true;
-      }
-
-      // position of the start of the unread suffix of the input word
-      size_t pos = 0;
-
-      size_t num_rewrites = 0;
-
-      while (pos < word.size()) {
-        LIBSEMIGROUPS_ASSERT(pos >= 0);
-        ++pos;
-        for (auto start = word.begin(); start < word.begin() + pos; ++start) {
-          auto it = _rules.find(native_word_type(start, word.begin() + pos));
-          if (it != _rules.end()) {
-            if (num_rewrites == max_rewrite_depth) {
-              return false;
-            }
-            LIBSEMIGROUPS_ASSERT(std::equal(start,
-                                            word.begin() + pos,
-                                            it->first.cbegin(),
-                                            it->first.cend()));
-            size_t diff = it->first.size();
-            pos -= diff;
-            word.erase(word.begin() + pos, word.begin() + pos + diff);
-            word.insert(
-                word.begin() + pos, it->second.begin(), it->second.end());
-            ++num_rewrites;
-            break;
-          }
-        }
-      }
-
-      return true;
-    }
+    bool rewrite(native_word_type& word, size_t max_rewrite_depth) const;
 
     rule_container_type const& rules() const noexcept {
       return _rules;
@@ -132,16 +92,7 @@ namespace libsemigroups::detail {
     //////////////////////////////////////////////////////////////////////
 
     // Default constructed KnuthBendixBacktrack represents the end iterator
-    KnuthBendixBacktrack()
-        : _max_queue_size(),
-          _max_rewriting_depth(),
-          _orientations(),
-          _output_presentation(),
-          _rule_index(UNDEFINED),
-          _rules(),
-          _rws(0),
-          _should_backtrack(),
-          _state_history(){};
+    KnuthBendixBacktrack();
 
     KnuthBendixBacktrack(KnuthBendixBacktrack const&)            = default;
     KnuthBendixBacktrack(KnuthBendixBacktrack&&)                 = default;
@@ -152,25 +103,7 @@ namespace libsemigroups::detail {
 
     KnuthBendixBacktrack(Presentation<native_word_type> const& p,
                          size_t                                max_depth,
-                         size_t                                max_queue_size)
-        : _max_queue_size{max_queue_size},
-          _max_rewriting_depth{max_depth},
-          _orientations{p.rules.size() / 2, Orientation::original},
-          _output_presentation{p},
-          _rule_index{0},
-          _rules{},
-          _rws{max_queue_size},
-          _should_backtrack{false},
-          _state_history{} {
-      LIBSEMIGROUPS_ASSERT(p.rules.size() / 2 <= _max_queue_size);
-      _rules.reserve(_max_queue_size);
-      _orientations.reserve(_max_queue_size);
-      _state_history.reserve(_max_queue_size);
-      for (size_t i = 0; i < p.rules.size(); i += 2) {
-        _rules.emplace_back(p.rules[i], p.rules[i + 1]);
-      }
-      operator++();
-    }
+                         size_t                                max_queue_size);
 
     //////////////////////////////////////////////////////////////////////
     // Public member functions
@@ -197,55 +130,7 @@ namespace libsemigroups::detail {
     }
 
     // prefix increment
-    KnuthBendixBacktrack const& operator++() {
-      if (_should_backtrack) {
-        _should_backtrack = false;
-        if (!backtrack()) {
-          return *this;
-        }
-      }
-      while (_rule_index < _rules.size()) {
-        auto [new_lhs, new_rhs] = _rules[_rule_index];
-
-        if (!rewrite_pair(new_lhs, new_rhs)) {
-          if (!backtrack()) {
-            return *this;
-          } else {
-            continue;
-          }
-        }
-
-        if (new_lhs != new_rhs) {
-          _rws.add_rule(new_lhs, new_rhs, _rule_index);
-          _state_history.emplace_back(_rule_index, _rules.size());
-
-          // Find critical pairs
-          bool processed_overlaps = true;
-
-          for (auto const& [old_lhs, old_rhs] : _rws.rules()) {
-            processed_overlaps
-                = process_overlaps(new_lhs, new_rhs, old_lhs, old_rhs);
-            if (!processed_overlaps) {
-              if (!backtrack()) {
-                return *this;
-              } else {
-                break;
-              }
-            }
-          }
-          // If it was not possible to process the overlaps and backtracking
-          // didn't fail
-          if (!processed_overlaps) {
-            continue;
-          }
-        }
-
-        _rule_index++;
-      }
-      _should_backtrack = true;
-      set_output_presentation();
-      return *this;
-    }
+    KnuthBendixBacktrack const& operator++();
 
     // postfix - not noexcept because the prefix increment isn't
     KnuthBendixBacktrack operator++(int) {
@@ -253,136 +138,28 @@ namespace libsemigroups::detail {
     }
 
    private:
-    bool backtrack() {
-      if (_state_history.empty()) {
-        _rule_index = UNDEFINED;
-        return false;
-      }
-      std::pair<size_t, size_t> last_unflipped_rule_state;
-      bool                      found_unflipped_rule = false;
+    bool backtrack();
 
-      // Find the last rule that we have processed and only tried one way round.
-      while (!_state_history.empty()) {
-        last_unflipped_rule_state = _state_history.back();
-        _state_history.pop_back();
-        _rule_index = last_unflipped_rule_state.first;
-        _rws.pop_rule(_rule_index);
-        if (_orientations[_rule_index] == Orientation::original) {
-          found_unflipped_rule = true;
-          break;
-        }
-      }
+    bool rewrite_pair(native_word_type& lhs, native_word_type& rhs) const;
 
-      // All rules have been tried both ways round
-      if (!found_unflipped_rule) {
-        _rule_index = UNDEFINED;
-        return false;
-      }
-
-      // Flip the rule
-      LIBSEMIGROUPS_ASSERT(_orientations[_rule_index] == Orientation::original);
-      _orientations[_rule_index] = Orientation::flipped;
-      std::swap(_rules[_rule_index].first, _rules[_rule_index].second);
-
-      // Reset to the state to be as if we are just about to process the newly
-      // flipped rule
-      _rules.resize(last_unflipped_rule_state.second);
-      _orientations.resize(last_unflipped_rule_state.second);
-      std::fill(_orientations.begin() + _rule_index + 1,
-                _orientations.end(),
-                Orientation::original);
-      return true;
-    }
-
-    bool rewrite_pair(native_word_type& lhs, native_word_type& rhs) const {
-      if (_rws.rewrite(lhs, _max_rewriting_depth)
-          && _rws.rewrite(rhs, _max_rewriting_depth)) {
-        return true;
-      }
-
-      return false;
-    }
-
-    bool add_pending_rule(native_word_type&& lhs, native_word_type&& rhs) {
-      if (lhs == rhs) {
-        return true;
-      }
-      if (_rules.size() >= _max_queue_size) {
-        return false;
-      }
-
-      _rules.emplace_back(std::move(lhs), std::move(rhs));
-      _orientations.emplace_back(Orientation::original);
-      return true;
-    }
+    bool add_pending_rule(native_word_type&& lhs, native_word_type&& rhs);
 
     bool process_single_overlap(native_word_type const&                u_lhs,
                                 native_word_type const&                u_rhs,
                                 native_word_type const&                v_lhs,
                                 native_word_type const&                v_rhs,
-                                native_word_type::const_iterator const it) {
-      // Add rules of the form AY -> XC where:
-      //    U = AB -> X
-      //    V = BC -> Y
-      // TODO(0): multiview?
-      native_word_type x(u_lhs.cbegin(), it);  // A
-      x.append(v_rhs.cbegin(), v_rhs.cend());  // Y
-
-      native_word_type y(u_rhs.cbegin(), u_rhs.cend());  // X
-      y.append(v_lhs.cbegin() + std::distance(it, u_lhs.cend()),
-               v_lhs.cend());  // C
-      // TODO(1) This could be augmented by a call to some "oracle" function
-      // that can tell us if we know our rewriting system will/won't terminate.
-      // This could be some incremental version of du_narendran_rusinowitch.
-
-      if (!rewrite_pair(x, y)) {
-        return false;
-      }
-      return add_pending_rule(std::move(x), std::move(y));
-    }
+                                native_word_type::const_iterator const it);
 
     bool process_subword_overlap(native_word_type const&                u_lhs,
                                  native_word_type const&                u_rhs,
                                  native_word_type const&                v_lhs,
                                  native_word_type const&                v_rhs,
-                                 native_word_type::const_iterator const start) {
-      // Add rules of the form Y -> AXC where:
-      //    U = B -> X
-      //    V = ABC -> Y
-      native_word_type x(v_rhs.cbegin(), v_rhs.cend());  // Y
-
-      native_word_type y(v_lhs.cbegin(), start);     // A
-      y.append(u_rhs.cbegin(), u_rhs.cend());        // X
-      y.append(start + u_lhs.size(), v_lhs.cend());  // C
-
-      if (!rewrite_pair(x, y)) {
-        return false;
-      }
-      return add_pending_rule(std::move(x), std::move(y));
-    }
+                                 native_word_type::const_iterator const start);
 
     bool process_onesided_overlaps(native_word_type const& u_lhs,
                                    native_word_type const& u_rhs,
                                    native_word_type const& v_lhs,
-                                   native_word_type const& v_rhs) {
-      // Find overlaps of the form:
-      //    U = AB -> X
-      //    V = BC -> Y
-      // where
-      //    ABC -> AY, and
-      //    ABC -> XC.
-      auto const lower_limit
-          = u_lhs.cend() - std::min(u_lhs.size(), v_lhs.size());
-
-      for (auto it = u_lhs.cend() - 1; it > lower_limit; --it) {
-        if (std::equal(it, u_lhs.cend(), v_lhs.cbegin())) {
-          if (!process_single_overlap(u_lhs, u_rhs, v_lhs, v_rhs, it)) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }
+                                   native_word_type const& v_rhs);
 
     // Find and process overlaps of the form
     // 1. U on the left:
@@ -404,41 +181,9 @@ namespace libsemigroups::detail {
     bool process_overlaps(native_word_type const& u_lhs,
                           native_word_type const& u_rhs,
                           native_word_type const& v_lhs,
-                          native_word_type const& v_rhs) {
-      // U on the left
-      if (!process_onesided_overlaps(u_lhs, u_rhs, v_lhs, v_rhs)) {
-        return false;
-      }
+                          native_word_type const& v_rhs);
 
-      if (u_lhs != v_lhs && u_rhs != v_rhs) {
-        // U on the right, only if U and V are different
-        if (!process_onesided_overlaps(v_lhs, v_rhs, u_lhs, u_rhs)) {
-          return false;
-        }
-      }
-
-      // U a subword
-      if (u_lhs.size() < v_lhs.size()) {
-        size_t size_difference = v_lhs.size() - u_lhs.size();
-        for (auto start = v_lhs.begin();
-             start <= v_lhs.begin() + size_difference;
-             ++start) {
-          if (std::equal(u_lhs.cbegin(), u_lhs.cend(), start)) {
-            if (!process_subword_overlap(u_lhs, u_rhs, v_lhs, v_rhs, start)) {
-              return false;
-            }
-          }
-        }
-      }
-      return true;
-    }
-
-    void set_output_presentation() {
-      _output_presentation.rules.clear();
-      for (auto const& [lhs, rhs] : _rws.rules()) {
-        presentation::add_rule_no_checks(_output_presentation, lhs, rhs);
-      }
-    }
+    void set_output_presentation();
 
     size_t                         _max_queue_size;
     size_t                         _max_rewriting_depth;
