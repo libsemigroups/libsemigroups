@@ -61,14 +61,9 @@ jobs:
       - name: Run the quick tests (ex:no-cygwin)
         run: ./test_all "[quick][exclude:no-cygwin]"
   macos:
-    name: "macOS-${{ matrix.os.arch }}"
-    runs-on: ${{ matrix.os.image_name }}
+    name: "macOS-arm"
+    runs-on: macos-latest
     timeout-minutes: 60
-    strategy:
-      matrix:
-        os:
-          - { image_name: macos-latest, arch: arm }
-          - { image_name: macos-15-intel, arch: x86 }
     env:
       CXX: ccache clang++
       CXXFLAGS: -fdiagnostics-color
@@ -79,7 +74,7 @@ jobs:
         with:
           update_packager_index: false
           install_ccache: true
-          override_cache_key: "macos_${{ matrix.os.arch }}"
+          override_cache_key: "macos_arm"
       - name: Runner information . . .
         run: uname -a
       - name: Install dependencies . . .
