@@ -27,21 +27,9 @@
 namespace libsemigroups {
   namespace detail {
 
-    void RewritingSystemBacktrack::add_rule(native_word_type const& lhs,
-                                            native_word_type const& rhs,
-                                            size_t                  index) {
-      LIBSEMIGROUPS_ASSERT(index < _lookup.size());
-      LIBSEMIGROUPS_ASSERT(_rules.find(lhs) == _rules.end());
-      _rules.emplace(lhs, rhs);
-      _lookup[index] = lhs;
-    }
-
-    void RewritingSystemBacktrack::pop_rule(size_t index) {
-      LIBSEMIGROUPS_ASSERT(index < _lookup.size());
-      native_word_type const& lhs = _lookup[index];
-      LIBSEMIGROUPS_ASSERT(_rules.find(lhs) != _rules.end());
-      _rules.erase(lhs);
-    }
+    //////////////////////////////////////////////////////////////////////
+    // RewritingSystemBacktrack
+    //////////////////////////////////////////////////////////////////////
 
     bool RewritingSystemBacktrack::rewrite(native_word_type& word,
                                            size_t max_rewrite_depth) const {
@@ -58,8 +46,18 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(pos >= 0);
         ++pos;
         for (auto start = word.begin(); start < word.begin() + pos; ++start) {
-          auto it = _rules.find(native_word_type(start, word.begin() + pos));
-          if (it != _rules.end()) {
+          // This is linear in the size of the stack, so using a map might have
+          // better complexity; however, the size of the stack is bounded above
+          // by the depth of the backtrack which will always be quite small, so
+          // this seems to actually be quicker.
+          auto it = std::find_if(
+              _rule_stack.begin(), _rule_stack.end(), [&](auto const& rule) {
+                return std::equal(rule.first.begin(),
+                                  rule.first.end(),
+                                  start,
+                                  word.begin() + pos);
+              });
+          if (it != _rule_stack.end()) {
             if (num_rewrites == max_rewrite_depth) {
               return false;
             }
@@ -80,6 +78,10 @@ namespace libsemigroups {
 
       return true;
     }
+
+    //////////////////////////////////////////////////////////////////////
+    // KnuthBendixBacktrack - Constructors
+    //////////////////////////////////////////////////////////////////////
 
     KnuthBendixBacktrack::KnuthBendixBacktrack()
         : _max_queue_size{},
@@ -116,7 +118,7 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////
-    // Public member functions
+    // KnuthBendixBacktrack - Public member functions
     //////////////////////////////////////////////////////////////////////
 
     // prefix increment
@@ -139,7 +141,7 @@ namespace libsemigroups {
         }
 
         if (new_lhs != new_rhs) {
-          _rws.add_rule(new_lhs, new_rhs, _rule_index);
+          _rws.add_rule(new_lhs, new_rhs);
           _state_history.emplace_back(_rule_index, _rules.size());
 
           // Find critical pairs
@@ -170,6 +172,10 @@ namespace libsemigroups {
       return *this;
     }
 
+    //////////////////////////////////////////////////////////////////////
+    // KnuthBendixBacktrack - Private member functions
+    //////////////////////////////////////////////////////////////////////
+
     bool KnuthBendixBacktrack::backtrack() {
       if (_state_history.empty()) {
         _rule_index = UNDEFINED;
@@ -182,8 +188,8 @@ namespace libsemigroups {
       while (!_state_history.empty()) {
         last_unflipped_rule_state = _state_history.back();
         _state_history.pop_back();
+        _rws.pop_rule();
         _rule_index = last_unflipped_rule_state.first;
-        _rws.pop_rule(_rule_index);
         if (_orientations[_rule_index] == Orientation::original) {
           found_unflipped_rule = true;
           break;

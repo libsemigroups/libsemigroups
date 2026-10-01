@@ -26,11 +26,10 @@
 #ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
 #define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
 
-#include <cstddef>        // for ptrdiff_t
-#include <iterator>       // for forward_iterator_tag, distance
-#include <unordered_map>  // for unordered map
-#include <utility>        // for pair, move
-#include <vector>         // for vector
+#include <cstddef>   // for ptrdiff_t
+#include <iterator>  // for forward_iterator_tag, distance
+#include <utility>   // for pair, move
+#include <vector>    // for vector
 
 #include "libsemigroups/presentation.hpp"  // for Presentaiton
 
@@ -44,30 +43,29 @@ namespace libsemigroups {
     class RewritingSystemBacktrack {
      public:
       using native_word_type = typename Rule::native_word_type;
-      using rule_container_type =
-          typename std::unordered_map<native_word_type, native_word_type>;
 
-      // TODO(0): Change this to use a stack, so rules can be popped easier?
-      explicit RewritingSystemBacktrack(size_t max_num_rules)
-          : _lookup{max_num_rules}, _rules{} {
-        _rules.reserve(max_num_rules);
+      explicit RewritingSystemBacktrack(size_t max_num_rules) : _rule_stack{} {
+        _rule_stack.reserve(max_num_rules);
       }
 
-      void add_rule(native_word_type const& lhs,
-                    native_word_type const& rhs,
-                    size_t                  index);
+      void add_rule(native_word_type const& lhs, native_word_type const& rhs) {
+        LIBSEMIGROUPS_ASSERT(!lhs.empty());
+        _rule_stack.emplace_back(lhs, rhs);
+      }
 
-      void pop_rule(size_t index);
+      void pop_rule() {
+        _rule_stack.pop_back();
+      }
 
       bool rewrite(native_word_type& word, size_t max_rewrite_depth) const;
 
-      rule_container_type const& rules() const noexcept {
-        return _rules;
+      std::vector<std::pair<native_word_type, native_word_type>>
+      rules() const noexcept {
+        return _rule_stack;
       }
 
      private:
-      std::vector<native_word_type> _lookup;
-      rule_container_type           _rules;
+      std::vector<std::pair<native_word_type, native_word_type>> _rule_stack;
     };
 
     // TODO: Make max_number_of_rules a template parameter?
