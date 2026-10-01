@@ -65,67 +65,68 @@ namespace libsemigroups {
     presentation::add_rule(p, "baa"s, "c"s);
     presentation::add_rule(p, "aba"s, "cc"s);
 
-    KnuthBendixBacktrack       kbb(p, 100, 20);
+    KnuthBendixBacktrack       kbb(p, 100, 50);
     KnuthBendixBacktrack const end
-        = detail::end_knuth_bendix_backtrack(p, 100, 20);
+        = detail::end_knuth_bendix_backtrack(p, 100, 50);
 
-    Presentation<std::string>             output;
-    std::vector<std::vector<std::string>> expected_rules{{"bccccccba",
-                                                          "cbccba",
-                                                          "bcccccca",
-                                                          "cbcca",
-                                                          "bcccca",
-                                                          "cba",
-                                                          "bcccccc",
-                                                          "cbcc",
-                                                          "ac",
-                                                          "cca",
-                                                          "abcc",
-                                                          "ccba",
-                                                          "aba",
-                                                          "cc",
-                                                          "baa",
-                                                          "c"},
-                                                         {"abcbcccccbcccca",
-                                                          "ccbccbcc",
-                                                          "bcccccbcccccbcccca",
-                                                          "cbcbcccccbcccca",
-                                                          "abcbcccca",
-                                                          "ccbcc",
-                                                          "cbcbcccca",
-                                                          "bcccccbcccca",
-                                                          "bccccaa",
-                                                          "cc",
-                                                          "cba",
-                                                          "bcccca",
-                                                          "bcccccc",
-                                                          "cbcc",
-                                                          "ac",
-                                                          "cca",
-                                                          "abcc",
-                                                          "ccba",
-                                                          "aba",
-                                                          "cc",
-                                                          "baa",
-                                                          "c"},
-                                                         {"abcbcccca",
-                                                          "ccbcc",
-                                                          "bcccccbcccca",
-                                                          "cbcbcccca",
-                                                          "bccccaa",
-                                                          "cc",
-                                                          "cba",
-                                                          "bcccca",
-                                                          "bcccccc",
-                                                          "cbcc",
-                                                          "ac",
-                                                          "cca",
-                                                          "abcc",
-                                                          "ccba",
-                                                          "aba",
-                                                          "cc",
-                                                          "baa",
-                                                          "c"}};
+    Presentation<std::string> output;
+
+    std::vector<std::vector<std::string>> expected_rules{
+        {"baa",
+         "c",
+         "aba",
+         "cc",
+         "ac",
+         "cca",
+         "bcccca",
+         "cba",
+         "abcc",
+         "ccba",
+         "bcccccc",
+         "cbcc"},
+        {"baa",
+         "c",
+         "aba",
+         "cc",
+         "ac",
+         "cca",
+         "cba",
+         "bcccca",
+         "abcc",
+         "cbcccca",
+         "bccccaa",
+         "cc",
+         "bcccccc",
+         "cbcc",
+         "abcbcccca",
+         "ccbcc",
+         "cbcbcccca",
+         "bcccccbcccca",
+         "abcbcccccbcccca",
+         "ccbccbcc",
+         "cbcccccbcccccbcccca",
+         "ccbcbcccccbcccca",
+         "bcccccbcccccbcccca",
+         "cbcbcccccbcccca"},
+        {"baa",
+         "c",
+         "aba",
+         "cc",
+         "ac",
+         "cca",
+         "cba",
+         "bcccca",
+         "abcc",
+         "cbcccca",
+         "bccccaa",
+         "cc",
+         "bcccccc",
+         "cbcc",
+         "abcbcccca",
+         "ccbcc",
+         "bcccccbcccca",
+         "cbcbcccca"},
+    };
 
     size_t index = 0;
 
@@ -224,8 +225,8 @@ namespace libsemigroups {
 
     v4::ToWord to_word("abc");
 
-    KnuthBendixBacktrack kbb = detail::begin_knuth_bendix_backtrack(p, 100, 20);
-    KnuthBendixBacktrack end = detail::end_knuth_bendix_backtrack(p, 100, 20);
+    KnuthBendixBacktrack kbb = detail::begin_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixBacktrack end = detail::end_knuth_bendix_backtrack(p, 100, 50);
     detail::RewritingSystemTrie<NoOrder> rws;
 
     while (kbb != end) {
@@ -257,7 +258,7 @@ namespace libsemigroups {
 
     KnuthBendixBacktrack       kbb;
     KnuthBendixBacktrack const end
-        = detail::end_knuth_bendix_backtrack(p, 100, 10);
+        = detail::end_knuth_bendix_backtrack(p, 20, 10);
 
     size_t total   = 0;
     size_t success = 0;
@@ -274,7 +275,7 @@ namespace libsemigroups {
       }
     }
     REQUIRE(total == 32385);
-    REQUIRE(success == 27385);
+    REQUIRE(success == 27407);
   }
 
 }  // namespace libsemigroups
