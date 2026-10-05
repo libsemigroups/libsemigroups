@@ -338,7 +338,7 @@ namespace libsemigroups {
         return false;
       }
 
-      if (u_lhs != v_lhs && u_rhs != v_rhs) {
+      if (u_lhs != v_lhs || u_rhs != v_rhs) {
         // U on the right, only if U and V are different
         if (!process_onesided_overlaps(v_lhs, v_rhs, u_lhs, u_rhs)) {
           return false;

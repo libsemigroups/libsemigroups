@@ -278,4 +278,31 @@ namespace libsemigroups {
     REQUIRE(success == 27407);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+                          "006",
+                          "confluence x2",
+                          "[quick]") {
+    Presentation<std::string> p;
+    p.alphabet("abcd"s);
+    presentation::add_rule(p, "ab"s, "d"s);
+    presentation::add_rule(p, "bc"s, "d"s);
+
+    v4::ToWord to_word("abcd");
+
+    KnuthBendixBacktrack kbb = detail::begin_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixBacktrack end = detail::end_knuth_bendix_backtrack(p, 100, 50);
+    detail::RewritingSystemTrie<NoOrder> rws;
+
+    while (kbb != end) {
+      rws.init();
+      rws.increase_alphabet_size_by(4);
+      for (size_t i = 0; i < kbb->rules.size(); i += 2) {
+        detail::rewriting_system::add_rule(
+            rws, to_word(kbb->rules[i]), to_word(kbb->rules[i + 1]));
+      }
+      REQUIRE(rws.confluent());
+      ++kbb;
+    }
+  }
+
 }  // namespace libsemigroups
