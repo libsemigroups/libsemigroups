@@ -69,8 +69,6 @@ namespace libsemigroups {
     KnuthBendixBacktrack const end
         = detail::end_knuth_bendix_backtrack(p, 100, 50);
 
-    Presentation<std::string> output;
-
     std::vector<std::vector<std::string>> expected_rules{
         {"baa",
          "c",
@@ -303,6 +301,29 @@ namespace libsemigroups {
       REQUIRE(rws.confluent());
       ++kbb;
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+                          "007",
+                          "empty words",
+                          "[quick]") {
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("a"s);
+    presentation::add_rule(p, "a"s, ""s);
+
+    KnuthBendixBacktrack       kbb(p, 100, 20);
+    KnuthBendixBacktrack const end
+        = detail::end_knuth_bendix_backtrack(p, 100, 20);
+
+    size_t index = 0;
+    while (kbb != end) {
+      REQUIRE(kbb->rules == std::vector<std::string>{"a"s, ""s});
+      ++kbb;
+      ++index;
+    }
+
+    REQUIRE(index == 1);
   }
 
 }  // namespace libsemigroups
