@@ -132,7 +132,7 @@ namespace libsemigroups {
       while (_rule_index < _rules.size()) {
         auto [new_lhs, new_rhs] = _rules[_rule_index];
 
-        if (!rewrite_pair(new_lhs, new_rhs)) {
+        if (!rewrite_pair(new_lhs, new_rhs) || new_lhs.empty()) {
           if (!backtrack()) {
             return *this;
           } else {
