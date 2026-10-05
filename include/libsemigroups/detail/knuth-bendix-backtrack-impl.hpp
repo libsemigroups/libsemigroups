@@ -31,7 +31,7 @@
 #include <utility>   // for pair, move
 #include <vector>    // for vector
 
-#include "libsemigroups/presentation.hpp"  // for Presentaiton
+#include "libsemigroups/presentation.hpp"  // for Presentation
 
 #include "rules.hpp"  // for Rule::native_word_type
 
