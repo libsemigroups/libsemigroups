@@ -122,7 +122,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////
 
     // prefix increment
-    KnuthBendixBacktrack const& KnuthBendixBacktrack::operator++() {
+    KnuthBendixBacktrack& KnuthBendixBacktrack::operator++() {
       if (_should_backtrack) {
         _should_backtrack = false;
         if (!backtrack()) {

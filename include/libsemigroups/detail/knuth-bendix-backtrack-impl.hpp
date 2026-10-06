@@ -22,6 +22,8 @@
 // * Reporting
 // * Replace RewritingSystemBacktrack with something that derives from
 //   RewritingSystemBase
+// * Move out of detail and document
+// * Rename to contain the word 'iterator'
 
 #ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
 #define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
@@ -78,12 +80,12 @@ namespace libsemigroups {
       using native_word_type =
           typename RewritingSystemBacktrack::native_word_type;
       using value_type        = Presentation<native_word_type>;
-      using reference         = value_type&;
+      using reference         = value_type const&;
       using const_reference   = value_type const&;
       using difference_type   = std::ptrdiff_t;
       using size_type         = size_t;
       using const_pointer     = value_type const*;
-      using pointer           = value_type*;
+      using pointer           = value_type const*;
       using iterator_category = std::forward_iterator_tag;
 
       //////////////////////////////////////////////////////////////////////
@@ -129,7 +131,7 @@ namespace libsemigroups {
       }
 
       // prefix increment
-      KnuthBendixBacktrack const& operator++();
+      KnuthBendixBacktrack& operator++();
 
       // postfix - not noexcept because the prefix increment isn't
       KnuthBendixBacktrack operator++(int) {
