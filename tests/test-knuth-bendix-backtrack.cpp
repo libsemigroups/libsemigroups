@@ -32,29 +32,58 @@
 #include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemTrie
 
 namespace libsemigroups {
-  using literals::operator""_w;
+  using KnuthBendixBacktrack = detail::KnuthBendixBacktrack;
+  using std::literals::operator""s;
+  using literals::     operator""_w;
 
   template <typename = Default, bool = false>
   struct NoOrder : public ReturnFalse {
     void init() const noexcept {}
   };
 
-  using KnuthBendixBacktrack = detail::KnuthBendixBacktrack;
-  using std::literals::operator""s;
+  template <typename X>
+  void is_input_iterator() {
+    using T = typename std::iterator_traits<X>::value_type;
+    using R = typename std::iterator_traits<X>::reference;
 
-  // Assert that the forward iterator requirements are met
-  static_assert(std::is_default_constructible_v<KnuthBendixBacktrack>,
-                "forward iterator requires default-constructible");
-  static_assert(std::is_copy_constructible_v<KnuthBendixBacktrack>,
-                "forward iterator requires copy-constructible");
-  static_assert(std::is_move_constructible_v<KnuthBendixBacktrack>,
-                "forward iterator requires move-constructible");
-  static_assert(std::is_copy_assignable_v<KnuthBendixBacktrack>,
-                "forward iterator requires copy-assignable");
-  static_assert(std::is_move_assignable_v<KnuthBendixBacktrack>,
-                "forward iterator requires move-assignable");
-  static_assert(std::is_destructible_v<KnuthBendixBacktrack>,
-                "forward iterator requires destructible");
+    // LegacyIterator requirements
+    static_assert(std::is_copy_constructible_v<X>,
+                  "input_iterator must be copy-constructible");
+    static_assert(std::is_copy_assignable_v<X>,
+                  "input_iterator must be copy-assignable");
+    static_assert(std::is_destructible_v<X>,
+                  "input_iterator must be destructible");
+    static_assert(std::is_swappable_v<X>, "input_iterator must be swappable");
+    static_assert(!std::is_void_v<decltype(*std::declval<X&>())>,
+                  "input_iterator must be dereferenceable");
+    static_assert(!std::is_void_v<decltype(++std::declval<X&>())>,
+                  "input_iterator must be incrementable");
+    static_assert(std::is_same_v<decltype(++std::declval<X&>()), X&>,
+                  "the return type of an incremented X& must be X&");
+
+    // LegacyInputIterator requirements, non-const
+    static_assert(std::is_same_v<decltype(*std::declval<X&>()), R>,
+                  "a dereferenced input_iterator's type must agree with the "
+                  "iterator_trait's reference type");
+    static_assert(std::is_convertible_v<decltype(*std::declval<X&>()), T>,
+                  "a dereferenced input_iterator's type must be convertible to "
+                  "the iterator_trait's value type");
+    static_assert(std::is_convertible_v<decltype(*std::declval<X&>()++), T>,
+                  "a dereferenced incremented input_iterator must be "
+                  "convertible to the iterator_trait's value type");
+
+    // LegacyInputIterator requirements, const
+    static_assert(
+        std::is_same_v<decltype(*std::declval<const X&>()), R>,
+        "a dereferenced const input_iterator's type must agree with the "
+        "iterator_trait's reference type");
+    static_assert(
+        std::is_convertible_v<decltype(*std::declval<const X&>()), T>,
+        "a dereferenced const input_iterator's type must be convertible to "
+        "the iterator_trait's value type");
+
+    // runtime checks
+  }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
                           "000",
@@ -324,6 +353,85 @@ namespace libsemigroups {
     }
 
     REQUIRE(index == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+                          "008",
+                          "input iterator",
+                          "[quick]") {
+    // static checks
+    is_input_iterator<KnuthBendixBacktrack>();
+
+    // runtime checks
+
+    Presentation<std::string> p;
+    p.alphabet("abc"s);
+    presentation::add_rule(p, "baa"s, "c"s);
+    presentation::add_rule(p, "aba"s, "cc"s);
+
+    KnuthBendixBacktrack       kbb(p, 100, 50);
+    KnuthBendixBacktrack       copy_constructed_kbb(kbb);
+    KnuthBendixBacktrack       copy_assigned_kbb = kbb;
+    KnuthBendixBacktrack const end
+        = detail::end_knuth_bendix_backtrack(p, 100, 50);
+
+    SECTION("Satisfies EqualityComparable") {
+      // Reflexive
+      REQUIRE(kbb == kbb);
+
+      // Symmetric
+      REQUIRE(kbb == copy_assigned_kbb);
+      REQUIRE(copy_assigned_kbb == kbb);
+      REQUIRE(kbb == copy_constructed_kbb);
+      REQUIRE(copy_constructed_kbb == kbb);
+
+      // Transitive
+      if (copy_assigned_kbb == copy_constructed_kbb) {
+        REQUIRE(kbb == copy_constructed_kbb);
+      }
+    }
+
+    SECTION("Valid equality in the domain of ==") {
+      // If i and j are in the domain of ==, then `i != j` is equivalent to
+      // `!(i == j)`
+      REQUIRE((kbb != kbb) == !(kbb == kbb));
+      REQUIRE((kbb != copy_assigned_kbb) == !(kbb == copy_assigned_kbb));
+      REQUIRE((kbb != copy_constructed_kbb) == !(kbb == copy_constructed_kbb));
+      REQUIRE((kbb != end) == !(kbb == end));
+    }
+
+    SECTION("Valid dereferencing") {
+      // If i is dereferenceable, then the expression `(void)*i, *i` is
+      // equivalent to `*i`.
+      REQUIRE(((void) *kbb, *kbb) == (*kbb));
+
+      // If i and j are in the domain of ==, and i == j, then `*i` is equivalent
+      // to `*j`.
+      REQUIRE(*kbb == *copy_assigned_kbb);
+      REQUIRE(*kbb == *copy_constructed_kbb);
+    }
+
+    SECTION("Valid arrow operator") {
+      // If i is dereferenceable, then `i->m` is equivalent to `(*i).m`.
+      REQUIRE(kbb->rules == (*kbb).rules);
+    }
+
+    SECTION("Valid incrementing") {
+      // `(void)r++` is equivalent to `(void)++r`
+      KnuthBendixBacktrack& kbb1(kbb);
+      KnuthBendixBacktrack& kbb2(kbb);
+      REQUIRE(kbb1 == kbb2);
+      ++kbb1;
+      kbb2++;
+      REQUIRE(kbb1 == kbb2);
+
+      // `*r++` is equivalent to `T x = *r; ++r; return x;`
+      KnuthBendixBacktrack&                                  kbb3(kbb);
+      KnuthBendixBacktrack&                                  kbb4(kbb);
+      std::iterator_traits<KnuthBendixBacktrack>::value_type p = *kbb3;
+      ++kbb3;
+      REQUIRE(*kbb4++ == p);
+    }
   }
 
 }  // namespace libsemigroups
