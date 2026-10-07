@@ -247,10 +247,22 @@ namespace libsemigroups {
       return result;
     }
 
+    // substring type helper (start index, string length)
+    struct Substring {
+      size_t start;
+      size_t length;
+      
+      size_t end() const noexcept {
+        return start + length;
+      }
+      Substring() = default;
+      Substring(size_t s, size_t l) : start(s), length(l) {}
+    };
+
     // s-factorize
-    std::vector<std::pair<int, int>> sfactorize(std::string const& s) {
+    std::vector<Substring> sfactorize(std::string const& s) {
       // factor: (start index, length)
-      std::vector<std::pair<int, int>> factors;   
+      std::vector<Substring> factors;   
       libsemigroups::Ukkonen suffix_tree;
 
       const int n = s.length();
@@ -263,11 +275,36 @@ namespace libsemigroups {
           len++;
         }
         len = std::max(1, len);
-        factors.push_back({i, len});
+        factors.push_back(Substring(i, len));
         ukkonen::add_word(suffix_tree, s.begin() + i, s.begin() + i + len);
         i += len;
       }
       return factors;
+    }
+
+     // kolpakov-kucherov max run alg
+    std::vector<Substring> max_run(std::string const& s, std::vector<Substring> const& factors) {
+      libsemigroups::Ukkonen suffix_tree;
+      ukkonen::add_word(suffix_tree, s.cbegin(), s.cend());
+      libsemigroups::Ukkonen prefix_tree;
+      ukkonen::add_word(prefix_tree, s.crbegin(), s.crend());
+      int n = s.length();
+      std::vector<Substring> runs; 
+      
+      for (int i = 1; i < factors.size(); i++) {
+        int b = factors[i].start;
+        int p_max = factors[i + 1].length;
+        int l1 = -1, l2 = -1, p = -1;
+        while (l1 + l2 < p && p <= p_max) {
+          p++;
+          l1 = ukkonen::common_suffix_len(s.substr(0, b - p), s.substr(0, b)); 
+          l2 = ukkonen::common_prefix_len(s.substr(b, n - p), s.substr(b + p, n - b - p));
+        }
+        if (l1 + l2 < p) {
+          runs.push_back(Substring(b - l1, b + p + l2));
+        }
+      }
+      return runs;
     }
   }  // namespace
 
