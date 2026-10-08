@@ -23,12 +23,12 @@
 #include <type_traits>  // for is_default_constructible_v, is_copy_constructi...
 #include <vector>       // for vector
 
-#include "libsemigroups/adapters.hpp"      // for ReturnFalse
+#include "libsemigroups/adapters.hpp"               // for ReturnFalse
+#include "libsemigroups/knuth-bendix-iterator.hpp"  // for Knuth...
 #include "libsemigroups/presentation.hpp"  // for Presentation, presentation...
 #include "libsemigroups/to-word.hpp"       // for ToWord
 #include "libsemigroups/word-range-class.hpp"  // for WordRange
 
-#include "libsemigroups/detail/knuth-bendix-backtrack-impl.hpp"  // for Knuth...
 #include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemTrie
 
 namespace libsemigroups {

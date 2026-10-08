@@ -35,7 +35,7 @@
 
 #include "libsemigroups/presentation.hpp"  // for Presentation
 
-#include "rules.hpp"  // for Rule::native_word_type
+#include "libsemigroups/detail/rules.hpp"  // for Rule::native_word_type
 
 namespace libsemigroups {
   namespace detail {

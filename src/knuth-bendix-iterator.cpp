@@ -18,7 +18,7 @@
 
 // This file contains the implementation of the KnuthBendixBacktrack class
 
-#include "libsemigroups/detail/knuth-bendix-backtrack-impl.hpp"
+#include "libsemigroups/knuth-bendix-iterator.hpp"
 
 #include <algorithm>  // for equal, swap, fill, min
 
