@@ -215,18 +215,20 @@ namespace libsemigroups {
   //! to<Presentation<Word>>(k);
   //! \end_code_no_test
   //!
-  //! This function calls `to<Presentation<typename Result::native_word_type>`
-  //! on `k.presentation()` to return a presentation equivalent to the object
-  //! used to construct or initialise the Kambites object (if any) but of a
-  //! different type (for example, this function can be used to convert from
-  //! `std::string` to \ref native_word_type).
+  //! This function returns a new presentation of type \p Result by converting
+  //! the presentation currently stored in \p k to a different word type.
+  //! The returned presentation is independent of \p k.
+  //!
+  //! This function does not run \p k. Running \p k may incorporate additional
+  //! generating pairs into its stored presentation, so the result need not be
+  //! equivalent to the presentation originally supplied to \p k.
   //!
   //! \tparam Result the return type, also used for SFINAE, should be
   //! \c Presentation<T> for some type \c T.
   //! \tparam Word the type of the words in the input Kambites.
   //! \param k the Kambites object from which to obtain the rules.
   //!
-  //! \returns A value of type `Presentation<Word>`.
+  //! \returns A value of type \p Result.
   template <typename Result, typename Word>
   auto to(Kambites<Word>& k) -> std::enable_if_t<
       std::is_same_v<Presentation<typename Result::native_word_type>, Result>
@@ -248,15 +250,21 @@ namespace libsemigroups {
   //! to<Presentation<Word>>(k);
   //! \end_code_no_test
   //!
-  //! This function returns a reference to the presentation used to construct or
-  //! initialise the Kambites object (if any) via `k.presentation()`.
+  //! This function returns a const reference to `k.presentation()`, the
+  //! presentation stored inside \p k. This internal presentation is initialized
+  //! by copying or moving the presentation supplied to \p k.
+  //!
+  //! The returned reference must not outlive \p k and reflects subsequent
+  //! changes to its stored presentation. This function does not run \p k;
+  //! running \p k may incorporate additional generating pairs into the stored
+  //! presentation.
   //!
   //! \tparam Result the return type, also used for SFINAE, should be
   //! \c Presentation<T> for some type \c T.
   //! \tparam Word the type of the words in the input Kambites.
   //! \param k the Kambites object from which to obtain the rules.
   //!
-  //! \returns A value of type `Presentation<Word>`.
+  //! \returns A const reference to the presentation stored in \p k.
   template <typename Result, typename Word>
   auto to(Kambites<Word>& k) -> std::enable_if_t<
       std::is_same_v<Presentation<typename Result::native_word_type>, Result>
