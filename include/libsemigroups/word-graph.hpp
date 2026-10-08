@@ -17,13 +17,14 @@
 //
 
 // This file contains declarations related to word graphs (which are basically
-// deterministic automata without initial or accept states).
+// deterministic automata rooted at node 0, without accept states).
 
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_HPP_
 
 #include "word-graph-class.hpp"
 #include "word-graph-helpers.hpp"
+#include "word-graph-io.hpp"
 
 #include "word-graph-helpers-deprecated.hpp"
 
