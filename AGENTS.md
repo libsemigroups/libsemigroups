@@ -34,7 +34,10 @@ finitely presented semigroups and monoids. The build system is GNU Autotools.
   `jdm` remote (`github.com/james-d-mitchell/libsemigroups`).
 - Open PRs from the feature branch on the personal fork into `main` in
   `libsemigroups/libsemigroups`, unless the user explicitly requests a
-  different PR destination.
+  different PR destination. With GitHub CLI, specify the destination with
+  `gh pr create --repo libsemigroups/libsemigroups --base main
+  --head james-d-mitchell:<branch>`. An outdated `main` on the personal fork
+  does not change the PR destination or require a snapshot base branch.
 - Feature branches must track the branch of the same name on the personal
   fork, never `main`. Leave a new branch untracked until its first push, then
   use `git push --set-upstream jdm HEAD` (substitute the appropriate remote
