@@ -24,8 +24,7 @@
 #include <string>      // for basic_string
 #include <utility>     // for forward
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for SourceLineInfo
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_...
 
 #include "libsemigroups/alphabet-class.hpp"        // for Alphabet::init
 #include "libsemigroups/alphabet-helpers.hpp"      // for add_letter

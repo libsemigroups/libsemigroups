@@ -32,7 +32,6 @@
 #include <utility>      // for pair, forward
 #include <vector>       // for vector, operat...
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, oper...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 #include "libsemigroups/cong-common-helpers.hpp"    // for reduce
