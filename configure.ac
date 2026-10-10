@@ -25,6 +25,26 @@ AC_PROG_CXX
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_17(,[mandatory])
 
+dnl Keep Libtool's macOS deployment target in sync with the compiler. Without
+dnl this, Libtool assumes 10.0 and adds the deprecated -bind_at_load flag.
+AC_ARG_VAR([MACOSX_DEPLOYMENT_TARGET], [minimum macOS version to support])
+AS_CASE([$host_os], [darwin*], [
+    AC_MSG_CHECKING([for the macOS deployment target])
+    AS_IF([test -z "$MACOSX_DEPLOYMENT_TARGET"], [
+        AC_COMPUTE_INT([libsemigroups_macos_version],
+            [__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__], [],
+            [libsemigroups_macos_version=0])
+        AS_IF([test "$libsemigroups_macos_version" -ge 10000], [
+            MACOSX_DEPLOYMENT_TARGET="$((libsemigroups_macos_version / 10000)).$((libsemigroups_macos_version / 100 % 100)).$((libsemigroups_macos_version % 100))"
+        ], [test "$libsemigroups_macos_version" -ge 1000], [
+            MACOSX_DEPLOYMENT_TARGET="$((libsemigroups_macos_version / 100)).$((libsemigroups_macos_version / 10 % 10)).$((libsemigroups_macos_version % 10))"
+        ])
+    ])
+    AC_MSG_RESULT([${MACOSX_DEPLOYMENT_TARGET:-unknown}])
+])
+AM_CONDITIONAL([LIBSEMIGROUPS_MACOS_DEPLOYMENT_TARGET],
+    [test "${host_os#darwin}" != "$host_os" && test -n "$MACOSX_DEPLOYMENT_TARGET"])
+
 dnl ## Check for pthread, this seems to be required to compile with GCC
 AC_LANG_PUSH([C])
 AX_PTHREAD(,[AC_MSG_ERROR([pthread is required])])
@@ -39,6 +59,10 @@ dnl Checks for programs.
 AC_PROG_INSTALL
 AC_PROG_LN_S
 LT_INIT
+AS_CASE([$host_os], [darwin*], [
+    AS_IF([test -n "$MACOSX_DEPLOYMENT_TARGET"],
+        [LIBTOOL='MACOSX_DEPLOYMENT_TARGET="$(MACOSX_DEPLOYMENT_TARGET)" '"$LIBTOOL"])
+])
 
 # Checks for header files.
 AC_CHECK_HEADERS([limits.h stdint.h stdlib.h sys/time.h unistd.h pthread.h])
