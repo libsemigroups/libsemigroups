@@ -127,6 +127,7 @@
 #include "detail/kambites-nf.hpp"
 #include "detail/kbe.hpp"
 #include "detail/ke.hpp"
+#include "detail/knuth-bendix-backtrack-impl.hpp"
 #include "detail/knuth-bendix-impl.hpp"
 #include "detail/knuth-bendix-nf.hpp"
 #include "detail/matrix-common.hpp"
