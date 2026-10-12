@@ -250,69 +250,69 @@ namespace libsemigroups {
     }
 
     // bucket helper
-    void get_bound(std::vector<int> const& s, std::vector<int>& bucket, int k, bool tail) {
+    void get_bound(std::vector<int> const& s, std::vector<int>& b, int k, bool tail) {
       int n = s.size();
-      fill(bucket.begin(), bucket.end(), 0);
-      for (int i = 0; i < n; i++) bucket[s[i]]++;
+      fill(b.begin(), b.end(), 0);
+      for (int i = 0; i < n; i++) b[s[i]]++;
       for (int i = 0, sum = 0; i <= k; i++) {
-        sum += bucket[i];
-        bucket[i] = tail ? sum : sum - bucket[i];
+        sum += b[i];
+        b[i] = tail ? sum : sum - b[i];
       }
     }
 
     // implied S = 0, L = 1 as defined in sa_is
-    void sa_pass(std::vector<int> const& s, std::vector<int>& sa, std::vector<bool> const& labeled, int k) {
+    void induced_sort(std::vector<int> const& s, std::vector<int>& sa, std::vector<bool> const& t, int k) {
       int n = s.size();
-      std::vector<int> bucket(k + 1, 0);
+      std::vector<int> b(k + 1, 0);
 
       // l-type, insert at head
-      get_bound(s, bucket, k, false);
+      get_bound(s, b, k, false);
       for (int i = 0; i < n; i++) {
         int prev = sa[i] - 1;
-        if (prev >= 0 && labeled[prev] == 1) {
-          sa[bucket[s[prev]]++] = prev;
+        if (prev >= 0 && t[prev] == 1) {
+          sa[b[s[prev]]++] = prev;
         } 
       }
 
       // s-type, insert at tail
-      get_bound(s, bucket, k, true);
+      get_bound(s, b, k, true);
       for (int i = n - 1; i >= 0; i--) {
         int prev = sa[i] - 1;
-        if (prev >= 0 && labeled[prev] == 0) {
-          sa[--bucket[s[prev]]] = prev;
+        if (prev >= 0 && t[prev] == 0) {
+          sa[--b[s[prev]]] = prev;
         } 
       }
     }
 
-    // an upheaval: SA-IS construction
+    // SA-IS construction
+    // decided higher memory overhead for indexing as opposed to pointer manipulation
     void sa_is(std::vector<int> const& s, std::vector<int>& sa, size_t k) {
       size_t n = s.size();
       const bool S_TYPE = 0;
       const bool L_TYPE = 1; 
-      std::vector<bool> labeled(n, S_TYPE); 
+      std::vector<bool> t(n, S_TYPE); 
       std::vector<int> lms; 
 
-      // classify characters and find LMS characters
-      labeled[n - 1] = S_TYPE;
+      // classify characters and find LMS charactet[n - 1] = S_TYPE;
       for (int i = n - 2; i >= 0; i--) {
-        if (s[i] < s[i + 1]) labeled[i] = S_TYPE; 
-        else if (s[i] > s[i + 1]) labeled[i] = L_TYPE;
-        else labeled[i] = labeled[i + 1];
+        if (s[i] < s[i + 1]) t[i] = S_TYPE; 
+        else if (s[i] > s[i + 1]) t[i] = L_TYPE;
+        else t[i] = t[i + 1];
       }
 
       for (int i = 1; i < n; i++) {
-        if (labeled[i] == S_TYPE && labeled[i - 1] == L_TYPE) lms.push_back(i);
+        if (t[i] == S_TYPE && t[i - 1] == L_TYPE) lms.push_back(i);
       }
 
       // first pass: add LMS to end of buckets
       fill(sa.begin(), sa.end(), -1);
-      std::vector<int> bucket(k + 1, 0);
-      get_bound(s, bucket, k, true);
+      std::vector<int> b(k + 1, 0);
+      get_bound(s, b, k, true);
       for (int i = 0; i < lms.size(); i++) {
         int lms_i = lms[i];
-        sa[--bucket[s[lms_i]]] = lms_i;
+        sa[--b[s[lms_i]]] = lms_i;
       }
-      sa_pass(s, sa, labeled, k);
+      induced_sort(s, sa, t, k);
 
       // assign lexicographical ranks to produce a reduced array
       int rank = 0;
@@ -322,15 +322,15 @@ namespace libsemigroups {
       for (int i = 0; i < n; i++) {
         int curr = sa[i];
 
-        if (curr > 0 && labeled[curr] == S_TYPE && labeled[curr - 1] == L_TYPE) {
+        if (curr > 0 && t[curr] == S_TYPE && t[curr - 1] == L_TYPE) {
           if (prev == -1) ranked[curr] = 0;
           else {
             int step = 0;
             while (true) {
-              if (s[curr + step] == s[prev + step] && labeled[curr + step] == labeled[prev + step]) step++;
+              if (s[curr + step] == s[prev + step] && t[curr + step] == t[prev + step]) step++;
               else { rank++; break; }
-              bool curr_lms = step > 0 && labeled[curr + step] == S_TYPE && labeled[curr + step - 1] == L_TYPE; 
-              bool prev_lms = step > 0 && labeled[prev + step] == S_TYPE && labeled[prev + step - 1] == L_TYPE; 
+              bool curr_lms = step > 0 && t[curr + step] == S_TYPE && t[curr + step - 1] == L_TYPE; 
+              bool prev_lms = step > 0 && t[prev + step] == S_TYPE && t[prev + step - 1] == L_TYPE; 
               if (curr_lms && prev_lms) break;
               if (curr_lms || prev_lms) { rank++; break; }
             }
@@ -356,14 +356,15 @@ namespace libsemigroups {
 
       // substitute into final sa array
       fill(sa.begin(), sa.end(), -1);
-      get_bound(s, bucket, k, true);
+      get_bound(s, b, k, true);
       for (int i = r_sa.size() - 1; i >= 0; i--) {
         int lms_i = lms[r_sa[i]];
-        sa[--bucket[s[lms_i]]] = lms_i;
+        sa[--b[s[lms_i]]] = lms_i;
       }
-      sa_pass(s, sa, labeled, k);
+      induced_sort(s, sa, t, k);
     }
-
+    
+    // assume constant alphabet
     std::vector<int> build_sa(std::string const& word) {
       int n = word.length();
       std::vector<int> s(n + 1, 0);
@@ -374,41 +375,68 @@ namespace libsemigroups {
       }
       s[n] = 0; // sentinel $
       sa_is(s, sa, 256);
-      
       return sa; 
     }
 
-    // // substring type helper (start index, string length)
-    // struct Substring {
-    //   size_t start;
-    //   size_t length;
+    std::vector<int> build_isa(std::string const& s) {
+      int n = s.size();
+      std::vector<int> sa = build_sa(s);
+      std::vector<int> isa(n);
+        for (int i = 0; i < n; i++) {
+            isa[sa[i]] = i;
+        }
+      return isa;
+    }
+
+    // defined in kasai 2001 lcp
+    void get_height(std::string const& a, std::vector<int> const& pos, std::vector<int>& height) {
+      int n = a.size();
+      std::vector<int> rank(n); 
+      // std::vector<int> height(n);
+      for (int i = 1; i < n; i++) {
+        rank[pos[i]] = i;
+      }
+
+      int h = 0;
+      for (int i = 1; i < n; i++) {
+        if (rank[i] > 1) {
+          int k = pos[rank[i] - 1];   // look at the left adjacent leaf
+          while (a[i + h] == a[k + h]) {
+            h++;
+          }
+          height[rank[i]] = h;
+          if (h > 0) h = h - 1;
+        }
+      }
+      // return height;
+    }
+
+    // do we just do a rudimentary linear min search? 
+    int lcp(std::string const& a, std::vector<int> const& pos, std::vector<int> const& height, int x, int z) {
+      int n = a.size();
+      int min = 0;
+      int local_lcp;
+      for (int y = x + 1; y <= z; z++) {
+        local_lcp = height[a[pos[y]]]; 
+        if (local_lcp < min) {
+          min = local_lcp; 
+        }
+      }
+      return min;
+    }
+
+
+    // outputs non-increasing list of lyndon factors (maximal runs)
+    // firstmost element is longest lyndon prefix
+    void lyndon_factorize(std::string const& s) {
       
-    //   size_t end() const noexcept {
-    //     return start + length;
-    //   }
-    //   Substring() = default;
-    //   Substring(size_t s, size_t l) : start(s), length(l) {}
-    // };
+    }
 
-    // // outputs non-increasing list of lyndon factors (maximal runs)
-    // // firstmost element is longest lyndon prefix
-    // std::vector<Substring> lyndon_factorize(std::string const& s) {
-    //   std::stack<Substring> factors;
-    //   int n = s.size();
-    //   for (int i = n - 1; i >= 0; i--) {
-    //     while (factors.size() > 1) {
-    //       Substring j = factors.top();
-    //       factors.pop();
-    //     }
-    //     factors.push();
-    //   } 
-    // }
+    // optimize for ideal final expression
+    // policy: select in descending order for longest factor
+    std::string factors_to_expression(std::vector<std::pair<int,int>> const& factors) {
 
-    // // optimize for ideal final expression
-    // // policy: select in descending order for longest factor
-    // std::string factors_to_expression(std::vector<Substring> const& factors) {
-
-    // }
+    }
 
   }  // namespace
 
