@@ -1021,6 +1021,74 @@ namespace libsemigroups {
       return p;
     }
 
+    // Theorem 3.32 of https://arxiv.org/pdf/2507.05497.
+    Presentation<word_type> full_domain_partition_monoid_CEF26(size_t n) {
+      //Monoid exists for all n>0 but this presentation is only valid for n>=4
+      if (n < 4) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "expected 1st argument to be at least 4, found {}", n);
+      }
+
+      Presentation<word_type> p;
+      p.alphabet(n+1);
+      p.contains_empty_word(true);
+      
+      size_t t_index = n - 1;
+      size_t e_index = n;
+
+      word_type t = {t_index};
+      word_type e = {e_index};
+      word_type w = {1, 2, 0, 1};
+      
+      for (size_t i = 0; i < n-1; ++i) {
+        //3.18
+        presentation::add_rule_no_checks(p, word_type({i, i}), {}); 
+        //3.19
+        for (size_t j = i+2; j < n-1; ++j){
+            presentation::add_rule_no_checks(p, word_type({i, j}), word_type({j, i})); 
+        }
+        //3.20
+        if (i != n-2) {
+            presentation::add_rule_no_checks(p, word_type({i, i+1, i}), word_type({i+1,i,i+1})); 
+        }
+
+        if (i > 1) {
+            //3.23
+            presentation::add_rule_no_checks(p, word_type({i}) + t, t + word_type({i}));
+            //3.24
+            presentation::add_rule_no_checks(p, word_type({i}) + e, e + word_type({i}));
+        }
+      }
+
+      //3.21
+      presentation::add_rule_no_checks(p, pow(t, 2), t);
+      presentation::add_rule_no_checks(p, t, e + t);
+      presentation::add_rule_no_checks(p, t, word_type({0}) + t);
+      //3.22
+      presentation::add_rule_no_checks(p, pow(e, 2), e);
+      presentation::add_rule_no_checks(p, e, t + e); 
+      presentation::add_rule_no_checks(p, e, word_type({0}) + e);
+      presentation::add_rule_no_checks(p, e, e + word_type({0}));
+
+      //3.25
+      presentation::add_rule_no_checks(p, t + word_type({0, 1}) + t, t + word_type({0, 1, 0}));
+      //3.26
+      presentation::add_rule_no_checks(p, t + word_type({1}) + t + word_type({1}), word_type({1}) + t + word_type({1}) + t);
+      //3.27
+      presentation::add_rule_no_checks(p, e + word_type({1}) + e + word_type({1}), word_type({1}) + e + word_type({1}) + e);
+      //3.28
+      presentation::add_rule_no_checks(p, t + word_type({1}) + e + word_type({1}), word_type({1}) + e + word_type({1}) + t);
+
+      //3.29
+      presentation::add_rule_no_checks(p, w + t + w + t, t + w + t + w);
+      //3.30
+      presentation::add_rule_no_checks(p, e + w + e + w, w + e + w + e);
+      //3.31
+      presentation::add_rule_no_checks(p, t + w + e + w, w + e + w + t);
+
+      return p;
+    }
+
     // From Theorem 5 in 10.21136/MB.2007.134125
     // https://dml.cz/bitstream/handle/10338.dmlcz/134125/MathBohem_132-2007-3_6.pdf
     Presentation<word_type> singular_brauer_monoid_MM07(size_t n) {

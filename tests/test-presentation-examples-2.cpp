@@ -387,4 +387,31 @@ namespace libsemigroups {
     REQUIRE(grammic_monoid(6).rules.size() == 210);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "113",                          
+                          "Full Domain Partition Monoid small n",
+                          "[extreme][presentation-examples]") {
+    REQUIRE_THROWS_AS(full_domain_partition_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_domain_partition_monoid_CEF26(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_domain_partition_monoid(3), LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_domain_partition_monoid_CEF26(3), LibsemigroupsException);
+
+    auto p = full_domain_partition_monoid(4);
+    REQUIRE(p.alphabet().size() == 5);
+    REQUIRE(p.rules.size() == 22*2);
+    REQUIRE(p.contains_empty_word());
+    REQUIRE_NOTHROW(p.throw_if_bad_alphabet_or_rules());
+    
+    auto q = full_domain_partition_monoid(5);
+    REQUIRE(q.alphabet().size() == 6);
+    REQUIRE(q.rules.size() == 28*2);
+    REQUIRE(q.contains_empty_word());
+    REQUIRE_NOTHROW(q.throw_if_bad_alphabet_or_rules());
+    //check size of monoids
+    KnuthBendix kb(congruence_kind::twosided, p);
+    REQUIRE(kb.number_of_classes() == 855);
+    kb.init(congruence_kind::twosided, q);
+    REQUIRE(kb.number_of_classes() == 19921);
+  }
+
 }  // namespace libsemigroups
