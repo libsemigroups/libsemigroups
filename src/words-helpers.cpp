@@ -378,20 +378,20 @@ namespace libsemigroups {
       return sa; 
     }
 
-    std::vector<int> build_isa(std::string const& s) {
-      int n = s.size();
-      std::vector<int> sa = build_sa(s);
-      std::vector<int> isa(n);
-        for (int i = 0; i < n; i++) {
-            isa[sa[i]] = i;
-        }
-      return isa;
-    }
+    // std::vector<int> build_isa(std::string const& s) {
+    //   int n = s.size();
+    //   std::vector<int> sa = build_sa(s);
+    //   std::vector<int> isa(n);
+    //     for (int i = 0; i < n; i++) {
+    //         isa[sa[i]] = i;
+    //     }
+    //   return isa;
+    // }
 
     // defined in kasai 2001 lcp
-    void get_height(std::string const& a, std::vector<int> const& pos, std::vector<int>& height) {
+    void get_height(std::vector<int> const& a, std::vector<int> const& pos, std::vector<int>& height) {
       int n = a.size();
-      std::vector<int> rank(n); 
+      std::vector<int> rank(n); // define rank as the inverse of pos (isa definition)
       // std::vector<int> height(n);
       for (int i = 1; i < n; i++) {
         rank[pos[i]] = i;
@@ -411,12 +411,19 @@ namespace libsemigroups {
       // return height;
     }
 
-    // do we just do a rudimentary linear min search? 
-    int lcp(std::string const& a, std::vector<int> const& pos, std::vector<int> const& height, int x, int z) {
+    // int rmq(int l, int r, const std::vector<int>& height, const SparseTable& st) {
+
+    // }
+
+    // lcp(A_pos[x], A_pos[z]) = min_{x < y <= z} {lcp(A_pos[y -1], A_pos[y])}
+    // returns length of lcp
+    int lcp(std::vector<int> const& a, std::vector<int> const& pos, std::vector<int> const& height, int x, int z) {
+      if (x == z) return 0;
+
       int n = a.size();
-      int min = 0;
+      int min = INT_MAX;
       int local_lcp;
-      for (int y = x + 1; y <= z; z++) {
+      for (int y = x + 1; y <= z; y++) {
         local_lcp = height[a[pos[y]]]; 
         if (local_lcp < min) {
           min = local_lcp; 
@@ -425,19 +432,85 @@ namespace libsemigroups {
       return min;
     }
 
+    int lcs(std::vector<int> const& rev_a, std::vector<int> const& rev_pos, std::vector<int> const& rev_height, int x, int z) {
+      if (x == z) return 0;
 
-    // outputs non-increasing list of lyndon factors (maximal runs)
-    // firstmost element is longest lyndon prefix
-    void lyndon_factorize(std::string const& s) {
+      int n = rev_a.size();
+      int rev_x = (n - 1) - x;
+      int rev_z = (n - 1) - z;
       
+      int start = rev_x;
+      int end = rev_z;
+      if (start > end) {
+        start = rev_z;
+        end = rev_x;
+      }
+
+      int min = INT_MAX;
+      int local_lcp;
+      for (int y = start + 1; y <= end; y++) {
+        local_lcp = rev_height[rev_a[rev_pos[y]]]; 
+        if (local_lcp < min) {
+          min = local_lcp; 
+        }
+      }
+      return min;
     }
 
-    // optimize for ideal final expression
-    // policy: select in descending order for longest factor
-    std::string factors_to_expression(std::vector<std::pair<int,int>> const& factors) {
+    bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& pos, std::vector<int> const& height, int i, int j, int i_v, int j_v) {
+      int len = j - i + 1;
+      int len_v = j_v - i_v + 1;
 
+      int lcp_len = lcp(w, pos, height, i, i_v);
+      if (lcp_len < len && lcp_len < len_v) {
+        return w[i + lcp_len] < w[i_v + lcp_len]; // compare first different character, sentinel = 0 guarantees no equivalence
+      }
+      return len < len_v; // shorter string is lexicographically smaller
     }
 
+    // outputs lyndon array with longest lyndon word at each index (storing end index j at i)
+    void build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& pos, std::vector<int> const& height, std::vector<int>& ly_arr) {
+      int n = w.size();
+      std::stack<std::pair<int,int>> S;
+      S.push({n - 1, n - 1}); // push sentinel
+      for (int i = n - 2; i >= 0; i--) {
+        int j = i;
+        while (S.size() > 1) {
+          int i_v = S.top().first;
+          int j_v = S.top().second;
+          if (!is_lex_smaller(w, pos, height, i, j, i_v, j_v)) break; // fails merge
+          j = j_v;  // merge string uv using previously established lyndon word at right (top of stack)
+          S.pop();
+        }
+        S.push({i, j});
+        ly_arr[i] = j;
+      }
+    }
+
+    struct Run{
+      int i;  // start index
+      int j;  // end index
+      int p;  // period
+    };
+
+    void max_runs(std::vector<int> const& w, std::vector<int> const& pos, std::vector<int> const& height, 
+                  std::vector<int> const& rev_w, std::vector<int> const& rev_pos, std::vector<int> const& rev_height, 
+                  std::vector<int>& ly_arr, std::vector<Run>& runs) {
+      int n = w.size();
+      for (int i = 0; i < n - 1; i++) {
+        int j = ly_arr[i];
+        int p = j - i + 1; 
+        int i_prime; 
+        int j_prime; 
+        
+        i_prime = (i > 0) ? i - lcs(rev_w, rev_pos, rev_height, i - 1, j) : i; // candidate left extension
+        j_prime = j + lcp(w, pos, height, i, j + 1);               // candidate right extension
+
+        if ((j_prime - i_prime + 1) >= 2*p && i_prime < i && i <= i_prime + p) {
+          runs.push_back({i_prime, j_prime, p});
+        }
+      }         
+    }
   }  // namespace
 
   namespace detail {
