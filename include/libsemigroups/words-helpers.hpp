@@ -643,7 +643,6 @@ namespace libsemigroups {
     // ADD DOCUMENTATION
     std::string operator""_c(const char* w, size_t n);
     std::string operator""_c(const char* w);
-
   }  // namespace literals
 
 }  // namespace libsemigroups
