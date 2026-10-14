@@ -148,10 +148,13 @@ namespace libsemigroups {
           lhs.begin(),
           std::mismatch(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()).first);
 
-      size_t const suffix_index = std::distance(
-          lhs.rbegin(),
-          std::mismatch(lhs.rbegin(), lhs.rend(), rhs.rbegin(), rhs.rend())
-              .first);
+      size_t const suffix_index
+          = std::distance(lhs.rbegin(),
+                          std::mismatch(lhs.rbegin(),
+                                        lhs.rend() - prefix_index,
+                                        rhs.rbegin(),
+                                        rhs.rend() - prefix_index)
+                              .first);
 
       if (prefix_index == rhs.size()) {
         // If the rhs is empty, set the indices to be UNDEFINED to indicate no
@@ -229,11 +232,13 @@ namespace libsemigroups {
         }
         all_rules_oriented = false;
 
+        LIBSEMIGROUPS_ASSERT(lhs_start <= lhs_end);
         size_t const lhs_count = std::count(
             lhs.begin() + lhs_start, lhs.begin() + lhs_end, letter);
 
         size_t const rhs_start = subword_start_indices.get(r, c + 1);
         size_t const rhs_end   = subword_end_indices[c + 1];
+        LIBSEMIGROUPS_ASSERT(rhs_start <= rhs_end);
         size_t const rhs_count = std::count(
             rhs.begin() + rhs_start, rhs.begin() + rhs_end, letter);
 

@@ -320,4 +320,71 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "110",
+                          "grammic_monoid arguments and small ranks",
+                          "[quick][presentation-examples]") {
+    REQUIRE_THROWS_AS(grammic_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(grammic_monoid_LXZ26(0), LibsemigroupsException);
+
+    auto p = grammic_monoid(1);
+    REQUIRE(p.alphabet() == 0_w);
+    REQUIRE(p.rules.empty());
+    REQUIRE(p.contains_empty_word());
+    REQUIRE(grammic_monoid(2) == plactic_monoid(2));
+
+    for (size_t n = 1; n <= 6; ++n) {
+      p = grammic_monoid(n);
+      REQUIRE(p == grammic_monoid_LXZ26(n));
+      REQUIRE(p.alphabet().size() == n);
+      REQUIRE(p.contains_empty_word());
+      REQUIRE_NOTHROW(p.throw_if_bad_alphabet_or_rules());
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "111",
+                          "grammic_monoid(3) is a proper plactic quotient",
+                          "[quick][presentation-examples]") {
+    auto rg = ReportGuard(false);
+    auto p  = grammic_monoid(3);
+    REQUIRE(p.rules.size() == 18);
+    KnuthBendix kb(congruence_kind::twosided, p);
+    REQUIRE(is_obviously_infinite(kb));
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    // The b = c case: cbab = bacb, equivalently cbab = bcab.
+    REQUIRE(knuth_bendix::contains(kb, 2101_w, 1021_w));
+    REQUIRE(knuth_bendix::contains(kb, 2101_w, 1201_w));
+    REQUIRE(!knuth_bendix::contains(kb, 01_w, 10_w));
+    REQUIRE(!knuth_bendix::contains(kb, 0_w, 00_w));
+    REQUIRE(knuth_bendix::normal_forms(kb).min(4).max(4).count() == 38);
+
+    KnuthBendix plactic(congruence_kind::twosided, plactic_monoid(3));
+    REQUIRE(!knuth_bendix::contains(plactic, 2101_w, 1021_w));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "112",
+                          "grammic_monoid relations for larger ranks",
+                          "[quick][presentation-examples]") {
+    auto p        = grammic_monoid(4);
+    auto expected = plactic_monoid(4).rules;
+    // All five instances of dbac = badc with a < b <= c < d.
+    expected.insert(expected.end(),
+                    {2101_w,
+                     1021_w,
+                     3101_w,
+                     1031_w,
+                     3102_w,
+                     1032_w,
+                     3202_w,
+                     2032_w,
+                     3212_w,
+                     2132_w});
+    REQUIRE(p.rules == expected);
+    // There are binomial(n + 1, 4) extra relations.
+    REQUIRE(grammic_monoid(5).rules.size() == 110);
+    REQUIRE(grammic_monoid(6).rules.size() == 210);
+  }
+
 }  // namespace libsemigroups

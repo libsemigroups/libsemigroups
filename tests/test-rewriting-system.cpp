@@ -27,8 +27,7 @@
 #include <utility>      // for pair, forward
 #include <vector>       // for vector, operat...
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/adapters.hpp"       // for ReturnFalse
 #include "libsemigroups/aho-corasick.hpp"   // for dot

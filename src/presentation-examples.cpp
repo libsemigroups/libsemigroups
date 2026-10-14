@@ -456,6 +456,25 @@ namespace libsemigroups {
       return p;
     }
 
+    // Theorem 3.17 of https://doi.org/10.1007/s00233-026-10671-1.
+    Presentation<word_type> grammic_monoid_LXZ26(size_t n) {
+      auto p = plactic_monoid_Knu70(n);
+      p.contains_empty_word(true);
+      // Use dbac = badc as in the abstract; the Knuth relations identify
+      // badc and bdac, the right-hand side used in Equation (3.3).
+      for (size_t d = 2; d < n; ++d) {
+        for (size_t c = 1; c < d; ++c) {
+          for (size_t b = 1; b <= c; ++b) {
+            for (size_t a = 0; a < b; ++a) {
+              presentation::add_rule_no_checks(
+                  p, word_type({d, b, a, c}), word_type({b, a, d, c}));
+            }
+          }
+        }
+      }
+      return p;
+    }
+
     Presentation<word_type> catalan_monoid_Sol96(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(

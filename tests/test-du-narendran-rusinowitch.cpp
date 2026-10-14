@@ -584,4 +584,16 @@ namespace libsemigroups {
     REQUIRE(du_narendran_rusinowitch(p) == "");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
+                          "016",
+                          "Overlapping common suffix and prefix",
+                          "[quick]") {
+    Presentation<std::string> p;
+    p.alphabet(std::string("ab"));
+    p.rules = {"abba", "aba"};
+    REQUIRE(du_narendran_rusinowitch(p) == "ba");
+    p.rules = {"aba", "abba"};
+    REQUIRE(du_narendran_rusinowitch(p).empty());
+  }
+
 }  // namespace libsemigroups

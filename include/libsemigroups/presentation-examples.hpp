@@ -55,6 +55,7 @@ namespace libsemigroups {
     Presentation<word_type> dual_symmetric_inverse_monoid(size_t n);
     Presentation<word_type> fibonacci_semigroup(size_t r, size_t n);
     Presentation<word_type> full_transformation_monoid(size_t n);
+    Presentation<word_type> grammic_monoid(size_t n);
     Presentation<word_type> hypo_plactic_monoid(size_t n);
     Presentation<word_type> monogenic_semigroup(size_t m, size_t r);
     Presentation<word_type> motzkin_monoid(size_t n);
@@ -335,6 +336,22 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is not odd.
     [[nodiscard]] Presentation<word_type>
     full_transformation_monoid_MW24_b(size_t n);
+
+    //! \brief A presentation for the grammic monoid.
+    //!
+    //! This function returns a monoid presentation defining the grammic monoid
+    //! with \p n generators, as in Theorem 3.17 of \cite Luo2026aa.
+    //!
+    //! This presentation consists of the Knuth relations from
+    //! \ref plactic_monoid_Knu70 together with \f$dbac = badc\f$ for all
+    //! \f$0 \leq a < b \leq c < d < n\f$.
+    //!
+    //! \param n the number of generators.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 1`.
+    [[nodiscard]] Presentation<word_type> grammic_monoid_LXZ26(size_t n);
 
     //! \brief A presentation for the hypoplactic monoid.
     //!
@@ -1018,6 +1035,20 @@ namespace libsemigroups {
     //! * `full_transformation_monoid_MW24_a`;
     //! * `full_transformation_monoid_MW24_b`.
     [[nodiscard]] Presentation<word_type> full_transformation_monoid(size_t n);
+
+    //! \copydoc grammic_monoid_LXZ26
+    //!
+    //! \note
+    //! This function performs exactly the same as `grammic_monoid_LXZ26`,
+    //! and exists as a convenience function for when a presentation for the
+    //! grammic monoid is required, but the relations of the presentation are
+    //! not important.
+    //!
+    //! \sa
+    //! `grammic_monoid_LXZ26`.
+    [[nodiscard]] inline Presentation<word_type> grammic_monoid(size_t n) {
+      return grammic_monoid_LXZ26(n);
+    }
 
     //! \copydoc hypo_plactic_monoid_Nov00
     //!
