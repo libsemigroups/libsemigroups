@@ -93,7 +93,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "aba"s, "cc"s);
 
     KnuthBendixIterator       kbb(p, 100, 50);
-    KnuthBendixIterator const end = end_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixIterator const end = end_knuth_bendix_iterator(p, 100, 50);
 
     std::vector<std::vector<std::string>> expected_rules{
         {"baa",
@@ -249,8 +249,8 @@ namespace libsemigroups {
 
     v4::ToWord to_word("abc");
 
-    KnuthBendixIterator kbb = begin_knuth_bendix_backtrack(p, 100, 50);
-    KnuthBendixIterator end = end_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixIterator kbb = begin_knuth_bendix_iterator(p, 100, 50);
+    KnuthBendixIterator end = end_knuth_bendix_iterator(p, 100, 50);
     detail::RewritingSystemTrie<NoOrder> rws;
 
     while (kbb != end) {
@@ -281,7 +281,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
 
     KnuthBendixIterator       kbb;
-    KnuthBendixIterator const end = end_knuth_bendix_backtrack(p, 20, 10);
+    KnuthBendixIterator const end = end_knuth_bendix_iterator(p, 20, 10);
 
     size_t total   = 0;
     size_t success = 0;
@@ -312,8 +312,8 @@ namespace libsemigroups {
 
     v4::ToWord to_word("abcd");
 
-    KnuthBendixIterator kbb = begin_knuth_bendix_backtrack(p, 100, 50);
-    KnuthBendixIterator end = end_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixIterator kbb = begin_knuth_bendix_iterator(p, 100, 50);
+    KnuthBendixIterator end = end_knuth_bendix_iterator(p, 100, 50);
     detail::RewritingSystemTrie<NoOrder> rws;
 
     while (kbb != end) {
@@ -338,7 +338,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "a"s, ""s);
 
     KnuthBendixIterator       kbb(p, 100, 20);
-    KnuthBendixIterator const end = end_knuth_bendix_backtrack(p, 100, 20);
+    KnuthBendixIterator const end = end_knuth_bendix_iterator(p, 100, 20);
 
     size_t index = 0;
     while (kbb != end) {
@@ -367,7 +367,7 @@ namespace libsemigroups {
     KnuthBendixIterator       kbb(p, 100, 50);
     KnuthBendixIterator       copy_constructed_kbb(kbb);
     KnuthBendixIterator       copy_assigned_kbb = kbb;
-    KnuthBendixIterator const end = end_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixIterator const end = end_knuth_bendix_iterator(p, 100, 50);
 
     SECTION("Satisfies EqualityComparable") {
       // Reflexive
