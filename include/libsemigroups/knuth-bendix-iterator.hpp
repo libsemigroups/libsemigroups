@@ -23,8 +23,8 @@
 // * Replace RewritingSystemBacktrack with something that derives from
 //   RewritingSystemBase
 
-#ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
-#define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
+#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_ITERATOR_HPP_
+#define LIBSEMIGROUPS_KNUTH_BENDIX_ITERATOR_HPP_
 
 #include <cstddef>   // for ptrdiff_t
 #include <iterator>  // for forward_iterator_tag, distance
@@ -197,14 +197,14 @@ namespace libsemigroups {
     std::vector<std::pair<size_t, size_t>> _state_history;
   };
 
-  inline KnuthBendixIterator begin_knuth_bendix_backtrack(
+  inline KnuthBendixIterator begin_knuth_bendix_iterator(
       Presentation<KnuthBendixIterator::native_word_type> const& p,
       size_t                                                     max_depth,
       size_t max_queue_size) {
     return KnuthBendixIterator(p, max_depth, max_queue_size);
   }
 
-  inline KnuthBendixIterator end_knuth_bendix_backtrack(
+  inline KnuthBendixIterator end_knuth_bendix_iterator(
       Presentation<KnuthBendixIterator::native_word_type> const&,
       size_t,
       size_t) {
@@ -212,4 +212,4 @@ namespace libsemigroups {
   }
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
+#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_ITERATOR_HPP_
