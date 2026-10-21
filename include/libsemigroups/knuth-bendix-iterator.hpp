@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the declaration of the KnuthBendixBacktrack class
+// This file contains the declaration of the KnuthBendixIterator class
 
 // TODO:
 // * Reporting
@@ -71,7 +71,7 @@ namespace libsemigroups {
     };
 
     // TODO: Make max_number_of_rules a template parameter?
-    class KnuthBendixBacktrack {
+    class KnuthBendixIterator {
      public:
       //////////////////////////////////////////////////////////////////////
       // Public aliases
@@ -92,19 +92,19 @@ namespace libsemigroups {
       // Constructors
       //////////////////////////////////////////////////////////////////////
 
-      // Default constructed KnuthBendixBacktrack represents the end iterator
-      KnuthBendixBacktrack();
+      // Default constructed KnuthBendixIterator represents the end iterator
+      KnuthBendixIterator();
 
-      KnuthBendixBacktrack(KnuthBendixBacktrack const&)            = default;
-      KnuthBendixBacktrack(KnuthBendixBacktrack&&)                 = default;
-      KnuthBendixBacktrack& operator=(KnuthBendixBacktrack const&) = default;
-      KnuthBendixBacktrack& operator=(KnuthBendixBacktrack&&)      = default;
+      KnuthBendixIterator(KnuthBendixIterator const&)            = default;
+      KnuthBendixIterator(KnuthBendixIterator&&)                 = default;
+      KnuthBendixIterator& operator=(KnuthBendixIterator const&) = default;
+      KnuthBendixIterator& operator=(KnuthBendixIterator&&)      = default;
 
-      ~KnuthBendixBacktrack() = default;
+      ~KnuthBendixIterator() = default;
 
-      KnuthBendixBacktrack(Presentation<native_word_type> const& p,
-                           size_t                                max_depth,
-                           size_t max_queue_size);
+      KnuthBendixIterator(Presentation<native_word_type> const& p,
+                          size_t                                max_depth,
+                          size_t                                max_queue_size);
 
       //////////////////////////////////////////////////////////////////////
       // Public member functions
@@ -113,12 +113,12 @@ namespace libsemigroups {
       // This is a weak comparison that is mainly intended to check if an
       // iterator is at the end
       [[nodiscard]] bool
-      operator==(KnuthBendixBacktrack const& that) const noexcept {
+      operator==(KnuthBendixIterator const& that) const noexcept {
         return _rule_index == that._rule_index;
       }
 
       [[nodiscard]] bool
-      operator!=(KnuthBendixBacktrack const& that) const noexcept {
+      operator!=(KnuthBendixIterator const& that) const noexcept {
         return !(operator==(that));
       }
 
@@ -131,11 +131,11 @@ namespace libsemigroups {
       }
 
       // prefix increment
-      KnuthBendixBacktrack& operator++();
+      KnuthBendixIterator& operator++();
 
       // postfix - not noexcept because the prefix increment isn't
-      KnuthBendixBacktrack operator++(int) {
-        return detail::default_postfix_increment<KnuthBendixBacktrack>(*this);
+      KnuthBendixIterator operator++(int) {
+        return detail::default_postfix_increment<KnuthBendixIterator>(*this);
       }
 
      private:
@@ -198,18 +198,18 @@ namespace libsemigroups {
       std::vector<std::pair<size_t, size_t>> _state_history;
     };
 
-    inline KnuthBendixBacktrack begin_knuth_bendix_backtrack(
-        Presentation<KnuthBendixBacktrack::native_word_type> const& p,
-        size_t                                                      max_depth,
+    inline KnuthBendixIterator begin_knuth_bendix_backtrack(
+        Presentation<KnuthBendixIterator::native_word_type> const& p,
+        size_t                                                     max_depth,
         size_t max_queue_size) {
-      return KnuthBendixBacktrack(p, max_depth, max_queue_size);
+      return KnuthBendixIterator(p, max_depth, max_queue_size);
     }
 
-    inline KnuthBendixBacktrack end_knuth_bendix_backtrack(
-        Presentation<KnuthBendixBacktrack::native_word_type> const&,
+    inline KnuthBendixIterator end_knuth_bendix_backtrack(
+        Presentation<KnuthBendixIterator::native_word_type> const&,
         size_t,
         size_t) {
-      return KnuthBendixBacktrack();
+      return KnuthBendixIterator();
     }
   }  // namespace detail
 }  // namespace libsemigroups
