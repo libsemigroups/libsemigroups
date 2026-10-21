@@ -70,6 +70,38 @@ namespace libsemigroups {
 
   }  // namespace detail
 
+  //! \ingroup knuth_bendix_group
+  //!
+  //! \brief An input iterator over confluent rewriting systems that uses the
+  //! Knuth-Bendix algorithm.
+  //!
+  //! This class enumerates confluent rewriting systems obtained from a
+  //! backtracking version of the Knuth-Bendix algorithm. The iterator is
+  //! bounded by a maximum rewriting depth and a maximum number of rules in the
+  //! rewriting system.
+  //!
+  //! A default-constructed iterator is an end iterator. The comparison
+  //! operators are weak comparisons intended primarily for comparing an
+  //! iterator with the value returned by
+  //! \ref end_knuth_bendix_iterator.
+  //!
+  //! \par Example
+  //! \code
+  //! Presentation<std::string> p;
+  //! p.alphabet("ab"s);
+  //! presentation::add_rule(p, "a"s, "b"s);
+  //! KnuthBendixIterator kbb(p, 100, 10);
+  //!
+  //! Presentation<std::string> expected;
+  //! expected.alphabet("ab"s);
+  //! expected.rules = {"a", "b"};
+  //!
+  //! *kbb == expected;  //-> true
+  //!
+  //! ++kbb;
+  //! expected.rules = {"b", "a"};
+  //! *kbb == expected;  //-> true
+  //! \endcode
   // TODO: Make max_number_of_rules a template parameter?
   class KnuthBendixIterator {
    public:
@@ -77,31 +109,67 @@ namespace libsemigroups {
     // Public aliases
     //////////////////////////////////////////////////////////////////////
 
+    //! The type of words in the presentation.
     using native_word_type =
         typename detail::RewritingSystemBacktrack::native_word_type;
-    using value_type        = Presentation<native_word_type>;
-    using reference         = value_type const&;
-    using const_reference   = value_type const&;
-    using difference_type   = std::ptrdiff_t;
-    using size_type         = size_t;
-    using const_pointer     = value_type const*;
-    using pointer           = value_type const*;
-    using iterator_category = std::forward_iterator_tag;
+
+    //! The type of the presentations produced by the iterator.
+    using value_type = Presentation<native_word_type>;
+
+    //! The type returned when dereferencing the iterator.
+    using reference = value_type const&;
+
+    //! The const reference type returned when dereferencing the iterator.
+    using const_reference = value_type const&;
+
+    //! The type used to represent distances between iterators.
+    using difference_type = std::ptrdiff_t;
+
+    //! An unsigned integral type used for sizes.
+    using size_type = size_t;
+
+    //! The pointer type returned by \ref operator->.
+    using const_pointer = value_type const*;
+
+    //! The const pointer type returned by \ref operator->.
+    using pointer = value_type const*;
+
+    //! The iterator category.
+    using iterator_category = std::input_iterator_tag;
 
     //////////////////////////////////////////////////////////////////////
     // Constructors
     //////////////////////////////////////////////////////////////////////
 
-    // Default constructed KnuthBendixIterator represents the end iterator
+    //! Constructs an end iterator.
     KnuthBendixIterator();
 
-    KnuthBendixIterator(KnuthBendixIterator const&)            = default;
-    KnuthBendixIterator(KnuthBendixIterator&&)                 = default;
-    KnuthBendixIterator& operator=(KnuthBendixIterator const&) = default;
-    KnuthBendixIterator& operator=(KnuthBendixIterator&&)      = default;
+    //! Default copy constructor.
+    KnuthBendixIterator(KnuthBendixIterator const&) = default;
 
+    //! Default move constructor.
+    KnuthBendixIterator(KnuthBendixIterator&&) = default;
+
+    //! Default copy assignment operator.
+    KnuthBendixIterator& operator=(KnuthBendixIterator const&) = default;
+
+    //! Default move assignment operator.
+    KnuthBendixIterator& operator=(KnuthBendixIterator&&) = default;
+
+    //! Default destructor.
     ~KnuthBendixIterator() = default;
 
+    //! \brief Constructs an iterator over the complete rewriting systems of
+    //! \p p.
+    //!
+    //! This function constructs an iterator over the complete rewriting systems
+    //! of \p p.
+    //!
+    //! \param p the input presentation.
+    //! \param max_depth the maximum number of rewriting steps permitted while
+    //!    rewriting a word.
+    //! \param max_queue_size the maximum number of rules permitted to be
+    //!    stored while processing the presentation.
     KnuthBendixIterator(Presentation<native_word_type> const& p,
                         size_t                                max_depth,
                         size_t                                max_queue_size);
@@ -110,30 +178,66 @@ namespace libsemigroups {
     // Public member functions
     //////////////////////////////////////////////////////////////////////
 
-    // This is a weak comparison that is mainly intended to check if an
-    // iterator is at the end
+    //! \brief Tests whether two iterators are equal.
+    //!
+    //! This function tests whether two iterators are equal. This is a weak
+    //! comparison that is mainly intended to check if an iterator is at the
+    //! end. As a result, it is possible for iterators over different
+    //! presentations to compare equal.
+    //!
+    //! \param that the iterator to compare with.
+    //!
+    //! \returns `true` if the iterators compare equal, and `false` otherwise.
     [[nodiscard]] bool
     operator==(KnuthBendixIterator const& that) const noexcept {
       return _rule_index == that._rule_index;
     }
 
+    //! \brief Tests whether two iterators compare unequal.
+    //!
+    //! Tests whether two iterators compare unequal.
+    //!
+    //! \param that the iterator to compare with.
+    //!
+    //! \returns `true` if the iterators compare unequal, and `false`
+    //! otherwise.
     [[nodiscard]] bool
     operator!=(KnuthBendixIterator const& that) const noexcept {
       return !(operator==(that));
     }
 
+    //! \brief Returns the current confluent rewriting system.
+    //!
+    //! Returns the current confluent rewriting system, represented as an
+    //! oriented presentation.
+    //!
+    //! \returns A const reference to the current presentation.
     [[nodiscard]] const_reference operator*() const noexcept {
       return _output_presentation;
     }
 
+    //! \brief Returns a const pointer to the current confluent rewriting
+    //! system.
+    //!
+    //! Returns a constpointer to the current confluent rewriting system.
+    //!
+    //! \returns A const pointer to the current presentation.
     [[nodiscard]] const_pointer operator->() const noexcept {
       return &(_output_presentation);
     }
 
-    // prefix increment
+    //! \brief Advances the iterator to the next confluent rewriting system.
+    //!
+    //! Advances the iterator to the next confluent rewriting system.
+    //!
+    //! \returns A reference to this iterator.
     KnuthBendixIterator& operator++();
 
-    // postfix - not noexcept because the prefix increment isn't
+    //! \brief Advances the iterator to the next confluent rewriting system.
+    //!
+    //! Advances the iterator to the next confluent rewriting system.
+    //!
+    //! \returns The previous iterator value.
     KnuthBendixIterator operator++(int) {
       return detail::default_postfix_increment<KnuthBendixIterator>(*this);
     }
@@ -197,6 +301,22 @@ namespace libsemigroups {
     std::vector<std::pair<size_t, size_t>> _state_history;
   };
 
+  //! \relates KnuthBendixIterator
+  //!
+  //! \brief Returns an iterator to the first confluent rewriting system.
+  //!
+  //! This function returns an iterator to the first confluent rewriting system
+  //! over \p p, with the constraints that no word is rewritten more than
+  //! \p max_depth times, and that no more than \p max_queue_size rules are
+  //! stored while processing the presentation.
+  //!
+  //! \param p the presentation to complete.
+  //! \param max_depth the maximum number of rewriting steps performed while
+  //! processing a word.
+  //! \param max_queue_size the maximum number of rules stored while
+  //! processing the presentation.
+  //!
+  //! \returns An iterator to the first completed presentation.
   inline KnuthBendixIterator begin_knuth_bendix_iterator(
       Presentation<KnuthBendixIterator::native_word_type> const& p,
       size_t                                                     max_depth,
@@ -204,6 +324,23 @@ namespace libsemigroups {
     return KnuthBendixIterator(p, max_depth, max_queue_size);
   }
 
+  //! \relates KnuthBendixIterator
+  //!
+  //! \brief Returns the end iterator for the confluent rewriting systems.
+  //!
+  //! This function returns an end iterator for the confluent rewriting systems
+  //! over \p p, with the constraints that no word is rewritten more than
+  //! \p max_depth times, and that no more than \p max_queue_size rules are
+  //! stored while processing the presentation.
+  //!
+  //! \param 1 the presentation passed to
+  //! \ref begin_knuth_bendix_iterator.
+  //! \param 1 the maximum rewriting depth passed to
+  //! \ref begin_knuth_bendix_iterator.
+  //! \param 1 the maximum queue size passed to
+  //! \ref begin_knuth_bendix_iterator.
+  //!
+  //! \returns A default-constructed end iterator.
   inline KnuthBendixIterator end_knuth_bendix_iterator(
       Presentation<KnuthBendixIterator::native_word_type> const&,
       size_t,
