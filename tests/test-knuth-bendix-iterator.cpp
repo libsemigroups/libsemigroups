@@ -422,9 +422,9 @@ namespace libsemigroups {
       // `*r++` is equivalent to `T x = *r; ++r; return x;`
       KnuthBendixIterator&                                  kbb3(kbb);
       KnuthBendixIterator&                                  kbb4(kbb);
-      std::iterator_traits<KnuthBendixIterator>::value_type p = *kbb3;
+      std::iterator_traits<KnuthBendixIterator>::value_type p2 = *kbb3;
       ++kbb3;
-      REQUIRE(*kbb4++ == p);
+      REQUIRE(*kbb4++ == p2);
     }
   }
 
