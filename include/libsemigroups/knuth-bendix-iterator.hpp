@@ -22,8 +22,6 @@
 // * Reporting
 // * Replace RewritingSystemBacktrack with something that derives from
 //   RewritingSystemBase
-// * Move out of detail and document
-// * Rename to contain the word 'iterator'
 
 #ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
 #define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
@@ -70,148 +68,148 @@ namespace libsemigroups {
       std::vector<std::pair<native_word_type, native_word_type>> _rule_stack;
     };
 
-    // TODO: Make max_number_of_rules a template parameter?
-    class KnuthBendixIterator {
-     public:
-      //////////////////////////////////////////////////////////////////////
-      // Public aliases
-      //////////////////////////////////////////////////////////////////////
-
-      using native_word_type =
-          typename RewritingSystemBacktrack::native_word_type;
-      using value_type        = Presentation<native_word_type>;
-      using reference         = value_type const&;
-      using const_reference   = value_type const&;
-      using difference_type   = std::ptrdiff_t;
-      using size_type         = size_t;
-      using const_pointer     = value_type const*;
-      using pointer           = value_type const*;
-      using iterator_category = std::forward_iterator_tag;
-
-      //////////////////////////////////////////////////////////////////////
-      // Constructors
-      //////////////////////////////////////////////////////////////////////
-
-      // Default constructed KnuthBendixIterator represents the end iterator
-      KnuthBendixIterator();
-
-      KnuthBendixIterator(KnuthBendixIterator const&)            = default;
-      KnuthBendixIterator(KnuthBendixIterator&&)                 = default;
-      KnuthBendixIterator& operator=(KnuthBendixIterator const&) = default;
-      KnuthBendixIterator& operator=(KnuthBendixIterator&&)      = default;
-
-      ~KnuthBendixIterator() = default;
-
-      KnuthBendixIterator(Presentation<native_word_type> const& p,
-                          size_t                                max_depth,
-                          size_t                                max_queue_size);
-
-      //////////////////////////////////////////////////////////////////////
-      // Public member functions
-      //////////////////////////////////////////////////////////////////////
-
-      // This is a weak comparison that is mainly intended to check if an
-      // iterator is at the end
-      [[nodiscard]] bool
-      operator==(KnuthBendixIterator const& that) const noexcept {
-        return _rule_index == that._rule_index;
-      }
-
-      [[nodiscard]] bool
-      operator!=(KnuthBendixIterator const& that) const noexcept {
-        return !(operator==(that));
-      }
-
-      [[nodiscard]] const_reference operator*() const noexcept {
-        return _output_presentation;
-      }
-
-      [[nodiscard]] const_pointer operator->() const noexcept {
-        return &(_output_presentation);
-      }
-
-      // prefix increment
-      KnuthBendixIterator& operator++();
-
-      // postfix - not noexcept because the prefix increment isn't
-      KnuthBendixIterator operator++(int) {
-        return detail::default_postfix_increment<KnuthBendixIterator>(*this);
-      }
-
-     private:
-      bool backtrack();
-
-      bool rewrite_pair(native_word_type& lhs, native_word_type& rhs) const;
-
-      bool add_pending_rule(native_word_type&& lhs, native_word_type&& rhs);
-
-      bool process_single_overlap(native_word_type const&                u_lhs,
-                                  native_word_type const&                u_rhs,
-                                  native_word_type const&                v_lhs,
-                                  native_word_type const&                v_rhs,
-                                  native_word_type::const_iterator const it);
-
-      bool
-      process_subword_overlap(native_word_type const&                u_lhs,
-                              native_word_type const&                u_rhs,
-                              native_word_type const&                v_lhs,
-                              native_word_type const&                v_rhs,
-                              native_word_type::const_iterator const start);
-
-      bool process_onesided_overlaps(native_word_type const& u_lhs,
-                                     native_word_type const& u_rhs,
-                                     native_word_type const& v_lhs,
-                                     native_word_type const& v_rhs);
-
-      // Find and process overlaps of the form
-      // 1. U on the left:
-      //    U = AB -> X
-      //    V = BC -> Y
-      //    XC <- ABC -> AY
-      // 2. U on the right:
-      //    U = BC -> X
-      //    V = AB -> Y
-      //    YB <- ABC -> AX
-      // 3. U a subword:
-      //    U = B -> X
-      //    V = ABC -> Y
-      //    Y <- ABC -> AXC
-      // We don't need to check that V is a subword because U is already reduced
-      // with respect to V.
-      //
-      // Return false if, at any stage, rewriting fails
-      bool process_overlaps(native_word_type const& u_lhs,
-                            native_word_type const& u_rhs,
-                            native_word_type const& v_lhs,
-                            native_word_type const& v_rhs);
-
-      void set_output_presentation();
-
-      size_t                         _max_queue_size;
-      size_t                         _max_rewriting_depth;
-      std::vector<Orientation>       _orientations;
-      Presentation<native_word_type> _output_presentation;
-      size_t                         _rule_index;
-      std::vector<std::pair<native_word_type, native_word_type>> _rules;
-      RewritingSystemBacktrack                                   _rws;
-      bool                                   _should_backtrack;
-      std::vector<std::pair<size_t, size_t>> _state_history;
-    };
-
-    inline KnuthBendixIterator begin_knuth_bendix_backtrack(
-        Presentation<KnuthBendixIterator::native_word_type> const& p,
-        size_t                                                     max_depth,
-        size_t max_queue_size) {
-      return KnuthBendixIterator(p, max_depth, max_queue_size);
-    }
-
-    inline KnuthBendixIterator end_knuth_bendix_backtrack(
-        Presentation<KnuthBendixIterator::native_word_type> const&,
-        size_t,
-        size_t) {
-      return KnuthBendixIterator();
-    }
   }  // namespace detail
+
+  // TODO: Make max_number_of_rules a template parameter?
+  class KnuthBendixIterator {
+   public:
+    //////////////////////////////////////////////////////////////////////
+    // Public aliases
+    //////////////////////////////////////////////////////////////////////
+
+    using native_word_type =
+        typename detail::RewritingSystemBacktrack::native_word_type;
+    using value_type        = Presentation<native_word_type>;
+    using reference         = value_type const&;
+    using const_reference   = value_type const&;
+    using difference_type   = std::ptrdiff_t;
+    using size_type         = size_t;
+    using const_pointer     = value_type const*;
+    using pointer           = value_type const*;
+    using iterator_category = std::forward_iterator_tag;
+
+    //////////////////////////////////////////////////////////////////////
+    // Constructors
+    //////////////////////////////////////////////////////////////////////
+
+    // Default constructed KnuthBendixIterator represents the end iterator
+    KnuthBendixIterator();
+
+    KnuthBendixIterator(KnuthBendixIterator const&)            = default;
+    KnuthBendixIterator(KnuthBendixIterator&&)                 = default;
+    KnuthBendixIterator& operator=(KnuthBendixIterator const&) = default;
+    KnuthBendixIterator& operator=(KnuthBendixIterator&&)      = default;
+
+    ~KnuthBendixIterator() = default;
+
+    KnuthBendixIterator(Presentation<native_word_type> const& p,
+                        size_t                                max_depth,
+                        size_t                                max_queue_size);
+
+    //////////////////////////////////////////////////////////////////////
+    // Public member functions
+    //////////////////////////////////////////////////////////////////////
+
+    // This is a weak comparison that is mainly intended to check if an
+    // iterator is at the end
+    [[nodiscard]] bool
+    operator==(KnuthBendixIterator const& that) const noexcept {
+      return _rule_index == that._rule_index;
+    }
+
+    [[nodiscard]] bool
+    operator!=(KnuthBendixIterator const& that) const noexcept {
+      return !(operator==(that));
+    }
+
+    [[nodiscard]] const_reference operator*() const noexcept {
+      return _output_presentation;
+    }
+
+    [[nodiscard]] const_pointer operator->() const noexcept {
+      return &(_output_presentation);
+    }
+
+    // prefix increment
+    KnuthBendixIterator& operator++();
+
+    // postfix - not noexcept because the prefix increment isn't
+    KnuthBendixIterator operator++(int) {
+      return detail::default_postfix_increment<KnuthBendixIterator>(*this);
+    }
+
+   private:
+    bool backtrack();
+
+    bool rewrite_pair(native_word_type& lhs, native_word_type& rhs) const;
+
+    bool add_pending_rule(native_word_type&& lhs, native_word_type&& rhs);
+
+    bool process_single_overlap(native_word_type const&                u_lhs,
+                                native_word_type const&                u_rhs,
+                                native_word_type const&                v_lhs,
+                                native_word_type const&                v_rhs,
+                                native_word_type::const_iterator const it);
+
+    bool process_subword_overlap(native_word_type const&                u_lhs,
+                                 native_word_type const&                u_rhs,
+                                 native_word_type const&                v_lhs,
+                                 native_word_type const&                v_rhs,
+                                 native_word_type::const_iterator const start);
+
+    bool process_onesided_overlaps(native_word_type const& u_lhs,
+                                   native_word_type const& u_rhs,
+                                   native_word_type const& v_lhs,
+                                   native_word_type const& v_rhs);
+
+    // Find and process overlaps of the form
+    // 1. U on the left:
+    //    U = AB -> X
+    //    V = BC -> Y
+    //    XC <- ABC -> AY
+    // 2. U on the right:
+    //    U = BC -> X
+    //    V = AB -> Y
+    //    YB <- ABC -> AX
+    // 3. U a subword:
+    //    U = B -> X
+    //    V = ABC -> Y
+    //    Y <- ABC -> AXC
+    // We don't need to check that V is a subword because U is already reduced
+    // with respect to V.
+    //
+    // Return false if, at any stage, rewriting fails
+    bool process_overlaps(native_word_type const& u_lhs,
+                          native_word_type const& u_rhs,
+                          native_word_type const& v_lhs,
+                          native_word_type const& v_rhs);
+
+    void set_output_presentation();
+
+    size_t                           _max_queue_size;
+    size_t                           _max_rewriting_depth;
+    std::vector<detail::Orientation> _orientations;
+    Presentation<native_word_type>   _output_presentation;
+    size_t                           _rule_index;
+    std::vector<std::pair<native_word_type, native_word_type>> _rules;
+    detail::RewritingSystemBacktrack                           _rws;
+    bool                                   _should_backtrack;
+    std::vector<std::pair<size_t, size_t>> _state_history;
+  };
+
+  inline KnuthBendixIterator begin_knuth_bendix_backtrack(
+      Presentation<KnuthBendixIterator::native_word_type> const& p,
+      size_t                                                     max_depth,
+      size_t max_queue_size) {
+    return KnuthBendixIterator(p, max_depth, max_queue_size);
+  }
+
+  inline KnuthBendixIterator end_knuth_bendix_backtrack(
+      Presentation<KnuthBendixIterator::native_word_type> const&,
+      size_t,
+      size_t) {
+    return KnuthBendixIterator();
+  }
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BACKTRACK_IMPL_HPP_
