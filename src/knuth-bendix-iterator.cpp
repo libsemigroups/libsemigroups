@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the implementation of the KnuthBendixBacktrack class
+// This file contains the implementation of the KnuthBendixIterator class
 
 #include "libsemigroups/knuth-bendix-iterator.hpp"
 
@@ -80,10 +80,10 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////
-    // KnuthBendixBacktrack - Constructors
+    // KnuthBendixIterator - Constructors
     //////////////////////////////////////////////////////////////////////
 
-    KnuthBendixBacktrack::KnuthBendixBacktrack()
+    KnuthBendixIterator::KnuthBendixIterator()
         : _max_queue_size{},
           _max_rewriting_depth{},
           _orientations{},
@@ -94,7 +94,7 @@ namespace libsemigroups {
           _should_backtrack{},
           _state_history{} {};
 
-    KnuthBendixBacktrack::KnuthBendixBacktrack(
+    KnuthBendixIterator::KnuthBendixIterator(
         Presentation<native_word_type> const& p,
         size_t                                max_depth,
         size_t                                max_queue_size)
@@ -118,11 +118,11 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////
-    // KnuthBendixBacktrack - Public member functions
+    // KnuthBendixIterator - Public member functions
     //////////////////////////////////////////////////////////////////////
 
     // prefix increment
-    KnuthBendixBacktrack& KnuthBendixBacktrack::operator++() {
+    KnuthBendixIterator& KnuthBendixIterator::operator++() {
       if (_should_backtrack) {
         _should_backtrack = false;
         if (!backtrack()) {
@@ -173,10 +173,10 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////
-    // KnuthBendixBacktrack - Private member functions
+    // KnuthBendixIterator - Private member functions
     //////////////////////////////////////////////////////////////////////
 
-    bool KnuthBendixBacktrack::backtrack() {
+    bool KnuthBendixIterator::backtrack() {
       if (_state_history.empty()) {
         _rule_index = UNDEFINED;
         return false;
@@ -217,8 +217,8 @@ namespace libsemigroups {
       return true;
     }
 
-    bool KnuthBendixBacktrack::rewrite_pair(native_word_type& lhs,
-                                            native_word_type& rhs) const {
+    bool KnuthBendixIterator::rewrite_pair(native_word_type& lhs,
+                                           native_word_type& rhs) const {
       if (_rws.rewrite(lhs, _max_rewriting_depth)
           && _rws.rewrite(rhs, _max_rewriting_depth)) {
         return true;
@@ -227,8 +227,8 @@ namespace libsemigroups {
       return false;
     }
 
-    bool KnuthBendixBacktrack::add_pending_rule(native_word_type&& lhs,
-                                                native_word_type&& rhs) {
+    bool KnuthBendixIterator::add_pending_rule(native_word_type&& lhs,
+                                               native_word_type&& rhs) {
       if (lhs == rhs) {
         return true;
       }
@@ -241,7 +241,7 @@ namespace libsemigroups {
       return true;
     }
 
-    bool KnuthBendixBacktrack::process_single_overlap(
+    bool KnuthBendixIterator::process_single_overlap(
         native_word_type const&                u_lhs,
         native_word_type const&                u_rhs,
         native_word_type const&                v_lhs,
@@ -267,7 +267,7 @@ namespace libsemigroups {
       return add_pending_rule(std::move(x), std::move(y));
     }
 
-    bool KnuthBendixBacktrack::process_subword_overlap(
+    bool KnuthBendixIterator::process_subword_overlap(
         native_word_type const&                u_lhs,
         native_word_type const&                u_rhs,
         native_word_type const&                v_lhs,
@@ -288,7 +288,7 @@ namespace libsemigroups {
       return add_pending_rule(std::move(x), std::move(y));
     }
 
-    bool KnuthBendixBacktrack::process_onesided_overlaps(
+    bool KnuthBendixIterator::process_onesided_overlaps(
         native_word_type const& u_lhs,
         native_word_type const& u_rhs,
         native_word_type const& v_lhs,
@@ -329,10 +329,10 @@ namespace libsemigroups {
     // with respect to V.
     //
     // Return false if, at any stage, rewriting fails
-    bool KnuthBendixBacktrack::process_overlaps(native_word_type const& u_lhs,
-                                                native_word_type const& u_rhs,
-                                                native_word_type const& v_lhs,
-                                                native_word_type const& v_rhs) {
+    bool KnuthBendixIterator::process_overlaps(native_word_type const& u_lhs,
+                                               native_word_type const& u_rhs,
+                                               native_word_type const& v_lhs,
+                                               native_word_type const& v_rhs) {
       // U on the left
       if (!process_onesided_overlaps(u_lhs, u_rhs, v_lhs, v_rhs)) {
         return false;
@@ -361,7 +361,7 @@ namespace libsemigroups {
       return true;
     }
 
-    void KnuthBendixBacktrack::set_output_presentation() {
+    void KnuthBendixIterator::set_output_presentation() {
       _output_presentation.rules.clear();
       for (auto const& [lhs, rhs] : _rws.rules()) {
         presentation::add_rule_no_checks(_output_presentation, lhs, rhs);

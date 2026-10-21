@@ -15,9 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains tests for the class KnuthBendixBacktrack
+// This file contains tests for the class KnuthBendixIterator
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, oper...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 #include <type_traits>  // for is_default_constructible_v, is_copy_constructi...
@@ -32,7 +31,7 @@
 #include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemTrie
 
 namespace libsemigroups {
-  using KnuthBendixBacktrack = detail::KnuthBendixBacktrack;
+  using KnuthBendixIterator = detail::KnuthBendixIterator;
   using std::literals::operator""s;
   using literals::     operator""_w;
 
@@ -85,7 +84,7 @@ namespace libsemigroups {
     // runtime checks
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
                           "000",
                           "simple test 0",
                           "[quick]") {
@@ -94,8 +93,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "baa"s, "c"s);
     presentation::add_rule(p, "aba"s, "cc"s);
 
-    KnuthBendixBacktrack       kbb(p, 100, 50);
-    KnuthBendixBacktrack const end
+    KnuthBendixIterator       kbb(p, 100, 50);
+    KnuthBendixIterator const end
         = detail::end_knuth_bendix_backtrack(p, 100, 50);
 
     std::vector<std::vector<std::string>> expected_rules{
@@ -166,14 +165,14 @@ namespace libsemigroups {
     REQUIRE(index == 3);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
                           "001",
                           "simple test 1",
                           "[quick]") {
     Presentation<std::string> p;
     p.alphabet("ab"s);
     presentation::add_rule(p, "a"s, "b"s);
-    KnuthBendixBacktrack kbb(p, 100, 10);
+    KnuthBendixIterator kbb(p, 100, 10);
 
     Presentation<std::string> expected;
     expected.alphabet("ab"s);
@@ -186,7 +185,7 @@ namespace libsemigroups {
     REQUIRE(*kbb == expected);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
                           "002",
                           "constructors",
                           "[quick]") {
@@ -194,13 +193,13 @@ namespace libsemigroups {
     p.alphabet("ab"s);
     presentation::add_rule(p, "a"s, "b"s);
 
-    KnuthBendixBacktrack kbb(p, 100, 10);
-    KnuthBendixBacktrack copy(kbb);
+    KnuthBendixIterator kbb(p, 100, 10);
+    KnuthBendixIterator copy(kbb);
     REQUIRE(copy == kbb);
     REQUIRE(*copy == *kbb);
     REQUIRE(copy.operator->() != kbb.operator->());
 
-    KnuthBendixBacktrack moved(std::move(copy));
+    KnuthBendixIterator moved(std::move(copy));
     REQUIRE(moved == kbb);
     REQUIRE(*moved == *kbb);
 
@@ -210,7 +209,7 @@ namespace libsemigroups {
     REQUIRE(kbb->rules == std::vector<std::string>{"a", "b"});
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
                           "003",
                           "accessors and comparison",
                           "[quick]") {
@@ -218,8 +217,8 @@ namespace libsemigroups {
     p.alphabet("ab"s);
     presentation::add_rule(p, "a"s, "b"s);
 
-    KnuthBendixBacktrack kbb_1(p, 100, 10);
-    KnuthBendixBacktrack kbb_2(p, 100, 10);
+    KnuthBendixIterator kbb_1(p, 100, 10);
+    KnuthBendixIterator kbb_2(p, 100, 10);
 
     auto const& presentation = *kbb_1;
     REQUIRE(kbb_1.operator->() == &presentation);
@@ -241,7 +240,7 @@ namespace libsemigroups {
     REQUIRE(before != kbb_1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
                           "004",
                           "confluence",
                           "[quick]") {
@@ -252,8 +251,8 @@ namespace libsemigroups {
 
     v4::ToWord to_word("abc");
 
-    KnuthBendixBacktrack kbb = detail::begin_knuth_bendix_backtrack(p, 100, 50);
-    KnuthBendixBacktrack end = detail::end_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixIterator kbb = detail::begin_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixIterator end = detail::end_knuth_bendix_backtrack(p, 100, 50);
     detail::RewritingSystemTrie<NoOrder> rws;
 
     while (kbb != end) {
@@ -268,7 +267,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
                           "005",
                           "one relation monoids",
                           "[extreme]") {
@@ -283,8 +282,8 @@ namespace libsemigroups {
     p.alphabet("ab"s);
     p.contains_empty_word(true);
 
-    KnuthBendixBacktrack       kbb;
-    KnuthBendixBacktrack const end
+    KnuthBendixIterator       kbb;
+    KnuthBendixIterator const end
         = detail::end_knuth_bendix_backtrack(p, 20, 10);
 
     size_t total   = 0;
@@ -295,7 +294,7 @@ namespace libsemigroups {
       for (auto const& rhs : rhss) {
         ++total;
         p.rules = {rhs, lhs};
-        kbb     = KnuthBendixBacktrack(p, 20, 10);
+        kbb     = KnuthBendixIterator(p, 20, 10);
         if (kbb != end) {
           ++success;
         }
@@ -305,7 +304,7 @@ namespace libsemigroups {
     REQUIRE(success == 27407);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
                           "006",
                           "confluence x2",
                           "[quick]") {
@@ -316,8 +315,8 @@ namespace libsemigroups {
 
     v4::ToWord to_word("abcd");
 
-    KnuthBendixBacktrack kbb = detail::begin_knuth_bendix_backtrack(p, 100, 50);
-    KnuthBendixBacktrack end = detail::end_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixIterator kbb = detail::begin_knuth_bendix_backtrack(p, 100, 50);
+    KnuthBendixIterator end = detail::end_knuth_bendix_backtrack(p, 100, 50);
     detail::RewritingSystemTrie<NoOrder> rws;
 
     while (kbb != end) {
@@ -332,7 +331,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
                           "007",
                           "empty words",
                           "[quick]") {
@@ -341,8 +340,8 @@ namespace libsemigroups {
     p.alphabet("a"s);
     presentation::add_rule(p, "a"s, ""s);
 
-    KnuthBendixBacktrack       kbb(p, 100, 20);
-    KnuthBendixBacktrack const end
+    KnuthBendixIterator       kbb(p, 100, 20);
+    KnuthBendixIterator const end
         = detail::end_knuth_bendix_backtrack(p, 100, 20);
 
     size_t index = 0;
@@ -355,12 +354,12 @@ namespace libsemigroups {
     REQUIRE(index == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendixBacktrack",
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
                           "008",
                           "input iterator",
                           "[quick]") {
     // static checks
-    is_input_iterator<KnuthBendixBacktrack>();
+    is_input_iterator<KnuthBendixIterator>();
 
     // runtime checks
 
@@ -369,10 +368,10 @@ namespace libsemigroups {
     presentation::add_rule(p, "baa"s, "c"s);
     presentation::add_rule(p, "aba"s, "cc"s);
 
-    KnuthBendixBacktrack       kbb(p, 100, 50);
-    KnuthBendixBacktrack       copy_constructed_kbb(kbb);
-    KnuthBendixBacktrack       copy_assigned_kbb = kbb;
-    KnuthBendixBacktrack const end
+    KnuthBendixIterator       kbb(p, 100, 50);
+    KnuthBendixIterator       copy_constructed_kbb(kbb);
+    KnuthBendixIterator       copy_assigned_kbb = kbb;
+    KnuthBendixIterator const end
         = detail::end_knuth_bendix_backtrack(p, 100, 50);
 
     SECTION("Satisfies EqualityComparable") {
@@ -418,17 +417,17 @@ namespace libsemigroups {
 
     SECTION("Valid incrementing") {
       // `(void)r++` is equivalent to `(void)++r`
-      KnuthBendixBacktrack& kbb1(kbb);
-      KnuthBendixBacktrack& kbb2(kbb);
+      KnuthBendixIterator& kbb1(kbb);
+      KnuthBendixIterator& kbb2(kbb);
       REQUIRE(kbb1 == kbb2);
       ++kbb1;
       kbb2++;
       REQUIRE(kbb1 == kbb2);
 
       // `*r++` is equivalent to `T x = *r; ++r; return x;`
-      KnuthBendixBacktrack&                                  kbb3(kbb);
-      KnuthBendixBacktrack&                                  kbb4(kbb);
-      std::iterator_traits<KnuthBendixBacktrack>::value_type p = *kbb3;
+      KnuthBendixIterator&                                  kbb3(kbb);
+      KnuthBendixIterator&                                  kbb4(kbb);
+      std::iterator_traits<KnuthBendixIterator>::value_type p = *kbb3;
       ++kbb3;
       REQUIRE(*kbb4++ == p);
     }
