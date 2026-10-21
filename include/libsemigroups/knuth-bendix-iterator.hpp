@@ -88,19 +88,19 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! Presentation<std::string> p;
-  //! p.alphabet("ab"s);
-  //! presentation::add_rule(p, "a"s, "b"s);
+  //! p.alphabet("ab");
+  //! presentation::add_rule(p, "a", "b");
   //! KnuthBendixIterator kbb(p, 100, 10);
   //!
   //! Presentation<std::string> expected;
-  //! expected.alphabet("ab"s);
+  //! expected.alphabet("ab");
   //! expected.rules = {"a", "b"};
   //!
-  //! *kbb == expected;  //-> true
+  //! (*kbb == expected);  //-> true
   //!
   //! ++kbb;
   //! expected.rules = {"b", "a"};
-  //! *kbb == expected;  //-> true
+  //! (*kbb == expected);  //-> true
   //! \endcode
   // TODO: Make max_number_of_rules a template parameter?
   class KnuthBendixIterator {
