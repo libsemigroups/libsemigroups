@@ -43,7 +43,6 @@ namespace libsemigroups {
       size_t num_rewrites = 0;
 
       while (pos < word.size()) {
-        LIBSEMIGROUPS_ASSERT(pos >= 0);
         ++pos;
         for (auto start = word.begin(); start < word.begin() + pos; ++start) {
           // This is linear in the size of the stack, so using a map might have
