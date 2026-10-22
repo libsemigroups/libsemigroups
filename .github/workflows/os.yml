@@ -17,6 +17,13 @@ jobs:
       - uses: jirutka/setup-alpine@v1
         with:
           branch: v3.15
+          # Avoid Alpine GitLab timeouts while keeping the same binary and checksum.
+          # This link comes from a comment at:
+          # https://github.com/jirutka/setup-alpine/issues/32
+          # TODO: ideally remove this if when the issue linked above has a less
+          # fragile solution
+          apk-tools-url: >-
+            https://raw.githubusercontent.com/quickjs-ng/apk-for-ci/ad4912db43383941249b342f23d6232b2046ffd5/apk.static#!sha256!34bb1a96f0258982377a289392d4ea9f3f4b767a4bb5806b1b87179b79ad8a1c
       - name: Alpine/musl versions . . .
         run: |
           cat /etc/alpine-release
