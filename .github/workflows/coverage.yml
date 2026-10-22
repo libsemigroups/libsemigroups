@@ -15,7 +15,7 @@ jobs:
   coverage:
     name: Upload quick test report
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color

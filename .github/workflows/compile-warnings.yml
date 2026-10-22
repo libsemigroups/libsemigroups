@@ -9,7 +9,7 @@ jobs:
   tests:
     name: ${{ matrix.compiler }}
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       CXX: ccache ${{ matrix.compiler }}
       CXXFLAGS: -fdiagnostics-color -O0 -g -Werror

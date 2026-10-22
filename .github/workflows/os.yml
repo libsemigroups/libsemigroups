@@ -11,7 +11,7 @@ jobs:
     defaults:
       run:
         shell: alpine.sh {0}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: jirutka/setup-alpine@v1
@@ -95,7 +95,7 @@ jobs:
   ubuntu-32:
     name: Ubuntu-32
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       GH_ACTIONS_ABI: 32
       GH_ACTIONS_ARCH: x86
