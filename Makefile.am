@@ -106,6 +106,7 @@ pkginclude_HEADERS += include/libsemigroups/kambites-helpers.hpp
 pkginclude_HEADERS += include/libsemigroups/kambites.hpp
 pkginclude_HEADERS += include/libsemigroups/knuth-bendix-class.hpp
 pkginclude_HEADERS += include/libsemigroups/knuth-bendix-class.tpp
+pkginclude_HEADERS += include/libsemigroups/knuth-bendix-iterator.hpp
 pkginclude_HEADERS += include/libsemigroups/knuth-bendix-helpers.hpp
 pkginclude_HEADERS += include/libsemigroups/knuth-bendix-helpers.tpp
 pkginclude_HEADERS += include/libsemigroups/knuth-bendix.hpp
@@ -1115,6 +1116,7 @@ if LIBSEMIGROUPS_HPCOMBI_ENABLED
 ## about there being no symbols.
 libsemigroups_la_SOURCES += src/hpcombi.cpp
 endif
+libsemigroups_la_SOURCES += src/knuth-bendix-iterator.cpp
 libsemigroups_la_SOURCES += src/max-plus-trunc-mat.cpp
 libsemigroups_la_SOURCES += src/obvinf.cpp
 libsemigroups_la_SOURCES += src/pbr.cpp
@@ -1239,6 +1241,7 @@ EXTRA_PROGRAMS += test_is_transf
 EXTRA_PROGRAMS += test_iterator
 EXTRA_PROGRAMS += test_kambites
 EXTRA_PROGRAMS += test_kbe
+EXTRA_PROGRAMS += test_knuth_bendix_iterator
 EXTRA_PROGRAMS += test_knuth_bendix
 EXTRA_PROGRAMS += test_konieczny
 EXTRA_PROGRAMS += test_matrix
@@ -1337,6 +1340,7 @@ test_all_SOURCES += tests/test-iterator.cpp
 test_all_SOURCES += tests/test-is-transf.cpp
 test_all_SOURCES += tests/test-kambites.cpp
 test_all_SOURCES += tests/test-kbe.cpp
+test_all_SOURCES += tests/test-knuth-bendix-iterator.cpp
 test_all_SOURCES += tests/test-knuth-bendix-extreme.cpp
 test_all_SOURCES += tests/test-knuth-bendix-fail.cpp
 test_all_SOURCES += tests/test-knuth-bendix-from-froidure-pin.cpp
@@ -1598,6 +1602,11 @@ test_kambites_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 test_kbe_SOURCES =  tests/test-main.cpp
 test_kbe_SOURCES += tests/test-kbe.cpp
 test_kbe_SOURCES += third_party/Catch2-3.14.0/catch_amalgamated_patch.cpp
+
+test_knuth_bendix_iterator_SOURCES =  tests/test-knuth-bendix-iterator.cpp
+test_knuth_bendix_iterator_SOURCES += tests/test-main.cpp
+test_knuth_bendix_iterator_SOURCES += $(CATCH2_SOURCES)
+test_knuth_bendix_iterator_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-extreme.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-fail.cpp
