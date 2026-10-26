@@ -5381,11 +5381,14 @@ namespace libsemigroups {
       std::thread::id thread;
       int             value;
     };
+    struct ThrowOnCall {
+      [[noreturn]] bool operator()(word_graph_type const&) const {
+        throw Error{std::this_thread::get_id(), 42};
+      }
+    };
     auto const caller = std::this_thread::get_id();
     try {
-      s.find_if(4, [](auto const&) -> bool {
-        throw Error{std::this_thread::get_id(), 42};
-      });
+      s.find_if(4, ThrowOnCall());
       FAIL("expected the worker exception on the calling thread");
     } catch (Error const& error) {
       REQUIRE(error.thread != caller);
