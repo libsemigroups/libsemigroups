@@ -27,14 +27,14 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/cong.hpp"             // for Congruence
-#include "libsemigroups/constants.hpp"        // for operator!=, operator==
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/kambites.hpp"         // for Kambites, add_generating_pair
-#include "libsemigroups/presentation.hpp"     // for Presentation, change_...
-#include "libsemigroups/stephen.hpp"          // for Stephen
+#include "libsemigroups/bipart.hpp"        // for Bipartition
+#include "libsemigroups/cong.hpp"          // for Congruence
+#include "libsemigroups/constants.hpp"     // for operator!=, operator==
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/kambites.hpp"      // for Kambites, add_generating_pair
+#include "libsemigroups/presentation.hpp"  // for Presentation, change_...
+#include "libsemigroups/stephen.hpp"       // for Stephen
 #include "libsemigroups/to-presentation.hpp"  // for v4::to<Presentation>
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for word_type, congruence_kind
