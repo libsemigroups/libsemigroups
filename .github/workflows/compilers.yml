@@ -9,28 +9,24 @@ jobs:
   tests:
     name: ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
     timeout-minutes: 60
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         sys:
-          - { compiler: g++, version: 9 }
-          - { compiler: g++, version: 10 }
           - { compiler: g++, version: 11 }
           - { compiler: g++, version: 12 }
           - { compiler: g++, version: 13 }
           - { compiler: g++, version: 14 }
-          - { compiler: g++, version: 15, source: toolchain-test }
-          - { compiler: g++, version: 16, source: toolchain-test }
-          - { compiler: clang++, version: 14 }
-          - { compiler: clang++, version: 15 }
-          - { compiler: clang++, version: 16 }
+          - { compiler: g++, version: 15 }
+          - { compiler: g++, version: 16 }
           - { compiler: clang++, version: 17 }
           - { compiler: clang++, version: 18 }
           - { compiler: clang++, version: 19 }
-          - { compiler: clang++, version: 20, source: llvm }
-          - { compiler: clang++, version: 21, source: llvm }
-          - { compiler: clang++, version: 22, source: llvm }
+          - { compiler: clang++, version: 20 }
+          - { compiler: clang++, version: 21 }
+          - { compiler: clang++, version: 22 }
+          - { compiler: clang++, version: 23, source: llvm }
     steps:
       - uses: actions/checkout@v7
       - name: Setup ccache . . .
@@ -44,16 +40,16 @@ jobs:
             wget --quiet --output-document=/tmp/llvm.sh https://apt.llvm.org/llvm.sh
             sudo bash /tmp/llvm.sh ${{ matrix.sys.version }}
           else
-            toolchain_archive=ppa
-            if [[ "${{ matrix.sys.source }}" == "toolchain-test" ]]; then
-              toolchain_archive=test
+            if [[ "${{ matrix.sys.compiler }}" == "clang++" ]]; then
+              package=clang
+            else
+              package=g++
             fi
-            sudo add-apt-repository "ppa:ubuntu-toolchain-r/$toolchain_archive" -y
             sudo apt-get --yes update
-            sudo apt-get --yes install ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
+            sudo apt-get --yes install "$package-${{ matrix.sys.version }}"
           fi
           CXX="ccache ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}"
-          echo "CXX=$CXX" >> $GITHUB_ENV
+          echo "CXX=$CXX" >> "$GITHUB_ENV"
       - name: Compiler information
         run: |
           echo $CXX
