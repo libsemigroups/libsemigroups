@@ -48,8 +48,8 @@ namespace libsemigroups {
       std::vector<int> get_height(std::vector<int> const& a, std::vector<int> const& pos, std::vector<int> const& rank);
       int lcp(std::vector<int> const& isa, std::vector<int> const& height, int x, int z);
       int lcs(std::vector<int> const& rev_isa, std::vector<int> const& rev_height, int x, int z);
-      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, int i, int j, int i_v, int j_v);
-      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height);
+      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, int i, int j, int i_v, int j_v, bool reverse);
+      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, bool reverse);
 
       struct Run{
         int i;  // start index

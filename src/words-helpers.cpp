@@ -419,6 +419,7 @@ namespace libsemigroups {
       // define sentinel as lexicographically smallest symbol
       std::vector<int> build_sa(std::string const& word) {
         int n = word.size();
+        if (n == 0) return {0}; // empty string base case
         std::vector<int> s(n + 1, 0);
         std::vector<int> sa(n + 1, 0);
 
@@ -479,33 +480,37 @@ namespace libsemigroups {
       }
 
       int lcs(std::vector<int> const& rev_isa, std::vector<int> const& rev_height, int x, int z) {
-        return lcp(rev_isa, rev_height, rev_height.size() - x - 1, rev_height.size() - z - 1);
+        return lcp(rev_isa, rev_height, rev_height.size() - x - 2, rev_height.size() - z - 2);
       }
 
-      // helper for build_lyndon_arr
-      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, int i, int j, int i_v, int j_v) {
+      // helper for build_lyndon_arr invoking lcp
+      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, int i, int j, int i_v, int j_v, bool reverse) {
         int len = j - i + 1;
         int len_v = j_v - i_v + 1;
 
         int lcp_len = lcp(isa, height, i, i_v);
         if (lcp_len < len && lcp_len < len_v) {
-          return w[i + lcp_len] < w[i_v + lcp_len]; // compare first different character, sentinel = 0 guarantees no equivalence
+          if (reverse) return w[i + lcp_len] > w[i_v + lcp_len]; // compare first different character, sentinel = 0 guarantees no equivalence
+          return w[i + lcp_len] < w[i_v + lcp_len];
         }
         return len < len_v; // shorter string is lexicographically smaller
       }
 
       // outputs lyndon array with longest lyndon word at each index (storing end index j at i)
-      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height) {
+      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, bool reverse) {
         int n = w.size();
         std::vector<int> ly_arr(n);
         std::stack<std::pair<int,int>> S;
+
+        ly_arr[n - 1] = n - 1;
         S.push({n - 1, n - 1}); // push sentinel
+
         for (int i = n - 2; i >= 0; i--) {
           int j = i;
-          while (S.size() > 1) {
+          while (!S.empty()) {
             int i_v = S.top().first;
             int j_v = S.top().second;
-            if (!is_lex_smaller(w, isa, height, i, j, i_v, j_v)) break; // fails merge
+            if (!is_lex_smaller(w, isa, height, i, j, i_v, j_v, reverse)) break; // fails merge
             j = j_v;  // merge string uv using previously established lyndon word at right (top of stack)
             S.pop();
           }
@@ -528,9 +533,10 @@ namespace libsemigroups {
           int j_prime; 
           
           i_prime = (i > 0) ? i - lcs(rev_isa, rev_height, i - 1, j) : i; // candidate left extension
-          j_prime = j + lcp(isa, height, i, j + 1);               // candidate right extension
-
-          if ((j_prime - i_prime + 1) >= 2*p && i_prime < i && i <= i_prime + p) {
+          j_prime = (j < n - 1) ? j + lcp(isa, height, i, j + 1): j;      // candidate right extension
+          std::cout << "~~~~~~~~~testing i = " << i << ", i_prime = " << i_prime << ", j_prime = " << j_prime << std::endl;
+          if ((j_prime - i_prime + 1) >= 2*p && i_prime <= i && i <= i_prime + p) {
+            std::cout << "adding run @ i = " << i << ", (" << i_prime << ", " << j_prime << ", " << p << ")" << std::endl;
             runs.push_back({i_prime, j_prime, p});
           }
         }
@@ -547,7 +553,7 @@ namespace libsemigroups {
        */
       std::string to_expression(std::string const& w, int n) {
         // input format validation
-        if (w == "") return "";
+        if (w == "") return "";   // TODO: see if i need another empty string check modeling build_sa
         for (char const& c: w) {
           if (!std::isalpha(c)) {
             LIBSEMIGROUPS_EXCEPTION("expects string argument with alphabet \"a-zA-Z\", "
@@ -565,31 +571,58 @@ namespace libsemigroups {
         }
         mapped_w[n] = 0; // sentinel $
         sa_is(mapped_w, sa, 257);
+        std::cout << std::endl << "sa = {";
+        for (auto e: sa) {
+          std::cout << e << ", ";
+        }
+        std::cout << "}" << std::endl;
         std::vector<int> isa = build_isa(sa);
         height = get_height(mapped_w, sa, isa);
+        std::cout << "height = {";
+        for (auto e: height) {
+          std::cout << e << ", ";
+        }
+        std::cout << "}" << std::endl;
 
         // construct same structures for the reverse string
         std::vector<int> rev_mw(n + 1, 0); 
         std::vector<int> rev_sa(n + 1, 0);
         std::vector<int> rev_height(n + 1, 0);
         for (int i = 0; i < n; i++) {
-          rev_mw[i] = (unsigned char)w[n - i - 1] + 1;
+          rev_mw[n - i - 1] = mapped_w[i];
         }
         rev_mw[n] = 0;
+        std::cout << "ORIGINAL STRING SANITY CHECK: " << mapped_w << std::endl;
+        std::cout << "REVERSE STRING SANITY CHECK: " << rev_mw << std::endl;
         sa_is(rev_mw, rev_sa, 257);
         std::vector<int> rev_isa = build_isa(rev_sa); 
         rev_height = get_height(rev_mw, rev_sa, rev_isa);
 
-        std::vector<int> ly_arr = build_lyndon_arr(mapped_w, sa, height);
-        std::vector<Run> runs = max_runs(sa, height, rev_sa, rev_height, ly_arr);
+        std::vector<int> ly_arr = build_lyndon_arr(mapped_w, isa, height, false);
+        std::vector<int> rev_ly_arr = build_lyndon_arr(mapped_w, isa, height, true);
+        std::cout << "ly_arr = {";
+        for (auto e: ly_arr) {
+          std::cout << e << ", ";
+        }
+        std::cout << "}" << std::endl;
+        std::cout << "REVVVVly_arr = {";
+        for (auto e: rev_ly_arr) {
+          std::cout << e << ", ";
+        }
+        std::cout << "}" << std::endl;
+        std::vector<Run> runs1 = max_runs(isa, height, rev_isa, rev_height, ly_arr);
+        std::vector<Run> runs2 = max_runs(isa, height, rev_isa, rev_height, rev_ly_arr);
 
         // bucket by run end index
         std::vector<std::vector<Run>> runs_by_end(n);
-        for (auto const& r: runs) {
+        for (auto const& r: runs1) {
+          runs_by_end[r.j].push_back(r);
+        }
+        for (auto const& r: runs2) {
           runs_by_end[r.j].push_back(r);
         }
         
-        // 1D DP storing (compression factor, run)
+        // 1D DP table storing (compression factor, run)
         auto cf = [](Run const& r) { return (r.j - r.i + 1) - r.p; };
         std::vector<std::pair<int, Run>> dp(n, {0, Run()});
         for (int i = 0; i < n; i++) {
@@ -616,13 +649,13 @@ namespace libsemigroups {
           else p--;
         }
 
-        // do we want single character runs to not be enclosed by parentheses? 
         p = 0;
         while (p < n) {
           if (!selected.empty() && p == selected.top().i) {
             Run r = selected.top();
-            result += "(" + w.substr(r.i, r.p) + ")^" + std::to_string((r.j - r.i + 1) / r.p);
-            p = r.j + 1; 
+            int exponent = (r.j - r.i + 1) / r.p;
+            result += "(" + w.substr(r.i, r.p) + ")^" + std::to_string(exponent);
+            p = r.i + (r.p * exponent); 
             selected.pop();
           }
           else {
