@@ -15,7 +15,7 @@ jobs:
   coverage:
     name: Upload quick test report
     timeout-minutes: 60
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     env:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
@@ -32,8 +32,6 @@ jobs:
           sudo apt-get install -y lcov
       - name: Run quick tests . . .
         run: |
-          sudo ln -sf /usr/bin/gcov-13 /usr/bin/gcov
-          export GCOV=/usr/bin/gcov-13
           ci/test-code-coverage.sh test_all "[quick][exclude:no-valgrind][exclude:no-coverage]"
       - name: Uploading to Codecov . . .
         uses: codecov/codecov-action@v7
