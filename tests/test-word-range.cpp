@@ -21,6 +21,7 @@
 #include <iterator>   // for distance
 #include <utility>    // for swap
 #include <vector>     // for vector
+#include <iostream>
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -1030,7 +1031,6 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS("&^1"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("a^16cd^10((ab)^2)^4(!f)^2"_p, LibsemigroupsException);
     REQUIRE("((ab)^3xx)^2"_p == "abababxxabababxx");
-    REQUIRE(""_p == "");
     REQUIRE_THROWS_AS(")"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("xy)"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("(ab)^2xy^7)"_p, LibsemigroupsException);
@@ -1038,6 +1038,139 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS("("_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("\n"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("-"_p, LibsemigroupsException);
+  }
+
+  // depends on functions tested below: suffix array construction, longest common prefix
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "053", "compress substring repetitions", "[lenlex][quick]") {
+    REQUIRE(""_c == "");
+    REQUIRE("a"_c == "a");
+
+    // how to deal with whitespace? only allow front and back padding but not spaces in the middle? 
+    // REQUIRE("           "_p == "");
+    // REQUIRE_THROWS_AS("\n"_p, LibsemigroupsException);
+    
+    // invalid character exceptions (nonexhaustive)
+    REQUIRE_THROWS_AS("abcd1efg"_c, LibsemigroupsException);
+    REQUIRE_THROWS_AS("a*b"_c, LibsemigroupsException);
+    REQUIRE_THROWS_AS(","_c, LibsemigroupsException);
+    REQUIRE_THROWS_AS("()"_c, LibsemigroupsException);
+    REQUIRE_THROWS_AS("^"_c, LibsemigroupsException);
+
+    // verify equivalent call to "compress" function
+    REQUIRE("cdababef"_c == "cd(ab)^2ef");
+    REQUIRE(words::compress("cdababef") == "cd(ab)^2ef");
+
+    // general
+    REQUIRE("cdababababababababef"_c == "cd((ab)^2)^4ef");  // idk if this is going to work bruh
+    REQUIRE("cdababababababababefef"_c == "cd((ab)^2)^4(ef)^2");
+    REQUIRE("aaaaaaaaaaaaaaaa"_c == "a^16");
+    REQUIRE("aaaaaaaaaaaaaaaacddddddddddababababababababefef"_c
+            == "a^16cd^10((ab)^2)^4(ef)^2");
+    REQUIRE("XXXyxx"_c == "X^3yx^2");
+    REQUIRE("baXaXaXx"_c == "b(aX)^3x");
+    REQUIRE("abbyabbyabbyabbyabbyabbyabbyabbyabbyabby"_c == "((a)b^2y)^10");
+
+    // large n
+    // most repeats/runs: fibonacci
+
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "054", "suffix array, isa, get_height, lcp pipeline", "[lenlex][quick]") {
+    std::string w; int n; std::vector<int> mapped_w; std::vector<int> pos; std::vector<int> rank; std::vector<int> height;
+    std::vector<int> ly_arr;
+    
+    // "a", single character case
+    w = "a";
+    n = w.size(); 
+    mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); ly_arr.clear();
+    for (int i = 0; i < n; i++) {
+      mapped_w.push_back((unsigned char)w[i] + 1);
+    }
+    mapped_w.push_back(0);
+    pos = detail::string_compress::build_sa(w);
+    rank = detail::string_compress::build_isa(pos);
+    height = detail::string_compress::get_height(mapped_w, pos, rank);
+    REQUIRE(pos == std::vector<int>({1, 0}));
+    REQUIRE(rank == std::vector<int>({1, 0}));
+    REQUIRE(height == std::vector<int>({0, 0}));
+
+    ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, height);
+    std::cout << std::endl << "lyndon array = { ";
+    for (auto e: ly_arr) std::cout << e << ", ";
+    std::cout << "}" << std::endl;
+
+    // "bbbbbbbbbb", testing (h = h - 1) redundancy condition
+    w = "bbbbbbbbbb";
+    n = w.size(); 
+    mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); ly_arr.clear();
+    for (int i = 0; i < n; i++) {
+      mapped_w.push_back((unsigned char)w[i] + 1);
+    }
+    mapped_w.push_back(0);
+    pos = detail::string_compress::build_sa(w);
+    rank = detail::string_compress::build_isa(pos);
+    height = detail::string_compress::get_height(mapped_w, pos, rank);
+    REQUIRE(pos == std::vector<int>({10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
+    REQUIRE(rank == std::vector<int>({10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
+    REQUIRE(height == std::vector<int>({0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9}));
+
+    ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, height);
+    std::cout << std::endl << "lyndon array = { ";
+    for (auto e: ly_arr) std::cout << e << ", ";
+    std::cout << "}" << std::endl;
+
+    // example given in kasai lcp paper (altered in that sentinel is processed as lexicographically smallest symbol)
+    w = "abcabbca";
+    n = w.size(); 
+    mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); ly_arr.clear();
+    for (int i = 0; i < n; i++) {
+      mapped_w.push_back((unsigned char)w[i] + 1);
+    }
+    mapped_w.push_back(0);
+    pos = detail::string_compress::build_sa(w);
+    rank = detail::string_compress::build_isa(pos);
+    height = detail::string_compress::get_height(mapped_w, pos, rank);
+    REQUIRE(pos == std::vector<int>({8, 7, 3, 0, 4, 5, 1, 6, 2}));
+    REQUIRE(rank == std::vector<int>({3, 6, 8, 2, 4, 5, 7, 1, 0}));
+    REQUIRE(height == std::vector<int>({0, 0, 1, 2, 0, 1, 3, 0, 2}));
+
+    ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, height);
+    std::cout << std::endl << "lyndon array = { ";
+    for (auto e: ly_arr) std::cout << e << ", ";
+    std::cout << "}" << std::endl;
+
+    // // "banana", small periodic string
+    // w = "banana"; 
+    // n = w.size(); 
+    // mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); ly_arr.clear();
+    // for (int i = 0; i < n; i++) {
+    //   mapped_w.push_back((unsigned char)w[i] + 1);
+    // }
+    // mapped_w.push_back(0);
+    // pos = detail::string_compress::build_sa(w);
+    // rank = detail::string_compress::build_isa(pos);
+    // height = detail::string_compress::get_height(mapped_w, pos, rank);
+    // REQUIRE(pos == std::vector<int>({6, 5, 3, 1, 0, 4, 2}));
+    // REQUIRE(rank == std::vector<int>({4, 3, 6, 2, 5, 1, 0}));
+    // REQUIRE(height == std::vector<int>({0, 0, 1, 3, 0, 0, 2}));
+
+    // // "a ba aba baaba ababaaba baabaababaaba", fibonacci word
+    // w = "abaababaabaababaababaabaababaaba";
+    // n = w.size(); 
+    // mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); ly_arr.clear();
+    // for (int i = 0; i < n; i++) {
+    //   mapped_w.push_back((unsigned char)w[i] + 1);
+    // }
+    // mapped_w.push_back(0);
+    // pos = detail::string_compress::build_sa(w);
+    // rank = detail::string_compress::build_isa(pos);
+    // height = detail::string_compress::get_height(mapped_w, pos, rank);
+    // REQUIRE(pos == std::vector<int>({32, 31, 28, 20, 7, 23, 15, 2, 10, 29, 26, 18, 5, 21, 13, 0, 8, 24, 16, 
+    //                                  3, 11, 30, 27, 19, 6, 22, 14, 1, 9, 25, 17, 4, 12}));
+    // REQUIRE(rank == std::vector<int>({15, 27, 7, 19, 31, 12, 24, 4, 16, 28, 8, 20, 32, 14, 26, 6, 18, 30, 
+    //                                   11, 23, 3, 13, 25, 5, 17, 29, 10, 22, 2, 9, 21, 1, 0}));
+    // REQUIRE(height == std::vector<int>({0, 0, 1, 4, 12, 4, 9, 17, 9, 1, 3, 6, 14, 6, 11, 19, 11, 3, 8, 16, 
+    //                                     8, 0, 2, 5, 13, 5, 10, 18, 10, 2, 7, 15, 7}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -1182,8 +1315,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("random_word", "037", "", "[quick]") {
     auto w = random_word(10, 3);
     REQUIRE(w.size() == 10);
-    REQUIRE(
-        std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; }));
+    auto const letters_less_than_three = std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; });
+    REQUIRE(letters_less_than_three);
     REQUIRE_THROWS_AS(random_word(10, 0), LibsemigroupsException);
 
     REQUIRE_THROWS_AS(random_string("", 5, 6), LibsemigroupsException);
