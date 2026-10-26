@@ -27,6 +27,9 @@ ID=$(docker run --rm -i -d -e GH_ACTIONS_TEST_PROG -e GH_ACTIONS_TEST_TAGS "$CON
 # Copy the libsemigroups directory into the container
 docker cp . "$ID:/home/libsemigroups"
 
+# Fix ownership as root without invoking sudo/PAM in the 32-bit container.
+docker exec --user root "$ID" chown -R libsemigroups: /home/libsemigroups
+
 # Run the $GH_ACTIONS_SCRIPT in the running container
 docker exec -i "$ID" "$PREFIX/run-tests-in-docker-container.sh" ; exit
 

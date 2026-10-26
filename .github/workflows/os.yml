@@ -109,7 +109,7 @@ jobs:
   ubuntu-32:
     name: Ubuntu-32
     timeout-minutes: 60
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     env:
       GH_ACTIONS_ABI: 32
       GH_ACTIONS_ARCH: x86
