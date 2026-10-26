@@ -2,7 +2,6 @@
 # This entire script should be executed in the libsemigroups container
 set -e
 
-sudo chown -R libsemigroups: /home/libsemigroups
 cd /home/libsemigroups
 mkdir -p m4
 ./autogen.sh
