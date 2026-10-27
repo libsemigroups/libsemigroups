@@ -1061,7 +1061,8 @@ namespace libsemigroups {
     REQUIRE(words::compress("cdababef") == "cd(ab)^2ef");
 
     // general
-    REQUIRE(words::compress("bbbbbbbbbb") == "b^10");
+    REQUIRE("baabababababa"_c == "ba(ab)^5a");
+    REQUIRE("bbbbbbbbbb"_c == "b^10");
     REQUIRE("cdababababababababef"_c == "cd(ab)^8ef");
     REQUIRE("cdababababababababefef"_c == "cd(ab)^8(ef)^2");
     REQUIRE("aaaaaaaaaaaaaaaa"_c == "a^16");
