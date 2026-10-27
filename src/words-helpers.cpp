@@ -536,9 +536,7 @@ namespace libsemigroups {
           
           i_prime = (i > 0) ? i - lcs(rev_isa, rev_height, i - 1, j) : i; // candidate left extension
           j_prime = (j < n - 1) ? j + lcp(isa, height, i, j + 1): j;      // candidate right extension
-          std::cout << "~~~~~~~~~testing i = " << i << ", i_prime = " << i_prime << ", j_prime = " << j_prime << std::endl;
           if ((j_prime - i_prime + 1) >= 2*p && i_prime <= i && i <= i_prime + p) {
-            std::cout << "adding run @ i = " << i << ", (" << i_prime << ", " << j_prime << ", " << p << ")" << std::endl;
             runs.push_back({i_prime, j_prime, p});
           }
         }
@@ -591,16 +589,7 @@ namespace libsemigroups {
 
         std::vector<int> ly_arr = build_lyndon_arr(mapped_w, isa, height, false);
         std::vector<int> rev_ly_arr = build_lyndon_arr(mapped_w, isa, height, true);
-        std::cout << "ly_arr = {";
-        for (auto e: ly_arr) {
-          std::cout << e << ", ";
-        }
-        std::cout << "}" << std::endl;
-        std::cout << "REVVVVly_arr = {";
-        for (auto e: rev_ly_arr) {
-          std::cout << e << ", ";
-        }
-        std::cout << "}" << std::endl;
+      
         std::vector<Run> runs1 = max_runs(isa, height, rev_isa, rev_height, ly_arr);
         std::vector<Run> runs2 = max_runs(isa, height, rev_isa, rev_height, rev_ly_arr);
 
@@ -613,39 +602,30 @@ namespace libsemigroups {
           runs_by_end[r.j].push_back(r);
         }
         
-        std::cout << "DP BUSINESS!!!!!!!!!!!" << std::endl;
+
         // 1D DP table storing (compression factor, run)
         auto cf = [](Run const& r) { return (r.j - r.i + 1) - r.p; };
         std::vector<std::pair<int, Run>> dp(n, {0, Run()});
         for (int i = 0; i < n; i++) {
-          dp[i] = (i > 0) ? dp[i - 1] : std::pair<int, Run>{0, Run()};
-          std::cout << "for i @ " << i << "... fallback setting dp[" << i << "] = (cp=" << dp[i].first << ", (run= " << dp[i].second.i << ", " 
-                    << dp[i].second.j << ", " << dp[i].second.p << "))" << std::endl;  
+          dp[i] = (i > 0) ? dp[i - 1] : std::pair<int, Run>{0, Run()};  
           for (auto const& r: runs_by_end[i]) {
             int prev = (r.i > 0) ? dp[r.i - 1].first : 0;
             int candidate = cf(r);
             if (dp[r.i - 1].second.j < r.i) candidate += prev;
-            std::cout << "~~~~~~~testing candidate = " << prev << " with new cf = " << candidate << std::endl; 
             if (candidate > dp[i].first) {
               dp[i] = {candidate, r}; 
-              std::cout << "!!!!candidate success, replacing dp[" << i << "] = (cp =" << dp[i].first << ", (run= " << dp[i].second.i << ", " 
-                    << dp[i].second.j << ", " << dp[i].second.p << "))" << std::endl; 
             }
           }
         }
-
-        std::cout << "FINAL STRING SELECTION/DP TRAVERSAL" << std::endl;
         // build final string by traversing dp array backwards
         std::string result = "";
         std::stack<Run> selected;
         int p = n - 1; 
         while (p >= 0) {
           Run r = dp[p].second;
-          std::cout << "looking at run = (" << r.i << ", " << r.j << ", " << r.p << ")" << std::endl;
           if (r.p > 0) {  // empty bucket has 0-value period
             selected.push(r);
             p = r.i - 1;
-            std::cout << "PUSHED" << std::endl;
           }
           else p--;
         }
@@ -654,7 +634,6 @@ namespace libsemigroups {
         while (p < n) {
           if (!selected.empty() && p == selected.top().i) {
             Run r = selected.top();
-            std::cout << "selected: (" << r.i << ", " << r.j << ", " << r.p << ")" << std::endl;
             int exponent = (r.j - r.i + 1) / r.p;
             if (r.p > 1) {
               result += "(";
@@ -674,7 +653,6 @@ namespace libsemigroups {
             result += w[p];
             p++;
           }
-          std::cout << "p = " << p << std::endl;
         }
         return result;
       }
