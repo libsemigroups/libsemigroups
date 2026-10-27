@@ -26,10 +26,8 @@
 #include <cstring>        // for strlen
 #include <numeric>        // for iota
 #include <random>         // for std::mt19937
-#include <stack>          // for stack
 #include <unordered_map>  // for unordered_map, operator==
 #include <utility>        // for move
-#include <vector>         // for vector
 #include <iostream>
 
 #include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_DEBUG
@@ -448,11 +446,9 @@ namespace libsemigroups {
         int h = 0;
         // iterate in order of appearance in original string
         for (int i = 0; i < n; i++) {
-          // std::cout << "...current i = " << i << std::endl;
           if (rank[i] > 0) {
             int k = pos[rank[i] - 1];   // look at the left adjacent leaf
             while ((i + h) < n && (k + h) < n && a[i + h] == a[k + h]) {
-              // std::cout << a[i + h] << " == " << a[k + h] << ", NOW H = " << h + 1 << std::endl;
               h++;
             }
             height[rank[i]] = h;
@@ -485,13 +481,19 @@ namespace libsemigroups {
 
       // helper for build_lyndon_arr invoking lcp
       bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, int i, int j, int i_v, int j_v, bool reverse) {
+        int len_w  = w.size();
         int len = j - i + 1;
         int len_v = j_v - i_v + 1;
 
         int lcp_len = lcp(isa, height, i, i_v);
+
+        // avoid sentinel inclusion (issue specific to reverse lyndon array construction)
+        if (i + lcp_len >= len_w - 1 || i_v + lcp_len >= len_w - 1) {
+          return len < len_v; 
+        }
         if (lcp_len < len && lcp_len < len_v) {
-          if (reverse) return w[i + lcp_len] > w[i_v + lcp_len]; // compare first different character, sentinel = 0 guarantees no equivalence
-          return w[i + lcp_len] < w[i_v + lcp_len];
+          if (reverse) return w[i + lcp_len] > w[i_v + lcp_len];  // reversed lexicographical ordering comparison
+          return w[i + lcp_len] < w[i_v + lcp_len];               // compare first different character, sentinel = 0 guarantees no equivalence
         }
         return len < len_v; // shorter string is lexicographically smaller
       }
@@ -549,7 +551,8 @@ namespace libsemigroups {
        *    compression factor (cf) = length - period
        * 
        * We accept only alpha characters, else exception. 
-       * Inverses (uppercase characters) are currently considered lexicographically smaller by way of ASCII mapping
+       * Inverses (uppercase characters) are currently considered lexicographically smaller by way of ASCII mapping.
+       * White space characters not accepted. 
        */
       std::string to_expression(std::string const& w, int n) {
         // input format validation
@@ -571,18 +574,8 @@ namespace libsemigroups {
         }
         mapped_w[n] = 0; // sentinel $
         sa_is(mapped_w, sa, 257);
-        std::cout << std::endl << "sa = {";
-        for (auto e: sa) {
-          std::cout << e << ", ";
-        }
-        std::cout << "}" << std::endl;
         std::vector<int> isa = build_isa(sa);
         height = get_height(mapped_w, sa, isa);
-        std::cout << "height = {";
-        for (auto e: height) {
-          std::cout << e << ", ";
-        }
-        std::cout << "}" << std::endl;
 
         // construct same structures for the reverse string
         std::vector<int> rev_mw(n + 1, 0); 
@@ -592,8 +585,6 @@ namespace libsemigroups {
           rev_mw[n - i - 1] = mapped_w[i];
         }
         rev_mw[n] = 0;
-        std::cout << "ORIGINAL STRING SANITY CHECK: " << mapped_w << std::endl;
-        std::cout << "REVERSE STRING SANITY CHECK: " << rev_mw << std::endl;
         sa_is(rev_mw, rev_sa, 257);
         std::vector<int> rev_isa = build_isa(rev_sa); 
         rev_height = get_height(rev_mw, rev_sa, rev_isa);
@@ -622,29 +613,39 @@ namespace libsemigroups {
           runs_by_end[r.j].push_back(r);
         }
         
+        std::cout << "DP BUSINESS!!!!!!!!!!!" << std::endl;
         // 1D DP table storing (compression factor, run)
         auto cf = [](Run const& r) { return (r.j - r.i + 1) - r.p; };
         std::vector<std::pair<int, Run>> dp(n, {0, Run()});
         for (int i = 0; i < n; i++) {
           dp[i] = (i > 0) ? dp[i - 1] : std::pair<int, Run>{0, Run()};
+          std::cout << "for i @ " << i << "... fallback setting dp[" << i << "] = (cp=" << dp[i].first << ", (run= " << dp[i].second.i << ", " 
+                    << dp[i].second.j << ", " << dp[i].second.p << "))" << std::endl;  
           for (auto const& r: runs_by_end[i]) {
             int prev = (r.i > 0) ? dp[r.i - 1].first : 0;
-            int candidate = prev + cf(r);
+            int candidate = cf(r);
+            if (dp[r.i - 1].second.j < r.i) candidate += prev;
+            std::cout << "~~~~~~~testing candidate = " << prev << " with new cf = " << candidate << std::endl; 
             if (candidate > dp[i].first) {
               dp[i] = {candidate, r}; 
+              std::cout << "!!!!candidate success, replacing dp[" << i << "] = (cp =" << dp[i].first << ", (run= " << dp[i].second.i << ", " 
+                    << dp[i].second.j << ", " << dp[i].second.p << "))" << std::endl; 
             }
           }
         }
 
+        std::cout << "FINAL STRING SELECTION/DP TRAVERSAL" << std::endl;
         // build final string by traversing dp array backwards
         std::string result = "";
         std::stack<Run> selected;
         int p = n - 1; 
         while (p >= 0) {
           Run r = dp[p].second;
-          if (r.p > 0) {
+          std::cout << "looking at run = (" << r.i << ", " << r.j << ", " << r.p << ")" << std::endl;
+          if (r.p > 0) {  // empty bucket has 0-value period
             selected.push(r);
             p = r.i - 1;
+            std::cout << "PUSHED" << std::endl;
           }
           else p--;
         }
@@ -653,8 +654,19 @@ namespace libsemigroups {
         while (p < n) {
           if (!selected.empty() && p == selected.top().i) {
             Run r = selected.top();
+            std::cout << "selected: (" << r.i << ", " << r.j << ", " << r.p << ")" << std::endl;
             int exponent = (r.j - r.i + 1) / r.p;
-            result += "(" + w.substr(r.i, r.p) + ")^" + std::to_string(exponent);
+            if (r.p > 1) {
+              result += "(";
+              result.append(w, r.i, r.p);
+              result += ")^";
+              result += std::to_string(exponent);
+            }
+            else {
+              result += w[r.i];
+              result += "^";
+              result += std::to_string(exponent);
+            }
             p = r.i + (r.p * exponent); 
             selected.pop();
           }
@@ -662,6 +674,7 @@ namespace libsemigroups {
             result += w[p];
             p++;
           }
+          std::cout << "p = " << p << std::endl;
         }
         return result;
       }

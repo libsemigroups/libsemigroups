@@ -20,8 +20,6 @@
 #include <cstddef>    // for size_t
 #include <iterator>   // for distance
 #include <utility>    // for swap
-#include <vector>     // for vector
-#include <iostream>
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -975,6 +973,7 @@ namespace libsemigroups {
     REQUIRE("X^3(yx^2)"_p == "XXXyxx");
     REQUIRE("b(aX)^3x"_p == "baXaXaXx");
     REQUIRE("((a)b^2y)^10"_p == "abbyabbyabbyabbyabbyabbyabbyabbyabbyabby");
+    REQUIRE("((aba)^2(baa)^2b)^2(aba)^2"_p == "abaababaabaababaababaabaababaaba");
     REQUIRE("(a,b)"_p == "ABab");
     REQUIRE("(aB,bA)"_p == "bAaBaBbA");
     REQUIRE("(abbab,babaa)"_p == "BABBAAABABabbabbabaa");
@@ -1041,12 +1040,14 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange", "053", "compress substring repetitions", "[lenlex][quick]") {
+    // following from test case 054
     REQUIRE(""_c == "");
     REQUIRE("a"_c == "a");
+    REQUIRE("abcabbca"_c == "abcab^2ca");
+    REQUIRE("banana"_c == "b(an)^2a");
+    // fibonacci case (represents upperbound for repeat/run occurence)
+    CHECK("abaababaabaababaababaabaababaaba"_c == "((aba)^2(baa)^2b)^2(aba)^2"); // "(abaababaabaab)^2abaaba" == "((aba)^2(baa)^2b)^2(aba)^2"
 
-    // how to deal with whitespace? only allow front and back padding but not spaces in the middle? 
-    // REQUIRE("           "_p == "");
-    // REQUIRE_THROWS_AS("\n"_p, LibsemigroupsException);
     
     // invalid character exceptions (nonexhaustive)
     REQUIRE_THROWS_AS("abcd1efg"_c, LibsemigroupsException);
@@ -1060,30 +1061,35 @@ namespace libsemigroups {
     REQUIRE(words::compress("cdababef") == "cd(ab)^2ef");
 
     // general
+    REQUIRE(words::compress("bbbbbbbbbb") == "b^10");
     REQUIRE("cdababababababababef"_c == "cd(ab)^8ef");
     REQUIRE("cdababababababababefef"_c == "cd(ab)^8(ef)^2");
-    REQUIRE("aaaaaaaaaaaaaaaa"_c == "(a)^16");
-    REQUIRE("aaaaaaaaaaaaaaaacddddddddddababababababababefef"_c == "(a)^16c(d)^10(ab)^8(ef)^2");
-    REQUIRE("XXXyxx"_c == "(X)^3y(x)^2");
+    REQUIRE("aaaaaaaaaaaaaaaa"_c == "a^16");
+    REQUIRE("aaaaaaaaaaaaaaaacddddddddddababababababababefef"_c == "a^16cd^10(ab)^8(ef)^2");
+    REQUIRE("XXXyxx"_c == "X^3yx^2");
     REQUIRE("baXaXaXx"_c == "b(aX)^3x");
-    REQUIRE("abbyabbyabbyabbyabbyabbyabbyabbyabbyabby"_c == "((a)b^2y)^10");  // (abby)^2
 
-    // large n
-    // most repeats/runs: fibonacci
-
+    // nested runs
+    CHECK("abbyabby"_c == "(ab^2y)^2"); // "(abby)^2" == "(ab^2y)^2"
+    CHECK("abbyabbyabbyabbyabbyabbyabbyabbyabbyabby"_c == "(ab^2y)^10"); // "(abby)^10" == "(ab^2y)^10"
+    CHECK("cabbaabbaccabbaabbac"_c == "(c(ab^2a)^2c)^2"); // "(cabbaabbac)^2" == "(c(ab^2a)^2c)^2"
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordRange", "054", "component-wise compress pipeline", "[lenlex][quick]") {
+  // tests suffix array construction (pos), inverse suffix array (rank), height array, forward lyndon array (implicit lcp/lcs), and forward runs
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "054", "component-wise max runs discovery pipeline", "[lenlex][quick]") {
     std::string w; int n; std::vector<int> mapped_w; std::vector<int> pos; std::vector<int> rank; std::vector<int> height;
     std::string rev_w; std::vector<int> mapped_rw; std::vector<int> rev_pos; std::vector<int> rev_rank; std::vector<int> rev_height; 
-    std::vector<int> ly_arr; std::vector<detail::string_compress::Run> runs; 
+    std::vector<int> ly_arr; std::vector<detail::string_compress::Run> runs; std::vector<detail::string_compress::Run> expected_runs;
+    auto run_eq = [](detail::string_compress::Run const& a, detail::string_compress::Run const& b) { 
+      return a.i == b.i && a.j == b.j && a.p == b.p; 
+    }; // for run comparison
     
     // "", empty case
     w = "";
     n = w.size(); 
     mapped_w.clear(); pos.clear(); rank.clear(); height.clear();
     rev_w.resize(n + 1); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear(); rev_height.clear(); 
-    ly_arr.clear(); runs.clear();
+    ly_arr.clear(); runs.clear(); expected_runs.clear();
     for (int i = 0; i < n; i++) {
       mapped_w.push_back((unsigned char)w[i] + 1);
     }
@@ -1095,7 +1101,6 @@ namespace libsemigroups {
     REQUIRE(rank == std::vector<int>({0}));
     REQUIRE(height == std::vector<int>({0}));
 
-    
     rev_w.assign(w.rbegin(), w.rend());
     for (int i = 0; i < n; i++) {
       mapped_rw.push_back((unsigned char)rev_w[i] + 1);
@@ -1106,23 +1111,17 @@ namespace libsemigroups {
     rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
     ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, height, false);
     runs = detail::string_compress::max_runs(rank, height, rev_rank, rev_height, ly_arr);
-    std::cout << std::endl << w << std::endl;
-    std::cout << "runs (start, end, period) = {";
-    for (auto e: runs) {
-      std::cout << "(" << e.i << ", " << e.j << ", " << e.p << ")" << ", ";
-    }
-    std::cout << "}" << std::endl;
     REQUIRE(ly_arr == std::vector<int>({0}));
-
-    std::cout << "RUNNING COMPRESS @@@@@@@@@@@@@@@@@@@@@" << std::endl;
-    REQUIRE(words::compress(w) == w);
+    expected_runs = {};
+    REQUIRE(runs.size() == expected_runs.size());
+    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
 
     // "a", single character case
     w = "a";
     n = w.size(); 
     mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); 
     rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear(); rev_height.clear(); 
-    ly_arr.clear(); runs.clear();
+    ly_arr.clear(); runs.clear(); expected_runs.clear();
     for (int i = 0; i < n; i++) {
       mapped_w.push_back((unsigned char)w[i] + 1);
     }
@@ -1139,32 +1138,15 @@ namespace libsemigroups {
       mapped_rw.push_back((unsigned char)rev_w[i] + 1);
     }
     mapped_rw.push_back(0);
-    std::cout << rev_w << std::endl;
     rev_pos = detail::string_compress::build_sa(rev_w);
-    std::cout << "rev_pos = {";
-    for (auto e: rev_pos) {
-      std::cout << e << ", ";
-    }
-    std::cout << "}" << std::endl;
     rev_rank = detail::string_compress::build_isa(rev_pos);
-    std::cout << "rev_pos = {";
-    for (auto e: rev_pos) {
-      std::cout << e << ", ";
-    }
-    std::cout << "}" << std::endl;
     rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
     ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, height, false);
     runs = detail::string_compress::max_runs(rank, height, rev_rank, rev_height, ly_arr);
-    std::cout << std::endl << w << std::endl;
-    std::cout << "runs (start, end, period) = {";
-    for (auto e: runs) {
-      std::cout << "(" << e.i << ", " << e.j << ", " << e.p << ")" << ", ";
-    }
-    std::cout << "}" << std::endl;
     REQUIRE(ly_arr == std::vector<int>({0, 1}));
-
-    std::cout << "RUNNING COMPRESS @@@@@@@@@@@@@@@@@@@@@" << std::endl;
-    REQUIRE(words::compress(w) == w);
+    expected_runs = {};
+    REQUIRE(runs.size() == expected_runs.size());
+    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
 
     // "bbbbbbbbbb", testing (h = h - 1) redundancy condition
     w = "bbbbbbbbbb";
@@ -1192,18 +1174,12 @@ namespace libsemigroups {
     rev_rank = detail::string_compress::build_isa(rev_pos);
     rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
     ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, height, false);
-    std::cout << std::endl << w << std::endl;
     runs = detail::string_compress::max_runs(rank, height, rev_rank, rev_height, ly_arr);
-    
-    std::cout << "runs (start, end, period) = {";
-    for (auto e: runs) {
-      std::cout << "(" << e.i << ", " << e.j << ", " << e.p << ")" << ", ";
-    }
-    std::cout << "}" << std::endl;
     REQUIRE(ly_arr == std::vector<int>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
+    expected_runs = {{0, 9, 1}, {0, 9, 1}};
+    REQUIRE(runs.size() == expected_runs.size());
+    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
 
-    std::cout << "RUNNING COMPRESS @@@@@@@@@@@@@@@@@@@@@" << std::endl;
-    REQUIRE(words::compress(w) == "(b)^10");
 
     // example given in kasai lcp paper (altered in that sentinel is processed as lexicographically smallest symbol)
     w = "abcabbca";
@@ -1231,18 +1207,11 @@ namespace libsemigroups {
     rev_rank = detail::string_compress::build_isa(rev_pos);
     rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
     ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, height, false);
-    std::cout << std::endl << w << std::endl;
     runs = detail::string_compress::max_runs(rank, height, rev_rank, rev_height, ly_arr);
-    
-    std::cout << "runs (start, end, period) = {";
-    for (auto e: runs) {
-      std::cout << "(" << e.i << ", " << e.j << ", " << e.p << ")" << ", ";
-    }
-    std::cout << "}" << std::endl;
     REQUIRE(ly_arr == std::vector<int>({2, 2, 2, 6, 6, 6, 6, 7, 8}));
-
-    std::cout << "RUNNING COMPRESS @@@@@@@@@@@@@@@@@@@@@" << std::endl;
-    // REQUIRE(words::compress(w) == w); // "abca(b)^2ca"
+    expected_runs = {};
+    REQUIRE(runs.size() == expected_runs.size());
+    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
 
     // "banana", small periodic string
     w = "banana"; 
@@ -1270,18 +1239,11 @@ namespace libsemigroups {
     rev_rank = detail::string_compress::build_isa(rev_pos);
     rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
     ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, height, false);
-    std::cout << std::endl << w << std::endl;
     runs = detail::string_compress::max_runs(rank, height, rev_rank, rev_height, ly_arr);
-    
-    std::cout << "runs (start, end, period) = {";
-    for (auto e: runs) {
-      std::cout << "(" << e.i << ", " << e.j << ", " << e.p << ")" << ", ";
-    }
-    std::cout << "}" << std::endl;
     REQUIRE(ly_arr == std::vector<int>({0, 2, 2, 4, 4, 5, 6}));
-
-    std::cout << "RUNNING COMPRESS @@@@@@@@@@@@@@@@@@@@@" << std::endl;
-    REQUIRE(words::compress(w) == "b(an)^2a");
+    expected_runs = {{1, 5, 2}, {1, 5, 2}};
+    REQUIRE(runs.size() == expected_runs.size());
+    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
 
     // "a ba aba baaba ababaaba baabaababaaba", fibonacci word
     w = "abaababaabaababaababaabaababaaba";
@@ -1312,19 +1274,15 @@ namespace libsemigroups {
     rev_rank = detail::string_compress::build_isa(rev_pos);
     rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
     ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, height, false);
-    std::cout << std::endl << w << std::endl;
     runs = detail::string_compress::max_runs(rank, height, rev_rank, rev_height, ly_arr);
-    
-    std::cout << "runs (start, end, period) = {";
-    for (auto e: runs) {
-      std::cout << "(" << e.i << ", " << e.j << ", " << e.p << ")" << ", ";
-    }
-    std::cout << "}" << std::endl;
     REQUIRE(ly_arr == std::vector<int>({1, 1, 6, 4, 4, 6, 6, 19, 9, 9, 14, 12, 12, 14, 14, 19, 17, 17, 19, 
                                         19, 27, 22, 22, 27, 25, 25, 27, 27, 30, 30, 30, 31, 32}));
-
-    std::cout << "RUNNING COMPRESS @@@@@@@@@@@@@@@@@@@@@" << std::endl;
-    // REQUIRE(words::compress(w) == w);
+    expected_runs = {
+      {0, 10, 5}, {3, 7, 2}, {3, 7, 2}, {0, 31, 13}, {8, 23, 5}, {11, 15, 2}, {11, 15, 2}, {16, 20, 2}, 
+      {16, 20, 2}, {13, 31, 8}, {21, 31, 5}, {24, 28, 2}, {24, 28, 2}, {26, 31, 3}
+    };
+    REQUIRE(runs.size() == expected_runs.size());
+    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
