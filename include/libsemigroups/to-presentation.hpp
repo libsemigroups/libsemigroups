@@ -221,8 +221,8 @@ namespace libsemigroups {
   //!
   //! This function does not run \p k. If \p k has been run before this function
   //! is called, its stored presentation may include additional generating pairs
-  //! added via `add_generating_pair`. Consequently, the result need not be
-  //! equivalent to the presentation originally supplied to \p k.
+  //! added via \ref Kambites::add_generating_pair. Consequently, the result
+  //! need not be equivalent to the presentation originally supplied to \p k.
   //!
   //! \tparam Result the return type, also used for SFINAE, should be
   //! \c Presentation<T> for some type \c T.
