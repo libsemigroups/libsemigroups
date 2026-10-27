@@ -13,6 +13,12 @@
   height: 72px;
 }
 
+/* The conversion table has black labels on a transparent SVG background. */
+.image img[src="to-table.svg"],
+.image object[data="to-table.svg"] {
+  background-color: #ffffff;
+}
+
 /* Add headings to the navbar*/
 #nav-tree [href="_HEADING_"],
 #main-nav [href="_HEADING_"] {
