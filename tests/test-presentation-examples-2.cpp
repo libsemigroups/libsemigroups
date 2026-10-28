@@ -388,7 +388,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Example",
-                          "113",                          
+                          "113",
                           "Full Domain Partition Monoid small n",
                           "[extreme][presentation-examples]") {
     REQUIRE_THROWS_AS(full_domain_partition_monoid(0), LibsemigroupsException);
