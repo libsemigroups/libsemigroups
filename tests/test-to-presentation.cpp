@@ -27,14 +27,14 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/cong.hpp"             // for Congruence
-#include "libsemigroups/constants.hpp"        // for operator!=, operator==
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/kambites-class.hpp"   // for Kambites
-#include "libsemigroups/presentation.hpp"     // for Presentation, change_...
-#include "libsemigroups/stephen.hpp"          // for Stephen
+#include "libsemigroups/bipart.hpp"        // for Bipartition
+#include "libsemigroups/cong.hpp"          // for Congruence
+#include "libsemigroups/constants.hpp"     // for operator!=, operator==
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/kambites.hpp"      // for Kambites, add_generating_pair
+#include "libsemigroups/presentation.hpp"  // for Presentation, change_...
+#include "libsemigroups/stephen.hpp"       // for Stephen
 #include "libsemigroups/to-presentation.hpp"  // for v4::to<Presentation>
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for word_type, congruence_kind
@@ -546,6 +546,37 @@ namespace libsemigroups {
     REQUIRE(to<Presentation<std::string>>(k_str) == p_str);
     REQUIRE(to<Presentation<word_type>>(k_str)
             == v4::to<Presentation<word_type>>(p_str));
+  }
+
+  // AI assistance: OpenAI Codex prepared this regression test.
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "032",
+                          "from Kambites with generating pairs",
+                          "[quick][to_presentation]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("abcd"s);
+    Kambites<std::string> k(congruence_kind::twosided, p);
+    kambites::add_generating_pair(k, "ab", "cd");
+
+    auto const& stored = to<Presentation<std::string>>(k);
+    auto        before = to<Presentation<word_type>>(k);
+    REQUIRE(&stored == &k.presentation());
+    REQUIRE(&stored != &p);
+    REQUIRE(stored.rules.empty());
+    REQUIRE(before.alphabet() == 0123_w);
+    REQUIRE(before.rules.empty());
+    REQUIRE(!k.started());
+
+    k.run();
+
+    auto after = to<Presentation<word_type>>(k);
+    REQUIRE(p.rules.empty());
+    REQUIRE(before.rules.empty());
+    REQUIRE(stored.rules == std::vector<std::string>({"ab", "cd"}));
+    REQUIRE(after.alphabet() == 0123_w);
+    REQUIRE(after.rules == std::vector<word_type>({01_w, 23_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",

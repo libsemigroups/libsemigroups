@@ -11,9 +11,16 @@ jobs:
     defaults:
       run:
         shell: alpine.sh {0}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - name: Preserve the environment for Alpine setup . . .
+        shell: bash
+        run: |
+          # setup-alpine requires sudo -E, which sudo-rs does not support.
+          if [ -x /usr/bin/sudo.ws ]; then
+            sudo update-alternatives --set sudo /usr/bin/sudo.ws
+          fi
       - uses: jirutka/setup-alpine@v1
         with:
           branch: v3.15
@@ -102,7 +109,7 @@ jobs:
   ubuntu-32:
     name: Ubuntu-32
     timeout-minutes: 60
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     env:
       GH_ACTIONS_ABI: 32
       GH_ACTIONS_ARCH: x86
