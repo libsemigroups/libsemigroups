@@ -28,7 +28,6 @@
 #include <random>         // for std::mt19937
 #include <unordered_map>  // for unordered_map, operator==
 #include <utility>        // for move
-#include <iostream>
 
 #include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/presentation.hpp"  // for index
@@ -362,10 +361,6 @@ namespace libsemigroups {
       }
       induced_sort(s, sa, t, k);
     }
-    
-    // int rmq(int l, int r, const std::vector<int>& height, const SparseTable& st) {
-
-    // }
   }
 
   namespace detail {
@@ -532,29 +527,43 @@ namespace libsemigroups {
           int j = ly_arr[i];
           int p = j - i + 1; 
           int i_prime; 
-          int j_prime; 
-          
+          int j_prime;
+
           i_prime = (i > 0) ? i - lcs(rev_isa, rev_height, i - 1, j) : i; // candidate left extension
           j_prime = (j < n - 1) ? j + lcp(isa, height, i, j + 1): j;      // candidate right extension
           if ((j_prime - i_prime + 1) >= 2*p && i_prime <= i && i <= i_prime + p) {
-            runs.push_back({i_prime, j_prime, p});
+            runs.push_back({i_prime, (j_prime - i_prime + 1) / p * p + i_prime - 1, p});  // fix cycle start at first index
           }
         }
-        return runs;          
+        return runs;
       }
 
       /**
-       * We choose a policy that outputs the shortest expression of form (x)^e. 
+       * We choose a policy that outputs a "semi-minimal" expression of form (x)^e.
+       * The two exceptions to true minimality are as follows:
+       *    - We don't consider cycle shifts. This would require a more complex run selection algorithm. 
+       *      The Bannai maximum runs algorithm produces runs that may include partial cycles at the start or end. 
+       *      We define a policy that simply fixes the cycle start at the first index of the run.
+       *      This potentially misses more ideal run boundaries. 
+       *    - We deliver the factored form instead of by-character optimisation (ex. x^2 rather than xx, (ef)^2 rather than efef)
+       *      This can be easily changed by adjustment to the compression factor function. 
+       *      This translates to minimality of original string characters rather than total output characters, with respect to first exception.
+       *  
        * This is executed as a dp-style algorithm maximising compression with
        *    compression factor (cf) = length - period
-       * 
-       * We accept only alpha characters, else exception. 
+       *
+       * We accept only alpha characters, else exception.
        * Inverses (uppercase characters) are currently considered lexicographically smaller by way of ASCII mapping.
-       * White space characters not accepted. 
+       * White space characters not accepted.
+       * Single character repeats are output without parentheses (ex. x^2 rather than (x)^2)
+       * 
+       * Run discovery pipeline can theoretically run in O(n). For praticality, lcp query link uses sparse table RMQ, which has O(nlogn) setup.
+       * Run selection/compression process is O(nlogn) for highly periodic strings, based on looping over the run length of all runs.
+       *   Average case is O(n). 
        */
       std::string to_expression(std::string const& w, int n) {
         // input format validation
-        if (w == "") return "";   // TODO: see if i need another empty string check modeling build_sa
+        if (w == "") return "";
         for (char const& c: w) {
           if (!std::isalpha(c)) {
             LIBSEMIGROUPS_EXCEPTION("expects string argument with alphabet \"a-zA-Z\", "
@@ -576,7 +585,7 @@ namespace libsemigroups {
         height = get_height(mapped_w, sa, isa);
 
         // construct same structures for the reverse string
-        std::vector<int> rev_mw(n + 1, 0); 
+        std::vector<int> rev_mw(n + 1, 0);
         std::vector<int> rev_sa(n + 1, 0);
         std::vector<int> rev_height(n + 1, 0);
         for (int i = 0; i < n; i++) {
@@ -584,70 +593,159 @@ namespace libsemigroups {
         }
         rev_mw[n] = 0;
         sa_is(rev_mw, rev_sa, 257);
-        std::vector<int> rev_isa = build_isa(rev_sa); 
+        std::vector<int> rev_isa = build_isa(rev_sa);
         rev_height = get_height(rev_mw, rev_sa, rev_isa);
 
         std::vector<int> ly_arr = build_lyndon_arr(mapped_w, isa, height, false);
         std::vector<int> rev_ly_arr = build_lyndon_arr(mapped_w, isa, height, true);
-      
+
         std::vector<Run> runs1 = max_runs(isa, height, rev_isa, rev_height, ly_arr);
         std::vector<Run> runs2 = max_runs(isa, height, rev_isa, rev_height, rev_ly_arr);
 
-        // bucket by run end index
-        std::vector<std::vector<Run>> runs_by_end(n);
-        for (auto const& r: runs1) {
-          runs_by_end[r.j].push_back(r);
-        }
-        for (auto const& r: runs2) {
-          runs_by_end[r.j].push_back(r);
-        }
-        
+        // combine runs vectors and sort by period length
+        std::vector<Run> all_runs = runs1;
+        all_runs.insert(all_runs.end(), runs2.begin(), runs2.end());
+        std::sort(all_runs.begin(), all_runs.end(), [](const Run& a, const Run& b) {
+            return a.p < b.p;
+        });
+        std::vector<int> run_savings(all_runs.size(), 0);
+        std::vector<std::vector<int>> nested_list(all_runs.size());
 
-        // 1D DP table storing (compression factor, run)
-        auto cf = [](Run const& r) { return (r.j - r.i + 1) - r.p; };
-        std::vector<std::pair<int, Run>> dp(n, {0, Run()});
+        // bucket by run start and end index: stores index into all_runs array
+        std::vector<std::vector<int>> runs_by_start(n);
+        std::vector<std::vector<int>> runs_by_end(n);
+        for (int i = 0; i < static_cast<int>(all_runs.size()); i++) {
+          runs_by_start[all_runs[i].i].push_back(i);
+          runs_by_end[all_runs[i].j].push_back(i);
+        }
+
+        // compression factor function
+        auto cf = [](Run const& r) { return (r.j - r.i + 1) - r.p; }; // omitting exponentiation syntax overhead
+
+        // 1D DP per period, maximising compression factor based on nested periods
+        for (int r = 0; r < static_cast<int>(all_runs.size()); r++) {
+          Run const& run = all_runs[r];
+          std::vector<std::pair<int,int>> p_dp(run.p, {0, -1});
+
+          for (int i = run.i; i < run.i + run.p; i++) {
+            int const offset = i - run.i;
+            if (offset > 0) {
+              p_dp[offset] = p_dp[offset - 1];  // carry over previous index
+            }
+            // loop through runs that start at an index inside larger period
+            for (int nested_i: runs_by_start[i]) {
+                Run const& nested = all_runs[nested_i];
+
+                // check that nested run candidate is fully contained in larger period
+                if (nested.p < run.p && nested.j < run.i + run.p) {
+                  int prev = (offset > 0) ? p_dp[offset - 1].first : 0;
+                  int candidate = run_savings[nested_i];
+                  if (offset == 0 || p_dp[offset - 1].second < 0
+                      || all_runs[p_dp[offset - 1].second].j < nested.j) {
+                    candidate += prev;
+                  }
+                  if (candidate >= p_dp[offset].first) {
+                    p_dp[offset] = {candidate, nested_i};
+                  }
+                }
+            }
+          }
+
+          // traverse p_dp backwards
+          std::stack<int> p_selected;
+          int curr = run.i + run.p - 1;
+          while (curr >= run.i) {
+            int const offset = curr - run.i;
+            if (p_dp[offset].second >= 0) {
+              Run const& nested = all_runs[p_dp[offset].second];
+              p_selected.push(p_dp[offset].second);
+              curr = nested.i - 1;
+            }
+            else curr--;
+          }
+
+          curr = 0;
+          while (curr < run.i + run.p) {
+            if (!p_selected.empty() && curr == all_runs[p_selected.top()].i) {
+              int child_i = p_selected.top();
+              p_selected.pop();
+              nested_list[r].push_back(child_i);
+              curr = all_runs[child_i].j + 1;
+            } else {
+              curr++;
+            }
+          }
+          run_savings[r] = cf(run) + p_dp[run.p - 1].first;
+        }
+
+        // 1D DP by end index
+        std::vector<std::pair<int, int>> dp(n, {0, -1});
         for (int i = 0; i < n; i++) {
-          dp[i] = (i > 0) ? dp[i - 1] : std::pair<int, Run>{0, Run()};  
-          for (auto const& r: runs_by_end[i]) {
-            int prev = (r.i > 0) ? dp[r.i - 1].first : 0;
-            int candidate = cf(r);
-            if (dp[r.i - 1].second.j < r.i) candidate += prev;
-            if (candidate > dp[i].first) {
-              dp[i] = {candidate, r}; 
+          if (i > 0) dp[i] = dp[i - 1];
+          for (int r: runs_by_end[i]) {
+            Run const& run = all_runs[r];
+            int prev = (run.i > 0) ? dp[run.i - 1].first : 0;
+            int candidate = run_savings[r];
+            if (run.i == 0 || dp[run.i - 1].second < 0
+                || all_runs[dp[run.i - 1].second].j < run.i) {
+              candidate += prev;
+            }
+            if (candidate >= dp[i].first) {
+              dp[i] = {candidate, r};
             }
           }
         }
         // build final string by traversing dp array backwards
         std::string result = "";
-        std::stack<Run> selected;
-        int p = n - 1; 
+        std::stack<int> selected;
+        int p = n - 1;
         while (p >= 0) {
-          Run r = dp[p].second;
-          if (r.p > 0) {  // empty bucket has 0-value period
-            selected.push(r);
+          if (dp[p].second >= 0) {
+            Run const& r = all_runs[dp[p].second];
+            selected.push(dp[p].second);
             p = r.i - 1;
           }
           else p--;
         }
 
+        // recursive lambda for final string reconstruction with nested runs
+        auto render_run = [&](auto& self, int run_i) -> void {
+          Run const& r = all_runs[run_i];
+          std::vector<int> const& children = nested_list[run_i];
+
+          if (r.p > 1) result += "(";
+
+          int curr = r.i;
+          int end_period = r.i + r.p;
+          int child_i = 0;
+
+          while (curr < end_period) {
+              if (child_i < static_cast<int>(children.size())
+                  && curr == all_runs[children[child_i]].i) {
+                  int child_run_i = children[child_i];
+                  self(self, child_run_i);  // recursively render nested (child) run
+
+                  curr = all_runs[child_run_i].j + 1;
+                  child_i++;
+              }
+              else {
+                result += w[curr];
+                curr++;
+              }
+          }
+
+          if (r.p > 1) result += ")";
+          int exponent = (r.j - r.i + 1) / r.p;
+          result += "^" + std::to_string(exponent);
+        };
+
         p = 0;
         while (p < n) {
-          if (!selected.empty() && p == selected.top().i) {
-            Run r = selected.top();
-            int exponent = (r.j - r.i + 1) / r.p;
-            if (r.p > 1) {
-              result += "(";
-              result.append(w, r.i, r.p);
-              result += ")^";
-              result += std::to_string(exponent);
-            }
-            else {
-              result += w[r.i];
-              result += "^";
-              result += std::to_string(exponent);
-            }
-            p = r.i + (r.p * exponent); 
+          if (!selected.empty() && p == all_runs[selected.top()].i) {
+            int top_run_i = selected.top();
             selected.pop();
+            render_run(render_run, top_run_i);
+            p = all_runs[top_run_i].j + 1;
           }
           else {
             result += w[p];
@@ -782,9 +880,9 @@ namespace libsemigroups {
   namespace literals {
     word_type operator""_w(char const* w, size_t n) {
       word_type result;
-#ifdef LIBSEMIGROUPS_DEBUG
-      static const std::string valid_chars = "0123456789";
-#endif
+  #ifdef LIBSEMIGROUPS_DEBUG
+        static const std::string valid_chars = "0123456789";
+  #endif
       // 0 is unset, 1 is reading integers, 2 is parsing a string
       int mode = 0;
       for (size_t i = 0; i < n; ++i) {
