@@ -63,6 +63,7 @@
 #include "kambites.hpp"
 #include "knuth-bendix-class.hpp"
 #include "knuth-bendix-helpers.hpp"
+#include "knuth-bendix-iterator.hpp"
 #include "knuth-bendix.hpp"
 #include "konieczny.hpp"
 #include "matrix-adapters.hpp"
