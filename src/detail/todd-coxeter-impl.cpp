@@ -886,9 +886,11 @@ namespace libsemigroups::detail {
     ValueGuard tg(_ticker_running);
     if (!_ticker_running && reporting_enabled()
         && (!running_for()
-            || duration_cast<seconds>(running_for_how_long()) >= seconds(1))) {
+            || duration_cast<seconds>(running_for_how_long())
+                   >= report_every())) {
       _ticker_running = true;
-      ticker([this]() { report_progress_from_thread(ye_print_divider); });
+      ticker([this]() { report_progress_from_thread(ye_print_divider); },
+             report_every());
     }
 
     stats_run_start();
