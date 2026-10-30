@@ -54,6 +54,7 @@ namespace libsemigroups {
     Presentation<word_type> double_catalan_monoid(size_t n);
     Presentation<word_type> dual_symmetric_inverse_monoid(size_t n);
     Presentation<word_type> fibonacci_semigroup(size_t r, size_t n);
+    Presentation<word_type> full_domain_partition_monoid(size_t n);
     Presentation<word_type> full_transformation_monoid(size_t n);
     Presentation<word_type> grammic_monoid(size_t n);
     Presentation<word_type> hypo_plactic_monoid(size_t n);
@@ -275,6 +276,20 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `r < 1`.
     [[nodiscard]] Presentation<word_type> fibonacci_semigroup_CRRT94(size_t r,
                                                                      size_t n);
+
+    //! \brief A presentation for the full domain partition monoid.
+    //!
+    //! This function returns a monoid presentation defining the full domain
+    //! partition monoid of degree \p n, as in \cite
+    //! carroll2025presentationssemigroupsfulldomainpartitions.
+    //!
+    //! \param n the degree.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 4`.
+    [[nodiscard]] Presentation<word_type>
+    full_domain_partition_monoid_CEF26(size_t n);
 
     //! \brief A presentation for the full transformation monoid.
     //!
@@ -1007,6 +1022,21 @@ namespace libsemigroups {
     [[nodiscard]] inline Presentation<word_type> fibonacci_semigroup(size_t r,
                                                                      size_t n) {
       return fibonacci_semigroup_CRRT94(r, n);
+    }
+
+    //! \copydoc full_domain_partition_monoid_CEF26
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `full_domain_partition_monoid_CEF26`, and exists as a convenience
+    //! function for when a presentation for the full domain partition monoid is
+    //! required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `full_domain_partition_monoid_CEF26`.
+    [[nodiscard]] inline Presentation<word_type>
+    full_domain_partition_monoid(size_t n) {
+      return full_domain_partition_monoid_CEF26(n);
     }
 
     //! \brief A presentation for the full transformation monoid.
