@@ -247,10 +247,14 @@ namespace libsemigroups {
 
     // helpers for string compress
     // bucket helper (suffix array construction)
-    void get_bound(std::vector<int> const& s, std::vector<int>& b, int k, bool tail) {
+    void get_bound(std::vector<int> const& s,
+                   std::vector<int>&       b,
+                   int                     k,
+                   bool                    tail) {
       int n = s.size();
       fill(b.begin(), b.end(), 0);
-      for (int i = 0; i < n; i++) b[s[i]]++;
+      for (int i = 0; i < n; i++)
+        b[s[i]]++;
       for (int i = 0, sum = 0; i <= k; i++) {
         sum += b[i];
         b[i] = tail ? sum : sum - b[i];
@@ -258,8 +262,11 @@ namespace libsemigroups {
     }
 
     // implied S = 0, L = 1 as defined in sa_is (suffix array construction)
-    void induced_sort(std::vector<int> const& s, std::vector<int>& sa, std::vector<bool> const& t, int k) {
-      int n = s.size();
+    void induced_sort(std::vector<int> const&  s,
+                      std::vector<int>&        sa,
+                      std::vector<bool> const& t,
+                      int                      k) {
+      int              n = s.size();
       std::vector<int> b(k + 1, 0);
 
       // l-type, insert at head
@@ -268,7 +275,7 @@ namespace libsemigroups {
         int prev = sa[i] - 1;
         if (prev >= 0 && t[prev] == 1) {
           sa[b[s[prev]]++] = prev;
-        } 
+        }
       }
 
       // s-type, insert at tail
@@ -277,29 +284,34 @@ namespace libsemigroups {
         int prev = sa[i] - 1;
         if (prev >= 0 && t[prev] == 0) {
           sa[--b[s[prev]]] = prev;
-        } 
+        }
       }
     }
 
     // SA-IS construction
-    // decided higher memory overhead for indexing as opposed to pointer manipulation
+    // decided higher memory overhead for indexing as opposed to pointer
+    // manipulation
     void sa_is(std::vector<int> const& s, std::vector<int>& sa, size_t k) {
-      int n = s.size();
-      const bool S_TYPE = 0;
-      const bool L_TYPE = 1; 
-      std::vector<bool> t(n, S_TYPE); 
-      std::vector<int> lms; 
+      int               n      = s.size();
+      const bool        S_TYPE = 0;
+      const bool        L_TYPE = 1;
+      std::vector<bool> t(n, S_TYPE);
+      std::vector<int>  lms;
 
       // classify characters and find LMS characters
       t[n - 1] = S_TYPE;  // sentinel is immediately S_TYPE
       for (int i = n - 2; i >= 0; i--) {
-        if (s[i] < s[i + 1]) t[i] = S_TYPE; 
-        else if (s[i] > s[i + 1]) t[i] = L_TYPE;
-        else t[i] = t[i + 1];
+        if (s[i] < s[i + 1])
+          t[i] = S_TYPE;
+        else if (s[i] > s[i + 1])
+          t[i] = L_TYPE;
+        else
+          t[i] = t[i + 1];
       }
 
       for (int i = 1; i < n; i++) {
-        if (t[i] == S_TYPE && t[i - 1] == L_TYPE) lms.push_back(i);
+        if (t[i] == S_TYPE && t[i - 1] == L_TYPE)
+          lms.push_back(i);
       }
 
       // first pass: add LMS to end of buckets
@@ -307,34 +319,46 @@ namespace libsemigroups {
       std::vector<int> b(k + 1, 0);
       get_bound(s, b, k, true);
       for (int i = 0; i < static_cast<int>(lms.size()); i++) {
-        int lms_i = lms[i];
+        int lms_i         = lms[i];
         sa[--b[s[lms_i]]] = lms_i;
       }
       induced_sort(s, sa, t, k);
 
       // assign lexicographical ranks to produce a reduced array
-      int rank = 0;
-      std::vector<int> ranked(n, -1); // sparse ranking look-up array
+      int              rank = 0;
+      std::vector<int> ranked(n, -1);  // sparse ranking look-up array
       std::vector<int> reduced;
-      int prev = -1; 
+      int              prev = -1;
       for (int i = 0; i < n; i++) {
         int curr = sa[i];
 
         if (curr > 0 && t[curr] == S_TYPE && t[curr - 1] == L_TYPE) {
-          if (prev == -1) ranked[curr] = 0;
-          else {
+          if (prev == -1) {
+            ranked[curr] = 0;
+          } else {
             int step = 0;
             while (true) {
-              if (s[curr + step] == s[prev + step] && t[curr + step] == t[prev + step]) step++;
-              else { rank++; break; }
-              bool curr_lms = step > 0 && t[curr + step] == S_TYPE && t[curr + step - 1] == L_TYPE; 
-              bool prev_lms = step > 0 && t[prev + step] == S_TYPE && t[prev + step - 1] == L_TYPE; 
-              if (curr_lms && prev_lms) break;
-              if (curr_lms || prev_lms) { rank++; break; }
+              if (s[curr + step] == s[prev + step]
+                  && t[curr + step] == t[prev + step]) {
+                step++;
+              } else {
+                rank++;
+                break;
+              }
+              bool curr_lms = step > 0 && t[curr + step] == S_TYPE
+                              && t[curr + step - 1] == L_TYPE;
+              bool prev_lms = step > 0 && t[prev + step] == S_TYPE
+                              && t[prev + step - 1] == L_TYPE;
+              if (curr_lms && prev_lms)
+                break;
+              if (curr_lms || prev_lms) {
+                rank++;
+                break;
+              }
             }
           }
           ranked[curr] = rank;
-          prev = curr;
+          prev         = curr;
         }
       }
       for (int i = 0; i < static_cast<int>(lms.size()); i++) {
@@ -347,8 +371,7 @@ namespace libsemigroups {
         for (int i = 0; i < static_cast<int>(reduced.size()); i++) {
           r_sa[reduced[i]] = i;
         }
-      }
-      else {
+      } else {
         sa_is(reduced, r_sa, rank + 1);
       }
 
@@ -356,20 +379,441 @@ namespace libsemigroups {
       fill(sa.begin(), sa.end(), -1);
       get_bound(s, b, k, true);
       for (int i = r_sa.size() - 1; i >= 0; i--) {
-        int lms_i = lms[r_sa[i]];
+        int lms_i         = lms[r_sa[i]];
         sa[--b[s[lms_i]]] = lms_i;
       }
       induced_sort(s, sa, t, k);
     }
 
-    
+    // O(nlogn) flat sparse table from height array
+    std::vector<int> build_sparse_table(std::vector<int> const& arr) {
+      int              n      = arr.size();
+      int              levels = log2(n) + 1;
+      std::vector<int> st(n * levels);
+
+      // layer 0
+      for (int i = 0; i < n; i++) {
+        st[i] = arr[i];
+      }
+
+      for (int k = 1; k < levels; k++) {
+        for (int j = 0; j + (1 << k) <= n; j++) {
+          int l         = st[(k - 1) * n + j];
+          int r         = st[(k - 1) * n + j
+                             + (1 << (k - 1))];  // jump forward 2^(k - 1) steps
+          st[k * n + j] = std::min(l, r);
+        }
+      }
+      return st;
+    }
 
     // O(1) queries, assume l < r
     int rmq(std::vector<int> const& st, int n, int l, int r) {
       int k = log2(r - l + 1);
       return std::min(st[k * n + l], st[k * n + r - (1 << k) + 1]);
     }
-  }
+
+    struct Run {
+      int i;  // start index
+      int j;  // end index
+      int p;  // period
+    };
+
+    // // define sentinel as lexicographically smallest symbol (used in
+    // component-wise tests) std::vector<int> build_sa(std::string const& word)
+    // {
+    //   int n = word.size();
+    //   if (n == 0) return {0}; // empty string base case
+    //   std::vector<int> s(n + 1, 0);
+    //   std::vector<int> sa(n + 1, 0);
+
+    //   for (int i = 0; i < n; i++) {
+    //     s[i] = static_cast<unsigned char>(word[i]) + 1;
+    //   }
+    //   s[n] = 0; // sentinel $
+    //   sa_is(s, sa, 257);
+    //   return sa;
+    // }
+
+    std::vector<int> build_isa(std::vector<int> const& pos) {
+      int              n = pos.size();
+      std::vector<int> isa(n);
+      for (int i = 0; i < n; i++) {
+        isa[pos[i]] = i;
+      }
+      return isa;
+    }
+
+    // defined in kasai 2001, stores length of longest common prefix between
+    // ADJACENT suffixes in sorted suffix array
+    std::vector<int> get_height(std::vector<int> const& a,
+                                std::vector<int> const& pos,
+                                std::vector<int> const& rank) {
+      int              n = a.size();
+      std::vector<int> height(n, 0);
+
+      int h = 0;
+      // iterate in order of appearance in original string
+      for (int i = 0; i < n; i++) {
+        if (rank[i] > 0) {
+          int k = pos[rank[i] - 1];  // look at the left adjacent leaf
+          while ((i + h) < n && (k + h) < n && a[i + h] == a[k + h]) {
+            h++;
+          }
+          height[rank[i]] = h;
+          if (h > 0)
+            h = h - 1;
+        }
+      }
+      return height;
+    }
+
+    // returns length of lcp: tentative implementation O(n^2)
+    int
+    lcp(std::vector<int> const& isa, std::vector<int> const& st, int x, int z) {
+      if (x == z)
+        return 0;
+      int rank_x = isa[x];
+      int rank_z = isa[z];
+      if (rank_x > rank_z)
+        std::swap(rank_x, rank_z);
+      return rmq(st, isa.size(), rank_x + 1, rank_z);
+    }
+
+    int lcs(std::vector<int> const& rev_isa,
+            std::vector<int> const& rev_st,
+            int                     x,
+            int                     z) {
+      return lcp(
+          rev_isa, rev_st, rev_isa.size() - x - 2, rev_isa.size() - z - 2);
+    }
+
+    // helper for build_lyndon_arr invoking lcp
+    bool is_lex_smaller(std::vector<int> const& w,
+                        std::vector<int> const& isa,
+                        std::vector<int> const& st,
+                        int                     i,
+                        int                     j,
+                        int                     i_v,
+                        int                     j_v,
+                        bool                    reverse) {
+      int len_w = w.size();
+      int len   = j - i + 1;
+      int len_v = j_v - i_v + 1;
+
+      int lcp_len = lcp(isa, st, i, i_v);
+
+      // avoid sentinel inclusion (issue specific to reverse lyndon array
+      // construction)
+      if (i + lcp_len >= len_w - 1 || i_v + lcp_len >= len_w - 1) {
+        return len < len_v;
+      }
+      if (lcp_len < len && lcp_len < len_v) {
+        if (reverse)
+          return w[i + lcp_len] > w[i_v + lcp_len];  // reversed lexicographical
+                                                     // ordering comparison
+        return w[i + lcp_len]
+               < w[i_v + lcp_len];  // compare first different character,
+                                    // sentinel = 0 guarantees no equivalence
+      }
+      return len < len_v;  // shorter string is lexicographically smaller
+    }
+
+    // outputs lyndon array with longest lyndon word at each index (storing end
+    // index j at i)
+    std::vector<int> build_lyndon_arr(std::vector<int> const& w,
+                                      std::vector<int> const& isa,
+                                      std::vector<int> const& st,
+                                      bool                    reverse) {
+      int                             n = w.size();
+      std::vector<int>                ly_arr(n);
+      std::stack<std::pair<int, int>> S;
+
+      ly_arr[n - 1] = n - 1;
+      S.push({n - 1, n - 1});  // push sentinel
+
+      for (int i = n - 2; i >= 0; i--) {
+        int j = i;
+        while (!S.empty()) {
+          int i_v = S.top().first;
+          int j_v = S.top().second;
+          if (!is_lex_smaller(w, isa, st, i, j, i_v, j_v, reverse))
+            break;  // fails merge
+          j = j_v;  // merge string uv using previously established lyndon word
+                    // at right (top of stack)
+          S.pop();
+        }
+        S.push({i, j});
+        ly_arr[i] = j;
+      }
+      return ly_arr;
+    }
+
+    std::vector<Run> max_runs(std::vector<int> const& isa,
+                              std::vector<int> const& st,
+                              std::vector<int> const& rev_isa,
+                              std::vector<int> const& rev_st,
+                              std::vector<int>&       ly_arr) {
+      std::vector<Run> runs;
+      int              n = isa.size();
+
+      for (int i = 0; i < n - 1; i++) {
+        int j = ly_arr[i];
+        int p = j - i + 1;
+        int i_prime;
+        int j_prime;
+
+        i_prime = (i > 0) ? i - lcs(rev_isa, rev_st, i - 1, j)
+                          : i;  // candidate left extension
+        j_prime = (j < n - 1) ? j + lcp(isa, st, i, j + 1)
+                              : j;  // candidate right extension
+        if ((j_prime - i_prime + 1) >= 2 * p && i_prime <= i
+            && i <= i_prime + p) {
+          runs.push_back({i_prime,
+                          (j_prime - i_prime + 1) / p * p + i_prime - 1,
+                          p});  // fix cycle start at first index
+        }
+      }
+      return runs;
+    }
+
+    /**
+     * We choose a policy that outputs a "semi-minimal" expression with repeated
+     * units expressed in form (x)^e. The two exceptions to true minimality are
+     * as follows:
+     *    - We don't consider cycle shifts. This would require a more complex
+     * run selection algorithm. The Bannai maximum runs algorithm produces runs
+     * that may include partial cycles at the start or end. We define a policy
+     * that simply fixes the cycle start at the first index of the run (in
+     * "max_runs" function). This potentially misses more ideal run boundaries.
+     *    - We deliver the factored form instead of by-character optimisation
+     * (ex. x^2 rather than xx, (ef)^2 rather than efef) This can be easily
+     * changed by adjustment to the compression factor function. This translates
+     * to minimality of original string characters rather than total output
+     * characters, with respect to first exception.
+     *
+     * This is executed as a dp-style algorithm maximising compression with
+     *    compression factor (cf) = length - period
+     *
+     * We accept only alpha characters, else exception.
+     * Inverses (uppercase characters) are currently considered
+     * lexicographically smaller by way of ASCII mapping. White space characters
+     * not accepted. Single character repeats are output without parentheses
+     * (ex. x^2 rather than (x)^2)
+     *
+     * Run discovery pipeline can theoretically run in O(n). For praticality,
+     * lcp query link uses sparse table RMQ, which has O(nlogn) setup. Run
+     * selection/compression process is O(nlogn) for highly periodic strings,
+     * based on looping over the period length of all runs. Average case is
+     * O(n). This is a more memory-heavy implementation. The sparse table itself
+     * uses O(nlogn) space.
+     */
+    std::string to_expression(std::string const& w, int n) {
+      // input format validation
+      if (w == "")
+        return "";
+      for (char const& c : w) {
+        if (!std::isalpha(c)) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "expects string argument with alphabet \"a-zA-Z\", "
+              "all other symbols invalid");
+        }
+      }
+
+      // map string to ASCII value, append sentinel, and build forward suffix
+      // array alphabet size is 256 + 1 (sentinel)
+      std::vector<int> mapped_w(n + 1, 0);
+      std::vector<int> sa(n + 1, 0);
+      std::vector<int> height(n + 1, 0);
+      std::vector<int> st;
+      for (int i = 0; i < n; i++) {
+        mapped_w[i] = static_cast<unsigned char>(w[i]) + 1;
+      }
+      mapped_w[n] = 0;  // sentinel $
+      sa_is(mapped_w, sa, 257);
+      std::vector<int> isa = build_isa(sa);
+      height               = get_height(mapped_w, sa, isa);
+      st                   = build_sparse_table(height);
+
+      // construct same structures for the reverse string
+      std::vector<int> rev_mw(n + 1, 0);
+      std::vector<int> rev_sa(n + 1, 0);
+      std::vector<int> rev_height(n + 1, 0);
+      std::vector<int> rev_st;
+      for (int i = 0; i < n; i++) {
+        rev_mw[n - i - 1] = mapped_w[i];
+      }
+      rev_mw[n] = 0;
+      sa_is(rev_mw, rev_sa, 257);
+      std::vector<int> rev_isa = build_isa(rev_sa);
+      rev_height               = get_height(rev_mw, rev_sa, rev_isa);
+      rev_st                   = build_sparse_table(rev_height);
+
+      std::vector<int> ly_arr     = build_lyndon_arr(mapped_w, isa, st, false);
+      std::vector<int> rev_ly_arr = build_lyndon_arr(mapped_w, isa, st, true);
+
+      std::vector<Run> runs1 = max_runs(isa, st, rev_isa, rev_st, ly_arr);
+      std::vector<Run> runs2 = max_runs(isa, st, rev_isa, rev_st, rev_ly_arr);
+
+      // combine runs vectors and sort by period length
+      std::vector<Run> all_runs = runs1;
+      all_runs.insert(all_runs.end(), runs2.begin(), runs2.end());
+      std::sort(all_runs.begin(),
+                all_runs.end(),
+                [](const Run& a, const Run& b) { return a.p < b.p; });
+      std::vector<int>              run_savings(all_runs.size(), 0);
+      std::vector<std::vector<int>> nested_list(all_runs.size());
+
+      // bucket by run start and end index: stores index into all_runs array
+      std::vector<std::vector<int>> runs_by_start(n);
+      std::vector<std::vector<int>> runs_by_end(n);
+      for (int i = 0; i < static_cast<int>(all_runs.size()); i++) {
+        runs_by_start[all_runs[i].i].push_back(i);
+        runs_by_end[all_runs[i].j].push_back(i);
+      }
+
+      // compression factor function
+      auto cf = [](Run const& r) {
+        return (r.j - r.i + 1) - r.p;
+      };  // omitting exponentiation syntax overhead
+
+      // 1D DP per period, maximising compression factor based on nested periods
+      for (int r = 0; r < static_cast<int>(all_runs.size()); r++) {
+        Run const&                       run = all_runs[r];
+        std::vector<std::pair<int, int>> p_dp(run.p, {0, -1});
+
+        for (int i = run.i; i < run.i + run.p; i++) {
+          int const offset = i - run.i;
+          if (offset > 0) {
+            p_dp[offset] = p_dp[offset - 1];  // carry over previous index
+          }
+          // loop through runs that start at an index inside larger period
+          for (int nested_i : runs_by_start[i]) {
+            Run const& nested = all_runs[nested_i];
+
+            // check that nested run candidate is fully contained in larger
+            // period
+            if (nested.p < run.p && nested.j < run.i + run.p) {
+              int prev      = (offset > 0) ? p_dp[offset - 1].first : 0;
+              int candidate = run_savings[nested_i];
+              if (offset == 0 || p_dp[offset - 1].second < 0
+                  || all_runs[p_dp[offset - 1].second].j < nested.j) {
+                candidate += prev;
+              }
+              if (candidate >= p_dp[offset].first) {
+                p_dp[offset] = {candidate, nested_i};
+              }
+            }
+          }
+        }
+
+        // traverse p_dp backwards
+        std::stack<int> p_selected;
+        int             curr = run.i + run.p - 1;
+        while (curr >= run.i) {
+          int const offset = curr - run.i;
+          if (p_dp[offset].second >= 0) {
+            Run const& nested = all_runs[p_dp[offset].second];
+            p_selected.push(p_dp[offset].second);
+            curr = nested.i - 1;
+          } else {
+            curr--;
+          }
+        }
+
+        curr = 0;
+        while (curr < run.i + run.p) {
+          if (!p_selected.empty() && curr == all_runs[p_selected.top()].i) {
+            int child_i = p_selected.top();
+            p_selected.pop();
+            nested_list[r].push_back(child_i);
+            curr = all_runs[child_i].j + 1;
+          } else {
+            curr++;
+          }
+        }
+        run_savings[r] = cf(run) + p_dp[run.p - 1].first;
+      }
+
+      // 1D DP by end index
+      std::vector<std::pair<int, int>> dp(n, {0, -1});
+      for (int i = 0; i < n; i++) {
+        if (i > 0)
+          dp[i] = dp[i - 1];
+        for (int r : runs_by_end[i]) {
+          Run const& run       = all_runs[r];
+          int        prev      = (run.i > 0) ? dp[run.i - 1].first : 0;
+          int        candidate = run_savings[r];
+          if (run.i == 0 || dp[run.i - 1].second < 0
+              || all_runs[dp[run.i - 1].second].j < run.i) {
+            candidate += prev;
+          }
+          if (candidate >= dp[i].first) {
+            dp[i] = {candidate, r};
+          }
+        }
+      }
+      // build final string by traversing dp array backwards
+      std::string     result = "";
+      std::stack<int> selected;
+      int             p = n - 1;
+      while (p >= 0) {
+        if (dp[p].second >= 0) {
+          Run const& r = all_runs[dp[p].second];
+          selected.push(dp[p].second);
+          p = r.i - 1;
+        } else {
+          p--;
+        }
+      }
+
+      // recursive lambda for final string reconstruction with nested runs
+      auto render_run = [&](auto& self, int run_i) -> void {
+        Run const&              r        = all_runs[run_i];
+        std::vector<int> const& children = nested_list[run_i];
+
+        if (r.p > 1)
+          result += "(";
+
+        int curr       = r.i;
+        int end_period = r.i + r.p;
+        int child_i    = 0;
+
+        while (curr < end_period) {
+          if (child_i < static_cast<int>(children.size())
+              && curr == all_runs[children[child_i]].i) {
+            int child_run_i = children[child_i];
+            self(self, child_run_i);  // recursively render nested (child) run
+
+            curr = all_runs[child_run_i].j + 1;
+            child_i++;
+          } else {
+            result += w[curr];
+            curr++;
+          }
+        }
+
+        if (r.p > 1)
+          result += ")";
+        int exponent = (r.j - r.i + 1) / r.p;
+        result += "^" + std::to_string(exponent);
+      };
+
+      p = 0;
+      while (p < n) {
+        if (!selected.empty() && p == all_runs[selected.top()].i) {
+          int top_run_i = selected.top();
+          selected.pop();
+          render_run(render_run, top_run_i);
+          p = all_runs[top_run_i].j + 1;
+        } else {
+          result += w[p];
+          p++;
+        }
+      }
+      return result;
+    }
+  }  // namespace
 
   namespace detail {
     // This is not in an unnamed namespace because it is used by random_strings.
@@ -413,372 +857,6 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 256);
       }
       return letters;
-    }
-
-    // namespace libsemigroups::detail::string_compress, specified for component testing
-    namespace string_compress{
-      // define sentinel as lexicographically smallest symbol
-      std::vector<int> build_sa(std::string const& word) {
-        int n = word.size();
-        if (n == 0) return {0}; // empty string base case
-        std::vector<int> s(n + 1, 0);
-        std::vector<int> sa(n + 1, 0);
-
-        for (int i = 0; i < n; i++) {
-          s[i] = static_cast<unsigned char>(word[i]) + 1;
-        }
-        s[n] = 0; // sentinel $
-        sa_is(s, sa, 257);
-        return sa; 
-      }
-
-      std::vector<int> build_isa(std::vector<int> const& pos) {
-        int n = pos.size();
-        std::vector<int> isa(n);
-        for (int i = 0; i < n; i++) {
-          isa[pos[i]] = i;
-        }
-        return isa;
-      }
-      
-      // defined in kasai 2001, stores length of longest common prefix between ADJACENT suffixes in sorted suffix array
-      std::vector<int> get_height(std::vector<int> const& a, std::vector<int> const& pos, std::vector<int> const& rank) {
-        int n = a.size();
-        std::vector<int> height(n, 0);
-
-        int h = 0;
-        // iterate in order of appearance in original string
-        for (int i = 0; i < n; i++) {
-          if (rank[i] > 0) {
-            int k = pos[rank[i] - 1];   // look at the left adjacent leaf
-            while ((i + h) < n && (k + h) < n && a[i + h] == a[k + h]) {
-              h++;
-            }
-            height[rank[i]] = h;
-            if (h > 0) h = h - 1;
-          }
-        }
-        return height;
-      } 
-
-      // O(nlogn) flat sparse table from height array
-      std::vector<int> build_sparse_table(std::vector<int> const& arr) {
-        int n = arr.size();
-        int levels = log2(n) + 1;
-        std::vector<int> st(n * levels);
-    
-        // layer 0
-        for (int i = 0; i < n; i++) {
-          st[i] = arr[i];
-        }
-
-        for (int k = 1; k < levels; k++) {
-          for (int j = 0; j + (1 << k) <= n; j++) {
-            int l = st[(k - 1) * n + j];
-            int r = st[(k - 1) * n + j + (1 << (k - 1))];   // jump forward 2^(k - 1) steps
-            st[k * n + j] = std::min(l, r);
-          }
-        }
-        return st; 
-      }
-
-      // returns length of lcp: tentative implementation O(n^2)
-      int lcp(std::vector<int> const& isa, std::vector<int> const& st, int x, int z) {
-        if (x == z) return 0;
-        int rank_x = isa[x];
-        int rank_z = isa[z];
-        if (rank_x > rank_z) std::swap(rank_x, rank_z);
-        return rmq(st, isa.size(), rank_x + 1, rank_z);
-      }
-
-      int lcs(std::vector<int> const& rev_isa, std::vector<int> const& rev_st, int x, int z) {
-        return lcp(rev_isa, rev_st, rev_isa.size() - x - 2, rev_isa.size() - z - 2);
-      }
-
-      // helper for build_lyndon_arr invoking lcp
-      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& st, int i, int j, int i_v, int j_v, bool reverse) {
-        int len_w  = w.size();
-        int len = j - i + 1;
-        int len_v = j_v - i_v + 1;
-
-        int lcp_len = lcp(isa, st, i, i_v);
-
-        // avoid sentinel inclusion (issue specific to reverse lyndon array construction)
-        if (i + lcp_len >= len_w - 1 || i_v + lcp_len >= len_w - 1) {
-          return len < len_v; 
-        }
-        if (lcp_len < len && lcp_len < len_v) {
-          if (reverse) return w[i + lcp_len] > w[i_v + lcp_len];  // reversed lexicographical ordering comparison
-          return w[i + lcp_len] < w[i_v + lcp_len];               // compare first different character, sentinel = 0 guarantees no equivalence
-        }
-        return len < len_v; // shorter string is lexicographically smaller
-      }
-
-      // outputs lyndon array with longest lyndon word at each index (storing end index j at i)
-      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& st, bool reverse) {
-        int n = w.size();
-        std::vector<int> ly_arr(n);
-        std::stack<std::pair<int,int>> S;
-
-        ly_arr[n - 1] = n - 1;
-        S.push({n - 1, n - 1}); // push sentinel
-
-        for (int i = n - 2; i >= 0; i--) {
-          int j = i;
-          while (!S.empty()) {
-            int i_v = S.top().first;
-            int j_v = S.top().second;
-            if (!is_lex_smaller(w, isa, st, i, j, i_v, j_v, reverse)) break; // fails merge
-            j = j_v;  // merge string uv using previously established lyndon word at right (top of stack)
-            S.pop();
-          }
-          S.push({i, j});
-          ly_arr[i] = j;
-        }
-        return ly_arr;
-      }
-
-      std::vector<Run> max_runs(std::vector<int> const& isa, std::vector<int> const& st,
-                                std::vector<int> const& rev_isa, std::vector<int> const& rev_st,
-                                std::vector<int>& ly_arr) {
-        std::vector<Run> runs; 
-        int n = isa.size();
-
-        for (int i = 0; i < n - 1; i++) {
-          int j = ly_arr[i];
-          int p = j - i + 1; 
-          int i_prime; 
-          int j_prime;
-
-          i_prime = (i > 0) ? i - lcs(rev_isa, rev_st, i - 1, j) : i; // candidate left extension
-          j_prime = (j < n - 1) ? j + lcp(isa, st, i, j + 1): j;      // candidate right extension
-          if ((j_prime - i_prime + 1) >= 2*p && i_prime <= i && i <= i_prime + p) {
-            runs.push_back({i_prime, (j_prime - i_prime + 1) / p * p + i_prime - 1, p});  // fix cycle start at first index
-          }
-        }
-        return runs;
-      }
-
-      /**
-       * We choose a policy that outputs a "semi-minimal" expression with repeated units expressed in form (x)^e.
-       * The two exceptions to true minimality are as follows:
-       *    - We don't consider cycle shifts. This would require a more complex run selection algorithm. 
-       *      The Bannai maximum runs algorithm produces runs that may include partial cycles at the start or end. 
-       *      We define a policy that simply fixes the cycle start at the first index of the run (in "max_runs" function).
-       *      This potentially misses more ideal run boundaries. 
-       *    - We deliver the factored form instead of by-character optimisation (ex. x^2 rather than xx, (ef)^2 rather than efef)
-       *      This can be easily changed by adjustment to the compression factor function. 
-       *      This translates to minimality of original string characters rather than total output characters, with respect to first exception.
-       *  
-       * This is executed as a dp-style algorithm maximising compression with
-       *    compression factor (cf) = length - period
-       *
-       * We accept only alpha characters, else exception.
-       * Inverses (uppercase characters) are currently considered lexicographically smaller by way of ASCII mapping.
-       * White space characters not accepted.
-       * Single character repeats are output without parentheses (ex. x^2 rather than (x)^2)
-       * 
-       * Run discovery pipeline can theoretically run in O(n). For praticality, lcp query link uses sparse table RMQ, which has O(nlogn) setup.
-       * Run selection/compression process is O(nlogn) for highly periodic strings, based on looping over the period length of all runs.
-       *   Average case is O(n). 
-       */
-      std::string to_expression(std::string const& w, int n) {
-        // input format validation
-        if (w == "") return "";
-        for (char const& c: w) {
-          if (!std::isalpha(c)) {
-            LIBSEMIGROUPS_EXCEPTION("expects string argument with alphabet \"a-zA-Z\", "
-                                    "all other symbols invalid");
-          }
-        }
-
-        // map string to ASCII value, append sentinel, and build forward suffix array
-        // alphabet size is 256 + 1 (sentinel)
-        std::vector<int> mapped_w(n + 1, 0);
-        std::vector<int> sa(n + 1, 0);
-        std::vector<int> height(n + 1, 0);
-        std::vector<int> st;
-        for (int i = 0; i < n; i++) {
-          mapped_w[i] = static_cast<unsigned char>(w[i]) + 1;
-        }
-        mapped_w[n] = 0; // sentinel $
-        sa_is(mapped_w, sa, 257);
-        std::vector<int> isa = build_isa(sa);
-        height = get_height(mapped_w, sa, isa);
-        st = build_sparse_table(height);
-
-        // construct same structures for the reverse string
-        std::vector<int> rev_mw(n + 1, 0);
-        std::vector<int> rev_sa(n + 1, 0);
-        std::vector<int> rev_height(n + 1, 0);
-        std::vector<int> rev_st;
-        for (int i = 0; i < n; i++) {
-          rev_mw[n - i - 1] = mapped_w[i];
-        }
-        rev_mw[n] = 0;
-        sa_is(rev_mw, rev_sa, 257);
-        std::vector<int> rev_isa = build_isa(rev_sa);
-        rev_height = get_height(rev_mw, rev_sa, rev_isa);
-        rev_st = build_sparse_table(rev_height);
-
-        std::vector<int> ly_arr = build_lyndon_arr(mapped_w, isa, st, false);
-        std::vector<int> rev_ly_arr = build_lyndon_arr(mapped_w, isa, st, true);
-
-        std::vector<Run> runs1 = max_runs(isa, st, rev_isa, rev_st, ly_arr);
-        std::vector<Run> runs2 = max_runs(isa, st, rev_isa, rev_st, rev_ly_arr);
-
-        // combine runs vectors and sort by period length
-        std::vector<Run> all_runs = runs1;
-        all_runs.insert(all_runs.end(), runs2.begin(), runs2.end());
-        std::sort(all_runs.begin(), all_runs.end(), [](const Run& a, const Run& b) {
-            return a.p < b.p;
-        });
-        std::vector<int> run_savings(all_runs.size(), 0);
-        std::vector<std::vector<int>> nested_list(all_runs.size());
-
-        // bucket by run start and end index: stores index into all_runs array
-        std::vector<std::vector<int>> runs_by_start(n);
-        std::vector<std::vector<int>> runs_by_end(n);
-        for (int i = 0; i < static_cast<int>(all_runs.size()); i++) {
-          runs_by_start[all_runs[i].i].push_back(i);
-          runs_by_end[all_runs[i].j].push_back(i);
-        }
-
-        // compression factor function
-        auto cf = [](Run const& r) { return (r.j - r.i + 1) - r.p; }; // omitting exponentiation syntax overhead
-
-        // 1D DP per period, maximising compression factor based on nested periods
-        for (int r = 0; r < static_cast<int>(all_runs.size()); r++) {
-          Run const& run = all_runs[r];
-          std::vector<std::pair<int,int>> p_dp(run.p, {0, -1});
-
-          for (int i = run.i; i < run.i + run.p; i++) {
-            int const offset = i - run.i;
-            if (offset > 0) {
-              p_dp[offset] = p_dp[offset - 1];  // carry over previous index
-            }
-            // loop through runs that start at an index inside larger period
-            for (int nested_i: runs_by_start[i]) {
-                Run const& nested = all_runs[nested_i];
-
-                // check that nested run candidate is fully contained in larger period
-                if (nested.p < run.p && nested.j < run.i + run.p) {
-                  int prev = (offset > 0) ? p_dp[offset - 1].first : 0;
-                  int candidate = run_savings[nested_i];
-                  if (offset == 0 || p_dp[offset - 1].second < 0
-                      || all_runs[p_dp[offset - 1].second].j < nested.j) {
-                    candidate += prev;
-                  }
-                  if (candidate >= p_dp[offset].first) {
-                    p_dp[offset] = {candidate, nested_i};
-                  }
-                }
-            }
-          }
-
-          // traverse p_dp backwards
-          std::stack<int> p_selected;
-          int curr = run.i + run.p - 1;
-          while (curr >= run.i) {
-            int const offset = curr - run.i;
-            if (p_dp[offset].second >= 0) {
-              Run const& nested = all_runs[p_dp[offset].second];
-              p_selected.push(p_dp[offset].second);
-              curr = nested.i - 1;
-            }
-            else curr--;
-          }
-
-          curr = 0;
-          while (curr < run.i + run.p) {
-            if (!p_selected.empty() && curr == all_runs[p_selected.top()].i) {
-              int child_i = p_selected.top();
-              p_selected.pop();
-              nested_list[r].push_back(child_i);
-              curr = all_runs[child_i].j + 1;
-            } else {
-              curr++;
-            }
-          }
-          run_savings[r] = cf(run) + p_dp[run.p - 1].first;
-        }
-
-        // 1D DP by end index
-        std::vector<std::pair<int, int>> dp(n, {0, -1});
-        for (int i = 0; i < n; i++) {
-          if (i > 0) dp[i] = dp[i - 1];
-          for (int r: runs_by_end[i]) {
-            Run const& run = all_runs[r];
-            int prev = (run.i > 0) ? dp[run.i - 1].first : 0;
-            int candidate = run_savings[r];
-            if (run.i == 0 || dp[run.i - 1].second < 0
-                || all_runs[dp[run.i - 1].second].j < run.i) {
-              candidate += prev;
-            }
-            if (candidate >= dp[i].first) {
-              dp[i] = {candidate, r};
-            }
-          }
-        }
-        // build final string by traversing dp array backwards
-        std::string result = "";
-        std::stack<int> selected;
-        int p = n - 1;
-        while (p >= 0) {
-          if (dp[p].second >= 0) {
-            Run const& r = all_runs[dp[p].second];
-            selected.push(dp[p].second);
-            p = r.i - 1;
-          }
-          else p--;
-        }
-
-        // recursive lambda for final string reconstruction with nested runs
-        auto render_run = [&](auto& self, int run_i) -> void {
-          Run const& r = all_runs[run_i];
-          std::vector<int> const& children = nested_list[run_i];
-
-          if (r.p > 1) result += "(";
-
-          int curr = r.i;
-          int end_period = r.i + r.p;
-          int child_i = 0;
-
-          while (curr < end_period) {
-              if (child_i < static_cast<int>(children.size())
-                  && curr == all_runs[children[child_i]].i) {
-                  int child_run_i = children[child_i];
-                  self(self, child_run_i);  // recursively render nested (child) run
-
-                  curr = all_runs[child_run_i].j + 1;
-                  child_i++;
-              }
-              else {
-                result += w[curr];
-                curr++;
-              }
-          }
-
-          if (r.p > 1) result += ")";
-          int exponent = (r.j - r.i + 1) / r.p;
-          result += "^" + std::to_string(exponent);
-        };
-
-        p = 0;
-        while (p < n) {
-          if (!selected.empty() && p == all_runs[selected.top()].i) {
-            int top_run_i = selected.top();
-            selected.pop();
-            render_run(render_run, top_run_i);
-            p = all_runs[top_run_i].j + 1;
-          }
-          else {
-            result += w[p];
-            p++;
-          }
-        }
-        return result;
-      }
     }
   }  // namespace detail
 
@@ -905,9 +983,9 @@ namespace libsemigroups {
   namespace literals {
     word_type operator""_w(char const* w, size_t n) {
       word_type result;
-  #ifdef LIBSEMIGROUPS_DEBUG
-        static const std::string valid_chars = "0123456789";
-  #endif
+#ifdef LIBSEMIGROUPS_DEBUG
+      static const std::string valid_chars = "0123456789";
+#endif
       // 0 is unset, 1 is reading integers, 2 is parsing a string
       int mode = 0;
       for (size_t i = 0; i < n; ++i) {
@@ -953,7 +1031,7 @@ namespace libsemigroups {
     }
 
     std::string operator""_c(char const* w, size_t n) {
-      return detail::string_compress::to_expression(w, n);
+      return to_expression(w, n);
     }
 
     std::string operator""_c(char const* w) {

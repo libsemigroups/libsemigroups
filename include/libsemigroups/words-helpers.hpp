@@ -42,27 +42,6 @@ namespace libsemigroups {
     void throw_if_random_string_should_throw(std::string const& alphabet,
                                              size_t             min,
                                              size_t             max);
-    namespace string_compress {
-      std::vector<int> build_sa(std::string const& word);
-      std::vector<int> build_isa(std::vector<int> const& pos);
-      std::vector<int> get_height(std::vector<int> const& a, std::vector<int> const& pos, std::vector<int> const& rank);
-      std::vector<int> build_sparse_table(std::vector<int> const& arr);
-      int lcp(std::vector<int> const& isa, std::vector<int> const& st, int x, int z);
-      int lcs(std::vector<int> const& rev_isa, std::vector<int> const& rev_st, int x, int z);
-      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& st, int i, int j, int i_v, int j_v, bool reverse);
-      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& st, bool reverse);
-
-      struct Run{
-        int i;  // start index
-        int j;  // end index
-        int p;  // period
-      };
-    
-      std::vector<Run> max_runs(std::vector<int> const& isa, std::vector<int> const& st,
-                                std::vector<int> const& rev_isa, std::vector<int> const& rev_st,
-                                std::vector<int>& ly_arr);
-      std::string to_expression(std::string const& w, int n);
-    }
   }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
@@ -260,7 +239,7 @@ namespace libsemigroups {
     //! \code
     //! #include <cassert>
     //! #include <string>
-    //! 
+    //!
     //! std::string w = "baabababababa";
     //! std::string compressed = compress(w);
     //! assert(compressed == "ba(ab)^5a");
@@ -677,10 +656,10 @@ namespace libsemigroups {
     //!
     //! See \ref literal_operator_p "operator\"\"_p" for details.
     std::string operator""_p(const char* w);
-    
-    //! \brief Literal for compressing \ref word_type into a minimal 
-    //! alebraic expression for readability. 
-    //! 
+
+    //! \brief Literal for compressing \ref word_type into a minimal
+    //! alebraic expression for readability.
+    //!
     //!
     //! See \ref literal_operator_c "operator\"\"_c" for details.
     std::string operator""_c(const char* w, size_t n);

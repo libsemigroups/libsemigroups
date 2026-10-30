@@ -20,7 +20,6 @@
 #include <cstddef>    // for size_t
 #include <iterator>   // for distance
 #include <utility>    // for swap
-#include <iostream>
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -205,7 +204,7 @@ namespace libsemigroups {
     word_type first = {};
     word_type last(13, 2);
     auto      w = std::vector(cbegin_wilo(3, 13, first, last),
-                         cend_wilo(3, 13, first, last));
+                              cend_wilo(3, 13, first, last));
     std::sort(w.begin(), w.end(), LenLexCmp());
     REQUIRE(w.size() == number_of_words(3, 0, 13));
     REQUIRE(w.size() == 797161);
@@ -310,7 +309,7 @@ namespace libsemigroups {
     word_type first = 0_w;
     word_type last  = 2222_w;
     auto      w     = std::vector(cbegin_wilo(3, 4, first, last),
-                         cend_wilo(3, 4, first, last));
+                                  cend_wilo(3, 4, first, last));
     REQUIRE(w.size() == 39);
     REQUIRE(w.size() == number_of_words(3, 1, 4));
     REQUIRE(w == std::vector({0_w,   00_w,  000_w, 001_w, 002_w, 01_w,  010_w,
@@ -332,7 +331,7 @@ namespace libsemigroups {
     word_type first = {};
     word_type last(10, 2);
     auto      w = std::vector(cbegin_wilo(3, 10, first, last),
-                         cend_wilo(3, 10, first, last));
+                              cend_wilo(3, 10, first, last));
     REQUIRE(w.size() == number_of_words(3, 0, 10));
     REQUIRE(w.size() == 29524);
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
@@ -384,7 +383,7 @@ namespace libsemigroups {
     word_type first = {};
     word_type last(10, 0);
     auto      w = std::vector(cbegin_wilo(1, 10, first, last),
-                         cend_wilo(1, 10, first, last));
+                              cend_wilo(1, 10, first, last));
     REQUIRE(w.size() == 10);
     REQUIRE(w
             == std::vector({{},
@@ -404,7 +403,7 @@ namespace libsemigroups {
     first = 00_w;
     last  = 0000_w;
     w     = std::vector(cbegin_wilo(1, 4, first, last),
-                    cend_wilo(1, 4, first, last));
+                        cend_wilo(1, 4, first, last));
     REQUIRE(w == std::vector({00_w, 000_w}));
 
     w = std::vector(cbegin_wilo(1, 1, first, last),
@@ -423,11 +422,11 @@ namespace libsemigroups {
     word_type first = {0, 1, 2, 3};
     word_type last(6, 3);
     auto      result   = std::vector(cbegin_wilo(4, 5, first, last),
-                              cend_wilo(4, 5, first, last));
+                                     cend_wilo(4, 5, first, last));
     auto      expected = std::vector(std::find(cbegin_wilo(4, 5, {}, last),
-                                          cend_wilo(4, 5, {}, last),
-                                          first),
-                                cend_wilo(4, 5, {}, last));
+                                               cend_wilo(4, 5, {}, last),
+                                               first),
+                                     cend_wilo(4, 5, {}, last));
 
     REQUIRE(result.size() == expected.size());
     REQUIRE(result.size() == 303);
@@ -441,7 +440,7 @@ namespace libsemigroups {
     word_type first  = {0, 1};
     word_type last   = {1, 1, 1};
     auto      result = std::vector(cbegin_wilo(2, 3, first, last),
-                              cend_wilo(2, 3, first, last));
+                                   cend_wilo(2, 3, first, last));
     REQUIRE(result == std::vector({01_w, 1_w, 10_w, 11_w}));
     REQUIRE(result.size() == 4);
     result = std::vector(cbegin_wilo(2, 1, first, last),
@@ -510,7 +509,7 @@ namespace libsemigroups {
     REQUIRE(words.count() == 26);
 
     v4::WordRange copy;
-    copy.         operator=(words);
+    copy.operator=(words);
     REQUIRE(copy.get() == 00_w);
     copy.next();
     REQUIRE(copy.get() == 000_w);
@@ -523,7 +522,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     v4::WordRange move;
-    move.         operator=(std::move(words));
+    move.operator=(std::move(words));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == 0_w);
@@ -912,7 +911,7 @@ namespace libsemigroups {
     REQUIRE(strings.count() == 26);
 
     v4::WordRange<std::string> copy;
-    copy.                      operator=(strings);
+    copy.operator=(strings);
     REQUIRE(copy.get() == "aa");
     copy.next();
     REQUIRE(copy.get() == "aaa");
@@ -925,7 +924,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     v4::WordRange<std::string> move;
-    move.                      operator=(std::move(strings));
+    move.operator=(std::move(strings));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
@@ -974,7 +973,8 @@ namespace libsemigroups {
     REQUIRE("X^3(yx^2)"_p == "XXXyxx");
     REQUIRE("b(aX)^3x"_p == "baXaXaXx");
     REQUIRE("((a)b^2y)^10"_p == "abbyabbyabbyabbyabbyabbyabbyabbyabbyabby");
-    REQUIRE("((aba)^2(baa)^2b)^2(aba)^2"_p == "abaababaabaababaababaabaababaaba");
+    REQUIRE("((aba)^2(baa)^2b)^2(aba)^2"_p
+            == "abaababaabaababaababaabaababaaba");
     REQUIRE("(a,b)"_p == "ABab");
     REQUIRE("(aB,bA)"_p == "bAaBaBbA");
     REQUIRE("(abbab,babaa)"_p == "BABBAAABABabbabbabaa");
@@ -1040,14 +1040,17 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS("-"_p, LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordRange", "053", "compress substring repetitions", "[lenlex][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordRange",
+                          "053",
+                          "compress substring repetitions",
+                          "[lenlex][quick]") {
     // following from component-wise checks
     REQUIRE(""_c == "");
     REQUIRE("a"_c == "a");
-    CHECK("bbbbbbbbbb"_c == "b^10");
-    CHECK("abcabbca"_c == "abcab^2ca");
-    CHECK("banana"_c == "b(an)^2a");
-    
+    REQUIRE("bbbbbbbbbb"_c == "b^10");
+    REQUIRE("abcabbca"_c == "abcab^2ca");
+    REQUIRE("banana"_c == "b(an)^2a");
+
     // invalid character exceptions (nonexhaustive)
     REQUIRE_THROWS_AS(" "_c, LibsemigroupsException);
     REQUIRE_THROWS_AS(" aba"_c, LibsemigroupsException);
@@ -1060,269 +1063,299 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS("^"_c, LibsemigroupsException);
 
     // verify equivalent call to "compress" function
-    CHECK("cdababef"_c == "cd(ab)^2ef");
-    CHECK(words::compress("cdababef") == "cd(ab)^2ef");
+    REQUIRE("cdababef"_c == "cd(ab)^2ef");
+    REQUIRE(words::compress("cdababef") == "cd(ab)^2ef");
 
     // general
-    CHECK("abc"_c == "abc");
-    CHECK("baabababababa"_c == "ba(ab)^5a");
-    CHECK("xxyxyxyzz"_c == "x(xy)^3z^2");
-    CHECK("cdababababababababef"_c == "cd(ab)^8ef");
-    CHECK("cdababababababababefef"_c == "cd(ab)^8(ef)^2");
-    CHECK("aaaaaaaaaaaaaaaa"_c == "a^16");
-    CHECK("aaaaaaaaaaaaaaaacddddddddddababababababababefef"_c == "a^16cd^10(ab)^8(ef)^2");
-    CHECK("XXXyxx"_c == "X^3yx^2");
-    CHECK("baXaXaXx"_c == "b(aX)^3x");
+    REQUIRE("abc"_c == "abc");
+    REQUIRE("baabababababa"_c == "ba(ab)^5a");
+    REQUIRE("xxyxyxyzz"_c == "x(xy)^3z^2");
+    REQUIRE("cdababababababababef"_c == "cd(ab)^8ef");
+    REQUIRE("cdababababababababefef"_c == "cd(ab)^8(ef)^2");
+    REQUIRE("aaaaaaaaaaaaaaaa"_c == "a^16");
+    REQUIRE("aaaaaaaaaaaaaaaacddddddddddababababababababefef"_c
+            == "a^16cd^10(ab)^8(ef)^2");
+    REQUIRE("XXXyxx"_c == "X^3yx^2");
+    REQUIRE("baXaXaXx"_c == "b(aX)^3x");
 
     // nested runs
-    CHECK("abbyabby"_c == "(ab^2y)^2"); 
-    CHECK("abbyabbyabbyabbyabbyabbyabbyabbyabbyabby"_c == "(ab^2y)^10"); 
-    CHECK("aaaaabaaaaab"_c == "(a^5b)^2");
-    CHECK("abababcabababc"_c == "((ab)^3c)^2");
-    CHECK("cabbaabbaccabbaabbac"_c == "(c(ab^2a)^2c)^2");
+    REQUIRE("abbyabby"_c == "(ab^2y)^2");
+    REQUIRE("abbyabbyabbyabbyabbyabbyabbyabbyabbyabby"_c == "(ab^2y)^10");
+    REQUIRE("aaaaabaaaaab"_c == "(a^5b)^2");
+    REQUIRE("abababcabababc"_c == "((ab)^3c)^2");
+    REQUIRE("cabbaabbaccabbaabbac"_c == "(c(ab^2a)^2c)^2");
 
     // fibonacci (represents upperbound for repeat/run occurrence)
-    // "(abaababaabaab)^2abaaba": no nested & cf includes exponentiation symbol constants variate
-    // "(aba)^2ba(abaab)^3a^2b(aba)^2": no nested & cf without exponentiation symbol constants variate
-    // "((aba^2b)^2a^2b)^2(aba)^2": nested & cf without exponentiation symbol constants variate
+    // "(abaababaabaab)^2abaaba": no nested & cf includes exponentiation symbol
+    // constants variate
+    // "(aba)^2ba(abaab)^3a^2b(aba)^2": no nested & cf without exponentiation
+    // symbol constants variate
+    // "((aba^2b)^2a^2b)^2(aba)^2": nested & cf without exponentiation symbol
+    // constants variate
     // "((aba)^2(baa)^2b)^2(aba)^2": julia's hypothesis (invalid)
     // "a ba aba baaba ababaaba baabaababaaba": original string
-    CHECK("abaababaabaababaababaabaababaaba"_c == "((aba^2b)^2a^2b)^2(aba)^2"); 
+    REQUIRE("abaababaabaababaababaabaababaaba"_c
+            == "((aba^2b)^2a^2b)^2(aba)^2");
 
     // difficult to manually trace, so just print and validate output
-    // "a bc abc bcabc abcbcabc bcabcabcbcabc" 
-    std::string f; 
-    REQUIRE_NOTHROW(f = "abcabcbcabcabcbcabcbcabcabcbcabc"_c); 
+    // "a bc abc bcabc abcbcabc bcabcabcbcabc"
+    std::string f;
+    REQUIRE_NOTHROW(f = "abcabcbcabcabcbcabcbcabcabcbcabc"_c);
     // WARN(" \"abcabcbcabcabcbcabcbcabcabcbcabc\" == " << f);
   }
 
-  // tests suffix array construction (pos), inverse suffix array (rank), height array, forward lyndon array (implicit lcp/lcs), and forward runs
-  LIBSEMIGROUPS_TEST_CASE("WordRange", "054", "component-wise max runs discovery pipeline", "[lenlex][quick]") {
-    std::string w; int n; std::vector<int> mapped_w; std::vector<int> pos; std::vector<int> rank; std::vector<int> height; std::vector<int> st;
-    std::string rev_w; std::vector<int> mapped_rw; std::vector<int> rev_pos; std::vector<int> rev_rank; std::vector<int> rev_height; std::vector<int> rev_st;
-    std::vector<int> ly_arr; std::vector<detail::string_compress::Run> runs; std::vector<detail::string_compress::Run> expected_runs;
-    auto run_eq = [](detail::string_compress::Run const& a, detail::string_compress::Run const& b) { 
-      return a.i == b.i && a.j == b.j && a.p == b.p; 
-    }; // for run comparison
-    
-    // "", empty case
-    w = "";
-    n = w.size(); 
-    mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
-    rev_w.resize(n + 1); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear(); rev_height.clear(); rev_st.clear();
-    ly_arr.clear(); runs.clear(); expected_runs.clear();
-    for (int i = 0; i < n; i++) {
-      mapped_w.push_back((unsigned char)w[i] + 1);
-    }
-    mapped_w.push_back(0);
-    pos = detail::string_compress::build_sa(w);
-    rank = detail::string_compress::build_isa(pos);
-    height = detail::string_compress::get_height(mapped_w, pos, rank);
-    st = detail::string_compress::build_sparse_table(height);
-    REQUIRE(pos == std::vector<int>({0}));
-    REQUIRE(rank == std::vector<int>({0}));
-    REQUIRE(height == std::vector<int>({0}));
+  // need to redefine namespace libsemigroups::detail::string_compress for
+  // component testing tests suffix array construction (pos), inverse suffix
+  // array (rank), height array, forward lyndon array (implicit lcp/lcs), and
+  // forward runs LIBSEMIGROUPS_TEST_CASE("WordRange", "054", "component-wise
+  // max runs discovery pipeline", "[lenlex][quick]") {
+  //   std::string w; int n; std::vector<int> mapped_w; std::vector<int> pos;
+  //   std::vector<int> rank; std::vector<int> height; std::vector<int> st;
+  //   std::string rev_w; std::vector<int> mapped_rw; std::vector<int> rev_pos;
+  //   std::vector<int> rev_rank; std::vector<int> rev_height; std::vector<int>
+  //   rev_st; std::vector<int> ly_arr;
+  //   std::vector<detail::string_compress::Run> runs;
+  //   std::vector<detail::string_compress::Run> expected_runs; auto run_eq =
+  //   [](detail::string_compress::Run const& a, detail::string_compress::Run
+  //   const& b) {
+  //     return a.i == b.i && a.j == b.j && a.p == b.p;
+  //   }; // for run comparison
 
-    rev_w.assign(w.rbegin(), w.rend());
-    for (int i = 0; i < n; i++) {
-      mapped_rw.push_back((unsigned char)rev_w[i] + 1);
-    }
-    mapped_rw.push_back(0);
-    rev_pos = detail::string_compress::build_sa(rev_w);
-    rev_rank = detail::string_compress::build_isa(rev_pos);
-    rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
-    rev_st = detail::string_compress::build_sparse_table(rev_height);
-    ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
-    runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st, ly_arr);
-    REQUIRE(ly_arr == std::vector<int>({0}));
-    expected_runs = {};
-    REQUIRE(runs.size() == expected_runs.size());
-    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
+  //   // "", empty case
+  //   w = "";
+  //   n = w.size();
+  //   mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
+  //   rev_w.resize(n + 1); mapped_rw.clear(); rev_pos.clear();
+  //   rev_rank.clear(); rev_height.clear(); rev_st.clear(); ly_arr.clear();
+  //   runs.clear(); expected_runs.clear(); for (int i = 0; i < n; i++) {
+  //     mapped_w.push_back((unsigned char)w[i] + 1);
+  //   }
+  //   mapped_w.push_back(0);
+  //   pos = detail::string_compress::build_sa(w);
+  //   rank = detail::string_compress::build_isa(pos);
+  //   height = detail::string_compress::get_height(mapped_w, pos, rank);
+  //   st = detail::string_compress::build_sparse_table(height);
+  //   REQUIRE(pos == std::vector<int>({0}));
+  //   REQUIRE(rank == std::vector<int>({0}));
+  //   REQUIRE(height == std::vector<int>({0}));
 
-    // "a", single character case
-    w = "a";
-    n = w.size(); 
-    mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
-    rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear(); rev_height.clear(); rev_st.clear();
-    ly_arr.clear(); runs.clear(); expected_runs.clear();
-    for (int i = 0; i < n; i++) {
-      mapped_w.push_back((unsigned char)w[i] + 1);
-    }
-    mapped_w.push_back(0);
-    pos = detail::string_compress::build_sa(w);
-    rank = detail::string_compress::build_isa(pos);
-    height = detail::string_compress::get_height(mapped_w, pos, rank);
-    st = detail::string_compress::build_sparse_table(height);
-    REQUIRE(pos == std::vector<int>({1, 0}));
-    REQUIRE(rank == std::vector<int>({1, 0}));
-    REQUIRE(height == std::vector<int>({0, 0}));
+  //   rev_w.assign(w.rbegin(), w.rend());
+  //   for (int i = 0; i < n; i++) {
+  //     mapped_rw.push_back((unsigned char)rev_w[i] + 1);
+  //   }
+  //   mapped_rw.push_back(0);
+  //   rev_pos = detail::string_compress::build_sa(rev_w);
+  //   rev_rank = detail::string_compress::build_isa(rev_pos);
+  //   rev_height = detail::string_compress::get_height(mapped_rw, rev_pos,
+  //   rev_rank); rev_st =
+  //   detail::string_compress::build_sparse_table(rev_height); ly_arr =
+  //   detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
+  //   runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st,
+  //   ly_arr); REQUIRE(ly_arr == std::vector<int>({0})); expected_runs = {};
+  //   REQUIRE(runs.size() == expected_runs.size());
+  //   REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(),
+  //   run_eq));
 
-    rev_w.assign(w.rbegin(), w.rend());
-    for (int i = 0; i < n; i++) {
-      mapped_rw.push_back((unsigned char)rev_w[i] + 1);
-    }
-    mapped_rw.push_back(0);
-    rev_pos = detail::string_compress::build_sa(rev_w);
-    rev_rank = detail::string_compress::build_isa(rev_pos);
-    rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
-    rev_st = detail::string_compress::build_sparse_table(rev_height);
-    ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
-    runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st, ly_arr);
-    REQUIRE(ly_arr == std::vector<int>({0, 1}));
-    expected_runs = {};
-    REQUIRE(runs.size() == expected_runs.size());
-    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
+  //   // "a", single character case
+  //   w = "a";
+  //   n = w.size();
+  //   mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
+  //   rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear();
+  //   rev_height.clear(); rev_st.clear(); ly_arr.clear(); runs.clear();
+  //   expected_runs.clear(); for (int i = 0; i < n; i++) {
+  //     mapped_w.push_back((unsigned char)w[i] + 1);
+  //   }
+  //   mapped_w.push_back(0);
+  //   pos = detail::string_compress::build_sa(w);
+  //   rank = detail::string_compress::build_isa(pos);
+  //   height = detail::string_compress::get_height(mapped_w, pos, rank);
+  //   st = detail::string_compress::build_sparse_table(height);
+  //   REQUIRE(pos == std::vector<int>({1, 0}));
+  //   REQUIRE(rank == std::vector<int>({1, 0}));
+  //   REQUIRE(height == std::vector<int>({0, 0}));
 
-    // "bbbbbbbbbb", testing (h = h - 1) redundancy condition
-    w = "bbbbbbbbbb";
-    n = w.size(); 
-    mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
-    rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear(); rev_height.clear(); rev_st.clear();
-    ly_arr.clear(); runs.clear();
-    for (int i = 0; i < n; i++) {
-      mapped_w.push_back((unsigned char)w[i] + 1);
-    }
-    mapped_w.push_back(0);
-    pos = detail::string_compress::build_sa(w);
-    rank = detail::string_compress::build_isa(pos);
-    height = detail::string_compress::get_height(mapped_w, pos, rank);
-    st = detail::string_compress::build_sparse_table(height);
-    REQUIRE(pos == std::vector<int>({10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
-    REQUIRE(rank == std::vector<int>({10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
-    REQUIRE(height == std::vector<int>({0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9}));
+  //   rev_w.assign(w.rbegin(), w.rend());
+  //   for (int i = 0; i < n; i++) {
+  //     mapped_rw.push_back((unsigned char)rev_w[i] + 1);
+  //   }
+  //   mapped_rw.push_back(0);
+  //   rev_pos = detail::string_compress::build_sa(rev_w);
+  //   rev_rank = detail::string_compress::build_isa(rev_pos);
+  //   rev_height = detail::string_compress::get_height(mapped_rw, rev_pos,
+  //   rev_rank); rev_st =
+  //   detail::string_compress::build_sparse_table(rev_height); ly_arr =
+  //   detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
+  //   runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st,
+  //   ly_arr); REQUIRE(ly_arr == std::vector<int>({0, 1})); expected_runs = {};
+  //   REQUIRE(runs.size() == expected_runs.size());
+  //   REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(),
+  //   run_eq));
 
-    rev_w.assign(w.rbegin(), w.rend());
-    for (int i = 0; i < n; i++) {
-      mapped_rw.push_back((unsigned char)rev_w[i] + 1);
-    }
-    mapped_rw.push_back(0);
-    rev_pos = detail::string_compress::build_sa(rev_w);
-    rev_rank = detail::string_compress::build_isa(rev_pos);
-    rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
-    rev_st = detail::string_compress::build_sparse_table(rev_height);
-    ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
-    runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st, ly_arr);
-    REQUIRE(ly_arr == std::vector<int>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
-    expected_runs = {{0, 9, 1}, {0, 9, 1}};
-    REQUIRE(runs.size() == expected_runs.size());
-    
-    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
+  //   // "bbbbbbbbbb", testing (h = h - 1) redundancy condition
+  //   w = "bbbbbbbbbb";
+  //   n = w.size();
+  //   mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
+  //   rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear();
+  //   rev_height.clear(); rev_st.clear(); ly_arr.clear(); runs.clear(); for
+  //   (int i = 0; i < n; i++) {
+  //     mapped_w.push_back((unsigned char)w[i] + 1);
+  //   }
+  //   mapped_w.push_back(0);
+  //   pos = detail::string_compress::build_sa(w);
+  //   rank = detail::string_compress::build_isa(pos);
+  //   height = detail::string_compress::get_height(mapped_w, pos, rank);
+  //   st = detail::string_compress::build_sparse_table(height);
+  //   REQUIRE(pos == std::vector<int>({10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
+  //   REQUIRE(rank == std::vector<int>({10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}));
+  //   REQUIRE(height == std::vector<int>({0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9}));
 
+  //   rev_w.assign(w.rbegin(), w.rend());
+  //   for (int i = 0; i < n; i++) {
+  //     mapped_rw.push_back((unsigned char)rev_w[i] + 1);
+  //   }
+  //   mapped_rw.push_back(0);
+  //   rev_pos = detail::string_compress::build_sa(rev_w);
+  //   rev_rank = detail::string_compress::build_isa(rev_pos);
+  //   rev_height = detail::string_compress::get_height(mapped_rw, rev_pos,
+  //   rev_rank); rev_st =
+  //   detail::string_compress::build_sparse_table(rev_height); ly_arr =
+  //   detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
+  //   runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st,
+  //   ly_arr); REQUIRE(ly_arr == std::vector<int>({0, 1, 2, 3, 4, 5, 6, 7, 8,
+  //   9, 10})); expected_runs = {{0, 9, 1}, {0, 9, 1}}; REQUIRE(runs.size() ==
+  //   expected_runs.size());
 
-    // example given in kasai lcp paper (altered in that sentinel is processed as lexicographically smallest symbol)
-    w = "abcabbca";
-    n = w.size(); 
-    mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
-    rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear(); rev_height.clear(); rev_st.clear();
-    ly_arr.clear(); runs.clear();
-    for (int i = 0; i < n; i++) {
-      mapped_w.push_back((unsigned char)w[i] + 1);
-    }
-    mapped_w.push_back(0);
-    pos = detail::string_compress::build_sa(w);
-    rank = detail::string_compress::build_isa(pos);
-    height = detail::string_compress::get_height(mapped_w, pos, rank);
-    st = detail::string_compress::build_sparse_table(height);
-    REQUIRE(pos == std::vector<int>({8, 7, 3, 0, 4, 5, 1, 6, 2}));
-    REQUIRE(rank == std::vector<int>({3, 6, 8, 2, 4, 5, 7, 1, 0}));
-    REQUIRE(height == std::vector<int>({0, 0, 1, 2, 0, 1, 3, 0, 2}));
+  //   REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(),
+  //   run_eq));
 
-    rev_w.assign(w.rbegin(), w.rend());
-    for (int i = 0; i < n; i++) {
-      mapped_rw.push_back((unsigned char)rev_w[i] + 1);
-    }
-    mapped_rw.push_back(0);
-    rev_pos = detail::string_compress::build_sa(rev_w);
-    rev_rank = detail::string_compress::build_isa(rev_pos);
-    rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
-    rev_st = detail::string_compress::build_sparse_table(rev_height);
-    ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
-    runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st, ly_arr);
-    REQUIRE(ly_arr == std::vector<int>({2, 2, 2, 6, 6, 6, 6, 7, 8}));
-    expected_runs = {};
-    REQUIRE(runs.size() == expected_runs.size());
-    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
+  //   // example given in kasai lcp paper (altered in that sentinel is
+  //   processed as lexicographically smallest symbol) w = "abcabbca"; n =
+  //   w.size(); mapped_w.clear(); pos.clear(); rank.clear(); height.clear();
+  //   st.clear(); rev_w.clear(); mapped_rw.clear(); rev_pos.clear();
+  //   rev_rank.clear(); rev_height.clear(); rev_st.clear(); ly_arr.clear();
+  //   runs.clear(); for (int i = 0; i < n; i++) {
+  //     mapped_w.push_back((unsigned char)w[i] + 1);
+  //   }
+  //   mapped_w.push_back(0);
+  //   pos = detail::string_compress::build_sa(w);
+  //   rank = detail::string_compress::build_isa(pos);
+  //   height = detail::string_compress::get_height(mapped_w, pos, rank);
+  //   st = detail::string_compress::build_sparse_table(height);
+  //   REQUIRE(pos == std::vector<int>({8, 7, 3, 0, 4, 5, 1, 6, 2}));
+  //   REQUIRE(rank == std::vector<int>({3, 6, 8, 2, 4, 5, 7, 1, 0}));
+  //   REQUIRE(height == std::vector<int>({0, 0, 1, 2, 0, 1, 3, 0, 2}));
 
-    // "banana", small periodic string
-    w = "banana"; 
-    n = w.size(); 
-    mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
-    rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear(); rev_height.clear(); rev_st.clear();
-    ly_arr.clear(); runs.clear();
-    for (int i = 0; i < n; i++) {
-      mapped_w.push_back((unsigned char)w[i] + 1);
-    }
-    mapped_w.push_back(0);
-    pos = detail::string_compress::build_sa(w);
-    rank = detail::string_compress::build_isa(pos);
-    height = detail::string_compress::get_height(mapped_w, pos, rank);
-    st = detail::string_compress::build_sparse_table(height);
-    REQUIRE(pos == std::vector<int>({6, 5, 3, 1, 0, 4, 2}));
-    REQUIRE(rank == std::vector<int>({4, 3, 6, 2, 5, 1, 0}));
-    REQUIRE(height == std::vector<int>({0, 0, 1, 3, 0, 0, 2}));
+  //   rev_w.assign(w.rbegin(), w.rend());
+  //   for (int i = 0; i < n; i++) {
+  //     mapped_rw.push_back((unsigned char)rev_w[i] + 1);
+  //   }
+  //   mapped_rw.push_back(0);
+  //   rev_pos = detail::string_compress::build_sa(rev_w);
+  //   rev_rank = detail::string_compress::build_isa(rev_pos);
+  //   rev_height = detail::string_compress::get_height(mapped_rw, rev_pos,
+  //   rev_rank); rev_st =
+  //   detail::string_compress::build_sparse_table(rev_height); ly_arr =
+  //   detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
+  //   runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st,
+  //   ly_arr); REQUIRE(ly_arr == std::vector<int>({2, 2, 2, 6, 6, 6, 6, 7,
+  //   8})); expected_runs = {}; REQUIRE(runs.size() == expected_runs.size());
+  //   REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(),
+  //   run_eq));
 
-    rev_w.assign(w.rbegin(), w.rend());
-    for (int i = 0; i < n; i++) {
-      mapped_rw.push_back((unsigned char)rev_w[i] + 1);
-    }
-    mapped_rw.push_back(0);
-    rev_pos = detail::string_compress::build_sa(rev_w);
-    rev_rank = detail::string_compress::build_isa(rev_pos);
-    rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
-    rev_st = detail::string_compress::build_sparse_table(rev_height);
-    ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
-    runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st, ly_arr);
-    REQUIRE(ly_arr == std::vector<int>({0, 2, 2, 4, 4, 5, 6}));
-    // expected_runs = {{1, 5, 2}, {1, 5, 2}}; // full runs with partial cycles
-    expected_runs = {{1, 4, 2}, {1, 4, 2}};
-    REQUIRE(runs.size() == expected_runs.size());
-    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
+  //   // "banana", small periodic string
+  //   w = "banana";
+  //   n = w.size();
+  //   mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
+  //   rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear();
+  //   rev_height.clear(); rev_st.clear(); ly_arr.clear(); runs.clear(); for
+  //   (int i = 0; i < n; i++) {
+  //     mapped_w.push_back((unsigned char)w[i] + 1);
+  //   }
+  //   mapped_w.push_back(0);
+  //   pos = detail::string_compress::build_sa(w);
+  //   rank = detail::string_compress::build_isa(pos);
+  //   height = detail::string_compress::get_height(mapped_w, pos, rank);
+  //   st = detail::string_compress::build_sparse_table(height);
+  //   REQUIRE(pos == std::vector<int>({6, 5, 3, 1, 0, 4, 2}));
+  //   REQUIRE(rank == std::vector<int>({4, 3, 6, 2, 5, 1, 0}));
+  //   REQUIRE(height == std::vector<int>({0, 0, 1, 3, 0, 0, 2}));
 
-    // "a ba aba baaba ababaaba baabaababaaba", fibonacci word
-    w = "abaababaabaababaababaabaababaaba";
-    n = w.size(); 
-    mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
-    rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear(); rev_height.clear(); rev_st.clear();
-    ly_arr.clear(); runs.clear();
-    for (int i = 0; i < n; i++) {
-      mapped_w.push_back((unsigned char)w[i] + 1);
-    }
-    mapped_w.push_back(0);
-    pos = detail::string_compress::build_sa(w);
-    rank = detail::string_compress::build_isa(pos);
-    height = detail::string_compress::get_height(mapped_w, pos, rank);
-    st = detail::string_compress::build_sparse_table(height);
-    REQUIRE(pos == std::vector<int>({32, 31, 28, 20, 7, 23, 15, 2, 10, 29, 26, 18, 5, 21, 13, 0, 8, 24, 16, 
-                                     3, 11, 30, 27, 19, 6, 22, 14, 1, 9, 25, 17, 4, 12}));
-    REQUIRE(rank == std::vector<int>({15, 27, 7, 19, 31, 12, 24, 4, 16, 28, 8, 20, 32, 14, 26, 6, 18, 30, 
-                                      11, 23, 3, 13, 25, 5, 17, 29, 10, 22, 2, 9, 21, 1, 0}));
-    REQUIRE(height == std::vector<int>({0, 0, 1, 4, 12, 4, 9, 17, 9, 1, 3, 6, 14, 6, 11, 19, 11, 3, 8, 16, 
-                                        8, 0, 2, 5, 13, 5, 10, 18, 10, 2, 7, 15, 7}));
+  //   rev_w.assign(w.rbegin(), w.rend());
+  //   for (int i = 0; i < n; i++) {
+  //     mapped_rw.push_back((unsigned char)rev_w[i] + 1);
+  //   }
+  //   mapped_rw.push_back(0);
+  //   rev_pos = detail::string_compress::build_sa(rev_w);
+  //   rev_rank = detail::string_compress::build_isa(rev_pos);
+  //   rev_height = detail::string_compress::get_height(mapped_rw, rev_pos,
+  //   rev_rank); rev_st =
+  //   detail::string_compress::build_sparse_table(rev_height); ly_arr =
+  //   detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
+  //   runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st,
+  //   ly_arr); REQUIRE(ly_arr == std::vector<int>({0, 2, 2, 4, 4, 5, 6}));
+  //   // expected_runs = {{1, 5, 2}, {1, 5, 2}}; // full runs with partial
+  //   cycles expected_runs = {{1, 4, 2}, {1, 4, 2}}; REQUIRE(runs.size() ==
+  //   expected_runs.size()); REQUIRE(std::equal(runs.begin(), runs.end(),
+  //   expected_runs.begin(), run_eq));
 
-    rev_w.assign(w.rbegin(), w.rend());
-    for (int i = 0; i < n; i++) {
-      mapped_rw.push_back((unsigned char)rev_w[i] + 1);
-    }
-    mapped_rw.push_back(0);
-    rev_pos = detail::string_compress::build_sa(rev_w);
-    rev_rank = detail::string_compress::build_isa(rev_pos);
-    rev_height = detail::string_compress::get_height(mapped_rw, rev_pos, rev_rank);
-    rev_st = detail::string_compress::build_sparse_table(rev_height);
-    ly_arr = detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
-    runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st, ly_arr);
-    REQUIRE(ly_arr == std::vector<int>({1, 1, 6, 4, 4, 6, 6, 19, 9, 9, 14, 12, 12, 14, 14, 19, 17, 17, 19, 
-                                        19, 27, 22, 22, 27, 25, 25, 27, 27, 30, 30, 30, 31, 32}));
-    // full runs with partial cycles
-    // expected_runs = { 
-    //   {0, 10, 5}, {3, 7, 2}, {3, 7, 2}, {0, 31, 13}, {8, 23, 5}, {11, 15, 2}, {11, 15, 2}, {16, 20, 2}, 
-    //   {16, 20, 2}, {13, 31, 8}, {21, 31, 5}, {24, 28, 2}, {24, 28, 2}, {26, 31, 3}
-    // };
-    expected_runs = {
-      {0, 9, 5}, {3, 6, 2}, {3, 6, 2}, {0, 25, 13}, {8, 22, 5}, {11, 14, 2}, {11, 14, 2}, {16, 19, 2}, 
-      {16, 19, 2}, {13, 28, 8}, {21, 30, 5}, {24, 27, 2}, {24, 27, 2}, {26, 31, 3}
-    };
-    REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(), run_eq));
-  }
+  //   // "a ba aba baaba ababaaba baabaababaaba", fibonacci word
+  //   w = "abaababaabaababaababaabaababaaba";
+  //   n = w.size();
+  //   mapped_w.clear(); pos.clear(); rank.clear(); height.clear(); st.clear();
+  //   rev_w.clear(); mapped_rw.clear(); rev_pos.clear(); rev_rank.clear();
+  //   rev_height.clear(); rev_st.clear(); ly_arr.clear(); runs.clear(); for
+  //   (int i = 0; i < n; i++) {
+  //     mapped_w.push_back((unsigned char)w[i] + 1);
+  //   }
+  //   mapped_w.push_back(0);
+  //   pos = detail::string_compress::build_sa(w);
+  //   rank = detail::string_compress::build_isa(pos);
+  //   height = detail::string_compress::get_height(mapped_w, pos, rank);
+  //   st = detail::string_compress::build_sparse_table(height);
+  //   REQUIRE(pos == std::vector<int>({32, 31, 28, 20, 7, 23, 15, 2, 10, 29,
+  //   26, 18, 5, 21, 13, 0, 8, 24, 16,
+  //                                    3, 11, 30, 27, 19, 6, 22, 14, 1, 9, 25,
+  //                                    17, 4, 12}));
+  //   REQUIRE(rank == std::vector<int>({15, 27, 7, 19, 31, 12, 24, 4, 16, 28,
+  //   8, 20, 32, 14, 26, 6, 18, 30,
+  //                                     11, 23, 3, 13, 25, 5, 17, 29, 10, 22,
+  //                                     2, 9, 21, 1, 0}));
+  //   REQUIRE(height == std::vector<int>({0, 0, 1, 4, 12, 4, 9, 17, 9, 1, 3, 6,
+  //   14, 6, 11, 19, 11, 3, 8, 16,
+  //                                       8, 0, 2, 5, 13, 5, 10, 18, 10, 2, 7,
+  //                                       15, 7}));
+
+  //   rev_w.assign(w.rbegin(), w.rend());
+  //   for (int i = 0; i < n; i++) {
+  //     mapped_rw.push_back((unsigned char)rev_w[i] + 1);
+  //   }
+  //   mapped_rw.push_back(0);
+  //   rev_pos = detail::string_compress::build_sa(rev_w);
+  //   rev_rank = detail::string_compress::build_isa(rev_pos);
+  //   rev_height = detail::string_compress::get_height(mapped_rw, rev_pos,
+  //   rev_rank); rev_st =
+  //   detail::string_compress::build_sparse_table(rev_height); ly_arr =
+  //   detail::string_compress::build_lyndon_arr(mapped_w, rank, st, false);
+  //   runs = detail::string_compress::max_runs(rank, st, rev_rank, rev_st,
+  //   ly_arr); REQUIRE(ly_arr == std::vector<int>({1, 1, 6, 4, 4, 6, 6, 19, 9,
+  //   9, 14, 12, 12, 14, 14, 19, 17, 17, 19,
+  //                                       19, 27, 22, 22, 27, 25, 25, 27, 27,
+  //                                       30, 30, 30, 31, 32}));
+  //   // full runs with partial cycles
+  //   // expected_runs = {
+  //   //   {0, 10, 5}, {3, 7, 2}, {3, 7, 2}, {0, 31, 13}, {8, 23, 5}, {11, 15,
+  //   2}, {11, 15, 2}, {16, 20, 2},
+  //   //   {16, 20, 2}, {13, 31, 8}, {21, 31, 5}, {24, 28, 2}, {24, 28, 2},
+  //   {26, 31, 3}
+  //   // };
+  //   expected_runs = {
+  //     {0, 9, 5}, {3, 6, 2}, {3, 6, 2}, {0, 25, 13}, {8, 22, 5}, {11, 14, 2},
+  //     {11, 14, 2}, {16, 19, 2}, {16, 19, 2}, {13, 28, 8}, {21, 30, 5}, {24,
+  //     27, 2}, {24, 27, 2}, {26, 31, 3}
+  //   };
+  //   REQUIRE(std::equal(runs.begin(), runs.end(), expected_runs.begin(),
+  //   run_eq));
+  // }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
                           "032",
@@ -1330,8 +1363,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+;
-    word_type    w = 01_w;
-    word_type    v = 2_w;
+    word_type w = 01_w;
+    word_type v = 2_w;
     REQUIRE((w + v) == 012_w);
     REQUIRE((w + v + w) == 01201_w);
 
@@ -1349,8 +1382,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+=;
-    word_type    w = 123_w;
-    word_type    v = 345_w;
+    word_type w = 123_w;
+    word_type v = 345_w;
     w += v;
     REQUIRE(w == 123345_w);
     word_type t = word_type({});
@@ -1466,7 +1499,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("random_word", "037", "", "[quick]") {
     auto w = random_word(10, 3);
     REQUIRE(w.size() == 10);
-    auto const letters_less_than_three = std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; });
+    auto const letters_less_than_three
+        = std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; });
     REQUIRE(letters_less_than_three);
     REQUIRE_THROWS_AS(random_word(10, 0), LibsemigroupsException);
 
