@@ -306,7 +306,7 @@ namespace libsemigroups {
       fill(sa.begin(), sa.end(), -1);
       std::vector<int> b(k + 1, 0);
       get_bound(s, b, k, true);
-      for (int i = 0; i < (int)lms.size(); i++) {
+      for (int i = 0; i < static_cast<int>(lms.size()); i++) {
         int lms_i = lms[i];
         sa[--b[s[lms_i]]] = lms_i;
       }
@@ -337,14 +337,14 @@ namespace libsemigroups {
           prev = curr;
         }
       }
-      for (int i = 0; i < (int)lms.size(); i++) {
+      for (int i = 0; i < static_cast<int>(lms.size()); i++) {
         reduced.push_back(ranked[lms[i]]);
       }
       // recursive call with reduced array
       std::vector<int> r_sa(reduced.size(), 0);
       // base case: all reduced characters are unique, map to r_sa
-      if (rank + 1 == (int)reduced.size()) {
-        for (int i = 0; i < (int)reduced.size(); i++) {
+      if (rank + 1 == static_cast<int>(reduced.size())) {
+        for (int i = 0; i < static_cast<int>(reduced.size()); i++) {
           r_sa[reduced[i]] = i;
         }
       }
@@ -360,6 +360,14 @@ namespace libsemigroups {
         sa[--b[s[lms_i]]] = lms_i;
       }
       induced_sort(s, sa, t, k);
+    }
+
+    
+
+    // O(1) queries, assume l < r
+    int rmq(std::vector<int> const& st, int n, int l, int r) {
+      int k = log2(r - l + 1);
+      return std::min(st[k * n + l], st[k * n + r - (1 << k) + 1]);
     }
   }
 
@@ -417,7 +425,7 @@ namespace libsemigroups {
         std::vector<int> sa(n + 1, 0);
 
         for (int i = 0; i < n; i++) {
-          s[i] = (unsigned char)word[i] + 1;
+          s[i] = static_cast<unsigned char>(word[i]) + 1;
         }
         s[n] = 0; // sentinel $
         sa_is(s, sa, 257);
@@ -453,34 +461,47 @@ namespace libsemigroups {
         return height;
       } 
 
+      // O(nlogn) flat sparse table from height array
+      std::vector<int> build_sparse_table(std::vector<int> const& arr) {
+        int n = arr.size();
+        int levels = log2(n) + 1;
+        std::vector<int> st(n * levels);
+    
+        // layer 0
+        for (int i = 0; i < n; i++) {
+          st[i] = arr[i];
+        }
+
+        for (int k = 1; k < levels; k++) {
+          for (int j = 0; j + (1 << k) <= n; j++) {
+            int l = st[(k - 1) * n + j];
+            int r = st[(k - 1) * n + j + (1 << (k - 1))];   // jump forward 2^(k - 1) steps
+            st[k * n + j] = std::min(l, r);
+          }
+        }
+        return st; 
+      }
+
       // returns length of lcp: tentative implementation O(n^2)
-      int lcp(std::vector<int> const& isa, std::vector<int> const& height, int x, int z) {
+      int lcp(std::vector<int> const& isa, std::vector<int> const& st, int x, int z) {
         if (x == z) return 0;
-        
         int rank_x = isa[x];
         int rank_z = isa[z];
         if (rank_x > rank_z) std::swap(rank_x, rank_z);
-
-        int min = INT_MAX;
-        for (int y = rank_x + 1; y <= rank_z; y++) {
-          if (height[y] < min) {
-            min = height[y]; 
-          }
-        }
-        return min;
+        return rmq(st, isa.size(), rank_x + 1, rank_z);
       }
 
-      int lcs(std::vector<int> const& rev_isa, std::vector<int> const& rev_height, int x, int z) {
-        return lcp(rev_isa, rev_height, rev_height.size() - x - 2, rev_height.size() - z - 2);
+      int lcs(std::vector<int> const& rev_isa, std::vector<int> const& rev_st, int x, int z) {
+        return lcp(rev_isa, rev_st, rev_isa.size() - x - 2, rev_isa.size() - z - 2);
       }
 
       // helper for build_lyndon_arr invoking lcp
-      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, int i, int j, int i_v, int j_v, bool reverse) {
+      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& st, int i, int j, int i_v, int j_v, bool reverse) {
         int len_w  = w.size();
         int len = j - i + 1;
         int len_v = j_v - i_v + 1;
 
-        int lcp_len = lcp(isa, height, i, i_v);
+        int lcp_len = lcp(isa, st, i, i_v);
 
         // avoid sentinel inclusion (issue specific to reverse lyndon array construction)
         if (i + lcp_len >= len_w - 1 || i_v + lcp_len >= len_w - 1) {
@@ -494,7 +515,7 @@ namespace libsemigroups {
       }
 
       // outputs lyndon array with longest lyndon word at each index (storing end index j at i)
-      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, bool reverse) {
+      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& st, bool reverse) {
         int n = w.size();
         std::vector<int> ly_arr(n);
         std::stack<std::pair<int,int>> S;
@@ -507,7 +528,7 @@ namespace libsemigroups {
           while (!S.empty()) {
             int i_v = S.top().first;
             int j_v = S.top().second;
-            if (!is_lex_smaller(w, isa, height, i, j, i_v, j_v, reverse)) break; // fails merge
+            if (!is_lex_smaller(w, isa, st, i, j, i_v, j_v, reverse)) break; // fails merge
             j = j_v;  // merge string uv using previously established lyndon word at right (top of stack)
             S.pop();
           }
@@ -517,8 +538,8 @@ namespace libsemigroups {
         return ly_arr;
       }
 
-      std::vector<Run> max_runs(std::vector<int> const& isa, std::vector<int> const& height, 
-                                std::vector<int> const& rev_isa, std::vector<int> const& rev_height, 
+      std::vector<Run> max_runs(std::vector<int> const& isa, std::vector<int> const& st,
+                                std::vector<int> const& rev_isa, std::vector<int> const& rev_st,
                                 std::vector<int>& ly_arr) {
         std::vector<Run> runs; 
         int n = isa.size();
@@ -529,8 +550,8 @@ namespace libsemigroups {
           int i_prime; 
           int j_prime;
 
-          i_prime = (i > 0) ? i - lcs(rev_isa, rev_height, i - 1, j) : i; // candidate left extension
-          j_prime = (j < n - 1) ? j + lcp(isa, height, i, j + 1): j;      // candidate right extension
+          i_prime = (i > 0) ? i - lcs(rev_isa, rev_st, i - 1, j) : i; // candidate left extension
+          j_prime = (j < n - 1) ? j + lcp(isa, st, i, j + 1): j;      // candidate right extension
           if ((j_prime - i_prime + 1) >= 2*p && i_prime <= i && i <= i_prime + p) {
             runs.push_back({i_prime, (j_prime - i_prime + 1) / p * p + i_prime - 1, p});  // fix cycle start at first index
           }
@@ -539,11 +560,11 @@ namespace libsemigroups {
       }
 
       /**
-       * We choose a policy that outputs a "semi-minimal" expression of form (x)^e.
+       * We choose a policy that outputs a "semi-minimal" expression with repeated units expressed in form (x)^e.
        * The two exceptions to true minimality are as follows:
        *    - We don't consider cycle shifts. This would require a more complex run selection algorithm. 
        *      The Bannai maximum runs algorithm produces runs that may include partial cycles at the start or end. 
-       *      We define a policy that simply fixes the cycle start at the first index of the run.
+       *      We define a policy that simply fixes the cycle start at the first index of the run (in "max_runs" function).
        *      This potentially misses more ideal run boundaries. 
        *    - We deliver the factored form instead of by-character optimisation (ex. x^2 rather than xx, (ef)^2 rather than efef)
        *      This can be easily changed by adjustment to the compression factor function. 
@@ -558,7 +579,7 @@ namespace libsemigroups {
        * Single character repeats are output without parentheses (ex. x^2 rather than (x)^2)
        * 
        * Run discovery pipeline can theoretically run in O(n). For praticality, lcp query link uses sparse table RMQ, which has O(nlogn) setup.
-       * Run selection/compression process is O(nlogn) for highly periodic strings, based on looping over the run length of all runs.
+       * Run selection/compression process is O(nlogn) for highly periodic strings, based on looping over the period length of all runs.
        *   Average case is O(n). 
        */
       std::string to_expression(std::string const& w, int n) {
@@ -576,18 +597,21 @@ namespace libsemigroups {
         std::vector<int> mapped_w(n + 1, 0);
         std::vector<int> sa(n + 1, 0);
         std::vector<int> height(n + 1, 0);
+        std::vector<int> st;
         for (int i = 0; i < n; i++) {
-          mapped_w[i] = (unsigned char)w[i] + 1;
+          mapped_w[i] = static_cast<unsigned char>(w[i]) + 1;
         }
         mapped_w[n] = 0; // sentinel $
         sa_is(mapped_w, sa, 257);
         std::vector<int> isa = build_isa(sa);
         height = get_height(mapped_w, sa, isa);
+        st = build_sparse_table(height);
 
         // construct same structures for the reverse string
         std::vector<int> rev_mw(n + 1, 0);
         std::vector<int> rev_sa(n + 1, 0);
         std::vector<int> rev_height(n + 1, 0);
+        std::vector<int> rev_st;
         for (int i = 0; i < n; i++) {
           rev_mw[n - i - 1] = mapped_w[i];
         }
@@ -595,12 +619,13 @@ namespace libsemigroups {
         sa_is(rev_mw, rev_sa, 257);
         std::vector<int> rev_isa = build_isa(rev_sa);
         rev_height = get_height(rev_mw, rev_sa, rev_isa);
+        rev_st = build_sparse_table(rev_height);
 
-        std::vector<int> ly_arr = build_lyndon_arr(mapped_w, isa, height, false);
-        std::vector<int> rev_ly_arr = build_lyndon_arr(mapped_w, isa, height, true);
+        std::vector<int> ly_arr = build_lyndon_arr(mapped_w, isa, st, false);
+        std::vector<int> rev_ly_arr = build_lyndon_arr(mapped_w, isa, st, true);
 
-        std::vector<Run> runs1 = max_runs(isa, height, rev_isa, rev_height, ly_arr);
-        std::vector<Run> runs2 = max_runs(isa, height, rev_isa, rev_height, rev_ly_arr);
+        std::vector<Run> runs1 = max_runs(isa, st, rev_isa, rev_st, ly_arr);
+        std::vector<Run> runs2 = max_runs(isa, st, rev_isa, rev_st, rev_ly_arr);
 
         // combine runs vectors and sort by period length
         std::vector<Run> all_runs = runs1;

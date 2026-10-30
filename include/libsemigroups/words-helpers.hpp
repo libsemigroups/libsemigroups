@@ -46,10 +46,11 @@ namespace libsemigroups {
       std::vector<int> build_sa(std::string const& word);
       std::vector<int> build_isa(std::vector<int> const& pos);
       std::vector<int> get_height(std::vector<int> const& a, std::vector<int> const& pos, std::vector<int> const& rank);
-      int lcp(std::vector<int> const& isa, std::vector<int> const& height, int x, int z);
-      int lcs(std::vector<int> const& rev_isa, std::vector<int> const& rev_height, int x, int z);
-      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, int i, int j, int i_v, int j_v, bool reverse);
-      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& height, bool reverse);
+      std::vector<int> build_sparse_table(std::vector<int> const& arr);
+      int lcp(std::vector<int> const& isa, std::vector<int> const& st, int x, int z);
+      int lcs(std::vector<int> const& rev_isa, std::vector<int> const& rev_st, int x, int z);
+      bool is_lex_smaller(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& st, int i, int j, int i_v, int j_v, bool reverse);
+      std::vector<int> build_lyndon_arr(std::vector<int> const& w, std::vector<int> const& isa, std::vector<int> const& st, bool reverse);
 
       struct Run{
         int i;  // start index
@@ -57,8 +58,8 @@ namespace libsemigroups {
         int p;  // period
       };
     
-      std::vector<Run> max_runs(std::vector<int> const& isa, std::vector<int> const& height, 
-                                std::vector<int> const& rev_isa, std::vector<int> const& rev_height, 
+      std::vector<Run> max_runs(std::vector<int> const& isa, std::vector<int> const& st,
+                                std::vector<int> const& rev_isa, std::vector<int> const& rev_st,
                                 std::vector<int>& ly_arr);
       std::string to_expression(std::string const& w, int n);
     }
