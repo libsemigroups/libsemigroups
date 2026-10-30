@@ -400,7 +400,7 @@ namespace libsemigroups {
         for (int j = 0; j + (1 << k) <= n; j++) {
           int l         = st[(k - 1) * n + j];
           int r         = st[(k - 1) * n + j
-                             + (1 << (k - 1))];  // jump forward 2^(k - 1) steps
+                     + (1 << (k - 1))];  // jump forward 2^(k - 1) steps
           st[k * n + j] = std::min(l, r);
         }
       }

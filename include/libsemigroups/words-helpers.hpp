@@ -657,7 +657,7 @@ namespace libsemigroups {
     //! See \ref literal_operator_p "operator\"\"_p" for details.
     std::string operator""_p(const char* w);
 
-    //! \brief Literal for compressing \ref word_type into a minimal
+    //! \brief Literal for compressing \ref word_type into a more minimal
     //! alebraic expression for readability.
     //!
     //!

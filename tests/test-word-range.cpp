@@ -204,7 +204,7 @@ namespace libsemigroups {
     word_type first = {};
     word_type last(13, 2);
     auto      w = std::vector(cbegin_wilo(3, 13, first, last),
-                              cend_wilo(3, 13, first, last));
+                         cend_wilo(3, 13, first, last));
     std::sort(w.begin(), w.end(), LenLexCmp());
     REQUIRE(w.size() == number_of_words(3, 0, 13));
     REQUIRE(w.size() == 797161);
@@ -309,7 +309,7 @@ namespace libsemigroups {
     word_type first = 0_w;
     word_type last  = 2222_w;
     auto      w     = std::vector(cbegin_wilo(3, 4, first, last),
-                                  cend_wilo(3, 4, first, last));
+                         cend_wilo(3, 4, first, last));
     REQUIRE(w.size() == 39);
     REQUIRE(w.size() == number_of_words(3, 1, 4));
     REQUIRE(w == std::vector({0_w,   00_w,  000_w, 001_w, 002_w, 01_w,  010_w,
@@ -331,7 +331,7 @@ namespace libsemigroups {
     word_type first = {};
     word_type last(10, 2);
     auto      w = std::vector(cbegin_wilo(3, 10, first, last),
-                              cend_wilo(3, 10, first, last));
+                         cend_wilo(3, 10, first, last));
     REQUIRE(w.size() == number_of_words(3, 0, 10));
     REQUIRE(w.size() == 29524);
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
@@ -383,7 +383,7 @@ namespace libsemigroups {
     word_type first = {};
     word_type last(10, 0);
     auto      w = std::vector(cbegin_wilo(1, 10, first, last),
-                              cend_wilo(1, 10, first, last));
+                         cend_wilo(1, 10, first, last));
     REQUIRE(w.size() == 10);
     REQUIRE(w
             == std::vector({{},
@@ -403,7 +403,7 @@ namespace libsemigroups {
     first = 00_w;
     last  = 0000_w;
     w     = std::vector(cbegin_wilo(1, 4, first, last),
-                        cend_wilo(1, 4, first, last));
+                    cend_wilo(1, 4, first, last));
     REQUIRE(w == std::vector({00_w, 000_w}));
 
     w = std::vector(cbegin_wilo(1, 1, first, last),
@@ -422,11 +422,11 @@ namespace libsemigroups {
     word_type first = {0, 1, 2, 3};
     word_type last(6, 3);
     auto      result   = std::vector(cbegin_wilo(4, 5, first, last),
-                                     cend_wilo(4, 5, first, last));
+                              cend_wilo(4, 5, first, last));
     auto      expected = std::vector(std::find(cbegin_wilo(4, 5, {}, last),
-                                               cend_wilo(4, 5, {}, last),
-                                               first),
-                                     cend_wilo(4, 5, {}, last));
+                                          cend_wilo(4, 5, {}, last),
+                                          first),
+                                cend_wilo(4, 5, {}, last));
 
     REQUIRE(result.size() == expected.size());
     REQUIRE(result.size() == 303);
@@ -440,7 +440,7 @@ namespace libsemigroups {
     word_type first  = {0, 1};
     word_type last   = {1, 1, 1};
     auto      result = std::vector(cbegin_wilo(2, 3, first, last),
-                                   cend_wilo(2, 3, first, last));
+                              cend_wilo(2, 3, first, last));
     REQUIRE(result == std::vector({01_w, 1_w, 10_w, 11_w}));
     REQUIRE(result.size() == 4);
     result = std::vector(cbegin_wilo(2, 1, first, last),
@@ -509,7 +509,7 @@ namespace libsemigroups {
     REQUIRE(words.count() == 26);
 
     v4::WordRange copy;
-    copy.operator=(words);
+    copy.         operator=(words);
     REQUIRE(copy.get() == 00_w);
     copy.next();
     REQUIRE(copy.get() == 000_w);
@@ -522,7 +522,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     v4::WordRange move;
-    move.operator=(std::move(words));
+    move.         operator=(std::move(words));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == 0_w);
@@ -911,7 +911,7 @@ namespace libsemigroups {
     REQUIRE(strings.count() == 26);
 
     v4::WordRange<std::string> copy;
-    copy.operator=(strings);
+    copy.                      operator=(strings);
     REQUIRE(copy.get() == "aa");
     copy.next();
     REQUIRE(copy.get() == "aaa");
@@ -924,7 +924,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     v4::WordRange<std::string> move;
-    move.operator=(std::move(strings));
+    move.                      operator=(std::move(strings));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
@@ -1363,8 +1363,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+;
-    word_type w = 01_w;
-    word_type v = 2_w;
+    word_type    w = 01_w;
+    word_type    v = 2_w;
     REQUIRE((w + v) == 012_w);
     REQUIRE((w + v + w) == 01201_w);
 
@@ -1382,8 +1382,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+=;
-    word_type w = 123_w;
-    word_type v = 345_w;
+    word_type    w = 123_w;
+    word_type    v = 345_w;
     w += v;
     REQUIRE(w == 123345_w);
     word_type t = word_type({});
