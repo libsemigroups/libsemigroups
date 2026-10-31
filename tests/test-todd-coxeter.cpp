@@ -5586,4 +5586,85 @@ namespace libsemigroups {
     REQUIRE(graph.current_spanning_tree().number_of_nodes() == 2);
     REQUIRE(todd_coxeter::reduce_no_run(tc, 1_w) == 0_w);
   }
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "140",
+                          "explicit lookaheads inherit and restore settings",
+                          "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 1_w);
+    presentation::add_rule(p, 111_w, 11_w);
+    WordGraph<uint32_t> initial(4, 2);
+    initial.target(0, 0, 1);
+    initial.target(1, 0, 2);
+    initial.target(2, 0, 3);
+
+    ToddCoxeter<word_type> tc;
+    tc.init(twosided, p, initial);
+    auto const style = GENERATE(options::lookahead_style::hlt,
+                                options::lookahead_style::felsch);
+    auto const version
+        = GENERATE(options::def_version::one, options::def_version::two);
+    tc.strategy(options::strategy::felsch)
+        .lookahead_extent(options::lookahead_extent::full)
+        .lookahead_style(style)
+        .def_version(version)
+        .def_max(17)
+        .def_policy(options::def_policy::unlimited)
+        .f_defs(101)
+        .hlt_defs(202)
+        .lookahead_growth_factor(1.5F)
+        .lookahead_growth_threshold(7)
+        .lookahead_min(3)
+        .lookahead_next(11)
+        .lookahead_stop_early_interval(std::chrono::milliseconds(42))
+        .lookahead_stop_early_ratio(0.125F)
+        .lower_bound(4)
+        .save(true)
+        .use_relations_in_extra(true);
+
+    auto check_settings = [&tc, style, version]() {
+      REQUIRE(tc.lookahead_extent() == options::lookahead_extent::full);
+      REQUIRE(tc.lookahead_style() == style);
+      REQUIRE(tc.def_version() == version);
+      REQUIRE(tc.def_max() == 17);
+      REQUIRE(tc.def_policy() == options::def_policy::unlimited);
+      REQUIRE(tc.f_defs() == 101);
+      REQUIRE(tc.hlt_defs() == 202);
+      REQUIRE(tc.lookahead_growth_factor() == 1.5F);
+      REQUIRE(tc.lookahead_growth_threshold() == 7);
+      REQUIRE(tc.lookahead_min() == 3);
+      REQUIRE(tc.lookahead_next() == 11);
+      REQUIRE(tc.lookahead_stop_early_interval()
+              == std::chrono::milliseconds(42));
+      REQUIRE(tc.lookahead_stop_early_ratio() == 0.125F);
+      REQUIRE(tc.lower_bound() == 4);
+      REQUIRE(tc.save());
+      REQUIRE(tc.use_relations_in_extra());
+    };
+
+    SECTION("perform_lookahead") {
+      tc.perform_lookahead();
+    }
+    SECTION("perform_lookahead_for") {
+      tc.perform_lookahead_for(std::chrono::seconds(1));
+    }
+    SECTION("perform_lookahead_until") {
+      size_t calls = 0;
+      tc.perform_lookahead_until([&]() {
+        ++calls;
+        REQUIRE(tc.strategy() == options::strategy::lookahead);
+        check_settings();
+        return false;
+      });
+      REQUIRE(calls > 0);
+    }
+
+    // Only a full lookahead visits node 0 and deduces the missing edge.
+    REQUIRE(tc.current_word_graph().target(0, 1) == 3);
+    REQUIRE(tc.current_word_graph().number_of_nodes_active() == 4);
+    REQUIRE(tc.strategy() == options::strategy::felsch);
+    check_settings();
+  }
 }  // namespace libsemigroups

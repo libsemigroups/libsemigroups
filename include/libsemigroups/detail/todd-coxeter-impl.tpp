@@ -101,7 +101,9 @@ namespace libsemigroups {
 
      public:
       explicit SettingsGuard(ToddCoxeterImpl* tc) : _tc(tc) {
-        _tc->_settings_stack.push_back(std::make_unique<Settings>());
+        // Preserve settings not overridden by the scoped operation.
+        _tc->_settings_stack.push_back(
+            std::make_unique<Settings>(_tc->settings()));
       }
 
       ~SettingsGuard() {
