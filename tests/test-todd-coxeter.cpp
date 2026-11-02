@@ -20,6 +20,8 @@
 #include <cstdlib>   // for size_t
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
+#include <memory>    // for make_unique, unique_ptr
+#include <utility>   // for move, pair
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -5666,5 +5668,166 @@ namespace libsemigroups {
     REQUIRE(tc.current_word_graph().number_of_nodes_active() == 4);
     REQUIRE(tc.strategy() == options::strategy::felsch);
     check_settings();
+  }
+  LIBSEMIGROUPS_TEST_CASE(
+      "ToddCoxeter",
+      "141",
+      "copy and move preserve pending and skipped definitions",
+      "[todd-coxeter][quick]") {
+    auto rg          = ReportGuard(false);
+    using TC         = ToddCoxeter<word_type>;
+    using Definition = std::pair<TC::node_type, TC::label_type>;
+    std::unique_ptr<TC> transferred;
+    {
+      Presentation<word_type> p;
+      p.alphabet(2);
+      TC original(onesided, p);
+      todd_coxeter::add_generating_pair(original, 0_w, 1_w);
+      todd_coxeter::add_generating_pair(original, 00_w, 0_w);
+      todd_coxeter::add_generating_pair(original, 01_w, 0_w);
+      original.strategy(options::strategy::felsch)
+          .def_policy(options::def_policy::no_stack_if_no_space)
+          .def_max(2);
+      original.run_until([&original]() {
+        return original.current_word_graph().number_of_nodes_active() >= 2;
+      });
+      REQUIRE_FALSE(original.finished());
+      REQUIRE_FALSE(original.current_word_graph().definitions().empty());
+      REQUIRE(original.current_word_graph().definitions().any_skipped());
+
+      // A stale owner would accept extra definitions under this policy.
+      original.def_policy(options::def_policy::unlimited);
+      SECTION("copy constructor") {
+        transferred = std::make_unique<TC>(original);
+      }
+      SECTION("move constructor") {
+        transferred = std::make_unique<TC>(std::move(original));
+      }
+      SECTION("copy assignment") {
+        transferred  = std::make_unique<TC>(twosided, p);
+        *transferred = original;
+      }
+      SECTION("move assignment") {
+        transferred  = std::make_unique<TC>(twosided, p);
+        *transferred = std::move(original);
+      }
+      SECTION("self copy assignment") {
+        auto& alias = original;
+        original    = alias;
+        transferred = std::make_unique<TC>(std::move(original));
+      }
+      SECTION("self move assignment") {
+        auto& alias = original;
+        original    = std::move(alias);
+        transferred = std::make_unique<TC>(std::move(original));
+      }
+      REQUIRE_FALSE(transferred->finished());
+      REQUIRE(transferred->number_of_generating_pairs() == 3);
+      REQUIRE(transferred->generating_pairs()
+              == std::vector<word_type>{0_w, 1_w, 00_w, 0_w, 01_w, 0_w});
+      REQUIRE(transferred->def_max() == 2);
+      REQUIRE(transferred->def_policy() == options::def_policy::unlimited);
+      REQUIRE(transferred->current_word_graph().definitions().any_skipped());
+      REQUIRE_FALSE(transferred->current_word_graph().definitions().empty());
+
+      transferred->def_max(0).def_policy(
+          options::def_policy::no_stack_if_no_space);
+      auto definitions = transferred->current_word_graph().definitions();
+      definitions.emplace_back(0, 0);
+      Definition d;
+      definitions.pop(d);
+      REQUIRE(d == Definition(0, 1));
+      REQUIRE_FALSE(definitions.empty());
+      definitions.pop(d);
+      REQUIRE(d == Definition(0, 0));
+      REQUIRE(definitions.empty());
+    }
+    // The destination must remain usable after the source is destroyed.
+    REQUIRE(transferred->number_of_classes() == 1);
+    check_complete_compatible(*transferred);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "142",
+                          "resume copied and moved unfinished enumerations",
+                          "[todd-coxeter][quick]") {
+    auto rg  = ReportGuard(false);
+    using TC = ToddCoxeter<word_type>;
+    std::unique_ptr<TC> transferred;
+    {
+      Presentation<word_type> p;
+      p.alphabet(1);
+      p.contains_empty_word(true);
+      presentation::add_rule(p, word_type(7, 0), word_type());
+      TC original(twosided, p);
+      original.strategy(options::strategy::felsch).def_max(3);
+      original.run_until([&original]() {
+        return original.current_word_graph().number_of_nodes_active() >= 3;
+      });
+      REQUIRE_FALSE(original.finished());
+      REQUIRE(original.current_word_graph().number_of_nodes_active() == 3);
+      WordGraph<uint32_t> const graph(original.current_word_graph());
+      SECTION("copy constructor") {
+        transferred = std::make_unique<TC>(original);
+      }
+      SECTION("move constructor") {
+        transferred = std::make_unique<TC>(std::move(original));
+      }
+      SECTION("copy assignment") {
+        transferred  = std::make_unique<TC>(onesided, p);
+        *transferred = original;
+      }
+      SECTION("move assignment") {
+        transferred  = std::make_unique<TC>(onesided, p);
+        *transferred = std::move(original);
+      }
+      SECTION("self copy assignment") {
+        auto& alias = original;
+        original    = alias;
+        transferred = std::make_unique<TC>(std::move(original));
+      }
+      SECTION("self move assignment") {
+        auto& alias = original;
+        original    = std::move(alias);
+        transferred = std::make_unique<TC>(std::move(original));
+      }
+      REQUIRE_FALSE(transferred->finished());
+      REQUIRE(transferred->kind() == twosided);
+      REQUIRE(transferred->def_max() == 3);
+      REQUIRE(transferred->strategy() == options::strategy::felsch);
+      REQUIRE(transferred->presentation().rules == p.rules);
+      REQUIRE(transferred->presentation().alphabet() == p.alphabet());
+      REQUIRE(WordGraph(transferred->current_word_graph()) == graph);
+    }
+    REQUIRE(transferred->number_of_classes() == 7);
+    check_complete_compatible(*transferred);
+    REQUIRE((normal_forms(*transferred) | to_vector())
+            == std::vector<word_type>{
+                word_type(), 0_w, 00_w, 000_w, 0000_w, 00000_w, 000000_w});
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "143",
+                          "graph copies preserve traversal cursors",
+                          "[todd-coxeter][quick]") {
+    using Graph = detail::ToddCoxeterImpl::Graph;
+    Graph original;
+    original.init();
+    auto const first            = original.new_node();
+    auto const second           = original.new_node();
+    original.cursor()           = first;
+    original.lookahead_cursor() = second;
+    SECTION("copy constructor") {
+      Graph copy(original);
+      REQUIRE(copy.cursor() == first);
+      REQUIRE(copy.lookahead_cursor() == second);
+    }
+    SECTION("copy assignment") {
+      Graph copy;
+      copy.init();
+      copy = original;
+      REQUIRE(copy.cursor() == first);
+      REQUIRE(copy.lookahead_cursor() == second);
+    }
   }
 }  // namespace libsemigroups

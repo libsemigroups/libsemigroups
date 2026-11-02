@@ -296,6 +296,10 @@ namespace libsemigroups {
         void init(ToddCoxeterImpl const* tc) {
           _any_skipped = false;
           _definitions.clear();
+          rebind(tc);
+        }
+
+        void rebind(ToddCoxeterImpl const* tc) noexcept {
           _tc = tc;
         }
 
