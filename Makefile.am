@@ -1246,6 +1246,7 @@ EXTRA_PROGRAMS += test_knuth_bendix
 EXTRA_PROGRAMS += test_konieczny
 EXTRA_PROGRAMS += test_matrix
 EXTRA_PROGRAMS += test_multi_view
+EXTRA_PROGRAMS += test_node_managed_graph
 EXTRA_PROGRAMS += test_obvinf
 EXTRA_PROGRAMS += test_order
 EXTRA_PROGRAMS += test_paths
@@ -1360,6 +1361,7 @@ test_all_SOURCES += tests/test-konieczny-transf.cpp
 test_all_SOURCES += tests/test-main.cpp
 test_all_SOURCES += tests/test-matrix.cpp
 test_all_SOURCES += tests/test-multi-view.cpp
+test_all_SOURCES += tests/test-node-managed-graph.cpp
 test_all_SOURCES += tests/test-obvinf.cpp
 test_all_SOURCES += tests/test-order.cpp
 test_all_SOURCES += tests/test-paths.cpp
@@ -1646,6 +1648,11 @@ test_multi_view_SOURCES =  tests/test-multi-view.cpp
 test_multi_view_SOURCES += tests/test-main.cpp
 test_multi_view_SOURCES += $(CATCH2_SOURCES)
 test_multi_view_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+
+test_node_managed_graph_SOURCES =  tests/test-node-managed-graph.cpp
+test_node_managed_graph_SOURCES += tests/test-main.cpp
+test_node_managed_graph_SOURCES += $(CATCH2_SOURCES)
+test_node_managed_graph_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 test_obvinf_SOURCES =  tests/test-obvinf.cpp
 test_obvinf_SOURCES += tests/test-main.cpp

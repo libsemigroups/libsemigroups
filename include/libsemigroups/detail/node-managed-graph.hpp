@@ -136,6 +136,7 @@ namespace libsemigroups {
       NodeManagedGraph& init(WordGraph<OtherNode> const& wg) {
         init();
         BaseGraph::init(wg);
+        LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() > 0);
         // NodeManager always has one node active
         NodeManager<node_type>::add_active_nodes(
             WordGraph<node_type>::number_of_nodes() - 1);

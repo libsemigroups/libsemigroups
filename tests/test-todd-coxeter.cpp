@@ -5805,29 +5805,4 @@ namespace libsemigroups {
             == std::vector<word_type>{
                 word_type(), 0_w, 00_w, 000_w, 0000_w, 00000_w, 000000_w});
   }
-
-  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                          "143",
-                          "graph copies preserve traversal cursors",
-                          "[todd-coxeter][quick]") {
-    using Graph = detail::ToddCoxeterImpl::Graph;
-    Graph original;
-    original.init();
-    auto const first            = original.new_node();
-    auto const second           = original.new_node();
-    original.cursor()           = first;
-    original.lookahead_cursor() = second;
-    SECTION("copy constructor") {
-      Graph copy(original);
-      REQUIRE(copy.cursor() == first);
-      REQUIRE(copy.lookahead_cursor() == second);
-    }
-    SECTION("copy assignment") {
-      Graph copy;
-      copy.init();
-      copy = original;
-      REQUIRE(copy.cursor() == first);
-      REQUIRE(copy.lookahead_cursor() == second);
-    }
-  }
 }  // namespace libsemigroups
