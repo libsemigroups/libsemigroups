@@ -496,6 +496,49 @@ namespace libsemigroups {
       return true;
     }
 
+    bool is_annular(Bipartition const& x) {
+      size_t const n = x.degree();
+
+      if (n < 3) {
+        return true;
+      }
+
+      // construct p
+      std::vector<std::vector<int>> blocks;
+      for (size_t i = 1; i < n; ++i) {
+        blocks.push_back({static_cast<int>(i), -static_cast<int>(i + 1)});
+      }
+      blocks.push_back({static_cast<int>(n), -1});
+      Bipartition const p = make<Bipartition>(blocks);
+
+      // construct identity
+      std::vector<std::vector<int>> identity_blocks;
+      for (size_t i = 1; i <= n; ++i) {
+        identity_blocks.push_back({static_cast<int>(i), -static_cast<int>(i)});
+      }
+      Bipartition const identity = make<Bipartition>(identity_blocks);
+
+      // Precompute the powers of p
+      std::vector<Bipartition> powers;
+      powers.push_back(p);
+      for (size_t i = 2; i < n; ++i) {
+        powers.push_back(powers.back() * p);
+      }
+      powers.push_back(identity);
+
+      // check all p^i*x*p^j (1,...,n)
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          Bipartition const candidate = powers[i] * x * powers[j];
+          if (is_planar(candidate)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
   }  // namespace bipartition
 
   std::string to_human_readable_repr(Bipartition const& x,
