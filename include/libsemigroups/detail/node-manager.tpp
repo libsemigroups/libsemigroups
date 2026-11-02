@@ -114,7 +114,9 @@ namespace libsemigroups {
 
     template <typename Node>
     NodeManager<Node>::NodeManager(NodeManager const& that)
-        : _bckwd(that._bckwd),
+        : _current(that._current),
+          _current_la(that._current_la),
+          _bckwd(that._bckwd),
           _first_free_node(that._first_free_node),
           _forwd(that._forwd),
           _growth_factor(that._growth_factor),
@@ -124,6 +126,8 @@ namespace libsemigroups {
 
     template <typename Node>
     NodeManager<Node>& NodeManager<Node>::operator=(NodeManager const& that) {
+      _current          = that._current;
+      _current_la       = that._current_la;
       _bckwd            = that._bckwd;
       _first_free_node  = that._first_free_node;
       _forwd            = that._forwd;
