@@ -892,4 +892,23 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "028",
+                          "check planarity of bipartitions",
+                          "[quick][bipart]") {
+    REQUIRE(bipartition::is_planar(make<Bipartition>({0, 0})));
+    REQUIRE(bipartition::is_planar(make<Bipartition>({0, 1, 0, 1})));
+    REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 1, 0})));
+    REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 2, 1, 0, 2})));
+    REQUIRE(
+        !bipartition::is_planar(make<Bipartition>({0, 1, 0, 1, 2, 3, 4, 5})));
+    REQUIRE(
+        bipartition::is_planar(make<Bipartition>({0, 1, 0, 2, 3, 2, 4, 5})));
+    REQUIRE(
+        !bipartition::is_planar(make<Bipartition>({0, 1, 0, 2, 1, 3, 4, 5})));
+    REQUIRE(
+        bipartition::is_planar(make<Bipartition>({0, 1, 1, 2, 3, 1, 4, 5})));
+    REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 2, 3, 1, 0})));
+  }
+
 }  // namespace libsemigroups

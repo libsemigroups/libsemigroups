@@ -466,6 +466,36 @@ namespace libsemigroups {
       return result;
     }
 
+    bool is_planar(Bipartition const& x) {
+      size_t const n = x.degree();
+
+      if (n < 2) {
+        return true;
+      }
+
+      // Reorder the lookup x from (+1, ..., +n, -1, ..., -n)
+      //  to (-n, ..., -1, +1, ..., +n)
+      std::vector<uint32_t> y(2 * n);
+      for (size_t i = 0; i < n; ++i) {
+        y[i]     = x[2 * n - 1 - i];
+        y[n + i] = x[i];
+      }
+
+      // Check for forbidden pattern a,b,a,b
+      for (size_t i = 0; i < 2 * n - 3; ++i) {
+        for (size_t j = i + 1; j < 2 * n - 2; ++j) {
+          for (size_t k = j + 1; k < 2 * n - 1; ++k) {
+            for (size_t l = k + 1; l < 2 * n; ++l) {
+              if (y[i] == y[k] && y[j] == y[l] && y[i] != y[j]) {
+                return false;
+              }
+            }
+          }
+        }
+      }
+      return true;
+    }
+
   }  // namespace bipartition
 
   std::string to_human_readable_repr(Bipartition const& x,
