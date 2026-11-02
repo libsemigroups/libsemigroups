@@ -504,6 +504,9 @@ namespace libsemigroups::detail {
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::operator=(ToddCoxeterImpl&& that) {
+    if (this == &that) {
+      return *this;
+    }
     LIBSEMIGROUPS_ASSERT(!that._settings_stack.empty());
     CongruenceCommon::operator=(std::move(that));
     _finished       = std::move(that._finished);
@@ -513,14 +516,16 @@ namespace libsemigroups::detail {
     _stats          = std::move(that._stats);
     _ticker_running = std::move(that._ticker_running);
     _word_graph     = std::move(that._word_graph);
-    // The next line is essential so that the _word_graph.definitions()._tc
-    // points at <this>.
-    _word_graph.definitions().init(this);
+    // Rebind the owner without discarding pending or skipped definitions.
+    _word_graph.definitions().rebind(this);
     LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
     return *this;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::operator=(ToddCoxeterImpl const& that) {
+    if (this == &that) {
+      return *this;
+    }
     LIBSEMIGROUPS_ASSERT(!that._settings_stack.empty());
     CongruenceCommon::operator=(that);
     _finished  = that._finished;
@@ -533,6 +538,7 @@ namespace libsemigroups::detail {
     _stats          = that._stats;
     _ticker_running = that._ticker_running;
     _word_graph     = that._word_graph;
+    _word_graph.definitions().rebind(this);
     return *this;
   }
 
