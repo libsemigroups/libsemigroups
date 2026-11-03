@@ -180,6 +180,10 @@ namespace libsemigroups {
         WordGraphWithSources<Node>::remove_all_sources_and_targets_no_checks(c);
         return c;
       } else {
+        // There are no free nodes to recycle: make new ones.
+        // It seems to be marginally faster to make lots like this, than to
+        // just make 1, in some examples, notably ToddCoxeterImpl 040
+        // (Walker 3).
         reserve(2 * NodeManager<node_type>::node_capacity());
         return NodeManager<node_type>::new_active_node();
       }
