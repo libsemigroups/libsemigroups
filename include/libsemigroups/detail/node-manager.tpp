@@ -56,6 +56,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "libsemigroups/detail/node-manager.hpp"
 namespace libsemigroups {
   namespace detail {
 
@@ -103,6 +104,39 @@ namespace libsemigroups {
         num_nodes_killed  = that.num_nodes_killed.load();
         return *this;
       }
+    };  // struct NodeManager::Stats
+
+    template <typename Node>
+    struct NodeManager<Node>::ActiveNodesRange {
+      using output_type = node_type;
+
+      NodeManager const* _node_manager;
+      output_type        _current;
+
+      ActiveNodesRange() : _node_manager(nullptr), _current(UNDEFINED) {}
+
+      explicit ActiveNodesRange(NodeManager const* nm)
+          : _node_manager(nm), _current(nm->initial_node()) {}
+
+      [[nodiscard]] output_type get() const noexcept {
+        return _current;
+      }
+
+      void next() noexcept {
+        _current = _node_manager->next_active_node(_current);
+      }
+
+      [[nodiscard]] bool at_end() const noexcept {
+        return _node_manager == nullptr
+               || _current == _node_manager->first_free_node();
+      }
+
+      [[nodiscard]] size_t size_hint() const noexcept {
+        return _node_manager->number_of_nodes_active();
+      }
+
+      static constexpr bool is_finite     = true;
+      static constexpr bool is_idempotent = true;
     };
   }  // namespace detail
 }  // namespace libsemigroups
