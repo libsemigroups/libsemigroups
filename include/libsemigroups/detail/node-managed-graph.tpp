@@ -81,12 +81,12 @@ namespace libsemigroups {
 
     template <typename Node>
     NodeManagedGraph<Node>& NodeManagedGraph<Node>::init() {
-      BaseGraph::init();
+      WordGraphWithSources<Node>::init();
       NodeManager<Node>::init();
       // NodeManagedGraph's always have 1 active node.
-      BaseGraph::add_nodes(1);
-      LIBSEMIGROUPS_ASSERT(BaseGraph::number_of_nodes() == 1);
-      LIBSEMIGROUPS_ASSERT(BaseGraph::number_of_nodes()
+      WordGraphWithSources<Node>::add_nodes(1);
+      LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes() == 1);
+      LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes()
                            == NodeManager<Node>::number_of_nodes_active());
       _coinc    = decltype(_coinc)();
       _settings = Settings();
@@ -99,7 +99,7 @@ namespace libsemigroups {
       size_t m = NodeManager<node_type>::node_capacity();
       if (n > m) {
         m = n - m;
-        BaseGraph::add_nodes(m);
+        WordGraphWithSources<Node>::add_nodes(m);
         NodeManager<node_type>::add_free_nodes(m);
       }
       return *this;
@@ -133,7 +133,7 @@ namespace libsemigroups {
     NodeManagedGraph<Node>::operator=(WordGraph<OtherNode> const& wg) {
       init(wg);
       LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::number_of_nodes_active()
-                           == BaseGraph::number_of_nodes());
+                           == WordGraphWithSources<Node>::number_of_nodes());
       return *this;
     }
 
@@ -177,7 +177,7 @@ namespace libsemigroups {
       if (NodeManager<node_type>::has_free_nodes()) {
         node_type const c = NodeManager<node_type>::new_active_node();
         // Clear the new node's row in each table
-        BaseGraph::remove_all_sources_and_targets_no_checks(c);
+        WordGraphWithSources<Node>::remove_all_sources_and_targets_no_checks(c);
         return c;
       } else {
         reserve(2 * NodeManager<node_type>::node_capacity());
@@ -230,8 +230,9 @@ namespace libsemigroups {
           std::tie(min, max)                 = std::minmax({min, max});
           any_collapse_before_large_collapse = true;
           NodeManager<node_type>::union_nodes(min, max);
-          _stats.num_edges_active -= BaseGraph::merge_nodes_no_checks(
-              min, max, new_def, incompat_func);
+          _stats.num_edges_active
+              -= WordGraphWithSources<Node>::merge_nodes_no_checks(
+                  min, max, new_def, incompat_func);
         }
       }
 
@@ -285,7 +286,7 @@ namespace libsemigroups {
         // loop above.
         auto c = NodeManager<node_type>::initial_node();
         while (c != NodeManager<node_type>::first_free_node()) {
-          BaseGraph::remove_all_sources_no_checks(c);
+          WordGraphWithSources<Node>::remove_all_sources_no_checks(c);
           c = NodeManager<node_type>::next_active_node(c);
         }
 
@@ -303,7 +304,7 @@ namespace libsemigroups {
               }
               // Must re-add the source, even if we don't need to reset
               // the target or stack the deduction
-              BaseGraph::add_source_no_checks(d, x, c);
+              WordGraphWithSources<Node>::add_source_no_checks(d, x, c);
               LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
             }
           }
@@ -331,12 +332,12 @@ namespace libsemigroups {
 
       if (NodeManager<node_type>::is_active_node(c)
           && NodeManager<node_type>::is_active_node(d)) {
-        BaseGraph::swap_nodes_no_checks(c, d);
+        WordGraphWithSources<Node>::swap_nodes_no_checks(c, d);
       } else if (NodeManager<node_type>::is_active_node(c)) {
-        BaseGraph::rename_node_no_checks(c, d);
+        WordGraphWithSources<Node>::rename_node_no_checks(c, d);
       } else {
         LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
-        BaseGraph::rename_node_no_checks(d, c);
+        WordGraphWithSources<Node>::rename_node_no_checks(d, c);
       }
       NodeManager<node_type>::switch_nodes(c, d);
     }
