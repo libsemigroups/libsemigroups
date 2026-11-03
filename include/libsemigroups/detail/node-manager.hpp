@@ -49,13 +49,6 @@ namespace libsemigroups {
       using Perm      = std::vector<node_type>;
 
       ////////////////////////////////////////////////////////////////////////
-      // NodeManager - data - protected
-      ////////////////////////////////////////////////////////////////////////
-     protected:
-      node_type _current;
-      node_type _current_la;
-
-      ////////////////////////////////////////////////////////////////////////
       // NodeManager - data - private
       ////////////////////////////////////////////////////////////////////////
      private:
@@ -65,6 +58,8 @@ namespace libsemigroups {
       static constexpr node_type _id_node = 0;
 
       std::vector<node_type>         _bckwd;
+      node_type                      _current;
+      node_type                      _current_la;
       node_type                      _first_free_node;
       std::vector<node_type>         _forwd;
       mutable std::vector<node_type> _ident;
