@@ -139,10 +139,6 @@ namespace libsemigroups {
         return _current_la;
       }
 
-      node_type const& lookahead_cursor() const {
-        return _current_la;
-      }
-
       // std::vector::size is noexcept
       inline size_t node_capacity() const noexcept {
         return _forwd.size();
