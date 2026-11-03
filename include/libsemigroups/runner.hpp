@@ -180,9 +180,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! report_every(Time)
-    //!
-    //! \deprecated_alias_warning
-    [[deprecated]] Reporter& report_every(nanoseconds val) noexcept {
+    Reporter& report_every(nanoseconds val) noexcept {
       _last_report          = std::chrono::high_resolution_clock::now();
       _report_time_interval = val;
       return *this;
@@ -206,14 +204,9 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \note This function is not thread-safe.
-    //!
-    //! \deprecated_alias_warning
     template <typename Time>
-    [[deprecated]] Reporter& report_every(Time t) noexcept {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    Reporter& report_every(Time t) noexcept {
       return report_every(nanoseconds(t));
-#pragma GCC diagnostic pop
     }
 
     //! \brief Get the minimum elapsed time between reports.
@@ -225,9 +218,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \note This function is thread-safe.
-    //!
-    //! \deprecated_alias_warning
-    [[deprecated]] [[nodiscard]] nanoseconds report_every() const noexcept {
+    [[nodiscard]] nanoseconds report_every() const noexcept {
       return _report_time_interval;
     }
 

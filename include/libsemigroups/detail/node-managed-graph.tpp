@@ -131,10 +131,7 @@ namespace libsemigroups {
     template <typename OtherNode>
     NodeManagedGraph<Node>&
     NodeManagedGraph<Node>::operator=(WordGraph<OtherNode> const& wg) {
-      init();
-      BaseGraph::operator=(wg);
-      NodeManager<node_type>::add_active_nodes(
-          WordGraph<node_type>::number_of_nodes() - 1);
+      init(wg);
       LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::number_of_nodes_active()
                            == BaseGraph::number_of_nodes());
       return *this;
@@ -253,6 +250,7 @@ namespace libsemigroups {
                      report_prefix(),
                      group_digits(_coinc.size()),
                      group_digits(large_collapse()));
+      auto const old_number_of_edges_active = number_of_edges_active();
       // Setting this here means that during a large collapse the % of edges
       // active falls to zero until we start rebuilding the sources in the while
       // loop below, this currently seems unavoidable.
@@ -311,6 +309,8 @@ namespace libsemigroups {
           }
           c = NodeManager<node_type>::next_active_node(c);
         }
+      } else {
+        _stats.num_edges_active = old_number_of_edges_active;
       }
       // The next assertion is likely very slow so commented out
       // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active

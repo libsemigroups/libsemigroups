@@ -471,8 +471,6 @@ namespace libsemigroups {
     // returns length of lcp: tentative implementation O(n^2)
     int
     lcp(std::vector<int> const& isa, std::vector<int> const& st, int x, int z) {
-      if (x == z)
-        return 0;
       int rank_x = isa[x];
       int rank_z = isa[z];
       if (rank_x > rank_z)

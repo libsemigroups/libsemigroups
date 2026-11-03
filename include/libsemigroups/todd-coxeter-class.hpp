@@ -447,7 +447,7 @@ namespace libsemigroups {
     //! \brief Move assignment operator.
     //!
     //! Move assignment operator.
-    ToddCoxeter& operator=(ToddCoxeter&&) = default;
+    ToddCoxeter& operator=(ToddCoxeter&& that);
 
     ~ToddCoxeter();
 

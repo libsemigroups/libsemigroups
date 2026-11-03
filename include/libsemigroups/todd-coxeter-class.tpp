@@ -22,6 +22,16 @@ namespace libsemigroups {
   ToddCoxeter<Word>::~ToddCoxeter() = default;
 
   template <typename Word>
+  ToddCoxeter<Word>& ToddCoxeter<Word>::operator=(ToddCoxeter&& that) {
+    if (this != &that) {
+      ToddCoxeterImpl::operator=(std::move(that));
+      _generating_pairs = std::move(that._generating_pairs);
+      _presentation     = std::move(that._presentation);
+    }
+    return *this;
+  }
+
+  template <typename Word>
   ToddCoxeter<Word>& ToddCoxeter<Word>::init() {
     ToddCoxeterImpl::init();
     _generating_pairs.clear();
