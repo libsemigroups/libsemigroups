@@ -172,7 +172,13 @@ namespace libsemigroups {
       using Graph::number_of_edges;
       using Graph::number_of_nodes;
       using Graph::out_degree;
-      using Graph::target_no_checks;
+
+      // We expose the getter from Graph, but don't want to expose the setter,
+      // so don't use "using Graph::target_no_checks" here.
+      [[nodiscard]] node_type target_no_checks(node_type  s,
+                                               label_type a) const noexcept {
+        return Graph::target_no_checks(s, a);
+      }
 
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - settings - public
@@ -212,13 +218,10 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       template <bool RegDefs>
-      FelschGraph& possibly_register_target_no_checks(node_type  s,
-                                                      label_type a,
-                                                      node_type  t) noexcept;
-
-      FelschGraph& register_target_no_checks(node_type  s,
-                                             label_type a,
-                                             node_type  t) noexcept;
+      FelschGraph& target_no_checks(node_type  s,
+                                    label_type a,
+                                    node_type  t,
+                                    std::bool_constant<RegDefs>) noexcept;
 
       void reduce_number_of_edges_to(size_type n);
 
@@ -345,8 +348,9 @@ namespace libsemigroups {
     };  // FelschGraph
 
     namespace felsch_graph {
-      constexpr static bool do_not_register_defs = false;
-      constexpr static bool do_register_defs     = true;
+      // The following are used for tag based dispatch
+      inline constexpr std::true_type  do_register_defs{};
+      inline constexpr std::false_type do_not_register_defs{};
 
       // Check that [first_node, last_node) is compatible with [first_rule,
       // last_rule) or if there are edges missing in paths labelled by rules,

@@ -602,8 +602,8 @@ namespace libsemigroups {
       // WordGraph
       size_type start = _felsch_graph.definitions().size();
 
-      _felsch_graph.register_target_no_checks(
-          current.source, current.generator, current.target);
+      _felsch_graph.target_no_checks(
+          current.source, current.generator, current.target, do_register_defs);
 
       auto first = _sims1or2->included_pairs().cbegin();
       auto last  = _sims1or2->included_pairs().cend();
@@ -1414,6 +1414,8 @@ namespace libsemigroups {
     }
 
     const_rcgp_iterator const& const_rcgp_iterator::operator++() {
+      using detail::felsch_graph::do_register_defs;
+
       if (at_end()) {
         return *this;
       }
@@ -1433,8 +1435,8 @@ namespace libsemigroups {
                 = _reconstructed_word_graph.target_no_checks(_source, _gen);
             LIBSEMIGROUPS_ASSERT(target1 != UNDEFINED);
             if (target2 == UNDEFINED) {
-              _reconstructed_word_graph.register_target_no_checks(
-                  _source, _gen, target1);
+              _reconstructed_word_graph.target_no_checks(
+                  _source, _gen, target1, do_register_defs);
               if (_tree.parent_no_checks(target1) == UNDEFINED
                   && target1 > _source) {
                 // Tree edges
