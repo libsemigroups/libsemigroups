@@ -374,7 +374,12 @@ namespace libsemigroups {
 
         using FelschGraph_::presentation;
         using FelschGraph_::standardize_no_checks;
-        using FelschGraph_::target_no_checks;
+
+        // We use the following to avoid allowing calling the 3-argument version
+        // of target_no_checks directly on the FelschGraph_
+        node_type target_no_checks(node_type s, label_type a) const noexcept {
+          return FelschGraph_::target_no_checks(s, a);
+        }
 
         ////////////////////////////////////////////////////////////////////////
         // Modifiers
@@ -448,10 +453,6 @@ namespace libsemigroups {
         // Functions that are present in the FelschGraph_, but must be
         // overridden here so that the validation and standardization stuff is
         // reset.
-
-        Graph& target_no_checks(node_type  s,
-                                label_type a,
-                                node_type  t) noexcept;
 
         Graph& register_target_no_checks(node_type  s,
                                          label_type a,
