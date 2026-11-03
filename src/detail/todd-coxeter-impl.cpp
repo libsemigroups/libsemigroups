@@ -181,16 +181,6 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   ToddCoxeterImpl::Graph&
-  ToddCoxeterImpl::Graph::target_no_checks(node_type  s,
-                                           label_type a,
-                                           node_type  t) noexcept {
-    _forest_valid          = false;
-    _standardization_order = Order::none;
-    FelschGraph_::target_no_checks(s, a, t);
-    return *this;
-  }
-
-  ToddCoxeterImpl::Graph&
   ToddCoxeterImpl::Graph::register_target_no_checks(node_type  s,
                                                     label_type a,
                                                     node_type  t) noexcept {
