@@ -59,7 +59,8 @@ namespace libsemigroups {
       // NodeManager - data - private
       ////////////////////////////////////////////////////////////////////////
      private:
-      struct Stats;
+      struct Stats;             // forward decl
+      struct ActiveNodesRange;  // forward decl
 
       static constexpr node_type _id_node = 0;
 
@@ -152,9 +153,14 @@ namespace libsemigroups {
         return _stats.num_nodes_killed;
       }
 
+      ActiveNodesRange active_nodes() const {
+        return ActiveNodesRange(this);
+      }
+
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - member functions - protected
       ////////////////////////////////////////////////////////////////////////
+      // TODO protected really?
 
       // not noexcept because free_node isn't, and std::vector::operator[]
       // isn't.
@@ -205,52 +211,18 @@ namespace libsemigroups {
       // not noexcept since std::vector::operator[] isn't.
       void free_node(node_type const);
 
+      // Public
       [[nodiscard]] constexpr node_type initial_node() const noexcept {
         return _id_node;
       }
 
+      // Public
       [[nodiscard]] node_type max_active_node() const noexcept;
 
      private:
       void compact(size_t N);
 
-      struct ActiveNodesRange {
-        using output_type = node_type;
-
-        NodeManager const* _node_manager;
-        output_type        _current;
-
-        ActiveNodesRange() : _node_manager(nullptr), _current(UNDEFINED) {}
-
-        explicit ActiveNodesRange(NodeManager const* nm)
-            : _node_manager(nm), _current(nm->initial_node()) {}
-
-        [[nodiscard]] output_type get() const noexcept {
-          return _current;
-        }
-
-        void next() noexcept {
-          _current = _node_manager->next_active_node(_current);
-        }
-
-        [[nodiscard]] bool at_end() const noexcept {
-          return _node_manager == nullptr
-                 || _current == _node_manager->first_free_node();
-        }
-
-        [[nodiscard]] size_t size_hint() const noexcept {
-          return _node_manager->number_of_nodes_active();
-        }
-
-        static constexpr bool is_finite     = true;
-        static constexpr bool is_idempotent = true;
-      };
-
      public:
-      ActiveNodesRange active_nodes() const {
-        return ActiveNodesRange(this);
-      }
-
 #ifdef LIBSEMIGROUPS_DEBUG
 
      protected:
