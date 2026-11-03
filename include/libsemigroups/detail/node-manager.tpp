@@ -280,12 +280,17 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(std::unique(copy.begin(), copy.end()) == copy.end());
 #endif
       _first_free_node = UNDEFINED;
-      _forwd.erase(_forwd.begin() + number_of_nodes_active(), _forwd.end());
+
+      auto const n = number_of_nodes_active();
+
+      LIBSEMIGROUPS_ASSERT(_last_active_node < n);
+
+      _forwd.resize(n);
       _forwd[_last_active_node] = UNDEFINED;
       _forwd.shrink_to_fit();
-      _bckwd.erase(_bckwd.begin() + number_of_nodes_active(), _bckwd.end());
+      _bckwd.resize(n);
       _bckwd.shrink_to_fit();
-      _ident.erase(_ident.begin() + number_of_nodes_active(), _ident.end());
+      _ident.resize(n);
       _ident.shrink_to_fit();
 #ifdef LIBSEMIGROUPS_DEBUG
       debug_validate_forwd_bckwd();
