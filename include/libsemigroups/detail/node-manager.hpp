@@ -34,7 +34,7 @@
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT/DEBUG
 #include "libsemigroups/exception.hpp"  // for LISEMIGROUPS_EXCEPTION
-#include "libsemigroups/ranges.hpp"
+#include "libsemigroups/ranges.hpp"     // for rx::is_input_range
 
 namespace libsemigroups {
   namespace detail {
