@@ -20,8 +20,6 @@
 // NodeManagedGraph instances.
 //
 // TODO(later) combine NodeManager and NodeManagedGraph
-// TODO(later) de-template this, we only ever use uint32_t for these so no point
-// in having it templated.
 
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
@@ -130,65 +128,65 @@ namespace libsemigroups {
       // NodeManager - member functions - public
       ////////////////////////////////////////////////////////////////////////
 
-      node_type& cursor() {
+      [[nodiscard]] node_type& cursor() {
         return _current;
       }
 
-      node_type& lookahead_cursor() {
+      [[nodiscard]] node_type& lookahead_cursor() {
         return _current_la;
       }
 
       // std::vector::size is noexcept
-      inline size_t node_capacity() const noexcept {
+      [[nodiscard]] inline size_t node_capacity() const noexcept {
         return _forwd.size();
       }
 
-      inline node_type first_free_node() const noexcept {
+      [[nodiscard]] inline node_type first_free_node() const noexcept {
         return _first_free_node;
       }
 
-      inline bool has_free_nodes() const noexcept {
+      [[nodiscard]] inline bool has_free_nodes() const noexcept {
         return _first_free_node != UNDEFINED;
       }
 
       // not noexcept since std::vector::operator[] isn't.
-      inline bool is_active_node(node_type c) const {
+      [[nodiscard]] inline bool is_active_node(node_type c) const {
         LIBSEMIGROUPS_ASSERT(c < _ident.size() || c == UNDEFINED);
         return c != UNDEFINED && _ident[c] == c;
       }
 
       [[nodiscard]] size_t position_of_node(node_type n) const;
 
-      inline bool is_valid_node(node_type c) const noexcept {
+      [[nodiscard]] inline bool is_valid_node(node_type c) const noexcept {
         return c < _forwd.size();
       }
 
       // not noexcept since std::vector::operator[] isn't.
-      inline node_type next_active_node(node_type c) const {
+      [[nodiscard]] inline node_type next_active_node(node_type c) const {
         return _forwd[c];
       }
 
       // Note that these iterators are invalidated by any changes to the
       // container, i.e. they can't be used as a substitute for cursors.
-      auto cbegin_active_nodes() const {
+      [[nodiscard]] auto cbegin_active_nodes() const {
         return rx::begin(ActiveNodesRange(this));
       }
 
       // Note that these iterators are invalidated by any changes to the
       // container, i.e. they can't be used as a substitute for cursors.
-      auto cend_active_nodes() const {
+      [[nodiscard]] auto cend_active_nodes() const {
         return rx::end(ActiveNodesRange(this));
       }
 
-      inline uint64_t number_of_nodes_active() const noexcept {
+      [[nodiscard]] inline uint64_t number_of_nodes_active() const noexcept {
         return _stats.num_nodes_active;
       }
 
-      inline uint64_t number_of_nodes_defined() const noexcept {
+      [[nodiscard]] inline uint64_t number_of_nodes_defined() const noexcept {
         return _stats.num_nodes_defined;
       }
 
-      inline uint64_t number_of_nodes_killed() const noexcept {
+      [[nodiscard]] inline uint64_t number_of_nodes_killed() const noexcept {
         return _stats.num_nodes_killed;
       }
 
@@ -211,7 +209,7 @@ namespace libsemigroups {
 
       // not noexcept since std::vector::operator[] isn't.
 
-      inline node_type find_node(node_type c) const {
+      [[nodiscard]] inline node_type find_node(node_type c) const {
         LIBSEMIGROUPS_ASSERT(is_valid_node(c));
         while (true) {
           node_type d = _ident[c];
@@ -229,10 +227,10 @@ namespace libsemigroups {
         return c;
       }
 
-      void      add_active_nodes(size_t);
-      void      add_free_nodes(size_t);
-      void      erase_free_nodes();
-      node_type new_active_node();
+      void                    add_active_nodes(size_t);
+      void                    add_free_nodes(size_t);
+      void                    erase_free_nodes();
+      [[nodiscard]] node_type new_active_node();
 
       // TODO rename -> swap_nodes_no_checks
       void switch_nodes(node_type const, node_type const);
@@ -245,7 +243,7 @@ namespace libsemigroups {
       // not noexcept since std::vector::operator[] isn't.
       void free_node(node_type const);
 
-      constexpr node_type initial_node() const noexcept {
+      [[nodiscard]] constexpr node_type initial_node() const noexcept {
         return _id_node;
       }
 
@@ -265,7 +263,7 @@ namespace libsemigroups {
         explicit ActiveNodesRange(NodeManager const* nm)
             : _node_manager(nm), _current(nm->initial_node()) {}
 
-        output_type get() const noexcept {
+        [[nodiscard]] output_type get() const noexcept {
           return _current;
         }
 
@@ -273,12 +271,12 @@ namespace libsemigroups {
           _current = _node_manager->next_active_node(_current);
         }
 
-        bool at_end() const noexcept {
+        [[nodiscard]] bool at_end() const noexcept {
           return _node_manager == nullptr
                  || _current == _node_manager->first_free_node();
         }
 
-        size_t size_hint() const noexcept {
+        [[nodiscard]] size_t size_hint() const noexcept {
           return _node_manager->number_of_nodes_active();
         }
 
