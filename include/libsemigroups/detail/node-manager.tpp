@@ -111,30 +111,6 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    NodeManager<Node>::NodeManager(NodeManager const& that)
-        : _current(that._current),
-          _current_la(that._current_la),
-          _bckwd(that._bckwd),
-          _first_free_node(that._first_free_node),
-          _forwd(that._forwd),
-          _ident(that._ident),
-          _last_active_node(that._last_active_node),
-          _stats(that._stats) {}
-
-    template <typename Node>
-    NodeManager<Node>& NodeManager<Node>::operator=(NodeManager const& that) {
-      _current          = that._current;
-      _current_la       = that._current_la;
-      _bckwd            = that._bckwd;
-      _first_free_node  = that._first_free_node;
-      _forwd            = that._forwd;
-      _ident            = that._ident;
-      _last_active_node = that._last_active_node;
-      _stats            = that._stats;
-      return *this;
-    }
-
-    template <typename Node>
     NodeManager<Node>::~NodeManager() = default;
 
     template <typename Node>

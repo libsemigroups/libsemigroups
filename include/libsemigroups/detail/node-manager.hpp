@@ -116,11 +116,11 @@ namespace libsemigroups {
       NodeManager();
       NodeManager& init();
 
-      NodeManager(NodeManager const& that);
-      NodeManager(NodeManager&&) = default;
+      NodeManager(NodeManager const& that) = default;
+      NodeManager(NodeManager&&)           = default;
 
-      NodeManager& operator=(NodeManager const& that);
-      NodeManager& operator=(NodeManager&&) = default;
+      NodeManager& operator=(NodeManager const& that) = default;
+      NodeManager& operator=(NodeManager&&)           = default;
 
       ~NodeManager();
 
