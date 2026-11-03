@@ -86,10 +86,8 @@ namespace libsemigroups {
             num_nodes_defined(that.num_nodes_defined.load()),
             num_nodes_killed(that.num_nodes_killed.load()) {}
 
-      Stats(Stats&& that)
-          : num_nodes_active(that.num_nodes_active.load()),
-            num_nodes_defined(that.num_nodes_defined.load()),
-            num_nodes_killed(that.num_nodes_killed.load()) {}
+      // Call the copy constructor
+      Stats(Stats&& that) : Stats(that) {}
 
       Stats& operator=(Stats const& that) {
         num_nodes_active  = that.num_nodes_active.load();
@@ -98,11 +96,9 @@ namespace libsemigroups {
         return *this;
       }
 
+      // Call the copy assignment operator
       Stats& operator=(Stats&& that) {
-        num_nodes_active  = that.num_nodes_active.load();
-        num_nodes_defined = that.num_nodes_defined.load();
-        num_nodes_killed  = that.num_nodes_killed.load();
-        return *this;
+        return *this = that;
       }
     };  // struct NodeManager::Stats
 
