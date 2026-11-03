@@ -171,11 +171,9 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     template <typename Node>
     NodeManager<Node>::NodeManager()
-        :  // protected
-          _current(0),
-          _current_la(0),
-          // private
-          _bckwd(1, 0),
+        : _bckwd(1, 0),
+          _current(_id_node),
+          _current_la(_id_node),
           _first_free_node(UNDEFINED),
           _forwd(1, static_cast<Node>(UNDEFINED)),
           _ident(1, 0),
@@ -184,12 +182,10 @@ namespace libsemigroups {
 
     template <typename Node>
     NodeManager<Node>& NodeManager<Node>::init() {
-      // protected
-      _current    = 0;
-      _current_la = 0;
-      // private
       _bckwd.clear();
       _bckwd.resize(1, 0);
+      _current         = _id_node;
+      _current_la      = _id_node;
       _first_free_node = UNDEFINED;
       _forwd.clear();
       _forwd.resize(1, static_cast<Node>(UNDEFINED));
