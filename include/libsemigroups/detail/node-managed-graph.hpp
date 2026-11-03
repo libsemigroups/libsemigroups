@@ -57,14 +57,8 @@ namespace libsemigroups {
       // Aliases - public
       ////////////////////////////////////////////////////////////////////////
 
-      using BaseGraph  = WordGraphWithSources<Node>;
-      using node_type  = typename BaseGraph::node_type;
-      using label_type = typename BaseGraph::label_type;
-
-      static_assert(
-          std::is_base_of_v<WordGraphWithSources<node_type>, BaseGraph>,
-          "the template parameter BaseGraph must be derived from "
-          "WordGraphWithSources");
+      using node_type  = typename WordGraphWithSources<Node>::node_type;
+      using label_type = typename WordGraphWithSources<Node>::label_type;
 
      protected:
       ////////////////////////////////////////////////////////////////////////
@@ -90,10 +84,10 @@ namespace libsemigroups {
 
      public:
       ////////////////////////////////////////////////////////////////////////
-      // BaseGraph mem fns
+      // WordGraphWithSources<Node> mem fns
       ////////////////////////////////////////////////////////////////////////
 
-      using BaseGraph::out_degree;
+      using WordGraphWithSources<Node>::out_degree;
 
       NodeManagedGraph& target_no_checks(node_type  s,
                                          label_type a,
@@ -105,7 +99,7 @@ namespace libsemigroups {
         //                      == count_number_of_edges_active());
         return *this;
       }
-      using BaseGraph::target_no_checks;
+      using WordGraphWithSources<Node>::target_no_checks;
 
       using NodeManager<node_type>::cursor;
       using NodeManager<node_type>::lookahead_cursor;
@@ -125,7 +119,7 @@ namespace libsemigroups {
 
       template <typename OtherNode>
       explicit NodeManagedGraph(WordGraph<OtherNode> const& wg)
-          : BaseGraph(wg), NodeManager<node_type>() {
+          : WordGraphWithSources<Node>(wg), NodeManager<node_type>() {
         // NodeManager always has one node active
         NodeManager<node_type>::add_active_nodes(
             WordGraph<node_type>::number_of_nodes() - 1);
@@ -135,7 +129,7 @@ namespace libsemigroups {
       template <typename OtherNode>
       NodeManagedGraph& init(WordGraph<OtherNode> const& wg) {
         init();
-        BaseGraph::init(wg);
+        WordGraphWithSources<Node>::init(wg);
         LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() > 0);
         // NodeManager always has one node active
         NodeManager<node_type>::add_active_nodes(
@@ -227,14 +221,14 @@ namespace libsemigroups {
         if (c < q.size()) {
           c = q[c];
         }
-        BaseGraph::permute_nodes_no_checks(
+        WordGraphWithSources<Node>::permute_nodes_no_checks(
             p, q, NodeManager<node_type>::number_of_nodes_active());
         NodeManager<node_type>::compact();
       }
 
       void permute_nodes_no_checks(std::vector<node_type> const& p,
                                    std::vector<node_type>&       q) {
-        BaseGraph::permute_nodes_no_checks(
+        WordGraphWithSources<Node>::permute_nodes_no_checks(
             p, q, NodeManager<node_type>::number_of_nodes_active());
         NodeManager<node_type>::apply_permutation(p);
       }
@@ -245,9 +239,8 @@ namespace libsemigroups {
     };  // class NodeManagedGraph
 
     namespace node_managed_graph {
-      template <typename BaseGraph>
-      typename BaseGraph::node_type
-      random_active_node(NodeManagedGraph<BaseGraph> const& nmg);
+      template <typename Node>
+      Node random_active_node(NodeManagedGraph<Node> const& nmg);
 
     }  // namespace node_managed_graph
 
