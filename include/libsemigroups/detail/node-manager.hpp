@@ -66,7 +66,6 @@ namespace libsemigroups {
       std::vector<node_type>         _bckwd;
       node_type                      _first_free_node;
       std::vector<node_type>         _forwd;
-      float                          _growth_factor;
       mutable std::vector<node_type> _ident;
       node_type                      _last_active_node;
 
@@ -191,12 +190,6 @@ namespace libsemigroups {
 
       inline uint64_t number_of_nodes_killed() const noexcept {
         return _stats.num_nodes_killed;
-      }
-
-      NodeManager& growth_factor(float val);
-
-      float growth_factor() const noexcept {
-        return _growth_factor;
       }
 
       ////////////////////////////////////////////////////////////////////////

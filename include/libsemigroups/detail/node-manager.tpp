@@ -88,7 +88,6 @@ namespace libsemigroups {
           _bckwd(1, 0),
           _first_free_node(UNDEFINED),
           _forwd(1, static_cast<Node>(UNDEFINED)),
-          _growth_factor(2.0),
           _ident(1, 0),
           _last_active_node(0),
           _stats() {}
@@ -104,7 +103,6 @@ namespace libsemigroups {
       _first_free_node = UNDEFINED;
       _forwd.clear();
       _forwd.resize(1, static_cast<Node>(UNDEFINED));
-      _growth_factor = 2.0;
       _ident.clear();
       _ident.resize(1, 0);
       _last_active_node = 0;
@@ -119,7 +117,6 @@ namespace libsemigroups {
           _bckwd(that._bckwd),
           _first_free_node(that._first_free_node),
           _forwd(that._forwd),
-          _growth_factor(that._growth_factor),
           _ident(that._ident),
           _last_active_node(that._last_active_node),
           _stats(that._stats) {}
@@ -131,7 +128,6 @@ namespace libsemigroups {
       _bckwd            = that._bckwd;
       _first_free_node  = that._first_free_node;
       _forwd            = that._forwd;
-      _growth_factor    = that._growth_factor;
       _ident            = that._ident;
       _last_active_node = that._last_active_node;
       _stats            = that._stats;
@@ -154,16 +150,6 @@ namespace libsemigroups {
         pos++;
       }
       return pos;
-    }
-
-    template <typename Node>
-    NodeManager<Node>& NodeManager<Node>::growth_factor(float val) {
-      if (val < 1.0) {
-        LIBSEMIGROUPS_EXCEPTION("expected a value of at least 1.0, found %f",
-                                val);
-      }
-      _growth_factor = val;
-      return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -259,13 +245,7 @@ namespace libsemigroups {
 
     template <typename Node>
     Node NodeManager<Node>::new_active_node() {
-      if (_first_free_node == UNDEFINED) {
-        // There are no free nodes to recycle: make new ones.
-        // It seems to be marginally faster to make lots like this, than to
-        // just make 1, in some examples, notably ToddCoxeterImpl 040
-        // (Walker 3).
-        add_free_nodes(growth_factor() * node_capacity());
-      }
+      LIBSEMIGROUPS_ASSERT(has_free_nodes());
       add_active_nodes(1);
       return _last_active_node;
     }
