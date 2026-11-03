@@ -192,8 +192,6 @@ namespace libsemigroups {
           _ident[c] = e;
           c         = e;
         }
-        LIBSEMIGROUPS_ASSERT(is_active_node(c));
-        return c;
       }
 
       void                    add_active_nodes(size_t);
