@@ -152,28 +152,14 @@ namespace libsemigroups {
     template <typename Graph, typename Definitions>
     template <bool RegDefs>
     FelschGraph<Graph, Definitions>&
-    FelschGraph<Graph, Definitions>::possibly_register_target_no_checks(
+    FelschGraph<Graph, Definitions>::target_no_checks(
         node_type  s,
         label_type a,
-        node_type  t) noexcept {
+        node_type  t,
+        std::bool_constant<RegDefs>) noexcept {
       if constexpr (RegDefs) {
-        return register_target_no_checks(s, a, t);
-      } else {
-        Graph::target_no_checks(s, a, t);
-        return *this;
+        _definitions.emplace_back(s, a);
       }
-    }
-
-    template <typename Graph, typename Definitions>
-    FelschGraph<Graph, Definitions>&
-    FelschGraph<Graph, Definitions>::register_target_no_checks(
-        node_type  s,
-        label_type a,
-        node_type  t) noexcept {
-      LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(a < out_degree());
-      LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
-      _definitions.emplace_back(s, a);
       Graph::target_no_checks(s, a, t);
       return *this;
     }
@@ -207,10 +193,10 @@ namespace libsemigroups {
 
       if (xa == UNDEFINED && yb != UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(a < out_degree());
-        possibly_register_target_no_checks<RegDefs>(x, a, yb);
+        target_no_checks(x, a, yb, std::bool_constant<RegDefs>{});
       } else if (xa != UNDEFINED && yb == UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(b < out_degree());
-        possibly_register_target_no_checks<RegDefs>(y, b, xa);
+        target_no_checks(y, b, xa, std::bool_constant<RegDefs>{});
       } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
         return incompat(xa, yb);
       } else if (xa == UNDEFINED && yb == UNDEFINED) {

@@ -57,10 +57,10 @@ namespace libsemigroups::detail {
 
   namespace {
     // Constants
-    constexpr bool do_not_register_defs
+    constexpr auto do_not_register_defs
         = detail::felsch_graph::do_not_register_defs;
 
-    constexpr bool do_register_defs = detail::felsch_graph::do_register_defs;
+    constexpr auto do_register_defs = detail::felsch_graph::do_register_defs;
 
     constexpr bool ye_print_divider = true;
 
@@ -186,7 +186,7 @@ namespace libsemigroups::detail {
                                                     node_type  t) noexcept {
     _forest_valid          = false;
     _standardization_order = Order::none;
-    FelschGraph_::register_target_no_checks(s, a, t);
+    FelschGraph_::target_no_checks(s, a, t, do_register_defs);
     return *this;
   }
 
@@ -313,9 +313,11 @@ namespace libsemigroups::detail {
     auto                pref_defs
         = [this](node_type xx, letter_type aa, node_type yy, letter_type bb) {
             node_type d = new_node();
-            possibly_register_target_no_checks<RegDefs>(xx, aa, d);
+            FelschGraph_::target_no_checks(
+                xx, aa, d, std::bool_constant<RegDefs>{});
             if (aa != bb || xx != yy) {
-              possibly_register_target_no_checks<RegDefs>(yy, bb, d);
+              FelschGraph_::target_no_checks(
+                  yy, bb, d, std::bool_constant<RegDefs>{});
             }
           };
 
