@@ -178,15 +178,12 @@ namespace libsemigroups {
 
     template <typename Node>
     NodeManager<Node>& NodeManager<Node>::init() {
-      _bckwd.clear();
-      _bckwd.resize(1, 0);
+      _bckwd.assign(1, 0);
       _current         = _id_node;
       _current_la      = _id_node;
       _first_free_node = UNDEFINED;
-      _forwd.clear();
-      _forwd.resize(1, static_cast<Node>(UNDEFINED));
-      _ident.clear();
-      _ident.resize(1, 0);
+      _forwd.assign(1, static_cast<Node>(UNDEFINED));
+      _ident.assign(1, 0);
       _last_active_node = 0;
       _stats.init();
       return *this;
