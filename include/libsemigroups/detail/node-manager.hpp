@@ -59,6 +59,8 @@ namespace libsemigroups {
       // NodeManager - data - private
       ////////////////////////////////////////////////////////////////////////
      private:
+      struct Stats;
+
       static constexpr node_type _id_node = 0;
 
       std::vector<node_type>         _bckwd;
@@ -66,47 +68,7 @@ namespace libsemigroups {
       std::vector<node_type>         _forwd;
       mutable std::vector<node_type> _ident;
       node_type                      _last_active_node;
-
-      struct Stats {
-        std::atomic_uint64_t num_nodes_active;
-        std::atomic_uint64_t num_nodes_defined;
-        std::atomic_uint64_t num_nodes_killed;
-
-        Stats() : num_nodes_active(), num_nodes_defined(), num_nodes_killed() {
-          init();
-        }
-
-        Stats& init() {
-          num_nodes_active  = 1;
-          num_nodes_defined = 1;
-          num_nodes_killed  = 0;
-          return *this;
-        }
-
-        Stats(Stats const& that)
-            : num_nodes_active(that.num_nodes_active.load()),
-              num_nodes_defined(that.num_nodes_defined.load()),
-              num_nodes_killed(that.num_nodes_killed.load()) {}
-
-        Stats(Stats&& that)
-            : num_nodes_active(that.num_nodes_active.load()),
-              num_nodes_defined(that.num_nodes_defined.load()),
-              num_nodes_killed(that.num_nodes_killed.load()) {}
-
-        Stats& operator=(Stats const& that) {
-          num_nodes_active  = that.num_nodes_active.load();
-          num_nodes_defined = that.num_nodes_defined.load();
-          num_nodes_killed  = that.num_nodes_killed.load();
-          return *this;
-        }
-
-        Stats& operator=(Stats&& that) {
-          num_nodes_active  = that.num_nodes_active.load();
-          num_nodes_defined = that.num_nodes_defined.load();
-          num_nodes_killed  = that.num_nodes_killed.load();
-          return *this;
-        }
-      } _stats;
+      Stats                          _stats;
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -302,13 +264,6 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
-#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-// TODO replace uint32_t by Node
-template <>
-struct rx::is_input_range<
-    typename libsemigroups::detail::NodeManager<uint32_t>::ActiveNodesRange>
-    : std::true_type {};
-#endif
 #include "node-manager.tpp"
 
 #endif  // LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
