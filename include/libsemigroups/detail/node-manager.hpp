@@ -153,14 +153,20 @@ namespace libsemigroups {
         return _stats.num_nodes_killed;
       }
 
-      ActiveNodesRange active_nodes() const {
+      [[nodiscard]] ActiveNodesRange active_nodes() const {
         return ActiveNodesRange(this);
       }
 
+      [[nodiscard]] constexpr node_type initial_node() const noexcept {
+        return _id_node;
+      }
+
+      [[nodiscard]] node_type max_active_node() const noexcept;
+
+     protected:
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - member functions - protected
       ////////////////////////////////////////////////////////////////////////
-      // TODO protected really?
 
       // not noexcept because free_node isn't, and std::vector::operator[]
       // isn't.
@@ -210,27 +216,16 @@ namespace libsemigroups {
 
       // not noexcept since std::vector::operator[] isn't.
       void free_node(node_type const);
-
-      // Public
-      [[nodiscard]] constexpr node_type initial_node() const noexcept {
-        return _id_node;
-      }
-
-      // Public
-      [[nodiscard]] node_type max_active_node() const noexcept;
-
-     private:
-      void compact(size_t N);
-
-     public:
 #ifdef LIBSEMIGROUPS_DEBUG
 
-     protected:
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - member functions (debug only) - protected
       ////////////////////////////////////////////////////////////////////////
       void debug_validate_forwd_bckwd() const;
 #endif
+
+     private:
+      void compact(size_t N);
     };
 
   }  // namespace detail
