@@ -113,6 +113,7 @@
 #include "words-helpers.hpp"
 
 #include "detail/aho-corasick-impl.hpp"
+#include "detail/alglib.hpp"
 #include "detail/bruidhinn-traits.hpp"
 #include "detail/citow.hpp"
 #include "detail/cong-common-class.hpp"
@@ -150,6 +151,7 @@
 #include "detail/todd-coxeter-impl.hpp"
 #include "detail/uf.hpp"
 #include "detail/value-guard.hpp"
+#include "detail/weight-finding.hpp"
 #include "detail/word-graph-with-sources.hpp"
 #include "detail/word-iterators-impl.hpp"
 #include "detail/word-iterators.hpp"
