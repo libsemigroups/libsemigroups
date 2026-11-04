@@ -4369,9 +4369,9 @@ End;)xxx");
     auto rg = ReportGuard(false);
 
     Presentation<W> p;
-    p.alphabet({0, 1, 2});
-    presentation::add_rule(p, {2}, {1});
-    presentation::add_rule(p, {1}, {0});
+    p.alphabet(W{0, 1, 2});
+    presentation::add_rule(p, W{2}, W{1});
+    presentation::add_rule(p, W{1}, W{0});
 
     auto result = presentation::find_weights(p);
     REQUIRE(result.has_value());
@@ -4392,9 +4392,9 @@ End;)xxx");
     auto rg = ReportGuard(false);
 
     Presentation<W> p;
-    p.alphabet({0, 1, 2});
-    presentation::add_rule(p, {0}, {1});
-    presentation::add_rule(p, {1}, {2});
+    p.alphabet(W{0, 1, 2});
+    presentation::add_rule(p, W{0}, W{1});
+    presentation::add_rule(p, W{1}, W{2});
 
     auto result = presentation::find_weights(p);
     REQUIRE(result.has_value());
@@ -4414,10 +4414,10 @@ End;)xxx");
     auto rg = ReportGuard(false);
 
     Presentation<W> p;
-    p.alphabet({0, 1, 2});
-    presentation::add_rule(p, {0, 1}, {1});
-    presentation::add_rule(p, {1, 2}, {2});
-    presentation::add_rule(p, {2, 0}, {0});
+    p.alphabet(W{0, 1, 2});
+    presentation::add_rule(p, W{0, 1}, W{1});
+    presentation::add_rule(p, W{1, 2}, W{2});
+    presentation::add_rule(p, W{2, 0}, W{0});
 
     auto result = presentation::find_weights(p);
     REQUIRE(result.has_value());
@@ -4438,10 +4438,10 @@ End;)xxx");
     auto rg = ReportGuard(false);
 
     Presentation<W> p;
-    p.alphabet({0, 1, 2});
-    presentation::add_rule(p, {0}, {1});
-    presentation::add_rule(p, {1}, {2});
-    presentation::add_rule(p, {2}, {0});
+    p.alphabet(W{0, 1, 2});
+    presentation::add_rule(p, W{0}, W{1});
+    presentation::add_rule(p, W{1}, W{2});
+    presentation::add_rule(p, W{2}, W{0});
 
     auto result = presentation::find_weights(p);
     REQUIRE(!result.has_value());
