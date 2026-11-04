@@ -23,6 +23,7 @@
 #include <vector>       // for vector
 
 #include "libsemigroups/adapters.hpp"               // for ReturnFalse
+#include "libsemigroups/config.hpp"                 // for LIBSEMIGROUPS_ALGL...
 #include "libsemigroups/knuth-bendix-iterator.hpp"  // for Knuth...
 #include "libsemigroups/presentation.hpp"  // for Presentation, presentation...
 #include "libsemigroups/to-word.hpp"       // for ToWord
@@ -427,5 +428,54 @@ namespace libsemigroups {
       REQUIRE(*kbb4++ == p2);
     }
   }
+
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
+                          "009",
+                          "one relation monoids + weight finding",
+                          "[extreme]") {
+    std::string const first_word("a");
+    std::string const last_word("aaaaaaaa");
+
+    v4::WordRange<std::string> lhss;
+    lhss.order(LenLexCmp(Alphabet("ab"s))).first(first_word).last(last_word);
+    v4::WordRange<std::string> rhss;
+
+    Presentation<std::string> p;
+    p.alphabet("ab"s);
+    p.contains_empty_word(true);
+
+    KnuthBendixIterator       kbb;
+    KnuthBendixIterator const end = end_knuth_bendix_iterator(p, 20, 1);
+
+    size_t total                     = 0;
+    size_t confluent                 = 0;
+    size_t terminating_and_confluent = 0;
+
+    for (auto const& lhs : lhss) {
+      rhss.order(LenLexCmp(Alphabet("ab"s))).first(lhs).last(last_word);
+      for (auto const& rhs : rhss) {
+        ++total;
+        p.rules           = {lhs, rhs};
+        bool is_confluent = false;
+        for (kbb = KnuthBendixIterator(p, 20, 1); kbb != end; ++kbb) {
+          is_confluent = true;
+          auto result  = presentation::find_weights(*kbb);
+          if (result.has_value()) {
+            ++terminating_and_confluent;
+            break;
+          }
+        }
+        if (is_confluent) {
+          ++confluent;
+        }
+      }
+    }
+
+    REQUIRE(total == 32385);
+    REQUIRE(confluent == 22105);
+    REQUIRE(terminating_and_confluent == 18487);
+  }
+#endif
 
 }  // namespace libsemigroups
