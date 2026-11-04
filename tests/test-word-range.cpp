@@ -964,7 +964,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordRange", "031", "parsing", "[lenlex][quick]") {
     REQUIRE(words::parse("cd(ab)^2ef") == "cdababef");
-    REQUIRE(literals::operator""_p("cd(ab)^2ef") == "cdababef"); 
+    REQUIRE(literals::operator""_p("cd(ab)^2ef") == "cdababef");
     REQUIRE("cd(ab)^2ef"_p == "cdababef");
     REQUIRE("cd((ab)^2)^4ef"_p == "cdababababababababef");
     REQUIRE("cd((ab)^2)^4(ef)^2"_p == "cdababababababababefef");
@@ -1053,7 +1053,7 @@ namespace libsemigroups {
     REQUIRE("banana"_c == "b(an)^2a");
 
     // test one parameter char const * overload
-    REQUIRE(literals::operator""_c("banana") == "b(an)^2a"); 
+    REQUIRE(literals::operator""_c("banana") == "b(an)^2a");
 
     // invalid character exceptions (nonexhaustive)
     REQUIRE_THROWS_AS(" "_c, LibsemigroupsException);
