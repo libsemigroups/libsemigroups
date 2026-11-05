@@ -16,18 +16,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
+#define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
+
+#include <string>       // for string
 #include <string_view>  // for string_view
 #include <type_traits>  // for is_reference
+#include <utility>      // for forward, move
+#include <vector>       // for vector
+
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_CATCH_ALL_HEADER
 #include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for TEST_CASE, etc.
 
-#ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
-#define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
-
 #include "libsemigroups/order.hpp"  // for lenlex_cmp
-
-#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #define STR2(X) #X
 #define STR(X) STR2(X)
@@ -50,6 +53,86 @@
                      "][" LIBSEMIGROUPS_TEST_NUM nr "][" __FILE__       \
                      "][" STR(__LINE__) "]" tags,                       \
                      __VA_ARGS__)
+
+// These wrappers retain Catch2's generator behaviour, including inline uses,
+// and record the selected values for the listener on every partial run.
+// An optional first argument test::prefix("label = ") labels the displayed
+// value without changing the type or value returned by the generator.
+#define LIBSEMIGROUPS_GENERATE(...)        \
+  ::libsemigroups::test::record_generator( \
+      GENERATE(__VA_ARGS__), #__VA_ARGS__, {__FILE__, __LINE__})
+#define LIBSEMIGROUPS_GENERATE_COPY(...)   \
+  ::libsemigroups::test::record_generator( \
+      GENERATE_COPY(__VA_ARGS__), #__VA_ARGS__, {__FILE__, __LINE__})
+#define LIBSEMIGROUPS_GENERATE_REF(...)    \
+  ::libsemigroups::test::record_generator( \
+      GENERATE_REF(__VA_ARGS__), #__VA_ARGS__, {__FILE__, __LINE__})
+
+namespace libsemigroups::test {
+  struct GeneratorPrefix {
+    std::string text;
+  };
+
+  inline GeneratorPrefix prefix(std::string text) {
+    return {std::move(text)};
+  }
+
+  template <typename T>
+  struct PrefixedGeneratorValue {
+    T           value;
+    std::string prefix;
+  };
+
+  // Catch2's GENERATE macros call makeGenerators unqualified. A prefix tag
+  // selects this overload through argument-dependent lookup; ordinary calls
+  // continue to use Catch2's overloads directly.
+  template <typename... Args>
+  auto makeGenerators(GeneratorPrefix label, Args&&... args) {
+    auto source
+        = Catch::Generators::makeGenerators(std::forward<Args>(args)...);
+    using Source = decltype(source);
+    using Value  = typename Source::type;
+    // GeneratorWrapper takes ownership of the source generator.
+    auto wrapped = Catch::Generators::GeneratorWrapper<Value>(
+        new Source(std::move(source)));
+    auto labelled = Catch::Generators::map(
+        [label = std::move(label)](Value const& value) {
+          return PrefixedGeneratorValue<Value>{value, label.text};
+        },
+        std::move(wrapped));
+    return Catch::Generators::makeGenerators(std::move(labelled));
+  }
+
+  struct GeneratorInfo {
+    std::string           expression;
+    std::string           value;
+    Catch::SourceLineInfo location;
+  };
+
+  std::vector<GeneratorInfo> const& generator_info();
+  void                              clear_generator_info();
+  void record_generator_info(char const*           expression,
+                             std::string           value,
+                             Catch::SourceLineInfo location);
+
+  template <typename T>
+  T record_generator(T                     value,
+                     char const*           expression,
+                     Catch::SourceLineInfo location,
+                     std::string_view      value_prefix = "") {
+    record_generator_info(
+        expression, fmt::format("{}{}", value_prefix, value), location);
+    return value;
+  }
+
+  template <typename T>
+  T record_generator(PrefixedGeneratorValue<T> value,
+                     char const*               expression,
+                     Catch::SourceLineInfo     location) {
+    return record_generator(
+        std::move(value.value), expression, location, value.prefix);
+  }
+}  // namespace libsemigroups::test
 
 std::string chomp(std::string_view what);
 
