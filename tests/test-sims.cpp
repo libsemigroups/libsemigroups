@@ -5265,7 +5265,8 @@ namespace libsemigroups {
                                    "[quick][low-index]",
                                    Sims1,
                                    Sims2) {
-    auto const              threads = GENERATE(1, 2);
+    auto const threads
+        = LIBSEMIGROUPS_GENERATE(test::prefix("number_of_threads = "), 1, 2);
     Presentation<word_type> p;
     p.alphabet(1).contains_empty_word(true);
     presentation::add_rule(p, 0000_w, ""_w);

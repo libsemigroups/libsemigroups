@@ -96,7 +96,11 @@ namespace libsemigroups {
     initial.target(1, 0, 1);
     initial.target(2, 1, 2);
     detail::NodeManagedGraph<uint32_t> graph(initial);
-    graph.large_collapse(GENERATE(size_t(1), size_t(2), size_t(100'000)));
+    graph.large_collapse(
+        LIBSEMIGROUPS_GENERATE(test::prefix("large_collapse = "),
+                               size_t(1),
+                               size_t(2),
+                               size_t(100'000)));
 
     SECTION("equal nodes") {
       graph.merge_nodes_no_checks(1, 1);
