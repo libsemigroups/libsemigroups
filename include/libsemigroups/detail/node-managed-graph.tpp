@@ -127,12 +127,15 @@ namespace libsemigroups::detail {
   NodeManagedGraph<Node>::~NodeManagedGraph() = default;
 
   template <typename Node>
-  template <typename OtherNode>
   NodeManagedGraph<Node>&
-  NodeManagedGraph<Node>::operator=(WordGraph<OtherNode> const& wg) {
-    init(wg);
-    LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::number_of_nodes_active()
-                         == WordGraphWithSources<Node>::number_of_nodes());
+  NodeManagedGraph<Node>::init(WordGraph<Node> const& wg) {
+    init();
+    WordGraphWithSources<Node>::init(wg);
+    LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() > 0);
+    // NodeManager always has one node active
+    NodeManager<node_type>::add_active_nodes(
+        WordGraph<node_type>::number_of_nodes() - 1);
+    _stats.num_edges_active = wg.number_of_edges();
     return *this;
   }
 
