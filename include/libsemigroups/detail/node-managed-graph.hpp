@@ -95,7 +95,8 @@ namespace libsemigroups::detail {
     NodeManagedGraph& target_no_checks(node_type  s,
                                        label_type a,
                                        node_type  t) noexcept {
-      _stats.num_edges_active += (t != UNDEFINED);
+      LIBSEMIGROUPS_ASSERT(t != UNDEFINED);
+      _stats.num_edges_active++;
       WordGraphWithSources<Node>::target_no_checks(s, a, t);
       // The next assertion is extremely slow so don't do it!
       // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
@@ -120,6 +121,7 @@ namespace libsemigroups::detail {
     NodeManagedGraph& operator=(NodeManagedGraph&&);
     ~NodeManagedGraph();
 
+    // TODO needed?
     template <typename OtherNode>
     explicit NodeManagedGraph(WordGraph<OtherNode> const& wg)
         : WordGraphWithSources<Node>(wg), NodeManager<node_type>() {
@@ -209,6 +211,8 @@ namespace libsemigroups::detail {
     }
 
     // Returns true if any changes were made to the graph and false o/w.
+    // TODO change Functor -> Register
+    // TODO remove default value
     template <typename Functor = Noop>
     bool process_coincidences(Functor&& = Noop{});
 
