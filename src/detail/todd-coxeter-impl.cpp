@@ -57,11 +57,6 @@ namespace libsemigroups::detail {
 
   namespace {
     // Constants
-    constexpr auto do_not_register_defs
-        = detail::felsch_graph::do_not_register_defs;
-
-    constexpr auto do_register_defs = detail::felsch_graph::do_register_defs;
-
     constexpr bool ye_print_divider = true;
 
     constexpr bool stop_early        = true;
@@ -70,11 +65,11 @@ namespace libsemigroups::detail {
     // Aliases
     using node_type = typename ToddCoxeterImpl::node_type;
 
-    using DoRegisterDefs = detail::felsch_graph::DoRegisterDefs<
+    using RegisterDefinitions = detail::felsch_graph::RegisterDefinitions<
         detail::NodeManagedGraph<detail::ToddCoxeterImpl::Graph::node_type>,
         detail::ToddCoxeterImpl::Definitions>;
 
-    using DoNotRegisterDefs = Noop;
+    using IgnoreDefinitions = Noop;
   }  // namespace
 
   ////////////////////////////////////////////////////////////////////////
@@ -186,7 +181,7 @@ namespace libsemigroups::detail {
                                                     node_type  t) noexcept {
     _forest_valid          = false;
     _standardization_order = Order::none;
-    FelschGraph_::target_no_checks(s, a, t, do_register_defs);
+    FelschGraph_::target_no_checks(s, a, t, RegisterDefinitions{this});
     return *this;
   }
 
@@ -225,8 +220,14 @@ namespace libsemigroups::detail {
       // This pass only adds edges and queues coincidences; compare before
       // process_coincidences merges nodes and invalidates the caches below.
       auto const old_number_of_edges = number_of_edges_active();
-      felsch_graph::make_compatible<do_not_register_defs>(
-          *this, current, current + 1, first, last, incompat, prefdefs);
+      felsch_graph::make_compatible(*this,
+                                    current,
+                                    current + 1,
+                                    first,
+                                    last,
+                                    incompat,
+                                    prefdefs,
+                                    IgnoreDefinitions{});
       if (number_of_edges_active() != old_number_of_edges) {
         _forest_valid          = false;
         _standardization_order = Order::none;
@@ -234,7 +235,7 @@ namespace libsemigroups::detail {
       // Using NoPreferredDefs is just a (more or less) arbitrary
       // choice, could allow the other choices here too (which works,
       // but didn't seem to be very useful).
-      process_coincidences(DoNotRegisterDefs{});
+      process_coincidences(IgnoreDefinitions{});
 
       current = NodeManager<node_type>::next_active_node(current);
       tc->_stats.lookahead_or_behind_position++;
@@ -277,14 +278,15 @@ namespace libsemigroups::detail {
         _forest_valid          = false;
         _standardization_order = Order::none;
       }
-      process_coincidences(DoRegisterDefs(this));
+      process_coincidences(RegisterDefinitions(this));
     }
   }
 
-  template <bool RegDefs>
+  template <typename Register>
   void ToddCoxeterImpl::Graph::push_definition_hlt(node_type const& c,
                                                    word_type const& u,
-                                                   word_type const& v) {
+                                                   word_type const& v,
+                                                   Register const&  reg) {
     LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
 
     // Paths and preferred definitions only add edges; coincidences are queued.
@@ -294,7 +296,7 @@ namespace libsemigroups::detail {
     letter_type a, b;
 
     if (!u.empty()) {
-      x = complete_path<RegDefs>(c, u.begin(), u.cend() - 1).second;
+      x = complete_path(c, u.begin(), u.cend() - 1, reg).second;
       a = u.back();
     } else {
       x = c;
@@ -302,7 +304,7 @@ namespace libsemigroups::detail {
     }
 
     if (!v.empty()) {
-      y = complete_path<RegDefs>(c, v.begin(), v.cend() - 1).second;
+      y = complete_path(c, v.begin(), v.cend() - 1, reg).second;
       b = v.back();
     } else {
       y = c;
@@ -311,18 +313,17 @@ namespace libsemigroups::detail {
 
     CollectCoincidences incompat(_coinc);
     auto                pref_defs
-        = [this](node_type xx, letter_type aa, node_type yy, letter_type bb) {
+        = [this,
+           &reg](node_type xx, letter_type aa, node_type yy, letter_type bb) {
             node_type d = new_node();
-            FelschGraph_::target_no_checks(
-                xx, aa, d, std::bool_constant<RegDefs>{});
+            FelschGraph_::target_no_checks(xx, aa, d, reg);
             if (aa != bb || xx != yy) {
-              FelschGraph_::target_no_checks(
-                  yy, bb, d, std::bool_constant<RegDefs>{});
+              FelschGraph_::target_no_checks(yy, bb, d, reg);
             }
           };
 
-    FelschGraph_::merge_targets_of_nodes_if_possible<RegDefs>(
-        x, a, y, b, incompat, pref_defs);
+    FelschGraph_::merge_targets_of_nodes_if_possible(
+        x, a, y, b, incompat, pref_defs, reg);
     if (number_of_edges_active() != old_number_of_edges) {
       _forest_valid          = false;
       _standardization_order = Order::none;
@@ -951,14 +952,15 @@ namespace libsemigroups::detail {
 
     if (save() || strategy() == options::strategy::felsch) {
       for (auto it = first; it < last; it += 2) {
-        _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
-        _word_graph.process_coincidences(DoRegisterDefs{_word_graph});
+        RegisterDefinitions reg(_word_graph);
+        _word_graph.push_definition_hlt(id, *it, *(it + 1), reg);
+        _word_graph.process_coincidences(reg);
       }
     } else {
       for (auto it = first; it < last; it += 2) {
-        _word_graph.push_definition_hlt<do_not_register_defs>(
-            id, *it, *(it + 1));
-        _word_graph.process_coincidences(DoNotRegisterDefs{});
+        _word_graph.push_definition_hlt(
+            id, *it, *(it + 1), IgnoreDefinitions{});
+        _word_graph.process_coincidences(IgnoreDefinitions{});
       }
     }
 
@@ -967,8 +969,9 @@ namespace libsemigroups::detail {
       last  = internal_presentation().rules.cend();
 
       for (auto it = first; it < last; it += 2) {
-        _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
-        _word_graph.process_coincidences(DoNotRegisterDefs{});
+        RegisterDefinitions reg(_word_graph);
+        _word_graph.push_definition_hlt(id, *it, *(it + 1), reg);
+        _word_graph.process_coincidences(reg);
       }
     }
 
@@ -1053,14 +1056,14 @@ namespace libsemigroups::detail {
     while (current != _word_graph.first_free_node() && !stopped()) {
       if (!save()) {
         for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<do_not_register_defs>(
-              current, *it, *(it + 1));
-          _word_graph.process_coincidences(DoNotRegisterDefs{});
+          _word_graph.push_definition_hlt(
+              current, *it, *(it + 1), IgnoreDefinitions{});
+          _word_graph.process_coincidences(IgnoreDefinitions{});
         }
       } else {
         for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<do_register_defs>(
-              current, *it, *(it + 1));
+          _word_graph.push_definition_hlt(
+              current, *it, *(it + 1), RegisterDefinitions{_word_graph});
           _word_graph.process_definitions();
         }
       }

@@ -578,8 +578,8 @@ namespace libsemigroups {
     template <typename Sims1or2>
     bool
     SimsBase<Sims1or2>::IteratorBase::try_define(PendingDef const& current) {
-      using detail::felsch_graph::do_register_defs;
       using detail::felsch_graph::make_compatible;
+      using detail::felsch_graph::RegisterDefinitions;
 
       // Try to make the definition represented by PendingDef, returns false
       // if it wasn't possible, and true if it was.
@@ -602,8 +602,10 @@ namespace libsemigroups {
       // WordGraph
       size_type start = _felsch_graph.definitions().size();
 
-      _felsch_graph.target_no_checks(
-          current.source, current.generator, current.target, do_register_defs);
+      _felsch_graph.target_no_checks(current.source,
+                                     current.generator,
+                                     current.target,
+                                     RegisterDefinitions{_felsch_graph});
 
       auto first = _sims1or2->included_pairs().cbegin();
       auto last  = _sims1or2->included_pairs().cend();
@@ -613,8 +615,12 @@ namespace libsemigroups {
         }
 
         start = _felsch_graph.definitions().size();
-        if (!make_compatible<do_register_defs>(
-                _felsch_graph, 0, 1, first, last)) {
+        if (!make_compatible(_felsch_graph,
+                             0,
+                             1,
+                             first,
+                             last,
+                             RegisterDefinitions{_felsch_graph})) {
           return false;
         }
       }
@@ -1197,8 +1203,8 @@ namespace libsemigroups {
   Sims2::iterator_base::~iterator_base() = default;
 
   bool Sims2::iterator_base::try_define(PendingDef const& current) {
-    using detail::felsch_graph::do_register_defs;
     using detail::felsch_graph::make_compatible;
+    using detail::felsch_graph::RegisterDefinitions;
     LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
     LIBSEMIGROUPS_ASSERT(current.num_nodes <= maximum_number_of_classes());
 
@@ -1216,8 +1222,12 @@ namespace libsemigroups {
     // That the graph is compatible at 0 with include is checked in
     // Sims1::iterator_base::try_define.
     if (num_nodes > 1
-        && (!make_compatible<do_register_defs>(
-                _felsch_graph, 1, num_nodes, first, last)
+        && (!make_compatible(_felsch_graph,
+                             1,
+                             num_nodes,
+                             first,
+                             last,
+                             RegisterDefinitions{_felsch_graph})
             || !_felsch_graph.process_definitions(start))) {
       // Seems to be important to check included_pairs() first then
       // process_definitions
@@ -1248,12 +1258,12 @@ namespace libsemigroups {
       auto first2 = _2_sided_include->begin(current.num_edges);
       auto last2  = _2_sided_include->end(current.num_edges);
       start       = _felsch_graph.definitions().size();
-      if (!make_compatible<do_register_defs>(
-              _felsch_graph,
-              0,
-              _felsch_graph.number_of_active_nodes(),
-              first2,
-              last2)
+      if (!make_compatible(_felsch_graph,
+                           0,
+                           _felsch_graph.number_of_active_nodes(),
+                           first2,
+                           last2,
+                           RegisterDefinitions{_felsch_graph})
           || !_felsch_graph.process_definitions(start)) {
         return false;
       }
@@ -1414,7 +1424,7 @@ namespace libsemigroups {
     }
 
     const_rcgp_iterator const& const_rcgp_iterator::operator++() {
-      using detail::felsch_graph::do_register_defs;
+      using detail::felsch_graph::RegisterDefinitions;
 
       if (at_end()) {
         return *this;
@@ -1436,7 +1446,10 @@ namespace libsemigroups {
             LIBSEMIGROUPS_ASSERT(target1 != UNDEFINED);
             if (target2 == UNDEFINED) {
               _reconstructed_word_graph.target_no_checks(
-                  _source, _gen, target1, do_register_defs);
+                  _source,
+                  _gen,
+                  target1,
+                  RegisterDefinitions{_reconstructed_word_graph});
               if (_tree.parent_no_checks(target1) == UNDEFINED
                   && target1 > _source) {
                 // Tree edges

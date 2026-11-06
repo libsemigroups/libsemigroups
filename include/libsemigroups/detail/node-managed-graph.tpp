@@ -190,12 +190,12 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    template <bool RegisterDefs>
+    template <typename Register>
     std::pair<bool, typename NodeManagedGraph<Node>::node_type>
-    NodeManagedGraph<Node>::complete_path(
-        node_type                 c,
-        word_type::const_iterator first,
-        word_type::const_iterator last) noexcept {
+    NodeManagedGraph<Node>::complete_path(node_type                 c,
+                                          word_type::const_iterator first,
+                                          word_type::const_iterator last,
+                                          Register const& reg) noexcept {
       LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
       LIBSEMIGROUPS_ASSERT(first <= last);
 
@@ -209,6 +209,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(target_no_checks(c, *it) == UNDEFINED);
         node_type d = new_node();
         target_no_checks(c, *it, d);
+        reg(c, *it);
         result = true;
         c      = d;
       }

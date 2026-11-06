@@ -471,10 +471,11 @@ namespace libsemigroups {
                              Iterator         last,
                              bool             should_stop_early);
 
-        template <bool RegDefs>
+        template <typename Register>
         void push_definition_hlt(node_type const& c,
                                  word_type const& u,
-                                 word_type const& v);
+                                 word_type const& v,
+                                 Register const&  reg);
 
         ////////////////////////////////////////////////////////////////////////
         // Reporting

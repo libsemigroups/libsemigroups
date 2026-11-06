@@ -199,11 +199,12 @@ namespace libsemigroups {
 
       node_type new_node();
 
-      template <bool RegisterDefs = false>
+      template <typename Register>
       [[nodiscard]] std::pair<bool, node_type>
       complete_path(node_type                 c,
                     word_type::const_iterator first,
-                    word_type::const_iterator last) noexcept;
+                    word_type::const_iterator last,
+                    Register const&) noexcept;
 
       void merge_nodes_no_checks(node_type x, node_type y) {
         _coinc.emplace(x, y);
