@@ -34,8 +34,8 @@
 #include <vector>       // for vector
 
 #include "libsemigroups/presentation.hpp"  // for Presentation, Presentation<>:...
-#include "libsemigroups/runner.hpp"
-#include "libsemigroups/types.hpp"               // for word_type
+#include "libsemigroups/runner.hpp"        // for Reporter
+#include "libsemigroups/types.hpp"         // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 #include "libsemigroups/word-graph.hpp"          // for WordGraph
 
@@ -196,11 +196,10 @@ namespace libsemigroups {
       node_type new_node();
 
       template <typename Register>
-      [[nodiscard]] std::pair<bool, node_type>
-      complete_path(node_type                 c,
-                    word_type::const_iterator first,
-                    word_type::const_iterator last,
-                    Register const&) noexcept;
+      [[nodiscard]] node_type complete_path(node_type                 s,
+                                            word_type::const_iterator first,
+                                            word_type::const_iterator last,
+                                            Register const&) noexcept;
 
       void merge_nodes_no_checks(node_type x, node_type y) {
         _coinc.emplace(x, y);
@@ -212,6 +211,7 @@ namespace libsemigroups {
 
       // q is not not const here because permute_nodes_no_checks changes q in
       // place.
+      // TODO to tpp
       void standardize_no_checks(std::vector<node_type> const& p,
                                  std::vector<node_type>&       q) {
         auto& c = lookahead_cursor();

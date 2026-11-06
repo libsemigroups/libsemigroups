@@ -296,7 +296,7 @@ namespace libsemigroups::detail {
     letter_type a, b;
 
     if (!u.empty()) {
-      x = complete_path(c, u.begin(), u.cend() - 1, reg).second;
+      x = complete_path(c, u.begin(), u.cend() - 1, reg);
       a = u.back();
     } else {
       x = c;
@@ -304,7 +304,7 @@ namespace libsemigroups::detail {
     }
 
     if (!v.empty()) {
-      y = complete_path(c, v.begin(), v.cend() - 1, reg).second;
+      y = complete_path(c, v.begin(), v.cend() - 1, reg);
       b = v.back();
     } else {
       y = c;
