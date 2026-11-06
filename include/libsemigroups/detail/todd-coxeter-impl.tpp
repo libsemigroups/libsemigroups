@@ -133,7 +133,9 @@ namespace libsemigroups {
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind        knd,
                                            WordGraph<Node> const& wg) {
       // TODO(1) check that wg is valid, which means what exactly in this
-      // context
+      // context:
+      // 1. that wg.number_of_nodes > 0
+      // 2. More?
       if (&wg == &current_word_graph()) {
         // TODO(later) implement?
         LIBSEMIGROUPS_EXCEPTION(
@@ -142,6 +144,7 @@ namespace libsemigroups {
       }
 
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
+      LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() > 0);
       detail::CongruenceCommon::init(knd);
       _finished  = false;
       _never_run = true;
@@ -162,6 +165,7 @@ namespace libsemigroups {
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind                knd,
                                            Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg) {
+      LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() > 0);
       if (&wg == &current_word_graph()) {
         // TODO(later) implement?
         LIBSEMIGROUPS_EXCEPTION(

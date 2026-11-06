@@ -106,7 +106,9 @@ namespace libsemigroups::detail {
   }
 
   template <typename Node>
-  NodeManagedGraph<Node>::NodeManagedGraph() = default;
+  NodeManagedGraph<Node>::NodeManagedGraph() {
+    init();
+  }
 
   template <typename Node>
   NodeManagedGraph<Node>::NodeManagedGraph(NodeManagedGraph const&) = default;
