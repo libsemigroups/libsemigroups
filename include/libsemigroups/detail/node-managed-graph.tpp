@@ -329,8 +329,9 @@ namespace libsemigroups::detail {
       static std::random_device rd;
       static std::mt19937       g(rd());
 
-      std::uniform_int_distribution<> d(0, nmg.number_of_nodes_active() - 1);
-      auto                            r = nmg.active_nodes();
+      std::uniform_int_distribution<uint64_t> d(
+          0, nmg.number_of_nodes_active() - 1);
+      auto r = nmg.active_nodes();
       rx::advance_by(r, d(g));
       return r.get();
     }
