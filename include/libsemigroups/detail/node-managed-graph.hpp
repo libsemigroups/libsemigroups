@@ -169,7 +169,7 @@ namespace libsemigroups::detail {
     void standardize_no_checks(std::vector<node_type> const& p,
                                std::vector<node_type>&       q);
 
-    [[nodiscard]] Stats& stats() const noexcept {
+    [[nodiscard]] Stats const& stats() const noexcept {
       return _stats;
     }
 
