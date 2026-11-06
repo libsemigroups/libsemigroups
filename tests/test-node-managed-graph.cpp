@@ -133,4 +133,18 @@ namespace libsemigroups {
     REQUIRE(graph.number_of_nodes_active() == nodes);
     REQUIRE(WordGraph(graph) == before);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "003",
+                          "default construction creates an active root",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    REQUIRE(graph.number_of_nodes() == 1);
+    REQUIRE(graph.is_active_node(0));
+
+    auto const node = graph.new_node();
+    REQUIRE(node == 1);
+    REQUIRE(node < graph.number_of_nodes());
+    REQUIRE(graph.is_active_node(node));
+  }
 }  // namespace libsemigroups
