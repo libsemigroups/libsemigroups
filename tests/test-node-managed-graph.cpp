@@ -72,17 +72,14 @@ namespace libsemigroups {
       REQUIRE(WordGraph(graph) == WordGraph<uint32_t>(initial));
     };
 
-    Graph graph(initial);
-    check(graph);
+    Graph graph;
     graph.init(initial);
     check(graph);
-    graph = initial;
-    check(graph);
 
-    graph = WordGraph<TestType>(3, 2);
+    graph.init(WordGraph<TestType>(3, 2));
     REQUIRE(graph.number_of_edges_active() == 0);
     REQUIRE(graph.count_number_of_edges_active() == 0);
-    graph = initial;
+    graph.init(initial);
     check(graph);
   }
 
@@ -98,7 +95,8 @@ namespace libsemigroups {
     initial.target(0, 1, 2);
     initial.target(1, 0, 1);
     initial.target(2, 1, 2);
-    detail::NodeManagedGraph<uint32_t> graph(initial);
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(initial);
     graph.large_collapse(
         LIBSEMIGROUPS_GENERATE(test::prefix("large_collapse = "),
                                size_t(1),

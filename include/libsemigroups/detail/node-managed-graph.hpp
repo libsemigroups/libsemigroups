@@ -87,22 +87,10 @@ namespace libsemigroups::detail {
 
    public:
     ////////////////////////////////////////////////////////////////////////
-    // WordGraphWithSources<Node> mem fns
+    // WordGraphWithSources + NodeManager mem fns
     ////////////////////////////////////////////////////////////////////////
 
     using WordGraphWithSources<Node>::out_degree;
-
-    NodeManagedGraph& target_no_checks(node_type  s,
-                                       label_type a,
-                                       node_type  t) noexcept {
-      LIBSEMIGROUPS_ASSERT(t != UNDEFINED);
-      _stats.num_edges_active++;
-      WordGraphWithSources<Node>::target_no_checks(s, a, t);
-      // The next assertion is extremely slow so don't do it!
-      // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
-      //                      == count_number_of_edges_active());
-      return *this;
-    }
     using WordGraphWithSources<Node>::target_no_checks;
 
     using NodeManager<node_type>::cursor;
@@ -121,30 +109,7 @@ namespace libsemigroups::detail {
     NodeManagedGraph& operator=(NodeManagedGraph&&);
     ~NodeManagedGraph();
 
-    // TODO needed?
-    template <typename OtherNode>
-    explicit NodeManagedGraph(WordGraph<OtherNode> const& wg)
-        : WordGraphWithSources<Node>(wg), NodeManager<node_type>() {
-      // NodeManager always has one node active
-      NodeManager<node_type>::add_active_nodes(
-          WordGraph<node_type>::number_of_nodes() - 1);
-      _stats.num_edges_active = wg.number_of_edges();
-    }
-
-    template <typename OtherNode>
-    NodeManagedGraph& init(WordGraph<OtherNode> const& wg) {
-      init();
-      WordGraphWithSources<Node>::init(wg);
-      LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() > 0);
-      // NodeManager always has one node active
-      NodeManager<node_type>::add_active_nodes(
-          WordGraph<node_type>::number_of_nodes() - 1);
-      _stats.num_edges_active = wg.number_of_edges();
-      return *this;
-    }
-
-    template <typename OtherNode>
-    NodeManagedGraph& operator=(WordGraph<OtherNode> const& wg);
+    NodeManagedGraph& init(WordGraph<Node> const& wg);
 
     NodeManagedGraph& reserve(size_t n);
 
@@ -159,6 +124,18 @@ namespace libsemigroups::detail {
     ////////////////////////////////////////////////////////////////////////
     // Settings
     ////////////////////////////////////////////////////////////////////////
+
+    NodeManagedGraph& target_no_checks(node_type  s,
+                                       label_type a,
+                                       node_type  t) noexcept {
+      LIBSEMIGROUPS_ASSERT(t != UNDEFINED);
+      _stats.num_edges_active++;
+      WordGraphWithSources<Node>::target_no_checks(s, a, t);
+      // The next assertion is extremely slow so don't do it!
+      // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
+      //                      == count_number_of_edges_active());
+      return *this;
+    }
 
     NodeManagedGraph& large_collapse(size_t val) noexcept {
       _settings.large_collapse = val;
