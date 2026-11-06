@@ -123,7 +123,7 @@ namespace libsemigroups {
         // NodeManager always has one node active
         NodeManager<node_type>::add_active_nodes(
             WordGraph<node_type>::number_of_nodes() - 1);
-        _stats.num_edges_active += wg.number_of_edges();
+        _stats.num_edges_active = wg.number_of_edges();
       }
 
       template <typename OtherNode>
@@ -134,7 +134,7 @@ namespace libsemigroups {
         // NodeManager always has one node active
         NodeManager<node_type>::add_active_nodes(
             WordGraph<node_type>::number_of_nodes() - 1);
-        _stats.num_edges_active += wg.number_of_edges();
+        _stats.num_edges_active = wg.number_of_edges();
         return *this;
       }
 
