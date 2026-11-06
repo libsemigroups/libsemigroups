@@ -20,29 +20,33 @@
 // by Stephen and by ToddCoxeterImpl.
 
 // TODO:
-// * iwyu
 // * code coverage
 
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGED_GRAPH_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGED_GRAPH_HPP_
 
-#include <cstddef>      // for size_t
-#include <cstdint>      // for uint32_t
-#include <stack>        // for stack
-#include <type_traits>  // for is_base_of
-#include <utility>      // for pair
-#include <vector>       // for vector
+#include <algorithm>  // for minmax
+#include <atomic>     // for atomic_uint64_t
+#include <cstddef>    // for size_t
+#include <cstdint>    // for uint64_t
+#include <random>     // for random_device, unifo...
+#include <stack>      // for stack
+#include <tuple>      // for tie
+#include <utility>    // for pair
+#include <vector>     // for vector
 
-#include "libsemigroups/presentation.hpp"  // for Presentation, Presentation<>:...
-#include "libsemigroups/runner.hpp"        // for Reporter
-#include "libsemigroups/types.hpp"         // for word_type
-#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
-#include "libsemigroups/word-graph.hpp"          // for WordGraph
+#include "libsemigroups/adapters.hpp"            // for Noop
+#include "libsemigroups/constants.hpp"           // for UNDEFINED
+#include "libsemigroups/debug.hpp"               // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/ranges.hpp"              // for advance_by
+#include "libsemigroups/runner.hpp"              // for Reporter
+#include "libsemigroups/types.hpp"               // for word_type, letter_type
+#include "libsemigroups/word-graph-class.hpp"    // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp"  // for last_node_on_path_no...
 
-#include "felsch-graph.hpp"
 #include "node-manager.hpp"             // for NodeManager
-#include "report.hpp"                   // for REPORT_DEFAULT
-#include "timer.hpp"                    // for Timer
+#include "report.hpp"                   // for report_default
+#include "string.hpp"                   // for group_digits
 #include "word-graph-with-sources.hpp"  // for WordGraphWithSources
 
 namespace libsemigroups::detail {
