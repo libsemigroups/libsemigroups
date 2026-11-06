@@ -140,54 +140,8 @@ namespace libsemigroups::detail {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Stats
+  // Other mem fns - alphabetical order !!!
   ////////////////////////////////////////////////////////////////////////
-
-  template <typename Node>
-  void NodeManagedGraph<Node>::stats_check_point() const {
-    _stats.prev_active_nodes = NodeManager<node_type>::number_of_nodes_active();
-    _stats.prev_nodes_killed = NodeManager<node_type>::number_of_nodes_killed();
-    _stats.prev_nodes_defined
-        = NodeManager<node_type>::number_of_nodes_defined();
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  // Accessors
-  ////////////////////////////////////////////////////////////////////////
-
-  template <typename Node>
-  uint64_t
-  NodeManagedGraph<Node>::count_number_of_edges_active() const noexcept {
-    auto     current   = NodeManager<node_type>::initial_node();
-    uint64_t num_edges = 0;
-    while (current != NodeManager<node_type>::first_free_node()) {
-      num_edges += WordGraph<node_type>::number_of_edges_no_checks(current);
-      current = NodeManager<node_type>::next_active_node(current);
-    }
-    return num_edges;
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  // Modifiers
-  ////////////////////////////////////////////////////////////////////////
-
-  template <typename Node>
-  typename NodeManagedGraph<Node>::node_type
-  NodeManagedGraph<Node>::new_node() {
-    if (NodeManager<node_type>::has_free_nodes()) {
-      node_type const c = NodeManager<node_type>::new_active_node();
-      // Clear the new node's row in each table
-      WordGraphWithSources<Node>::remove_all_sources_and_targets_no_checks(c);
-      return c;
-    } else {
-      // There are no free nodes to recycle: make new ones.
-      // It seems to be marginally faster to make lots like this, than to
-      // just make 1, in some examples, notably ToddCoxeterImpl 040
-      // (Walker 3).
-      reserve(2 * NodeManager<node_type>::node_capacity());
-      return NodeManager<node_type>::new_active_node();
-    }
-  }
 
   template <typename Node>
   template <typename Register>
@@ -212,6 +166,36 @@ namespace libsemigroups::detail {
       s = d;
     }
     return s;
+  }
+
+  template <typename Node>
+  uint64_t
+  NodeManagedGraph<Node>::count_number_of_edges_active() const noexcept {
+    auto     current   = NodeManager<node_type>::initial_node();
+    uint64_t num_edges = 0;
+    while (current != NodeManager<node_type>::first_free_node()) {
+      num_edges += WordGraph<node_type>::number_of_edges_no_checks(current);
+      current = NodeManager<node_type>::next_active_node(current);
+    }
+    return num_edges;
+  }
+
+  template <typename Node>
+  typename NodeManagedGraph<Node>::node_type
+  NodeManagedGraph<Node>::new_node() {
+    if (NodeManager<node_type>::has_free_nodes()) {
+      node_type const c = NodeManager<node_type>::new_active_node();
+      // Clear the new node's row in each table
+      WordGraphWithSources<Node>::remove_all_sources_and_targets_no_checks(c);
+      return c;
+    } else {
+      // There are no free nodes to recycle: make new ones.
+      // It seems to be marginally faster to make lots like this, than to
+      // just make 1, in some examples, notably ToddCoxeterImpl 040
+      // (Walker 3).
+      reserve(2 * NodeManager<node_type>::node_capacity());
+      return NodeManager<node_type>::new_active_node();
+    }
   }
 
   template <typename Node>
@@ -334,6 +318,28 @@ namespace libsemigroups::detail {
     WordGraphWithSources<Node>::permute_nodes_no_checks(
         p, q, NodeManager<node_type>::number_of_nodes_active());
     NodeManager<node_type>::compact();
+  }
+
+  template <typename Node>
+  void NodeManagedGraph<Node>::stats_check_point() const {
+    _stats.prev_active_nodes = NodeManager<node_type>::number_of_nodes_active();
+    _stats.prev_nodes_killed = NodeManager<node_type>::number_of_nodes_killed();
+    _stats.prev_nodes_defined
+        = NodeManager<node_type>::number_of_nodes_defined();
+  }
+
+  template <typename Node>
+  NodeManagedGraph<Node>&
+  NodeManagedGraph<Node>::target_no_checks(node_type  s,
+                                           label_type a,
+                                           node_type  t) noexcept {
+    LIBSEMIGROUPS_ASSERT(t != UNDEFINED);
+    _stats.num_edges_active++;
+    WordGraphWithSources<Node>::target_no_checks(s, a, t);
+    // The next assertion is extremely slow so don't do it!
+    // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
+    //                      == count_number_of_edges_active());
+    return *this;
   }
 
   ////////////////////////////////////////////////////////////////////////

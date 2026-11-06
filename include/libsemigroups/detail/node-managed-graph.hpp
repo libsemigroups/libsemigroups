@@ -111,31 +111,17 @@ namespace libsemigroups::detail {
 
     NodeManagedGraph& init(WordGraph<Node> const& wg);
 
-    NodeManagedGraph& reserve(size_t n);
-
     ////////////////////////////////////////////////////////////////////////
-    // Operators
+    // Other mem fns - alphabetical order !!!
     ////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] bool operator==(WordGraph<node_type> const& that) const {
-      return static_cast<WordGraph<node_type> const&>(*this) == that;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Settings
-    ////////////////////////////////////////////////////////////////////////
-
-    NodeManagedGraph& target_no_checks(node_type  s,
-                                       label_type a,
-                                       node_type  t) noexcept {
-      LIBSEMIGROUPS_ASSERT(t != UNDEFINED);
-      _stats.num_edges_active++;
-      WordGraphWithSources<Node>::target_no_checks(s, a, t);
-      // The next assertion is extremely slow so don't do it!
-      // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
-      //                      == count_number_of_edges_active());
-      return *this;
-    }
+    template <typename Register>
+    [[nodiscard]] node_type complete_path(node_type                 s,
+                                          word_type::const_iterator first,
+                                          word_type::const_iterator last,
+                                          Register const&) noexcept;
+    // 100% not thread safe
+    [[nodiscard]] uint64_t count_number_of_edges_active() const noexcept;
 
     NodeManagedGraph& large_collapse(size_t val) noexcept {
       _settings.large_collapse = val;
@@ -146,56 +132,26 @@ namespace libsemigroups::detail {
       return _settings.large_collapse;
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // Stats
-    ////////////////////////////////////////////////////////////////////////
-
-    [[nodiscard]] Stats& stats() const noexcept {
-      return _stats;
+    void merge_nodes_no_checks(node_type x, node_type y) {
+      _coinc.emplace(x, y);
     }
 
-    void stats_check_point() const;
-
-    ////////////////////////////////////////////////////////////////////////
-    // Accessors
-    ////////////////////////////////////////////////////////////////////////
+    [[nodiscard]] node_type new_node();
 
     [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
       return _stats.num_edges_active;
     }
 
-    // 100% not thread safe
-    [[nodiscard]] uint64_t count_number_of_edges_active() const noexcept;
-
     [[nodiscard]] size_t number_of_coincidences() const noexcept {
       return _coinc.size();
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // Modifiers
-    ////////////////////////////////////////////////////////////////////////
-
-    [[nodiscard]] node_type new_node();
-
-    template <typename Register>
-    [[nodiscard]] node_type complete_path(node_type                 s,
-                                          word_type::const_iterator first,
-                                          word_type::const_iterator last,
-                                          Register const&) noexcept;
-
-    void merge_nodes_no_checks(node_type x, node_type y) {
-      _coinc.emplace(x, y);
+    [[nodiscard]] bool operator==(WordGraph<node_type> const& that) const {
+      return static_cast<WordGraph<node_type> const&>(*this) == that;
     }
-
-    // Returns true if any changes were made to the graph and false o/w.
-    template <typename Register>
-    bool process_coincidences(Register const&);
 
     // q is not not const here because permute_nodes_no_checks changes q in
     // place.
-    void standardize_no_checks(std::vector<node_type> const& p,
-                               std::vector<node_type>&       q);
-
     void permute_nodes_no_checks(std::vector<node_type> const& p,
                                  std::vector<node_type>&       q) {
       WordGraphWithSources<Node>::permute_nodes_no_checks(
@@ -203,11 +159,35 @@ namespace libsemigroups::detail {
       NodeManager<node_type>::apply_permutation(p);
     }
 
+    // Returns true if any changes were made to the graph and false o/w.
+    // Sometimes we don't care what the answer is, so nodiscard omitted.
+    template <typename Register>
+    bool process_coincidences(Register const&);
+
+    NodeManagedGraph& reserve(size_t n);
+
+    void standardize_no_checks(std::vector<node_type> const& p,
+                               std::vector<node_type>&       q);
+
+    [[nodiscard]] Stats& stats() const noexcept {
+      return _stats;
+    }
+
+    void stats_check_point() const;
+
+    NodeManagedGraph& target_no_checks(node_type  s,
+                                       label_type a,
+                                       node_type  t) noexcept;
+
     // Not currently used for anything, previously required for immediate
     // standardization. The implementation has been deleted but should be
     // available in the git history pre-v3.7.0
     // void swap_nodes_no_checks(node_type c, node_type d);
   };  // class NodeManagedGraph
+
+  ////////////////////////////////////////////////////////////////////////
+  // Helpers
+  ////////////////////////////////////////////////////////////////////////
 
   namespace node_managed_graph {
     template <typename Node>
