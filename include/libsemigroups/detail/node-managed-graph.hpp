@@ -231,8 +231,9 @@ namespace libsemigroups {
       }
 
       // Not currently used for anything, previously required for immediate
-      // standardization
-      void swap_nodes_no_checks(node_type c, node_type d);
+      // standardization. The implementation has been deleted but should be
+      // available in the git history pre-v3.7.0
+      // void swap_nodes_no_checks(node_type c, node_type d);
     };  // class NodeManagedGraph
 
     namespace node_managed_graph {
