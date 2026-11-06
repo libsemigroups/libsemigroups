@@ -325,28 +325,6 @@ namespace libsemigroups {
              || any_collapse_after_large_collapse;
     }
 
-    template <typename Node>
-    void NodeManagedGraph<Node>::swap_nodes_no_checks(node_type c,
-                                                      node_type d) {
-      LIBSEMIGROUPS_ASSERT(_coinc.empty());
-      LIBSEMIGROUPS_ASSERT(c != NodeManager<node_type>::initial_node());
-      LIBSEMIGROUPS_ASSERT(d != NodeManager<node_type>::initial_node());
-      LIBSEMIGROUPS_ASSERT(c != d);
-      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_valid_node(c));
-      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_valid_node(d));
-
-      if (NodeManager<node_type>::is_active_node(c)
-          && NodeManager<node_type>::is_active_node(d)) {
-        WordGraphWithSources<Node>::swap_nodes_no_checks(c, d);
-      } else if (NodeManager<node_type>::is_active_node(c)) {
-        WordGraphWithSources<Node>::rename_node_no_checks(c, d);
-      } else {
-        LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
-        WordGraphWithSources<Node>::rename_node_no_checks(d, c);
-      }
-      NodeManager<node_type>::switch_nodes(c, d);
-    }
-
     ////////////////////////////////////////////////////////////////////////
     // Helpers
     ////////////////////////////////////////////////////////////////////////
