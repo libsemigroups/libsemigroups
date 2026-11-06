@@ -21,6 +21,7 @@
 
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
 
+#include "libsemigroups/detail/felsch-graph.hpp"        // for IgnoreDefinitions
 #include "libsemigroups/detail/node-managed-graph.hpp"  // for NodeManagedGraph
 #include "libsemigroups/detail/report.hpp"              // for ReportGuard
 
@@ -89,6 +90,8 @@ namespace libsemigroups {
                           "002",
                           "redundant coincidences preserve active edge counts",
                           "[node-managed-graph][quick]") {
+    using detail::felsch_graph::IgnoreDefinitions;
+
     auto                rg = ReportGuard(false);
     WordGraph<uint32_t> initial(3, 2);
     initial.target(0, 0, 1);
@@ -109,7 +112,7 @@ namespace libsemigroups {
     }
     SECTION("nodes with equal representatives") {
       graph.merge_nodes_no_checks(1, 2);
-      REQUIRE(graph.process_coincidences());
+      REQUIRE(graph.process_coincidences(IgnoreDefinitions{}));
       REQUIRE(graph.number_of_edges_active()
               == graph.count_number_of_edges_active());
       graph.merge_nodes_no_checks(1, 2);

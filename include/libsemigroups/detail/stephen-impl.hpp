@@ -41,6 +41,7 @@
 #include "libsemigroups/word-graph-class.hpp"      // for WordGraph
 #include "libsemigroups/word-graph-helpers.hpp"    // for word_graph_no_run
 
+#include "felsch-graph.hpp"             // for IgnoreDefinitions
 #include "node-managed-graph.hpp"       // for NodeMana...
 #include "node-manager.hpp"             // for NodeManager
 #include "report.hpp"                   // for report_n...

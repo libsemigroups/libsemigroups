@@ -211,10 +211,8 @@ namespace libsemigroups::detail {
     }
 
     // Returns true if any changes were made to the graph and false o/w.
-    // TODO change Functor -> Register
-    // TODO remove default value
-    template <typename Functor = Noop>
-    bool process_coincidences(Functor&& = Noop{});
+    template <typename Register>
+    bool process_coincidences(Register const&);
 
     // q is not not const here because permute_nodes_no_checks changes q in
     // place.

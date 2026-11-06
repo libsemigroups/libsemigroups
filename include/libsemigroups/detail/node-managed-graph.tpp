@@ -211,8 +211,8 @@ namespace libsemigroups::detail {
   }
 
   template <typename Node>
-  template <typename Functor>
-  bool NodeManagedGraph<Node>::process_coincidences(Functor&& new_def) {
+  template <typename Register>
+  bool NodeManagedGraph<Node>::process_coincidences(Register const& reg) {
     bool any_collapse_before_large_collapse = false;
     if (_coinc.empty()) {
       return any_collapse_before_large_collapse;
@@ -231,7 +231,7 @@ namespace libsemigroups::detail {
         NodeManager<node_type>::union_nodes(min, max);
         _stats.num_edges_active
             -= WordGraphWithSources<Node>::merge_nodes_no_checks(
-                min, max, new_def, incompat_func);
+                min, max, reg, incompat_func);
       }
     }
 
@@ -298,7 +298,7 @@ namespace libsemigroups::detail {
             _stats.num_edges_active++;
             auto d = NodeManager<node_type>::find_node(cx);
             if (cx != d) {
-              new_def(c, x);
+              reg(c, x);
               WordGraph<node_type>::target_no_checks(c, x, d);
             }
             // Must re-add the source, even if we don't need to reset
