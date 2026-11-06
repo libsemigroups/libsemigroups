@@ -198,7 +198,7 @@ namespace libsemigroups::detail {
     // Modifiers
     ////////////////////////////////////////////////////////////////////////
 
-    node_type new_node();
+    [[nodiscard]] node_type new_node();
 
     template <typename Register>
     [[nodiscard]] node_type complete_path(node_type                 s,
@@ -216,17 +216,8 @@ namespace libsemigroups::detail {
 
     // q is not not const here because permute_nodes_no_checks changes q in
     // place.
-    // TODO to tpp
     void standardize_no_checks(std::vector<node_type> const& p,
-                               std::vector<node_type>&       q) {
-      auto& c = lookahead_cursor();
-      if (c < q.size()) {
-        c = q[c];
-      }
-      WordGraphWithSources<Node>::permute_nodes_no_checks(
-          p, q, NodeManager<node_type>::number_of_nodes_active());
-      NodeManager<node_type>::compact();
-    }
+                               std::vector<node_type>&       q);
 
     void permute_nodes_no_checks(std::vector<node_type> const& p,
                                  std::vector<node_type>&       q) {

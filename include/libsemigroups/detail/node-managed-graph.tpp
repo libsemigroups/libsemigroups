@@ -19,6 +19,7 @@
 // This file contains the implementation for the NodeManagedGraph class, used
 // by Stephen and by ToddCoxeterImpl.
 
+#include "libsemigroups/detail/node-managed-graph.hpp"
 namespace libsemigroups::detail {
 
   ////////////////////////////////////////////////////////////////////////
@@ -317,6 +318,19 @@ namespace libsemigroups::detail {
     //                      == count_number_of_edges_active());
     return any_collapse_before_large_collapse
            || any_collapse_after_large_collapse;
+  }
+
+  template <typename Node>
+  void
+  NodeManagedGraph<Node>::standardize_no_checks(std::vector<node_type> const& p,
+                                                std::vector<node_type>& q) {
+    auto& c = lookahead_cursor();
+    if (c < q.size()) {
+      c = q[c];
+    }
+    WordGraphWithSources<Node>::permute_nodes_no_checks(
+        p, q, NodeManager<node_type>::number_of_nodes_active());
+    NodeManager<node_type>::compact();
   }
 
   ////////////////////////////////////////////////////////////////////////
