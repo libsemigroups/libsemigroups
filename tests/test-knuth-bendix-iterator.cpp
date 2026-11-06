@@ -23,6 +23,7 @@
 #include <vector>       // for vector
 
 #include "libsemigroups/adapters.hpp"               // for ReturnFalse
+#include "libsemigroups/config.hpp"                 // for LIBSEMIGROUPS_ALGL...
 #include "libsemigroups/knuth-bendix-iterator.hpp"  // for Knuth...
 #include "libsemigroups/presentation.hpp"  // for Presentation, presentation...
 #include "libsemigroups/to-word.hpp"       // for ToWord
@@ -427,5 +428,127 @@ namespace libsemigroups {
       REQUIRE(*kbb4++ == p2);
     }
   }
+
+#ifdef LIBSEMIGROUPS_ALGLIB_ENABLED
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
+                          "009",
+                          "one relation monoids + weight finding",
+                          "[extreme]") {
+    std::string const first_word("a");
+    std::string const last_word("aaaaaaaa");
+
+    v4::WordRange<std::string> lhss;
+    lhss.order(LenLexCmp(Alphabet("ab"s))).first(first_word).last(last_word);
+    v4::WordRange<std::string> rhss;
+
+    Presentation<std::string> p;
+    p.alphabet("ab"s);
+    p.contains_empty_word(true);
+
+    KnuthBendixIterator       kbb;
+    KnuthBendixIterator const end = end_knuth_bendix_iterator(p, 20, 1);
+
+    size_t total                     = 0;
+    size_t confluent                 = 0;
+    size_t terminating_and_confluent = 0;
+
+    for (auto const& lhs : lhss) {
+      rhss.order(LenLexCmp(Alphabet("ab"s))).first(lhs).last(last_word);
+      for (auto const& rhs : rhss) {
+        ++total;
+        p.rules           = {lhs, rhs};
+        bool is_confluent = false;
+        for (kbb = KnuthBendixIterator(p, 20, 1); kbb != end; ++kbb) {
+          is_confluent = true;
+          auto result  = presentation::find_weights(*kbb);
+          if (result.has_value()) {
+            ++terminating_and_confluent;
+            break;
+          }
+        }
+        if (is_confluent) {
+          ++confluent;
+        }
+      }
+    }
+
+    REQUIRE(total == 32385);
+    REQUIRE(confluent == 22105);
+    REQUIRE(terminating_and_confluent == 18487);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendixIterator",
+                          "010",
+                          "one relation monoids + weight finding x2",
+                          "[quick]") {
+    std::vector<std::pair<std::string, std::string>> input_relations
+        = {{"aaaaa"s, "b"s},
+           {"aaaaaa"s, "b"s},
+           {"baaaaaa"s, "bba"s},
+           {"bba"s, "bbbbbbb"s},
+           {"baab"s, "babbb"s},
+           {"babbb"s, "bbaa"s},
+           {"aaaaaab"s, "bbba"s},
+           {"aaaab"s, "aabbab"s}};
+
+    std::vector<std::pair<std::string, std::string>> ordered_relations
+        = {{"b"s, "aaaaa"s},
+           {"b"s, "aaaaaa"s},
+           {"baaaaaa"s, "bba"s},
+           {"bba"s, "baaaaaa"s},
+           {"bba"s, "bbbbbbb"s},
+           {"baab"s, "babbb"s},
+           {"babbb"s, "baab"s},
+           {"bbaa"s, "babbb"s},
+           {"aaaaaab"s, "bbba"s},
+           {"bbba"s, "aaaaaab"s},
+           {"aaaab"s, "aabbab"s},
+           {"aabbab"s, "aaaab"s}};
+
+    // The weights here are interesting. Specifically, they are not as small as
+    // they could be. This is because the function that we are trying to
+    // minimise when producing these values is currently the function with
+    // constant value 1. JDE chose this function because he assumed it would
+    // lead to the fastest run-time, but this should be experimented with and
+    // benchmarked once we have some real use-cases.
+    std::vector<std::vector<size_t>> weights = {{1, 13},
+                                                {1, 14},
+                                                {1, 1},
+                                                {1, 13},
+                                                {13, 1},
+                                                {6, 1},
+                                                {1, 1},
+                                                {6, 1},
+                                                {1, 1},
+                                                {1, 6},
+                                                {6, 1},
+                                                {1, 1}};
+
+    Presentation<std::string> p;
+    p.alphabet("ab"s);
+    p.contains_empty_word(true);
+
+    KnuthBendixIterator       kbb;
+    KnuthBendixIterator const end = end_knuth_bendix_iterator(p, 20, 1);
+
+    size_t i = 0;
+
+    for (auto const& [lhs, rhs] : input_relations) {
+      p.rules = {lhs, rhs};
+      for (kbb = KnuthBendixIterator(p, 20, 1); kbb != end; ++kbb) {
+        fmt::println("{}", kbb->rules);
+        auto result = presentation::find_weights(*kbb);
+        if (result.has_value()) {
+          REQUIRE(kbb->rules.size() == 2);
+          REQUIRE(std::make_pair(kbb->rules[0], kbb->rules[1])
+                  == ordered_relations[i]);
+          REQUIRE(result.value() == weights[i]);
+          ++i;
+        }
+      }
+    }
+  }
+
+#endif
 
 }  // namespace libsemigroups
