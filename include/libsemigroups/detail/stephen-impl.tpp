@@ -53,6 +53,7 @@ namespace libsemigroups {
                             node_type                from,
                             label_type               letter,
                             node_type                to) {
+        using detail::felsch_graph::IgnoreDefinitions;
         WordGraphWithSources_::target_no_checks(from, letter, to);
         if constexpr (is_specialization_of_v<presentation_type,
                                              InversePresentation>) {
@@ -64,7 +65,7 @@ namespace libsemigroups {
           auto inverse_target = target_no_checks(to, ll);
           if (inverse_target != UNDEFINED && inverse_target != from) {
             merge_nodes_no_checks(from, inverse_target);
-            process_coincidences();
+            process_coincidences(IgnoreDefinitions{});
             return;
           }
           WordGraphWithSources_::target_no_checks(to, ll, from);
@@ -216,6 +217,8 @@ namespace libsemigroups {
     template <typename PresentationType>
     void StephenImpl<PresentationType>::append_no_checks(
         StephenImpl<PresentationType>& that) {
+      using felsch_graph::IgnoreDefinitions;
+
       // NOTE: Appending seems to work fine without running both this and that.
       // If for some reason this is no longer true later on, uncomment the next
       // two lines and update docs to indicate algorithm is run when calling
@@ -236,7 +239,7 @@ namespace libsemigroups {
 
       _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
       _word_graph.merge_nodes_no_checks(accept_state, that.initial_state() + N);
-      _word_graph.process_coincidences();
+      _word_graph.process_coincidences(IgnoreDefinitions{});
       _accept_state = UNDEFINED;
       _finished     = false;
       _internal_word.insert(_internal_word.end(),
@@ -353,6 +356,8 @@ namespace libsemigroups {
 
     template <typename PresentationType>
     void StephenImpl<PresentationType>::run_impl() {
+      using felsch_graph::IgnoreDefinitions;
+
       using std::chrono::duration_cast;
       using std::chrono::seconds;
 
@@ -407,7 +412,7 @@ namespace libsemigroups {
               } else if (u_end != v_end) {
                 did_def = true;
                 _word_graph.merge_nodes_no_checks(u_end, v_end);
-                _word_graph.process_coincidences();
+                _word_graph.process_coincidences(IgnoreDefinitions{});
               }
               --it;
             } else {
@@ -436,7 +441,7 @@ namespace libsemigroups {
                 } else if (u_end != v_end) {
                   did_def = true;
                   _word_graph.merge_nodes_no_checks(u_end, v_end);
-                  _word_graph.process_coincidences();
+                  _word_graph.process_coincidences(IgnoreDefinitions{});
                 }
               } else {
                 --it;
