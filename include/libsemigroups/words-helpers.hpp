@@ -230,6 +230,25 @@ namespace libsemigroups {
     //! \returns the parsed string.
     std::string parse(std::string const& w);
 
+    //! \brief Non-literal version of \ref literal_operator_c "operator\"\"_c"
+    //!
+    //! This function returns the same value as
+    //! \ref literal_operator_c "operator\"\"_c" and is included to allow things
+    //! like:
+    //!
+    //! \code
+    //! #include <cassert>
+    //! #include <string>
+    //!
+    //! std::string w = "baabababababa";
+    //! std::string compressed = compress(w);
+    //! assert(compressed == "ba(ab)^5a");
+    //! \endcode
+    //!
+    //! \param w the string to compress.
+    //! \returns the compressed string.
+    std::string compress(std::string const& w);
+
     //! \brief Returns the index of a character in human readable order.
     //!
     //! Defined in `word-range.hpp`.
@@ -638,6 +657,13 @@ namespace libsemigroups {
     //! See \ref literal_operator_p "operator\"\"_p" for details.
     std::string operator""_p(const char* w);
 
+    //! \brief Literal for compressing \ref word_type into a more minimal
+    //! alebraic expression for readability.
+    //!
+    //!
+    //! See \ref literal_operator_c "operator\"\"_c" for details.
+    std::string operator""_c(const char* w, size_t n);
+    std::string operator""_c(const char* w);
   }  // namespace literals
 
 }  // namespace libsemigroups
