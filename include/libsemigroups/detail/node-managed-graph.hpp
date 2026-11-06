@@ -168,10 +168,6 @@ namespace libsemigroups {
       // Stats
       ////////////////////////////////////////////////////////////////////////
 
-      [[nodiscard]] Stats& stats() noexcept {
-        return _stats;
-      }
-
       [[nodiscard]] Stats& stats() const noexcept {
         return _stats;
       }
