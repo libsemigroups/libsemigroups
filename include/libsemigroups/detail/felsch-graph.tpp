@@ -150,16 +150,14 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Graph, typename Definitions>
-    template <bool RegDefs>
+    template <typename Register>
     FelschGraph<Graph, Definitions>&
     FelschGraph<Graph, Definitions>::target_no_checks(
-        node_type  s,
-        label_type a,
-        node_type  t,
-        std::bool_constant<RegDefs>) noexcept {
-      if constexpr (RegDefs) {
-        _definitions.emplace_back(s, a);
-      }
+        node_type       s,
+        label_type      a,
+        node_type       t,
+        Register const& reg) noexcept {
+      reg(s, a);
       Graph::target_no_checks(s, a, t);
       return *this;
     }
@@ -177,14 +175,15 @@ namespace libsemigroups {
     }
 
     template <typename Graph, typename Definitions>
-    template <bool RegDefs, typename Incompatible, typename PreferredDefs>
+    template <typename Incompatible, typename PreferredDefs, typename Register>
     bool FelschGraph<Graph, Definitions>::merge_targets_of_nodes_if_possible(
-        node_type      x,
-        label_type     a,
-        node_type      y,
-        label_type     b,
-        Incompatible&  incompat,
-        PreferredDefs& pref_def) {
+        node_type       x,
+        label_type      a,
+        node_type       y,
+        label_type      b,
+        Incompatible&   incompat,
+        PreferredDefs&  pref_def,
+        Register const& reg) {
       LIBSEMIGROUPS_ASSERT(x < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(y < number_of_nodes());
 
@@ -193,10 +192,10 @@ namespace libsemigroups {
 
       if (xa == UNDEFINED && yb != UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(a < out_degree());
-        target_no_checks(x, a, yb, std::bool_constant<RegDefs>{});
+        target_no_checks(x, a, yb, reg);
       } else if (xa != UNDEFINED && yb == UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(b < out_degree());
-        target_no_checks(y, b, xa, std::bool_constant<RegDefs>{});
+        target_no_checks(y, b, xa, reg);
       } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
         return incompat(xa, yb);
       } else if (xa == UNDEFINED && yb == UNDEFINED) {
@@ -213,7 +212,7 @@ namespace libsemigroups {
     }
 
     template <typename Graph, typename Definitions>
-    template <bool RegDefs, typename Incompatible, typename PreferredDefs>
+    template <typename Incompatible, typename PreferredDefs, typename Register>
     bool FelschGraph<Graph, Definitions>::merge_targets_of_paths_if_possible(
         node_type                          u_node,
         typename word_type::const_iterator u_first,
@@ -222,7 +221,8 @@ namespace libsemigroups {
         typename word_type::const_iterator v_first,
         typename word_type::const_iterator v_last,
         Incompatible&                      incompat,
-        PreferredDefs&                     pref_defs) noexcept {
+        PreferredDefs&                     pref_defs,
+        Register const&                    reg) noexcept {
       LIBSEMIGROUPS_ASSERT(u_node < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(v_node < number_of_nodes());
 
@@ -259,8 +259,8 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(y < number_of_nodes());
         LIBSEMIGROUPS_ASSERT(b < _presentation.alphabet().size());
       }
-      return merge_targets_of_nodes_if_possible<RegDefs>(
-          x, a, y, b, incompat, pref_defs);
+      return merge_targets_of_nodes_if_possible(
+          x, a, y, b, incompat, pref_defs, reg);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -309,23 +309,24 @@ namespace libsemigroups {
     // of the i-th rule, and returns merge_targets on the last but one nodes
     // and letters.
     template <typename Graph, typename Definitions>
-    template <bool RegDefs, typename Incompatible, typename PreferredDefs>
+    template <typename Incompatible, typename PreferredDefs, typename Register>
     inline bool FelschGraph<Graph, Definitions>::
         merge_targets_of_paths_labelled_by_rules_if_possible(
             node_type const& c,
             size_t           i,
             Incompatible&    incompat,
-            PreferredDefs&   pref_defs) noexcept {
+            PreferredDefs&   pref_defs,
+            Register const&  reg) noexcept {
       auto j = (i % 2 == 0 ? i + 1 : i - 1);
-      return merge_targets_of_paths_if_possible<RegDefs>(
-          c,
-          _presentation.rules[i].cbegin(),
-          _presentation.rules[i].cend(),
-          c,
-          _presentation.rules[j].cbegin(),
-          _presentation.rules[j].cend(),
-          incompat,
-          pref_defs);
+      return merge_targets_of_paths_if_possible(c,
+                                                _presentation.rules[i].cbegin(),
+                                                _presentation.rules[i].cend(),
+                                                c,
+                                                _presentation.rules[j].cbegin(),
+                                                _presentation.rules[j].cend(),
+                                                incompat,
+                                                pref_defs,
+                                                reg);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -338,14 +339,15 @@ namespace libsemigroups {
         Definition     d,
         Incompatible&  incompat,
         PreferredDefs& pref_defs) {
+      using felsch_graph::RegisterDefinitions;
+
       felsch_tree().push_back(d.second);
       for (auto it = felsch_tree().cbegin(); it < felsch_tree().cend(); ++it) {
         // Using anything other than NoPreferredDefs here seems to be bad
         // in test case "ACE --- perf602p5 - Felsch", maybe this is a good
         // example where the fill factor would be useful?
-        if (!merge_targets_of_paths_labelled_by_rules_if_possible<
-                felsch_graph::do_register_defs>(
-                d.first, *it, incompat, pref_defs)) {
+        if (!merge_targets_of_paths_labelled_by_rules_if_possible(
+                d.first, *it, incompat, pref_defs, RegisterDefinitions{this})) {
           return false;
         }
       }
@@ -404,6 +406,8 @@ namespace libsemigroups {
         node_type      c,
         Incompatible&  incompat,
         PreferredDefs& pref_defs) {
+      using felsch_graph::RegisterDefinitions;
+
       size_t const n = Graph::out_degree();
       for (size_t x = 0; x < n; ++x) {
         node_type e = Graph::first_source_no_checks(c, x);
@@ -459,15 +463,16 @@ namespace libsemigroups {
             u_last  = u.cend();
             e       = Graph::first_source_no_checks(c, x);
             while (e != UNDEFINED) {
-              if (!merge_targets_of_paths_if_possible<
-                      felsch_graph::do_register_defs>(y,
-                                                      u_first,
-                                                      u_last,
-                                                      e,
-                                                      v.cbegin(),
-                                                      v.cend(),
-                                                      incompat,
-                                                      pref_defs)) {
+              if (!merge_targets_of_paths_if_possible(
+                      y,
+                      u_first,
+                      u_last,
+                      e,
+                      v.cbegin(),
+                      v.cend(),
+                      incompat,
+                      pref_defs,
+                      RegisterDefinitions{this})) {
                 return false;
               }
               e = Graph::next_source_no_checks(e, x);
@@ -492,9 +497,11 @@ namespace libsemigroups {
         node_type      c,
         Incompatible&  incompat,
         PreferredDefs& pref_defs) {
+      using felsch_graph::RegisterDefinitions;
+
       for (auto it = felsch_tree().cbegin(); it < felsch_tree().cend(); ++it) {
-        if (!merge_targets_of_paths_labelled_by_rules_if_possible<
-                felsch_graph::do_register_defs>(c, *it, incompat, pref_defs)) {
+        if (!merge_targets_of_paths_labelled_by_rules_if_possible(
+                c, *it, incompat, pref_defs, RegisterDefinitions{this})) {
           return false;
         }
       }
@@ -517,11 +524,11 @@ namespace libsemigroups {
 
     // Helper namespace
     namespace felsch_graph {
-      template <bool RegDefs,
-                typename Graph,
+      template <typename Graph,
                 typename Definitions,
                 typename Incompatible,
-                typename PrefDefs>
+                typename PrefDefs,
+                typename Register>
       bool make_compatible(
           FelschGraph<Graph, Definitions>&                    fd,
           typename FelschGraph<Graph, Definitions>::node_type first_node,
@@ -529,7 +536,8 @@ namespace libsemigroups {
           typename std::vector<word_type>::const_iterator     first_rule,
           typename std::vector<word_type>::const_iterator     last_rule,
           Incompatible&&                                      incompat,
-          PrefDefs&& pref_defs) noexcept {
+          PrefDefs&&                                          pref_defs,
+          Register const&                                     reg) noexcept {
         LIBSEMIGROUPS_ASSERT(first_node < fd.number_of_nodes());
         LIBSEMIGROUPS_ASSERT(last_node <= fd.number_of_nodes());
         LIBSEMIGROUPS_ASSERT(std::distance(first_rule, last_rule) % 2 == 0);
@@ -537,17 +545,15 @@ namespace libsemigroups {
 
         for (node_type n = first_node; n < last_node; ++n) {
           for (auto it = first_rule; it != last_rule; it += 2) {
-            if (!fd.template merge_targets_of_paths_if_possible<RegDefs,
-                                                                Incompatible,
-                                                                PrefDefs>(
-                    n,
-                    it->cbegin(),
-                    it->cend(),
-                    n,
-                    (it + 1)->cbegin(),
-                    (it + 1)->cend(),
-                    incompat,
-                    pref_defs)) {
+            if (!fd.merge_targets_of_paths_if_possible(n,
+                                                       it->cbegin(),
+                                                       it->cend(),
+                                                       n,
+                                                       (it + 1)->cbegin(),
+                                                       (it + 1)->cend(),
+                                                       incompat,
+                                                       pref_defs,
+                                                       reg)) {
               return false;
             }
           }
