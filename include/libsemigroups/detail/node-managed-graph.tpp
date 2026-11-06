@@ -259,6 +259,7 @@ namespace libsemigroups::detail {
           if (v != UNDEFINED) {
             node_type const u = target_no_checks(min, i);
             if (u == UNDEFINED) {
+              reg(min, i);
               WordGraph<node_type>::target_no_checks(min, i, v);
             } else if (u != v) {
               _coinc.emplace(u, v);
