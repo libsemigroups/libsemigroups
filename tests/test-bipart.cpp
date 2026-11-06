@@ -892,4 +892,42 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "028",
+                          "check planarity of bipartitions",
+                          "[quick][bipart]") {
+    REQUIRE(bipartition::is_planar(make<Bipartition>({0, 0})));
+    REQUIRE(bipartition::is_planar(make<Bipartition>({0, 1, 0, 1})));
+    REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 1, 0})));
+    REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 2, 1, 0, 2})));
+    REQUIRE(
+        !bipartition::is_planar(make<Bipartition>({0, 1, 0, 1, 2, 3, 4, 5})));
+    REQUIRE(
+        bipartition::is_planar(make<Bipartition>({0, 1, 0, 2, 3, 2, 4, 5})));
+    REQUIRE(
+        !bipartition::is_planar(make<Bipartition>({0, 1, 0, 2, 1, 3, 4, 5})));
+    REQUIRE(
+        bipartition::is_planar(make<Bipartition>({0, 1, 1, 2, 3, 1, 4, 5})));
+    REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 2, 3, 1, 0})));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "029",
+                          "check if bipartition is annular",
+                          "[quick][bipart]") {
+    REQUIRE(bipartition::is_annular(make<Bipartition>({0, 0})));  // n=1
+    REQUIRE(bipartition::is_annular(
+        make<Bipartition>({{1, -1}, {2, -2}, {3, -3}})));  // identity
+    REQUIRE(bipartition::is_annular(
+        make<Bipartition>({0, 1, 0, 2, 3, 2, 4, 5})));  // planar
+    REQUIRE(bipartition::is_annular(
+        make<Bipartition>({{1, -2}, {2, -3}, {3, -1}})));  // p
+    REQUIRE(bipartition::is_annular(
+        make<Bipartition>({0, 1, 0, 2, 1, 3, 4, 5})));  // not planar is annular
+    REQUIRE(!bipartition::is_annular(
+        make<Bipartition>({{1, -2}, {2, -1}, {3, -3}})));  // not annular
+    REQUIRE(!bipartition::is_annular(make<Bipartition>(
+        {{1, -1}, {-2, -4}, {3, 4}, {2, -3}})));  // not annular
+  }
+
 }  // namespace libsemigroups

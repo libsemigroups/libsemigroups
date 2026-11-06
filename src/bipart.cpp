@@ -466,6 +466,79 @@ namespace libsemigroups {
       return result;
     }
 
+    bool is_planar(Bipartition const& x) {
+      size_t const n = x.degree();
+
+      if (n < 2) {
+        return true;
+      }
+
+      // Reorder the lookup x from (+1, ..., +n, -1, ..., -n)
+      //  to (-n, ..., -1, +1, ..., +n)
+      std::vector<uint32_t> y(2 * n);
+      for (size_t i = 0; i < n; ++i) {
+        y[i]     = x[2 * n - 1 - i];
+        y[n + i] = x[i];
+      }
+
+      // Check for forbidden pattern a,b,a,b
+      for (size_t i = 0; i < 2 * n - 3; ++i) {
+        for (size_t j = i + 1; j < 2 * n - 2; ++j) {
+          for (size_t k = j + 1; k < 2 * n - 1; ++k) {
+            for (size_t l = k + 1; l < 2 * n; ++l) {
+              if (y[i] == y[k] && y[j] == y[l] && y[i] != y[j]) {
+                return false;
+              }
+            }
+          }
+        }
+      }
+      return true;
+    }
+
+    bool is_annular(Bipartition const& x) {
+      size_t const n = x.degree();
+
+      if (n < 3) {
+        return true;
+      }
+
+      // construct p
+      std::vector<std::vector<int>> blocks;
+      for (size_t i = 1; i < n; ++i) {
+        blocks.push_back({static_cast<int>(i), -static_cast<int>(i + 1)});
+      }
+      blocks.push_back({static_cast<int>(n), -1});
+      Bipartition const p = make<Bipartition>(blocks);
+
+      // construct identity
+      std::vector<std::vector<int>> identity_blocks;
+      for (size_t i = 1; i <= n; ++i) {
+        identity_blocks.push_back({static_cast<int>(i), -static_cast<int>(i)});
+      }
+      Bipartition const identity = make<Bipartition>(identity_blocks);
+
+      // Precompute the powers of p
+      std::vector<Bipartition> powers;
+      powers.push_back(p);
+      for (size_t i = 2; i < n; ++i) {
+        powers.push_back(powers.back() * p);
+      }
+      powers.push_back(identity);
+
+      // check all p^i*x*p^j (1,...,n)
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          Bipartition const candidate = powers[i] * x * powers[j];
+          if (is_planar(candidate)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
   }  // namespace bipartition
 
   std::string to_human_readable_repr(Bipartition const& x,
