@@ -58,7 +58,7 @@
 // * idempotent() - just make the accept state = initial state.
 // * class_of for inverse StephenImpl (i.e. all walks in the graph through all
 // nodes) (not sure how to do this just yet). This is different than
-// words_accepted see Corollary 3.2 in StephenImpl's "Presentations of inverse
+// words_accepted see Corollary 3.2 in Stephen's "Presentations of inverse
 // monoids" paper (not thesis).
 // * canonical_form (as per Howie's book)
 

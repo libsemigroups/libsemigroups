@@ -18,6 +18,10 @@
 
 // This file contains the implementation of the StephenImpl class template.
 
+// TODO: stop using WordGraphWithSources directly here, and use
+// NodeManagedGraph instead, o/w it's highly likely that the data structures
+// in WordGraphWithSources and NodeManagedGraph will get out of sync
+
 namespace libsemigroups {
   namespace detail {
 
@@ -25,10 +29,11 @@ namespace libsemigroups {
     class StephenImpl<PresentationType>::StephenGraph
         : public detail::NodeManagedGraph<uint32_t> {
       using WordGraphWithSources_ = detail::WordGraphWithSources<uint32_t>;
+      using NodeManagedGraph_     = detail::NodeManagedGraph<uint32_t>;
 
      public:
       using node_type = typename WordGraphWithSources_::node_type;
-      using WordGraphWithSources_::init;
+      using NodeManagedGraph_::init;
 
       StephenGraph& init(Presentation<word_type> const& p) {
         NodeManager<node_type>::clear();
@@ -37,6 +42,7 @@ namespace libsemigroups {
         return *this;
       }
 
+      // TODO rm
       StephenGraph& init(Presentation<word_type>&& p) {
         NodeManager<node_type>::clear();
         WordGraphWithSources_::init(NodeManager<node_type>::node_capacity(),
@@ -54,21 +60,26 @@ namespace libsemigroups {
                             label_type               letter,
                             node_type                to) {
         using detail::felsch_graph::IgnoreDefinitions;
-        WordGraphWithSources_::target_no_checks(from, letter, to);
+        NodeManagedGraph_::target_no_checks(from, letter, to);
         if constexpr (is_specialization_of_v<presentation_type,
                                              InversePresentation>) {
           // convert l (which is an index)
           // -> actual letter
           // -> inverse of letter
           // -> index of inverse of letter
-          auto ll             = p.index(p.inverse(p.letter(letter)));
+          // There's no inverse_no_checks, so can't call that in the next line
+          // :-)
+          auto ll = p.index_no_checks(p.inverse(p.letter_no_checks(letter)));
           auto inverse_target = target_no_checks(to, ll);
-          if (inverse_target != UNDEFINED && inverse_target != from) {
-            merge_nodes_no_checks(from, inverse_target);
-            process_coincidences(IgnoreDefinitions{});
-            return;
+          if (inverse_target != UNDEFINED) {
+            if (inverse_target != from) {
+              merge_nodes_no_checks(from, inverse_target);
+              process_coincidences(IgnoreDefinitions{});
+              return;
+            }
+          } else {
+            NodeManagedGraph_::target_no_checks(to, ll, from);
           }
-          WordGraphWithSources_::target_no_checks(to, ll, from);
         }
       }
 

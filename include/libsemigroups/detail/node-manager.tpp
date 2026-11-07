@@ -170,6 +170,7 @@ namespace libsemigroups {
           _last_active_node(0),
           _stats() {}
 
+    // TODO init(size_t m, size_t n)
     template <typename Node>
     NodeManager<Node>& NodeManager<Node>::init() {
       _bckwd.assign(1, 0);
