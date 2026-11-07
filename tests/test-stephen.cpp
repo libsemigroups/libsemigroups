@@ -2532,5 +2532,23 @@ namespace libsemigroups {
     REQUIRE(graph.number_of_edges_active() == 1);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "075",
+                          "setting a new word resets the active-edge count",
+                          "[stephen][quick]") {
+    Presentation<word_type> p;
+    p.alphabet(0_w);
+    Stephen s(p);
+    stephen::set_word(s, 00_w);
+
+    auto const& graph = static_cast<detail::NodeManagedGraph<uint32_t> const&>(
+        s.word_graph_no_run());
+    REQUIRE(graph.number_of_edges_active() == 2);
+
+    stephen::set_word(s, 0_w);
+    REQUIRE(graph.number_of_edges_active() == 1);
+    REQUIRE(graph.count_number_of_edges_active() == 1);
+  }
+
   // TODO(2): the examples from Stephen's paper/thesis?
 }  // namespace libsemigroups
