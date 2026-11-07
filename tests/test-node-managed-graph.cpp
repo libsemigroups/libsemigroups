@@ -166,4 +166,48 @@ namespace libsemigroups {
     REQUIRE(graph.number_of_edges_active() == 0);
     REQUIRE(graph.number_of_coincidences() == 0);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "005",
+                          "batch activation clears recycled rows",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(3, 1);
+    graph.target_no_checks(0, 0, 2);
+    graph.target_no_checks(2, 0, 1);
+    graph.merge_nodes_no_checks(1, 2);
+    REQUIRE(
+        graph.process_coincidences(detail::felsch_graph::IgnoreDefinitions{}));
+    REQUIRE_FALSE(graph.is_active_node(2));
+
+    graph.add_active_nodes(2);
+    REQUIRE(graph.number_of_nodes() == 4);
+    REQUIRE(graph.number_of_nodes() == graph.node_capacity());
+    REQUIRE(graph.number_of_nodes_active() == 4);
+    REQUIRE(graph.target_no_checks(2, 0) == UNDEFINED);
+    REQUIRE(graph.first_source_no_checks(2, 0) == UNDEFINED);
+    REQUIRE(graph.count_number_of_edges_active()
+            == graph.number_of_edges_active());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "006",
+                          "erasing free nodes trims graph rows and capacity",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(2, 1);
+    graph.target_no_checks(0, 0, 1);
+    graph.reserve(5);
+
+    graph.erase_free_nodes();
+    REQUIRE(graph.number_of_nodes() == 2);
+    REQUIRE(graph.node_capacity() == 2);
+    REQUIRE(graph.target_no_checks(0, 0) == 1);
+    REQUIRE(graph.number_of_edges_active() == 1);
+
+    auto const node = graph.new_node();
+    REQUIRE(node == 2);
+    REQUIRE(node < graph.number_of_nodes());
+    REQUIRE(graph.number_of_nodes() == graph.node_capacity());
+  }
 }  // namespace libsemigroups

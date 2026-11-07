@@ -2550,5 +2550,22 @@ namespace libsemigroups {
     REQUIRE(graph.count_number_of_edges_active() == 1);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "076",
+                          "appending counts the copied edges",
+                          "[stephen][quick]") {
+    Presentation<word_type> p;
+    p.alphabet(0_w);
+    Stephen left(p), right(p);
+    stephen::set_word(left, 0_w);
+    stephen::set_word(right, 0_w);
+    left *= right;
+
+    auto const& graph = static_cast<detail::NodeManagedGraph<uint32_t> const&>(
+        left.word_graph_no_run());
+    REQUIRE(graph.number_of_edges_active() == 2);
+    REQUIRE(graph.count_number_of_edges_active() == 2);
+  }
+
   // TODO(2): the examples from Stephen's paper/thesis?
 }  // namespace libsemigroups

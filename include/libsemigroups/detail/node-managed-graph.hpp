@@ -120,6 +120,17 @@ namespace libsemigroups::detail {
     // Other mem fns - alphabetical order !!!
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO to tpp
+    void add_active_nodes(size_t m) {
+      reserve(NodeManager<Node>::number_of_nodes_active() + m);
+      // Don't call NodeManager::add_active_nodes because we must also clear the
+      // sources and targets of any recycled nodes.
+      for (size_t i = 0; i < m; ++i) {
+        std::ignore = new_node();
+      }
+      // TODO add some assertions
+    }
+
     template <typename Register>
     [[nodiscard]] node_type complete_path(node_type                 s,
                                           word_type::const_iterator first,
