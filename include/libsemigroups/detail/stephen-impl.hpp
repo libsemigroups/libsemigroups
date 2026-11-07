@@ -82,7 +82,7 @@ namespace libsemigroups {
       using node_type = word_graph_type::node_type;
 
      private:
-      class StephenGraph;  // forward decl
+      class Graph;  // forward decl
 
       // Data members
       node_type                         _accept_state;
@@ -91,7 +91,7 @@ namespace libsemigroups {
       std::shared_ptr<PresentationType> _internal_presentation;
       word_type                         _internal_word;
       bool                              _ticker_running;
-      StephenGraph                      _word_graph;
+      Graph                             _word_graph;
 
      public:
       StephenImpl();

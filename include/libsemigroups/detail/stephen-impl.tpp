@@ -26,7 +26,7 @@ namespace libsemigroups {
   namespace detail {
 
     template <typename PresentationType>
-    class StephenImpl<PresentationType>::StephenGraph
+    class StephenImpl<PresentationType>::Graph
         : public detail::NodeManagedGraph<uint32_t> {
       using WordGraphWithSources_ = detail::WordGraphWithSources<uint32_t>;
       using NodeManagedGraph_     = detail::NodeManagedGraph<uint32_t>;
@@ -35,25 +35,15 @@ namespace libsemigroups {
       using node_type = typename WordGraphWithSources_::node_type;
       using NodeManagedGraph_::init;
 
-      StephenGraph& init(Presentation<word_type> const& p) {
-        NodeManager<node_type>::clear();
-        WordGraphWithSources_::init(NodeManager<node_type>::node_capacity(),
-                                    p.alphabet().size());
-        return *this;
-      }
-
-      // TODO rm
-      StephenGraph& init(Presentation<word_type>&& p) {
-        NodeManager<node_type>::clear();
-        WordGraphWithSources_::init(NodeManager<node_type>::node_capacity(),
-                                    p.alphabet().size());
+      Graph& init(Presentation<word_type> const& p) {
+        NodeManagedGraph_::init(1, p.alphabet().size());
         return *this;
       }
 
       using WordGraph<node_type>::target;
       using WordGraph<node_type>::target_no_checks;
 
-      // TODO(2) Add data to the StephenGraph which is a pointer to either the
+      // TODO(2) Add data to the Graph which is a pointer to either the
       // encompassing StephenImpl object or the presentation
       void target_no_checks(presentation_type const& p,
                             node_type                from,
@@ -83,7 +73,7 @@ namespace libsemigroups {
         }
       }
 
-      // TODO(2) Add data to the StephenGraph which is a pointer to either the
+      // TODO(2) Add data to the Graph which is a pointer to either the
       // encompassing StephenImpl object or the presentation
       std::pair<bool, node_type>
       complete_path(presentation_type const&  p,
@@ -102,7 +92,7 @@ namespace libsemigroups {
           node_type d = target_no_checks(c, *it);
           if (d == UNDEFINED) {
             d = new_node();
-            StephenGraph::target_no_checks(p, c, *it, d);
+            Graph::target_no_checks(p, c, *it, d);
             result = true;
           }
           c = d;
@@ -110,7 +100,7 @@ namespace libsemigroups {
         return std::make_pair(result, c);
       }
 
-      void disjoint_union_inplace_no_checks(StephenGraph& that) {
+      void disjoint_union_inplace_no_checks(Graph& that) {
         word_graph::standardize_no_checks(that, LenLexCmp());
         LIBSEMIGROUPS_ASSERT(word_graph::is_standardized(that, LenLexCmp()));
         size_t const N = number_of_nodes_active();
