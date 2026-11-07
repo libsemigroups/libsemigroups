@@ -80,12 +80,16 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Node>
-  NodeManagedGraph<Node>& NodeManagedGraph<Node>::init() {
-    WordGraphWithSources<Node>::init();
-    NodeManager<Node>::init();
+  NodeManagedGraph<Node>& NodeManagedGraph<Node>::init(size_t num_nodes,
+                                                       size_t degree) {
     // NodeManagedGraph's always have 1 active node.
-    WordGraphWithSources<Node>::add_nodes(1);
-    LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes() == 1);
+    LIBSEMIGROUPS_ASSERT(num_nodes > 0);
+    WordGraphWithSources<Node>::init(num_nodes, degree);
+    // TODO make a NodeManager::init(num_nodes)
+    NodeManager<Node>::init();
+    NodeManager<Node>::add_active_nodes(num_nodes - 1);
+    LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes()
+                         == num_nodes);
     LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes()
                          == NodeManager<Node>::number_of_nodes_active());
     _coinc    = decltype(_coinc)();

@@ -147,4 +147,23 @@ namespace libsemigroups {
     REQUIRE(node < graph.number_of_nodes());
     REQUIRE(graph.is_active_node(node));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "004",
+                          "sized initialization resets graph state",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(2, 1);
+    graph.target_no_checks(0, 0, 1);
+    graph.merge_nodes_no_checks(0, 1);
+
+    graph.init(3, 2);
+    REQUIRE(graph.number_of_nodes() == 3);
+    REQUIRE(graph.node_capacity() == 3);
+    REQUIRE(graph.number_of_nodes_active() == 3);
+    REQUIRE(graph.out_degree() == 2);
+    REQUIRE(graph.number_of_edges() == 0);
+    REQUIRE(graph.number_of_edges_active() == 0);
+    REQUIRE(graph.number_of_coincidences() == 0);
+  }
 }  // namespace libsemigroups

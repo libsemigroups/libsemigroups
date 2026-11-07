@@ -100,14 +100,19 @@ namespace libsemigroups::detail {
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO sync constructors and init
     NodeManagedGraph();
-    NodeManagedGraph& init();
+    NodeManagedGraph& init(size_t num_nodes = 1, size_t degree = 0);
 
     NodeManagedGraph(NodeManagedGraph const&);
     NodeManagedGraph(NodeManagedGraph&&);
     NodeManagedGraph& operator=(NodeManagedGraph const&);
     NodeManagedGraph& operator=(NodeManagedGraph&&);
     ~NodeManagedGraph();
+
+    explicit NodeManagedGraph(WordGraph<Node> const& wg) {
+      init(wg);
+    }
 
     NodeManagedGraph& init(WordGraph<Node> const& wg);
 
