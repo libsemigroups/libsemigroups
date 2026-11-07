@@ -18,21 +18,16 @@
 
 // This file contains the implementation of the StephenImpl class template.
 
-// TODO: stop using WordGraphWithSources directly here, and use
-// NodeManagedGraph instead, o/w it's highly likely that the data structures
-// in WordGraphWithSources and NodeManagedGraph will get out of sync
-
 namespace libsemigroups {
   namespace detail {
 
     template <typename PresentationType>
     class StephenImpl<PresentationType>::Graph
         : public detail::NodeManagedGraph<uint32_t> {
-      using WordGraphWithSources_ = detail::WordGraphWithSources<uint32_t>;
-      using NodeManagedGraph_     = detail::NodeManagedGraph<uint32_t>;
+      using NodeManagedGraph_ = detail::NodeManagedGraph<uint32_t>;
 
      public:
-      using node_type = typename WordGraphWithSources_::node_type;
+      using node_type = typename NodeManagedGraph_::node_type;
       using NodeManagedGraph_::init;
 
       Graph& init(Presentation<word_type> const& p) {
@@ -104,15 +99,13 @@ namespace libsemigroups {
         word_graph::standardize_no_checks(that, LenLexCmp());
         LIBSEMIGROUPS_ASSERT(word_graph::is_standardized(that, LenLexCmp()));
         size_t const N = number_of_nodes_active();
-        // TODO(2): the following 2 lines are a bit awkward
-        WordGraphWithSources_::add_nodes(that.number_of_nodes_active());
-        NodeManager<node_type>::add_active_nodes(that.number_of_nodes_active());
+        NodeManagedGraph_::add_active_nodes(that.number_of_nodes_active());
 
         for (node_type n = 0; n < that.number_of_nodes_active(); ++n) {
           for (auto a : that.labels()) {
             auto m = that.target_no_checks(n, a);
             if (m != UNDEFINED) {
-              WordGraphWithSources_::target_no_checks(n + N, a, m + N);
+              NodeManagedGraph_::target_no_checks(n + N, a, m + N);
             }
           }
         }
