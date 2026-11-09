@@ -70,4 +70,21 @@ namespace libsemigroups {
     REQUIRE(graph.next_source_no_checks(3, 0) == UNDEFINED);
     REQUIRE(graph.first_source_no_checks(2, 1) == 0);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
+                          "003",
+                          "removing a target twice",
+                          "[word-graph-with-sources][quick]") {
+    detail::WordGraphWithSources<uint32_t> graph(3, 1);
+    graph.target_no_checks(0, 0, 2);
+    graph.target_no_checks(1, 0, 2);
+
+    graph.remove_target_no_checks(0, 0);
+    graph.remove_target_no_checks(0, 0);
+
+    REQUIRE(graph.target_no_checks(0, 0) == UNDEFINED);
+    REQUIRE(graph.target_no_checks(1, 0) == 2);
+    REQUIRE(graph.first_source_no_checks(2, 0) == 1);
+    REQUIRE(graph.next_source_no_checks(1, 0) == UNDEFINED);
+  }
 }  // namespace libsemigroups
