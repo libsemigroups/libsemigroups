@@ -198,9 +198,9 @@ namespace libsemigroups {
     detail::NodeManagedGraph<uint32_t> graph;
     graph.init(2, 1);
     graph.target_no_checks(0, 0, 1);
-    graph.reserve(5);
-
+    graph.add_free_nodes(5);
     graph.erase_free_nodes();
+
     REQUIRE(graph.number_of_nodes() == 2);
     REQUIRE(graph.node_capacity() == 2);
     REQUIRE(graph.target_no_checks(0, 0) == 1);

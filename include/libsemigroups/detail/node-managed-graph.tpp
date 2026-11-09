@@ -129,17 +129,6 @@ namespace libsemigroups::detail {
   }
 
   template <typename Node>
-  NodeManagedGraph<Node>& NodeManagedGraph<Node>::reserve(size_t n) {
-    size_t m = NodeManager<node_type>::node_capacity();
-    if (n > m) {
-      m = n - m;
-      WordGraphWithSources<Node>::add_nodes(m);
-      NodeManager<node_type>::add_free_nodes(m);
-    }
-    return *this;
-  }
-
-  template <typename Node>
   NodeManagedGraph<Node>::NodeManagedGraph(NodeManagedGraph const&) = default;
 
   template <typename Node>
@@ -173,6 +162,27 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
   // Other mem fns - alphabetical order !!!
   ////////////////////////////////////////////////////////////////////////
+
+  template <typename Node>
+  void NodeManagedGraph<Node>::add_active_nodes(size_t m) {
+    add_free_nodes(NodeManager<Node>::number_of_nodes_active() + m);
+    // Don't call NodeManager::add_active_nodes because we must also clear the
+    // sources and targets of any recycled nodes.
+    for (size_t i = 0; i < m; ++i) {
+      std::ignore = new_node();
+    }
+    // TODO add some assertions
+  }
+
+  template <typename Node>
+  void NodeManagedGraph<Node>::add_free_nodes(size_t m) {
+    size_t n = NodeManager<node_type>::node_capacity();
+    if (m > n) {
+      n = m - n;
+      WordGraphWithSources<Node>::add_nodes(n);
+      NodeManager<node_type>::add_free_nodes(n);
+    }
+  }
 
   template <typename Node>
   template <typename Register>
@@ -224,7 +234,7 @@ namespace libsemigroups::detail {
       // It seems to be marginally faster to make lots like this, than to
       // just make 1, in some examples, notably ToddCoxeterImpl 040
       // (Walker 3).
-      reserve(2 * NodeManager<node_type>::node_capacity());
+      add_free_nodes(2 * NodeManager<node_type>::node_capacity());
       return NodeManager<node_type>::new_active_node();
     }
   }
