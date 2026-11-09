@@ -318,13 +318,18 @@ namespace libsemigroups::detail {
   void
   NodeManagedGraph<Node>::standardize_no_checks(std::vector<node_type> const& p,
                                                 std::vector<node_type>& q) {
-    auto& c = lookahead_cursor();
-    if (c < q.size()) {
-      c = q[c];
-    }
+    auto const c      = lookahead_cursor();
+    bool const at_end = c == NodeManager<Node>::first_free_node();
+    // The permutation overwrites q and compaction resets the cursors.
+    auto const mapped = c < q.size() ? q[c] : static_cast<node_type>(UNDEFINED);
     WordGraphWithSources<Node>::permute_nodes_no_checks(
-        p, q, NodeManager<node_type>::number_of_nodes_active());
-    NodeManager<node_type>::compact();
+        p, q, NodeManager<Node>::number_of_nodes_active());
+    NodeManager<Node>::compact();
+    if (at_end) {
+      lookahead_cursor() = NodeManager<Node>::first_free_node();
+    } else if (mapped != UNDEFINED) {
+      lookahead_cursor() = mapped;
+    }
   }
 
   template <typename Node>
