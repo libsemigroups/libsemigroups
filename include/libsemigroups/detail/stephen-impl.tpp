@@ -221,15 +221,15 @@ namespace libsemigroups {
       // this->run();
       // that.run();
 
-      // TODO(2) _word_graph has two mem fns number_nodes_active (in
-      // NodeManager) and number_active_nodes (in WordGraph), this is super
-      // confusing!
-      size_t const N = _word_graph.number_of_nodes_active();
-
       // accept_state() may call run, so we get the value before attempting to
       // modify the graph
       StephenImpl<PresentationType>::node_type const accept_state
           = StephenImpl<PresentationType>::accept_state();
+
+      // TODO(2) _word_graph has two mem fns number_nodes_active (in
+      // NodeManager) and number_active_nodes (in WordGraph), this is super
+      // confusing!
+      size_t const N = _word_graph.number_of_nodes_active();
 
       _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
       _word_graph.merge_nodes_no_checks(accept_state, that.initial_state() + N);
