@@ -46,7 +46,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       using node_type = Node;
-      using Perm      = std::vector<node_type>;
 
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - data - private
@@ -198,11 +197,6 @@ namespace libsemigroups {
       void                    add_free_nodes(size_t);
       void                    erase_free_nodes();
       [[nodiscard]] node_type new_active_node();
-
-      // TODO rename -> swap_nodes_no_checks
-      void switch_nodes(node_type const, node_type const);
-      // TODO rename -> permute_nodes_no_checks
-      void apply_permutation(Perm p);
 
       void clear();
       void compact();
