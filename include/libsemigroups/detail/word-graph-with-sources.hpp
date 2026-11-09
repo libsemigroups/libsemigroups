@@ -81,17 +81,11 @@ namespace libsemigroups {
         return *this;
       }
 
-      template <typename ThatNode>
-      explicit WordGraphWithSources(WordGraph<ThatNode> const& that);
+      explicit WordGraphWithSources(WordGraph<Node> const& that);
+      void init(WordGraph<Node> const& that);
 
-      template <typename ThatNode>
-      void init(WordGraph<ThatNode> const& that);
-
-      template <typename ThatNode>
-      explicit WordGraphWithSources(WordGraph<ThatNode>&& that);
-
-      template <typename ThatNode>
-      void init(WordGraph<ThatNode>&& that);
+      explicit WordGraphWithSources(WordGraph<Node>&& that);
+      void init(WordGraph<Node>&& that);
 
       WordGraphWithSources(WordGraphWithSources&&)                 = default;
       WordGraphWithSources(WordGraphWithSources const&)            = default;
@@ -105,6 +99,11 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(a < out_degree());
         LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
         WordGraph<node_type>::target_no_checks(s, a, t);
+        add_source_no_checks(t, a, s);
+      }
+
+      void target(node_type s, label_type a, node_type t) noexcept {
+        WordGraph<node_type>::target(s, a, t);
         add_source_no_checks(t, a, s);
       }
 
