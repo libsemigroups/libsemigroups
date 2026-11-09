@@ -27,27 +27,14 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
-    template <typename ThatNode>
     WordGraphWithSources<Node>::WordGraphWithSources(
-        WordGraph<ThatNode> const& that)
-        : WordGraph<Node>(that),
-          _preim_init(that.out_degree(), that.number_of_nodes(), UNDEFINED),
-          _preim_next(that.out_degree(), that.number_of_nodes(), UNDEFINED) {
-      populate_sources_no_checks();
+        WordGraph<Node> const& that)
+        : WordGraphWithSources() {
+      init(that);
     }
 
     template <typename Node>
-    template <typename ThatNode>
-    WordGraphWithSources<Node>::WordGraphWithSources(WordGraph<ThatNode>&& that)
-        : WordGraph<Node>(std::move(that)),
-          _preim_init(out_degree(), number_of_nodes(), UNDEFINED),
-          _preim_next(out_degree(), number_of_nodes(), UNDEFINED) {
-      populate_sources_no_checks();
-    }
-
-    template <typename Node>
-    template <typename ThatNode>
-    void WordGraphWithSources<Node>::init(WordGraph<ThatNode> const& that) {
+    void WordGraphWithSources<Node>::init(WordGraph<Node> const& that) {
       WordGraph<Node>::init(that);
       _preim_init.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
       _preim_next.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
@@ -55,8 +42,13 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    template <typename ThatNode>
-    void WordGraphWithSources<Node>::init(WordGraph<ThatNode>&& that) {
+    WordGraphWithSources<Node>::WordGraphWithSources(WordGraph<Node>&& that)
+        : WordGraphWithSources() {
+      init(std::move(that));
+    }
+
+    template <typename Node>
+    void WordGraphWithSources<Node>::init(WordGraph<Node>&& that) {
       WordGraph<Node>::init(std::move(that));
       _preim_init.init(out_degree(), number_of_nodes(), UNDEFINED);
       _preim_next.init(out_degree(), number_of_nodes(), UNDEFINED);
