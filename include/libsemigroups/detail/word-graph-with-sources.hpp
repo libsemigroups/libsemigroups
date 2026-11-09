@@ -67,12 +67,19 @@ namespace libsemigroups {
       using WordGraph<Node>::out_degree;
       using WordGraph<Node>::number_of_nodes;
 
-      explicit WordGraphWithSources(size_type m = 0, size_type n = 0)
-          : WordGraph<node_type>(m, n),
-            _preim_init(n, m, UNDEFINED),
-            _preim_next(n, m, UNDEFINED) {}
+      explicit WordGraphWithSources(size_type num_nodes = 0,
+                                    size_type degree    = 0)
+          : WordGraph<node_type>(num_nodes, degree),
+            _preim_init(degree, num_nodes, UNDEFINED),
+            _preim_next(degree, num_nodes, UNDEFINED) {}
 
-      void init(size_type m = 0, size_type n = 0);
+      WordGraphWithSources& init(size_type num_nodes = 0,
+                                 size_type degree    = 0) {
+        WordGraph<node_type>::init(num_nodes, degree);
+        _preim_init.reshape(degree, num_nodes);
+        _preim_next.reshape(degree, num_nodes);
+        return *this;
+      }
 
       template <typename ThatNode>
       explicit WordGraphWithSources(WordGraph<ThatNode> const& that);
@@ -93,33 +100,31 @@ namespace libsemigroups {
 
       ~WordGraphWithSources();
 
-      // the template is for uniformity of interface with FelschGraph
-      template <bool = true>
-      void target_no_checks(node_type c, label_type x, node_type d) noexcept {
-        LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-        LIBSEMIGROUPS_ASSERT(x < out_degree());
-        LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
-        WordGraph<node_type>::target_no_checks(c, x, d);
-        add_source_no_checks(d, x, c);
+      void target_no_checks(node_type s, label_type a, node_type t) noexcept {
+        LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+        LIBSEMIGROUPS_ASSERT(a < out_degree());
+        LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
+        WordGraph<node_type>::target_no_checks(s, a, t);
+        add_source_no_checks(t, a, s);
       }
 
       // Can't use using WordGraph<node_type>::target here because it doesn't
       // work (compiles but run time error, probably confusing the function
       // above with the WordGraph<node_type> function of the same name
-      [[nodiscard]] node_type target(node_type v, label_type lbl) const {
-        return WordGraph<node_type>::target(v, lbl);
+      [[nodiscard]] node_type target(node_type s, label_type a) const {
+        return WordGraph<node_type>::target(s, a);
       }
 
-      [[nodiscard]] node_type target_no_checks(node_type  v,
-                                               label_type lbl) const {
-        return WordGraph<node_type>::target_no_checks(v, lbl);
+      [[nodiscard]] node_type target_no_checks(node_type  s,
+                                               label_type a) const {
+        return WordGraph<node_type>::target_no_checks(s, a);
       }
 
-      void remove_target_no_checks(node_type c, label_type x) noexcept {
-        LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-        LIBSEMIGROUPS_ASSERT(x < out_degree());
-        remove_source_no_checks(WordGraph<Node>::target_no_checks(c, x), x, c);
-        WordGraph<node_type>::remove_target_no_checks(c, x);
+      void remove_target_no_checks(node_type s, label_type a) noexcept {
+        LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+        LIBSEMIGROUPS_ASSERT(a < out_degree());
+        remove_source_no_checks(WordGraph<Node>::target_no_checks(s, a), a, s);
+        WordGraph<node_type>::remove_target_no_checks(s, a);
       }
 
       void add_nodes(size_type m) {
@@ -134,22 +139,22 @@ namespace libsemigroups {
         WordGraph<node_type>::add_to_out_degree(m);
       }
 
-      inline node_type first_source_no_checks(node_type   c,
-                                              letter_type x) const noexcept {
-        LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-        LIBSEMIGROUPS_ASSERT(x < out_degree());
-        LIBSEMIGROUPS_ASSERT(c < _preim_init.number_of_rows());
-        LIBSEMIGROUPS_ASSERT(x < _preim_init.number_of_cols());
-        return _preim_init.get(c, x);
+      inline node_type first_source_no_checks(node_type   s,
+                                              letter_type a) const noexcept {
+        LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+        LIBSEMIGROUPS_ASSERT(a < out_degree());
+        LIBSEMIGROUPS_ASSERT(s < _preim_init.number_of_rows());
+        LIBSEMIGROUPS_ASSERT(a < _preim_init.number_of_cols());
+        return _preim_init.get(s, a);
       }
 
-      inline node_type next_source_no_checks(node_type   c,
-                                             letter_type x) const noexcept {
-        LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-        LIBSEMIGROUPS_ASSERT(x < out_degree());
-        LIBSEMIGROUPS_ASSERT(c < _preim_next.number_of_rows());
-        LIBSEMIGROUPS_ASSERT(x < _preim_next.number_of_cols());
-        return _preim_next.get(c, x);
+      inline node_type next_source_no_checks(node_type   s,
+                                             letter_type a) const noexcept {
+        LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+        LIBSEMIGROUPS_ASSERT(a < out_degree());
+        LIBSEMIGROUPS_ASSERT(s < _preim_next.number_of_rows());
+        LIBSEMIGROUPS_ASSERT(a < _preim_next.number_of_cols());
+        return _preim_next.get(s, a);
       }
 
       void induced_subgraph_no_checks(node_type first, node_type last);
@@ -168,15 +173,15 @@ namespace libsemigroups {
                                      NewEdgeFunc&&      new_edge,
                                      IncompatibleFunc&& incompat);
 
-      // Is d a source of c under x? This is costly!
-      bool is_source_no_checks(node_type c, label_type x, node_type d) const;
+      // Is s a source of t under a? This is costly!
+      bool is_source_no_checks(node_type t, label_type a, node_type s) const;
 
-      void remove_all_sources_and_targets_no_checks(node_type c);
-      void remove_all_sources_no_checks(node_type c);
+      void remove_all_sources_and_targets_no_checks(node_type n);
+      void remove_all_sources_no_checks(node_type n);
 
-      void add_source_no_checks(node_type  c,
-                                label_type x,
-                                node_type  d) noexcept;
+      void add_source_no_checks(node_type  t,
+                                label_type a,
+                                node_type  s) noexcept;
 
       // TODO to cpp/tpp file
       void disjoint_union_inplace_no_checks(WordGraph<Node> const& that) {
@@ -193,7 +198,7 @@ namespace libsemigroups {
 
      private:
       void populate_sources_no_checks();
-      void remove_source_no_checks(node_type cx, label_type x, node_type d);
+      void remove_source_no_checks(node_type t, label_type a, node_type s);
     };
   }  // namespace detail
 }  // namespace libsemigroups

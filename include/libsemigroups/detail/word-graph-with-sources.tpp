@@ -23,7 +23,7 @@ namespace libsemigroups {
 
   namespace detail {
     ////////////////////////////////////////////////////////////////////////////
-    // Constructors
+    // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
@@ -43,18 +43,6 @@ namespace libsemigroups {
           _preim_init(out_degree(), number_of_nodes(), UNDEFINED),
           _preim_next(out_degree(), number_of_nodes(), UNDEFINED) {
       populate_sources_no_checks();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Initializers
-    ////////////////////////////////////////////////////////////////////////////
-
-    // number of nodes, out-degree
-    template <typename Node>
-    void WordGraphWithSources<Node>::init(size_type m, size_type n) {
-      WordGraph<node_type>::init(m, n);
-      _preim_init.reshape(n, m);
-      _preim_next.reshape(n, m);
     }
 
     template <typename Node>
@@ -171,55 +159,55 @@ namespace libsemigroups {
       return num_edges_removed;
     }
 
-    // Is d a source of c under x?
+    // Is s a source of t under a?
     template <typename Node>
-    bool WordGraphWithSources<Node>::is_source_no_checks(node_type  c,
-                                                         label_type x,
-                                                         node_type  d) const {
-      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(x < out_degree());
-      LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
-      c = first_source_no_checks(c, x);
-      while (c != d && c != UNDEFINED) {
-        c = next_source_no_checks(c, x);
+    bool WordGraphWithSources<Node>::is_source_no_checks(node_type  t,
+                                                         label_type a,
+                                                         node_type  s) const {
+      LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(a < out_degree());
+      LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+      t = first_source_no_checks(t, a);
+      while (t != s && t != UNDEFINED) {
+        t = next_source_no_checks(t, a);
       }
-      return c == d;
+      return t == s;
     }
 
     template <typename Node>
     void WordGraphWithSources<Node>::remove_all_sources_and_targets_no_checks(
-        node_type c) {
-      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+        node_type n) {
+      LIBSEMIGROUPS_ASSERT(n < number_of_nodes());
       for (auto e : WordGraph<Node>::labels()) {
-        WordGraph<Node>::remove_target_no_checks(c, e);
-        _preim_init.set(c, e, UNDEFINED);
+        WordGraph<Node>::remove_target_no_checks(n, e);
+        _preim_init.set(n, e, UNDEFINED);
       }
     }
 
     template <typename Node>
-    void WordGraphWithSources<Node>::remove_all_sources_no_checks(node_type c) {
-      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
+    void WordGraphWithSources<Node>::remove_all_sources_no_checks(node_type n) {
+      LIBSEMIGROUPS_ASSERT(n < number_of_nodes());
       for (auto e : WordGraph<Node>::labels()) {
-        _preim_init.set(c, e, UNDEFINED);
+        _preim_init.set(n, e, UNDEFINED);
       }
     }
 
-    // Add d to the list of preimages of c under x, i.e.
-    // _word_graph.target(d, x) = c
+    // Add s to the list of preimages of t under a, i.e.
+    // _word_graph.target(s, a) = t
     template <typename Node>
     void
-    WordGraphWithSources<Node>::add_source_no_checks(node_type  c,
-                                                     label_type x,
-                                                     node_type  d) noexcept {
-      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(x < out_degree());
-      LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
-      // If d = _preim_init(c, x), then preim_next(d, x) = d, which means that
+    WordGraphWithSources<Node>::add_source_no_checks(node_type  t,
+                                                     label_type a,
+                                                     node_type  s) noexcept {
+      LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(a < out_degree());
+      LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+      // If s = _preim_init(t, a), then preim_next(s, a) = s, which means that
       // if we try to loop over preimages we'll enter an infinite loop.
-      if (d != _preim_init.get(c, x)) {
-        // c -> e -> ... -->  c -> d -> e -> ..
-        _preim_next.set(d, x, _preim_init.get(c, x));
-        _preim_init.set(c, x, d);
+      if (s != _preim_init.get(t, a)) {
+        // t -> e -> ... -->  t -> s -> e -> ..
+        _preim_next.set(s, a, _preim_init.get(t, a));
+        _preim_init.set(t, a, s);
       }
     }
 
@@ -240,22 +228,22 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    void WordGraphWithSources<Node>::remove_source_no_checks(node_type  cx,
-                                                             label_type x,
-                                                             node_type  d) {
-      LIBSEMIGROUPS_ASSERT(cx < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(x < out_degree());
-      LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
+    void WordGraphWithSources<Node>::remove_source_no_checks(node_type  t,
+                                                             label_type a,
+                                                             node_type  s) {
+      LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(a < out_degree());
+      LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
 
-      node_type e = _preim_init.get(cx, x);
-      if (e == d) {
-        _preim_init.set(cx, x, _preim_next.get(d, x));
+      node_type n = _preim_init.get(t, a);
+      if (n == s) {
+        _preim_init.set(t, a, _preim_next.get(s, a));
       } else {
-        while (_preim_next.get(e, x) != d) {
-          e = _preim_next.get(e, x);
+        while (_preim_next.get(n, a) != s) {
+          n = _preim_next.get(n, a);
         }
-        LIBSEMIGROUPS_ASSERT(_preim_next.get(e, x) == d);
-        _preim_next.set(e, x, _preim_next.get(d, x));
+        LIBSEMIGROUPS_ASSERT(_preim_next.get(n, a) == s);
+        _preim_next.set(n, a, _preim_next.get(s, a));
       }
     }
   }  // namespace detail
