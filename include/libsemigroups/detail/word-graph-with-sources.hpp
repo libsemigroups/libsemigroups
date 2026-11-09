@@ -180,18 +180,21 @@ namespace libsemigroups {
                                 label_type a,
                                 node_type  s) noexcept;
 
-      // TODO to cpp/tpp file
-      void disjoint_union_inplace_no_checks(WordGraph<Node> const& that) {
-        size_t N = number_of_nodes();
-        add_nodes(that.number_of_nodes());
-        for (auto s : that.nodes()) {
-          for (auto [a, t] : that.labels_and_targets_no_checks(s)) {
-            if (t != UNDEFINED) {
-              target_no_checks(s + N, a, t + N);
-            }
-          }
-        }
-      }
+      // We keep the following mem fns of WordGraph hidden, since calling
+      // them on a WordGraphWithSources <wgws> will render <wgws> invalid.
+
+      WordGraph<Node>& disjoint_union_inplace_no_checks(WordGraph<Node> const&)
+          = delete;
+      WordGraph<Node>& disjoint_union_inplace(WordGraph<Node> const&) = delete;
+      WordGraph<Node>& induced_subgraph(node_type, node_type)         = delete;
+      WordGraph<Node>& remove_all_targets()                           = delete;
+      WordGraph<Node>& remove_target(node_type, label_type)           = delete;
+      WordGraph<Node>& remove_label_no_checks(label_type)             = delete;
+      WordGraph<Node>& remove_label(label_type)                       = delete;
+      WordGraph<Node>& reserve(size_type, size_type)                  = delete;
+      WordGraph<Node>& standardize_no_checks()                        = delete;
+      WordGraph<Node>& swap_targets_no_checks()                       = delete;
+      WordGraph<Node>& swap_targets()                                 = delete;
 
      private:
       void populate_sources_no_checks();
