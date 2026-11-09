@@ -160,7 +160,7 @@ namespace libsemigroups {
     // NodeManager - constructors - public
     ////////////////////////////////////////////////////////////////////////
     template <typename Node>
-    NodeManager<Node>::NodeManager()
+    NodeManager<Node>::NodeManager(size_t num_nodes)
         : _bckwd(1, 0),
           _current(_id_node),
           _current_la(_id_node),
@@ -168,11 +168,13 @@ namespace libsemigroups {
           _forwd(1, static_cast<Node>(UNDEFINED)),
           _ident(1, 0),
           _last_active_node(0),
-          _stats() {}
+          _stats() {
+      LIBSEMIGROUPS_ASSERT(num_nodes > 0);
+      add_active_nodes(num_nodes - 1);
+    }
 
-    // TODO init(size_t m, size_t n)
     template <typename Node>
-    NodeManager<Node>& NodeManager<Node>::init() {
+    NodeManager<Node>& NodeManager<Node>::init(size_t num_nodes) {
       _bckwd.assign(1, 0);
       _current         = _id_node;
       _current_la      = _id_node;
@@ -181,6 +183,8 @@ namespace libsemigroups {
       _ident.assign(1, 0);
       _last_active_node = 0;
       _stats.init();
+      LIBSEMIGROUPS_ASSERT(num_nodes > 0);
+      add_active_nodes(num_nodes - 1);
       return *this;
     }
 
