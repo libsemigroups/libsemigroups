@@ -71,15 +71,6 @@ namespace libsemigroups::detail {
 
   template <typename Node>
   WordGraphWithSources<Node>&
-  WordGraphWithSources<Node>::add_to_out_degree(size_type m) {
-    _preim_init.add_cols(m);
-    _preim_next.add_cols(m);
-    WordGraph<node_type>::add_to_out_degree(m);
-    return *this;
-  }
-
-  template <typename Node>
-  WordGraphWithSources<Node>&
   WordGraphWithSources<Node>::induced_subgraph_no_checks(node_type first,
                                                          node_type last) {
     LIBSEMIGROUPS_ASSERT(first <= number_of_nodes());
