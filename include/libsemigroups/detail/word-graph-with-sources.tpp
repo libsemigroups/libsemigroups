@@ -33,8 +33,7 @@ namespace libsemigroups {
         : WordGraph<Node>(that),
           _preim_init(that.out_degree(), that.number_of_nodes(), UNDEFINED),
           _preim_next(that.out_degree(), that.number_of_nodes(), UNDEFINED) {
-      rebuild_sources_no_checks(WordGraph<Node>::cbegin_nodes(),
-                                WordGraph<Node>::cend_nodes());
+      populate_sources_no_checks();
     }
 
     template <typename Node>
@@ -43,8 +42,7 @@ namespace libsemigroups {
         : WordGraph<Node>(std::move(that)),
           _preim_init(out_degree(), number_of_nodes(), UNDEFINED),
           _preim_next(out_degree(), number_of_nodes(), UNDEFINED) {
-      rebuild_sources_no_checks(WordGraph<Node>::cbegin_nodes(),
-                                WordGraph<Node>::cend_nodes());
+      populate_sources_no_checks();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -65,8 +63,7 @@ namespace libsemigroups {
       WordGraph<Node>::init(that);
       _preim_init.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
       _preim_next.init(that.out_degree(), that.number_of_nodes(), UNDEFINED);
-      rebuild_sources_no_checks(WordGraph<Node>::cbegin_nodes(),
-                                WordGraph<Node>::cend_nodes());
+      populate_sources_no_checks();
     }
 
     template <typename Node>
@@ -75,8 +72,7 @@ namespace libsemigroups {
       WordGraph<Node>::init(std::move(that));
       _preim_init.init(out_degree(), number_of_nodes(), UNDEFINED);
       _preim_next.init(out_degree(), number_of_nodes(), UNDEFINED);
-      rebuild_sources_no_checks(WordGraph<Node>::cbegin_nodes(),
-                                WordGraph<Node>::cend_nodes());
+      populate_sources_no_checks();
     }
 
     template <typename Node>
@@ -227,30 +223,21 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Node>
-    template <typename It>
-    void WordGraphWithSources<Node>::rebuild_sources_no_checks(It first,
-                                                               It last) {
-      for (auto it = first; it != last; ++it) {
-        LIBSEMIGROUPS_ASSERT(*it < number_of_nodes());
-        remove_all_sources_no_checks(*it);
-      }
+    ////////////////////////////////////////////////////////////////////////////
+    // Private member functions
+    ////////////////////////////////////////////////////////////////////////////
 
-      for (auto it = first; it != last; ++it) {
-        node_type c = *it;
-        LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-        for (auto x : WordGraph<Node>::labels()) {
-          auto cx = WordGraph<node_type>::target_no_checks(c, x);
-          if (cx != UNDEFINED) {
-            target_no_checks(c, x, cx);
+    template <typename Node>
+    void WordGraphWithSources<Node>::populate_sources_no_checks() {
+      for (auto s : WordGraph<Node>::nodes()) {
+        for (auto a : WordGraph<Node>::labels()) {
+          auto t = WordGraph<node_type>::target_no_checks(s, a);
+          if (t != UNDEFINED) {
+            add_source_no_checks(t, a, s);
           }
         }
       }
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Private member functions
-    ////////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
     void WordGraphWithSources<Node>::remove_source_no_checks(node_type  cx,
