@@ -32,14 +32,15 @@
 #define LIBSEMIGROUPS_DETAIL_WORD_GRAPH_WITH_SOURCES_HPP_
 
 #include <cstddef>  // for size_t
-#include <stack>    // for stack
+#include <cstdint>  // for uint64_t
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/constants.hpp"   // for UNDEFINED
-#include "libsemigroups/types.hpp"       // for letter_type
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/constants.hpp"         // for UNDEFINED
+#include "libsemigroups/debug.hpp"             // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/exception.hpp"         // for throw_if_not_less
+#include "libsemigroups/types.hpp"             // for letter_type
+#include "libsemigroups/word-graph-class.hpp"  // for WordGraph
 
 #include "containers.hpp"  // for DynamicArray2
 
