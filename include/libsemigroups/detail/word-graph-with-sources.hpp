@@ -147,8 +147,6 @@ namespace libsemigroups::detail {
     first_source_no_checks(node_type s, letter_type a) const noexcept {
       LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(a < out_degree());
-      LIBSEMIGROUPS_ASSERT(s < _preim_init.number_of_rows());
-      LIBSEMIGROUPS_ASSERT(a < _preim_init.number_of_cols());
       return _preim_init.get(s, a);
     }
 
@@ -156,8 +154,6 @@ namespace libsemigroups::detail {
     next_source_no_checks(node_type s, letter_type a) const noexcept {
       LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(a < out_degree());
-      LIBSEMIGROUPS_ASSERT(s < _preim_next.number_of_rows());
-      LIBSEMIGROUPS_ASSERT(a < _preim_next.number_of_cols());
       return _preim_next.get(s, a);
     }
 
