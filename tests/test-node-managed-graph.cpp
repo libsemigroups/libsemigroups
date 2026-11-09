@@ -19,7 +19,8 @@
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint16_t, uint32_t
 
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/order.hpp"       // for LenLexCmp
+#include "libsemigroups/word-graph.hpp"  // for WordGraph, standardize_no_checks
 
 #include "libsemigroups/detail/felsch-graph.hpp"        // for IgnoreDefinitions
 #include "libsemigroups/detail/node-managed-graph.hpp"  // for NodeManagedGraph
@@ -209,5 +210,29 @@ namespace libsemigroups {
     REQUIRE(node == 2);
     REQUIRE(node < graph.number_of_nodes());
     REQUIRE(graph.number_of_nodes() == graph.node_capacity());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "007",
+                          "standardization preserves the lookahead cursor",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(4, 1);
+    graph.target_no_checks(0, 0, 3);
+    graph.target_no_checks(3, 0, 2);
+    graph.merge_nodes_no_checks(0, 1);
+    REQUIRE(
+        graph.process_coincidences(detail::felsch_graph::IgnoreDefinitions{}));
+
+    SECTION("cursor points to an active node") {
+      graph.lookahead_cursor() = 3;
+      REQUIRE(word_graph::standardize_no_checks(graph, LenLexCmp()).first);
+      REQUIRE(graph.lookahead_cursor() == 1);
+    }
+    SECTION("cursor points past the active nodes") {
+      graph.lookahead_cursor() = graph.first_free_node();
+      REQUIRE(word_graph::standardize_no_checks(graph, LenLexCmp()).first);
+      REQUIRE(graph.lookahead_cursor() == graph.first_free_node());
+    }
   }
 }  // namespace libsemigroups
