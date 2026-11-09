@@ -72,14 +72,9 @@ namespace libsemigroups {
       WordGraph<Node>::induced_subgraph_no_checks(first, last);
       _preim_init.shrink_rows_to_no_checks(first, last);
       _preim_next.shrink_rows_to_no_checks(first, last);
-      if (first != 0) {
-        std::for_each(_preim_init.begin(),
-                      _preim_init.end(),
-                      [&first](node_type& x) { x -= first; });
-        std::for_each(_preim_next.begin(),
-                      _preim_next.end(),
-                      [&first](node_type& x) { x -= first; });
-      }
+      _preim_init.fill(UNDEFINED);
+      _preim_next.fill(UNDEFINED);
+      populate_sources_no_checks();
     }
 
     // The vector q is not const because apply_row_permutation_no_copy_no_checks
