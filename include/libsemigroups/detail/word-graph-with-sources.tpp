@@ -168,24 +168,6 @@ namespace libsemigroups::detail {
   // WordGraphWithSources specific mem fns
   ////////////////////////////////////////////////////////////////////////
 
-  // Add s to the list of preimages of t under a, i.e.
-  // _word_graph.target(s, a) = t
-  template <typename Node>
-  void WordGraphWithSources<Node>::add_source_no_checks(node_type  t,
-                                                        label_type a,
-                                                        node_type  s) noexcept {
-    LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
-    LIBSEMIGROUPS_ASSERT(a < out_degree());
-    LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
-    // If s = _preim_init(t, a), then preim_next(s, a) = s, which means that
-    // if we try to loop over preimages we'll enter an infinite loop.
-    if (s != _preim_init.get(t, a)) {
-      // t -> e -> ... -->  t -> s -> e -> ..
-      _preim_next.set(s, a, _preim_init.get(t, a));
-      _preim_init.set(t, a, s);
-    }
-  }
-
   template <typename Node>
   template <typename NewEdgeFunc, typename IncompatibleFunc>
   uint64_t WordGraphWithSources<Node>::merge_nodes_no_checks(
@@ -226,6 +208,27 @@ namespace libsemigroups::detail {
       }
     }
     return num_edges_removed;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  // Protected member functions
+  ////////////////////////////////////////////////////////////////////////////
+
+  // Add s to the list of preimages of t under a, i.e.
+  // _word_graph.target(s, a) = t
+  template <typename Node>
+  void WordGraphWithSources<Node>::add_source_no_checks(node_type  t,
+                                                        label_type a,
+                                                        node_type  s) noexcept {
+    LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(a < out_degree());
+    LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+    // If s = _preim_init(t, a), then preim_next(s, a) = s, which means that
+    // if we try to loop over preimages we'll enter an infinite loop.
+    LIBSEMIGROUPS_ASSERT(s != _preim_init.get(t, a));
+    // t -> e -> ... -->  t -> s -> e -> ..
+    _preim_next.set(s, a, _preim_init.get(t, a));
+    _preim_init.set(t, a, s);
   }
 
   template <typename Node>
