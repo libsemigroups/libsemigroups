@@ -54,8 +54,8 @@ namespace libsemigroups::detail {
     using size_type  = typename WordGraph<Node>::size_type;
 
    private:
-    detail::DynamicArray2<node_type> _preim_init;
-    detail::DynamicArray2<node_type> _preim_next;
+    DynamicArray2<node_type> _preim_init;
+    DynamicArray2<node_type> _preim_next;
 
    public:
     ////////////////////////////////////////////////////////////////////////
