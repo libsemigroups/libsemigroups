@@ -159,21 +159,6 @@ namespace libsemigroups {
       return num_edges_removed;
     }
 
-    // Is s a source of t under a?
-    template <typename Node>
-    bool WordGraphWithSources<Node>::is_source_no_checks(node_type  t,
-                                                         label_type a,
-                                                         node_type  s) const {
-      LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(a < out_degree());
-      LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
-      t = first_source_no_checks(t, a);
-      while (t != s && t != UNDEFINED) {
-        t = next_source_no_checks(t, a);
-      }
-      return t == s;
-    }
-
     template <typename Node>
     void WordGraphWithSources<Node>::remove_all_sources_and_targets_no_checks(
         node_type n) {
