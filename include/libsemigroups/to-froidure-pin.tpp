@@ -136,8 +136,6 @@ namespace libsemigroups {
   auto to(detail::ToddCoxeterImpl& tc) -> std::enable_if_t<
       std::is_same_v<Thing<detail::TCE>, FroidurePin<detail::TCE>>,
       FroidurePin<detail::TCE>> {
-    using word_graph_type = typename detail::ToddCoxeterImpl::word_graph_type;
-
     if (tc.kind() != congruence_kind::twosided) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument must be a two-sided congruence, found a {} congruence",
@@ -147,7 +145,8 @@ namespace libsemigroups {
     tc.run();
     tc.shrink_to_fit();
     // Ensure class indices and letters are equal!
-    auto wg        = std::make_shared<word_graph_type>(tc.current_word_graph());
+    auto wg = std::make_shared<typename detail::TCE::word_graph_type>(
+        tc.current_word_graph());
     size_t const n = wg->out_degree();
     size_t       m = n;
     for (letter_type a = 0; a < m;) {
