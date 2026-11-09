@@ -100,6 +100,7 @@ namespace libsemigroups::detail {
 
     // We keep the following mem fns of WordGraph hidden, since calling
     // them on a WordGraphWithSources <wgws> will render <wgws> invalid.
+    WordGraph<Node>& add_to_out_degree(size_type) = delete;
     WordGraph<Node>& disjoint_union_inplace_no_checks(WordGraph<Node> const&)
         = delete;
     WordGraph<Node>& disjoint_union_inplace(WordGraph<Node> const&) = delete;
@@ -118,7 +119,6 @@ namespace libsemigroups::detail {
     ////////////////////////////////////////////////////////////////////////
 
     WordGraphWithSources& add_nodes(size_type m);
-    WordGraphWithSources& add_to_out_degree(size_type m);
     WordGraphWithSources& induced_subgraph_no_checks(node_type first,
                                                      node_type last);
 
