@@ -38,4 +38,16 @@ namespace libsemigroups {
     REQUIRE(graph.first_source_no_checks(1, 0) == 0);
     REQUIRE(graph.next_source_no_checks(0, 0) == UNDEFINED);
   }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "WordGraphWithSources",
+      "001",
+      "merging nodes with different targets removes one edge",
+      "[word-graph-with-sources][quick]") {
+    detail::WordGraphWithSources<uint32_t> graph(4, 2);
+    graph.target_no_checks(0, 1, 2);
+    graph.target_no_checks(1, 1, 3);
+
+    REQUIRE(graph.merge_nodes_no_checks(0, 1, Noop{}, Noop{}) == 1);
+  }
 }  // namespace libsemigroups
