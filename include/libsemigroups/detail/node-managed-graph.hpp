@@ -172,15 +172,6 @@ namespace libsemigroups::detail {
       return static_cast<WordGraph<node_type> const&>(*this) == that;
     }
 
-    // q is not not const here because permute_nodes_no_checks changes q in
-    // place.
-    void permute_nodes_no_checks(std::vector<node_type> const& p,
-                                 std::vector<node_type>&       q) {
-      WordGraphWithSources<Node>::permute_nodes_no_checks(
-          p, q, NodeManager<node_type>::number_of_nodes_active());
-      NodeManager<node_type>::apply_permutation(p);
-    }
-
     // Returns true if any changes were made to the graph and false o/w.
     // Sometimes we don't care what the answer is, so nodiscard omitted.
     template <typename Register>
