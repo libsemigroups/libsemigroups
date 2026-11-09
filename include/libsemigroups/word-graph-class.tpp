@@ -133,7 +133,10 @@ namespace libsemigroups {
     if (first != 0) {
       std::for_each(_dynamic_array_2.begin(),
                     _dynamic_array_2.end(),
-                    [first](node_type& x) { x -= first; });
+                    [first](node_type& x) {
+                      if (x != UNDEFINED)
+                        x -= first;
+                    });
     }
     return *this;
   }
