@@ -119,7 +119,7 @@ namespace libsemigroups::detail {
       }
     }
     // Permute the rows themselves
-    detail::dynamic_array2::apply_row_permutation_no_copy_no_checks(
+    dynamic_array2::apply_row_permutation_no_copy_no_checks(
         q, this->_dynamic_array_2, _preim_init, _preim_next);
     return *this;
   }
@@ -158,9 +158,9 @@ namespace libsemigroups::detail {
   WordGraphWithSources<Node>& WordGraphWithSources<Node>::target(node_type  s,
                                                                  label_type a,
                                                                  node_type  t) {
-    detail::throw_if_not_less(s, number_of_nodes(), "node ");
-    detail::throw_if_not_less(a, out_degree(), "label ");
-    detail::throw_if_not_less(t, number_of_nodes(), "node ");
+    throw_if_not_less(s, number_of_nodes(), "node ");
+    throw_if_not_less(a, out_degree(), "label ");
+    throw_if_not_less(t, number_of_nodes(), "node ");
     return target_no_checks(s, a, t);
   }
 
