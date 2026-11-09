@@ -19,7 +19,6 @@
 // This file contains the implementation for the NodeManagedGraph class, used
 // by Stephen and by ToddCoxeterImpl.
 
-#include "libsemigroups/detail/node-managed-graph.hpp"
 namespace libsemigroups::detail {
 
   ////////////////////////////////////////////////////////////////////////
@@ -40,7 +39,21 @@ namespace libsemigroups::detail {
 
   template <typename Node>
   struct NodeManagedGraph<Node>::Settings {
-    uint64_t large_collapse = 100'000;
+    uint64_t large_collapse;
+
+    Settings() noexcept {
+      init();
+    }
+
+    Settings& init() noexcept {
+      large_collapse = 100'000;
+      return *this;
+    }
+
+    Settings(Settings const&)            = default;
+    Settings(Settings&&)                 = default;
+    Settings& operator=(Settings const&) = default;
+    Settings& operator=(Settings&&)      = default;
   };
 
   template <typename Node>
@@ -51,12 +64,18 @@ namespace libsemigroups::detail {
     std::atomic_uint64_t prev_nodes_defined;
     std::atomic_uint64_t prev_nodes_killed;
 
-    Stats()
-        : num_edges_active(0),
-          num_large_collapses(0),
-          prev_active_nodes(),
-          prev_nodes_defined(),
-          prev_nodes_killed() {}
+    Stats() {
+      init();
+    }
+
+    Stats& init() {
+      num_edges_active    = 0;
+      num_large_collapses = 0;
+      prev_active_nodes   = 0;
+      prev_nodes_defined  = 0;
+      prev_nodes_killed   = 0;
+      return *this;
+    }
 
     Stats(Stats const& that)
         : num_edges_active(that.num_edges_active.load()),
@@ -65,12 +84,19 @@ namespace libsemigroups::detail {
           prev_nodes_defined(that.prev_nodes_defined.load()),
           prev_nodes_killed(that.prev_nodes_killed.load()) {}
 
+    Stats(Stats&& that) : Stats(that) {}
+
     Stats& operator=(Stats const& that) {
       num_edges_active    = that.num_edges_active.load();
       num_large_collapses = that.num_large_collapses;
       prev_active_nodes   = that.prev_active_nodes.load();
       prev_nodes_killed   = that.prev_nodes_killed.load();
       prev_nodes_defined  = that.prev_nodes_defined.load();
+      return *this;
+    }
+
+    Stats& operator=(Stats&& that) {
+      *this = that;
       return *this;
     }
   };
@@ -91,10 +117,8 @@ namespace libsemigroups::detail {
     LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes()
                          == NodeManager<Node>::number_of_nodes_active());
     _coinc = decltype(_coinc)();
-    // TODO change to _settings.init()
-    _settings = Settings();
-    // TODO change to _stats.init()
-    _stats = Stats();
+    _settings.init();
+    _stats.init();
     return *this;
   }
 
