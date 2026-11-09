@@ -63,9 +63,9 @@ namespace libsemigroups {
       detail::DynamicArray2<node_type> _preim_next;
 
      public:
-      // So that we can use out_degree and number_of_nodes in assertions
-      using WordGraph<Node>::out_degree;
-      using WordGraph<Node>::number_of_nodes;
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + initializers
+      ////////////////////////////////////////////////////////////////////////
 
       explicit WordGraphWithSources(size_type num_nodes = 0,
                                     size_type degree    = 0)
@@ -94,6 +94,34 @@ namespace libsemigroups {
 
       ~WordGraphWithSources();
 
+      ////////////////////////////////////////////////////////////////////////
+      // WordGraph mem fns
+      ////////////////////////////////////////////////////////////////////////
+
+      using WordGraph<Node>::out_degree;
+      using WordGraph<Node>::number_of_nodes;
+      using WordGraph<Node>::target;
+      using WordGraph<Node>::target_no_checks;
+
+      // We keep the following mem fns of WordGraph hidden, since calling
+      // them on a WordGraphWithSources <wgws> will render <wgws> invalid.
+      WordGraph<Node>& disjoint_union_inplace_no_checks(WordGraph<Node> const&)
+          = delete;
+      WordGraph<Node>& disjoint_union_inplace(WordGraph<Node> const&) = delete;
+      WordGraph<Node>& induced_subgraph(node_type, node_type)         = delete;
+      WordGraph<Node>& remove_all_targets()                           = delete;
+      WordGraph<Node>& remove_target(node_type, label_type)           = delete;
+      WordGraph<Node>& remove_label_no_checks(label_type)             = delete;
+      WordGraph<Node>& remove_label(label_type)                       = delete;
+      WordGraph<Node>& reserve(size_type, size_type)                  = delete;
+      WordGraph<Node>& standardize_no_checks()                        = delete;
+      WordGraph<Node>& swap_targets_no_checks()                       = delete;
+      WordGraph<Node>& swap_targets()                                 = delete;
+
+      ////////////////////////////////////////////////////////////////////////
+      // WordGraph mem requiring a specialization
+      ////////////////////////////////////////////////////////////////////////
+
       void target_no_checks(node_type s, label_type a, node_type t) noexcept {
         LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
         LIBSEMIGROUPS_ASSERT(a < out_degree());
@@ -102,21 +130,9 @@ namespace libsemigroups {
         add_source_no_checks(t, a, s);
       }
 
-      void target(node_type s, label_type a, node_type t) noexcept {
+      void target(node_type s, label_type a, node_type t) {
         WordGraph<node_type>::target(s, a, t);
         add_source_no_checks(t, a, s);
-      }
-
-      // Can't use using WordGraph<node_type>::target here because it doesn't
-      // work (compiles but run time error, probably confusing the function
-      // above with the WordGraph<node_type> function of the same name
-      [[nodiscard]] node_type target(node_type s, label_type a) const {
-        return WordGraph<node_type>::target(s, a);
-      }
-
-      [[nodiscard]] node_type target_no_checks(node_type  s,
-                                               label_type a) const {
-        return WordGraph<node_type>::target_no_checks(s, a);
       }
 
       void remove_target_no_checks(node_type s, label_type a) noexcept {
@@ -138,6 +154,19 @@ namespace libsemigroups {
         WordGraph<node_type>::add_to_out_degree(m);
       }
 
+      void induced_subgraph_no_checks(node_type first, node_type last);
+
+      // The permutation q must map the valid nodes to the [0, .. , n), where
+      // n is the number of valid nodes, and p = q ^ -1. The vector q is not
+      // const because it is modified in-place.
+      void permute_nodes_no_checks(std::vector<node_type> const& p,
+                                   std::vector<node_type>&       q,
+                                   size_t                        n);
+
+      ////////////////////////////////////////////////////////////////////////
+      // WordGraphWithSources specific mem fns
+      ////////////////////////////////////////////////////////////////////////
+
       inline node_type first_source_no_checks(node_type   s,
                                               letter_type a) const noexcept {
         LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
@@ -156,15 +185,6 @@ namespace libsemigroups {
         return _preim_next.get(s, a);
       }
 
-      void induced_subgraph_no_checks(node_type first, node_type last);
-
-      // The permutation q must map the valid nodes to the [0, .. , n), where
-      // n is the number of valid nodes, and p = q ^ -1. The vector q is not
-      // const because it is modified in-place.
-      void permute_nodes_no_checks(std::vector<node_type> const& p,
-                                   std::vector<node_type>&       q,
-                                   size_t                        n);
-
       // Returns the number of edges removed
       template <typename NewEdgeFunc, typename IncompatibleFunc>
       uint64_t merge_nodes_no_checks(node_type          min,
@@ -178,22 +198,6 @@ namespace libsemigroups {
       void add_source_no_checks(node_type  t,
                                 label_type a,
                                 node_type  s) noexcept;
-
-      // We keep the following mem fns of WordGraph hidden, since calling
-      // them on a WordGraphWithSources <wgws> will render <wgws> invalid.
-
-      WordGraph<Node>& disjoint_union_inplace_no_checks(WordGraph<Node> const&)
-          = delete;
-      WordGraph<Node>& disjoint_union_inplace(WordGraph<Node> const&) = delete;
-      WordGraph<Node>& induced_subgraph(node_type, node_type)         = delete;
-      WordGraph<Node>& remove_all_targets()                           = delete;
-      WordGraph<Node>& remove_target(node_type, label_type)           = delete;
-      WordGraph<Node>& remove_label_no_checks(label_type)             = delete;
-      WordGraph<Node>& remove_label(label_type)                       = delete;
-      WordGraph<Node>& reserve(size_type, size_type)                  = delete;
-      WordGraph<Node>& standardize_no_checks()                        = delete;
-      WordGraph<Node>& swap_targets_no_checks()                       = delete;
-      WordGraph<Node>& swap_targets()                                 = delete;
 
      private:
       void populate_sources_no_checks();
