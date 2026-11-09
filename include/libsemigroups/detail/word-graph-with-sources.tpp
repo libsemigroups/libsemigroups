@@ -146,17 +146,24 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(a < out_degree());
       LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
-      WordGraph<node_type>::target_no_checks(s, a, t);
-      add_source_no_checks(t, a, s);
+      node_type const current = target_no_checks(s, a);
+      if (t != current) {
+        if (current != UNDEFINED) {
+          remove_source_no_checks(current, a, s);
+        }
+        WordGraph<node_type>::target_no_checks(s, a, t);
+        add_source_no_checks(t, a, s);
+      }
       return *this;
     }
 
     template <typename Node>
     WordGraphWithSources<Node>&
     WordGraphWithSources<Node>::target(node_type s, label_type a, node_type t) {
-      WordGraph<node_type>::target(s, a, t);
-      add_source_no_checks(t, a, s);
-      return *this;
+      detail::throw_if_not_less(s, number_of_nodes(), "node ");
+      detail::throw_if_not_less(a, out_degree(), "label ");
+      detail::throw_if_not_less(t, number_of_nodes(), "node ");
+      return target_no_checks(s, a, t);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -199,7 +206,8 @@ namespace libsemigroups {
           auto w = next_source_no_checks(m, a);
           LIBSEMIGROUPS_ASSERT(WordGraph<Node>::target_no_checks(m, a) != min);
           LIBSEMIGROUPS_ASSERT(WordGraph<Node>::target_no_checks(m, a) == max);
-          target_no_checks(m, a, min);
+          WordGraph<Node>::target_no_checks(m, a, min);
+          add_source_no_checks(min, a, m);
           new_edge(m, a);
           m = w;
         }
