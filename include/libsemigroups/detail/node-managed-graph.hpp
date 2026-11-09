@@ -93,6 +93,7 @@ namespace libsemigroups::detail {
     using WordGraphWithSources<Node>::out_degree;
     using WordGraphWithSources<Node>::number_of_nodes;
     using WordGraphWithSources<Node>::target_no_checks;
+    using WordGraphWithSources<Node>::target;
 
     using NodeManager<node_type>::cursor;
     using NodeManager<node_type>::lookahead_cursor;
@@ -181,6 +182,8 @@ namespace libsemigroups::detail {
     NodeManagedGraph& target_no_checks(node_type  s,
                                        label_type a,
                                        node_type  t) noexcept;
+
+    NodeManagedGraph& target(node_type s, label_type a, node_type t);
 
     // Not currently used for anything, previously required for immediate
     // standardization. The implementation has been deleted but should be
