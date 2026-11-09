@@ -121,8 +121,10 @@ namespace libsemigroups::detail {
                                                       label_type a) noexcept {
     LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
     LIBSEMIGROUPS_ASSERT(a < out_degree());
-    remove_source_no_checks(WordGraph<Node>::target_no_checks(s, a), a, s);
-    WordGraph<node_type>::remove_target_no_checks(s, a);
+    if (target_no_checks(s, a) != UNDEFINED) {
+      remove_source_no_checks(target_no_checks(s, a), a, s);
+      WordGraph<node_type>::remove_target_no_checks(s, a);
+    }
     return *this;
   }
 
