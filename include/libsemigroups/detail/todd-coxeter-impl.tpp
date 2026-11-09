@@ -116,11 +116,11 @@ namespace libsemigroups {
     // ToddCoxeterImpl::Graph
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Functor>
-    void ToddCoxeterImpl::Graph::process_coincidences(Functor&& func) {
+    template <typename Register>
+    void ToddCoxeterImpl::Graph::process_coincidences(Register&& reg) {
       // FelschGraph_::process_coincidences returns true if any changes are
       // made to the graph.
-      if (FelschGraph_::process_coincidences(std::forward<Functor>(func))) {
+      if (FelschGraph_::process_coincidences(std::forward<Register>(reg))) {
         _forest_valid          = false;
         _standardization_order = Order::none;
       }

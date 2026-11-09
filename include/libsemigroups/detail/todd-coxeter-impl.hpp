@@ -390,8 +390,8 @@ namespace libsemigroups {
         // but is_non_trivial is declared in todd-coxeter-helpers.hpp and so
         // it is not straightforward to make these functions friends,
         // unfortunately.
-        template <typename Functor = Noop>
-        void process_coincidences(Functor&& func = Noop{});
+        template <typename Register>
+        void process_coincidences(Register&& reg);
 
         // NOTE: Should be private but can't be because used by is_non_trivial
         // but is_non_trivial is declared in todd-coxeter-helpers.hpp and so
