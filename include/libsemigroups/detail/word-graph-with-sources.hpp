@@ -173,9 +173,6 @@ namespace libsemigroups {
                                      NewEdgeFunc&&      new_edge,
                                      IncompatibleFunc&& incompat);
 
-      // Is s a source of t under a? This is costly!
-      bool is_source_no_checks(node_type t, label_type a, node_type s) const;
-
       void remove_all_sources_and_targets_no_checks(node_type n);
       void remove_all_sources_no_checks(node_type n);
 
