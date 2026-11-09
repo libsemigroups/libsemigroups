@@ -162,7 +162,6 @@ namespace libsemigroups::detail {
       node_type m = first_source_no_checks(max, a);
       while (m != UNDEFINED) {
         auto w = next_source_no_checks(m, a);
-        LIBSEMIGROUPS_ASSERT(WordGraph<Node>::target_no_checks(m, a) != min);
         LIBSEMIGROUPS_ASSERT(WordGraph<Node>::target_no_checks(m, a) == max);
         WordGraph<Node>::target_no_checks(m, a, min);
         add_source_no_checks(min, a, m);
@@ -175,7 +174,6 @@ namespace libsemigroups::detail {
         remove_source_no_checks(m, a, max);
         node_type const n = WordGraph<Node>::target_no_checks(min, a);
         if (n == UNDEFINED) {
-          LIBSEMIGROUPS_ASSERT(n != min);
           target_no_checks(min, a, m);
           new_edge(min, a);
         } else {
@@ -256,10 +254,11 @@ namespace libsemigroups::detail {
     if (n == s) {
       _preim_init.set(t, a, _preim_next.get(s, a));
     } else {
-      while (_preim_next.get(n, a) != s) {
-        n = _preim_next.get(n, a);
+      auto m = _preim_next.get(n, a);
+      while (m != s) {
+        n = m;
+        m = _preim_next.get(n, a);
       }
-      LIBSEMIGROUPS_ASSERT(_preim_next.get(n, a) == s);
       _preim_next.set(n, a, _preim_next.get(s, a));
     }
   }
