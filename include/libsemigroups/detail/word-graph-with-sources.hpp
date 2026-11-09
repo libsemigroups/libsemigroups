@@ -77,9 +77,6 @@ namespace libsemigroups::detail {
     explicit WordGraphWithSources(WordGraph<Node> const& that);
     void init(WordGraph<Node> const& that);
 
-    explicit WordGraphWithSources(WordGraph<Node>&& that);
-    void init(WordGraph<Node>&& that);
-
     WordGraphWithSources(WordGraphWithSources&&)                 = default;
     WordGraphWithSources(WordGraphWithSources const&)            = default;
     WordGraphWithSources& operator=(WordGraphWithSources const&) = default;

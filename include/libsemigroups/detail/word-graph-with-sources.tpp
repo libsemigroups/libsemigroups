@@ -40,20 +40,6 @@ namespace libsemigroups::detail {
   }
 
   template <typename Node>
-  WordGraphWithSources<Node>::WordGraphWithSources(WordGraph<Node>&& that)
-      : WordGraphWithSources() {
-    init(std::move(that));
-  }
-
-  template <typename Node>
-  void WordGraphWithSources<Node>::init(WordGraph<Node>&& that) {
-    WordGraph<Node>::init(std::move(that));
-    _preim_init.init(out_degree(), number_of_nodes(), UNDEFINED);
-    _preim_next.init(out_degree(), number_of_nodes(), UNDEFINED);
-    populate_sources_no_checks();
-  }
-
-  template <typename Node>
   WordGraphWithSources<Node>::~WordGraphWithSources() = default;
 
   ////////////////////////////////////////////////////////////////////////
