@@ -31,11 +31,6 @@
 #ifndef LIBSEMIGROUPS_DETAIL_WORD_GRAPH_WITH_SOURCES_HPP_
 #define LIBSEMIGROUPS_DETAIL_WORD_GRAPH_WITH_SOURCES_HPP_
 
-// TODO:
-// * test file
-// * doc
-// * add _no_checks where appropriate
-
 #include <cstddef>  // for size_t
 #include <stack>    // for stack
 #include <utility>  // for pair
