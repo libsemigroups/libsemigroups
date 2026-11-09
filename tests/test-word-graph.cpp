@@ -19,6 +19,7 @@
 #include <algorithm>      // for min_element, reverse, sort
 #include <cmath>          // for pow
 #include <cstddef>        // for ptrdiff_t, size_t
+#include <cstdint>        // for uint16_t, uint32_t
 #include <limits>         // for numeric_limits
 #include <numeric>        // for iota
 #include <random>         // for mt19937
@@ -1679,5 +1680,23 @@ namespace libsemigroups {
       graph.remove_label(1);
       REQUIRE(graph.number_of_edges() == 0);
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "068",
+                          "initializing from a reserved graph",
+                          "[quick][word-graph]") {
+    WordGraph<uint16_t> source(2, 2);
+    source.reserve(5, 4);
+    source.target(1, 1, 0);
+
+    WordGraph<size_t> graph(2, 2);
+    graph.init(source);
+
+    REQUIRE(graph.number_of_nodes() == 2);
+    REQUIRE(graph.out_degree() == 2);
+    REQUIRE(graph.target(1, 1) == 0);
+    REQUIRE(graph.target(1, 0) == UNDEFINED);
+    REQUIRE(graph.number_of_edges() == 1);
   }
 }  // namespace libsemigroups
