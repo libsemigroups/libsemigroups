@@ -171,7 +171,7 @@ namespace libsemigroups::detail {
     for (size_t i = 0; i < m; ++i) {
       std::ignore = new_node();
     }
-    // TODO add some assertions
+    LIBSEMIGROUPS_ASSERT(NodeManager<Node>::number_of_nodes_active() > m);
   }
 
   template <typename Node>
@@ -182,6 +182,7 @@ namespace libsemigroups::detail {
       WordGraphWithSources<Node>::add_nodes(n);
       NodeManager<node_type>::add_free_nodes(n);
     }
+    LIBSEMIGROUPS_ASSERT(number_of_nodes() >= m);
   }
 
   template <typename Node>

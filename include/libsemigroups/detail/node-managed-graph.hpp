@@ -91,6 +91,7 @@ namespace libsemigroups::detail {
     ////////////////////////////////////////////////////////////////////////
 
     using WordGraphWithSources<Node>::out_degree;
+    using WordGraphWithSources<Node>::number_of_nodes;
     using WordGraphWithSources<Node>::target_no_checks;
 
     using NodeManager<node_type>::cursor;
