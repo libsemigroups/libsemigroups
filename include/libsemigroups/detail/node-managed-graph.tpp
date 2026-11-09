@@ -85,16 +85,16 @@ namespace libsemigroups::detail {
     // NodeManagedGraph's always have 1 active node.
     LIBSEMIGROUPS_ASSERT(num_nodes > 0);
     WordGraphWithSources<Node>::init(num_nodes, degree);
-    // TODO make a NodeManager::init(num_nodes)
-    NodeManager<Node>::init();
-    NodeManager<Node>::add_active_nodes(num_nodes - 1);
+    NodeManager<Node>::init(num_nodes);
     LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes()
                          == num_nodes);
     LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes()
                          == NodeManager<Node>::number_of_nodes_active());
-    _coinc    = decltype(_coinc)();
+    _coinc = decltype(_coinc)();
+    // TODO change to _settings.init()
     _settings = Settings();
-    _stats    = Stats();
+    // TODO change to _stats.init()
+    _stats = Stats();
     return *this;
   }
 
@@ -110,7 +110,7 @@ namespace libsemigroups::detail {
   }
 
   template <typename Node>
-  NodeManagedGraph<Node>::NodeManagedGraph() {
+  NodeManagedGraph<Node>::NodeManagedGraph() : NodeManager<Node>() {
     init();
   }
 
