@@ -235,4 +235,25 @@ namespace libsemigroups {
       REQUIRE(graph.lookahead_cursor() == graph.first_free_node());
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "008",
+                          "target setters maintain the active edge count",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph(3, 1);
+
+    SECTION("checked setter") {
+      graph.target(0, 0, 1);
+      REQUIRE(graph.number_of_edges_active() == 1);
+      graph.target(0, 0, 2);
+    }
+    SECTION("unchecked setter") {
+      graph.target_no_checks(0, 0, 1);
+      REQUIRE(graph.number_of_edges_active() == 1);
+      graph.target_no_checks(0, 0, 2);
+    }
+
+    REQUIRE(graph.target(0, 0) == 2);
+    REQUIRE(graph.number_of_edges_active() == 1);
+  }
 }  // namespace libsemigroups

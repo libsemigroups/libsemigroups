@@ -382,11 +382,22 @@ namespace libsemigroups::detail {
                                            label_type a,
                                            node_type  t) noexcept {
     LIBSEMIGROUPS_ASSERT(t != UNDEFINED);
-    _stats.num_edges_active++;
+    _stats.num_edges_active += target(s, a) == UNDEFINED;
     WordGraphWithSources<Node>::target_no_checks(s, a, t);
     // The next assertion is extremely slow so don't do it!
     // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
     //                      == count_number_of_edges_active());
+    return *this;
+  }
+
+  template <typename Node>
+  NodeManagedGraph<Node>& NodeManagedGraph<Node>::target(node_type  s,
+                                                         label_type a,
+                                                         node_type  t) {
+    throw_if_not_less(s, number_of_nodes(), "node ");
+    throw_if_not_less(a, out_degree(), "label ");
+    throw_if_not_less(t, number_of_nodes(), "node ");
+    target_no_checks(s, a, t);
     return *this;
   }
 
