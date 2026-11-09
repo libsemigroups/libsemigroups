@@ -300,10 +300,11 @@ namespace libsemigroups {
 
   template <typename Node>
   size_t WordGraph<Node>::number_of_edges() const {
-    return _dynamic_array_2.number_of_rows() * _dynamic_array_2.number_of_cols()
-           - std::count(_dynamic_array_2.cbegin(),
-                        _dynamic_array_2.cend(),
-                        static_cast<Node>(UNDEFINED));
+    size_type count = 0;
+    for (auto s : nodes()) {
+      count += number_of_edges_no_checks(s);
+    }
+    return count;
   }
 
   template <typename Node>
@@ -315,8 +316,8 @@ namespace libsemigroups {
   template <typename Node>
   size_t WordGraph<Node>::number_of_edges_no_checks(node_type n) const {
     return out_degree()
-           - std::count(_dynamic_array_2.cbegin_row(n),
-                        _dynamic_array_2.cend_row(n),
+           - std::count(cbegin_targets_no_checks(n),
+                        cend_targets_no_checks(n),
                         UNDEFINED);
   }
 

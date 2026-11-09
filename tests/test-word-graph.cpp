@@ -1650,4 +1650,34 @@ namespace libsemigroups {
     REQUIRE(word_graph::topological_sort_no_checks(graph, size_t(0))
             == word_graph::topological_sort_no_checks(view, size_t(0)));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "066",
+                          "edge counts after reserving rows and columns",
+                          "[quick][word-graph]") {
+    WordGraph<size_t> graph(2, 1);
+    graph.reserve(5, 4);
+    graph.target(0, 0, 1);
+
+    REQUIRE(graph.number_of_edges() == 1);
+    REQUIRE(graph.number_of_edges(0) == 1);
+    REQUIRE(graph.number_of_edges(1) == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "067",
+                          "total edge count uses logical graph dimensions",
+                          "[quick][word-graph]") {
+    WordGraph<size_t> graph(2, 2);
+    graph.target(1, 1, 0);
+
+    SECTION("reserve after adding an edge") {
+      graph.reserve(5, 4);
+      REQUIRE(graph.number_of_edges() == 1);
+    }
+    SECTION("remove the last label") {
+      graph.remove_label(1);
+      REQUIRE(graph.number_of_edges() == 0);
+    }
+  }
 }  // namespace libsemigroups
