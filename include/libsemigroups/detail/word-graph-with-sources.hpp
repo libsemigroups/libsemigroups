@@ -116,6 +116,9 @@ namespace libsemigroups::detail {
     ////////////////////////////////////////////////////////////////////////
 
     WordGraphWithSources& add_nodes(size_type m);
+
+    // Every defined target of a node in [first, last) must also lie in that
+    // range.
     WordGraphWithSources& induced_subgraph_no_checks(node_type first,
                                                      node_type last);
 
@@ -147,6 +150,7 @@ namespace libsemigroups::detail {
       return _preim_init.get(s, a);
     }
 
+    // s must belong to a source list for label a.
     [[nodiscard]] inline node_type
     next_source_no_checks(node_type s, letter_type a) const noexcept {
       LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
@@ -154,7 +158,8 @@ namespace libsemigroups::detail {
       return _preim_next.get(s, a);
     }
 
-    // Returns the number of edges removed
+    // The caller must treat max as invalid after the merge.
+    // Returns the number of edges removed.
     template <typename NewEdgeFunc, typename IncompatibleFunc>
     [[nodiscard]] uint64_t merge_nodes_no_checks(node_type          min,
                                                  node_type          max,
