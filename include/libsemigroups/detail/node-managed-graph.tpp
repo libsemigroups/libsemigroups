@@ -106,6 +106,12 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Node>
+  NodeManagedGraph<Node>::NodeManagedGraph(size_t num_nodes, size_t degree)
+      : NodeManager<Node>() {
+    init(num_nodes, degree);
+  }
+
+  template <typename Node>
   NodeManagedGraph<Node>& NodeManagedGraph<Node>::init(size_t num_nodes,
                                                        size_t degree) {
     // NodeManagedGraph's always have 1 active node.
@@ -131,11 +137,6 @@ namespace libsemigroups::detail {
       NodeManager<node_type>::add_free_nodes(m);
     }
     return *this;
-  }
-
-  template <typename Node>
-  NodeManagedGraph<Node>::NodeManagedGraph() : NodeManager<Node>() {
-    init();
   }
 
   template <typename Node>
