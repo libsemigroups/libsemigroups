@@ -1404,7 +1404,7 @@ namespace libsemigroups::detail {
           _word_graph.merge_nodes_no_checks(current, other);
           if (_word_graph.number_of_coincidences()
               > settings().lookbehind_threshold) {
-            _word_graph.process_coincidences();
+            _word_graph.process_coincidences(IgnoreDefinitions{});
           }
         }
       }
@@ -1416,7 +1416,7 @@ namespace libsemigroups::detail {
     }
     // Just in case we have some accumulated coincidences but not enough to
     // trigger process_coincidences above, we call it again
-    _word_graph.process_coincidences();
+    _word_graph.process_coincidences(IgnoreDefinitions{});
     report_after_phase();
     stats_phase_stop();
     _stats.lookahead_or_behind_nodes_killed
