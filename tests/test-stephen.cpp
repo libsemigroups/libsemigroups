@@ -2567,5 +2567,25 @@ namespace libsemigroups {
     REQUIRE(graph.count_number_of_edges_active() == 2);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "077",
+                          "append uses the node count after running",
+                          "[stephen][quick]") {
+    Presentation<word_type> p;
+    p.alphabet(0_w);
+    p.rules = {00_w, 0_w};
+    Stephen left(p), right(p);
+    stephen::set_word(left, 00_w);
+    stephen::set_word(right, 0_w);
+    left *= right;
+
+    auto const& graph = static_cast<detail::NodeManagedGraph<uint32_t> const&>(
+        left.word_graph_no_run());
+    REQUIRE(graph.number_of_nodes_active() == 2);
+    REQUIRE(
+        word_graph::number_of_nodes_reachable_from(graph, graph.initial_node())
+        == graph.number_of_nodes_active());
+  }
+
   // TODO(2): the examples from Stephen's paper/thesis?
 }  // namespace libsemigroups
