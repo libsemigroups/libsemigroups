@@ -136,65 +136,6 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    void WordGraphWithSources<Node>::swap_nodes_no_checks(node_type c,
-                                                          node_type d) {
-      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
-      for (auto x : WordGraph<Node>::labels()) {
-        node_type cx = WordGraph<Node>::target_no_checks(c, x);
-        node_type dx = WordGraph<Node>::target_no_checks(d, x);
-        replace_target_no_checks(c, x, d);
-        replace_target_no_checks(d, x, c);
-
-        if (cx == dx && cx != UNDEFINED) {
-          // Swap c <--> d in preimages of cx = dx
-          size_t    found = 0;
-          node_type e     = _preim_init.get(cx, x);
-          if (e == c) {
-            ++found;
-            _preim_init.set(cx, x, d);
-          } else if (e == d) {
-            ++found;
-            _preim_init.set(cx, x, c);
-          }
-          while (e != UNDEFINED && found < 2) {
-            node_type f = _preim_next.get(e, x);
-            if (f == c) {
-              ++found;
-              _preim_next.set(e, x, d);
-            } else if (f == d) {
-              ++found;
-              _preim_next.set(e, x, c);
-            }
-            e = f;
-          }
-        } else {
-          replace_source_no_checks(c, d, x, cx);
-          replace_source_no_checks(d, c, x, dx);
-        }
-        WordGraph<Node>::swap_targets_no_checks(c, d, x);
-        _preim_init.swap(c, x, d, x);
-        _preim_next.swap(c, x, d, x);
-      }
-    }
-
-    // c must be valid, d may not be
-    template <typename Node>
-    void WordGraphWithSources<Node>::rename_node_no_checks(node_type c,
-                                                           node_type d) {
-      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
-      for (auto x : WordGraph<Node>::labels()) {
-        node_type cx = WordGraph<Node>::target_no_checks(c, x);
-        replace_target_no_checks(c, x, d);
-        replace_source_no_checks(c, d, x, cx);
-        WordGraph<Node>::swap_targets_no_checks(c, d, x);
-        _preim_init.swap(c, x, d, x);
-        _preim_next.swap(c, x, d, x);
-      }
-    }
-
-    template <typename Node>
     template <typename NewEdgeFunc, typename IncompatibleFunc>
     uint64_t WordGraphWithSources<Node>::merge_nodes_no_checks(
         node_type          min,
@@ -328,50 +269,6 @@ namespace libsemigroups {
         }
         LIBSEMIGROUPS_ASSERT(_preim_next.get(e, x) == d);
         _preim_next.set(e, x, _preim_next.get(d, x));
-      }
-    }
-
-    // All edges of the form e - x -> c are replaced with e - x -> d,
-    template <typename Node>
-    void WordGraphWithSources<Node>::replace_target_no_checks(node_type  c,
-                                                              label_type x,
-                                                              node_type  d) {
-      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(x < out_degree());
-      LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
-      node_type e = _preim_init.get(c, x);
-      while (e != UNDEFINED) {
-        LIBSEMIGROUPS_ASSERT(WordGraph<Node>::target_no_checks(e, x) == c);
-        WordGraph<Node>::target_no_checks(e, x, d);
-        e = _preim_next.get(e, x);
-      }
-    }
-
-    template <typename Node>
-    void WordGraphWithSources<Node>::replace_source_no_checks(node_type  c,
-                                                              node_type  d,
-                                                              label_type x,
-                                                              node_type  cx) {
-      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(x < out_degree());
-      LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(cx < number_of_nodes());
-      if (cx != UNDEFINED) {
-        // Replace c <-- d in preimages of cx, and d is not a preimage of cx
-        // under x
-        node_type e = _preim_init.get(cx, x);
-        if (e == c) {
-          _preim_init.set(cx, x, d);
-          return;
-        }
-        while (e != UNDEFINED) {
-          node_type f = _preim_next.get(e, x);
-          if (f == c) {
-            _preim_next.set(e, x, d);
-            return;
-          }
-          e = f;
-        }
       }
     }
   }  // namespace detail

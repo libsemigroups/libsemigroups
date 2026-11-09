@@ -161,16 +161,6 @@ namespace libsemigroups {
                                    std::vector<node_type>&       q,
                                    size_t                        n);
 
-      // Swaps valid nodes c and d, if c or d is not valid, then this will
-      // fail spectacularly (no checks are performed)
-      void swap_nodes_no_checks(node_type c, node_type d);
-
-      // Rename c to d, i.e. node d has the exact same in- and out-neighbours
-      // as c after this is called. Assumed that c is valid when this function
-      // is called, and that d is valid after it is called. This is a
-      // one-sided version of swap nodes.
-      void rename_node_no_checks(node_type c, node_type d);
-
       // Returns the number of edges removed
       template <typename NewEdgeFunc, typename IncompatibleFunc>
       uint64_t merge_nodes_no_checks(node_type          min,
@@ -206,11 +196,6 @@ namespace libsemigroups {
 
      private:
       void remove_source_no_checks(node_type cx, label_type x, node_type d);
-      void replace_target_no_checks(node_type c, label_type x, node_type d);
-      void replace_source_no_checks(node_type  c,
-                                    node_type  d,
-                                    label_type x,
-                                    node_type  cx);
     };
   }  // namespace detail
 }  // namespace libsemigroups
