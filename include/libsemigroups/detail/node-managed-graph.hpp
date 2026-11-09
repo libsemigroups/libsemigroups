@@ -139,6 +139,12 @@ namespace libsemigroups::detail {
     // 100% not thread safe
     [[nodiscard]] uint64_t count_number_of_edges_active() const noexcept;
 
+    void erase_free_nodes() {
+      auto const n = NodeManager<Node>::number_of_nodes_active();
+      NodeManager<Node>::erase_free_nodes();
+      WordGraphWithSources<Node>::induced_subgraph_no_checks(0, n);
+    }
+
     NodeManagedGraph& large_collapse(size_t val) noexcept {
       _settings.large_collapse = val;
       return *this;
