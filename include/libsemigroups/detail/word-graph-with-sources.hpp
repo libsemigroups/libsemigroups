@@ -143,8 +143,6 @@ namespace libsemigroups::detail {
     // WordGraphWithSources specific mem fns
     ////////////////////////////////////////////////////////////////////////
 
-    void add_source_no_checks(node_type t, label_type a, node_type s) noexcept;
-
     [[nodiscard]] inline node_type
     first_source_no_checks(node_type s, letter_type a) const noexcept {
       LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
@@ -170,6 +168,10 @@ namespace libsemigroups::detail {
                                                  NewEdgeFunc&&      new_edge,
                                                  IncompatibleFunc&& incompat);
 
+   protected:
+    // Only valid to insert s as a source of t if it isn't in the list of
+    // sources already!!
+    void add_source_no_checks(node_type t, label_type a, node_type s) noexcept;
     void remove_all_sources_and_targets_no_checks(node_type n);
     void remove_all_sources_no_checks(node_type n);
 
