@@ -178,9 +178,6 @@ namespace libsemigroups {
                                 label_type x,
                                 node_type  d) noexcept;
 
-      template <typename It>
-      void rebuild_sources_no_checks(It first, It last);
-
       // TODO to cpp/tpp file
       void disjoint_union_inplace_no_checks(WordGraph<Node> const& that) {
         size_t N = number_of_nodes();
@@ -195,6 +192,7 @@ namespace libsemigroups {
       }
 
      private:
+      void populate_sources_no_checks();
       void remove_source_no_checks(node_type cx, label_type x, node_type d);
     };
   }  // namespace detail
