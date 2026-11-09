@@ -1276,6 +1276,7 @@ EXTRA_PROGRAMS += test_uf
 EXTRA_PROGRAMS += test_ukkonen
 EXTRA_PROGRAMS += test_word_graph
 EXTRA_PROGRAMS += test_word_graph_view
+EXTRA_PROGRAMS += test_word_graph_with_sources
 EXTRA_PROGRAMS += test_word_range
 
 EXTRA_PROGRAMS += bench_all
@@ -1393,6 +1394,7 @@ test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-ukkonen.cpp
 test_all_SOURCES += tests/test-word-graph.cpp
 test_all_SOURCES += tests/test-word-graph-view.cpp
+test_all_SOURCES += tests/test-word-graph-with-sources.cpp
 test_all_SOURCES += tests/test-word-range.cpp
 test_all_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
@@ -1800,6 +1802,11 @@ test_word_graph_view_SOURCES =  tests/test-word-graph-view.cpp
 test_word_graph_view_SOURCES += tests/test-main.cpp
 test_word_graph_view_SOURCES += $(CATCH2_SOURCES)
 test_word_graph_view_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+
+test_word_graph_with_sources_SOURCES =  tests/test-word-graph-with-sources.cpp
+test_word_graph_with_sources_SOURCES += tests/test-main.cpp
+test_word_graph_with_sources_SOURCES += $(CATCH2_SOURCES)
+test_word_graph_with_sources_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
