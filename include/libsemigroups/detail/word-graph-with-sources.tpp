@@ -130,16 +130,17 @@ namespace libsemigroups {
 
         v = WordGraph<Node>::target_no_checks(max, i);
         if (v != UNDEFINED) {
-          num_edges_removed++;
           remove_source_no_checks(v, i, max);
           node_type const u = WordGraph<Node>::target_no_checks(min, i);
           if (u == UNDEFINED) {
             LIBSEMIGROUPS_ASSERT(u != min);
             target_no_checks(min, i, v);
             new_edge(min, i);
-            num_edges_removed--;
-          } else if (u != v) {
-            incompat(u, v);
+          } else {
+            num_edges_removed++;
+            if (u != v) {
+              incompat(u, v);
+            }
           }
         }
       }

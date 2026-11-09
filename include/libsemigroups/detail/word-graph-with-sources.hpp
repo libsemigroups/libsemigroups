@@ -100,8 +100,9 @@ namespace libsemigroups {
 
       using WordGraph<Node>::out_degree;
       using WordGraph<Node>::number_of_nodes;
-      using WordGraph<Node>::target;
-      using WordGraph<Node>::target_no_checks;
+      using WordGraph<Node>::target;  // for the 2-arg version only see below
+      using WordGraph<Node>::target_no_checks;  // for the 2-arg version only
+                                                // see below
 
       // We keep the following mem fns of WordGraph hidden, since calling
       // them on a WordGraphWithSources <wgws> will render <wgws> invalid.
