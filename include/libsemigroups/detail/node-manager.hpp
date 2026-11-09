@@ -70,7 +70,9 @@ namespace libsemigroups {
       // NodeManager - constructors + destructor - public
       ////////////////////////////////////////////////////////////////////////
 
+      // Construct with given number of active nodes
       explicit NodeManager(size_t num_nodes = 1);
+      // Re-init with given number of active nodes
       NodeManager& init(size_t num_nodes = 1);
 
       NodeManager(NodeManager const& that) = default;
