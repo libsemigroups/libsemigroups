@@ -17,5 +17,8 @@ cpplint --repository='..' tests/*.hpp || ((exit_code = 1))
 cpplint --repository='include' tests/*.cpp || ((exit_code = 1))
 cpplint --repository='..' benchmarks/*.hpp || ((exit_code = 1))
 cpplint --repository='include' benchmarks/*.cpp || ((exit_code = 1))
+cpplint --repository='c-bindings' c-bindings/include/*.h || ((exit_code = 1))
+cpplint --repository='c-bindings' c-bindings/include/*.hpp || ((exit_code = 1))
+cpplint --repository='c-bindings' c-bindings/src/*.cpp || ((exit_code = 1))
 
 exit $exit_code
