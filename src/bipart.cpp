@@ -481,18 +481,43 @@ namespace libsemigroups {
         y[n + i] = x[i];
       }
 
-      // Check for forbidden pattern a,b,a,b
-      for (size_t i = 0; i < 2 * n - 3; ++i) {
-        for (size_t j = i + 1; j < 2 * n - 2; ++j) {
-          for (size_t k = j + 1; k < 2 * n - 1; ++k) {
-            for (size_t l = k + 1; l < 2 * n; ++l) {
-              if (y[i] == y[k] && y[j] == y[l] && y[i] != y[j]) {
-                return false;
-              }
-            }
-          }
+      // Convert lookup into vector of intervals
+      std::vector<std::pair<int, int>> intervals(2 * n, {-1, -1});
+      for (size_t i = 0; i < 2 * n; ++i) {
+        uint32_t const label = y[i];
+        if (intervals[label].first == -1) {
+          intervals[label] = {static_cast<int>(i), static_cast<int>(i)};
+        } else {
+          intervals[label].second = static_cast<int>(i);
         }
       }
+      intervals.erase(std::remove_if(intervals.begin(),
+                                     intervals.end(),
+                                     [](auto const& interval) {
+                                       return interval.first == -1;
+                                     }),
+                      intervals.end());
+      std::sort(intervals.begin(), intervals.end());
+
+      // store endpoints of currently open intervals
+      std::vector<int> stack;
+
+      for (auto const& interval : intervals) {
+        int const start = interval.first;
+        int const end   = interval.second;
+
+        while (!stack.empty() && stack.back() < start) {
+          stack.pop_back();
+        }
+
+        // false if current interval intersects with an open interval
+        if (!stack.empty() && end > stack.back()) {
+          return false;
+        }
+
+        stack.push_back(end);
+      }
+
       return true;
     }
 

@@ -229,19 +229,19 @@ namespace libsemigroups {
     //! \returns A random Bipartition.
     Bipartition random(size_t deg);
 
-    //! \brief Returns whether a bipartition is planar.
+    //! \brief Returns whether a bipartiion is planar.
     //!
-    //! This function checks whether the bipartition is planar by looking for
-    //! four points in the signed ordering whose corresponding blocks have
-    //! labels \p a, \p b, \p a, \p b, where \p a and \p b are distinct.
-    //! If such a pattern exists, the bipartition is not planar.
+    //! A bipartition is planar if, when its points are arranged in the
+    //! order (-n, ..., -1, +1, ..., +n), there are no two distinct blocks
+    //! whose elements alternate. Equivalently, the intervals between the
+    //! first and last occurrences of each block are either disjoint or
+    //! nested.
     //!
     //! \param x the bipartition to check.
-    //!
-    //! \returns \c true if the bipartition is planar, and \c false otherwise.
+    //! \returns `true` if \p x is planar, and `false` otherwise.
     //!
     //! \complexity
-    //! \(O(n^4)\), where \(n\) is the degree of the bipartition.
+    //! O(n log n), where n is the degree of \p x.
     bool is_planar(Bipartition const& x);
 
     //! \brief Returns whether a bipartition is annular.
