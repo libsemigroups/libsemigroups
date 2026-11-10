@@ -466,7 +466,16 @@ namespace libsemigroups {
     std::vector<bool> _unique;
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-    Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> _matrix;
+    // _matrix is resized by templates in this file, which are compiled by the
+    // user of the library, and destroyed in obvinf.cpp, which is compiled into
+    // the library. By default, how Eigen allocates memory depends on compiler
+    // flags, such as -mavx and -fsanitize=address, that can differ between the
+    // two. With DontAlign, Eigen always uses plain malloc and free.
+    Eigen::Matrix<int64_t,
+                  Eigen::Dynamic,
+                  Eigen::Dynamic,
+                  Eigen::ColMajor | Eigen::DontAlign>
+        _matrix;
 #else
     std::vector<int64_t> _matrix;
 #endif

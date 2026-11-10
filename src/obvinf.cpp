@@ -40,6 +40,28 @@ namespace libsemigroups {
   using const_iterator_pair_string =
       typename std::vector<std::pair<std::string, std::string>>::const_iterator;
 
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+  namespace {
+    // On Linux, for example, the library exports the instantiations of Eigen's
+    // templates that it uses, and so its calls can be bound at load time to
+    // copies in the user's binary that were compiled with different flags.
+    // DontAlign makes the type below distinct from Eigen::MatrixXf, so that
+    // using a decomposition of that type elsewhere can't replace the functions
+    // used here.
+    template <typename Matrix>
+    Eigen::Index rank(Matrix const& matrix) {
+      using float_matrix_type
+          = Eigen::Matrix<float,
+                          Eigen::Dynamic,
+                          Eigen::Dynamic,
+                          Eigen::ColMajor | Eigen::DontAlign>;
+      return Eigen::ColPivHouseholderQR<float_matrix_type>(
+                 matrix.template cast<float>())
+          .rank();
+    }
+  }  // namespace
+#endif
+
   IsObviouslyInfinite::IsObviouslyInfinite(size_t n) : IsObviouslyInfinite() {
     init(n);
   }
@@ -118,8 +140,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     LIBSEMIGROUPS_ASSERT(_matrix.rows() >= 0);
     if (_nr_gens != 0) {
-      LIBSEMIGROUPS_ASSERT(_matrix.cast<float>().colPivHouseholderQr().rank()
-                           >= 0);
+      LIBSEMIGROUPS_ASSERT(rank(_matrix) >= 0);
     }
 #endif
     if (_nr_gens == 0) {
@@ -135,9 +156,7 @@ namespace libsemigroups {
                             [](bool v) -> bool { return v; })
             || (!_empty_word && _nr_letter_components > 1)
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-            || _nr_relations < _nr_gens
-            || size_t(_matrix.cast<float>().colPivHouseholderQr().rank())
-                   != _nr_gens);
+            || _nr_relations < _nr_gens || size_t(rank(_matrix)) != _nr_gens);
 #else
                || _nr_relations < _nr_gens);
 #endif
