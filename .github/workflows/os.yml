@@ -13,10 +13,24 @@ jobs:
         shell: alpine.sh {0}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
+      - name: Preserve the environment for Alpine setup . . .
+        shell: bash
+        run: |
+          # setup-alpine requires sudo -E, which sudo-rs does not support.
+          if [ -x /usr/bin/sudo.ws ]; then
+            sudo update-alternatives --set sudo /usr/bin/sudo.ws
+          fi
       - uses: jirutka/setup-alpine@v1
         with:
           branch: v3.15
+          # Avoid Alpine GitLab timeouts while keeping the same binary and checksum.
+          # This link comes from a comment at:
+          # https://github.com/jirutka/setup-alpine/issues/32
+          # TODO: ideally remove this if when the issue linked above has a less
+          # fragile solution
+          apk-tools-url: >-
+            https://raw.githubusercontent.com/quickjs-ng/apk-for-ci/ad4912db43383941249b342f23d6232b2046ffd5/apk.static#!sha256!34bb1a96f0258982377a289392d4ea9f3f4b767a4bb5806b1b87179b79ad8a1c
       - name: Alpine/musl versions . . .
         run: |
           cat /etc/alpine-release
@@ -48,8 +62,8 @@ jobs:
     env:
       CHERE_INVOKING: 1
     steps:
-      - uses: actions/checkout@v6
-      - uses: cygwin/cygwin-install-action@v6
+      - uses: actions/checkout@v7
+      - uses: cygwin/cygwin-install-action@v7
         with:
           packages: gcc-g++,libtool,autoconf,automake
       - name: Configure . . .
@@ -61,25 +75,20 @@ jobs:
       - name: Run the quick tests (ex:no-cygwin)
         run: ./test_all "[quick][exclude:no-cygwin]"
   macos:
-    name: "macOS-${{ matrix.os.arch }}"
-    runs-on: ${{ matrix.os.image_name }}
+    name: "macOS-arm"
+    runs-on: macos-latest
     timeout-minutes: 60
-    strategy:
-      matrix:
-        os:
-          - { image_name: macos-latest, arch: arm }
-          - { image_name: macos-15-intel, arch: x86 }
     env:
       CXX: ccache clang++
       CXXFLAGS: -fdiagnostics-color
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
           update_packager_index: false
           install_ccache: true
-          override_cache_key: "macos_${{ matrix.os.arch }}"
+          override_cache_key: "macos_arm"
       - name: Runner information . . .
         run: uname -a
       - name: Install dependencies . . .
@@ -107,7 +116,7 @@ jobs:
       GH_ACTIONS_TEST_PROG: test_all
       GH_ACTIONS_TEST_TAGS: "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Running the quick tests in libsemigroups-docker-x86-32-base docker container . . .
         run: |
           ci/launch-docker-container.sh
@@ -115,7 +124,7 @@ jobs:
     name: Ubuntu-arm
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -135,7 +144,7 @@ jobs:
     name: Ubuntu-aarch64
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: uraimo/run-on-arch-action@v3
         with:
           arch: aarch64
@@ -153,11 +162,11 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Test in FreeBSD
         uses: vmactions/freebsd-vm@v1
         with:
-          release: "14.3"
+          release: "15.1"
           usesh: true
           prepare: |
             pkg update -f
@@ -176,7 +185,7 @@ jobs:
       AUTOCONF_VERSION: 2.72
       AUTOMAKE_VERSION: 1.17
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Test in OpenBSD
         uses: vmactions/openbsd-vm@v1
         with:
@@ -190,3 +199,44 @@ jobs:
             make -j4
             make test_all -j4
             ./test_all [quick]
+  Windows:
+    name: Windows
+    timeout-minutes: 60
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sys:
+          - mingw64
+          - mingw32
+          - ucrt64
+          - clang64
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.sys }}
+          pacboy: |
+            ${{ matrix.sys == 'clang64' && 'clang:p' || 'gcc:p' }}
+          install: |
+            automake
+            autoconf
+            libtool
+            make
+      - name: Setup ccache
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          windows_compile_environment: msys2
+      - name: Build libsemigroups . . .
+        run: |
+          ./autogen.sh
+          ./configure ${{ matrix.sys == 'mingw32' && '--disable-hpcombi' || '' }} # hpcombi is not supported on 32-bit systems
+          make -j4
+      - name: Build test_all . . .
+        run: make test_all.exe -j4
+      - name: Run the quick tests . . .
+        run: ./test_all.exe "[quick][exclude:no-valgrind]"

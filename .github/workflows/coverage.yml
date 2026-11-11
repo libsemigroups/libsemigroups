@@ -20,7 +20,7 @@ jobs:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -32,11 +32,9 @@ jobs:
           sudo apt-get install -y lcov
       - name: Run quick tests . . .
         run: |
-          sudo ln -sf /usr/bin/gcov-13 /usr/bin/gcov
-          export GCOV=/usr/bin/gcov-13
           ci/test-code-coverage.sh test_all "[quick][exclude:no-valgrind][exclude:no-coverage]"
       - name: Uploading to Codecov . . .
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           fail_ci_if_error: true
           files: coverage.info
