@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout libsemigroups
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install git + autotools
         run: |
           sudo apt-get --yes update
@@ -69,7 +69,7 @@ jobs:
     name: GAP 4.15.1 / Semigroups / stable-5.6 / ubuntu / 64-bit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: "Install GAP"
         uses: gap-actions/setup-gap@v3
         with:

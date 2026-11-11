@@ -31,7 +31,7 @@ jobs:
       CXXFLAGS: -fdiagnostics-color
       CONFIGFLAGS: ${{ matrix.debug }} ${{ matrix.eigen }} ${{ matrix.hpcombi }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -86,7 +86,7 @@ jobs:
       # TODO is the next line really required?
       BACKWARD_CPPFLAGS: -I/home/runner/micromamba/envs/libsemigroups/include
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -129,7 +129,7 @@ jobs:
       CXXFLAGS: -fdiagnostics-color
       CONFIGFLAGS: ${{ matrix.popcnt }} ${{ matrix.clzll }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
