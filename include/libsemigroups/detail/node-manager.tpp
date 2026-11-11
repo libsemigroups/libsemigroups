@@ -56,15 +56,95 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "libsemigroups/detail/node-manager.hpp"
 namespace libsemigroups {
   namespace detail {
 
     ////////////////////////////////////////////////////////////////////////
-    // Typedefs/aliases
+    // Nested classes
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
-    constexpr Node NodeManager<Node>::_id_node;
+    struct NodeManager<Node>::Stats {
+      std::atomic_uint64_t num_nodes_active;
+      std::atomic_uint64_t num_nodes_defined;
+      std::atomic_uint64_t num_nodes_killed;
+
+      Stats() : num_nodes_active(), num_nodes_defined(), num_nodes_killed() {
+        init();
+      }
+
+      Stats& init() {
+        num_nodes_active  = 1;
+        num_nodes_defined = 1;
+        num_nodes_killed  = 0;
+        return *this;
+      }
+
+      Stats(Stats const& that)
+          : num_nodes_active(that.num_nodes_active.load()),
+            num_nodes_defined(that.num_nodes_defined.load()),
+            num_nodes_killed(that.num_nodes_killed.load()) {}
+
+      // Call the copy constructor
+      Stats(Stats&& that) : Stats(that) {}
+
+      Stats& operator=(Stats const& that) {
+        num_nodes_active  = that.num_nodes_active.load();
+        num_nodes_defined = that.num_nodes_defined.load();
+        num_nodes_killed  = that.num_nodes_killed.load();
+        return *this;
+      }
+
+      // Call the copy assignment operator
+      Stats& operator=(Stats&& that) {
+        return *this = that;
+      }
+    };  // struct NodeManager::Stats
+
+    template <typename Node>
+    struct NodeManager<Node>::ActiveNodesRange {
+      using output_type = node_type;
+
+      NodeManager const* _node_manager;
+      output_type        _current;
+
+      ActiveNodesRange() : _node_manager(nullptr), _current(UNDEFINED) {}
+
+      explicit ActiveNodesRange(NodeManager const* nm)
+          : _node_manager(nm), _current(nm->initial_node()) {}
+
+      [[nodiscard]] output_type get() const noexcept {
+        return _current;
+      }
+
+      void next() noexcept {
+        _current = _node_manager->next_active_node(_current);
+      }
+
+      [[nodiscard]] bool at_end() const noexcept {
+        return _node_manager == nullptr
+               || _current == _node_manager->first_free_node();
+      }
+
+      [[nodiscard]] size_t size_hint() const noexcept {
+        return _node_manager->number_of_nodes_active();
+      }
+
+      static constexpr bool is_finite     = true;
+      static constexpr bool is_idempotent = true;
+    };
+  }  // namespace detail
+}  // namespace libsemigroups
+
+// TODO replace uint32_t by Node
+template <>
+struct rx::is_input_range<
+    typename libsemigroups::detail::NodeManager<uint32_t>::ActiveNodesRange>
+    : std::true_type {};
+
+namespace libsemigroups {
+  namespace detail {
 
     ////////////////////////////////////////////////////////////////////////
     // Helper free function
@@ -80,61 +160,31 @@ namespace libsemigroups {
     // NodeManager - constructors - public
     ////////////////////////////////////////////////////////////////////////
     template <typename Node>
-    NodeManager<Node>::NodeManager()
-        :  // protected
-          _current(0),
-          _current_la(0),
-          // private
-          _bckwd(1, 0),
+    NodeManager<Node>::NodeManager(size_t num_nodes)
+        : _bckwd(1, 0),
+          _current(_id_node),
+          _current_la(_id_node),
           _first_free_node(UNDEFINED),
           _forwd(1, static_cast<Node>(UNDEFINED)),
-          _growth_factor(2.0),
           _ident(1, 0),
           _last_active_node(0),
-          _stats() {}
-
-    template <typename Node>
-    NodeManager<Node>& NodeManager<Node>::init() {
-      // protected
-      _current    = 0;
-      _current_la = 0;
-      // private
-      _bckwd.clear();
-      _bckwd.resize(1, 0);
-      _first_free_node = UNDEFINED;
-      _forwd.clear();
-      _forwd.resize(1, static_cast<Node>(UNDEFINED));
-      _growth_factor = 2.0;
-      _ident.clear();
-      _ident.resize(1, 0);
-      _last_active_node = 0;
-      _stats.init();
-      return *this;
+          _stats() {
+      LIBSEMIGROUPS_ASSERT(num_nodes > 0);
+      add_active_nodes(num_nodes - 1);
     }
 
     template <typename Node>
-    NodeManager<Node>::NodeManager(NodeManager const& that)
-        : _current(that._current),
-          _current_la(that._current_la),
-          _bckwd(that._bckwd),
-          _first_free_node(that._first_free_node),
-          _forwd(that._forwd),
-          _growth_factor(that._growth_factor),
-          _ident(that._ident),
-          _last_active_node(that._last_active_node),
-          _stats(that._stats) {}
-
-    template <typename Node>
-    NodeManager<Node>& NodeManager<Node>::operator=(NodeManager const& that) {
-      _current          = that._current;
-      _current_la       = that._current_la;
-      _bckwd            = that._bckwd;
-      _first_free_node  = that._first_free_node;
-      _forwd            = that._forwd;
-      _growth_factor    = that._growth_factor;
-      _ident            = that._ident;
-      _last_active_node = that._last_active_node;
-      _stats            = that._stats;
+    NodeManager<Node>& NodeManager<Node>::init(size_t num_nodes) {
+      _bckwd.assign(1, 0);
+      _current         = _id_node;
+      _current_la      = _id_node;
+      _first_free_node = UNDEFINED;
+      _forwd.assign(1, static_cast<Node>(UNDEFINED));
+      _ident.assign(1, 0);
+      _last_active_node = 0;
+      _stats.init();
+      LIBSEMIGROUPS_ASSERT(num_nodes > 0);
+      add_active_nodes(num_nodes - 1);
       return *this;
     }
 
@@ -154,16 +204,6 @@ namespace libsemigroups {
         pos++;
       }
       return pos;
-    }
-
-    template <typename Node>
-    NodeManager<Node>& NodeManager<Node>::growth_factor(float val) {
-      if (val < 1.0) {
-        LIBSEMIGROUPS_EXCEPTION("expected a value of at least 1.0, found %f",
-                                val);
-      }
-      _growth_factor = val;
-      return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -245,12 +285,17 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(std::unique(copy.begin(), copy.end()) == copy.end());
 #endif
       _first_free_node = UNDEFINED;
-      _forwd.erase(_forwd.begin() + number_of_nodes_active(), _forwd.end());
+
+      auto const n = number_of_nodes_active();
+
+      LIBSEMIGROUPS_ASSERT(_last_active_node < n);
+
+      _forwd.resize(n);
       _forwd[_last_active_node] = UNDEFINED;
       _forwd.shrink_to_fit();
-      _bckwd.erase(_bckwd.begin() + number_of_nodes_active(), _bckwd.end());
+      _bckwd.resize(n);
       _bckwd.shrink_to_fit();
-      _ident.erase(_ident.begin() + number_of_nodes_active(), _ident.end());
+      _ident.resize(n);
       _ident.shrink_to_fit();
 #ifdef LIBSEMIGROUPS_DEBUG
       debug_validate_forwd_bckwd();
@@ -259,81 +304,18 @@ namespace libsemigroups {
 
     template <typename Node>
     Node NodeManager<Node>::new_active_node() {
-      if (_first_free_node == UNDEFINED) {
-        // There are no free nodes to recycle: make new ones.
-        // It seems to be marginally faster to make lots like this, than to
-        // just make 1, in some examples, notably ToddCoxeterImpl 040
-        // (Walker 3).
-        add_free_nodes(growth_factor() * node_capacity());
-      }
+      LIBSEMIGROUPS_ASSERT(has_free_nodes());
       add_active_nodes(1);
       return _last_active_node;
     }
 
-    template <typename Node>
-    void NodeManager<Node>::switch_nodes(Node c, Node d) {
-      LIBSEMIGROUPS_ASSERT(is_active_node(c) || is_active_node(d));
-      Node fc = _forwd[c], fd = _forwd[d], bc = _bckwd[c], bd = _bckwd[d];
+    // The following was removed between v3.6.1 and v3.7.0, this comment
+    // remains as a reminder that it once existed.
+    // void NodeManager<Node>::switch_nodes(Node c, Node d)
 
-      if (fc != d) {
-        _forwd[d]  = fc;
-        _bckwd[c]  = bd;
-        _forwd[bd] = c;
-        if (fc != UNDEFINED) {
-          _bckwd[fc] = d;
-        }
-      } else {
-        _forwd[d] = c;
-        _bckwd[c] = d;
-      }
-
-      if (fd != c) {
-        _forwd[c]  = fd;
-        _bckwd[d]  = bc;
-        _forwd[bc] = d;
-        if (fd != UNDEFINED) {
-          _bckwd[fd] = c;
-        }
-      } else {
-        _forwd[c] = d;
-        _bckwd[d] = c;
-      }
-
-      if (!is_active_node(c)) {
-        _ident[d] = 0;
-        _ident[c] = c;
-      } else if (!is_active_node(d)) {
-        _ident[c] = 0;
-        _ident[d] = d;
-      }
-
-      _current          = ff(c, d, _current);
-      _last_active_node = ff(c, d, _last_active_node);
-      _first_free_node  = ff(c, d, _first_free_node);
-      // This is never called from lookahead so we don't have to update
-      // _current_la, also it might be that we are calling this after
-      // everything is finished and so _current may not be active.
-
-      LIBSEMIGROUPS_ASSERT(is_active_node(_last_active_node));
-      LIBSEMIGROUPS_ASSERT(!is_active_node(_first_free_node));
-    }
-
-    // The permutation p ^ -1 must map the active nodes to the [0, ..
-    // , number_of_nodes_active())
-    template <typename Node>
-    void NodeManager<Node>::apply_permutation(NodeManager::Perm p) {
-      size_t const n = p.size();
-      for (Node i = 0; i < n; ++i) {
-        Node current = i;
-        while (i != p[current]) {
-          size_t next = p[current];
-          switch_nodes(current, next);
-          p[current] = current;
-          current    = next;
-        }
-        p[current] = current;
-      }
-    }
+    // The following was removed between v3.6.1 and v3.7.0, this comment
+    // remains as a reminder that it once existed.
+    // void NodeManager<Node>::apply_permutation(NodeManager::Perm p)
 
     ////////////////////////////////////////////////////////////////////////
     // NodeManager - member functions - private

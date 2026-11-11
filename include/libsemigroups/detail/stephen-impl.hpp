@@ -41,6 +41,7 @@
 #include "libsemigroups/word-graph-class.hpp"      // for WordGraph
 #include "libsemigroups/word-graph-helpers.hpp"    // for word_graph_no_run
 
+#include "felsch-graph.hpp"             // for IgnoreDefinitions
 #include "node-managed-graph.hpp"       // for NodeMana...
 #include "node-manager.hpp"             // for NodeManager
 #include "report.hpp"                   // for report_n...
@@ -57,7 +58,7 @@
 // * idempotent() - just make the accept state = initial state.
 // * class_of for inverse StephenImpl (i.e. all walks in the graph through all
 // nodes) (not sure how to do this just yet). This is different than
-// words_accepted see Corollary 3.2 in StephenImpl's "Presentations of inverse
+// words_accepted see Corollary 3.2 in Stephen's "Presentations of inverse
 // monoids" paper (not thesis).
 // * canonical_form (as per Howie's book)
 
@@ -81,7 +82,7 @@ namespace libsemigroups {
       using node_type = word_graph_type::node_type;
 
      private:
-      class StephenGraph;  // forward decl
+      class Graph;  // forward decl
 
       // Data members
       node_type                         _accept_state;
@@ -90,7 +91,7 @@ namespace libsemigroups {
       std::shared_ptr<PresentationType> _internal_presentation;
       word_type                         _internal_word;
       bool                              _ticker_running;
-      StephenGraph                      _word_graph;
+      Graph                             _word_graph;
 
      public:
       StephenImpl();
@@ -200,8 +201,7 @@ namespace libsemigroups {
 
       void standardize() {
         word_graph::standardize_no_checks(_word_graph, LenLexCmp());
-        _word_graph.induced_subgraph_no_checks(
-            0, _word_graph.number_of_nodes_active());
+        _word_graph.erase_free_nodes();
       }
     };  // class StephenImpl
 

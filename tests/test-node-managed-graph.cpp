@@ -19,8 +19,10 @@
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint16_t, uint32_t
 
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/order.hpp"       // for LenLexCmp
+#include "libsemigroups/word-graph.hpp"  // for WordGraph, standardize_no_checks
 
+#include "libsemigroups/detail/felsch-graph.hpp"        // for IgnoreDefinitions
 #include "libsemigroups/detail/node-managed-graph.hpp"  // for NodeManagedGraph
 #include "libsemigroups/detail/report.hpp"              // for ReportGuard
 
@@ -71,17 +73,14 @@ namespace libsemigroups {
       REQUIRE(WordGraph(graph) == WordGraph<uint32_t>(initial));
     };
 
-    Graph graph(initial);
-    check(graph);
+    Graph graph;
     graph.init(initial);
     check(graph);
-    graph = initial;
-    check(graph);
 
-    graph = WordGraph<TestType>(3, 2);
+    graph.init(WordGraph<TestType>(3, 2));
     REQUIRE(graph.number_of_edges_active() == 0);
     REQUIRE(graph.count_number_of_edges_active() == 0);
-    graph = initial;
+    graph.init(initial);
     check(graph);
   }
 
@@ -89,14 +88,21 @@ namespace libsemigroups {
                           "002",
                           "redundant coincidences preserve active edge counts",
                           "[node-managed-graph][quick]") {
+    using detail::felsch_graph::IgnoreDefinitions;
+
     auto                rg = ReportGuard(false);
     WordGraph<uint32_t> initial(3, 2);
     initial.target(0, 0, 1);
     initial.target(0, 1, 2);
     initial.target(1, 0, 1);
     initial.target(2, 1, 2);
-    detail::NodeManagedGraph<uint32_t> graph(initial);
-    graph.large_collapse(GENERATE(size_t(1), size_t(2), size_t(100'000)));
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(initial);
+    graph.large_collapse(
+        LIBSEMIGROUPS_GENERATE(test::prefix("large_collapse = "),
+                               size_t(1),
+                               size_t(2),
+                               size_t(100'000)));
 
     SECTION("equal nodes") {
       graph.merge_nodes_no_checks(1, 1);
@@ -105,7 +111,7 @@ namespace libsemigroups {
     }
     SECTION("nodes with equal representatives") {
       graph.merge_nodes_no_checks(1, 2);
-      REQUIRE(graph.process_coincidences());
+      REQUIRE(graph.process_coincidences(IgnoreDefinitions{}));
       REQUIRE(graph.number_of_edges_active()
               == graph.count_number_of_edges_active());
       graph.merge_nodes_no_checks(1, 2);
@@ -127,5 +133,127 @@ namespace libsemigroups {
             == graph.count_number_of_edges_active());
     REQUIRE(graph.number_of_nodes_active() == nodes);
     REQUIRE(WordGraph(graph) == before);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "003",
+                          "default construction creates an active root",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    REQUIRE(graph.number_of_nodes() == 1);
+    REQUIRE(graph.is_active_node(0));
+
+    auto const node = graph.new_node();
+    REQUIRE(node == 1);
+    REQUIRE(node < graph.number_of_nodes());
+    REQUIRE(graph.is_active_node(node));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "004",
+                          "sized initialization resets graph state",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(2, 1);
+    graph.target_no_checks(0, 0, 1);
+    graph.merge_nodes_no_checks(0, 1);
+
+    graph.init(3, 2);
+    REQUIRE(graph.number_of_nodes() == 3);
+    REQUIRE(graph.node_capacity() == 3);
+    REQUIRE(graph.number_of_nodes_active() == 3);
+    REQUIRE(graph.out_degree() == 2);
+    REQUIRE(graph.number_of_edges() == 0);
+    REQUIRE(graph.number_of_edges_active() == 0);
+    REQUIRE(graph.number_of_coincidences() == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "005",
+                          "batch activation clears recycled rows",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(3, 1);
+    graph.target_no_checks(0, 0, 2);
+    graph.target_no_checks(2, 0, 1);
+    graph.merge_nodes_no_checks(1, 2);
+    REQUIRE(
+        graph.process_coincidences(detail::felsch_graph::IgnoreDefinitions{}));
+    REQUIRE_FALSE(graph.is_active_node(2));
+
+    graph.add_active_nodes(2);
+    REQUIRE(graph.number_of_nodes() == 4);
+    REQUIRE(graph.number_of_nodes() == graph.node_capacity());
+    REQUIRE(graph.number_of_nodes_active() == 4);
+    REQUIRE(graph.target_no_checks(2, 0) == UNDEFINED);
+    REQUIRE(graph.first_source_no_checks(2, 0) == UNDEFINED);
+    REQUIRE(graph.count_number_of_edges_active()
+            == graph.number_of_edges_active());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "006",
+                          "erasing free nodes trims graph rows and capacity",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(2, 1);
+    graph.target_no_checks(0, 0, 1);
+    graph.add_free_nodes(5);
+    graph.erase_free_nodes();
+
+    REQUIRE(graph.number_of_nodes() == 2);
+    REQUIRE(graph.node_capacity() == 2);
+    REQUIRE(graph.target_no_checks(0, 0) == 1);
+    REQUIRE(graph.number_of_edges_active() == 1);
+
+    auto const node = graph.new_node();
+    REQUIRE(node == 2);
+    REQUIRE(node < graph.number_of_nodes());
+    REQUIRE(graph.number_of_nodes() == graph.node_capacity());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "007",
+                          "standardization preserves the lookahead cursor",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph;
+    graph.init(4, 1);
+    graph.target_no_checks(0, 0, 3);
+    graph.target_no_checks(3, 0, 2);
+    graph.merge_nodes_no_checks(0, 1);
+    REQUIRE(
+        graph.process_coincidences(detail::felsch_graph::IgnoreDefinitions{}));
+
+    SECTION("cursor points to an active node") {
+      graph.lookahead_cursor() = 3;
+      REQUIRE(word_graph::standardize_no_checks(graph, LenLexCmp()).first);
+      REQUIRE(graph.lookahead_cursor() == 1);
+    }
+    SECTION("cursor points past the active nodes") {
+      graph.lookahead_cursor() = graph.first_free_node();
+      REQUIRE(word_graph::standardize_no_checks(graph, LenLexCmp()).first);
+      REQUIRE(graph.lookahead_cursor() == graph.first_free_node());
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("NodeManagedGraph",
+                          "008",
+                          "target setters maintain the active edge count",
+                          "[node-managed-graph][quick]") {
+    detail::NodeManagedGraph<uint32_t> graph(3, 1);
+
+    SECTION("checked setter") {
+      graph.target(0, 0, 1);
+      REQUIRE(graph.number_of_edges_active() == 1);
+      graph.target(0, 0, 2);
+    }
+    SECTION("unchecked setter") {
+      graph.target_no_checks(0, 0, 1);
+      REQUIRE(graph.number_of_edges_active() == 1);
+      graph.target_no_checks(0, 0, 2);
+    }
+
+    REQUIRE(graph.target(0, 0) == 2);
+    REQUIRE(graph.number_of_edges_active() == 1);
   }
 }  // namespace libsemigroups

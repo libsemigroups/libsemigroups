@@ -20,8 +20,6 @@
 // NodeManagedGraph instances.
 //
 // TODO(later) combine NodeManager and NodeManagedGraph
-// TODO(later) de-template this, we only ever use uint32_t for these so no point
-// in having it templated.
 
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
@@ -36,7 +34,7 @@
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT/DEBUG
 #include "libsemigroups/exception.hpp"  // for LISEMIGROUPS_EXCEPTION
-#include "libsemigroups/ranges.hpp"
+#include "libsemigroups/ranges.hpp"     // for rx::is_input_range
 
 namespace libsemigroups {
   namespace detail {
@@ -48,82 +46,40 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       using node_type = Node;
-      using Perm      = std::vector<node_type>;
-
-      ////////////////////////////////////////////////////////////////////////
-      // NodeManager - data - protected
-      ////////////////////////////////////////////////////////////////////////
-     protected:
-      node_type _current;
-      node_type _current_la;
 
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - data - private
       ////////////////////////////////////////////////////////////////////////
      private:
+      struct Stats;             // forward decl
+      struct ActiveNodesRange;  // forward decl
+
       static constexpr node_type _id_node = 0;
 
       std::vector<node_type>         _bckwd;
+      node_type                      _current;
+      node_type                      _current_la;
       node_type                      _first_free_node;
       std::vector<node_type>         _forwd;
-      float                          _growth_factor;
       mutable std::vector<node_type> _ident;
       node_type                      _last_active_node;
-
-      struct Stats {
-        std::atomic_uint64_t num_nodes_active;
-        std::atomic_uint64_t num_nodes_defined;
-        std::atomic_uint64_t num_nodes_killed;
-
-        Stats() : num_nodes_active(), num_nodes_defined(), num_nodes_killed() {
-          init();
-        }
-
-        Stats& init() {
-          num_nodes_active  = 1;
-          num_nodes_defined = 1;
-          num_nodes_killed  = 0;
-          return *this;
-        }
-
-        Stats(Stats const& that)
-            : num_nodes_active(that.num_nodes_active.load()),
-              num_nodes_defined(that.num_nodes_defined.load()),
-              num_nodes_killed(that.num_nodes_killed.load()) {}
-
-        Stats(Stats&& that)
-            : num_nodes_active(that.num_nodes_active.load()),
-              num_nodes_defined(that.num_nodes_defined.load()),
-              num_nodes_killed(that.num_nodes_killed.load()) {}
-
-        Stats& operator=(Stats const& that) {
-          num_nodes_active  = that.num_nodes_active.load();
-          num_nodes_defined = that.num_nodes_defined.load();
-          num_nodes_killed  = that.num_nodes_killed.load();
-          return *this;
-        }
-
-        Stats& operator=(Stats&& that) {
-          num_nodes_active  = that.num_nodes_active.load();
-          num_nodes_defined = that.num_nodes_defined.load();
-          num_nodes_killed  = that.num_nodes_killed.load();
-          return *this;
-        }
-      } _stats;
+      Stats                          _stats;
 
      public:
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - constructors + destructor - public
       ////////////////////////////////////////////////////////////////////////
 
-      NodeManager();
-      NodeManager& init();
+      // Construct with given number of active nodes
+      explicit NodeManager(size_t num_nodes = 1);
+      // Re-init with given number of active nodes
+      NodeManager& init(size_t num_nodes = 1);
 
-      NodeManager(NodeManager const& that);
-      NodeManager(NodeManager&&) = default;
+      NodeManager(NodeManager const& that) = default;
+      NodeManager(NodeManager&&)           = default;
 
-      NodeManager& operator=(NodeManager const& that);
-      NodeManager& operator=(NodeManager&&) = default;
+      NodeManager& operator=(NodeManager const& that) = default;
+      NodeManager& operator=(NodeManager&&)           = default;
 
       ~NodeManager();
 
@@ -131,78 +87,79 @@ namespace libsemigroups {
       // NodeManager - member functions - public
       ////////////////////////////////////////////////////////////////////////
 
-      node_type& cursor() {
+      [[nodiscard]] node_type& cursor() {
         return _current;
       }
 
-      node_type& lookahead_cursor() {
-        return _current_la;
-      }
-
-      node_type const& lookahead_cursor() const {
+      [[nodiscard]] node_type& lookahead_cursor() {
         return _current_la;
       }
 
       // std::vector::size is noexcept
-      inline size_t node_capacity() const noexcept {
+      [[nodiscard]] inline size_t node_capacity() const noexcept {
         return _forwd.size();
       }
 
-      inline node_type first_free_node() const noexcept {
+      [[nodiscard]] inline node_type first_free_node() const noexcept {
         return _first_free_node;
       }
 
-      inline bool has_free_nodes() const noexcept {
+      [[nodiscard]] inline bool has_free_nodes() const noexcept {
         return _first_free_node != UNDEFINED;
       }
 
       // not noexcept since std::vector::operator[] isn't.
-      inline bool is_active_node(node_type c) const {
+      [[nodiscard]] inline bool is_active_node(node_type c) const {
         LIBSEMIGROUPS_ASSERT(c < _ident.size() || c == UNDEFINED);
         return c != UNDEFINED && _ident[c] == c;
       }
 
       [[nodiscard]] size_t position_of_node(node_type n) const;
 
-      inline bool is_valid_node(node_type c) const noexcept {
+      [[nodiscard]] inline bool is_valid_node(node_type c) const noexcept {
         return c < _forwd.size();
       }
 
       // not noexcept since std::vector::operator[] isn't.
-      inline node_type next_active_node(node_type c) const {
+      [[nodiscard]] inline node_type next_active_node(node_type c) const {
         return _forwd[c];
       }
 
       // Note that these iterators are invalidated by any changes to the
       // container, i.e. they can't be used as a substitute for cursors.
-      auto cbegin_active_nodes() const {
+      [[nodiscard]] auto cbegin_active_nodes() const {
         return rx::begin(ActiveNodesRange(this));
       }
 
       // Note that these iterators are invalidated by any changes to the
       // container, i.e. they can't be used as a substitute for cursors.
-      auto cend_active_nodes() const {
+      [[nodiscard]] auto cend_active_nodes() const {
         return rx::end(ActiveNodesRange(this));
       }
 
-      inline uint64_t number_of_nodes_active() const noexcept {
+      [[nodiscard]] inline uint64_t number_of_nodes_active() const noexcept {
         return _stats.num_nodes_active;
       }
 
-      inline uint64_t number_of_nodes_defined() const noexcept {
+      [[nodiscard]] inline uint64_t number_of_nodes_defined() const noexcept {
         return _stats.num_nodes_defined;
       }
 
-      inline uint64_t number_of_nodes_killed() const noexcept {
+      [[nodiscard]] inline uint64_t number_of_nodes_killed() const noexcept {
         return _stats.num_nodes_killed;
       }
 
-      NodeManager& growth_factor(float val);
-
-      float growth_factor() const noexcept {
-        return _growth_factor;
+      [[nodiscard]] ActiveNodesRange active_nodes() const {
+        return ActiveNodesRange(this);
       }
 
+      [[nodiscard]] constexpr node_type initial_node() const noexcept {
+        return _id_node;
+      }
+
+      [[nodiscard]] node_type max_active_node() const noexcept;
+
+     protected:
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - member functions - protected
       ////////////////////////////////////////////////////////////////////////
@@ -222,7 +179,7 @@ namespace libsemigroups {
 
       // not noexcept since std::vector::operator[] isn't.
 
-      inline node_type find_node(node_type c) const {
+      [[nodiscard]] inline node_type find_node(node_type c) const {
         LIBSEMIGROUPS_ASSERT(is_valid_node(c));
         while (true) {
           node_type d = _ident[c];
@@ -236,92 +193,33 @@ namespace libsemigroups {
           _ident[c] = e;
           c         = e;
         }
-        LIBSEMIGROUPS_ASSERT(is_active_node(c));
-        return c;
       }
 
-      void      add_active_nodes(size_t);
-      void      add_free_nodes(size_t);
-      void      erase_free_nodes();
-      node_type new_active_node();
-
-      // TODO rename -> swap_nodes_no_checks
-      void switch_nodes(node_type const, node_type const);
-      // TODO rename -> permute_nodes_no_checks
-      void apply_permutation(Perm p);
+      void                    add_active_nodes(size_t);
+      void                    add_free_nodes(size_t);
+      void                    erase_free_nodes();
+      [[nodiscard]] node_type new_active_node();
 
       void clear();
       void compact();
 
       // not noexcept since std::vector::operator[] isn't.
       void free_node(node_type const);
-
-      constexpr node_type initial_node() const noexcept {
-        return _id_node;
-      }
-
-      [[nodiscard]] node_type max_active_node() const noexcept;
-
-     private:
-      void compact(size_t N);
-
-      struct ActiveNodesRange {
-        using output_type = node_type;
-
-        NodeManager const* _node_manager;
-        output_type        _current;
-
-        ActiveNodesRange() : _node_manager(nullptr), _current(UNDEFINED) {}
-
-        explicit ActiveNodesRange(NodeManager const* nm)
-            : _node_manager(nm), _current(nm->initial_node()) {}
-
-        output_type get() const noexcept {
-          return _current;
-        }
-
-        void next() noexcept {
-          _current = _node_manager->next_active_node(_current);
-        }
-
-        bool at_end() const noexcept {
-          return _node_manager == nullptr
-                 || _current == _node_manager->first_free_node();
-        }
-
-        size_t size_hint() const noexcept {
-          return _node_manager->number_of_nodes_active();
-        }
-
-        static constexpr bool is_finite     = true;
-        static constexpr bool is_idempotent = true;
-      };
-
-     public:
-      ActiveNodesRange active_nodes() const {
-        return ActiveNodesRange(this);
-      }
-
 #ifdef LIBSEMIGROUPS_DEBUG
 
-     protected:
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - member functions (debug only) - protected
       ////////////////////////////////////////////////////////////////////////
       void debug_validate_forwd_bckwd() const;
 #endif
+
+     private:
+      void compact(size_t N);
     };
 
   }  // namespace detail
 }  // namespace libsemigroups
 
-#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-// TODO replace uint32_t by Node
-template <>
-struct rx::is_input_range<
-    typename libsemigroups::detail::NodeManager<uint32_t>::ActiveNodesRange>
-    : std::true_type {};
-#endif
 #include "node-manager.tpp"
 
 #endif  // LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_

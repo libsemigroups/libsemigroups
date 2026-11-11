@@ -31,189 +31,154 @@
 #ifndef LIBSEMIGROUPS_DETAIL_WORD_GRAPH_WITH_SOURCES_HPP_
 #define LIBSEMIGROUPS_DETAIL_WORD_GRAPH_WITH_SOURCES_HPP_
 
-// TODO:
-// * test file
-// * doc
-// * add _no_checks where appropriate
-
 #include <cstddef>  // for size_t
-#include <stack>    // for stack
+#include <cstdint>  // for uint64_t
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/constants.hpp"   // for UNDEFINED
-#include "libsemigroups/types.hpp"       // for letter_type
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/constants.hpp"         // for UNDEFINED
+#include "libsemigroups/debug.hpp"             // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/exception.hpp"         // for throw_if_not_less
+#include "libsemigroups/types.hpp"             // for letter_type
+#include "libsemigroups/word-graph-class.hpp"  // for WordGraph
 
 #include "containers.hpp"  // for DynamicArray2
 
-namespace libsemigroups {
+namespace libsemigroups::detail {
 
-  namespace detail {
-    template <typename Node>
-    class WordGraphWithSources : public WordGraph<Node> {
-     public:
-      using node_type  = Node;
-      using label_type = typename WordGraph<Node>::label_type;
-      using size_type  = typename WordGraph<Node>::size_type;
+  template <typename Node>
+  class WordGraphWithSources : public WordGraph<Node> {
+   public:
+    using node_type  = Node;
+    using label_type = typename WordGraph<Node>::label_type;
+    using size_type  = typename WordGraph<Node>::size_type;
 
-     private:
-      detail::DynamicArray2<node_type> _preim_init;
-      detail::DynamicArray2<node_type> _preim_next;
+   private:
+    DynamicArray2<node_type> _preim_init;
+    DynamicArray2<node_type> _preim_next;
 
-     public:
-      // So that we can use out_degree and number_of_nodes in assertions
-      using WordGraph<Node>::out_degree;
-      using WordGraph<Node>::number_of_nodes;
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors + initializers
+    ////////////////////////////////////////////////////////////////////////
 
-      explicit WordGraphWithSources(size_type m = 0, size_type n = 0)
-          : WordGraph<node_type>(m, n),
-            _preim_init(n, m, UNDEFINED),
-            _preim_next(n, m, UNDEFINED) {}
+    explicit WordGraphWithSources(size_type num_nodes = 0, size_type degree = 0)
+        : WordGraph<node_type>(num_nodes, degree),
+          _preim_init(degree, num_nodes, UNDEFINED),
+          _preim_next(degree, num_nodes, UNDEFINED) {}
 
-      void init(size_type m = 0, size_type n = 0);
+    WordGraphWithSources& init(size_type num_nodes = 0, size_type degree = 0) {
+      WordGraph<node_type>::init(num_nodes, degree);
+      _preim_init.reshape(degree, num_nodes);
+      _preim_next.reshape(degree, num_nodes);
+      return *this;
+    }
 
-      template <typename ThatNode>
-      explicit WordGraphWithSources(WordGraph<ThatNode> const& that);
+    explicit WordGraphWithSources(WordGraph<Node> const& that);
+    void init(WordGraph<Node> const& that);
 
-      template <typename ThatNode>
-      void init(WordGraph<ThatNode> const& that);
+    WordGraphWithSources(WordGraphWithSources&&)                 = default;
+    WordGraphWithSources(WordGraphWithSources const&)            = default;
+    WordGraphWithSources& operator=(WordGraphWithSources const&) = default;
+    WordGraphWithSources& operator=(WordGraphWithSources&&)      = default;
 
-      template <typename ThatNode>
-      explicit WordGraphWithSources(WordGraph<ThatNode>&& that);
+    ~WordGraphWithSources();
 
-      template <typename ThatNode>
-      void init(WordGraph<ThatNode>&& that);
+    ////////////////////////////////////////////////////////////////////////
+    // WordGraph mem fns used as is or deleted
+    ////////////////////////////////////////////////////////////////////////
 
-      WordGraphWithSources(WordGraphWithSources&&)                 = default;
-      WordGraphWithSources(WordGraphWithSources const&)            = default;
-      WordGraphWithSources& operator=(WordGraphWithSources const&) = default;
-      WordGraphWithSources& operator=(WordGraphWithSources&&)      = default;
+    using WordGraph<Node>::out_degree;
+    using WordGraph<Node>::number_of_nodes;
+    // for the 2-arg version only see below
+    using WordGraph<Node>::target;
+    // for the 2-arg version only see below
+    using WordGraph<Node>::target_no_checks;
 
-      ~WordGraphWithSources();
+    // We keep the following mem fns of WordGraph hidden, since calling
+    // them on a WordGraphWithSources <wgws> will render <wgws> invalid.
+    WordGraph<Node>& add_to_out_degree(size_type) = delete;
+    WordGraph<Node>& disjoint_union_inplace_no_checks(WordGraph<Node> const&)
+        = delete;
+    WordGraph<Node>& disjoint_union_inplace(WordGraph<Node> const&) = delete;
+    WordGraph<Node>& induced_subgraph(node_type, node_type)         = delete;
+    WordGraph<Node>& remove_all_targets()                           = delete;
+    WordGraph<Node>& remove_target(node_type, label_type)           = delete;
+    WordGraph<Node>& remove_label_no_checks(label_type)             = delete;
+    WordGraph<Node>& remove_label(label_type)                       = delete;
+    WordGraph<Node>& reserve(size_type, size_type)                  = delete;
+    WordGraph<Node>& standardize_no_checks()                        = delete;
+    WordGraph<Node>& swap_targets_no_checks()                       = delete;
+    WordGraph<Node>& swap_targets()                                 = delete;
 
-      // the template is for uniformity of interface with FelschGraph
-      template <bool = true>
-      void target_no_checks(node_type c, label_type x, node_type d) noexcept {
-        LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-        LIBSEMIGROUPS_ASSERT(x < out_degree());
-        LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
-        WordGraph<node_type>::target_no_checks(c, x, d);
-        add_source_no_checks(d, x, c);
-      }
+    ////////////////////////////////////////////////////////////////////////
+    // WordGraph mem fns with a specialization
+    ////////////////////////////////////////////////////////////////////////
 
-      // Can't use using WordGraph<node_type>::target here because it doesn't
-      // work (compiles but run time error, probably confusing the function
-      // above with the WordGraph<node_type> function of the same name
-      [[nodiscard]] node_type target(node_type v, label_type lbl) const {
-        return WordGraph<node_type>::target(v, lbl);
-      }
+    WordGraphWithSources& add_nodes(size_type m);
 
-      [[nodiscard]] node_type target_no_checks(node_type  v,
-                                               label_type lbl) const {
-        return WordGraph<node_type>::target_no_checks(v, lbl);
-      }
+    // Every defined target of a node in [first, last) must also lie in that
+    // range.
+    WordGraphWithSources& induced_subgraph_no_checks(node_type first,
+                                                     node_type last);
 
-      void remove_target_no_checks(node_type c, label_type x) noexcept {
-        LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-        LIBSEMIGROUPS_ASSERT(x < out_degree());
-        remove_source_no_checks(WordGraph<Node>::target_no_checks(c, x), x, c);
-        WordGraph<node_type>::remove_target_no_checks(c, x);
-      }
+    // The permutation q must map the valid nodes to the [0, .. , n), where
+    // n is the number of valid nodes, and p = q ^ -1. The vector q is not
+    // const because it is modified in-place.
+    WordGraphWithSources&
+    permute_nodes_no_checks(std::vector<node_type> const& p,
+                            std::vector<node_type>&       q,
+                            size_t                        n);
 
-      void add_nodes(size_type m) {
-        WordGraph<node_type>::add_nodes(m);
-        _preim_init.add_rows(m);
-        _preim_next.add_rows(m);
-      }
+    WordGraphWithSources& remove_target_no_checks(node_type  s,
+                                                  label_type a) noexcept;
 
-      void add_to_out_degree(size_type m) {
-        _preim_init.add_cols(m);
-        _preim_next.add_cols(m);
-        WordGraph<node_type>::add_to_out_degree(m);
-      }
+    WordGraphWithSources& target_no_checks(node_type  s,
+                                           label_type a,
+                                           node_type  t) noexcept;
 
-      inline node_type first_source_no_checks(node_type   c,
-                                              letter_type x) const noexcept {
-        LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-        LIBSEMIGROUPS_ASSERT(x < out_degree());
-        LIBSEMIGROUPS_ASSERT(c < _preim_init.number_of_rows());
-        LIBSEMIGROUPS_ASSERT(x < _preim_init.number_of_cols());
-        return _preim_init.get(c, x);
-      }
+    WordGraphWithSources& target(node_type s, label_type a, node_type t);
 
-      inline node_type next_source_no_checks(node_type   c,
-                                             letter_type x) const noexcept {
-        LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-        LIBSEMIGROUPS_ASSERT(x < out_degree());
-        LIBSEMIGROUPS_ASSERT(c < _preim_next.number_of_rows());
-        LIBSEMIGROUPS_ASSERT(x < _preim_next.number_of_cols());
-        return _preim_next.get(c, x);
-      }
+    ////////////////////////////////////////////////////////////////////////
+    // WordGraphWithSources specific mem fns
+    ////////////////////////////////////////////////////////////////////////
 
-      void induced_subgraph_no_checks(node_type first, node_type last);
+    [[nodiscard]] inline node_type
+    first_source_no_checks(node_type s, letter_type a) const noexcept {
+      LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(a < out_degree());
+      return _preim_init.get(s, a);
+    }
 
-      // The permutation q must map the valid nodes to the [0, .. , n), where
-      // n is the number of valid nodes, and p = q ^ -1. The vector q is not
-      // const because it is modified in-place.
-      void permute_nodes_no_checks(std::vector<node_type> const& p,
-                                   std::vector<node_type>&       q,
-                                   size_t                        n);
+    // s must belong to a source list for label a.
+    [[nodiscard]] inline node_type
+    next_source_no_checks(node_type s, letter_type a) const noexcept {
+      LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(a < out_degree());
+      return _preim_next.get(s, a);
+    }
 
-      // Swaps valid nodes c and d, if c or d is not valid, then this will
-      // fail spectacularly (no checks are performed)
-      void swap_nodes_no_checks(node_type c, node_type d);
+    // The caller must treat max as invalid after the merge.
+    // Returns the number of edges removed.
+    template <typename NewEdgeFunc, typename IncompatibleFunc>
+    [[nodiscard]] uint64_t merge_nodes_no_checks(node_type          min,
+                                                 node_type          max,
+                                                 NewEdgeFunc&&      new_edge,
+                                                 IncompatibleFunc&& incompat);
 
-      // Rename c to d, i.e. node d has the exact same in- and out-neighbours
-      // as c after this is called. Assumed that c is valid when this function
-      // is called, and that d is valid after it is called. This is a
-      // one-sided version of swap nodes.
-      void rename_node_no_checks(node_type c, node_type d);
+   protected:
+    // Only valid to insert s as a source of t if it isn't in the list of
+    // sources already!!
+    void add_source_no_checks(node_type t, label_type a, node_type s) noexcept;
+    void remove_all_sources_and_targets_no_checks(node_type n);
+    void remove_all_sources_no_checks(node_type n);
 
-      // Returns the number of edges removed
-      template <typename NewEdgeFunc, typename IncompatibleFunc>
-      uint64_t merge_nodes_no_checks(node_type          min,
-                                     node_type          max,
-                                     NewEdgeFunc&&      new_edge,
-                                     IncompatibleFunc&& incompat);
-
-      // Is d a source of c under x? This is costly!
-      bool is_source_no_checks(node_type c, label_type x, node_type d) const;
-
-      void remove_all_sources_and_targets_no_checks(node_type c);
-      void remove_all_sources_no_checks(node_type c);
-
-      void add_source_no_checks(node_type  c,
-                                label_type x,
-                                node_type  d) noexcept;
-
-      template <typename It>
-      void rebuild_sources_no_checks(It first, It last);
-
-      // TODO to cpp/tpp file
-      void disjoint_union_inplace_no_checks(WordGraph<Node> const& that) {
-        size_t N = number_of_nodes();
-        add_nodes(that.number_of_nodes());
-        for (auto s : that.nodes()) {
-          for (auto [a, t] : that.labels_and_targets_no_checks(s)) {
-            if (t != UNDEFINED) {
-              target_no_checks(s + N, a, t + N);
-            }
-          }
-        }
-      }
-
-     private:
-      void remove_source_no_checks(node_type cx, label_type x, node_type d);
-      void replace_target_no_checks(node_type c, label_type x, node_type d);
-      void replace_source_no_checks(node_type  c,
-                                    node_type  d,
-                                    label_type x,
-                                    node_type  cx);
-    };
-  }  // namespace detail
-}  // namespace libsemigroups
+   private:
+    void populate_sources_no_checks();
+    void remove_source_no_checks(node_type t, label_type a, node_type s);
+  };
+  // class WordGraphWithSources
+}  // namespace libsemigroups::detail
 
 #include "word-graph-with-sources.tpp"
 

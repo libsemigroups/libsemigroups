@@ -5456,7 +5456,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 01_w, 1_w);
     presentation::add_rule(p, 11_w, 10_w);
     ToddCoxeter tc(twosided, p);
-    tc.save(GENERATE(false, true));
+    tc.save(LIBSEMIGROUPS_GENERATE(test::prefix("save = "), false, true));
     tc.standardize(Order::lenlex);
 
     auto const& graph = tc.current_word_graph();
@@ -5494,10 +5494,13 @@ namespace libsemigroups {
     REQUIRE(graph.current_spanning_tree().parent(3) == 2);
     tc.strategy(options::strategy::lookahead);
     tc.lookahead_extent(options::lookahead_extent::full);
-    tc.lookahead_style(GENERATE(options::lookahead_style::hlt,
-                                options::lookahead_style::felsch));
-    tc.def_version(
-        GENERATE(options::def_version::one, options::def_version::two));
+    tc.lookahead_style(
+        LIBSEMIGROUPS_GENERATE(test::prefix("lookahead_style = "),
+                               options::lookahead_style::hlt,
+                               options::lookahead_style::felsch));
+    tc.def_version(LIBSEMIGROUPS_GENERATE(test::prefix("def_version = "),
+                                          options::def_version::one,
+                                          options::def_version::two));
     tc.run_until([] { return false; });
 
     REQUIRE(graph.number_of_nodes_active() == 4);
@@ -5524,17 +5527,20 @@ namespace libsemigroups {
     ToddCoxeter<word_type> tc;
     tc.init(twosided, p, initial);
     tc.standardize(Order::lex);
-    tc.def_version(
-        GENERATE(options::def_version::one, options::def_version::two));
+    tc.def_version(LIBSEMIGROUPS_GENERATE(test::prefix("def_version = "),
+                                          options::def_version::one,
+                                          options::def_version::two));
     SECTION("HLT") {
       tc.strategy(options::strategy::hlt);
-      tc.save(GENERATE(false, true));
+      tc.save(LIBSEMIGROUPS_GENERATE(test::prefix("save = "), false, true));
     }
     SECTION("lookahead") {
       tc.strategy(options::strategy::lookahead);
       tc.lookahead_extent(options::lookahead_extent::full);
-      tc.lookahead_style(GENERATE(options::lookahead_style::hlt,
-                                  options::lookahead_style::felsch));
+      tc.lookahead_style(
+          LIBSEMIGROUPS_GENERATE(test::prefix("lookahead_style = "),
+                                 options::lookahead_style::hlt,
+                                 options::lookahead_style::felsch));
     }
 
     auto const& graph = tc.current_word_graph();
@@ -5568,11 +5574,15 @@ namespace libsemigroups {
     tc.standardize(Order::lenlex);
     tc.strategy(options::strategy::lookahead);
     tc.lookahead_extent(options::lookahead_extent::full);
-    tc.lookahead_style(GENERATE(options::lookahead_style::hlt,
-                                options::lookahead_style::felsch));
-    tc.def_version(
-        GENERATE(options::def_version::one, options::def_version::two));
-    tc.large_collapse(GENERATE(size_t(1), size_t(100'000)));
+    tc.lookahead_style(
+        LIBSEMIGROUPS_GENERATE(test::prefix("lookahead_style = "),
+                               options::lookahead_style::hlt,
+                               options::lookahead_style::felsch));
+    tc.def_version(LIBSEMIGROUPS_GENERATE(test::prefix("def_version = "),
+                                          options::def_version::one,
+                                          options::def_version::two));
+    tc.large_collapse(LIBSEMIGROUPS_GENERATE(
+        test::prefix("large_collapse = "), size_t(1), size_t(100'000)));
 
     auto const& graph = tc.current_word_graph();
     REQUIRE(graph.number_of_edges_active() == 4);
@@ -5604,10 +5614,13 @@ namespace libsemigroups {
 
     ToddCoxeter<word_type> tc;
     tc.init(twosided, p, initial);
-    auto const style = GENERATE(options::lookahead_style::hlt,
-                                options::lookahead_style::felsch);
-    auto const version
-        = GENERATE(options::def_version::one, options::def_version::two);
+    auto const style
+        = LIBSEMIGROUPS_GENERATE(test::prefix("lookahead_style = "),
+                                 options::lookahead_style::hlt,
+                                 options::lookahead_style::felsch);
+    auto const version = LIBSEMIGROUPS_GENERATE(test::prefix("def_version = "),
+                                                options::def_version::one,
+                                                options::def_version::two);
     tc.strategy(options::strategy::felsch)
         .lookahead_extent(options::lookahead_extent::full)
         .lookahead_style(style)
@@ -5724,7 +5737,7 @@ namespace libsemigroups {
       REQUIRE_FALSE(transferred->finished());
       REQUIRE(transferred->number_of_generating_pairs() == 3);
       REQUIRE(transferred->generating_pairs()
-              == std::vector<word_type>{0_w, 1_w, 00_w, 0_w, 01_w, 0_w});
+              == std::vector({0_w, 1_w, 00_w, 0_w, 01_w, 0_w}));
       REQUIRE(transferred->def_max() == 2);
       REQUIRE(transferred->def_policy() == options::def_policy::unlimited);
       REQUIRE(transferred->current_word_graph().definitions().any_skipped());
@@ -5766,7 +5779,8 @@ namespace libsemigroups {
       });
       REQUIRE_FALSE(original.finished());
       REQUIRE(original.current_word_graph().number_of_nodes_active() == 3);
-      WordGraph<uint32_t> const graph(original.current_word_graph());
+      WordGraph const graph(original.current_word_graph());
+
       SECTION("copy constructor") {
         transferred = std::make_unique<TC>(original);
       }
@@ -5802,7 +5816,7 @@ namespace libsemigroups {
     REQUIRE(transferred->number_of_classes() == 7);
     check_complete_compatible(*transferred);
     REQUIRE((normal_forms(*transferred) | to_vector())
-            == std::vector<word_type>{
-                word_type(), 0_w, 00_w, 000_w, 0000_w, 00000_w, 000000_w});
+            == std::vector(
+                {word_type(), 0_w, 00_w, 000_w, 0000_w, 00000_w, 000000_w}));
   }
 }  // namespace libsemigroups

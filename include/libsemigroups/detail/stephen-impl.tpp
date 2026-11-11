@@ -22,56 +22,53 @@ namespace libsemigroups {
   namespace detail {
 
     template <typename PresentationType>
-    class StephenImpl<PresentationType>::StephenGraph
+    class StephenImpl<PresentationType>::Graph
         : public detail::NodeManagedGraph<uint32_t> {
-      using WordGraphWithSources_ = detail::WordGraphWithSources<uint32_t>;
+      using NodeManagedGraph_ = detail::NodeManagedGraph<uint32_t>;
 
      public:
-      using node_type = typename WordGraphWithSources_::node_type;
-      using WordGraphWithSources_::init;
+      using node_type = typename NodeManagedGraph_::node_type;
+      using NodeManagedGraph_::init;
 
-      StephenGraph& init(Presentation<word_type> const& p) {
-        NodeManager<node_type>::clear();
-        WordGraphWithSources_::init(NodeManager<node_type>::node_capacity(),
-                                    p.alphabet().size());
-        return *this;
-      }
-
-      StephenGraph& init(Presentation<word_type>&& p) {
-        NodeManager<node_type>::clear();
-        WordGraphWithSources_::init(NodeManager<node_type>::node_capacity(),
-                                    p.alphabet().size());
+      Graph& init(Presentation<word_type> const& p) {
+        NodeManagedGraph_::init(1, p.alphabet().size());
         return *this;
       }
 
       using WordGraph<node_type>::target;
       using WordGraph<node_type>::target_no_checks;
 
-      // TODO(2) Add data to the StephenGraph which is a pointer to either the
+      // TODO(2) Add data to the Graph which is a pointer to either the
       // encompassing StephenImpl object or the presentation
       void target_no_checks(presentation_type const& p,
                             node_type                from,
                             label_type               letter,
                             node_type                to) {
-        WordGraphWithSources_::target_no_checks(from, letter, to);
+        using detail::felsch_graph::IgnoreDefinitions;
+        NodeManagedGraph_::target_no_checks(from, letter, to);
         if constexpr (is_specialization_of_v<presentation_type,
                                              InversePresentation>) {
           // convert l (which is an index)
           // -> actual letter
           // -> inverse of letter
           // -> index of inverse of letter
-          auto ll             = p.index(p.inverse(p.letter(letter)));
+          // There's no inverse_no_checks, so can't call that in the next line
+          // :-)
+          auto ll = p.index_no_checks(p.inverse(p.letter_no_checks(letter)));
           auto inverse_target = target_no_checks(to, ll);
-          if (inverse_target != UNDEFINED && inverse_target != from) {
-            merge_nodes_no_checks(from, inverse_target);
-            process_coincidences();
-            return;
+          if (inverse_target != UNDEFINED) {
+            if (inverse_target != from) {
+              merge_nodes_no_checks(from, inverse_target);
+              process_coincidences(IgnoreDefinitions{});
+              return;
+            }
+          } else {
+            NodeManagedGraph_::target_no_checks(to, ll, from);
           }
-          WordGraphWithSources_::target_no_checks(to, ll, from);
         }
       }
 
-      // TODO(2) Add data to the StephenGraph which is a pointer to either the
+      // TODO(2) Add data to the Graph which is a pointer to either the
       // encompassing StephenImpl object or the presentation
       std::pair<bool, node_type>
       complete_path(presentation_type const&  p,
@@ -90,7 +87,7 @@ namespace libsemigroups {
           node_type d = target_no_checks(c, *it);
           if (d == UNDEFINED) {
             d = new_node();
-            StephenGraph::target_no_checks(p, c, *it, d);
+            Graph::target_no_checks(p, c, *it, d);
             result = true;
           }
           c = d;
@@ -98,19 +95,17 @@ namespace libsemigroups {
         return std::make_pair(result, c);
       }
 
-      void disjoint_union_inplace_no_checks(StephenGraph& that) {
+      void disjoint_union_inplace_no_checks(Graph& that) {
         word_graph::standardize_no_checks(that, LenLexCmp());
         LIBSEMIGROUPS_ASSERT(word_graph::is_standardized(that, LenLexCmp()));
         size_t const N = number_of_nodes_active();
-        // TODO(2): the following 2 lines are a bit awkward
-        WordGraphWithSources_::add_nodes(that.number_of_nodes_active());
-        NodeManager<node_type>::add_active_nodes(that.number_of_nodes_active());
+        NodeManagedGraph_::add_active_nodes(that.number_of_nodes_active());
 
         for (node_type n = 0; n < that.number_of_nodes_active(); ++n) {
           for (auto a : that.labels()) {
             auto m = that.target_no_checks(n, a);
             if (m != UNDEFINED) {
-              WordGraphWithSources_::target_no_checks(n + N, a, m + N);
+              NodeManagedGraph_::target_no_checks(n + N, a, m + N);
             }
           }
         }
@@ -216,6 +211,8 @@ namespace libsemigroups {
     template <typename PresentationType>
     void StephenImpl<PresentationType>::append_no_checks(
         StephenImpl<PresentationType>& that) {
+      using felsch_graph::IgnoreDefinitions;
+
       // NOTE: Appending seems to work fine without running both this and that.
       // If for some reason this is no longer true later on, uncomment the next
       // two lines and update docs to indicate algorithm is run when calling
@@ -224,19 +221,19 @@ namespace libsemigroups {
       // this->run();
       // that.run();
 
-      // TODO(2) _word_graph has two mem fns number_nodes_active (in
-      // NodeManager) and number_active_nodes (in WordGraph), this is super
-      // confusing!
-      size_t const N = _word_graph.number_of_nodes_active();
-
       // accept_state() may call run, so we get the value before attempting to
       // modify the graph
       StephenImpl<PresentationType>::node_type const accept_state
           = StephenImpl<PresentationType>::accept_state();
 
+      // TODO(2) _word_graph has two mem fns number_nodes_active (in
+      // NodeManager) and number_active_nodes (in WordGraph), this is super
+      // confusing!
+      size_t const N = _word_graph.number_of_nodes_active();
+
       _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
       _word_graph.merge_nodes_no_checks(accept_state, that.initial_state() + N);
-      _word_graph.process_coincidences();
+      _word_graph.process_coincidences(IgnoreDefinitions{});
       _accept_state = UNDEFINED;
       _finished     = false;
       _internal_word.insert(_internal_word.end(),
@@ -353,6 +350,8 @@ namespace libsemigroups {
 
     template <typename PresentationType>
     void StephenImpl<PresentationType>::run_impl() {
+      using felsch_graph::IgnoreDefinitions;
+
       using std::chrono::duration_cast;
       using std::chrono::seconds;
 
@@ -407,7 +406,7 @@ namespace libsemigroups {
               } else if (u_end != v_end) {
                 did_def = true;
                 _word_graph.merge_nodes_no_checks(u_end, v_end);
-                _word_graph.process_coincidences();
+                _word_graph.process_coincidences(IgnoreDefinitions{});
               }
               --it;
             } else {
@@ -436,7 +435,7 @@ namespace libsemigroups {
                 } else if (u_end != v_end) {
                   did_def = true;
                   _word_graph.merge_nodes_no_checks(u_end, v_end);
-                  _word_graph.process_coincidences();
+                  _word_graph.process_coincidences(IgnoreDefinitions{});
                 }
               } else {
                 --it;
