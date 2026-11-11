@@ -435,10 +435,10 @@ namespace libsemigroups {
     matrix::row_space_size(x);  // returns 7
   }
 
-  // presentation.hpp: Line 1183
+  // presentation.hpp: Line 1185
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "025",
-                          "./include/libsemigroups/presentation.hpp:1183",
+                          "./include/libsemigroups/presentation.hpp:1185",
                           "[docs][quick][no-valgrind]") {
     Presentation<std::string> p;
     presentation::to_report_string(p);
