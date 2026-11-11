@@ -1,0 +1,70 @@
+exclude: |
+  (?x)^(
+    third_party/.*|
+    (tests|benchmarks)/catch_.*\.(c|h|t)pp|
+    m4/.*|
+    docs/doxygen-awesome-css/.*
+  )$
+default_install_hook_types: [pre-commit, pre-push]
+repos:
+  - repo: local
+    hooks:
+      - id: check-test-catch2-includes
+        name: Use test-main.hpp instead of direct Catch2 includes
+        entry: '^\s*#\s*include\s*[<"](?:[^">]*/)?(?:[Cc]atch2[^">]*|catch[_.][^">]*)[">]'
+        language: pygrep
+        files: ^tests/.*\.(c|h|t)pp$
+        stages: ["pre-commit", "pre-push"]
+      - id: check-docs-code-examples
+        name: Check documentation code examples are up to date
+        entry: python etc/extract-doc-examples.py
+        args:
+          - include/libsemigroups
+          - --recursive
+          - --check
+          - --clang-format=clang-format
+        language: python
+        additional_dependencies: [clang-format==15.0.7]
+        stages: ["pre-push"]
+        pass_filenames: false
+        always_run: true
+      - id: check-libsemigroups-hpp
+        name: Check libsemigroups.hpp is up to date
+        entry: python etc/generate-libsemigroups-hpp.py --check
+        language: python
+        stages: ["pre-push"]
+        pass_filenames: false
+        always_run: true
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v15.0.7
+    hooks:
+      - id: clang-format
+        files: ^(include/libsemigroups|src|tests|benchmarks)/.*\.(c|h|t)pp$
+  - repo: https://github.com/cpplint/cpplint
+    rev: 2.0.2
+    hooks:
+      - id: cpplint
+        stages: ["pre-push"]
+        files: |
+          (?x)^(
+            include/libsemigroups/.*\.(h|t)pp|
+            src/.*\.cpp|
+            tests/.*\.cpp|
+            benchmarks/.*\.cpp
+          )$
+        args: ["--repository=include", "--extensions=cpp,hpp,tpp"]
+      - id: cpplint
+        name: cpplint-extras
+        alias: cpplint-extras
+        stages: ["pre-push"]
+        files: |
+          (?x)^(
+            tests/.*\.hpp|
+            benchmarks/.*\.hpp
+          )$
+        args: ["--repository=..", "--extensions=hpp"]
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.2
+    hooks:
+      - id: codespell
+        stages: ["pre-push"]
