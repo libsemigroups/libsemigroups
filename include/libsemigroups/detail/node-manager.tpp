@@ -142,8 +142,7 @@ namespace libsemigroups {
     NodeManager<Node>::~NodeManager() = default;
 
     template <typename Node>
-    [[nodiscard]] size_t
-    NodeManager<Node>::position_of_node(node_type n) const {
+    size_t NodeManager<Node>::position_of_node(node_type n) const {
       if (!is_active_node(n)) {
         return UNDEFINED;
       }
@@ -377,7 +376,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    [[nodiscard]] Node NodeManager<Node>::max_active_node() const noexcept {
+    Node NodeManager<Node>::max_active_node() const noexcept {
       auto      current = initial_node();
       node_type max     = 0;
       while (current != first_free_node()) {

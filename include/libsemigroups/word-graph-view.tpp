@@ -19,10 +19,6 @@
 // This file contains an implementation of word graph views, a thin layer over
 // word graphs exposing a chosen range of nodes
 
-#include "libsemigroups/word-graph-view.hpp"
-#include "libsemigroups/word-graph.hpp"
-#include <utility>
-
 namespace libsemigroups {
 
   template <typename Node>
@@ -107,7 +103,7 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Node>
-  [[nodiscard]] typename WordGraphView<Node>::size_type
+  typename WordGraphView<Node>::size_type
   WordGraphView<Node>::number_of_edges_no_checks() const noexcept {
     size_t count = 0;
     for (auto s : nodes_no_checks()) {
