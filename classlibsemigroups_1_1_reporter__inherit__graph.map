@@ -1,19 +1,19 @@
 <map id="Reporter" name="Reporter">
 <area shape="rect" id="Node000001" title="Collection of values related to reporting." alt="" coords="5,173,77,198"/>
 <area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm." alt="" coords="125,173,188,198"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="92,183,124,183,124,188,92,188"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,183,126,184,122,187,93,188"/>
 <area shape="rect" id="Node000003" href="$classlibsemigroups_1_1_action.html" title=" " alt="" coords="247,5,419,46"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="166,157,192,107,211,80,234,57,254,44,257,49,238,61,215,83,196,109,170,160"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="166,157,192,107,211,80,234,57,257,45,253,48,238,61,215,83,196,109,170,160"/>
 <area shape="rect" id="Node000004" href="$classlibsemigroups_1_1_action.html" title=" " alt="" coords="250,71,416,111"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="181,160,206,140,235,122,261,110,264,114,237,127,209,145,184,165"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="181,161,206,140,235,122,265,110,260,114,237,127,209,145,185,165"/>
 <area shape="rect" id="Node000005" href="$classlibsemigroups_1_1_action.html" title="Class for generating the action of a semigroup." alt="" coords="242,136,424,177"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="203,175,241,169,242,174,204,181"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="203,175,244,170,239,173,205,180"/>
 <area shape="rect" id="Node000006" href="$classlibsemigroups_1_1_froidure_pin_base.html" title="Base class for FroidurePin containing non&#45;element specific data and member functions." alt="" coords="274,201,392,226"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="204,190,274,202,274,207,203,196"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="203,190,276,203,271,205,204,196"/>
 <area shape="rect" id="Node000008" href="$classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm." alt="" coords="260,251,406,291"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="188,206,237,237,263,248,261,253,235,241,185,210"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="187,205,237,237,264,250,259,250,235,241,186,211"/>
 <area shape="rect" id="Node000009" href="$classlibsemigroups_1_1_stephen.html" title="For constructing the word graph of left factors of a word in an f.p. semigroup." alt="" coords="236,316,430,341"/>
-<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="171,212,197,258,216,281,238,301,259,312,257,317,234,305,212,285,193,261,167,214"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="170,211,197,258,216,281,238,301,261,315,256,315,234,305,212,285,193,261,168,215"/>
 <area shape="rect" id="Node000007" href="$classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure&#45;Pin algorithm." alt="" coords="478,193,630,234"/>
-<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="408,211,478,211,478,216,408,216"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="407,211,481,213,475,214,408,216"/>
 </map>
