@@ -1,5 +1,13 @@
 # Changelog - version 3
 
+## v3.6.2 (released 12/11/2026)
+
+This is a minor release including a number of fixes (backported from main).
+The principal reason for a release at this time is to include the fix in:
+
+- make Eigen allocation independent of compiler flags by [\@jswent] 
+  https://github.com/libsemigroups/libsemigroups/pull/1140
+
 ## v3.6.1 (released 17/05/2026)
 
 In this release we include one minor fix for older versions of libc++ that

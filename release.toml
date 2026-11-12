@@ -5,4 +5,4 @@ expired_emails = [
     "cr66@st-andrews.ac.uk",
     "ns241@st-andrews.ac.uk",
 ]
-ignore = ["dependabot", "codex"]
+ignore = ["dependabot", "codex", "OpenAI"]

@@ -39,7 +39,7 @@
   contributed the implementation of the Konieczny and
   Lallement-McFadden algorithm, to the Todd-Coxeter implementation,
   and to BMat8s.
-- Jake Swent (<jws20@st-andrews.ac.uk>) contributed to the `to` function, the
+- Jake Swent (<jake@osprey21.com>) contributed to the `to` function, the
   reduction orderings code, and added various CI bots.
 - [Nicolas Thiéry](http://nicolas.thiery.name/)
   (<nthiery@users.sf.net>) contributed to the build system, packaging
