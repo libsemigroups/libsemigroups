@@ -909,6 +909,8 @@ namespace libsemigroups {
     REQUIRE(
         bipartition::is_planar(make<Bipartition>({0, 1, 1, 2, 3, 1, 4, 5})));
     REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 2, 3, 1, 0})));
+    REQUIRE(!bipartition::is_planar(
+        make<Bipartition>({0, 0, 0, 0, 0, 1, 2, 1, 2, 1})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
@@ -928,6 +930,58 @@ namespace libsemigroups {
         make<Bipartition>({{1, -2}, {2, -1}, {3, -3}})));  // not annular
     REQUIRE(!bipartition::is_annular(make<Bipartition>(
         {{1, -1}, {-2, -4}, {3, 4}, {2, -3}})));  // not annular
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "030",
+                          "exhaustive check of bipartition planar - small n",
+                          "[quick][bipart]") {
+    for (size_t degree = 0; degree <= 4; ++degree) {
+      std::vector<uint32_t> lookup(2 * degree);
+
+      if (degree == 0) {
+        auto x = make<Bipartition>(lookup);
+        REQUIRE(bipartition::is_planar(x)
+                == bipartition::is_planar_brute_force(x));
+        continue;
+      }
+
+      // The first position must have label 0.
+      lookup[0] = 0;
+
+      auto enumerate
+          = [&](auto&& self, size_t pos, uint32_t max_label) -> void {
+        if (pos == 2 * degree) {
+          auto x = make<Bipartition>(lookup);
+
+          REQUIRE(bipartition::is_planar(x)
+                  == bipartition::is_planar_brute_force(x));
+          return;
+        }
+
+        // Use an existing label, or introduce the next new label.
+        for (uint32_t label = 0; label <= max_label + 1; ++label) {
+          lookup[pos] = label;
+          self(self, pos + 1, std::max(max_label, label));
+        }
+      };
+
+      enumerate(enumerate, 1, 0);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "031",
+                          "is_planar random tests",
+                          "[standard][bipartition]") {
+    for (size_t degree : {5, 8, 12, 20}) {
+      for (size_t i = 0; i < 100; ++i) {
+        auto x = bipartition::random(degree);
+
+        REQUIRE(bipartition::is_planar(x)
+                == bipartition::is_planar_brute_force(x));
+      }
+    }
   }
 
 }  // namespace libsemigroups

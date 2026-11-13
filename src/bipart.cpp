@@ -466,6 +466,36 @@ namespace libsemigroups {
       return result;
     }
 
+    bool is_planar_brute_force(Bipartition const& x) {
+      size_t const n = x.degree();
+
+      if (n < 2) {
+        return true;
+      }
+
+      // Reorder the lookup x from (+1, ..., +n, -1, ..., -n)
+      //  to (-n, ..., -1, +1, ..., +n)
+      std::vector<uint32_t> y(2 * n);
+      for (size_t i = 0; i < n; ++i) {
+        y[i]     = x[2 * n - 1 - i];
+        y[n + i] = x[i];
+      }
+
+      // Check for forbidden pattern a,b,a,b
+      for (size_t i = 0; i < 2 * n - 3; ++i) {
+        for (size_t j = i + 1; j < 2 * n - 2; ++j) {
+          for (size_t k = j + 1; k < 2 * n - 1; ++k) {
+            for (size_t l = k + 1; l < 2 * n; ++l) {
+              if (y[i] == y[k] && y[j] == y[l] && y[i] != y[j]) {
+                return false;
+              }
+            }
+          }
+        }
+      }
+      return true;
+    }
+
     bool is_planar(Bipartition const& x) {
       size_t const n = x.degree();
 
@@ -482,21 +512,17 @@ namespace libsemigroups {
       }
 
       // Convert lookup into vector of intervals
-      std::vector<std::pair<int, int>> intervals(2 * n, {-1, -1});
+      // (each pair of consecutive indices in a block form an interval)
+      std::vector<std::pair<size_t, size_t>> intervals;
+      std::vector<size_t>                    last(2 * n, 2 * n);
+
       for (size_t i = 0; i < 2 * n; ++i) {
         uint32_t const label = y[i];
-        if (intervals[label].first == -1) {
-          intervals[label] = {static_cast<int>(i), static_cast<int>(i)};
-        } else {
-          intervals[label].second = static_cast<int>(i);
+        if (last[label] != 2 * n) {
+          intervals.emplace_back(last[label], i);
         }
+        last[label] = i;
       }
-      intervals.erase(std::remove_if(intervals.begin(),
-                                     intervals.end(),
-                                     [](auto const& interval) {
-                                       return interval.first == -1;
-                                     }),
-                      intervals.end());
       std::sort(intervals.begin(), intervals.end());
 
       // store endpoints of currently open intervals
@@ -506,7 +532,7 @@ namespace libsemigroups {
         int const start = interval.first;
         int const end   = interval.second;
 
-        while (!stack.empty() && stack.back() < start) {
+        while (!stack.empty() && stack.back() <= start) {
           stack.pop_back();
         }
 
