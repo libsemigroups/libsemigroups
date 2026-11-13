@@ -100,6 +100,36 @@ namespace libsemigroups {
       REQUIRE(statistic < upper_quantile);
     }
 
+    bool is_planar_brute_force(Bipartition const& x) {
+      size_t const n = x.degree();
+
+      if (n < 2) {
+        return true;
+      }
+
+      // Reorder the lookup x from (+1, ..., +n, -1, ..., -n)
+      //  to (-n, ..., -1, +1, ..., +n)
+      std::vector<uint32_t> y(2 * n);
+      for (size_t i = 0; i < n; ++i) {
+        y[i]     = x[2 * n - 1 - i];
+        y[n + i] = x[i];
+      }
+
+      // Check for forbidden pattern a,b,a,b
+      for (size_t i = 0; i < 2 * n - 3; ++i) {
+        for (size_t j = i + 1; j < 2 * n - 2; ++j) {
+          for (size_t k = j + 1; k < 2 * n - 1; ++k) {
+            for (size_t l = k + 1; l < 2 * n; ++l) {
+              if (y[i] == y[k] && y[j] == y[l] && y[i] != y[j]) {
+                return false;
+              }
+            }
+          }
+        }
+      }
+      return true;
+    }
+
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "000", "empty blocks", "[quick]") {
@@ -941,8 +971,7 @@ namespace libsemigroups {
 
       if (degree == 0) {
         auto x = make<Bipartition>(lookup);
-        REQUIRE(bipartition::is_planar(x)
-                == bipartition::is_planar_brute_force(x));
+        REQUIRE(bipartition::is_planar(x) == is_planar_brute_force(x));
         continue;
       }
 
@@ -954,8 +983,7 @@ namespace libsemigroups {
         if (pos == 2 * degree) {
           auto x = make<Bipartition>(lookup);
 
-          REQUIRE(bipartition::is_planar(x)
-                  == bipartition::is_planar_brute_force(x));
+          REQUIRE(bipartition::is_planar(x) == is_planar_brute_force(x));
           return;
         }
 
@@ -978,8 +1006,7 @@ namespace libsemigroups {
       for (size_t i = 0; i < 100; ++i) {
         auto x = bipartition::random(degree);
 
-        REQUIRE(bipartition::is_planar(x)
-                == bipartition::is_planar_brute_force(x));
+        REQUIRE(bipartition::is_planar(x) == is_planar_brute_force(x));
       }
     }
   }
