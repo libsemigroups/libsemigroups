@@ -229,6 +229,43 @@ namespace libsemigroups {
     //! \returns A random Bipartition.
     Bipartition random(size_t deg);
 
+    //! \brief Check whether a bipartition is planar.
+    //!
+    //! A bipartition is planar if, when its points are arranged in the
+    //! order (-n, ..., -1, +1, ..., +n), there are no two distinct blocks
+    //! whose elements alternate.
+    //!
+    //! This is checked by considering the intervals between consecutive
+    //! occurrences of points belonging to the same block. The bipartition
+    //! is planar if and only if no two of these intervals cross.
+    //!
+    //! \param x the bipartition to check.
+    //! \returns `true` if \p x is planar, and `false` otherwise.
+    //!
+    //! \complexity
+    //! O(n log n), where n is the degree of \p x.
+    bool is_planar(Bipartition const& x);
+
+    //! \brief Returns whether a bipartition is annular.
+    //!
+    //! A bipartition \p x is annular if there exist a planar bipartition \p y
+    //! and integers \f$i\f$ and \f$j\f$ such that
+    //! \f$x = p^i y p^j\f$, where \f$p\f$ is the cyclic permutation
+    //! bipartition.
+    //!
+    //! This function checks whether \p x is annular by testing whether
+    //! \f$p^{-i} x p^{-j}\f$ is planar for some
+    //! \f$i,j \in \{0,\ldots,n-1\}\f$, where \f$n\f$ is the degree
+    //! of \p x.
+    //!
+    //! \param x the bipartition to check.
+    //!
+    //! \returns \c true if the bipartition is annular, and \c false otherwise.
+    //!
+    //! \complexity
+    //! \(O(n^3logn)\), where \(n\) is the degree of the bipartition.
+    bool is_annular(Bipartition const& x);
+
   }  // namespace bipartition
 
   //! \ingroup bipart_group
