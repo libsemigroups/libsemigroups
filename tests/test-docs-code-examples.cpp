@@ -599,6 +599,19 @@ namespace libsemigroups {
     //  0121212121_w};
   }
 
+  // word-graph-io.hpp: Line 93
+  LIBSEMIGROUPS_TEST_CASE("docs",
+                          "033",
+                          "./include/libsemigroups/word-graph-io.hpp:93",
+                          "[docs][quick][no-valgrind]") {
+    WordGraph<uint32_t> graph(2, 2);
+    graph.target(0, 0, 1);
+    graph.target(0, 1, 1);
+    auto text = word_graph::to_kbmag_string(graph);
+    auto copy = make<WordGraph<uint32_t>>(text);
+    copy == graph;  // returns true
+  }
+
   // word-graph-view-helpers.hpp: Line 458
   LIBSEMIGROUPS_TEST_CASE(
       "docs",
