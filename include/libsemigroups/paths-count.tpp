@@ -160,12 +160,23 @@ namespace libsemigroups::v4::paths {
                           size_t                  min,
                           size_t                  max) {
       static_assert(sizeof(Node1) >= sizeof(Node2));
-      if (!word_graph::is_reachable(
+      if (min > max
+          || !word_graph::is_reachable(
               wg, static_cast<Node1>(source), static_cast<Node1>(target))) {
         // Complexity is O(number of nodes + number of edges).
         return 0;
-      } else if (count_special(wg, source, target, min, max)) {
-        return POSITIVE_INFINITY;
+      }
+      if (max == POSITIVE_INFINITY) {
+        if (!word_graph::is_acyclic(
+                wg, static_cast<Node1>(source), static_cast<Node1>(target))) {
+          return POSITIVE_INFINITY;
+        }
+        // No path to the target can repeat a node. Cycles elsewhere may
+        // keep the source row nonzero, so bound the matrix loop explicitly.
+        max = wg.number_of_nodes() - 1;
+        if (min > max) {
+          return 0;
+        }
       }
       auto am = word_graph::adjacency_matrix(wg);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED

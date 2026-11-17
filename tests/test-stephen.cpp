@@ -54,9 +54,10 @@
 #include "libsemigroups/word-range.hpp"             // for StringRange
 #include "libsemigroups/words-helpers.hpp"          // for operator+, pow
 
-#include "libsemigroups/detail/fmt.hpp"       // for format
-#include "libsemigroups/detail/iterator.hpp"  // for operator+
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
+#include "libsemigroups/detail/fmt.hpp"                 // for format
+#include "libsemigroups/detail/iterator.hpp"            // for operator+
+#include "libsemigroups/detail/node-managed-graph.hpp"  // for NodeManagedGraph
+#include "libsemigroups/detail/report.hpp"              // for ReportGuard
 
 namespace libsemigroups {
   using namespace literals;
@@ -2511,6 +2512,79 @@ namespace libsemigroups {
 })vogon";
     REQUIRE(stephen::dot(s).to_string() == expected);
     REQUIRE(stephen::dot(s, 0_w).to_string() == expected);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "074",
+                          "a self-inverse loop counts as one edge",
+                          "[stephen][quick]") {
+    InversePresentation<word_type> p;
+    p.alphabet(0_w);
+    p.inverses(0_w);
+    p.contains_empty_word(true);
+    p.rules = {0_w, {}};
+    Stephen s(p);
+    stephen::set_word(s, word_type{}).run();
+
+    auto const& graph = static_cast<detail::NodeManagedGraph<uint32_t> const&>(
+        s.word_graph_no_run());
+    REQUIRE(graph.target_no_checks(0, 0) == 0);
+    REQUIRE(graph.number_of_edges_active() == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "075",
+                          "setting a new word resets the active-edge count",
+                          "[stephen][quick]") {
+    Presentation<word_type> p;
+    p.alphabet(0_w);
+    Stephen s(p);
+    stephen::set_word(s, 00_w);
+
+    auto const& graph = static_cast<detail::NodeManagedGraph<uint32_t> const&>(
+        s.word_graph_no_run());
+    REQUIRE(graph.number_of_edges_active() == 2);
+
+    stephen::set_word(s, 0_w);
+    REQUIRE(graph.number_of_edges_active() == 1);
+    REQUIRE(graph.count_number_of_edges_active() == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "076",
+                          "appending counts the copied edges",
+                          "[stephen][quick]") {
+    Presentation<word_type> p;
+    p.alphabet(0_w);
+    Stephen left(p), right(p);
+    stephen::set_word(left, 0_w);
+    stephen::set_word(right, 0_w);
+    left *= right;
+
+    auto const& graph = static_cast<detail::NodeManagedGraph<uint32_t> const&>(
+        left.word_graph_no_run());
+    REQUIRE(graph.number_of_edges_active() == 2);
+    REQUIRE(graph.count_number_of_edges_active() == 2);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "077",
+                          "append uses the node count after running",
+                          "[stephen][quick]") {
+    Presentation<word_type> p;
+    p.alphabet(0_w);
+    p.rules = {00_w, 0_w};
+    Stephen left(p), right(p);
+    stephen::set_word(left, 00_w);
+    stephen::set_word(right, 0_w);
+    left *= right;
+
+    auto const& graph = static_cast<detail::NodeManagedGraph<uint32_t> const&>(
+        left.word_graph_no_run());
+    REQUIRE(graph.number_of_nodes_active() == 2);
+    REQUIRE(
+        word_graph::number_of_nodes_reachable_from(graph, graph.initial_node())
+        == graph.number_of_nodes_active());
   }
 
   // TODO(2): the examples from Stephen's paper/thesis?

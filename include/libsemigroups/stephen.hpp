@@ -120,8 +120,6 @@ namespace libsemigroups {
     using native_word_type = typename PresentationType::native_word_type;
 
    private:
-    class StephenGraph;  // forward decl
-
     // Data members
     PresentationType _presentation;
     native_word_type _word;

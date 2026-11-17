@@ -1041,6 +1041,21 @@ namespace libsemigroups {
             == POSITIVE_INFINITY);
     REQUIRE(v4::paths::count(wg, 0, 1, 0, 10, v4::paths::algorithm::matrix)
             == 5);
+
+    // The cycle at node 1 cannot contribute any paths to node 2.
+    auto dense = make<WordGraph<size_t>>(3, {{1, 1, 2}, {1, 1, 1}, {1, 1, 1}});
+    REQUIRE(v4::paths::count(dense, 0, 2, 0, POSITIVE_INFINITY) == 1);
+    REQUIRE(v4::paths::count(
+                dense, 0, 2, 0, POSITIVE_INFINITY, v4::paths::algorithm::matrix)
+            == 1);
+    REQUIRE(v4::paths::count(
+                dense, 0, 2, 3, POSITIVE_INFINITY, v4::paths::algorithm::matrix)
+            == 0);
+
+    dense.target(1, 2, 2);
+    REQUIRE(v4::paths::count(
+                dense, 0, 2, 0, POSITIVE_INFINITY, v4::paths::algorithm::matrix)
+            == POSITIVE_INFINITY);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",

@@ -126,8 +126,10 @@ namespace libsemigroups {
       using label_type      = typename Graph::label_type;
       using size_type       = typename Graph::size_type;
 
-      using Definition         = std::pair<node_type, label_type>;
-      using NoPreferredDefs    = Noop;
+      using Definition = std::pair<node_type, label_type>;
+      // TODO move to felsch_graph namespace
+      using NoPreferredDefs = Noop;
+      // TODO move to felsch_graph namespace
       using StopIfIncompatible = ReturnFalse;
 
      private:
@@ -217,11 +219,11 @@ namespace libsemigroups {
       // FelschGraph - modifiers - public
       ////////////////////////////////////////////////////////////////////////
 
-      template <bool RegDefs>
+      template <typename Register>
       FelschGraph& target_no_checks(node_type  s,
                                     label_type a,
                                     node_type  t,
-                                    std::bool_constant<RegDefs>) noexcept;
+                                    Register const&) noexcept;
 
       void reduce_number_of_edges_to(size_type n);
 
@@ -233,24 +235,29 @@ namespace libsemigroups {
       // Not nodiscard because we don't care about the return value in
       // ToddCoxeterImpl (return value indicates if we should stop early an
       // incompatibility is discovered, which we never do in TC)
-      template <bool RegDefs, typename Incompatible, typename PreferredDefs>
-      bool merge_targets_of_nodes_if_possible(node_type      x,
-                                              label_type     a,
-                                              node_type      y,
-                                              label_type     b,
-                                              Incompatible&  incompat,
-                                              PreferredDefs& pref_defs);
+      template <typename Incompatible,
+                typename PreferredDefs,
+                typename Register>
+      bool merge_targets_of_nodes_if_possible(node_type       x,
+                                              label_type      a,
+                                              node_type       y,
+                                              label_type      b,
+                                              Incompatible&   incompat,
+                                              PreferredDefs&  pref_defs,
+                                              Register const& reg);
 
-      template <bool RegDefs, typename Incompatible, typename PreferredDefs>
-      [[nodiscard]] bool
-      merge_targets_of_paths_if_possible(node_type                 u_node,
-                                         word_type::const_iterator u_first,
-                                         word_type::const_iterator u_last,
-                                         node_type                 v_node,
-                                         word_type::const_iterator v_first,
-                                         word_type::const_iterator v_last,
-                                         Incompatible&             incompat,
-                                         PreferredDefs& pref_defs) noexcept;
+      template <typename Incompatible,
+                typename PreferredDefs,
+                typename Register>
+      bool merge_targets_of_paths_if_possible(node_type                 u_node,
+                                              word_type::const_iterator u_first,
+                                              word_type::const_iterator u_last,
+                                              node_type                 v_node,
+                                              word_type::const_iterator v_first,
+                                              word_type::const_iterator v_last,
+                                              Incompatible&   incompat,
+                                              PreferredDefs&  pref_defs,
+                                              Register const& reg) noexcept;
 
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - process definitions - public
@@ -300,12 +307,15 @@ namespace libsemigroups {
       // and letters.
       // Not nodiscard because we don't care about the return value in
       // ToddCoxeterImpl
-      template <bool RegDefs, typename Incompatible, typename PreferredDefs>
+      template <typename Incompatible,
+                typename PreferredDefs,
+                typename Register>
       bool merge_targets_of_paths_labelled_by_rules_if_possible(
           node_type const& c,
           size_t           i,
           Incompatible&    incompat,
-          PreferredDefs&   pref_defs) noexcept;
+          PreferredDefs&   pref_defs,
+          Register const&  reg) noexcept;
 
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - process definitions - private
@@ -348,20 +358,16 @@ namespace libsemigroups {
     };  // FelschGraph
 
     namespace felsch_graph {
-      // The following are used for tag based dispatch
-      inline constexpr std::true_type  do_register_defs{};
-      inline constexpr std::false_type do_not_register_defs{};
-
       // Check that [first_node, last_node) is compatible with [first_rule,
       // last_rule) or if there are edges missing in paths labelled by rules,
       // then try to fill those in so that fd is compatible.
       // Not nodiscard because we don't care about the return value in
       // ToddCoxeterImpl
-      template <bool RegDefs,
-                typename Node,
+      template <typename Node,
                 typename Definitions,
                 typename Incompatible,
-                typename PrefDefs>
+                typename PrefDefs,
+                typename Register>
       bool make_compatible(
           FelschGraph<Node, Definitions>&                    fd,
           typename FelschGraph<Node, Definitions>::node_type first_node,
@@ -369,31 +375,35 @@ namespace libsemigroups {
           typename std::vector<word_type>::const_iterator    first_rule,
           typename std::vector<word_type>::const_iterator    last_rule,
           Incompatible&&                                     incompat,
-          PrefDefs&& pref_defs) noexcept;
+          PrefDefs&&                                         pref_defs,
+          Register const&                                    reg) noexcept;
 
       // Not nodiscard because we don't care about the return value in
       // ToddCoxeterImpl
-      template <bool RegDefs, typename Node, typename Definitions>
+      // TODO remove this overload
+      template <typename Node, typename Definitions, typename Register>
       bool make_compatible(
           FelschGraph<Node, Definitions>&                    fd,
           typename FelschGraph<Node, Definitions>::node_type first_node,
           typename FelschGraph<Node, Definitions>::node_type last_node,
           typename std::vector<word_type>::const_iterator    first_rule,
-          typename std::vector<word_type>::const_iterator    last_rule) {
-        return make_compatible<RegDefs>(
+          typename std::vector<word_type>::const_iterator    last_rule,
+          Register const&                                    reg) {
+        return make_compatible(
             fd,
             first_node,
             last_node,
             first_rule,
             last_rule,
             typename FelschGraph<Node, Definitions>::StopIfIncompatible(),
-            typename FelschGraph<Node, Definitions>::NoPreferredDefs());
+            typename FelschGraph<Node, Definitions>::NoPreferredDefs(),
+            reg);
       }
 
-      using DoNotRegisterDefs = Noop;
+      using IgnoreDefinitions = Noop;
 
       template <typename Graph, typename Definitions>
-      class DoRegisterDefs {
+      class RegisterDefinitions {
         detail::FelschGraph<Graph, Definitions>* _felsch_graph;
 
        public:
@@ -402,18 +412,21 @@ namespace libsemigroups {
         using label_type =
             typename detail::FelschGraph<Graph, Definitions>::label_type;
 
-        DoRegisterDefs()                                     = default;
-        DoRegisterDefs(DoRegisterDefs const&)                = default;
-        DoRegisterDefs& operator=(DoRegisterDefs const&)     = default;
-        DoRegisterDefs(DoRegisterDefs&&) noexcept            = default;
-        DoRegisterDefs& operator=(DoRegisterDefs&&) noexcept = default;
+        RegisterDefinitions()                                      = delete;
+        RegisterDefinitions(RegisterDefinitions const&)            = default;
+        RegisterDefinitions& operator=(RegisterDefinitions const&) = default;
+        RegisterDefinitions(RegisterDefinitions&&) noexcept        = default;
+        RegisterDefinitions& operator=(RegisterDefinitions&&) noexcept
+            = default;
 
-        ~DoRegisterDefs() = default;
+        ~RegisterDefinitions() = default;
 
-        explicit DoRegisterDefs(detail::FelschGraph<Graph, Definitions>& graph)
+        explicit RegisterDefinitions(
+            detail::FelschGraph<Graph, Definitions>& graph)
             : _felsch_graph(&graph) {}
 
-        explicit DoRegisterDefs(detail::FelschGraph<Graph, Definitions>* graph)
+        explicit RegisterDefinitions(
+            detail::FelschGraph<Graph, Definitions>* graph)
             : _felsch_graph(graph) {}
 
         void operator()(node_type s, label_type a) const {

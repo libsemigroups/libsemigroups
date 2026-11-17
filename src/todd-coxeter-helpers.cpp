@@ -36,7 +36,7 @@
 
 namespace libsemigroups {
 
-  using DoRegisterDefs = detail::felsch_graph::DoRegisterDefs<
+  using RegisterDefinitions = detail::felsch_graph::RegisterDefinitions<
       detail::NodeManagedGraph<detail::ToddCoxeterImpl::Graph::node_type>,
       detail::ToddCoxeterImpl::Definitions>;
 
@@ -72,7 +72,7 @@ namespace libsemigroups {
             auto& wg = const_cast<detail::ToddCoxeterImpl::Graph&>(
                 copy.current_word_graph());
             wg.merge_nodes_no_checks(c1, c2);
-            wg.process_coincidences(DoRegisterDefs(wg));
+            wg.process_coincidences(RegisterDefinitions(wg));
             wg.process_definitions();
             copy.run_for(try_for);
           }

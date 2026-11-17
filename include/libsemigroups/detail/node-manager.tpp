@@ -160,7 +160,7 @@ namespace libsemigroups {
     // NodeManager - constructors - public
     ////////////////////////////////////////////////////////////////////////
     template <typename Node>
-    NodeManager<Node>::NodeManager()
+    NodeManager<Node>::NodeManager(size_t num_nodes)
         : _bckwd(1, 0),
           _current(_id_node),
           _current_la(_id_node),
@@ -168,10 +168,13 @@ namespace libsemigroups {
           _forwd(1, static_cast<Node>(UNDEFINED)),
           _ident(1, 0),
           _last_active_node(0),
-          _stats() {}
+          _stats() {
+      LIBSEMIGROUPS_ASSERT(num_nodes > 0);
+      add_active_nodes(num_nodes - 1);
+    }
 
     template <typename Node>
-    NodeManager<Node>& NodeManager<Node>::init() {
+    NodeManager<Node>& NodeManager<Node>::init(size_t num_nodes) {
       _bckwd.assign(1, 0);
       _current         = _id_node;
       _current_la      = _id_node;
@@ -180,6 +183,8 @@ namespace libsemigroups {
       _ident.assign(1, 0);
       _last_active_node = 0;
       _stats.init();
+      LIBSEMIGROUPS_ASSERT(num_nodes > 0);
+      add_active_nodes(num_nodes - 1);
       return *this;
     }
 
@@ -304,70 +309,13 @@ namespace libsemigroups {
       return _last_active_node;
     }
 
-    template <typename Node>
-    void NodeManager<Node>::switch_nodes(Node c, Node d) {
-      LIBSEMIGROUPS_ASSERT(is_active_node(c) || is_active_node(d));
-      Node fc = _forwd[c], fd = _forwd[d], bc = _bckwd[c], bd = _bckwd[d];
+    // The following was removed between v3.6.1 and v3.7.0, this comment
+    // remains as a reminder that it once existed.
+    // void NodeManager<Node>::switch_nodes(Node c, Node d)
 
-      if (fc != d) {
-        _forwd[d]  = fc;
-        _bckwd[c]  = bd;
-        _forwd[bd] = c;
-        if (fc != UNDEFINED) {
-          _bckwd[fc] = d;
-        }
-      } else {
-        _forwd[d] = c;
-        _bckwd[c] = d;
-      }
-
-      if (fd != c) {
-        _forwd[c]  = fd;
-        _bckwd[d]  = bc;
-        _forwd[bc] = d;
-        if (fd != UNDEFINED) {
-          _bckwd[fd] = c;
-        }
-      } else {
-        _forwd[c] = d;
-        _bckwd[d] = c;
-      }
-
-      if (!is_active_node(c)) {
-        _ident[d] = 0;
-        _ident[c] = c;
-      } else if (!is_active_node(d)) {
-        _ident[c] = 0;
-        _ident[d] = d;
-      }
-
-      _current          = ff(c, d, _current);
-      _last_active_node = ff(c, d, _last_active_node);
-      _first_free_node  = ff(c, d, _first_free_node);
-      // This is never called from lookahead so we don't have to update
-      // _current_la, also it might be that we are calling this after
-      // everything is finished and so _current may not be active.
-
-      LIBSEMIGROUPS_ASSERT(is_active_node(_last_active_node));
-      LIBSEMIGROUPS_ASSERT(!is_active_node(_first_free_node));
-    }
-
-    // The permutation p ^ -1 must map the active nodes to the [0, ..
-    // , number_of_nodes_active())
-    template <typename Node>
-    void NodeManager<Node>::apply_permutation(NodeManager::Perm p) {
-      size_t const n = p.size();
-      for (Node i = 0; i < n; ++i) {
-        Node current = i;
-        while (i != p[current]) {
-          size_t next = p[current];
-          switch_nodes(current, next);
-          p[current] = current;
-          current    = next;
-        }
-        p[current] = current;
-      }
-    }
+    // The following was removed between v3.6.1 and v3.7.0, this comment
+    // remains as a reminder that it once existed.
+    // void NodeManager<Node>::apply_permutation(NodeManager::Perm p)
 
     ////////////////////////////////////////////////////////////////////////
     // NodeManager - member functions - private

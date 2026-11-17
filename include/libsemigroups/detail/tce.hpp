@@ -45,7 +45,7 @@ namespace libsemigroups {
     class TCE {
      public:
       using node_type       = typename ToddCoxeterImpl::node_type;
-      using word_graph_type = typename ToddCoxeterImpl::word_graph_type;
+      using word_graph_type = WordGraph<node_type>;
 
       TCE() noexcept                      = default;
       TCE(TCE const&) noexcept            = default;
@@ -156,7 +156,7 @@ namespace libsemigroups {
 
   template <>
   struct FroidurePinState<detail::TCE> {
-    using type = typename detail::ToddCoxeterImpl::word_graph_type;
+    using type = typename detail::TCE::word_graph_type;
   };
 }  // namespace libsemigroups
 

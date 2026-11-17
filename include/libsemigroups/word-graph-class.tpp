@@ -65,19 +65,30 @@ namespace libsemigroups {
         == static_cast<OtherNode>(UNDEFINED)) {
       _dynamic_array_2.set_default_value(static_cast<Node>(UNDEFINED));
     }
-    _degree           = wg.out_degree();
-    _nr_nodes         = wg.number_of_nodes();
-    _num_active_nodes = 0;
-    _dynamic_array_2.reshape(wg.out_degree(), wg.number_of_nodes());
-    std::transform(wg._dynamic_array_2.cbegin(),
-                   wg._dynamic_array_2.cend(),
-                   _dynamic_array_2.begin(),
-                   [](auto const& val) {
-                     if (val == static_cast<OtherNode>(UNDEFINED)) {
-                       return static_cast<Node>(UNDEFINED);
-                     }
-                     return static_cast<Node>(val);
-                   });
+    _degree                   = wg.out_degree();
+    _nr_nodes                 = wg.number_of_nodes();
+    _num_active_nodes         = 0;
+    auto const convert_target = [](OtherNode t) {
+      return t == UNDEFINED ? static_cast<Node>(UNDEFINED)
+                            : static_cast<Node>(t);
+    };
+    if (wg._dynamic_array_2.number_of_cols()
+            == _dynamic_array_2.number_of_cols()
+        && wg._dynamic_array_2.number_of_rows()
+               == _dynamic_array_2.number_of_rows()) {
+      std::transform(wg._dynamic_array_2.cbegin(),
+                     wg._dynamic_array_2.cend(),
+                     _dynamic_array_2.begin(),
+                     convert_target);
+    } else {
+      _dynamic_array_2.reshape(wg.out_degree(), wg.number_of_nodes());
+      for (auto s : wg.nodes()) {
+        std::transform(wg.cbegin_targets_no_checks(s),
+                       wg.cend_targets_no_checks(s),
+                       _dynamic_array_2.begin_row(s),
+                       convert_target);
+      }
+    }
     return *this;
   }
 
@@ -133,7 +144,10 @@ namespace libsemigroups {
     if (first != 0) {
       std::for_each(_dynamic_array_2.begin(),
                     _dynamic_array_2.end(),
-                    [first](node_type& x) { x -= first; });
+                    [first](node_type& x) {
+                      if (x != UNDEFINED)
+                        x -= first;
+                    });
     }
     return *this;
   }
@@ -297,10 +311,11 @@ namespace libsemigroups {
 
   template <typename Node>
   size_t WordGraph<Node>::number_of_edges() const {
-    return _dynamic_array_2.number_of_rows() * _dynamic_array_2.number_of_cols()
-           - std::count(_dynamic_array_2.cbegin(),
-                        _dynamic_array_2.cend(),
-                        static_cast<Node>(UNDEFINED));
+    size_type count = 0;
+    for (auto s : nodes()) {
+      count += number_of_edges_no_checks(s);
+    }
+    return count;
   }
 
   template <typename Node>
@@ -312,8 +327,8 @@ namespace libsemigroups {
   template <typename Node>
   size_t WordGraph<Node>::number_of_edges_no_checks(node_type n) const {
     return out_degree()
-           - std::count(_dynamic_array_2.cbegin_row(n),
-                        _dynamic_array_2.cend_row(n),
+           - std::count(cbegin_targets_no_checks(n),
+                        cend_targets_no_checks(n),
                         UNDEFINED);
   }
 

@@ -19,348 +19,403 @@
 // This file contains the implementation for the NodeManagedGraph class, used
 // by Stephen and by ToddCoxeterImpl.
 
-namespace libsemigroups {
+namespace libsemigroups::detail {
 
-  namespace detail {
-    ////////////////////////////////////////////////////////////////////////
-    // Nested classes
-    ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+  // Nested classes
+  ////////////////////////////////////////////////////////////////////////
 
-    template <typename Node>
-    struct NodeManagedGraph<Node>::CollectCoincidences {
-      explicit CollectCoincidences(Coincidences& c) : _coinc(c) {}
+  template <typename Node>
+  struct NodeManagedGraph<Node>::CollectCoincidences {
+    explicit CollectCoincidences(Coincidences& c) : _coinc(c) {}
 
-      bool operator()(node_type x, node_type y) {
-        _coinc.emplace(x, y);
-        return true;
-      }
+    bool operator()(node_type x, node_type y) {
+      _coinc.emplace(x, y);
+      return true;
+    }
 
-      Coincidences& _coinc;
-    };
+    Coincidences& _coinc;
+  };
 
-    template <typename Node>
-    struct NodeManagedGraph<Node>::Settings {
-      uint64_t large_collapse = 100'000;
-    };
+  template <typename Node>
+  struct NodeManagedGraph<Node>::Settings {
+    uint64_t large_collapse;
 
-    template <typename Node>
-    struct NodeManagedGraph<Node>::Stats {
-      std::atomic_uint64_t num_edges_active;
-      uint64_t             num_large_collapses;
-      std::atomic_uint64_t prev_active_nodes;
-      std::atomic_uint64_t prev_nodes_defined;
-      std::atomic_uint64_t prev_nodes_killed;
+    Settings() noexcept {
+      init();
+    }
 
-      Stats()
-          : num_edges_active(0),
-            num_large_collapses(0),
-            prev_active_nodes(),
-            prev_nodes_defined(),
-            prev_nodes_killed() {}
-
-      Stats(Stats const& that)
-          : num_edges_active(that.num_edges_active.load()),
-            num_large_collapses(that.num_large_collapses),
-            prev_active_nodes(that.prev_active_nodes.load()),
-            prev_nodes_defined(that.prev_nodes_defined.load()),
-            prev_nodes_killed(that.prev_nodes_killed.load()) {}
-
-      Stats& operator=(Stats const& that) {
-        num_edges_active    = that.num_edges_active.load();
-        num_large_collapses = that.num_large_collapses;
-        prev_active_nodes   = that.prev_active_nodes.load();
-        prev_nodes_killed   = that.prev_nodes_killed.load();
-        prev_nodes_defined  = that.prev_nodes_defined.load();
-        return *this;
-      }
-    };
-
-    ////////////////////////////////////////////////////////////////////////
-    // Constructors + initializers
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Node>
-    NodeManagedGraph<Node>& NodeManagedGraph<Node>::init() {
-      WordGraphWithSources<Node>::init();
-      NodeManager<Node>::init();
-      // NodeManagedGraph's always have 1 active node.
-      WordGraphWithSources<Node>::add_nodes(1);
-      LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes() == 1);
-      LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes()
-                           == NodeManager<Node>::number_of_nodes_active());
-      _coinc    = decltype(_coinc)();
-      _settings = Settings();
-      _stats    = Stats();
+    Settings& init() noexcept {
+      large_collapse = 100'000;
       return *this;
     }
 
-    template <typename Node>
-    NodeManagedGraph<Node>& NodeManagedGraph<Node>::reserve(size_t n) {
-      size_t m = NodeManager<node_type>::node_capacity();
-      if (n > m) {
-        m = n - m;
-        WordGraphWithSources<Node>::add_nodes(m);
-        NodeManager<node_type>::add_free_nodes(m);
-      }
+    Settings(Settings const&)            = default;
+    Settings(Settings&&)                 = default;
+    Settings& operator=(Settings const&) = default;
+    Settings& operator=(Settings&&)      = default;
+  };
+
+  template <typename Node>
+  struct NodeManagedGraph<Node>::Stats {
+    std::atomic_uint64_t num_edges_active;
+    uint64_t             num_large_collapses;
+    std::atomic_uint64_t prev_active_nodes;
+    std::atomic_uint64_t prev_nodes_defined;
+    std::atomic_uint64_t prev_nodes_killed;
+
+    Stats() {
+      init();
+    }
+
+    Stats& init() {
+      num_edges_active    = 0;
+      num_large_collapses = 0;
+      prev_active_nodes   = 0;
+      prev_nodes_defined  = 0;
+      prev_nodes_killed   = 0;
       return *this;
     }
 
-    template <typename Node>
-    NodeManagedGraph<Node>::NodeManagedGraph() = default;
+    Stats(Stats const& that)
+        : num_edges_active(that.num_edges_active.load()),
+          num_large_collapses(that.num_large_collapses),
+          prev_active_nodes(that.prev_active_nodes.load()),
+          prev_nodes_defined(that.prev_nodes_defined.load()),
+          prev_nodes_killed(that.prev_nodes_killed.load()) {}
 
-    template <typename Node>
-    NodeManagedGraph<Node>::NodeManagedGraph(NodeManagedGraph const&) = default;
+    Stats(Stats&& that) : Stats(that) {}
 
-    template <typename Node>
-    NodeManagedGraph<Node>::NodeManagedGraph(NodeManagedGraph&&) = default;
-
-    template <typename Node>
-    NodeManagedGraph<Node>&
-    NodeManagedGraph<Node>::operator=(NodeManagedGraph const&)
-        = default;
-
-    template <typename Node>
-    NodeManagedGraph<Node>&
-    NodeManagedGraph<Node>::operator=(NodeManagedGraph&&)
-        = default;
-
-    template <typename Node>
-    NodeManagedGraph<Node>::~NodeManagedGraph() = default;
-
-    template <typename Node>
-    template <typename OtherNode>
-    NodeManagedGraph<Node>&
-    NodeManagedGraph<Node>::operator=(WordGraph<OtherNode> const& wg) {
-      init(wg);
-      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::number_of_nodes_active()
-                           == WordGraphWithSources<Node>::number_of_nodes());
+    Stats& operator=(Stats const& that) {
+      num_edges_active    = that.num_edges_active.load();
+      num_large_collapses = that.num_large_collapses;
+      prev_active_nodes   = that.prev_active_nodes.load();
+      prev_nodes_killed   = that.prev_nodes_killed.load();
+      prev_nodes_defined  = that.prev_nodes_defined.load();
       return *this;
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // Stats
-    ////////////////////////////////////////////////////////////////////////
+    Stats& operator=(Stats&& that) {
+      *this = that;
+      return *this;
+    }
+  };
 
-    template <typename Node>
-    void NodeManagedGraph<Node>::stats_check_point() const {
-      _stats.prev_active_nodes
-          = NodeManager<node_type>::number_of_nodes_active();
-      _stats.prev_nodes_killed
-          = NodeManager<node_type>::number_of_nodes_killed();
-      _stats.prev_nodes_defined
-          = NodeManager<node_type>::number_of_nodes_defined();
+  ////////////////////////////////////////////////////////////////////////
+  // Constructors + initializers
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Node>
+  NodeManagedGraph<Node>::NodeManagedGraph(size_t num_nodes, size_t degree)
+      : NodeManager<Node>() {
+    init(num_nodes, degree);
+  }
+
+  template <typename Node>
+  NodeManagedGraph<Node>& NodeManagedGraph<Node>::init(size_t num_nodes,
+                                                       size_t degree) {
+    // NodeManagedGraph's always have 1 active node.
+    LIBSEMIGROUPS_ASSERT(num_nodes > 0);
+    WordGraphWithSources<Node>::init(num_nodes, degree);
+    NodeManager<Node>::init(num_nodes);
+    LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes()
+                         == num_nodes);
+    LIBSEMIGROUPS_ASSERT(WordGraphWithSources<Node>::number_of_nodes()
+                         == NodeManager<Node>::number_of_nodes_active());
+    _coinc = decltype(_coinc)();
+    _settings.init();
+    _stats.init();
+    return *this;
+  }
+
+  template <typename Node>
+  NodeManagedGraph<Node>::NodeManagedGraph(NodeManagedGraph const&) = default;
+
+  template <typename Node>
+  NodeManagedGraph<Node>::NodeManagedGraph(NodeManagedGraph&&) = default;
+
+  template <typename Node>
+  NodeManagedGraph<Node>&
+  NodeManagedGraph<Node>::operator=(NodeManagedGraph const&)
+      = default;
+
+  template <typename Node>
+  NodeManagedGraph<Node>& NodeManagedGraph<Node>::operator=(NodeManagedGraph&&)
+      = default;
+
+  template <typename Node>
+  NodeManagedGraph<Node>::~NodeManagedGraph() = default;
+
+  template <typename Node>
+  NodeManagedGraph<Node>&
+  NodeManagedGraph<Node>::init(WordGraph<Node> const& wg) {
+    init();
+    WordGraphWithSources<Node>::init(wg);
+    LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() > 0);
+    // NodeManager always has one node active
+    NodeManager<node_type>::add_active_nodes(
+        WordGraph<node_type>::number_of_nodes() - 1);
+    _stats.num_edges_active = wg.number_of_edges();
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Other mem fns - alphabetical order !!!
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Node>
+  void NodeManagedGraph<Node>::add_active_nodes(size_t m) {
+    add_free_nodes(NodeManager<Node>::number_of_nodes_active() + m);
+    // Don't call NodeManager::add_active_nodes because we must also clear the
+    // sources and targets of any recycled nodes.
+    for (size_t i = 0; i < m; ++i) {
+      std::ignore = new_node();
+    }
+    LIBSEMIGROUPS_ASSERT(NodeManager<Node>::number_of_nodes_active() > m);
+  }
+
+  template <typename Node>
+  void NodeManagedGraph<Node>::add_free_nodes(size_t m) {
+    size_t n = NodeManager<node_type>::node_capacity();
+    if (m > n) {
+      n = m - n;
+      WordGraphWithSources<Node>::add_nodes(n);
+      NodeManager<node_type>::add_free_nodes(n);
+    }
+    LIBSEMIGROUPS_ASSERT(number_of_nodes() >= m);
+  }
+
+  template <typename Node>
+  template <typename Register>
+  typename NodeManagedGraph<Node>::node_type
+  NodeManagedGraph<Node>::complete_path(node_type                 s,
+                                        word_type::const_iterator first,
+                                        word_type::const_iterator last,
+                                        Register const& reg) noexcept {
+    LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(s));
+    LIBSEMIGROUPS_ASSERT(first <= last);
+
+    word_type::const_iterator it;
+
+    std::tie(s, it)
+        = word_graph::last_node_on_path_no_checks(*this, s, first, last);
+
+    for (; it < last; ++it) {
+      LIBSEMIGROUPS_ASSERT(target_no_checks(s, *it) == UNDEFINED);
+      node_type d = new_node();
+      target_no_checks(s, *it, d);
+      reg(s, *it);
+      s = d;
+    }
+    return s;
+  }
+
+  template <typename Node>
+  uint64_t
+  NodeManagedGraph<Node>::count_number_of_edges_active() const noexcept {
+    auto     current   = NodeManager<node_type>::initial_node();
+    uint64_t num_edges = 0;
+    while (current != NodeManager<node_type>::first_free_node()) {
+      num_edges += WordGraph<node_type>::number_of_edges_no_checks(current);
+      current = NodeManager<node_type>::next_active_node(current);
+    }
+    return num_edges;
+  }
+
+  template <typename Node>
+  typename NodeManagedGraph<Node>::node_type
+  NodeManagedGraph<Node>::new_node() {
+    if (NodeManager<node_type>::has_free_nodes()) {
+      node_type const c = NodeManager<node_type>::new_active_node();
+      // Clear the new node's row in each table
+      WordGraphWithSources<Node>::remove_all_sources_and_targets_no_checks(c);
+      return c;
+    } else {
+      // There are no free nodes to recycle: make new ones.
+      // It seems to be marginally faster to make lots like this, than to
+      // just make 1, in some examples, notably ToddCoxeterImpl 040
+      // (Walker 3).
+      add_free_nodes(2 * NodeManager<node_type>::node_capacity());
+      return NodeManager<node_type>::new_active_node();
+    }
+  }
+
+  template <typename Node>
+  template <typename Register>
+  bool NodeManagedGraph<Node>::process_coincidences(Register const& reg) {
+    bool any_collapse_before_large_collapse = false;
+    if (_coinc.empty()) {
+      return any_collapse_before_large_collapse;
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // Accessors
-    ////////////////////////////////////////////////////////////////////////
+    CollectCoincidences incompat_func(_coinc);
 
-    template <typename Node>
-    uint64_t
-    NodeManagedGraph<Node>::count_number_of_edges_active() const noexcept {
-      auto     current   = NodeManager<node_type>::initial_node();
-      uint64_t num_edges = 0;
-      while (current != NodeManager<node_type>::first_free_node()) {
-        num_edges += WordGraph<node_type>::number_of_edges_no_checks(current);
-        current = NodeManager<node_type>::next_active_node(current);
-      }
-      return num_edges;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Modifiers
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Node>
-    typename NodeManagedGraph<Node>::node_type
-    NodeManagedGraph<Node>::new_node() {
-      if (NodeManager<node_type>::has_free_nodes()) {
-        node_type const c = NodeManager<node_type>::new_active_node();
-        // Clear the new node's row in each table
-        WordGraphWithSources<Node>::remove_all_sources_and_targets_no_checks(c);
-        return c;
-      } else {
-        // There are no free nodes to recycle: make new ones.
-        // It seems to be marginally faster to make lots like this, than to
-        // just make 1, in some examples, notably ToddCoxeterImpl 040
-        // (Walker 3).
-        reserve(2 * NodeManager<node_type>::node_capacity());
-        return NodeManager<node_type>::new_active_node();
+    while (!_coinc.empty() && _coinc.size() < large_collapse()) {
+      Coincidence c = _coinc.top();
+      _coinc.pop();
+      node_type min = NodeManager<node_type>::find_node(c.first);
+      node_type max = NodeManager<node_type>::find_node(c.second);
+      if (min != max) {
+        std::tie(min, max)                 = std::minmax({min, max});
+        any_collapse_before_large_collapse = true;
+        NodeManager<node_type>::union_nodes(min, max);
+        _stats.num_edges_active
+            -= WordGraphWithSources<Node>::merge_nodes_no_checks(
+                min, max, reg, incompat_func);
       }
     }
 
-    template <typename Node>
-    template <bool RegisterDefs>
-    std::pair<bool, typename NodeManagedGraph<Node>::node_type>
-    NodeManagedGraph<Node>::complete_path(
-        node_type                 c,
-        word_type::const_iterator first,
-        word_type::const_iterator last) noexcept {
-      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
-      LIBSEMIGROUPS_ASSERT(first <= last);
-
-      word_type::const_iterator it;
-
-      std::tie(c, it)
-          = word_graph::last_node_on_path_no_checks(*this, c, first, last);
-
-      bool result = false;
-      for (; it < last; ++it) {
-        LIBSEMIGROUPS_ASSERT(target_no_checks(c, *it) == UNDEFINED);
-        node_type d = new_node();
-        target_no_checks(c, *it, d);
-        result = true;
-        c      = d;
-      }
-      return std::make_pair(result, c);
-    }
-
-    template <typename Node>
-    template <typename Functor>
-    bool NodeManagedGraph<Node>::process_coincidences(Functor&& new_def) {
-      bool any_collapse_before_large_collapse = false;
-      if (_coinc.empty()) {
-        return any_collapse_before_large_collapse;
-      }
-
-      CollectCoincidences incompat_func(_coinc);
-
-      while (!_coinc.empty() && _coinc.size() < large_collapse()) {
-        Coincidence c = _coinc.top();
-        _coinc.pop();
-        node_type min = NodeManager<node_type>::find_node(c.first);
-        node_type max = NodeManager<node_type>::find_node(c.second);
-        if (min != max) {
-          std::tie(min, max)                 = std::minmax({min, max});
-          any_collapse_before_large_collapse = true;
-          NodeManager<node_type>::union_nodes(min, max);
-          _stats.num_edges_active
-              -= WordGraphWithSources<Node>::merge_nodes_no_checks(
-                  min, max, new_def, incompat_func);
-        }
-      }
-
-      if (_coinc.empty()) {
-        // The next assert is likely very slow so don't do it routinely
-        // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
-        //                      == count_number_of_edges_active());
-        return any_collapse_before_large_collapse;
-      }
-
-      using detail::group_digits;
-      _stats.num_large_collapses++;
-
-      report_default("{}: large collapse, number of coincidences {} >= {} = "
-                     "large_collapse()!\n",
-                     report_prefix(),
-                     group_digits(_coinc.size()),
-                     group_digits(large_collapse()));
-      auto const old_number_of_edges_active = number_of_edges_active();
-      // Setting this here means that during a large collapse the % of edges
-      // active falls to zero until we start rebuilding the sources in the while
-      // loop below, this currently seems unavoidable.
-      _stats.num_edges_active                = 0;
-      bool any_collapse_after_large_collapse = false;
-
-      while (!_coinc.empty()) {
-        Coincidence c = _coinc.top();
-        _coinc.pop();
-        node_type min = NodeManager<node_type>::find_node(c.first);
-        node_type max = NodeManager<node_type>::find_node(c.second);
-        if (min != max) {
-          std::tie(min, max)                = std::minmax({min, max});
-          any_collapse_after_large_collapse = true;
-          NodeManager<node_type>::union_nodes(min, max);
-          for (letter_type i = 0; i < out_degree(); ++i) {
-            node_type const v = target_no_checks(max, i);
-            if (v != UNDEFINED) {
-              node_type const u = target_no_checks(min, i);
-              if (u == UNDEFINED) {
-                WordGraph<node_type>::target_no_checks(min, i, v);
-              } else if (u != v) {
-                _coinc.emplace(u, v);
-              }
-            }
-          }
-        }
-      }
-
-      if (any_collapse_after_large_collapse) {
-        // Rebuild the sources only required if any changes were made in the
-        // loop above.
-        auto c = NodeManager<node_type>::initial_node();
-        while (c != NodeManager<node_type>::first_free_node()) {
-          WordGraphWithSources<Node>::remove_all_sources_no_checks(c);
-          c = NodeManager<node_type>::next_active_node(c);
-        }
-
-        c = NodeManager<node_type>::initial_node();
-
-        while (c != NodeManager<node_type>::first_free_node()) {
-          for (letter_type x = 0; x < out_degree(); ++x) {
-            auto cx = target_no_checks(c, x);
-            if (cx != UNDEFINED) {
-              _stats.num_edges_active++;
-              auto d = NodeManager<node_type>::find_node(cx);
-              if (cx != d) {
-                new_def(c, x);
-                WordGraph<node_type>::target_no_checks(c, x, d);
-              }
-              // Must re-add the source, even if we don't need to reset
-              // the target or stack the deduction
-              WordGraphWithSources<Node>::add_source_no_checks(d, x, c);
-              LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
-            }
-          }
-          c = NodeManager<node_type>::next_active_node(c);
-        }
-      } else {
-        _stats.num_edges_active = old_number_of_edges_active;
-      }
-      // The next assertion is likely very slow so commented out
+    if (_coinc.empty()) {
+      // The next assert is likely very slow so don't do it routinely
       // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
       //                      == count_number_of_edges_active());
-      return any_collapse_before_large_collapse
-             || any_collapse_after_large_collapse;
+      return any_collapse_before_large_collapse;
     }
 
+    using detail::group_digits;
+    _stats.num_large_collapses++;
+
+    report_default("{}: large collapse, number of coincidences {} >= {} = "
+                   "large_collapse()!\n",
+                   report_prefix(),
+                   group_digits(_coinc.size()),
+                   group_digits(large_collapse()));
+    auto const old_number_of_edges_active = number_of_edges_active();
+    // Setting this here means that during a large collapse the % of edges
+    // active falls to zero until we start rebuilding the sources in the while
+    // loop below, this currently seems unavoidable.
+    _stats.num_edges_active                = 0;
+    bool any_collapse_after_large_collapse = false;
+
+    while (!_coinc.empty()) {
+      Coincidence c = _coinc.top();
+      _coinc.pop();
+      node_type min = NodeManager<node_type>::find_node(c.first);
+      node_type max = NodeManager<node_type>::find_node(c.second);
+      if (min != max) {
+        std::tie(min, max)                = std::minmax({min, max});
+        any_collapse_after_large_collapse = true;
+        NodeManager<node_type>::union_nodes(min, max);
+        for (letter_type i = 0; i < out_degree(); ++i) {
+          node_type const v = target_no_checks(max, i);
+          if (v != UNDEFINED) {
+            node_type const u = target_no_checks(min, i);
+            if (u == UNDEFINED) {
+              reg(min, i);
+              WordGraph<node_type>::target_no_checks(min, i, v);
+            } else if (u != v) {
+              _coinc.emplace(u, v);
+            }
+          }
+        }
+      }
+    }
+
+    if (any_collapse_after_large_collapse) {
+      // Rebuild the sources only required if any changes were made in the
+      // loop above.
+      auto c = NodeManager<node_type>::initial_node();
+      while (c != NodeManager<node_type>::first_free_node()) {
+        WordGraphWithSources<Node>::remove_all_sources_no_checks(c);
+        c = NodeManager<node_type>::next_active_node(c);
+      }
+
+      c = NodeManager<node_type>::initial_node();
+
+      while (c != NodeManager<node_type>::first_free_node()) {
+        for (letter_type x = 0; x < out_degree(); ++x) {
+          auto cx = target_no_checks(c, x);
+          if (cx != UNDEFINED) {
+            _stats.num_edges_active++;
+            auto d = NodeManager<node_type>::find_node(cx);
+            if (cx != d) {
+              reg(c, x);
+              WordGraph<node_type>::target_no_checks(c, x, d);
+            }
+            // Must re-add the source, even if we don't need to reset
+            // the target or stack the deduction
+            WordGraphWithSources<Node>::add_source_no_checks(d, x, c);
+            LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
+          }
+        }
+        c = NodeManager<node_type>::next_active_node(c);
+      }
+    } else {
+      _stats.num_edges_active = old_number_of_edges_active;
+    }
+    // The next assertion is likely very slow so commented out
+    // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
+    //                      == count_number_of_edges_active());
+    return any_collapse_before_large_collapse
+           || any_collapse_after_large_collapse;
+  }
+
+  template <typename Node>
+  void
+  NodeManagedGraph<Node>::standardize_no_checks(std::vector<node_type> const& p,
+                                                std::vector<node_type>& q) {
+    auto const c      = lookahead_cursor();
+    bool const at_end = c == NodeManager<Node>::first_free_node();
+    // The permutation overwrites q and compaction resets the cursors.
+    auto const mapped = c < q.size() ? q[c] : static_cast<node_type>(UNDEFINED);
+    WordGraphWithSources<Node>::permute_nodes_no_checks(
+        p, q, NodeManager<Node>::number_of_nodes_active());
+    NodeManager<Node>::compact();
+    if (at_end) {
+      lookahead_cursor() = NodeManager<Node>::first_free_node();
+    } else if (mapped != UNDEFINED) {
+      lookahead_cursor() = mapped;
+    }
+  }
+
+  template <typename Node>
+  void NodeManagedGraph<Node>::stats_check_point() const {
+    _stats.prev_active_nodes = NodeManager<node_type>::number_of_nodes_active();
+    _stats.prev_nodes_killed = NodeManager<node_type>::number_of_nodes_killed();
+    _stats.prev_nodes_defined
+        = NodeManager<node_type>::number_of_nodes_defined();
+  }
+
+  template <typename Node>
+  NodeManagedGraph<Node>&
+  NodeManagedGraph<Node>::target_no_checks(node_type  s,
+                                           label_type a,
+                                           node_type  t) noexcept {
+    LIBSEMIGROUPS_ASSERT(t != UNDEFINED);
+    _stats.num_edges_active += target(s, a) == UNDEFINED;
+    WordGraphWithSources<Node>::target_no_checks(s, a, t);
+    // The next assertion is extremely slow so don't do it!
+    // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
+    //                      == count_number_of_edges_active());
+    return *this;
+  }
+
+  template <typename Node>
+  NodeManagedGraph<Node>& NodeManagedGraph<Node>::target(node_type  s,
+                                                         label_type a,
+                                                         node_type  t) {
+    throw_if_not_less(s, number_of_nodes(), "node ");
+    throw_if_not_less(a, out_degree(), "label ");
+    throw_if_not_less(t, number_of_nodes(), "node ");
+    target_no_checks(s, a, t);
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Helpers
+  ////////////////////////////////////////////////////////////////////////
+
+  namespace node_managed_graph {
     template <typename Node>
-    void NodeManagedGraph<Node>::swap_nodes_no_checks(node_type c,
-                                                      node_type d) {
-      LIBSEMIGROUPS_ASSERT(_coinc.empty());
-      LIBSEMIGROUPS_ASSERT(c != NodeManager<node_type>::initial_node());
-      LIBSEMIGROUPS_ASSERT(d != NodeManager<node_type>::initial_node());
-      LIBSEMIGROUPS_ASSERT(c != d);
-      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_valid_node(c));
-      LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_valid_node(d));
+    Node random_active_node(NodeManagedGraph<Node> const& nmg) {
+      static std::random_device rd;
+      static std::mt19937       g(rd());
 
-      if (NodeManager<node_type>::is_active_node(c)
-          && NodeManager<node_type>::is_active_node(d)) {
-        WordGraphWithSources<Node>::swap_nodes_no_checks(c, d);
-      } else if (NodeManager<node_type>::is_active_node(c)) {
-        WordGraphWithSources<Node>::rename_node_no_checks(c, d);
-      } else {
-        LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
-        WordGraphWithSources<Node>::rename_node_no_checks(d, c);
-      }
-      NodeManager<node_type>::switch_nodes(c, d);
+      std::uniform_int_distribution<uint64_t> d(
+          0, nmg.number_of_nodes_active() - 1);
+      auto r = nmg.active_nodes();
+      rx::advance_by(r, d(g));
+      return r.get();
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Helpers
-    ////////////////////////////////////////////////////////////////////////
-
-    namespace node_managed_graph {
-      template <typename Node>
-      Node random_active_node(NodeManagedGraph<Node> const& nmg) {
-        static std::random_device rd;
-        static std::mt19937       g(rd());
-
-        std::uniform_int_distribution<> d(0, nmg.number_of_nodes_active() - 1);
-        auto                            r = nmg.active_nodes();
-        rx::advance_by(r, d(g));
-        return r.get();
-      }
-    }  // namespace node_managed_graph
-  }    // namespace detail
-}  // namespace libsemigroups
+  }  // namespace node_managed_graph
+}  // namespace libsemigroups::detail
