@@ -18,6 +18,7 @@
 
 // This file contains implementations of functions related to words (counting,
 // and converting) in libsemigroups.
+#include <iostream>
 
 namespace libsemigroups {
   namespace words {
@@ -25,35 +26,57 @@ namespace libsemigroups {
     std::vector<std::pair<Word, Word>> parse_relations(std::string const& w) {
       std::vector<std::pair<Word, Word>> rules; 
       size_t start = 0;
+      size_t p = 0;
+      size_t eq = std::string::npos; 
+      bool whitespace_only = true;
+      int bracket_depth = 0; 
 
-      while (start < w.size()) {
-        size_t end = w.find(',', start); 
-        if (end == std::string::npos) end = w.size();
-
-        // handle whitespace
-        size_t not_whitespace = w.find_first_not_of(" \t\n\r", start);
-        if (start == end || not_whitespace >= end) {
-          start = end + 1;
-          continue;
+      while (p <= w.size()) {
+        if (w[p] != '\0' && w[p] != ',' && w[p] != ' ' && w[p] != '\t' && w[p] != '\n' && w[p] != '\r') whitespace_only = false; 
+    
+        if (w[p] == '(') { 
+          bracket_depth++; 
         }
-
-        size_t eq = w.find('=', start);
-        if (eq == std::string::npos || eq >= end) {
+        else if (w[p] == ')') {
+          bracket_depth--;
+          if (bracket_depth < 0) {
           LIBSEMIGROUPS_EXCEPTION(
-            "Relation starting at string position {} is incomplete, missing internal \'=\'", start);
+            "Relation starting at string position {} includes mismatched brackets", start);
+          }
         }
-        
-        std::string left = parse(w.substr(start, eq - start));
-        std::string right = parse(w.substr(eq + 1, end - eq - 1));
-        start = end + 1;
+        else if (w[p] == '=') {
+          if (bracket_depth != 0) {
+            LIBSEMIGROUPS_EXCEPTION(
+              "Relation starting at string position {} includes mismatched brackets", start);
+          }
+          eq = p; 
+        }
+        else if ((w[p] == ',' || p == w.size()) && bracket_depth == 0) {
+          // handle empty equation
+          if (start == p || whitespace_only) {
+            start = p + 1;
+            whitespace_only = true;
+            p++;
+            continue;
+          }
+          if (eq == std::string::npos) {
+            LIBSEMIGROUPS_EXCEPTION(
+              "Relation starting at string position {} is incomplete, missing internal \'=\'", start);
+          }
 
-        // handle empty equations
-        if (left == "" && right == "") continue;
-        else if (left == "" || right == "") {
-          LIBSEMIGROUPS_EXCEPTION(
-            "Relation starting at string position {} is incomplete, missing one side of the equation", start);
+          std::string left = parse(w.substr(start, eq - start));
+          std::string right = parse(w.substr(eq + 1, p - eq - 1));
+
+          if (left == "" || right == "") {
+            LIBSEMIGROUPS_EXCEPTION(
+              "Relation starting at string position {} is incomplete, missing one side of the equation", start);
+          }
+          rules.push_back({std::move(left), std::move(right)});
+          start = p + 1;
+          eq = std::string::npos;
+          whitespace_only = true;
         }
-        rules.push_back({left, right});
+        p++;
       }
       return rules; 
     }

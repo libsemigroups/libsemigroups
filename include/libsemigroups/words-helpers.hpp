@@ -233,6 +233,7 @@ namespace libsemigroups {
     //! \brief Parses a string of semigroup or monoid relations. 
     //!
     //! This function parses a string of relations equations and expands them into a vector of word pairs.
+    //! Expects brackets around conjugation expressions. 
     //! This can be applied to a presentation using \ref Presentation::add_rule(). 
     //!
     //! \param w the string to parse.

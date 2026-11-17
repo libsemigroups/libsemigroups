@@ -35,6 +35,7 @@
 
 #include "libsemigroups/detail/report.hpp"          // for ReportGuard
 #include "libsemigroups/detail/word-iterators.hpp"  // for const_wilo_iterator
+#include "libsemigroups/presentation.hpp"           // for Presentation
 
 // We test the deprecated v3 ToWord rather than v4::ToWord to ensure that the
 // tests run as are (i.e. we didn't introduce breaking changes), and so we
@@ -1042,36 +1043,38 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange", "054", "parse_relations", "[lenlex][quick]") {
-    // std::cout << std::endl;
+    std::cout << std::endl;
     REQUIRE_THROWS_AS(words::parse_relations("abcd,"), LibsemigroupsException);
     REQUIRE_THROWS_AS(words::parse_relations("abcd, ba=b"), LibsemigroupsException);
     REQUIRE_THROWS_AS(words::parse_relations("a=, b=b"), LibsemigroupsException);
     REQUIRE_THROWS_AS(words::parse_relations("a=a, =b"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(words::parse_relations("="), LibsemigroupsException);
     REQUIRE_THROWS_AS(words::parse_relations("a=a=a"), LibsemigroupsException);  // exception handled by parse 
 
+    REQUIRE(words::parse_relations("   ") == std::vector<std::pair<std::string,std::string>>());
+    REQUIRE(words::parse_relations(" , ") == std::vector<std::pair<std::string,std::string>>());
     REQUIRE(words::parse_relations("   ,") == std::vector<std::pair<std::string,std::string>>());
     REQUIRE(words::parse_relations(",") == std::vector<std::pair<std::string,std::string>>()); 
 
-    std::vector<std::pair<std::string,std::string>> expected = { {"abababababababababab", "1"}, {"ba", "b"} };
-    REQUIRE(words::parse_relations("(ab)^10=1,ba=b") == expected);
+    REQUIRE(words::parse_relations("(ab)^10=1,ba=b") == std::vector<std::pair<std::string,std::string>>({{"abababababababababab", "1"}, {"ba", "b"}}));
+    REQUIRE(words::parse_relations("   a = b,   b = b") == std::vector<std::pair<std::string,std::string>>{{"a", "b"}, {"b", "b"}}); 
+    REQUIRE(words::parse_relations("a = a,") == std::vector<std::pair<std::string,std::string>>{{"a", "a"}});
 
-    expected = { {"a", "b"}, {"b", "b"} };
-    REQUIRE(words::parse_relations("   a = b,   b = b") == expected); 
-
-    expected = { {"a", "a"} };
-    REQUIRE(words::parse_relations("a = a,") == expected);
-
-    expected = { {"a", "ab"}, {"BABAAAababaaBBBAABABAaaababbbb", "b"}, {"BABBAAABABabbabbabaa", "b"} };
+    std::vector<std::pair<std::string,std::string>> expected = { {"a", "ab"}, {"BABAAAababaaBBBAABABAaaababbbb", "b"}, {"BABBAAABABabbabbabaa", "b"} };
     REQUIRE(words::parse_relations("a=ab, ((a^2,(ab)^2),b^3)=b, (abbab,babaa)=b") == expected); // comma delimiter double def
 
-
-    // auto rules = words::parse_relations("(ab)^10=1,ba=b");
-    // for (auto& r: rules) {
-    //   std::cout << "(" << r.first << ", " << r.second << ")" << std::endl;
-    // }
-
     // test compatibility with Presentation::add_rule()
-    
+    auto rules = words::parse_relations("(ab)^10=1,ba=b");
+    Presentation<std::string> pres; 
+    for (auto const& [lhs, rhs]: rules) {
+      pres.add_rule_no_checks(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    }
+    pres.alphabet_from_rules();
+    pres.throw_if_bad_alphabet_or_rules();
+    REQUIRE(pres.rules == std::vector<std::string>({"abababababababababab", "1", "ba", "b"}));
+
+    // test nonstring template type?
+    // identity element handling?
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
