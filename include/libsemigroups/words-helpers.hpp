@@ -34,7 +34,6 @@
 #include "exception.hpp"      // for LibsemigroupsException
 #include "ranges.hpp"         // for begin, end
 #include "types.hpp"          // for word_type
-#include "alphabet-class.hpp" // for Alphabet
 
 namespace libsemigroups {
   namespace detail {

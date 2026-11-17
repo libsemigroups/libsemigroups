@@ -21,6 +21,7 @@
 #include <iterator>   // for distance
 #include <utility>    // for swap
 #include <vector>     // for vector
+#include <iostream>
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -1040,6 +1041,39 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS("-"_p, LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "054", "parse_relations", "[lenlex][quick]") {
+    // std::cout << std::endl;
+    REQUIRE_THROWS_AS(words::parse_relations("abcd,"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(words::parse_relations("abcd, ba=b"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(words::parse_relations("a=, b=b"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(words::parse_relations("a=a, =b"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(words::parse_relations("a=a=a"), LibsemigroupsException);  // exception handled by parse 
+
+    REQUIRE(words::parse_relations("   ,") == std::vector<std::pair<std::string,std::string>>());
+    REQUIRE(words::parse_relations(",") == std::vector<std::pair<std::string,std::string>>()); 
+
+    std::vector<std::pair<std::string,std::string>> expected = { {"abababababababababab", "1"}, {"ba", "b"} };
+    REQUIRE(words::parse_relations("(ab)^10=1,ba=b") == expected);
+
+    expected = { {"a", "b"}, {"b", "b"} };
+    REQUIRE(words::parse_relations("   a = b,   b = b") == expected); 
+
+    expected = { {"a", "a"} };
+    REQUIRE(words::parse_relations("a = a,") == expected);
+
+    expected = { {"a", "ab"}, {"BABAAAababaaBBBAABABAaaababbbb", "b"}, {"BABBAAABABabbabbabaa", "b"} };
+    REQUIRE(words::parse_relations("a=ab, ((a^2,(ab)^2),b^3)=b, (abbab,babaa)=b") == expected); // comma delimiter double def
+
+
+    // auto rules = words::parse_relations("(ab)^10=1,ba=b");
+    // for (auto& r: rules) {
+    //   std::cout << "(" << r.first << ", " << r.second << ")" << std::endl;
+    // }
+
+    // test compatibility with Presentation::add_rule()
+    
+  }
+
   LIBSEMIGROUPS_TEST_CASE("WordRange",
                           "032",
                           "operator+",
@@ -1182,8 +1216,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("random_word", "037", "", "[quick]") {
     auto w = random_word(10, 3);
     REQUIRE(w.size() == 10);
-    REQUIRE(
-        std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; }));
+    auto const letters_less_than_three
+        = std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; });
+    REQUIRE(letters_less_than_three);
     REQUIRE_THROWS_AS(random_word(10, 0), LibsemigroupsException);
 
     REQUIRE_THROWS_AS(random_string("", 5, 6), LibsemigroupsException);
