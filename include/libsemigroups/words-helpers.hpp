@@ -30,10 +30,11 @@
 #include <string_view>       // for string_view
 #include <vector>            // for vector, operator==
 
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LibsemigroupsException
-#include "ranges.hpp"     // for begin, end
-#include "types.hpp"      // for word_type
+#include "debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"      // for LibsemigroupsException
+#include "ranges.hpp"         // for begin, end
+#include "types.hpp"          // for word_type
+#include "alphabet-class.hpp" // for Alphabet
 
 namespace libsemigroups {
   namespace detail {
@@ -229,6 +230,16 @@ namespace libsemigroups {
     //! \param w the string to parse.
     //! \returns the parsed string.
     std::string parse(std::string const& w);
+
+    //! \brief Parses a string of semigroup or monoid relations. 
+    //!
+    //! This function parses a string of relations equations and expands them into a vector of word pairs.
+    //! This can be applied to a presentation using \ref Presentation::add_rule(). 
+    //!
+    //! \param w the string to parse.
+    //! \returns rules as a vector of word pairs. 
+    template <typename Word = std::string>
+    std::vector<std::pair<Word, Word>> parse_relations(std::string const& w);
 
     //! \brief Returns the index of a character in human readable order.
     //!

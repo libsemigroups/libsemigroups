@@ -21,6 +21,30 @@
 
 namespace libsemigroups {
   namespace words {
+    template <typename Word = std::string>
+    std::vector<std::pair<Word, Word>> parse_relations(std::string const& w) {
+      std::vector<std::pair<Word, Word>> rules; 
+
+      // parse for macro symbols ',' and '='
+      size_t start = 0;
+      while (start < w.size()) {
+        size_t end = w.find(',', start); 
+        size_t eq = w.find('=', start);
+        if (end == std::string::npos) end = w.size();
+        if (eq == std::string::npos || eq >= end) {
+          LIBSEMIGROUPS_EXCEPTION(
+            "Relation starting at string position {} is incomplete, missing internal \'=\'", start);
+        }
+        
+        std::string left = parse(w.substr(start, eq - start));
+        std::string right = parse(w.substr(eq + 1, end - eq - 1));
+
+        rules.push_back({left, right});
+        start = end + 1; 
+      }
+      return rules; 
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // pow
     ////////////////////////////////////////////////////////////////////////
