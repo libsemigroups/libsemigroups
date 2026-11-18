@@ -1060,8 +1060,13 @@ namespace libsemigroups {
     REQUIRE(words::parse_relations("   a = b,   b = b") == std::vector<std::pair<std::string,std::string>>{{"a", "b"}, {"b", "b"}}); 
     REQUIRE(words::parse_relations("a = a,") == std::vector<std::pair<std::string,std::string>>{{"a", "a"}});
 
+    // test bracket parsing behavior intended to solve case of comma delimiter/conjugator double definition
+    REQUIRE_THROWS_AS(words::parse_relations(")("), LibsemigroupsException); 
+    REQUIRE_THROWS_AS(words::parse_relations("(b)(=b,a=a"), LibsemigroupsException); 
+    REQUIRE_THROWS_AS(words::parse_relations("(a=a)"), LibsemigroupsException); // but should this be allowed?
+    REQUIRE(words::parse_relations("(((((a)))))=(((a)))") == std::vector<std::pair<std::string,std::string>>{{"a", "a"}}); 
     std::vector<std::pair<std::string,std::string>> expected = { {"a", "ab"}, {"BABAAAababaaBBBAABABAaaababbbb", "b"}, {"BABBAAABABabbabbabaa", "b"} };
-    REQUIRE(words::parse_relations("a=ab, ((a^2,(ab)^2),b^3)=b, (abbab,babaa)=b") == expected); // comma delimiter double def
+    REQUIRE(words::parse_relations("a=ab, ((a^2,(ab)^2),b^3)=b, (abbab,babaa)=b") == expected); 
 
     // test compatibility with Presentation::add_rule()
     auto rules = words::parse_relations("(ab)^10=1,ba=b");
@@ -1073,8 +1078,10 @@ namespace libsemigroups {
     pres.throw_if_bad_alphabet_or_rules();
     REQUIRE(pres.rules == std::vector<std::string>({"abababababababababab", "1", "ba", "b"}));
 
-    // test nonstring template type?
-    // identity element handling?
+    // test non-string template types
+    REQUIRE(words::parse_relations<std::vector<char>>("ab=cd") == std::vector<std::pair<std::vector<char>,std::vector<char>>>{{{'a', 'b'},{'c', 'd'}}});
+    REQUIRE(words::parse_relations<std::list<char>>("ab=cd, a=b") == std::vector<std::pair<std::list<char>,std::list<char>>>{{{'a', 'b'},{'c', 'd'}},{{'a'}, {'b'}}});
+    REQUIRE(words::parse_relations<std::vector<size_t>>("a=b") == std::vector<std::pair<std::vector<size_t>,std::vector<size_t>>>{{{97},{98}}}); // maps to ASCII
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
