@@ -21,6 +21,81 @@
 
 namespace libsemigroups {
   namespace words {
+    template <typename Word>
+    std::vector<Word> parse_relations(std::string const& w) {
+      std::vector<Word> rules;
+      size_t                             start           = 0;
+      size_t                             p               = 0;
+      size_t                             equal_sign      = std::string::npos;
+      bool                               whitespace_only = true;
+      int                                bracket_depth   = 0;
+
+      while (p <= w.size()) {
+        if (w[p] == '(') {
+          bracket_depth++;
+        } else if (w[p] == ')') {
+          bracket_depth--;
+          if (bracket_depth < 0) {
+            LIBSEMIGROUPS_EXCEPTION("Relation starting at string position {} "
+                                    "includes mismatched brackets",
+                                    start);
+          }
+        }
+        else if (w[p] == '=') {
+          if (bracket_depth != 0) {
+            LIBSEMIGROUPS_EXCEPTION("Relation starting at string position {} "
+                                    "includes mismatched brackets",
+                                    start);
+          }
+          equal_sign = p;  // save equal sign index as marker for lhs and rhs
+          whitespace_only = false;
+        } else if ((w[p] == ',' || p == w.size()) && bracket_depth == 0) {
+          // handle empty equation
+          if (start == p || whitespace_only) {
+            start           = p + 1;
+            whitespace_only = true;
+            p++;
+            continue;
+          }
+          if (equal_sign == std::string::npos) {
+            LIBSEMIGROUPS_EXCEPTION("Relation starting at string position {} "
+                                    "is incomplete, missing internal \'=\'",
+                                    start);
+          }
+
+          std::string left = parse(w.substr(start, equal_sign - start));
+          std::string right
+              = parse(w.substr(equal_sign + 1, p - equal_sign - 1));
+
+          if (left == "" || right == "") {
+            LIBSEMIGROUPS_EXCEPTION(
+                "Relation starting at string position {} is incomplete, "
+                "missing one side of the equation",
+                start);
+          }
+
+          // bridge to template
+          Word left_word(left.begin(), left.end());
+          Word right_word(right.begin(), right.end());
+
+          rules.emplace_back(std::move(left_word));
+          rules.emplace_back(std::move(right_word));
+
+          start           = p + 1;
+          equal_sign      = std::string::npos;
+          whitespace_only = true;
+        } else if (w[p] != ' ' && w[p] != '\t' && w[p] != '\n'
+                   && w[p] != '\r') {
+          whitespace_only = false;
+        }
+        p++;
+      }
+      if (bracket_depth != 0) {
+        LIBSEMIGROUPS_EXCEPTION("Final relation is missing closing bracket");
+      }
+      return rules;
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // pow
     ////////////////////////////////////////////////////////////////////////
