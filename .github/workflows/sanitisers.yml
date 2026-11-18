@@ -31,7 +31,7 @@ jobs:
       - name: Configure with -fsanitize=${{ matrix.type }} . . .
         run: |
           mkdir -p m4 && ./autogen.sh
-          ./configure CXX="$CXX" CXXFLAGS="-fsanitize=${{ matrix.type }} $CXXFLAGS"
+          ./configure CXX="$CXX" CXXFLAGS="-fsanitize=${{ matrix.type }} -fsanitize-ignorelist=sanitizer-ignorelist.txt $CXXFLAGS"
       - name: Build libsemigroups . . .
         run: make -j4
       - name: Build test_all . . .
