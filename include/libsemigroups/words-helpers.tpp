@@ -22,8 +22,8 @@
 namespace libsemigroups {
   namespace words {
     template <typename Word>
-    std::vector<std::pair<Word, Word>> parse_relations(std::string const& w) {
-      std::vector<std::pair<Word, Word>> rules;
+    std::vector<Word> parse_relations(std::string const& w) {
+      std::vector<Word> rules;
       size_t                             start           = 0;
       size_t                             p               = 0;
       size_t                             equal_sign      = std::string::npos;
@@ -40,7 +40,8 @@ namespace libsemigroups {
                                     "includes mismatched brackets",
                                     start);
           }
-        } else if (w[p] == '=') {
+        }
+        else if (w[p] == '=') {
           if (bracket_depth != 0) {
             LIBSEMIGROUPS_EXCEPTION("Relation starting at string position {} "
                                     "includes mismatched brackets",
@@ -77,7 +78,9 @@ namespace libsemigroups {
           Word left_word(left.begin(), left.end());
           Word right_word(right.begin(), right.end());
 
-          rules.push_back({std::move(left_word), std::move(right_word)});
+          rules.emplace_back(std::move(left_word));
+          rules.emplace_back(std::move(right_word));
+
           start           = p + 1;
           equal_sign      = std::string::npos;
           whitespace_only = true;

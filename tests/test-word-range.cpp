@@ -1056,23 +1056,14 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(words::parse_relations("a=a=a"),
                       LibsemigroupsException);  // exception handled by parse
 
-    REQUIRE(words::parse_relations("   ")
-            == std::vector<std::pair<std::string, std::string>>());
-    REQUIRE(words::parse_relations(" , ")
-            == std::vector<std::pair<std::string, std::string>>());
-    REQUIRE(words::parse_relations("   ,")
-            == std::vector<std::pair<std::string, std::string>>());
-    REQUIRE(words::parse_relations(",")
-            == std::vector<std::pair<std::string, std::string>>());
+    REQUIRE(words::parse_relations("   ") == std::vector<std::string>());
+    REQUIRE(words::parse_relations(" , ") == std::vector<std::string>());
+    REQUIRE(words::parse_relations("   ,") == std::vector<std::string>());
+    REQUIRE(words::parse_relations(",") == std::vector<std::string>());
 
-    REQUIRE(words::parse_relations("(ab)^10=1,ba=b")
-            == std::vector<std::pair<std::string, std::string>>(
-                {{"abababababababababab", "1"}, {"ba", "b"}}));
-    REQUIRE(words::parse_relations("   a = b,   b = b")
-            == std::vector<std::pair<std::string, std::string>>{{"a", "b"},
-                                                                {"b", "b"}});
-    REQUIRE(words::parse_relations("a = a,")
-            == std::vector<std::pair<std::string, std::string>>{{"a", "a"}});
+    REQUIRE(words::parse_relations("(ab)^10=1,ba=b") == std::vector<std::string>{"abababababababababab", "1", "ba", "b"});
+    REQUIRE(words::parse_relations("   a = b,   b = b") == std::vector<std::string>{"a", "b", "b", "b"});
+    REQUIRE(words::parse_relations("a = a,") == std::vector<std::string>{"a", "a"});
 
     // test bracket parsing behavior intended to solve case of comma
     // delimiter/conjugator double definition
@@ -1080,13 +1071,9 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(words::parse_relations("(b)(=b,a=a"),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(words::parse_relations("(a=a)"),
-                      LibsemigroupsException);  // but should this be allowed?
-    REQUIRE(words::parse_relations("(((((a)))))=(((a)))")
-            == std::vector<std::pair<std::string, std::string>>{{"a", "a"}});
-    std::vector<std::pair<std::string, std::string>> expected
-        = {{"a", "ab"},
-           {"BABAAAababaaBBBAABABAaaababbbb", "b"},
-           {"BABBAAABABabbabbabaa", "b"}};
+                      LibsemigroupsException); 
+    REQUIRE(words::parse_relations("(((((a)))))=(((a)))") == std::vector<std::string>{"a", "a"});
+    std::vector<std::string> expected = {"a", "ab", "BABAAAababaaBBBAABABAaaababbbb", "b", "BABBAAABABabbabbabaa", "b"};
     REQUIRE(
         words::parse_relations("a=ab, ((a^2,(ab)^2),b^3)=b, (abbab,babaa)=b")
         == expected);
@@ -1094,8 +1081,8 @@ namespace libsemigroups {
     // test compatibility with Presentation::add_rule()
     auto                      rules = words::parse_relations("(ab)^10=1,ba=b");
     Presentation<std::string> pres;
-    for (auto const& [lhs, rhs] : rules) {
-      pres.add_rule_no_checks(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    for (size_t i = 0; i < rules.size() - 1; i += 2) {
+      pres.add_rule_no_checks(rules[i].begin(), rules[i].end(), rules[i + 1].begin(), rules[i + 1].end());
     }
     pres.alphabet_from_rules();
     pres.throw_if_bad_alphabet_or_rules();
@@ -1105,14 +1092,11 @@ namespace libsemigroups {
 
     // test non-string template types
     REQUIRE(words::parse_relations<std::vector<char>>("ab=cd")
-            == std::vector<std::pair<std::vector<char>, std::vector<char>>>{
-                {{'a', 'b'}, {'c', 'd'}}});
+            == std::vector<std::vector<char>>{{'a', 'b'}, {'c', 'd'}});
     REQUIRE(words::parse_relations<std::list<char>>("ab=cd, a=b")
-            == std::vector<std::pair<std::list<char>, std::list<char>>>{
-                {{'a', 'b'}, {'c', 'd'}}, {{'a'}, {'b'}}});
+            == std::vector<std::list<char>>{{'a', 'b'}, {'c', 'd'}, {'a'}, {'b'}});
     REQUIRE(words::parse_relations<std::vector<size_t>>("a=b")
-            == std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>>{
-                {{97}, {98}}});  // maps to ASCII
+            == std::vector<std::vector<size_t>>{{97}, {98}});  // maps to ASCII
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
