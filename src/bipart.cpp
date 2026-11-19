@@ -478,13 +478,13 @@ namespace libsemigroups {
 
       // Reorder the lookup x from (+1, ..., +n, -1, ..., -n)
       //  to (-n, ..., -1, +1, ..., +n)
-      std::vector<u_int32_t> y(x.cbegin(), x.cend());
+      std::vector<unit32_t> y(x.cbegin(), x.cend());
       std::reverse(y.begin(), y.begin() + n);
 
       // Convert lookup into vector of intervals
       // (each pair of consecutive indices in a block form an interval)
-      std::vector<std::pair<u_int32_t, u_int32_t>> intervals;
-      std::vector<u_int32_t>                       last(2 * n, 2 * n);
+      std::vector<std::pair<unit32_t, unit32_t>> intervals;
+      std::vector<unit32_t>                      last(2 * n, 2 * n);
 
       for (size_t i = 0; i < 2 * n; ++i) {
         uint32_t const label = y[i];
@@ -496,7 +496,7 @@ namespace libsemigroups {
       std::sort(intervals.begin(), intervals.end());
 
       // store endpoints of currently open intervals
-      std::vector<u_int32_t> stack;
+      std::vector<unit32_t> stack;
 
       for (auto const& [start, end] : intervals) {
         while (!stack.empty() && stack.back() <= start) {
@@ -515,7 +515,7 @@ namespace libsemigroups {
     }
 
     bool is_annular(Bipartition const& x) {
-      u_int32_t const n = x.degree();
+      unit32_t const n = x.degree();
 
       if (n < 3) {
         return true;
