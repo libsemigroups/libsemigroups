@@ -466,6 +466,94 @@ namespace libsemigroups {
       return result;
     }
 
+    // Check planarity by considering the intervals between consecutive
+    // occurrences of points belonging to the same block. The bipartition
+    // is planar if and only if no two of these intervals cross.
+    bool is_planar(Bipartition const& x) {
+      size_t const n = x.degree();
+
+      if (n < 2) {
+        return true;
+      }
+
+      // Reorder the lookup x from (+1, ..., +n, -1, ..., -n)
+      //  to (-n, ..., -1, +1, ..., +n)
+      std::vector<uint32_t> y(x.cbegin(), x.cend());
+      std::reverse(y.begin(), y.begin() + n);
+
+      // Convert lookup into vector of intervals
+      // (each pair of consecutive indices in a block form an interval)
+      std::vector<std::pair<uint32_t, uint32_t>> intervals;
+      std::vector<uint32_t>                      last(2 * n, 2 * n);
+
+      for (size_t i = 0; i < 2 * n; ++i) {
+        uint32_t const label = y[i];
+        if (last[label] != 2 * n) {
+          intervals.emplace_back(last[label], i);
+        }
+        last[label] = i;
+      }
+      std::sort(intervals.begin(), intervals.end());
+
+      // store endpoints of currently open intervals
+      std::vector<uint32_t> stack;
+
+      for (auto const& [start, end] : intervals) {
+        while (!stack.empty() && stack.back() <= start) {
+          stack.pop_back();
+        }
+
+        // false if current interval intersects with an open interval
+        if (!stack.empty() && end > stack.back()) {
+          return false;
+        }
+
+        stack.push_back(end);
+      }
+
+      return true;
+    }
+
+    bool is_annular(Bipartition const& x) {
+      uint32_t const n = x.degree();
+
+      if (n < 3) {
+        return true;
+      }
+
+      // construct p
+      std::vector<uint32_t> blocks(2 * n);
+      for (size_t i = 0; i < n; ++i) {
+        blocks[i]     = i;
+        blocks[n + i] = (i == 0 ? n - 1 : i - 1);
+      }
+      Bipartition const p(std::move(blocks));
+
+      // construct identity
+      Bipartition const identity = Bipartition::one(n);
+
+      // Precompute the powers of p
+      std::vector<Bipartition> powers;
+      powers.push_back(p);
+      for (size_t i = 2; i < n; ++i) {
+        powers.push_back(powers.back() * p);
+      }
+      powers.push_back(identity);
+
+      // check all p^i*x*p^j (1,...,n)
+      Bipartition candidate;
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+          candidate = powers[i] * x * powers[j];
+          if (is_planar(candidate)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
   }  // namespace bipartition
 
   std::string to_human_readable_repr(Bipartition const& x,

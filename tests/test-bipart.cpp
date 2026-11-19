@@ -100,6 +100,36 @@ namespace libsemigroups {
       REQUIRE(statistic < upper_quantile);
     }
 
+    bool is_planar_brute_force(Bipartition const& x) {
+      size_t const n = x.degree();
+
+      if (n < 2) {
+        return true;
+      }
+
+      // Reorder the lookup x from (+1, ..., +n, -1, ..., -n)
+      //  to (-n, ..., -1, +1, ..., +n)
+      std::vector<uint32_t> y(2 * n);
+      for (size_t i = 0; i < n; ++i) {
+        y[i]     = x[2 * n - 1 - i];
+        y[n + i] = x[i];
+      }
+
+      // Check for forbidden pattern a,b,a,b
+      for (size_t i = 0; i < 2 * n - 3; ++i) {
+        for (size_t j = i + 1; j < 2 * n - 2; ++j) {
+          for (size_t k = j + 1; k < 2 * n - 1; ++k) {
+            for (size_t l = k + 1; l < 2 * n; ++l) {
+              if (y[i] == y[k] && y[j] == y[l] && y[i] != y[j]) {
+                return false;
+              }
+            }
+          }
+        }
+      }
+      return true;
+    }
+
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "000", "empty blocks", "[quick]") {
@@ -888,6 +918,95 @@ namespace libsemigroups {
         REQUIRE(z.rank() == x.rank());
         REQUIRE(std::vector<bool>(z.cbegin_lookup(), z.cend_lookup())
                 == std::vector<bool>(x.cbegin_lookup(), x.cend_lookup()));
+      }
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "028",
+                          "check planarity of bipartitions",
+                          "[quick][bipart]") {
+    REQUIRE(bipartition::is_planar(make<Bipartition>({0, 0})));
+    REQUIRE(bipartition::is_planar(make<Bipartition>({0, 1, 0, 1})));
+    REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 1, 0})));
+    REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 2, 1, 0, 2})));
+    REQUIRE(
+        !bipartition::is_planar(make<Bipartition>({0, 1, 0, 1, 2, 3, 4, 5})));
+    REQUIRE(
+        bipartition::is_planar(make<Bipartition>({0, 1, 0, 2, 3, 2, 4, 5})));
+    REQUIRE(
+        !bipartition::is_planar(make<Bipartition>({0, 1, 0, 2, 1, 3, 4, 5})));
+    REQUIRE(
+        bipartition::is_planar(make<Bipartition>({0, 1, 1, 2, 3, 1, 4, 5})));
+    REQUIRE(!bipartition::is_planar(make<Bipartition>({0, 1, 2, 3, 1, 0})));
+    REQUIRE(!bipartition::is_planar(
+        make<Bipartition>({0, 0, 0, 0, 0, 1, 2, 1, 2, 1})));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "029",
+                          "check if bipartition is annular",
+                          "[quick][bipart]") {
+    REQUIRE(bipartition::is_annular(make<Bipartition>({0, 0})));  // n=1
+    REQUIRE(bipartition::is_annular(
+        make<Bipartition>({{1, -1}, {2, -2}, {3, -3}})));  // identity
+    REQUIRE(bipartition::is_annular(
+        make<Bipartition>({0, 1, 0, 2, 3, 2, 4, 5})));  // planar
+    REQUIRE(bipartition::is_annular(
+        make<Bipartition>({{1, -2}, {2, -3}, {3, -1}})));  // p
+    REQUIRE(bipartition::is_annular(
+        make<Bipartition>({0, 1, 0, 2, 1, 3, 4, 5})));  // not planar is annular
+    REQUIRE(!bipartition::is_annular(
+        make<Bipartition>({{1, -2}, {2, -1}, {3, -3}})));  // not annular
+    REQUIRE(!bipartition::is_annular(make<Bipartition>(
+        {{1, -1}, {-2, -4}, {3, 4}, {2, -3}})));  // not annular
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "030",
+                          "exhaustive check of bipartition planar - small n",
+                          "[quick][bipart]") {
+    for (size_t degree = 0; degree <= 4; ++degree) {
+      std::vector<uint32_t> lookup(2 * degree);
+
+      if (degree == 0) {
+        auto x = make<Bipartition>(lookup);
+        REQUIRE(bipartition::is_planar(x) == is_planar_brute_force(x));
+        continue;
+      }
+
+      // The first position must have label 0.
+      lookup[0] = 0;
+
+      auto enumerate
+          = [&](auto&& self, size_t pos, uint32_t max_label) -> void {
+        if (pos == 2 * degree) {
+          auto x = make<Bipartition>(lookup);
+
+          REQUIRE(bipartition::is_planar(x) == is_planar_brute_force(x));
+          return;
+        }
+
+        // Use an existing label, or introduce the next new label.
+        for (uint32_t label = 0; label <= max_label + 1; ++label) {
+          lookup[pos] = label;
+          self(self, pos + 1, std::max(max_label, label));
+        }
+      };
+
+      enumerate(enumerate, 1, 0);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "031",
+                          "is_planar random tests",
+                          "[standard][bipartition]") {
+    for (size_t degree : {5, 8, 12, 20}) {
+      for (size_t i = 0; i < 100; ++i) {
+        auto x = bipartition::random(degree);
+
+        REQUIRE(bipartition::is_planar(x) == is_planar_brute_force(x));
       }
     }
   }
