@@ -231,39 +231,37 @@ namespace libsemigroups {
 
     //! \brief Check whether a bipartition is planar.
     //!
-    //! A bipartition is planar if, when its points are arranged in the
-    //! order (-n, ..., -1, +1, ..., +n), there are no two distinct blocks
-    //! whose elements alternate.
-    //!
-    //! This is checked by considering the intervals between consecutive
-    //! occurrences of points belonging to the same block. The bipartition
-    //! is planar if and only if no two of these intervals cross.
+    //! A bipartition \f$x\f$ of degree \f$n\f$ is called planar if there
+    //! do not exist distinct blocks \f$A, U \in x\f$ along with \f$a,b
+    //! \in A\f$ and \f$u,v \in U\f$, such that \f$a<u<b<v\f$. Equivalently,
+    //! a bipartition x is planar if it can be represented as a graph without
+    //! edges crossing inside of the rectangle formed by its vertices
+    //! \f$[n] \union [-n]\f$.
     //!
     //! \param x the bipartition to check.
     //! \returns `true` if \p x is planar, and `false` otherwise.
     //!
     //! \complexity
-    //! O(n log n), where n is the degree of \p x.
+    //! \f$O(n \log n)\f$, where \f$n\f$ is the degree of \p x.
     bool is_planar(Bipartition const& x);
 
     //! \brief Returns whether a bipartition is annular.
     //!
-    //! A bipartition \p x is annular if there exist a planar bipartition \p y
-    //! and integers \f$i\f$ and \f$j\f$ such that
-    //! \f$x = p^i y p^j\f$, where \f$p\f$ is the cyclic permutation
-    //! bipartition.
-    //!
-    //! This function checks whether \p x is annular by testing whether
-    //! \f$p^{-i} x p^{-j}\f$ is planar for some
-    //! \f$i,j \in \{0,\ldots,n-1\}\f$, where \f$n\f$ is the degree
-    //! of \p x.
+    //! The bipartition \p x is annular if there exist a planar bipartition
+    //! \f$y\f$ and integers \f$i\f$ and \f$j\f$ such that \f$x = p^i*y*p^j\f$,
+    //! where \f$p\f$ is the bipartition of degree n with blocks \f$\{\{i,
+    //! -(i+1)\} : i \in \{1,\ldots,n-1\}\}\f$ and \f$\{n,-1\}\f$. Equivalently,
+    //! the bipartition \p x of degree \f$n\f$ is annular if it can be
+    //! represented as a graph without edges crossing inside an annulus where
+    //! the vertices in \f$[n]\f$, (\f$[-n]\f$ respectively) lie on the inner
+    //! (resp. outer) circle bounding the annulus.
     //!
     //! \param x the bipartition to check.
     //!
     //! \returns \c true if the bipartition is annular, and \c false otherwise.
     //!
     //! \complexity
-    //! \(O(n^3logn)\), where \(n\) is the degree of the bipartition.
+    //! \f$O(n^3logn)\f$, where \f$n\f$ is the degree of the bipartition.
     bool is_annular(Bipartition const& x);
 
   }  // namespace bipartition

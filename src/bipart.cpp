@@ -466,6 +466,9 @@ namespace libsemigroups {
       return result;
     }
 
+    // Check planarity by considering the intervals between consecutive
+    // occurrences of points belonging to the same block. The bipartition
+    // is planar if and only if no two of these intervals cross.
     bool is_planar(Bipartition const& x) {
       size_t const n = x.degree();
 
@@ -475,16 +478,13 @@ namespace libsemigroups {
 
       // Reorder the lookup x from (+1, ..., +n, -1, ..., -n)
       //  to (-n, ..., -1, +1, ..., +n)
-      std::vector<uint32_t> y(2 * n);
-      for (size_t i = 0; i < n; ++i) {
-        y[i]     = x[2 * n - 1 - i];
-        y[n + i] = x[i];
-      }
+      std::vector<u_int32_t> y(x.cbegin(), x.cend());
+      std::reverse(y.begin(), y.begin() + n);
 
       // Convert lookup into vector of intervals
       // (each pair of consecutive indices in a block form an interval)
-      std::vector<std::pair<size_t, size_t>> intervals;
-      std::vector<size_t>                    last(2 * n, 2 * n);
+      std::vector<std::pair<u_int32_t, u_int32_t>> intervals;
+      std::vector<u_int32_t>                       last(2 * n, 2 * n);
 
       for (size_t i = 0; i < 2 * n; ++i) {
         uint32_t const label = y[i];
@@ -496,12 +496,9 @@ namespace libsemigroups {
       std::sort(intervals.begin(), intervals.end());
 
       // store endpoints of currently open intervals
-      std::vector<int> stack;
+      std::vector<u_int32_t> stack;
 
-      for (auto const& interval : intervals) {
-        int const start = interval.first;
-        int const end   = interval.second;
-
+      for (auto const& [start, end] : intervals) {
         while (!stack.empty() && stack.back() <= start) {
           stack.pop_back();
         }
@@ -518,26 +515,22 @@ namespace libsemigroups {
     }
 
     bool is_annular(Bipartition const& x) {
-      size_t const n = x.degree();
+      u_int32_t const n = x.degree();
 
       if (n < 3) {
         return true;
       }
 
       // construct p
-      std::vector<std::vector<int>> blocks;
-      for (size_t i = 1; i < n; ++i) {
-        blocks.push_back({static_cast<int>(i), -static_cast<int>(i + 1)});
+      std::vector<uint32_t> blocks(2 * n);
+      for (size_t i = 0; i < n; ++i) {
+        blocks[i]     = i;
+        blocks[n + i] = (i == 0 ? n - 1 : i - 1);
       }
-      blocks.push_back({static_cast<int>(n), -1});
-      Bipartition const p = make<Bipartition>(blocks);
+      Bipartition const p(std::move(blocks));
 
       // construct identity
-      std::vector<std::vector<int>> identity_blocks;
-      for (size_t i = 1; i <= n; ++i) {
-        identity_blocks.push_back({static_cast<int>(i), -static_cast<int>(i)});
-      }
-      Bipartition const identity = make<Bipartition>(identity_blocks);
+      Bipartition const identity = Bipartition::one(n);
 
       // Precompute the powers of p
       std::vector<Bipartition> powers;
@@ -548,9 +541,10 @@ namespace libsemigroups {
       powers.push_back(identity);
 
       // check all p^i*x*p^j (1,...,n)
+      Bipartition candidate;
       for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < n; ++j) {
-          Bipartition const candidate = powers[i] * x * powers[j];
+          candidate = powers[i] * x * powers[j];
           if (is_planar(candidate)) {
             return true;
           }
