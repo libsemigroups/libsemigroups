@@ -5494,7 +5494,7 @@ namespace libsemigroups {
           break;
         }
         if (num_lookaheads == 1) {
-          tc.standardize(Order::lenlex);
+          tc.standardize(Order::shortlex);
           tc.perform_lookbehind();
           limit *= 1.1;
         }
@@ -5522,8 +5522,8 @@ namespace libsemigroups {
     REQUIRE(tc.current_index_of(w.begin(), w.end()) == 49);
     tc.run();
     using node_type = typename decltype(tc)::word_graph_type::node_type;
-    REQUIRE(word_graph::number_of_nodes_reachable_from(tc.current_word_graph(),
-                                                       node_type(0))
+    REQUIRE(v4::word_graph::number_of_nodes_reachable_from(
+                tc.current_word_graph(), node_type(0))
             == tc.current_word_graph().number_of_nodes_active());
     std::vector<std::vector<word_type>> const classes
         = congruence_common::non_trivial_classes(tc, words);
@@ -5547,7 +5547,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 11_w, 10_w);
     ToddCoxeter tc(twosided, p);
     tc.save(GENERATE(false, true));
-    tc.standardize(Order::lenlex);
+    tc.standardize(Order::shortlex);
 
     auto const& graph = tc.current_word_graph();
     REQUIRE(graph.current_spanning_tree().number_of_nodes() == 1);
@@ -5579,7 +5579,7 @@ namespace libsemigroups {
 
     ToddCoxeter<word_type> tc;
     tc.init(twosided, p, initial);
-    tc.standardize(Order::lenlex);
+    tc.standardize(Order::shortlex);
     auto const& graph = tc.current_word_graph();
     REQUIRE(graph.current_spanning_tree().parent(3) == 2);
     tc.strategy(options::strategy::lookahead);
@@ -5655,7 +5655,7 @@ namespace libsemigroups {
 
     ToddCoxeter<word_type> tc;
     tc.init(twosided, p, initial);
-    tc.standardize(Order::lenlex);
+    tc.standardize(Order::shortlex);
     tc.strategy(options::strategy::lookahead);
     tc.lookahead_extent(options::lookahead_extent::full);
     tc.lookahead_style(GENERATE(options::lookahead_style::hlt,
