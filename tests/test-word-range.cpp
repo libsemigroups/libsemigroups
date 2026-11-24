@@ -1056,10 +1056,6 @@ namespace libsemigroups {
     REQUIRE(literals::operator""_c("banana") == "b(an)^2a");
 
     // invalid character exceptions (nonexhaustive)
-    REQUIRE_THROWS_AS(" "_c, LibsemigroupsException);
-    REQUIRE_THROWS_AS(" aba"_c, LibsemigroupsException);
-    REQUIRE_THROWS_AS("aaaa aa"_c, LibsemigroupsException);
-    REQUIRE_THROWS_AS("a\nb"_c, LibsemigroupsException);
     REQUIRE_THROWS_AS("abcd1efg"_c, LibsemigroupsException);
     REQUIRE_THROWS_AS("a*b"_c, LibsemigroupsException);
     REQUIRE_THROWS_AS(","_c, LibsemigroupsException);
@@ -1069,6 +1065,13 @@ namespace libsemigroups {
     // verify equivalent call to "compress" function
     REQUIRE("cdababef"_c == "cd(ab)^2ef");
     REQUIRE(words::compress("cdababef") == "cd(ab)^2ef");
+
+    // whitespace stripping
+    REQUIRE(" "_c == "");
+    REQUIRE(std::string(" aba"_c).size() == 3);
+    REQUIRE(" aba"_c == "aba");
+    REQUIRE("aaaa aa"_c == "a^6");
+    REQUIRE("a\nb"_c == "ab");
 
     // general
     REQUIRE("abc"_c == "abc");

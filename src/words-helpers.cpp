@@ -21,7 +21,7 @@
 
 #include "libsemigroups/words-helpers.hpp"
 
-#include <cctype>         // for isalpha, isdigit
+#include <cctype>         // for isalpha, isdigit, isspace
 #include <cmath>          // for pow
 #include <cstring>        // for strlen
 #include <numeric>        // for iota
@@ -606,17 +606,23 @@ namespace libsemigroups {
      * O(n). This is a more memory-heavy implementation. The sparse table itself
      * uses O(nlogn) space.
      */
-    std::string to_expression(std::string const& w, int n) {
+    std::string to_expression(std::string const& w) {
       // input format validation
-      if (w == "")
-        return "";
-      for (char const& c : w) {
+      std::string word;
+      word.reserve(w.size());
+      for (unsigned char c : w) {
+        if (std::isspace(c))
+          continue;
         if (!std::isalpha(c)) {
           LIBSEMIGROUPS_EXCEPTION(
               "expects string argument with alphabet \"a-zA-Z\", "
               "all other symbols invalid");
         }
+        word.push_back(c);
       }
+      if (word == "")
+        return "";
+      int n = word.size();
 
       // map string to ASCII value, append sentinel, and build forward suffix
       // array alphabet size is 256 + 1 (sentinel)
@@ -625,7 +631,7 @@ namespace libsemigroups {
       std::vector<int> height(n + 1, 0);
       std::vector<int> st;
       for (int i = 0; i < n; i++) {
-        mapped_w[i] = static_cast<unsigned char>(w[i]) + 1;
+        mapped_w[i] = static_cast<unsigned char>(word[i]) + 1;
       }
       mapped_w[n] = 0;  // sentinel $
       sa_is(mapped_w, sa, 257);
@@ -786,7 +792,7 @@ namespace libsemigroups {
             curr = all_runs[child_run_i].j + 1;
             child_i++;
           } else {
-            result += w[curr];
+            result += word[curr];
             curr++;
           }
         }
@@ -805,7 +811,7 @@ namespace libsemigroups {
           render_run(render_run, top_run_i);
           p = all_runs[top_run_i].j + 1;
         } else {
-          result += w[p];
+          result += word[p];
           p++;
         }
       }
@@ -1029,7 +1035,7 @@ namespace libsemigroups {
     }
 
     std::string operator""_c(char const* w, size_t n) {
-      return to_expression(w, n);
+      return to_expression(std::string(w, n));
     }
 
     std::string operator""_c(char const* w) {
