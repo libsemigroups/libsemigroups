@@ -28,11 +28,12 @@
 #include <limits>            // for numeric_limits
 #include <string>            // for basic_string
 #include <string_view>       // for string_view
+#include <type_traits>       // for is_same_v
 #include <vector>            // for vector, operator==
 
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LibsemigroupsException
-#include "ranges.hpp"     // for beg    in, end
+#include "ranges.hpp"     // for begin, end
 #include "types.hpp"      // for word_type
 
 namespace libsemigroups {
@@ -233,7 +234,8 @@ namespace libsemigroups {
     //! \brief Parses a string of semigroup or monoid relations.
     //!
     //! This function parses a string of relations equations and expands them
-    //! into a vector of words. Equation LHS are at even indices and equation RHS are at odd indices. Parsing expects brackets around conjugation
+    //! into a vector of words. Equation LHS are at even indices and equation
+    //! RHS are at odd indices. Parsing expects brackets around conjugation
     //! expressions. This can be applied to a presentation using \ref
     //! Presentation::add_rule().
     //!
