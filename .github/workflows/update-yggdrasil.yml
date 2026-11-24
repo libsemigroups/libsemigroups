@@ -159,10 +159,8 @@ jobs:
           # Replace only the first occurrence
           sed -i "0,/\"${OLD_COMMIT}\"/s//\"${NEW_COMMIT}\"/" "$FILE"
 
-          # Update: the trailing version comment  # vX.Y.Z
-          # The line with the commit SHA has a comment like:  # v3.5.1
-          # TBD: is this comment necessary in the first place?
-          sed -i -E "s|#\s*v[0-9]+\.[0-9]+\.[0-9]+|# v${NEW_VERSION}|" "$FILE"
+          # Note: the GitSource also has tag="v$(version)", which follows
+          # the version line above automatically, so needs no patching.
 
           # Validate
           echo "──── diff ────"
@@ -174,8 +172,6 @@ jobs:
             || { echo "::error::Version not updated"; exit 1; }
           grep -q "\"${NEW_COMMIT}\"" "$FILE" \
             || { echo "::error::Commit SHA not updated"; exit 1; }
-          grep -q "# v${NEW_VERSION}" "$FILE" \
-            || { echo "::error::Version comment not updated"; exit 1; }
 
           # Verify the file still has exactly one GitSource for libsemigroups
           COUNT=$(grep -c 'GitSource.*libsemigroups/libsemigroups' "$FILE")
