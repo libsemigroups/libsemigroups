@@ -28,6 +28,7 @@
 #include <limits>            // for numeric_limits
 #include <string>            // for basic_string
 #include <string_view>       // for string_view
+#include <type_traits>       // for is_same_v
 #include <vector>            // for vector, operator==
 
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
@@ -229,6 +230,19 @@ namespace libsemigroups {
     //! \param w the string to parse.
     //! \returns the parsed string.
     std::string parse(std::string const& w);
+
+    //! \brief Parses a string of semigroup or monoid relations.
+    //!
+    //! This function parses a string of relations equations and expands them
+    //! into a vector of words. Equation LHS are at even indices and equation
+    //! RHS are at odd indices. Parsing expects brackets around conjugation
+    //! expressions. This can be applied to a presentation using \ref
+    //! Presentation::add_rule().
+    //!
+    //! \param w the string to parse.
+    //! \returns rules as a vector of words.
+    template <typename Word = std::string>
+    std::vector<Word> parse_relations(std::string const& w);
 
     //! \brief Returns the index of a character in human readable order.
     //!
