@@ -1,5 +1,9 @@
 # Changelog - version 3
 
+## v3.6.3 (released 24/11/2026)
+
+This is another minor release including a fix (backported from main).
+
 ## v3.6.2 (released 12/11/2026)
 
 This is a minor release including a number of fixes (backported from main).
