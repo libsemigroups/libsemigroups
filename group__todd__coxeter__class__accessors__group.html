@@ -45,6 +45,8 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -414,7 +416,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>This function returns the number of nodes in the active part of the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="current_word_graph">current_word_graph</a>. Recall that <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="current_word_graph">current_word_graph</a> can grow and shrink drastically during a congruence enumeration. As such to avoid unnecessary memory allocations, where possible, the nodes in the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="current_word_graph">current_word_graph</a> are "recycled" leading to the situation where some of the nodes in <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="current_word_graph">current_word_graph</a> are "active" and others are "inactive". In other words, the "active" nodes correspond to the part of the word graph that actually represents the classes of the congruence we are trying to enumerate; and the "inactive" nodes are only there to be "recycled" into "active" nodes if they are required later on.</p>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <span class="tt">noexcept</span> and is guaranteed never to throw.</dd></dl>
-<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000010">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <span class="tt"><a class="el" href="namespacelibsemigroups.html" title="Namespace for everything in the libsemigroups library.">libsemigroups</a></span> in v4. Use <span class="tt"><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="Get the current word graph.">current_word_graph()</a>.<a class="el" href="#ga2ece699d31c498c5b09521cadbd22934" title="Return the number of nodes in the active part of the current word graph.">number_of_nodes_active()</a></span> instead. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000009">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <span class="tt"><a class="el" href="namespacelibsemigroups.html" title="Namespace for everything in the libsemigroups library.">libsemigroups</a></span> in v4. Use <span class="tt"><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="Get the current word graph.">current_word_graph()</a>.<a class="el" href="#ga2ece699d31c498c5b09521cadbd22934" title="Return the number of nodes in the active part of the current word graph.">number_of_nodes_active()</a></span> instead. </dd></dl>
 
 </div>
 </div>
